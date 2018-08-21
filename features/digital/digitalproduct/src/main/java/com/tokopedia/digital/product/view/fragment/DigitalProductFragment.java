@@ -20,6 +20,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -63,6 +64,7 @@ import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
 import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
 import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
@@ -159,6 +161,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private static final String DIGITAL_SMARTCARD = "mainapp_digital_smartcard";
 
     private static final int DEFAULT_POST_DELAYED_VALUE = 500;
+    private static final int PANDUAN_TAB_POSITION = 1;
 
     @BindView(R2.id.main_container)
     NestedScrollView mainHolderContainer;
@@ -210,6 +213,8 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
 
     private FirebaseRemoteConfigImpl remoteConfig;
 
+    private DigitalAnalytics digitalAnalytics;
+
     private USSDBroadcastReceiver ussdBroadcastReceiver;
     private ShowCaseDialog showCaseDialog;
     private int selectedSimIndex = 0;//start from 0
@@ -257,6 +262,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
+        digitalAnalytics = new DigitalAnalytics();
 
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -1296,6 +1302,24 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
         promoTabLayout.setupWithViewPager(promoViewPager);
         promoViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(promoTabLayout));
         promoViewPager.setAdapter(getViewPagerAdapter(tabCount, firstTab));
+        promoViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == PANDUAN_TAB_POSITION) {
+                    digitalAnalytics.eventClickPanduanPage(categoryDataState.getName());
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private PagerAdapter getViewPagerAdapter(int tabCount, String firstTab) {

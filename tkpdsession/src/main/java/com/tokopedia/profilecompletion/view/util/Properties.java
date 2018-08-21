@@ -12,8 +12,10 @@ import rx.functions.Action1;
 
 /**
  * Created by stevenfredian on 7/13/17.
+ * see Properties on abstraction
  */
 
+@Deprecated
 public final class Properties {
 
     // no instances of helper class

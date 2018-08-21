@@ -37,4 +37,9 @@ public class ActivateRepository implements IActivateRepository {
         return activateTokoCashCloudDataStore.linkedWalletToTokoCash(mapParam)
                 .map(mapper);
     }
+
+    @Override
+    public Observable<String> getRefreshWalletToken() {
+        return activateTokoCashCloudDataStore.getRefreshWalletToken();
+    }
 }
