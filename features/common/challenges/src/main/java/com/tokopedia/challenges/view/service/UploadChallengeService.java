@@ -82,7 +82,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public void createNotification() {
         builder = buildBaseNotification();
         Notification notification = builder
-                .setStyle(new NotificationCompat.BigTextStyle().bigText("Upload In Progress"))
+                .setContentText("Upload In Progress")
                 .setProgress(uploadFingerprints.getTotalParts(),0,true)
                 .build();
         notificationManager.notify(TAG, notificationID, notification);
@@ -93,13 +93,13 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     }
 
     private NotificationCompat.Builder buildBaseNotification() {
-        String title = "Challenge Uploading";
+
         int largeIconRes = R.drawable.ic_stat_notify2;
         return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
-                .setContentTitle(title)
+                .setContentTitle("Tokopedia Challenges")
                 .setSmallIcon(R.drawable.ic_stat_notify_white)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setOnlyAlertOnce(true);
     }
 
@@ -120,6 +120,9 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     @Override
     public void onProgressComplete() {
         notificationManager.cancel(TAG,notificationID);
+        builder = buildBaseNotification();
+        Notification notification = builder.setContentText("Submitted Successfully").build();
+        notificationManager.notify(TAG, notificationID, notification);
         sendBroadcast(new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE));
         stopSelf();
 
