@@ -49,6 +49,7 @@ import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenter;
 import com.tokopedia.core.manage.people.address.presenter.AddAddressPresenterImpl;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ import java.util.List;
 
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_ADDRESS;
+import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.EXTRA_PLATFORM_PAGE;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_DISTRICT_RECOMMENDATION;
 import static com.tokopedia.core.manage.people.address.ManageAddressConstant.IS_EDIT;
@@ -126,6 +128,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
 
     private String extraPlatformPage;
+    private boolean isFromMarketPlaceCartEmptyAddressFirst;
 
     public static AddAddressFragment createInstance(Bundle extras) {
         AddAddressFragment fragment = new AddAddressFragment();
@@ -175,6 +178,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         this.token = arguments.getParcelable(KERO_TOKEN);
         this.address = arguments.getParcelable(EDIT_PARAM);
         this.extraPlatformPage = arguments.getString(EXTRA_PLATFORM_PAGE, "");
+        this.isFromMarketPlaceCartEmptyAddressFirst = arguments.getBoolean(EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST, false);
     }
 
     @Override
@@ -346,8 +350,6 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 sendAnalyticsOnInputPhoneClicked();
             return false;
         });
-
-
 
 
         saveButton.setOnClickListener(view -> {
@@ -716,8 +718,29 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         presenter.detachView();
     }
 
+    @Override
+    protected String getScreenName() {
+        if (isAddAddressFromCartCheckoutMarketplace()) {
+            return isFromMarketPlaceCartEmptyAddressFirst()
+                    ? ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART
+                    : ConstantTransactionAnalytics.ScreenName.ADD_NEW_ADDRESS_PAGE;
+        }
+        return super.getScreenName();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        sendAnalyticsScreenName(getScreenName());
+        checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), getScreenName());
+    }
+
     private boolean isAddAddressFromCartCheckoutMarketplace() {
         return extraPlatformPage.equalsIgnoreCase(PLATFORM_MARKETPLACE_CART);
+    }
+
+    private boolean isFromMarketPlaceCartEmptyAddressFirst() {
+        return isFromMarketPlaceCartEmptyAddressFirst;
     }
 
     public boolean isValidAddress() {
@@ -1097,5 +1120,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
                 checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahSuccess();
             else
                 checkoutAnalyticsChangeAddress.eventClickCourierCartChangeAddressErrorValidationAlamatSebagaiPadaTambahNotSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsScreenName(String screenName) {
+        if (isAddAddressFromCartCheckoutMarketplace())
+            checkoutAnalyticsChangeAddress.sendScreenName(getActivity(), screenName);
     }
 }

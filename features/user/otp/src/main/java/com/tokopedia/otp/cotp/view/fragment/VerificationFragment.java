@@ -272,6 +272,8 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             public void afterTextChanged(Editable s) {
                 if (inputOtp.getText().length() == MAX_OTP_LENGTH) {
                     enableVerifyButton();
+                    presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
+                            .getEmail(), inputOtp.getText().toString());
                 } else {
                     disableVerifyButton();
                 }
@@ -294,6 +296,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         verifyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(analytics!= null && viewModel != null) {
+                    analytics.eventClickVerifyButton(viewModel.getOtpType());
+                }
                 presenter.verifyOtp(viewModel.getOtpType(), viewModel.getPhoneNumber(), viewModel
                         .getEmail(), inputOtp.getText().toString());
             }
@@ -418,6 +423,14 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     }
 
     @Override
+    public void trackOnBackPressed() {
+        if(analytics!= null && viewModel!= null) {
+            analytics.eventClickBackOTPPage(viewModel.getOtpType());
+        }
+
+    }
+
+    @Override
     public void showLoadingProgress() {
         progressDialog.setVisibility(View.VISIBLE);
     }
@@ -471,6 +484,9 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
         resend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(analytics!= null && viewModel != null){
+                    analytics.eventClickResendOtp(viewModel.getOtpType());
+                }
                 inputOtp.setText("");
                 removeErrorOtp();
                 presenter.requestOTP(viewModel);
@@ -485,12 +501,12 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
             or.setVisibility(View.VISIBLE);
             useOtherMethod.setVisibility(View.VISIBLE);
 
-            useOtherMethod.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dropKeyboard();
-                    goToOtherVerificationMethod();
+            useOtherMethod.setOnClickListener(v -> {
+                if(analytics!= null && viewModel != null){
+                    analytics.eventClickUseOtherMethod(viewModel.getOtpType());
                 }
+                dropKeyboard();
+                goToOtherVerificationMethod();
             });
         } else {
             or.setVisibility(View.GONE);
@@ -604,4 +620,5 @@ public class VerificationFragment extends BaseDaggerFragment implements Verifica
     void showNeverAskForReadSms() {
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.RECEIVE_SMS);
     }
+
 }

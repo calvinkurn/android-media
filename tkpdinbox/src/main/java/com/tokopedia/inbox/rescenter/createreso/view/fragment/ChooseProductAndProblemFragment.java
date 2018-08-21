@@ -3,6 +3,8 @@ package com.tokopedia.inbox.rescenter.createreso.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,19 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.inbox.R;
-import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.activity.ProductProblemDetailActivity;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.ProductProblemAdapter;
-import com.tokopedia.inbox.rescenter.createreso.view.di.DaggerCreateResoComponent;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemItemListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemFragmentPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
+import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +36,8 @@ import javax.inject.Inject;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements ProductProblemListFragment.View, ProductProblemItemListener {
+public class ChooseProductAndProblemFragment extends BaseDaggerFragment implements
+        ProductProblemListFragment.View, ProductProblemItemListener {
 
     public static final String PRODUCT_PROBLEM_DATA = "product_problem_data";
     public static final String PROBLEM_RESULT_DATA = "problem_result_data";
@@ -70,66 +73,56 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     protected void initInjector() {
-        AppComponent appComponent = getComponent(AppComponent.class);
-        DaggerCreateResoComponent daggerCreateResoComponent =
-                (DaggerCreateResoComponent) DaggerCreateResoComponent.builder()
-                        .appComponent(appComponent)
-                        .build();
-
-        daggerCreateResoComponent.inject(this);
+        DaggerResolutionComponent resolutionComponent =
+                (DaggerResolutionComponent)DaggerResolutionComponent.builder()
+                        .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext())
+                                .getBaseAppComponent()).build();
+        resolutionComponent.inject(this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_product_problem, container, false);
+        rvProductProblem = (RecyclerView) view.findViewById(R.id.rv_product_problem);
+        btnContinue = (Button) view.findViewById(R.id.btn_continue);
         presenter.attachView(this);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        setupArguments(getArguments());
+        initView();
+        setViewListener();
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-
-    }
-
-    @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
 
     }
 
     @Override
-    protected void setupArguments(Bundle arguments) {
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+    }
+
+    private void setupArguments(Bundle arguments) {
         productProblemListViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
         problemResultList = arguments.getParcelableArrayList(PROBLEM_RESULT_LIST_DATA);
 
     }
 
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_product_problem;
-    }
-
-    @Override
-    protected void initView(View view) {
-        rvProductProblem = (RecyclerView) view.findViewById(R.id.rv_product_problem);
-        btnContinue = (Button) view.findViewById(R.id.btn_continue);
+    private void initView() {
         disableBottomButton();
-        rvProductProblem.setLayoutManager(new LinearLayoutManager(context));
-        adapter = new ProductProblemAdapter(context, this);
+        rvProductProblem.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new ProductProblemAdapter(getActivity(), this);
         rvProductProblem.setAdapter(adapter);
         presenter.loadProblemAndProduct(productProblemListViewModel, problemResultList);
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,9 +140,8 @@ public class ChooseProductAndProblemFragment extends BaseDaggerFragment implemen
 
     @Override
     public void onItemClicked(ProductProblemViewModel productProblemViewModel) {
-        Intent intent = new Intent(getActivity(), ProductProblemDetailActivity.class);
-        intent.putExtra(PRODUCT_PROBLEM_DATA, productProblemViewModel);
-        intent.putExtra(PROBLEM_RESULT_DATA, presenter.getProblemResultItem(productProblemViewModel));
+        Intent intent = ProductProblemDetailActivity.getInstance(getActivity(),
+                productProblemViewModel, presenter.getProblemResultItem(productProblemViewModel));
         startActivityForResult(intent, REQUEST_CODE);
     }
 

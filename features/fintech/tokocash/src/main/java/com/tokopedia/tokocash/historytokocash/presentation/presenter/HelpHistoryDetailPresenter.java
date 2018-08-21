@@ -16,7 +16,7 @@ import rx.Subscriber;
 /**
  * Created by nabillasabbaha on 2/19/18.
  */
-
+@Deprecated
 public class HelpHistoryDetailPresenter extends BaseDaggerPresenter<HelpHistoryDetailContract.View>
         implements HelpHistoryDetailContract.Presenter {
 

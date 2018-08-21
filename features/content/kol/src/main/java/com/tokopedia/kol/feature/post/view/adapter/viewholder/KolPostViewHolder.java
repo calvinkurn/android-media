@@ -1,10 +1,12 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,7 +41,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private final Context context;
     private BaseKolView baseKolView;
+    private FrameLayout containerView;
     private ImageView reviewImage;
     private TextView tooltip;
     private View tooltipClickArea;
@@ -47,7 +51,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     private Type type;
 
     public enum Type {
-        PROFILE, FEED
+        PROFILE, FEED, EXPLORE
     }
 
     public KolPostViewHolder(View itemView,
@@ -57,7 +61,9 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         this.viewListener = viewListener;
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
+        context = itemView.getContext();
         topShadow = itemView.findViewById(R.id.top_shadow);
+        containerView = itemView.findViewById(R.id.container_view);
 
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content);
@@ -76,6 +82,17 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
             topShadow.setVisibility(View.GONE);
         }
 
+        if (type == Type.EXPLORE) {
+            containerView.setBackground(null);
+            containerView.setBackgroundColor(
+                    MethodChecker.getColor(context, R.color.white)
+            );
+        } else {
+            containerView.setBackground(
+                    MethodChecker.getDrawable(context, R.drawable.shadow_top_bottom)
+            );
+        }
+
         reviewImage.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -90,7 +107,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         );
 
         ImageHandler.loadImageWithTarget(
-                reviewImage.getContext(),
+                context,
                 element.getKolImage(),
                 new SimpleTarget<Bitmap>() {
                     @Override
@@ -117,22 +134,20 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         baseKolView.onViewRecycled();
 
         reviewImage.setImageDrawable(
-                MethodChecker.getDrawable(
-                        reviewImage.getContext(),
-                        R.drawable.ic_loading_image)
+                MethodChecker.getDrawable(context, R.drawable.ic_loading_image)
         );
     }
 
     @Override
     public void onAvatarClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }
 
     @Override
     public void onNameClickListener(BaseKolViewModel element) {
-        if (type == Type.FEED) {
+        if (type != Type.PROFILE) {
             goToProfile(element);
         }
     }

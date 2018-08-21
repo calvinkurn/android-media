@@ -13,13 +13,18 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendMessageUseCase;
 import com.tokopedia.topchat.chatroom.domain.SendReasonRatingUseCase;
@@ -32,8 +37,11 @@ import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomDeleteMessageSubsciber;
+import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomGetShopInfoSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetExistingChatSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetReplySubscriber;
+import com.tokopedia.topchat.chatroom.view.subscriber.GetUserStatusSubscriber;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendMessageViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
@@ -74,6 +82,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final GetExistingChatUseCase getExistingChatUseCase;
     private final SetChatRatingUseCase setChatRatingUseCase;
     private final SendReasonRatingUseCase sendReasonRatingUseCase;
+    private final GetUserStatusUseCase getUserStatusUseCase;
+    private final DeleteMessageListUseCase deleteMessageListUseCase;
+    private final GetChatShopInfoUseCase getChatShopInfoUseCase;
+    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final UserSession userSession;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
@@ -86,10 +98,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private ImageUploadHandlerChat imageUploadHandler;
     private String cameraFileLoc;
     private int shopIdFromAPI = 0;
-    final static String USER = "Pengguna";
-    final static String ADMIN = "Administrator";
-    final static String OFFICIAL = "Official";
-    final static String SELLER = "shop";
+    final static String USER_TAG = "Pengguna";
+    final static String ADMIN_TAG = "Administrator";
+    final static String OFFICIAL_TAG = "Official";
+    public final static String SELLER = "shop";
+    public final static String USER_ROLE = "user";
     private SendMessageUseCase sendMessageUseCase;
     private WebSocketUseCase webSocketUseCase;
     private WebSocketMapper webSocketMapper;
@@ -105,7 +118,11 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       SessionHandler sessionHandler,
                       WebSocketMapper webSocketMapper,
                       GetExistingChatUseCase getExistingChatUseCase,
-                      UserSession userSession) {
+                      UserSession userSession,
+                      GetUserStatusUseCase getUserStatusUseCase,
+                      DeleteMessageListUseCase deleteMessageListUseCase,
+                      GetChatShopInfoUseCase getChatShopInfoUseCase,
+                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -117,6 +134,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.userSession = userSession;
         this.webSocketMapper = webSocketMapper;
         this.getExistingChatUseCase = getExistingChatUseCase;
+        this.getUserStatusUseCase = getUserStatusUseCase;
+        this.deleteMessageListUseCase = deleteMessageListUseCase;
+        this.getChatShopInfoUseCase = getChatShopInfoUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
     }
 
     @Override
@@ -163,12 +184,16 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         setChatRatingUseCase.unsubscribe();
         getExistingChatUseCase.unsubscribe();
         sendReasonRatingUseCase.unsubscribe();
+        getUserStatusUseCase.unsubscribe();
+        deleteMessageListUseCase.unsubscribe();
+        getChatShopInfoUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 
     @Override
     public void onGoToDetail(String id, String role) {
-        if (role != null && id != null && !role.equals(ADMIN.toLowerCase()) && !role.equals
-                (OFFICIAL.toLowerCase())) {
+        if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
+                (OFFICIAL_TAG.toLowerCase())) {
             if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
                         ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
@@ -425,7 +450,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().setCanLoadMore(false);
         getView().setHeaderModel(replyData.getNameHeader(), replyData.getImageHeader());
         getView().setHeader();
-        if (pagingHandler.getPage() == 1) {
+        if (pagingHandler.getPage() == 1 && replyData.getChatList().size() > 0) {
             getView().getAdapter().setList(replyData.getChatList());
             getView().scrollToBottom();
             getView().hideMainLoading();
@@ -435,8 +460,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                         (QuickReplyListViewModel) replyData.getChatList().get(0);
                 getView().showQuickReplyView(model);
             }
-        } else {
+        } else if (replyData.getChatList().size() > 0) {
             getView().getAdapter().addList(replyData.getChatList());
+        } else if (replyData.getChatList().size() == 0) {
+            getView().hideMainLoading();
         }
         getView().displayReplyField(replyData.getTextAreaReply() == 1);
         getView().setCanLoadMore(replyData.isHasNext());
@@ -608,5 +635,54 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
         requestParam = GetExistingChatUseCase.generateParam(isUserToShop, destinationId, source);
         getExistingChatUseCase.execute(requestParam, new GetExistingChatSubscriber(getView(), this));
+    }
+
+    @Override
+    public void getUserStatus(String userId, String role) {
+        if(role != null){
+            if(role.equalsIgnoreCase(SELLER)) {
+                getUserStatusUseCase.setUser(false);
+                getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
+                        new GetUserStatusSubscriber(this,getView()));
+            } else if(role.equalsIgnoreCase(USER_ROLE)) {
+                getUserStatusUseCase.setUser(true);
+                getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
+                        new GetUserStatusSubscriber(this,getView()));
+            }
+        }
+    }
+
+    @Override
+    public void deleteChat(String messageId) {
+        if(!TextUtils.isEmpty(messageId) && TextUtils.isDigitsOnly(messageId)) {
+            deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId), new
+                    ChatRoomDeleteMessageSubsciber(getView()));
+        }
+    }
+
+    @Override
+    public void getFollowStatus(String shopId) {
+        if(getChatShopInfoUseCase != null) {
+            getChatShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
+                    new ChatRoomGetShopInfoSubscriber(this,getView()));
+        }
+    }
+
+    @Override
+    public void doFollowUnfollowToggle(String shopId) {
+        getView().hideMainLoading();
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() { }
+
+            @Override
+            public void onError(Throwable e) { e.printStackTrace();}
+
+            @Override
+            public void onNext(Boolean aBoolean) {
+                if(aBoolean) getView().toggleFollowSuccess();
+            }
+        });
     }
 }

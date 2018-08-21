@@ -20,6 +20,7 @@ import java.util.List;
  * @author Aghny A. Putra on 5/02/18
  */
 
+@Deprecated
 public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ITEM_VIEW_REMOVE_ALL_CHECKBOX =

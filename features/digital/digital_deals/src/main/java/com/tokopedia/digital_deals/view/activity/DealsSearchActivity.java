@@ -66,7 +66,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
     private DealsCategoryAdapter dealsCategoryAdapter;
     private int listCount;
     private String searchText;
-    private int adapterPosition=-1;
+    private int adapterPosition = -1;
 
     @Override
     public int getLayoutRes() {
@@ -171,7 +171,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
             rvDeals.requestFocus();
             clLocation.setVisibility(View.VISIBLE);
             tvCityName.setText(location.getName());
-        }else{
+        } else {
             llDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
@@ -316,9 +316,9 @@ public class DealsSearchActivity extends DealsBaseActivity implements
                 break;
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!tvCityName.getText().equals(location1.getName())) {
-                        tvCityName.setText(location1.getName());
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location != null && !TextUtils.isEmpty(tvCityName.getText()) && !TextUtils.isEmpty(location.getName()) && !tvCityName.getText().equals(location.getName())) {
+                        tvCityName.setText(location.getName());
                     }
                     if (!TextUtils.isEmpty(searchInputView.getSearchText()))
                         mPresenter.getDealsListBySearch(searchInputView.getSearchText());
@@ -365,7 +365,7 @@ public class DealsSearchActivity extends DealsBaseActivity implements
 
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
-        this.adapterPosition=position;
+        this.adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
 }

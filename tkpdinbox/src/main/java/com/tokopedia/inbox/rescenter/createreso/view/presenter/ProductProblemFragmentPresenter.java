@@ -1,6 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemListFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
@@ -15,7 +15,8 @@ import javax.inject.Inject;
  * Created by yoasfs on 14/08/17.
  */
 
-public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<ProductProblemListFragment.View> implements ProductProblemListFragment.Presenter {
+public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<ProductProblemListFragment.View>
+        implements ProductProblemListFragment.Presenter {
 
     public static final int RESULT_SAVE = 2001;
     public static final int RESULT_SAVE_AND_CHOOSE_OTHER = 2002;

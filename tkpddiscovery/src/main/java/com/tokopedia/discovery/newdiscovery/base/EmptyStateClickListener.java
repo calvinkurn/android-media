@@ -6,4 +6,6 @@ package com.tokopedia.discovery.newdiscovery.base;
 
 public interface EmptyStateClickListener {
     void onEmptyButtonClicked();
+    void onBannerAdsClicked(String appLink);
+    void onSelectedFilterRemoved(String uniqueId);
 }

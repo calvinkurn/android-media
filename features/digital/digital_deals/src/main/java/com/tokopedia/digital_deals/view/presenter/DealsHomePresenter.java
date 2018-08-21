@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -29,6 +28,7 @@ import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.activity.DealsLocationActivity;
 import com.tokopedia.digital_deals.view.activity.DealsSearchActivity;
 import com.tokopedia.digital_deals.view.contractor.DealsContract;
+import com.tokopedia.digital_deals.view.customview.WrapContentHeightViewPager;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
@@ -74,7 +74,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     private ArrayList<CategoryItem> categoryItems;
     private List<Brand> brands;
     private List<CategoriesModel> categoriesModels;
-    private TouchViewPager mTouchViewPager;
+    private WrapContentHeightViewPager mTouchViewPager;
     private RequestParams searchNextParams = RequestParams.create();
     private Subscription subscription;
     private HashMap<String, Object> params = new HashMap<>();
@@ -103,7 +103,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
     }
 
     @Override
-    public void startBannerSlide(TouchViewPager viewPager) {
+    public void startBannerSlide(WrapContentHeightViewPager viewPager) {
         this.mTouchViewPager = viewPager;
         currentPage = viewPager.getCurrentItem();
         try {

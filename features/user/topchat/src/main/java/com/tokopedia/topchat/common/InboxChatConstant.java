@@ -12,4 +12,9 @@ public interface InboxChatConstant {
     int MODE_API = 2;
 
     String UPLOADING = "Uploaded Image";
+
+    String USER_TAG = "Pengguna";
+    String ADMIN_TAG = "Administrator";
+    String OFFICIAL_TAG = "Official";
+    String SELLER_TAG = "Penjual";
 }

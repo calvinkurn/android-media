@@ -29,6 +29,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
+        if(getView().getAppContext()==null)
+            return;
         getView().showProcessGetData(orderCategory);
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderCategory", orderCategory);

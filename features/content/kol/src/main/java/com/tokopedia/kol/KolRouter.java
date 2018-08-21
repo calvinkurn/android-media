@@ -1,6 +1,8 @@
 package com.tokopedia.kol;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 
 import okhttp3.Interceptor;
 
@@ -18,4 +20,6 @@ public interface KolRouter {
     void openRedirectUrl(Activity activity, String url);
 
     Interceptor getChuckInterceptor();
+
+    Intent getTopProfileIntent(Context context, String userId);
 }

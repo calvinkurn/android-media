@@ -122,11 +122,15 @@ public class TopAdsKeywordListPresenter extends TopAdsBaseListPresenter<TopAdsKe
                               boolean isPositive) {
 
         BaseKeywordParam baseKeywordParam = new BaseKeywordParam();
-        baseKeywordParam.startDate = startDate.getTime();
-        baseKeywordParam.endDate = endDate.getTime();
+        if (startDate != null){
+            baseKeywordParam.startDate = startDate.getTime();
+            baseKeywordParam.startDateDesc = formatDate(startDate.getTime());
+        }
 
-        baseKeywordParam.startDateDesc = formatDate(startDate.getTime());
-        baseKeywordParam.endDateDesc = formatDate(endDate.getTime());
+        if (endDate != null){
+            baseKeywordParam.endDate = endDate.getTime();
+            baseKeywordParam.endDateDesc = formatDate(endDate.getTime());
+        }
 
         baseKeywordParam.groupId = groupId;
         baseKeywordParam.sortingParam = sortId;

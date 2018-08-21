@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -9,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
@@ -26,6 +26,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,7 +40,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -47,14 +47,11 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.newgallery.GalleryActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
@@ -65,7 +62,6 @@ import com.tokopedia.topchat.attachinvoice.view.resultmodel.SelectedInvoice;
 import com.tokopedia.topchat.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.topchat.attachproduct.view.activity.AttachProductActivity;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
-import com.tokopedia.topchat.chatlist.adapter.viewholder.chatlist.ListChatViewHolder;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.invoicesent.InvoiceLinkAttributePojo;
@@ -87,7 +83,9 @@ import com.tokopedia.topchat.chatroom.view.presenter.ChatRoomPresenter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.AttachInvoiceSentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.invoiceattachment.mapper.AttachInvoiceMapper;
@@ -120,6 +118,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
+import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.MESSAGE_ID;
 import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARAM_WEBSOCKET;
 
 /**
@@ -130,14 +129,21 @@ public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    private static final int MAX_SIZE_IMAGE_PICKER = 5;
+    public static final int CHAT_DELETED_RESULT_CODE = 101;
+
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
     private static final String BRANCH_IO_HOST = "tokopedia.link";
     private static final String CONTACT_US_URL_BASE_DOMAIN = TkpdBaseURL.BASE_CONTACT_US;
     private static final String ROLE_SHOP = "shop";
-    private static final String ENABLE_TOPCHAT = "topchat_template";
     public static final String TAG = "ChatRoomFragment";
+
+    public static final String STATUS_DESC_KEY = "CHAT_STATUS_DESC";
+    public static final String STATUS_KEY = "CHAT_STATUS";
+    public static final String IS_FAVORITE_KEY = "IS_FAVORITE";
+    public static final String IS_SHOP_KEY = "IS_SHOP";
     private static final long MILIS_TO_SECOND = 1000;
     @Inject
     ChatRoomPresenter presenter;
@@ -154,6 +160,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private ReasonBottomSheet reasonBottomSheet;
 
     private ImageView avatar;
+    private ImageView onlineStatus;
     private TextView user;
     private TextView onlineDesc;
     private TextView label;
@@ -176,18 +183,25 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private Observable<Boolean> replyIsTyping;
     private int mode;
     private View notifier;
-    private String title, avatarImage;
+    private ImageButton headerMenuButton;
 
-    private RemoteConfig remoteConfig;
+    private String title, avatarImage, lastOnline;
+    private boolean isOnline = false;
+
     private boolean uploading;
     private boolean isChatBot;
-    private String PARAM_URL = "PARAM_URL";
-    private String IS_CHAT_BOT = "IS_CHAT_BOT";
 
     public static ChatRoomFragment createInstance(Bundle extras) {
         ChatRoomFragment fragment = new ChatRoomFragment();
         fragment.setArguments(extras);
         return fragment;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putBoolean(STATUS_KEY, isOnline);
+        outState.putString(STATUS_DESC_KEY, lastOnline);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -200,6 +214,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     "false").equals("true");
             isChatBot = (getArguments().getBoolean(TkpdInboxRouter.IS_CHAT_BOT, false) ||
                     isChatBotArguments);
+        }
+
+        if (savedInstanceState != null) {
+            isOnline = savedInstanceState.getBoolean(STATUS_KEY, false);
+            lastOnline = savedInstanceState.getString(STATUS_DESC_KEY, "");
         }
     }
 
@@ -227,22 +246,23 @@ public class ChatRoomFragment extends BaseDaggerFragment
         maximize = rootView.findViewById(R.id.maximize);
         notifier = rootView.findViewById(R.id.notifier);
         replyWatcher = Events.text(replyColumn);
+        headerMenuButton = toolbar.findViewById(R.id.header_menu);
+        headerMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBottomSheetMenu();
+            }
+        });
         recyclerView.setHasFixedSize(true);
         templateRecyclerView.setHasFixedSize(true);
         presenter.attachView(this);
         uploading = false;
         prepareView();
         initListener();
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         return rootView;
     }
 
     private void prepareView() {
-        if (getArguments().getBoolean(ChatRoomActivity.IS_HAS_ATTACH_BUTTON) && !isChatBot) {
-            attachButton.setVisibility(View.VISIBLE);
-        } else {
-            attachButton.setVisibility(View.GONE);
-        }
 
         if (!TextUtils.isEmpty(getArguments().getString(ChatRoomActivity.PARAM_CUSTOM_MESSAGE,
                 ""))) {
@@ -315,7 +335,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     if (needCreateWebSocket()) {
                         maximize.setVisibility(isChatBot ? View.GONE : View.VISIBLE);
                     }
-                    pickerButton.setVisibility(isChatBot ? View.VISIBLE : View.GONE);
+                    pickerButton.setVisibility(View.GONE);
                     attachButton.setVisibility(View.GONE);
                 }
             }
@@ -362,7 +382,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                         new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
-                        null,null);
+                        null, null);
                 Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
                 startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
@@ -500,11 +520,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 } else if (isChatBot && isNeedAuthToken) {
                     startActivity(ChatMarketingThumbnailActivity.getCallingIntent(getActivity(),
                             URLGenerator.generateURLSessionLoginV4(url, getContext())));
-                } else if(isBranchIOLink(url)){
+                } else if (isBranchIOLink(url)) {
                     handleBranchIOLinkClick(url);
                 } else {
                     ((TopChatRouter) getActivity().getApplication()).openRedirectUrl(getActivity
-                            (),url);
+                            (), url);
                 }
             }
         }
@@ -513,16 +533,16 @@ public class ChatRoomFragment extends BaseDaggerFragment
     @Override
     public void handleBranchIOLinkClick(String url) {
         Intent intent = ((TopChatRouter) getActivity().getApplication()).getSplashScreenIntent(getContext());
-        intent.putExtra("branch",url);
-        intent.putExtra("branch_force_new_session",true);
+        intent.putExtra("branch", url);
+        intent.putExtra("branch_force_new_session", true);
         startActivity(intent);
     }
 
     @Override
     public boolean isBranchIOLink(String url) {
-        if(url == null) return false;
+        if (url == null) return false;
         Uri uri = Uri.parse(url);
-        if(uri.getHost() != null && uri.getHost().equals(BRANCH_IO_HOST)) {
+        if (uri.getHost() != null && uri.getHost().equals(BRANCH_IO_HOST)) {
             return true;
         } else {
             return false;
@@ -564,7 +584,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         if (needCreateWebSocket()) {
             presenter.getReply(mode);
         } else {
-            //progressBar.setVisibility(View.GONE);
             presenter.getExistingChat();
         }
 
@@ -637,26 +656,33 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setHeader() {
-
         if (toolbar != null) {
             mainHeader.setVisibility(View.VISIBLE);
             avatar = toolbar.findViewById(R.id.user_avatar);
+            onlineStatus = toolbar.findViewById(R.id.online_status);
             user = toolbar.findViewById(R.id.title);
             onlineDesc = toolbar.findViewById(R.id.subtitle);
             label = toolbar.findViewById(R.id.label);
-            ImageHandler.loadImageCircle2(getActivity(), avatar, avatarImage, R.drawable
-                    .ic_image_avatar_boy);
+            ImageHandler.loadImageCircle2(getActivity(), avatar, avatarImage,
+                    R.drawable.ic_image_avatar_boy);
 
             user.setText(title);
+            String senderTag = getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "");
             if (!TextUtils.isEmpty(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, ""))
-                    && !getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG, "")
-                    .equals(ListChatViewHolder.USER)) {
+                    && !senderTag.equals(InboxChatConstant.USER_TAG)) {
                 label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
                 label.setVisibility(View.VISIBLE);
+                if (senderTag.equals(InboxChatConstant.SELLER_TAG)) {
+                    label.setBackgroundResource(R.drawable.topchat_seller_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.medium_green));
+                } else {
+                    label.setBackgroundResource(R.drawable.topchat_admin_label);
+                    label.setTextColor(getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
+                }
             } else {
                 label.setVisibility(View.GONE);
             }
-            setOnlineDesc(getActivity().getString(R.string.just_now));
+
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -664,6 +690,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
                 }
             });
+
+            setOnlineDesc(lastOnline, isOnline);
         }
     }
 
@@ -681,14 +709,19 @@ public class ChatRoomFragment extends BaseDaggerFragment
         return adapter;
     }
 
-    public void setOnlineDesc(final String when) {
+    @Override
+    public void setOnlineDesc(final String when, final boolean isOnline) {
         if (getActivity() != null) {
-
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if (onlineDesc != null)
+                    if (onlineDesc != null && when != null)
                         onlineDesc.setText(when);
+                    if (onlineStatus != null) {
+                        if (isOnline)
+                            onlineStatus.setImageResource(R.drawable.status_indicator_online);
+                        else onlineStatus.setImageResource(R.drawable.status_indicator_offline);
+                    }
                 }
             });
         }
@@ -828,9 +861,10 @@ public class ChatRoomFragment extends BaseDaggerFragment
             label = toolbar.findViewById(R.id.label);
             ImageHandler.loadImageCircle2(getActivity(), avatar, null, R.drawable
                     .ic_image_avatar_boy);
-            user.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME));
+            title = getArguments().getString(InboxMessageConstant.PARAM_SENDER_NAME);
+            user.setText(title);
             label.setText(getArguments().getString(InboxMessageConstant.PARAM_SENDER_TAG));
-            setOnlineDesc(getActivity().getString(R.string.just_now));
+            setOnlineDesc(this.lastOnline, this.isOnline);
         }
     }
 
@@ -876,7 +910,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
-                    if(!isChatBot) presenter.getTemplate();
+                    if (!isChatBot) presenter.getTemplate();
                     break;
                 }
                 break;
@@ -897,18 +931,15 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (imagePathList == null || imagePathList.size() <= 0) {
                     return;
                 }
-                String imagePath = imagePathList.get(0);
                 List<ImageUploadViewModel> list = new ArrayList<>();
+                String imagePath = imagePathList.get(0);
                 if (!TextUtils.isEmpty(imagePath)) {
                     ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
                     list.add(temp);
                 } else {
-                    ArrayList<String> imagePaths = data.getStringArrayListExtra(GalleryActivity.IMAGE_URLS);
-                    if (imagePaths != null) {
-                        for (int i = 0; i < imagePaths.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePaths.get(i));
-                            list.add(temp);
-                        }
+                    for (int i = 0; i < imagePathList.size(); i++) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
+                        list.add(temp);
                     }
                 }
                 adapter.addReply(list);
@@ -1095,7 +1126,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     public boolean isAllowedTemplate() {
-        return (remoteConfig.getBoolean(ENABLE_TOPCHAT));
+        return true;
     }
 
 
@@ -1243,7 +1274,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (InboxMessageConstant.PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getString(R.string.is_typing));
+                    setOnlineDesc(getString(R.string.is_typing), this.isOnline);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1258,7 +1289,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
             case ChatWebSocketConstant.EVENT_TOPCHAT_END_TYPING:
                 if (String.valueOf(response.getData().getMsgId()).equals(getArguments().getString
                         (InboxMessageConstant.PARAM_MESSAGE_ID))) {
-                    setOnlineDesc(getActivity().getString(R.string.just_now));
+                    setOnlineDesc(this.lastOnline, this.isOnline);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -1372,6 +1403,12 @@ public class ChatRoomFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable modelToBeRemoved) {
+        presenter.sendMessage(networkType, message.getMessage());
+        adapter.remove(modelToBeRemoved);
+    }
+
+    @Override
     public void onSuccessSendReply(ReplyActionData replyData, String reply) {
         adapter.removeLast();
         addViewMessage(replyData, reply);
@@ -1387,7 +1424,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         replyColumn.setText("");
         showError(getActivity().getString(R.string.delete_error).concat("\n").concat(getString(R
                 .string.string_general_error)));
-        if (quickReplyAdapter!=null && quickReplyAdapter.getItemCount() != 0) {
+        if (quickReplyAdapter != null && quickReplyAdapter.getItemCount() != 0) {
             rvQuickReply.setVisibility(View.VISIBLE);
             templateRecyclerView.setVisibility(View.GONE);
         }
@@ -1452,12 +1489,17 @@ public class ChatRoomFragment extends BaseDaggerFragment
 
     @Override
     public void setMessageId(String messageId) {
-        getArguments().putString(ChatRoomActivity.PARAM_MESSAGE_ID,messageId);
+        if (getArguments() != null) {
+            getArguments().putString(ChatRoomActivity.PARAM_MESSAGE_ID, messageId);
+        }
     }
 
     @Override
     public void enableWebSocket() {
-        getArguments().putBoolean(ChatRoomActivity.PARAM_WEBSOCKET,true);
+        if (getArguments() != null) {
+            getArguments().putBoolean(ChatRoomActivity.PARAM_WEBSOCKET, true);
+        }
+        setPickerButton();
     }
 
     @Override
@@ -1475,8 +1517,107 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         }
                     });
         }
-
         reasonBottomSheet.show();
-
     }
+
+    @Override
+    public void setUserStatus(String status, boolean isOnline) {
+        this.lastOnline = status;
+        this.isOnline = isOnline;
+        setOnlineDesc(status, isOnline);
+    }
+
+    public void showBottomSheetMenu() {
+        boolean isFavorited = getArguments().getBoolean(IS_FAVORITE_KEY, false);
+        boolean isShop = getArguments().getBoolean(IS_SHOP_KEY, false);
+
+        Menus headerMenu = new Menus(getContext());
+        List<Menus.ItemMenus> listMenu = new ArrayList<>();
+        String viewProfileText = getString(R.string.view_profile_container_string, title);
+        String profileText = getString(R.string.follow_store);
+        if (isFavorited) profileText = getString(R.string.already_follow_store);
+
+        listMenu.add(new Menus.ItemMenus(viewProfileText, R.drawable.ic_set_profile));
+        if (isShop) listMenu.add(new Menus.ItemMenus(profileText, R.drawable.ic_add_grey));
+        listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
+
+        headerMenu.setItemMenuList(listMenu);
+        headerMenu.setActionText(getString(R.string.cancel));
+        headerMenu.setOnActionClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                headerMenu.dismiss();
+            }
+        });
+        headerMenu.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                if (itemMenus.title.equalsIgnoreCase(getString(R.string.delete_conversation))) {
+                    showDeleteChatDialog();
+                } else if (pos == 0) {
+                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
+                        itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
+                    presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
+                }
+                headerMenu.dismiss();
+            }
+        });
+        headerMenu.show();
+    }
+
+    @Override
+    public void successDeleteChat() {
+        String messageId = getArguments().getString(ChatRoomActivity.PARAM_MESSAGE_ID, "");
+        Intent data = new Intent();
+        data.putExtra(ChatRoomActivity.PARAM_MESSAGE_ID, messageId);
+        getActivity().setResult(CHAT_DELETED_RESULT_CODE, data);
+        getActivity().finish();
+    }
+
+    private void showDeleteChatDialog() {
+        final AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(getActivity());
+        myAlertDialog.setTitle(R.string.delete_chat_question);
+        myAlertDialog.setMessage(R.string.delete_chat_warning_message);
+        myAlertDialog.setPositiveButton(getString(R.string.delete), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        presenter.deleteChat(getArguments().getString(MESSAGE_ID));
+                    }
+                });
+        myAlertDialog.setNegativeButton(getActivity().getString(R.string.cancel), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                });
+        Dialog dialog = myAlertDialog.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
+    }
+
+    @Override
+    public void setChatShopInfoData(ChatShopInfoViewModel viewModel) {
+        getArguments().putBoolean(IS_FAVORITE_KEY, viewModel.isFavorited());
+        getArguments().putBoolean(IS_SHOP_KEY, viewModel.isShop());
+    }
+
+    @Override
+    public void toggleFollowSuccess() {
+        boolean isFollow = getArguments().getBoolean(IS_FAVORITE_KEY, false);
+        getArguments().putBoolean(IS_FAVORITE_KEY, !isFollow);
+    }
+
+    @Override
+    public void setMenuVisible(boolean isVisible) {
+        if (headerMenuButton != null) {
+            if (isVisible) headerMenuButton.setVisibility(View.VISIBLE);
+            else headerMenuButton.setVisibility(View.GONE);
+        }
+    }
+
+
 }

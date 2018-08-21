@@ -130,6 +130,18 @@ public class UserSession {
         return sharedPrefs.getBoolean(IS_MSISDN_VERIFIED, false);
     }
 
+    public String getPhoneNumber() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(PHONE_NUMBER, null);
+    }
+
+    public String getEmail() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
+                Context.MODE_PRIVATE);
+        return sharedPrefs.getString(EMAIL, null);
+    }
+
     /**
      * SETTER METHOD
      */

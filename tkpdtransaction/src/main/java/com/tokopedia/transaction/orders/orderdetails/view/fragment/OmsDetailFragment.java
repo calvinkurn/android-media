@@ -143,8 +143,8 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     public void setStatus(Status status) {
         statusLabel.setText(status.statusLabel());
         statusValue.setText(status.statusText());
-        if(!status.textColor().equals(""))
-        statusValue.setTextColor(Color.parseColor(status.textColor()));
+        if (!status.textColor().equals(""))
+            statusValue.setTextColor(Color.parseColor(status.textColor()));
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
         shape.setCornerRadius(4);
@@ -263,7 +263,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
     @Override
     public void setTopActionButton(ActionButton actionButton) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_0),getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_24));
+        params.setMargins(getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_0), getResources().getDimensionPixelSize(R.dimen.dp_24));
         primaryActionBtn.setText(actionButton.getLabel());
         GradientDrawable shape = new GradientDrawable();
         shape.setShape(GradientDrawable.RECTANGLE);
@@ -303,7 +303,7 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
                     newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
                     newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
                     RouteManager.route(getActivity(), newUri);
-                } else if (uri != null && !uri.equals("")){
+                } else if (uri != null && !uri.equals("")) {
                     TransactionPurchaseRouter.startWebViewActivity(getActivity(), uri);
                 }
             }
@@ -323,7 +323,10 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
 
     @Override
     public Context getAppContext() {
-        return getActivity().getApplicationContext();
+        if (getActivity() != null)
+            return getActivity().getApplicationContext();
+        else
+            return null;
     }
 
     @Override
@@ -333,6 +336,12 @@ public class OmsDetailFragment extends BaseDaggerFragment implements OrderListDe
         doubleTextView.setBottomText(payMethod.getValue());
         doubleTextView.setBottomGravity(Gravity.RIGHT);
         paymentMethodInfo.addView(doubleTextView);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 
     @Override

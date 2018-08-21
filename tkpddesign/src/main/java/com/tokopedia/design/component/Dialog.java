@@ -3,6 +3,7 @@ package com.tokopedia.design.component;
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -77,7 +78,9 @@ public class Dialog extends BaseDialog {
     public void setDesc(Spanned desc) {
         this.desc.setText(desc);
     }
-
+    public void setDescMovementMethod(){
+        this.desc.setMovementMethod(LinkMovementMethod.getInstance());
+    }
     public void setBtnOk(String title) {
         this.btnOk.setText(title);
     }
