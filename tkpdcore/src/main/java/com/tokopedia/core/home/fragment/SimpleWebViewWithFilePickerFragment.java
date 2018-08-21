@@ -139,23 +139,29 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             final Uri uri = Uri.parse(url);
-            return onOverrideUrl(uri);
+            return onOverrideUrl(view, uri);
         }
 
         @TargetApi(Build.VERSION_CODES.N)
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            return onOverrideUrl(request.getUrl());
+            return onOverrideUrl(view, request.getUrl());
         }
 
 
-        protected boolean onOverrideUrl(Uri url) {
+        protected boolean onOverrideUrl(WebView view, Uri url) {
+            String urlString = url.toString();
             try {
                 if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
                                     Bundle());
+                    return true;
+                } else if (urlString.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(urlString));
+                    startActivity(intent);
+                    view.reload();
                     return true;
                 } else {
                     return false;
