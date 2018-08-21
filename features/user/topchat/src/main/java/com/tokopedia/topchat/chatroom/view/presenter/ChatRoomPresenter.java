@@ -191,10 +191,14 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     }
 
     @Override
-    public void onGoToDetail(String id, String role) {
+    public void onGoToDetail(String id, String role, String source) {
         if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
                 (OFFICIAL_TAG.toLowerCase())) {
-            if (role.equals(SELLER.toLowerCase())) {
+            if (role.equals(SELLER.toLowerCase())
+                    && !TextUtils.isEmpty(source)
+                    && source.equals(TkpdInboxRouter.SHOP)) {
+                getView().finishActivity();
+            } else if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
                         ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -639,22 +643,22 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void getUserStatus(String userId, String role) {
-        if(role != null){
-            if(role.equalsIgnoreCase(SELLER)) {
+        if (role != null) {
+            if (role.equalsIgnoreCase(SELLER)) {
                 getUserStatusUseCase.setUser(false);
                 getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
-                        new GetUserStatusSubscriber(this,getView()));
-            } else if(role.equalsIgnoreCase(USER_ROLE)) {
+                        new GetUserStatusSubscriber(this, getView()));
+            } else if (role.equalsIgnoreCase(USER_ROLE)) {
                 getUserStatusUseCase.setUser(true);
                 getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
-                        new GetUserStatusSubscriber(this,getView()));
+                        new GetUserStatusSubscriber(this, getView()));
             }
         }
     }
 
     @Override
     public void deleteChat(String messageId) {
-        if(!TextUtils.isEmpty(messageId) && TextUtils.isDigitsOnly(messageId)) {
+        if (!TextUtils.isEmpty(messageId) && TextUtils.isDigitsOnly(messageId)) {
             deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId), new
                     ChatRoomDeleteMessageSubsciber(getView()));
         }
@@ -662,9 +666,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void getFollowStatus(String shopId) {
-        if(getChatShopInfoUseCase != null) {
+        if (getChatShopInfoUseCase != null) {
             getChatShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
-                    new ChatRoomGetShopInfoSubscriber(this,getView()));
+                    new ChatRoomGetShopInfoSubscriber(this, getView()));
         }
     }
 
@@ -673,16 +677,19 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getView().hideMainLoading();
         toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId),
                 new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() { }
+                    @Override
+                    public void onCompleted() {
+                    }
 
-            @Override
-            public void onError(Throwable e) { e.printStackTrace();}
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            @Override
-            public void onNext(Boolean aBoolean) {
-                if(aBoolean) getView().toggleFollowSuccess();
-            }
-        });
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) getView().toggleFollowSuccess();
+                    }
+                });
     }
 }

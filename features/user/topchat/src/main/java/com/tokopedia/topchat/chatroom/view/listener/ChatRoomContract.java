@@ -178,6 +178,8 @@ public class ChatRoomContract {
         void setMenuVisible(boolean isVisible);
 
         void toggleFollowSuccess();
+
+        void finishActivity();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -189,7 +191,7 @@ public class ChatRoomContract {
 
         void closeWebSocket();
 
-        void onGoToDetail(String userId, String role);
+        void onGoToDetail(String id, String role, String string);
 
         void sendMessage(int networkType);
 
