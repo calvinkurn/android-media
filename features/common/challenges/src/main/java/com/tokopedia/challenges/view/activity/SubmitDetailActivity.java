@@ -61,6 +61,7 @@ public class SubmitDetailActivity extends BaseActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
-        setTitle("Tokopedia Challenges");
+
+        updateTitle("Post");
     }
 }

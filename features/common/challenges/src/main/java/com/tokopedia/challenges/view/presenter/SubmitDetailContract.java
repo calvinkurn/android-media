@@ -28,10 +28,6 @@ public interface SubmitDetailContract {
 
         void setApprovedView(String text);
 
-        void setPendingView(String status);
-
-        void setDeclinedView(String status);
-
         void setDetailTitle(String text);
 
         void setDetailContent(String text);
@@ -43,5 +39,7 @@ public interface SubmitDetailContract {
         void setSubmittResult(SubmissionResult submissionResult);
 
         void hidProgressBar();
+
+        void showDialogInfo(String string, String desc);
     }
 }

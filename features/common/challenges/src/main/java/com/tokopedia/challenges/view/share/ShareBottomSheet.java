@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.share;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     @Inject
     public ShareBottomSheetPresenter presenter;
     private ChallengesComponent challengesComponent;
+    private ProgressDialog progress;
 
 
     public static ShareBottomSheet newInstance(String url, String title, String og_url, String og_title, String og_image, String submissionId, String deepLink, boolean isChallenge) {
@@ -131,5 +133,31 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
             url = deepLink;
         }
         presenter.createAndShareUrl(packageName,url,submissionId,deepLink,isChallenge,title,og_url,og_title,og_image);
+    }
+
+    @Override
+    public void setNewUrl(String shareUri) {
+        this.url = shareUri;
+    }
+
+
+    @Override
+    public void showProgress(String message) {
+        if (progress == null) {
+            progress = new ProgressDialog(getContext());
+        }
+        if (!progress.isShowing()) {
+            progress.setMessage(message);
+            progress.setIndeterminate(true);
+            progress.show();
+        }
+    }
+
+    @Override
+    public void hideProgress() {
+        if (progress != null && progress.isShowing()) {
+            progress.dismiss();
+            progress = null;
+        }
     }
 }

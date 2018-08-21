@@ -8,6 +8,12 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 public class ShareBottomSheetContract {
     public interface View extends CustomerView {
         Activity getActivity();
+
+        void setNewUrl(String shareUri);
+
+        void showProgress(String message);
+
+        void hideProgress();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

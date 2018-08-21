@@ -112,6 +112,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private String buzzPointText;
     private TextView tvHowBuzzPointsText;
     private String challengeId;
+    private Boolean isPastChallenge;
     private FloatingActionButton btnShare;
     private FirebaseRemoteConfigImpl firebaseRemoteConfig;
     private boolean isWinnerList = false;
@@ -130,6 +131,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
+        this.isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE);
+
         isWinnerList = getArguments().getBoolean("isPastChallenge", false);
         setHasOptionsMenu(true);
         this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
@@ -187,7 +190,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         appBarLayout = view.findViewById(R.id.app_bar);
         seeMoreButtonDesc.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
-        submitButton.setOnClickListener(this);
         videoPlayer = view.findViewById(R.id.video_player);
         tvTnCText = view.findViewById(R.id.tv_tnc_text);
         tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
@@ -197,13 +199,22 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         flHeader = view.findViewById(R.id.fl_header);
         mainContent = view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
-        btnShare.setOnClickListener(this);
+
         baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
         longDescription = view.findViewById(R.id.markdownView);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         mPresenter.attachView(this);
+        if(isPastChallenge){
+            btnShare.setVisibility(View.GONE);
+            submitButton.setVisibility(View.GONE);
+        }else {
+            btnShare.setOnClickListener(this);
+            submitButton.setOnClickListener(this);
+            btnShare.setVisibility(View.VISIBLE);
+            submitButton.setVisibility(View.VISIBLE);
+        }
         if (!TextUtils.isEmpty(challengeId)) {
             mPresenter.initialize(true, challengeResult);
         } else {
@@ -211,6 +222,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
 
         mPresenter.loadCountdownView(challengeResult, isWinnerList);
+
         return view;
     }
 

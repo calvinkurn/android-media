@@ -25,6 +25,7 @@ import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.design.component.Dialog;
 
 import javax.inject.Inject;
 
@@ -42,8 +43,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView pointsView;
     private FloatingActionButton likeBtn;
     private TextView approvedView;
-    private TextView pendingView;
-    private TextView declinedView;
     private TextView detailTitle;
     private TextView detailContent;
     private TextView participateTitle;
@@ -84,8 +83,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         pointsView = view.findViewById(R.id.tv_points);
 
         approvedView = view.findViewById(R.id.approved);
-        pendingView = view.findViewById(R.id.pending);
-        declinedView = view.findViewById(R.id.declined);
 
         detailTitle = view.findViewById(R.id.detail_title);
         detailContent = view.findViewById(R.id.detail_content);
@@ -172,23 +169,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
 
-    private void statusContent(TextView view, String text) {
-        view.setVisibility(View.VISIBLE);
-        view.setText(text);
-    }
-
     public void setApprovedView(String approveText) {
-        statusContent(approvedView, approveText);
-    }
-
-    @Override
-    public void setPendingView(String pendingText) {
-        statusContent(pendingView, pendingText);
-    }
-
-    @Override
-    public void setDeclinedView(String declineText) {
-        statusContent(declinedView, declineText);
+        approvedView.setText(approveText);
+        if (isPastChallenge) {
+            approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
+            approvedView.setTextColor(getResources().getColor(R.color.black_38));
+        } else if ("Approved".equalsIgnoreCase(approveText)) {
+            approvedView.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
+            approvedView.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+        } else if ("Declined".equalsIgnoreCase(approveText)) {
+            approvedView.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
+            approvedView.setTextColor(getResources().getColor(R.color.red_200));
+        } else if ("Waiting".equalsIgnoreCase(approveText)) {
+            approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
+            approvedView.setTextColor(getResources().getColor(R.color.orange_300));
+        }
     }
 
     public void setDetailTitle(String title) {
@@ -198,23 +193,23 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setDetailContent(String content) {
         if (TextUtils.isEmpty(content)) {
             detailTitle.setVisibility(View.GONE);
-            challengeTitle.setVisibility(View.GONE);
+            detailContent.setVisibility(View.GONE);
         } else {
             detailTitle.setVisibility(View.VISIBLE);
-            challengeTitle.setVisibility(View.VISIBLE);
+            detailContent.setVisibility(View.VISIBLE);
         }
         this.detailContent.setText(content);
     }
 
     public void setParticipateTitle(String participateTitle) {
-        if (!isPastChallenge) {
-            this.participateTitle.setText(participateTitle);
-
-            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getCollection().getId());
-            this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
-        } else {
+        if (isPastChallenge) {
             this.participateTitle.setVisibility(View.GONE);
             this.participateTextView.setVisibility(View.GONE);
+        } else {
+            this.participateTitle.setText(participateTitle);
+            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getCollection().getId());
+            this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
+
         }
     }
 
@@ -270,5 +265,20 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showDialogInfo(String title, String desc) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(title);
+        dialog.setDesc(desc);
+        dialog.setBtnOk("ok");
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
+        dialog.show();
     }
 }

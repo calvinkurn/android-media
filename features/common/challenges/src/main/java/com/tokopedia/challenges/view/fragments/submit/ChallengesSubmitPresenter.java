@@ -92,7 +92,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-              //  getView().hideProgress();
+                //  getView().hideProgress();
             }
 
             @Override
@@ -106,7 +106,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
-                if(fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
+                if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeResult().getId(), filePath));
                     getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
@@ -152,14 +152,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     private boolean isValidateDescription(@NonNull String description) {
-        if (description.length() < 0 || description.length() > 300)
+        if (description.length() <= 0 || description.length() > 300)
             return false;
         else
             return true;
     }
 
     private boolean isValidateTitle(@NonNull String title) {
-        if (title.length() < 0 || title.length() > 50)
+        if (title.length() <= 0 || title.length() > 50)
             return false;
         else
             return true;
@@ -189,6 +189,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     public void getSubmissionDetail() {
+        getView().showProgress("Please wait");
         getDetailsSubmissionsUseCase.setRequestParams(postId);
         getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -198,11 +199,13 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
+                getView().hideProgress();
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                getView().hideProgress();
                 RestResponse res1 = restResponse.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
                 if (submissionResult != null) {

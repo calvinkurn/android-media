@@ -36,6 +36,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private RecyclerView recyclerView;
     private LinearLayout emptyLayout;
     private View progressBar;
+    private Boolean isFirst =true;
 
 
     @Override
@@ -59,8 +60,18 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView = view.findViewById(R.id.rv_home_submissions);
         emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
-        mySubmissionsHomePresenter.getMySubmissionsList();
+        //mySubmissionsHomePresenter.getMySubmissionsList();
+        //isFirst = false;
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
+        if (isFirst){
+            isFirst =false;
+        }
     }
 
     @Override

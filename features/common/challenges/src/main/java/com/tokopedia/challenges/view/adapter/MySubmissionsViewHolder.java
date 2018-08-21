@@ -14,6 +14,7 @@ import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
 import com.tokopedia.challenges.view.utils.Utils;
 
 public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
@@ -63,6 +64,22 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
         //imgLikes
         tvStatus.setText(submissionsResult.getStatus());
+
+        if ("Approved".equalsIgnoreCase(submissionsResult.getStatus())) {
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
+        } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.red_200));
+        } else if ("Waiting".equalsIgnoreCase(submissionsResult.getStatus())) {
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.orange_300));
+        }
+        if (submissionsResult.getMe().isLiked()) {
+            imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+        } else {
+            imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+        }
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
 

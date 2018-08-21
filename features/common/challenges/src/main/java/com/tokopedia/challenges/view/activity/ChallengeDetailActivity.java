@@ -44,6 +44,7 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
 
         extras.putString(Utils.QUERY_PARAM_CHALLENGE_ID, extras.getString(Utils.QUERY_PARAM_CHALLENGE_ID));
+        extras.putString(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, extras.getString(Utils.QUERY_PARAM_IS_PAST_CHALLENGE));
         destination = new Intent(context, ChallengeDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);

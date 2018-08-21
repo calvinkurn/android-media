@@ -20,9 +20,9 @@ import com.tokopedia.design.utils.TabUtil;
  * Created by ashwanityagi on 06/08/18.
  */
 
-public class ChallengesHomeActivity extends BaseActivity{
-private TabLayout tabLayout;
-private ViewPager viewPager;
+public class ChallengesHomeActivity extends BaseActivity {
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -60,6 +60,7 @@ private ViewPager viewPager;
         viewPager.setAdapter(new ChallengesHomeAdapter(getSupportFragmentManager()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null && isShowCloseButton()) {
@@ -68,13 +69,13 @@ private ViewPager viewPager;
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle("Tokopedia Challenges");
+            getSupportActionBar().setTitle("Tokopedia Challenge");
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
         }
 
-        TabUtil.wrapTabIndicatorToTitle(tabLayout,(int)getResources().getDimension(R.dimen.dp_16),(int)getResources().getDimension(R.dimen.dp_12));
+        TabUtil.wrapTabIndicatorToTitle(tabLayout, (int) getResources().getDimension(R.dimen.dp_16), (int) getResources().getDimension(R.dimen.dp_12));
 
     }
 

@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -28,7 +29,7 @@ public class ChallengesHomeAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 return new ChallengesFragment();
             case 1:
@@ -36,6 +37,4 @@ public class ChallengesHomeAdapter extends FragmentStatePagerAdapter {
         }
         return new ChallengesFragment();
     }
-
-
 }

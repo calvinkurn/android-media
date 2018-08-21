@@ -25,9 +25,8 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     private GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
 
 
-
     @Inject
-    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase,GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase) {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase) {
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
         this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
         this.getDetailsSubmissionsUseCase = getDetailsSubmissionsUseCase;
@@ -47,14 +46,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setLikesCountView(String.valueOf(model.getLikes()));
         getView().setPointsView(String.valueOf(model.getPoints()));
         String status = model.getStatus();
-        if (status.equalsIgnoreCase("approved") || status.equalsIgnoreCase("participated")) {
-            getView().setApprovedView(status);
-        } else if (status.equalsIgnoreCase("declined")) {
-            getView().setDeclinedView(status);
-        } else if (status.equalsIgnoreCase("pending")) {
-            getView().showStatusInfo();
-            getView().setPendingView(status);
-        }
+        getView().setApprovedView(status);
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
         getView().setParticipateTitle(model.getCollection().getTitle());
@@ -108,7 +100,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         });
     }
 
-    public void getSubmissionDetails(String submissionId){
+    public void getSubmissionDetails(String submissionId) {
         getDetailsSubmissionsUseCase.setRequestParams(submissionId);
         getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -123,12 +115,15 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                getView().hidProgressBar();
+
                 RestResponse res1 = typeRestResponseMap.get(SubmissionResult.class);
                 SubmissionResult submissionResult = res1.getData();
-                if (submissionResult != null){
+                if (submissionResult != null) {
+                    getView().hidProgressBar();
                     getView().setSubmittResult(submissionResult);
                     setDataInFields(submissionResult);
+                } else {
+                    getView().showDialogInfo("Under Review", "All submissions from participants of the challenge must approved by Tokopedia");
                 }
             }
         });
