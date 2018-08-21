@@ -602,7 +602,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
-    <!-- Strings related Manage People -->
+ <!-- Strings related Manage People -->
 
 
     <!-- Strings related to browse category -->
