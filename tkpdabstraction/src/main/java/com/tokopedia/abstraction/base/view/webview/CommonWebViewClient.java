@@ -95,13 +95,6 @@ public class CommonWebViewClient extends WebChromeClient {
 
     }
 
-    public void setRecieveResult(Intent intent, int resultCode) {
-        if (null == callbackBeforeL) return;
-        Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-        callbackBeforeL.onReceiveValue(result);
-        callbackBeforeL = null;
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
         if (Build.VERSION.SDK_INT >= 21) {
@@ -116,16 +109,17 @@ public class CommonWebViewClient extends WebChromeClient {
                     String dataString = intent.getDataString();
                     if (dataString != null) {
                         results = new Uri[]{Uri.parse(dataString)};
-
                     }
                 }
             }
-            setRecieveResult(intent, resultCode);
+            callbackAfterL.onReceiveValue(results);
+            callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
                 if (null == callbackBeforeL) return;
                 Uri result = intent == null || resultCode != RESULT_OK ? null : intent.getData();
-                setRecieveResult(intent, resultCode);
+                callbackBeforeL.onReceiveValue(result);
+                callbackBeforeL = null;
             }
         }
     }
