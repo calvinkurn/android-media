@@ -28,7 +28,7 @@ public class Utils {
     public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
     public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
     public static final String QUERY_PARAM_IS_PAST_CHALLENGE = "isPastChallenge";
-    public static Boolean FROMNOCACHE;
+    public static boolean FROMNOCACHE;
 
 
     synchronized public static Utils getSingletonInstance() {

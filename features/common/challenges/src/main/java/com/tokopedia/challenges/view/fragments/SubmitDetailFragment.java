@@ -48,6 +48,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView participateTitle;
     private TextView btnShare;
     private boolean isPastChallenge;
+    private TextView btnSubmit;
+    private View llShare;
 
     @Inject
     SubmitDetailPresenter presenter;
@@ -92,6 +94,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         participateTextView = view.findViewById(R.id.participate_title);
         btnShare = view.findViewById(R.id.btn_share);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        btnSubmit = view.findViewById(R.id.btn_submit);
+        llShare = view.findViewById(R.id.ll_share);
+
 
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
         setClickListeners();
@@ -183,9 +188,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         } else if ("Approved".equalsIgnoreCase(approveText)) {
             approvedView.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             approvedView.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+            likeBtn.setVisibility(View.VISIBLE);
         } else if ("Declined".equalsIgnoreCase(approveText)) {
             approvedView.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
             approvedView.setTextColor(getResources().getColor(R.color.red_200));
+            btnSubmit.setVisibility(View.VISIBLE);
+            llShare.setVisibility(View.GONE);
         } else if ("Waiting".equalsIgnoreCase(approveText)) {
             approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             approvedView.setTextColor(getResources().getColor(R.color.orange_300));

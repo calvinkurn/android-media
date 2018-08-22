@@ -94,7 +94,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView tvHashTag;
     TextView tvTnCText;
     WebView longDescription;
-    TextView submitPhoto;
     private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
 
@@ -200,7 +199,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         flHeader = view.findViewById(R.id.fl_header);
         mainContent = view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
-        submitPhoto = view.findViewById(R.id.submit_photo);
         baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
@@ -336,16 +334,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvParticipated.setVisibility(View.GONE);
         } else {
             tvParticipated.setText(participatedText);
-            if (participatedText.equalsIgnoreCase("Approved")) {
-                setTextStatus(getResources().getColor(R.color.accepted_green_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_green_radius_huge), tvParticipated);
-            } else if (participatedText.equalsIgnoreCase("Pending")) {
-                setTextStatus(getResources().getColor(R.color.pending_yellow_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_yellow_radius_huge), tvParticipated);
-            } else if (participatedText.equalsIgnoreCase("Declined")) {
-                submitPhoto.setText("Resubmit Other Content");
-                setTextStatus(getResources().getColor(R.color.declined_red_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_red_radius_huge), tvParticipated);
-            } else {
-                setTextStatus(getResources().getColor(R.color.completed_gray_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_gray_radius_huge), tvParticipated);
-            }
         }
     }
 

@@ -70,9 +70,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
             if (submissionsResult.getMe().isLiked()) {
-                imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
-            } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+            } else {
+                imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
             }
         } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
