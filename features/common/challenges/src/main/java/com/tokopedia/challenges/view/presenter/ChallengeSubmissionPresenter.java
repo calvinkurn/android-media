@@ -72,7 +72,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                 if(!settings.isUploadAllowed()) {
                     getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
                 }else {
-                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), getView().getChallengeResult(),settings));;
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(),settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
                 }
             }
         });

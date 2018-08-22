@@ -5,12 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.GetChallegeTermsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
@@ -21,7 +19,6 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.service.UploadChallengeService;
-import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -55,8 +52,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     @Override
     public void attachView(IChallengesSubmitContract.View view) {
         super.attachView(view);
-        getView().setChallengeTitle(getView().getChallengeResult().getTitle());
-        getView().setChallengeDescription(getView().getChallengeResult().getDescription());
+        getView().setChallengeData();
         mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
         mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());

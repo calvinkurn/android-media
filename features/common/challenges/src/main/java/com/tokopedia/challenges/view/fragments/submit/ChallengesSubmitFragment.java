@@ -66,8 +66,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public static final int REQUEST_IMAGE_SELECT = 1;
     private static final int REQUEST_CODE_VIDEO = 2;
     private static final int REQUEST_CODE_IMAGE_VIDEO = 2;
-    String mAttachmentPath;
-
+    private String mAttachmentPath;
+    private  ProgressDialog progress;
     private View parent;
 
 
@@ -77,12 +77,18 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private TextView mChallengeTitle;
     private ChallengeSettings challengeSettings;
     private ExpandableTextView mChallengeDescription;
+    private String channelId;
+    private String channelTitle;
+    private String channelDesc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.challengeResult = getArguments().getParcelable("challengesResult");
         this.challengeSettings = getArguments().getParcelable("challengeSettings");
+        this.channelId = getArguments().getString("channelId");
+        this.channelTitle = getArguments().getString("channelTitle");
+        this.channelDesc = getArguments().getString("channelDesc");
+
         setHasOptionsMenu(true);
     }
 
@@ -152,8 +158,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
             }
         });
-
-
     }
 
 
@@ -176,9 +180,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     public String getImage() {
         return mAttachmentPath;
     }
-
-
-    ProgressDialog progress;
 
     @Override
     public void showProgress(String message) {
@@ -237,20 +238,14 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     }
 
     @Override
-    public void setChallengeTitle(String text) {
-        mChallengeTitle.setText(text);
-    }
-
-    @Override
-    public void setChallengeDescription(String text) {
-        mChallengeDescription.setText(text);
+    public void setChallengeData() {
+        mChallengeTitle.setText(channelTitle);
+        mChallengeDescription.setText(channelDesc);
     }
 
     @Override
     public void selectImageVideo() {
-        //actionVideoImagePicker();
         ChallengesSubmitFragmentPermissionsDispatcher.actionVideoImagePickerWithCheck(ChallengesSubmitFragment.this);
-        //showVideoImageChooseDialog();
     }
 
     @Override
@@ -260,7 +255,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void selectVideo() {
-        //actionVideoPicker();
         ChallengesSubmitFragmentPermissionsDispatcher.actionVideoPickerWithCheck(ChallengesSubmitFragment.this);
     }
 

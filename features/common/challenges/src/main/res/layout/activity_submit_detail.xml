@@ -292,6 +292,8 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_12"
             android:visibility="gone"
+            android:paddingTop="@dimen/dp_12"
+            android:paddingBottom="@dimen/dp_12"
             android:background="@drawable/bg_round_corner_solid_green"
            android:gravity="center"
             android:text="Resubmit other content"

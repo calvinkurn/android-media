@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,7 +26,9 @@ import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
+import com.tokopedia.design.component.ToasterError;
 
 import javax.inject.Inject;
 
@@ -108,7 +111,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         } else {
             hidProgressBar();
             presenter.setDataInFields(submissionResult);
-            if(fromSubmission){
+            if (fromSubmission) {
                 ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
 
             }
@@ -194,6 +197,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             approvedView.setTextColor(getResources().getColor(R.color.red_200));
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
+            btnSubmit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
         } else if ("Waiting".equalsIgnoreCase(approveText)) {
             approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             approvedView.setTextColor(getResources().getColor(R.color.orange_300));
@@ -294,5 +303,26 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void navigateToActivity(Intent intent) {
+        getActivity().startActivity(intent);
+    }
+
+    @Override
+    public void setSnackBarErrorMessage(String message) {
+        View rootView = getActivity().getWindow().getDecorView().findViewById(android.R.id.content);
+
+        ToasterError
+                .make(rootView,
+                        message,
+                        BaseToaster.LENGTH_LONG)
+                .show();
+    }
+
+    @Override
+    public SubmissionResult getSubmissionResult() {
+        return submissionResult;
     }
 }

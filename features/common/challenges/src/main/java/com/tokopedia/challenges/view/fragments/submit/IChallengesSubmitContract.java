@@ -22,9 +22,7 @@ public interface IChallengesSubmitContract {
         public void finish();
         void setSnackBarErrorMessage(String message);
         public Result getChallengeResult();
-        public void setChallengeTitle(String text);
-        public void setChallengeDescription(String text);
-
+        public void setChallengeData();
         public void selectImageVideo();
         public void selectImage();
         public void selectVideo();
