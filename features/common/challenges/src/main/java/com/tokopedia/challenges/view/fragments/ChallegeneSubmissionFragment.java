@@ -205,18 +205,19 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         longDescription = view.findViewById(R.id.markdownView);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         mPresenter.attachView(this);
-        if(isPastChallenge){
+        if (isPastChallenge) {
             btnShare.setVisibility(View.GONE);
             submitButton.setVisibility(View.GONE);
-        }else {
+        } else {
             btnShare.setOnClickListener(this);
             submitButton.setOnClickListener(this);
             btnShare.setVisibility(View.VISIBLE);
             submitButton.setVisibility(View.VISIBLE);
         }
-        if (!TextUtils.isEmpty(challengeId)) {
+        if (!TextUtils.isEmpty(challengeId) || challengeResult == null) {
             mPresenter.initialize(true, challengeResult);
         } else {
+            challengeId = challengeResult.getId();
             mPresenter.initialize(false, challengeResult);
         }
 
@@ -487,7 +488,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void setSnackBarErrorMessage(String message) {
-        setSnackBarErrorMessage(message,new View.OnClickListener() {
+        setSnackBarErrorMessage(message, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
             }
@@ -502,6 +503,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void setChallengeResult(Result challengeResult) {
         this.challengeResult = challengeResult;
+    }
+
+    @Override
+    public String getChallengeId() {
+        return challengeId;
     }
 
     @Override

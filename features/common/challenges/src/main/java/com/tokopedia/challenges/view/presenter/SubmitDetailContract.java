@@ -8,13 +8,13 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
-    public interface Presenter extends CustomerPresenter<View> {
+     interface Presenter extends CustomerPresenter<View> {
         void setDataInFields(SubmissionResult model);
 
         void likeBtnClick(SubmissionResult result);
     }
 
-    public interface View extends CustomerView {
+     interface View extends CustomerView {
         void showStatusInfo();
 
         void setProfilePic(String text);
@@ -51,6 +51,7 @@ public interface SubmitDetailContract {
 
         Activity getActivity();
 
-        SubmissionResult getSubmissionResult();
+         void showProgressBar();
+
     }
 }

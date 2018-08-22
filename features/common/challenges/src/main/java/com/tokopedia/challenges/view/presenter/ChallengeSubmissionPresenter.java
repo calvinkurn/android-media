@@ -46,13 +46,12 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     @Override
     public void initialize(boolean loadFromApi, Result challengeResult) {
         getSubmissionChallenges(loadFromApi, challengeResult);
-        getTermsNCondition(challengeResult.getId());
-        getChallengeSettingUseCase.setCHALLENGE_ID(challengeResult.getId());
     }
 
     @Override
     public void onSubmitButtonClick() {
         getView().showProgressBar();
+        getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
         getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
             @Override
@@ -69,10 +68,10 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 ChallengeSettings settings = res1.getData();
-                if(!settings.isUploadAllowed()) {
+                if (!settings.isUploadAllowed()) {
                     getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
-                }else {
-                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(),settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
+                } else {
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
                 }
             }
         });

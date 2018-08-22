@@ -53,9 +53,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public void attachView(IChallengesSubmitContract.View view) {
         super.attachView(view);
         getView().setChallengeData();
-        mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
-        mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
-        mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeResult().getId());
+        mGetChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
+        mGetChallegeTermsUseCase.setCHALLENGE_ID(getView().getChallengeId());
+        mIntializeMultiPartUseCase.setCHALLENGE_ID(getView().getChallengeId());
     }
 
 
@@ -105,7 +105,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 UploadFingerprints fingerprints = res1.getData();
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
-                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeResult().getId(), filePath));
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath));
                     getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
                 }
                 postId = fingerprints.getNewPostId();

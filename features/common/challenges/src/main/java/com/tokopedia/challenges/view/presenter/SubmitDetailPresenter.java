@@ -4,11 +4,13 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -26,15 +28,15 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
     private PostBuzzPointEventUseCase postBuzzPointEventUseCase;
     private GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
-    private GetChallengeSettingUseCase getChallengeSettingUseCase;
+    private GetChallengeDetailsAndSttingsUseCase getChallengeDetailsAndSttingsUseCase;
 
 
     @Inject
-    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase,GetChallengeSettingUseCase getChallengeSettingUseCase) {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase, GetChallengeDetailsAndSttingsUseCase getChallengeDetailsAndSttingsUseCase) {
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
         this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
         this.getDetailsSubmissionsUseCase = getDetailsSubmissionsUseCase;
-        this.getChallengeSettingUseCase = getChallengeSettingUseCase;
+        this.getChallengeDetailsAndSttingsUseCase = getChallengeDetailsAndSttingsUseCase;
     }
 
     @Override
@@ -135,10 +137,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     }
 
-    @Override
-    public void onSubmitButtonClick() {
 
-        getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+    public void onSubmitButtonClick(String challegeId) {
+        getView().showProgressBar();
+        getChallengeDetailsAndSttingsUseCase.setRequestParams(challegeId);
+        getChallengeDetailsAndSttingsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
             @Override
             public void onCompleted() {
@@ -147,17 +150,20 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onError(Throwable e) {
-
+                getView().hidProgressBar();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                getView().hidProgressBar();
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
+                RestResponse res2 = restResponse.get(Result.class);
                 ChallengeSettings settings = res1.getData();
-                if(!settings.isUploadAllowed()) {
+                Result result = res2.getData();
+                if (!settings.isUploadAllowed() || result == null) {
                     getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
-                }else {
-                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(),settings,getView().getSubmissionResult().getCollection().getId(),getView().getSubmissionResult().getCollection().getTitle(),getView().getSubmissionResult().getCollection().get));
+                } else {
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, result.getId(), result.getTitle(), result.getDescription()));
                 }
             }
         });

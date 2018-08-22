@@ -61,6 +61,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private String submissionId;
     private View progressBarLayout;
     private boolean fromSubmission;
+    private View progressBar;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -99,6 +100,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
+        progressBar = view.findViewById(R.id.progress_bar);
 
 
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
@@ -197,12 +199,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             approvedView.setTextColor(getResources().getColor(R.color.red_200));
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
-            btnSubmit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if ("Waiting".equalsIgnoreCase(approveText)) {
             approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             approvedView.setTextColor(getResources().getColor(R.color.orange_300));
@@ -230,7 +227,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             this.participateTextView.setVisibility(View.GONE);
         } else {
             this.participateTitle.setText(participateTitle);
-            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
+            String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
             this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
 
         }
@@ -288,6 +285,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -320,9 +323,5 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                         BaseToaster.LENGTH_LONG)
                 .show();
     }
-
-    @Override
-    public SubmissionResult getSubmissionResult() {
-        return submissionResult;
-    }
 }
+

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,24 +8,15 @@
     android:orientation="vertical"
     android:scrollbars="none">
 
-    <LinearLayout
-        android:id="@+id/progress_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/dp_16"
-        android:visibility="gone"
-        android:orientation="vertical">
-
-        <include layout="@layout/details_loader" />
-    </LinearLayout>
-
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_above="@+id/card_share"
+        android:paddingBottom="@dimen/dp_5"
         android:background="@color/white"
+        android:visibility="visible"
         android:scrollbars="none">
 
         <android.support.constraint.ConstraintLayout
@@ -138,7 +129,6 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:textColor="@color/black_39"
                 android:textSize="@dimen/sp_20"
-                android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_img_layout" />
 
             <ImageView
@@ -210,7 +200,7 @@
                 android:text="@string/detail_title_text"
                 android:layout_marginTop="@dimen/dp_16"
                 android:textColor="#000000"
-                android:textSize="@dimen/sp_17"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintTop_toBottomOf="@+id/approved" />
 
             <TextView
@@ -233,7 +223,7 @@
                 android:layout_marginTop="@dimen/dp_16"
                 android:textColor="@color/black"
                 android:text="@string/participate_in"
-                android:textSize="@dimen/sp_20"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintTop_toBottomOf="@+id/detail_content" />
 
             <TextView
@@ -244,7 +234,7 @@
                 android:layout_marginBottom="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
                 android:textColor="@color/tkpd_main_green"
                 android:textSize="@dimen/sp_14"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -255,7 +245,9 @@
     </ScrollView>
 
     <android.support.v7.widget.CardView
+        android:id="@+id/card_share"
         android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
         app:cardElevation="@dimen/dp_8">
 
@@ -299,4 +291,33 @@
             android:text="Resubmit other content"
             android:textColor="@color/white" />
     </android.support.v7.widget.CardView>
-</LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/progress_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:elevation="@dimen/dp_18"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/prog_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/dp_18"
+        android:background="@color/white"
+        android:orientation="vertical">
+        <include layout="@layout/details_loader" />
+    </LinearLayout>
+
+
+</RelativeLayout>
