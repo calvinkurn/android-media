@@ -1,5 +1,8 @@
 package com.tokopedia.challenges.view.utils;
 
+import android.text.TextUtils;
+
+import com.tokopedia.challenges.view.model.challengesubmission.Awards;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
@@ -10,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -147,6 +151,36 @@ public class Utils {
             url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
         }
         return url;
+    }
+
+    public static int getWinnerPosition(List<Awards> awards) {
+        int position;
+        int finalPosition = Integer.MAX_VALUE;
+        if (awards != null) {
+            for (Awards award : awards) {
+                if (award != null) {
+                    if (!TextUtils.isEmpty(award.getType())) {
+                        if (award.getType().equalsIgnoreCase("JudgesPick")) {
+                            finalPosition = 1;
+                            break;
+                        } else if (award.getType().equalsIgnoreCase("FirstPlace")) {
+                            position = 2;
+                            if (finalPosition > position)
+                                finalPosition = position;
+
+                        } else if (award.getType().equalsIgnoreCase("SecondPlace")) {
+                            position = 3;
+                            if (finalPosition > position)
+                                finalPosition = position;
+                        }
+                    }
+                }
+            }
+        }
+        if (finalPosition == Integer.MAX_VALUE)
+            return -1;
+        else
+            return finalPosition;
     }
 
 }

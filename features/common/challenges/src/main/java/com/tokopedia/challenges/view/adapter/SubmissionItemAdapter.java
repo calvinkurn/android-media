@@ -43,6 +43,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private boolean isFooterAdded;
     private int orientation;
     private boolean isPastChallenge;
+    private boolean isWinner;
 
 
     public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation, boolean isPastChallenge) {
@@ -170,6 +171,10 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
+    public void isWinnerLayout(boolean isWinner) {
+        this.isWinner=isWinner;
+    }
+
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private View itemView;
         private ImageView submissionImage;
@@ -177,6 +182,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         private TextView submissionTitle;
         private ImageView ivFavourite;
         private ImageView ivShareVia;
+        private TextView tvWinnerNumber;
         private int index;
 
         public ItemViewHolder(View itemView) {
@@ -187,6 +193,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             submissionTitle = itemView.findViewById(R.id.tv_submission_title);
             ivFavourite = itemView.findViewById(R.id.iv_like);
             ivShareVia = itemView.findViewById(R.id.iv_share);
+            tvWinnerNumber = itemView.findViewById(R.id.tv_winner_number);
             if (orientation == LinearLayoutManager.HORIZONTAL) {
                 DisplayMetrics displaymetrics = new DisplayMetrics();
                 ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -208,6 +215,10 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             } else {
                 itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
                 tvBuzzPoints.setVisibility(View.GONE);
+            }
+            if(isWinner){
+                tvWinnerNumber.setVisibility(View.VISIBLE);
+                tvWinnerNumber.setText(String.valueOf(getIndex()));
             }
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);

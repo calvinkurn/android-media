@@ -62,7 +62,9 @@ public class SubmissionResult implements Parcelable
     @SerializedName("Sharing")
     @Expose
     private Sharing sharing;
-
+    @SerializedName("Awards")
+    @Expose
+    private List<Awards> awards;
 
     public SubmissionResult() {
     }
@@ -84,6 +86,7 @@ public class SubmissionResult implements Parcelable
         user = in.readParcelable(User.class.getClassLoader());
         me = in.readParcelable(Me.class.getClassLoader());
         sharing = in.readParcelable(Sharing.class.getClassLoader());
+        awards = in.createTypedArrayList(Awards.CREATOR);
     }
 
     @Override
@@ -104,6 +107,7 @@ public class SubmissionResult implements Parcelable
         dest.writeParcelable(user, flags);
         dest.writeParcelable(me, flags);
         dest.writeParcelable(sharing, flags);
+        dest.writeTypedList(awards);
     }
 
     @Override
@@ -251,4 +255,11 @@ public class SubmissionResult implements Parcelable
         this.sharing = sharing;
     }
 
+    public List<Awards> getAwards() {
+        return awards;
+    }
+
+    public void setAwards(List<Awards> awards) {
+        this.awards = awards;
+    }
 }

@@ -61,6 +61,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private String submissionId;
     private View progressBarLayout;
     private boolean fromSubmission;
+    private TextView tvWinnerNumber;
     private View progressBar;
 
     public static Fragment newInstance() {
@@ -100,6 +101,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
+        tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
         progressBar = view.findViewById(R.id.progress_bar);
 
 
@@ -323,5 +325,15 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                         BaseToaster.LENGTH_LONG)
                 .show();
     }
-}
 
+    @Override
+    public SubmissionResult getSubmissionResult() {
+        return submissionResult;
+    }
+
+    @Override
+    public void setWinnerPosition(String s) {
+        tvWinnerNumber.setVisibility(View.VISIBLE);
+        tvWinnerNumber.setText(s);
+    }
+}
