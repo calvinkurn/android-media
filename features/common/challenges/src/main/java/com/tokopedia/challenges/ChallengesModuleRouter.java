@@ -32,4 +32,6 @@ public interface ChallengesModuleRouter {
 
     void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents);
 
+    String getStringRemoteConfig(String key);
+
 }
