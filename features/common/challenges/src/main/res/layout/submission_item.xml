@@ -24,6 +24,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/tv_winner_number"
+            style="@style/TextView.Small.White"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:visibility="gone"
+            android:layout_marginRight="@dimen/dp_16"
+            android:gravity="center_horizontal"
+            android:background="@drawable/ic_winner_badge"
+            android:textSize="@dimen/sp_10"
+            app:layout_constraintRight_toRightOf="@+id/iv_challenge"
+            app:layout_constraintTop_toTopOf="@id/iv_challenge" />
+
+        <TextView
             android:id="@+id/tv_submission_title"
             style="@style/TextView.Title.FontMedium.BlackPrimary"
             android:layout_width="0dp"

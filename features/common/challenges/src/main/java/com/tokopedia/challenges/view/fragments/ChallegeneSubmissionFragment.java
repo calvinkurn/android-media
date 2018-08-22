@@ -351,6 +351,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
             winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
+            winnerItemAdapter.isWinnerLayout(true);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
     }
@@ -436,13 +437,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void onClick(View v) {
         if (v.getId() == R.id.seemorebutton_description) {
             if (shortDescription.getVisibility() == View.VISIBLE) {
-                seeMoreButtonDesc.setText(R.string.expand);
+                seeMoreButtonDesc.setText(R.string.collapse);
                 MarkdownProcessor m = new MarkdownProcessor();
                 String html = m.markdown(challengeResult.getDescription());
                 longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
                 shortDescription.setVisibility(View.GONE);
                 longDescription.setVisibility(View.VISIBLE);
             } else {
+                seeMoreButtonDesc.setText(R.string.expand);
                 seeMoreButtonDesc.setText(R.string.collapse);
                 shortDescription.setVisibility(View.VISIBLE);
                 longDescription.setVisibility(View.GONE);

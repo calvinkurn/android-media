@@ -55,6 +55,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
         getView().setParticipateTitle(model.getCollection().getTitle());
+        if(model.getAwards()!=null){
+            int position=Utils.getWinnerPosition(model.getAwards());
+            if(position!=-1)
+                getView().setWinnerPosition(String.valueOf(position));
+        }
     }
 
     @Override

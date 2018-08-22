@@ -37,8 +37,7 @@
                     android:layout_marginBottom="@dimen/sp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:background="@drawable/award_image_bg"
-                    app:srcCompat="@drawable/ic_winner" />
+                    android:src="@drawable/award_circular" />
 
 
                 <LinearLayout
