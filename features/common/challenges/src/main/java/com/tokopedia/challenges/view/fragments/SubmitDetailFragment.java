@@ -62,6 +62,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private View progressBarLayout;
     private boolean fromSubmission;
     private TextView tvWinnerNumber;
+    private View progressBar;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -101,6 +102,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
+        progressBar = view.findViewById(R.id.progress_bar);
 
 
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
@@ -196,12 +198,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             approvedView.setTextAppearance(getContext(), R.style.TextView_Declined);
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
-            btnSubmit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if ("Waiting".equalsIgnoreCase(approveText)) {
             approvedView.setTextAppearance(getContext(), R.style.TextView_Waiting);
         }
@@ -228,7 +225,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             this.participateTextView.setVisibility(View.GONE);
         } else {
             this.participateTitle.setText(participateTitle);
-            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
+            String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
             this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
 
         }
@@ -286,6 +283,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override

@@ -60,6 +60,8 @@ public class ChallengeSubmissonContractor {
         Result getChallengeResult();
 
         void setChallengeResult(Result challengeResult);
+
+        String getChallengeId();
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {

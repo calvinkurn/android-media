@@ -21,30 +21,27 @@ import javax.inject.Inject;
 public class GetChallengeDetailsAndSttingsUseCase extends RestRequestSupportInterceptorUseCase {
 
 
-    private RequestParams requestParams;
+    private String challengeId;
 
     @Inject
     public GetChallengeDetailsAndSttingsUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams){
-        this.requestParams=requestParams;
+    public void setRequestParams(String challengeId){
+        this.challengeId=challengeId;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        HashMap<String, Object> parameters=requestParams.getParameters();
-        String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);
-        parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.CHALLENGES_DETAILS, challengeID), Result.class)
-                .setQueryParams(parameters)
+
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.CHALLENGES_DETAILS, challengeId), Result.class)
                 .build();
         tempRequest.add(restRequest1);
 
-        RestRequest restRequest2 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_SETTING,challengeID), ChallengeSettings.class)
+        RestRequest restRequest2 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.Upload.CHALLENGE_SETTING,challengeId), ChallengeSettings.class)
                 .build();
         tempRequest.add(restRequest2);
 

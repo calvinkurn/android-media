@@ -73,7 +73,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Inject
     ChallengesSubmitPresenter presenter;
-    private Result challengeResult;
     private TextView mChallengeTitle;
     private ChallengeSettings challengeSettings;
     private ExpandableTextView mChallengeDescription;
@@ -232,10 +231,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         });
     }
 
-    @Override
-    public Result getChallengeResult() {
-        return challengeResult;
-    }
 
     @Override
     public void setChallengeData() {
@@ -358,5 +353,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         ((ChallengesModuleRouter) ((getActivity()).getApplication())).onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-
+    @Override
+    public String getChallengeId() {
+        return channelId;
+    }
 }
