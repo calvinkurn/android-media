@@ -2552,9 +2552,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setOgImageUrl(og_image)
                 .setDeepLink(deepLink)
                 .build();
-//        ShareSocmedHandler.ShareSpecific(shareData, context, packageName, "text/plain", null, null);
 
-        // ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), shareData);
         BranchSdkUtils.generateBranchLink(shareData, context, new BranchSdkUtils.GenerateShareContents() {
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
