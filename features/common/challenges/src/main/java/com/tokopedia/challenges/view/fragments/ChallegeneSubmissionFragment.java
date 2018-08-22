@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -54,7 +55,6 @@ import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.usecase.RequestParams;
@@ -114,7 +114,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private String challengeId;
     private Boolean isPastChallenge;
     private FloatingActionButton btnShare;
-    private FirebaseRemoteConfigImpl firebaseRemoteConfig;
     private boolean isWinnerList = false;
 
     public static Fragment createInstance(Bundle extras) {
@@ -135,7 +134,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
         isWinnerList = getArguments().getBoolean("isPastChallenge", false);
         setHasOptionsMenu(true);
-        this.firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getContext());
     }
 
 
@@ -418,7 +416,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     public void showBuzzPointsText() {
-        buzzPointText = firebaseRemoteConfig.getString("app_text_how_to_generate_buzz_point");
+        buzzPointText =((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
             tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointText));
@@ -430,7 +428,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         tncText = termsNCondition.getTerms();
         if (!TextUtils.isEmpty(tncText)) {
             clTnc.setVisibility(View.VISIBLE);
-            tvTnCText.setText(Html.fromHtml(tncText));
+            tvTnCText.setText(tncText);
         }
     }
 

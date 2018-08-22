@@ -45,7 +45,7 @@ public class TncBottomSheetFragment extends TkpdBaseV4Fragment {
             setViewIds(view);
             if (toolBarTitle != null)
                 toolbar.setTitle(toolBarTitle);
-                textView.setText(Html.fromHtml(text));
+                textView.setText(text);
         }
         return view;
     }

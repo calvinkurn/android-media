@@ -13,8 +13,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -202,7 +200,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void showMessage(String showToast) {
-        Toast.makeText(getContext(),showToast,Toast.LENGTH_LONG).show();
+        //Toast.makeText(getContext(),showToast,Toast.LENGTH_LONG).show();
     }
 
 

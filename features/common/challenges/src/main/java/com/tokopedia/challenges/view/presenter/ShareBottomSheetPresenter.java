@@ -55,7 +55,6 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
                     ClipboardHandler.CopyToClipboard(getView().getActivity(), branchUrl);
-
                 } else {
                     ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, shareContents);
 

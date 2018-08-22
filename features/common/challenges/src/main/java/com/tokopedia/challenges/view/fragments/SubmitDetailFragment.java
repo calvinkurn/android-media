@@ -323,11 +323,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
-    public SubmissionResult getSubmissionResult() {
-        return submissionResult;
-    }
-
-    @Override
     public void setWinnerPosition(String s) {
         tvWinnerNumber.setVisibility(View.VISIBLE);
         tvWinnerNumber.setText(s);

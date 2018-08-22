@@ -51,7 +51,7 @@ public interface SubmitDetailContract {
 
         Activity getActivity();
 
-        SubmissionResult getSubmissionResult();
+        void showProgressBar();
 
         void setWinnerPosition(String s);
     }
