@@ -188,15 +188,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setApprovedView(String approveText) {
         approvedView.setText(approveText);
         if (isPastChallenge) {
-            approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
-            approvedView.setTextColor(getResources().getColor(R.color.black_38));
+            approvedView.setTextAppearance(getContext(), R.style.TextView_Completed);
         } else if ("Approved".equalsIgnoreCase(approveText)) {
-            approvedView.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
-            approvedView.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+            approvedView.setTextAppearance(getContext(), R.style.TextView_Approved);
             likeBtn.setVisibility(View.VISIBLE);
         } else if ("Declined".equalsIgnoreCase(approveText)) {
-            approvedView.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
-            approvedView.setTextColor(getResources().getColor(R.color.red_200));
+            approvedView.setTextAppearance(getContext(), R.style.TextView_Declined);
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(new View.OnClickListener() {
@@ -206,8 +203,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                 }
             });
         } else if ("Waiting".equalsIgnoreCase(approveText)) {
-            approvedView.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
-            approvedView.setTextColor(getResources().getColor(R.color.orange_300));
+            approvedView.setTextAppearance(getContext(), R.style.TextView_Waiting);
         }
     }
 

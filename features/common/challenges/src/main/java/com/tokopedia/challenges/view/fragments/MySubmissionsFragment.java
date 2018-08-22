@@ -16,6 +16,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
 import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
+import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
@@ -36,7 +37,8 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private RecyclerView recyclerView;
     private LinearLayout emptyLayout;
     private View progressBar;
-    private Boolean isFirst =true;
+    private Boolean isFirst = true;
+    private LinearLayoutManager layoutManager;
 
 
     @Override
@@ -60,6 +62,13 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView = view.findViewById(R.id.rv_home_submissions);
         emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
+        layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        recyclerView.setLayoutManager(layoutManager);
+        listAdpater = new MySubmissionsListAdapter(getActivity(), null, this);
+        recyclerView.setAdapter(listAdpater);
+        recyclerView.addOnScrollListener(rvOnScrollListener);
+        recyclerView.setVisibility(View.VISIBLE);
+        emptyLayout.setVisibility(View.GONE);
         //mySubmissionsHomePresenter.getMySubmissionsList();
         //isFirst = false;
         return view;
@@ -69,19 +78,16 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public void onStart() {
         super.onStart();
         mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
-        if (isFirst){
-            isFirst =false;
+        if (isFirst) {
+            isFirst = false;
         }
     }
 
     @Override
     public void setSubmissionsDataToUI(List<SubmissionResult> resultList) {
-        recyclerView.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
-        listAdpater = new MySubmissionsListAdapter(getActivity(), resultList, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(listAdpater);
+        if (resultList != null) {
+            listAdpater.addAll(resultList);
+        }
     }
 
     @Override
@@ -109,8 +115,23 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     @Override
     public void showProgressBarView() {
         progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void removeFooter() {
+        listAdpater.removeFooter();
+
+    }
+
+    @Override
+    public void addFooter() {
+        listAdpater.addFooter();
+    }
+
+    @Override
+    public LinearLayoutManager getLayoutManager() {
+        return layoutManager;
     }
 
 
@@ -125,6 +146,19 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         super.onDetach();
         // mListener = null;
     }
+
+    private RecyclerView.OnScrollListener rvOnScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            mySubmissionsHomePresenter.onRecyclerViewScrolled(layoutManager);
+        }
+    };
 
     @Override
     protected String getScreenName() {

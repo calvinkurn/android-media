@@ -29,14 +29,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
             android:layout_marginRight="@dimen/dp_10"
+            style="@style/TextView.Approved"
             android:layout_marginTop="@dimen/dp_8"
-            android:background="@drawable/bg_round_solid_green_radius_huge"
-            android:paddingBottom="@dimen/dp_3"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_3"
-            android:text="               "
-            android:textColor="@color/green_800"
+            android:text="                 "
             app:layout_constraintLeft_toRightOf="@+id/img_challenge" />
 
         <TextView

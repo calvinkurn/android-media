@@ -60,22 +60,14 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining.setVisibility(View.GONE);
         tvStatus.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
-            tvStatus.setText("Completed");
-            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.black_38));
+            tvStatus.setTextAppearance(context, R.style.TextView_Completed);
             imgShare.setVisibility(View.GONE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0) {
-            tvStatus.setText("Approved");
-            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.tkpd_main_green));
+            tvStatus.setTextAppearance(context, R.style.TextView_Approved);
         } else if (challengesResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-            tvStatus.setText("Declined");
-            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(com.tokopedia.design.R.color.red_200));
+            tvStatus.setTextAppearance(context, R.style.TextView_Declined);
         } else if (challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-            tvStatus.setText("Pending");
-            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(R.color.orange_300));
+            tvStatus.setTextAppearance(context, R.style.TextView_Waiting);
         } else {
             RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
             tvTimeRemaining.setText(daysFormatter.getRemainingDays() + " days Remaining");

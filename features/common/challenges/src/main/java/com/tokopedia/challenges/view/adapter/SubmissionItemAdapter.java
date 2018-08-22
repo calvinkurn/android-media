@@ -218,7 +218,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             if(isWinner){
                 tvWinnerNumber.setVisibility(View.VISIBLE);
-                tvWinnerNumber.setText(String.valueOf(getIndex()));
+                tvWinnerNumber.setText(String.valueOf(getIndex()+1));
             }
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);

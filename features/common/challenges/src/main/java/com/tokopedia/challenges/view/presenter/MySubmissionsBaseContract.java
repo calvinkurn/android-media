@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -21,6 +22,12 @@ public interface MySubmissionsBaseContract {
         void showProgressBarView();
 
         Context getActivity();
+
+        void removeFooter();
+
+        void addFooter();
+
+        LinearLayoutManager getLayoutManager();
     }
 
     interface Presenter extends CustomerPresenter<View> {

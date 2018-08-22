@@ -205,15 +205,12 @@
                 android:layout_marginBottom="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:background="@drawable/bg_round_solid_green_radius_huge"
-                android:paddingBottom="@dimen/dp_5"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_5"
-                android:textColor="@color/accepted_green_textcolor"
+                style="@style/TextView.Approved"
+                android:text="        "
                 android:visibility="visible"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
+                app:layout_constraintTop_toTopOf="@+id/points_img"
+                app:layout_constraintBottom_toBottomOf="@+id/points_img"/>
 
             <TextView
                 android:id="@+id/detail_title"

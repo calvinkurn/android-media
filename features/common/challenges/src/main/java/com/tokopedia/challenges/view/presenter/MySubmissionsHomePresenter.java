@@ -1,14 +1,11 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.challenges.domain.usecase.GetActiveChallengesUseCase;
-import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetMySubmissionsListUseCase;
-import com.tokopedia.challenges.domain.usecase.GetPastChallengesUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -26,17 +23,23 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
     private GetMySubmissionsListUseCase getMySubmissionsListUseCase;
     private PostSubmissionLikeUseCase postSubmissionLikeUseCase;
+    private boolean isLoading;
+    private boolean isLastPage;
+    private int pageStart = 0;
+    private int pageSize = 20;
 
     @Inject
-    public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase ,PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
+    public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase, PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
         this.getMySubmissionsListUseCase = getMySubmissionsListUseCase;
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
     }
 
     public void getMySubmissionsList(Boolean isFirst) {
-        if(isFirst){
+        if (isFirst) {
             getView().showProgressBarView();
         }
+        isLoading=true;
+        getMySubmissionsListUseCase.setRequestParams(pageStart, pageSize);
         getMySubmissionsListUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -45,6 +48,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
 
             @Override
             public void onError(Throwable e) {
+                isLoading = false;
                 getView().removeProgressBarView();
                 e.printStackTrace();
             }
@@ -55,12 +59,17 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 int responseCodeOfResponse1 = res1.getCode();
                 SubmissionResponse mainDataObject = res1.getData();
-
+                isLoading = false;
+                getView().removeFooter();
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
+                    pageStart += mainDataObject.getSubmissionResults().size();
                     getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
                 } else {
-                    getView().renderEmptyList();
+                    isLastPage = true;
+                    if (pageStart == 0)
+                        getView().renderEmptyList();
                 }
+                checkIfToLoad(getView().getLayoutManager());
             }
         });
     }
@@ -87,5 +96,28 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
             }
         });
 
+    }
+
+    public void onRecyclerViewScrolled(LinearLayoutManager layoutManager) {
+        checkIfToLoad(layoutManager);
+    }
+
+    public void setPageStart(int start) {
+        this.pageStart = start;
+    }
+
+    private void checkIfToLoad(LinearLayoutManager layoutManager) {
+        int visibleItemCount = layoutManager.getChildCount();
+        int totalItemCount = layoutManager.getItemCount();
+        int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+        if (!isLoading && !isLastPage) {
+            if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                    && firstVisibleItemPosition >= 0) {
+                getMySubmissionsList(false);
+            } else {
+                getView().addFooter();
+            }
+        }
     }
 }

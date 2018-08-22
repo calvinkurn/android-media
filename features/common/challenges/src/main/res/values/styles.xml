@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="ToolbarExpandedTitle2">
         <item name="android:textSize">@dimen/sp_20</item>
         <item name="android:shadowColor">#ffffff</item>
@@ -7,7 +8,56 @@
         <item name="android:singleLine">false</item>
         <item name="android:maxLines">5</item>
     </style>
+
     <declare-styleable name="ExpandableTextView">
         <attr name="animation_duration" format="integer" />
     </declare-styleable>
+
+    <style name="TextView.Approved">
+        <item name="android:text">Approved</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="android:background">@drawable/bg_round_solid_green_radius_huge</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
+        <item name="android:paddingTop">@dimen/dp_2</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+        <item name="android:textColor">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="TextView.Declined">
+        <item name="android:text">Rejected</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="android:background">@drawable/bg_round_solid_red_radius_huge</item>
+        <item name="android:textColor">@color/declined_red_textcolor</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
+        <item name="android:paddingTop">@dimen/dp_2</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+    </style>
+
+    <style name="TextView.Waiting">
+        <item name="android:text">Pending</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="android:background">@drawable/bg_round_solid_yellow_radius_huge</item>
+        <item name="android:textColor">@color/pending_yellow_textcolor</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
+        <item name="android:paddingTop">@dimen/dp_2</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+    </style>
+    <style name="TextView.Completed">
+        <item name="android:text">Completed</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textSize">@dimen/sp_11</item>
+        <item name="android:background">@drawable/bg_round_solid_gray_radius_huge</item>
+        <item name="android:textColor">@color/black_38</item>
+        <item name="android:paddingBottom">@dimen/dp_5</item>
+        <item name="android:paddingTop">@dimen/dp_2</item>
+        <item name="android:paddingLeft">@dimen/dp_16</item>
+        <item name="android:paddingRight">@dimen/dp_16</item>
+    </style>
+
 </resources>

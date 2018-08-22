@@ -140,7 +140,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     }
 
-    @Override
+
     public void onSubmitButtonClick() {
 
         getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -162,7 +162,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 if(!settings.isUploadAllowed()) {
                     getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
                 }else {
-                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(),settings,getView().getSubmissionResult().getCollection().getId(),getView().getSubmissionResult().getCollection().getTitle(),getView().getSubmissionResult().getCollection().get));
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(),settings,getView().getSubmissionResult().getCollection().getId(),getView().getSubmissionResult().getCollection().getTitle(),getView().getSubmissionResult().getCollection().getEndDate()));
                 }
             }
         });
