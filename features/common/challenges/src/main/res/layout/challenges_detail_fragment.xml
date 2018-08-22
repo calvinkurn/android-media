@@ -126,10 +126,10 @@
                     android:layout_marginRight="@dimen/dp_16"
                     android:background="@drawable/bg_round_solid_green_radius_huge"
                     android:gravity="center_vertical"
-                    android:paddingBottom="@dimen/dp_3"
+                    android:paddingBottom="@dimen/dp_4"
                     android:paddingLeft="@dimen/dp_16"
                     android:paddingRight="@dimen/dp_16"
-                    android:paddingTop="@dimen/dp_3"
+                    android:paddingTop="@dimen/dp_2"
                     tools:text="Participated" />
 
                 <android.support.constraint.ConstraintLayout

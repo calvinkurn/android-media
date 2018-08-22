@@ -2,6 +2,7 @@ package com.tokopedia.challenges.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -60,14 +61,11 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining.setVisibility(View.GONE);
         tvStatus.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Completed);
+            Utils.setTextViewBackground(context, tvStatus, "Completed");
+//            tvStatus.setTextAppearance(context, R.style.TextView_Completed);
             imgShare.setVisibility(View.GONE);
-        } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Approved);
-        } else if (challengesResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Declined);
-        } else if (challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Waiting);
+        } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
+            Utils.setTextViewBackground(context, tvStatus, "Participated");
         } else {
             RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
             tvTimeRemaining.setText(daysFormatter.getRemainingDays() + " days Remaining");

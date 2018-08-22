@@ -322,7 +322,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void setCountDownView(String participatedText) {
-        if (participatedText.equals("")) {
+        if (TextUtils.isEmpty(participatedText)) {
             try {
                 countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
                 countDownView.start(timerProgressBar);
@@ -332,7 +332,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             timerView.setVisibility(View.VISIBLE);
             tvParticipated.setVisibility(View.GONE);
         } else {
-            tvParticipated.setText(participatedText);
+            Utils.setTextViewBackground(getContext(), tvParticipated, participatedText);
         }
     }
 
@@ -416,7 +416,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     public void showBuzzPointsText() {
-        buzzPointText =((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
+        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
             tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointText));

@@ -1,7 +1,11 @@
 package com.tokopedia.challenges.view.utils;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.TextView;
 
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.challengesubmission.Awards;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -183,4 +187,23 @@ public class Utils {
             return finalPosition;
     }
 
+    public static void setTextViewBackground(Context context, TextView tvStatus, String status) {
+        tvStatus.setText(status);
+        if ("Approved".equalsIgnoreCase(status) || "Participated".equalsIgnoreCase(status)) {
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
+        } else if ("Declined".equalsIgnoreCase(status)) {
+            tvStatus.setText("Rejected");
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.declined_red_textcolor));
+
+        } else if ("Waiting".equalsIgnoreCase(status)) {
+            tvStatus.setText("Pending");
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
+        } else if ("Completed".equalsIgnoreCase(status)) {
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
+        }
+    }
 }

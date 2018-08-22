@@ -188,19 +188,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
 
     public void setApprovedView(String approveText) {
-        approvedView.setText(approveText);
-        if (isPastChallenge) {
-            approvedView.setTextAppearance(getContext(), R.style.TextView_Completed);
-        } else if ("Approved".equalsIgnoreCase(approveText)) {
-            approvedView.setTextAppearance(getContext(), R.style.TextView_Approved);
+        Utils.setTextViewBackground(getContext(), approvedView, approveText);
+        if ("Approved".equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
         } else if ("Declined".equalsIgnoreCase(approveText)) {
-            approvedView.setTextAppearance(getContext(), R.style.TextView_Declined);
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
-        } else if ("Waiting".equalsIgnoreCase(approveText)) {
-            approvedView.setTextAppearance(getContext(), R.style.TextView_Waiting);
         }
     }
 

@@ -63,23 +63,19 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         tvTitle.setText(challengesResult.getTitle());
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
         //imgLikes
-        tvStatus.setText(submissionsResult.getStatus());
+//        tvStatus.setText(submissionsResult.getStatus());
 
+        Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         if ("Approved".equalsIgnoreCase(submissionsResult.getStatus())) {
             imgLikes.setVisibility(View.VISIBLE);
-            tvStatus.setTextAppearance(context, R.style.TextView_Approved);
-            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
-            tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
             } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
             }
         } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Declined);
             imgShare.setVisibility(View.GONE);
         } else if ("Waiting".equalsIgnoreCase(submissionsResult.getStatus())) {
-            tvStatus.setTextAppearance(context, R.style.TextView_Waiting);
         }
 
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);

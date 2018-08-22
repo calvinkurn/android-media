@@ -58,6 +58,7 @@
             android:id="@+id/tv_time_remaining"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_16"
             app:corners="20"
             app:layout_constraintRight_toRightOf="parent"

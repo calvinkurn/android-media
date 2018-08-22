@@ -118,6 +118,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                     getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
                     getTermsNCondition(challengeResult.getId());
+                    loadCountdownView(challengeResult, false);
                     loadSubmissions();
                 }
             });
@@ -137,16 +138,10 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             getView().setCountDownView("Completed");
             getWinnerList();
         } else {
-            if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null) {
-                if (challengeResult.getMe().getSubmissionCounts().getApproved() > 0) {
-                    getView().setCountDownView("Approved");
-                } else if (challengeResult.getMe().getSubmissionCounts().getDeclined() > 0) {
-                    getView().setCountDownView("Declined");
-                } else if (challengeResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-                    getView().setCountDownView("Pending");
-                } else {
-                    getView().setCountDownView("");
-                }
+            if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
+                    && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
+                    || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0)) {
+                    getView().setCountDownView("Participated");
             } else {
                 getView().setCountDownView("");
             }
