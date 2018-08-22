@@ -94,6 +94,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     TextView tvHashTag;
     TextView tvTnCText;
     WebView longDescription;
+    TextView submitPhoto;
     private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
 
@@ -199,7 +200,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         flHeader = view.findViewById(R.id.fl_header);
         mainContent = view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
-
+        submitPhoto = view.findViewById(R.id.submit_photo);
         baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
         seeMoreButtonTnc.setOnClickListener(this);
@@ -340,6 +341,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             } else if (participatedText.equalsIgnoreCase("Pending")) {
                 setTextStatus(getResources().getColor(R.color.pending_yellow_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_yellow_radius_huge), tvParticipated);
             } else if (participatedText.equalsIgnoreCase("Declined")) {
+                submitPhoto.setText("Resubmit Other Content");
                 setTextStatus(getResources().getColor(R.color.declined_red_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_red_radius_huge), tvParticipated);
             } else {
                 setTextStatus(getResources().getColor(R.color.completed_gray_textcolor), getResources().getDrawable(R.drawable.bg_round_solid_gray_radius_huge), tvParticipated);
@@ -468,9 +470,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
-//            ((ChallengesModuleRouter) (getActivity().getApplication())).generateBranchUrlForChallenge(getActivity(),ChallengesUrl.AppLink.CHALLENGES_DETAILS,challengeResult.getTitle(),challengeResult.getThumbnailUrl(),
-//                    challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(),
-//                    challengeResult.getSharing().getMetaTags().getOgImage());
         }
 
     }

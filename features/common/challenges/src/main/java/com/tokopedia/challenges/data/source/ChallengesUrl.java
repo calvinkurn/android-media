@@ -43,6 +43,7 @@ public class ChallengesUrl {
 
     public interface Me {
         String SUBMISSIONS = "private/me/submissions?sort=recent";
+        String SUBMISSIONS_NOCACHE = "/private/me/submissions/nocache?sort=recent";
     }
 
     public interface Upload {

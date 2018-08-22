@@ -34,6 +34,7 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
 
     @Override
     protected List<RestRequest> buildRequest() {
+        Utils.FROMNOCACHE = true;
         List<RestRequest> tempRequest = new ArrayList<>();
 
         boolean setLiked = requestParams.getBoolean(IS_LIKED, false);

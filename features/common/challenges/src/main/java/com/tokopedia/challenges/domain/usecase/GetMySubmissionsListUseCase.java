@@ -7,6 +7,7 @@ import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 
@@ -17,8 +18,8 @@ import javax.inject.Inject;
 
 public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUseCase {
 
-    private int start=0;
-    private int size=10;
+    private int start = 0;
+    private int size = 10;
 
     @Inject
     public GetMySubmissionsListUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
@@ -34,8 +35,12 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start="+start+"&size="+size, SubmissionResponse.class)
+        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start=" + start + "&size=" + size;
+        if (Utils.FROMNOCACHE) {
+            url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_NOCACHE + "&status=all&start=" + start + "&size=" + size;
+            Utils.FROMNOCACHE = false;
+        }
+        RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class)
                 .build();
 
         tempRequest.add(restRequest1);

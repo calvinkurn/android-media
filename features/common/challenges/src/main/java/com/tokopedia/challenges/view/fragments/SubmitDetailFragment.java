@@ -51,10 +51,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Inject
     SubmitDetailPresenter presenter;
-    private SubmissionResult model;
+    private SubmissionResult submissionResult;
     private TextView participateTextView;
     private String submissionId;
     private View progressBarLayout;
+    private boolean fromSubmission;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -94,13 +95,18 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
         isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
         setClickListeners();
-        model = getArguments().getParcelable("submissionsResult");
-        if (model == null) {
+        submissionResult = getArguments().getParcelable("submissionsResult");
+        fromSubmission = getArguments().getBoolean("fromSubmission");
+        if (submissionResult == null) {
             submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
             presenter.getSubmissionDetails(submissionId);
         } else {
             hidProgressBar();
-            presenter.setDataInFields(model);
+            presenter.setDataInFields(submissionResult);
+            if(fromSubmission){
+                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
+
+            }
         }
 
 
@@ -130,14 +136,14 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
 
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), model.getSharing().getMetaTags().getOgUrl(), model.getTitle(), model.getSharing().getMetaTags().getOgUrl(), model.getSharing().getMetaTags().getOgTitle(), model.getSharing().getMetaTags().getOgImage(), model.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, model.getId()), false);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
 
         });
 
         likeBtn.setOnClickListener(v -> {
-            presenter.likeBtnClick(model);
-            if (model.getMe() != null) {
-                setLikes(!model.getMe().isLiked());
+            presenter.likeBtnClick(submissionResult);
+            if (submissionResult.getMe() != null) {
+                setLikes(!submissionResult.getMe().isLiked());
             }
         });
     }
@@ -207,7 +213,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             this.participateTextView.setVisibility(View.GONE);
         } else {
             this.participateTitle.setText(participateTitle);
-            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, model.getCollection().getId());
+            String applink = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
             this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
 
         }
@@ -240,7 +246,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setLikes(boolean isLiked) {
 
-        model.getMe().setLiked(isLiked);
+        submissionResult.getMe().setLiked(isLiked);
         if (isLiked) {
             updateLikeCount(true);
             likeBtn.setImageResource(R.drawable.ic_wishlist_checked);
@@ -254,12 +260,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        presenter.sendBuzzPointEvent(model.getId());
+        presenter.sendBuzzPointEvent(submissionResult.getId());
     }
 
     @Override
     public void setSubmittResult(SubmissionResult submissionResult) {
-        model = submissionResult;
+        this.submissionResult = submissionResult;
     }
 
     @Override

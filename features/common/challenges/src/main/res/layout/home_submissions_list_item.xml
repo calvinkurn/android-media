@@ -74,6 +74,7 @@
             android:layout_marginLeft="@dimen/dp_12"
             android:layout_marginTop="@dimen/dp_12"
             android:clickable="true"
+            android:visibility="gone"
             android:src="@drawable/ic_wishlist_unchecked"
             app:layout_constraintLeft_toRightOf="@+id/img_share"
             app:layout_constraintTop_toBottomOf="@+id/view_line" />

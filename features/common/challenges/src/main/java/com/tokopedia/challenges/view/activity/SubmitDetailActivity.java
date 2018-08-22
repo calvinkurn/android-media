@@ -47,9 +47,11 @@ public class SubmitDetailActivity extends BaseActivity {
     protected Fragment getNewFragment() {
         SubmissionResult model = getIntent().getParcelableExtra("submissionsResult");
         String submissionId = getIntent().getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID);
+        boolean fromSubmission = getIntent().getBooleanExtra("fromSubmission",false);
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
         arg.putParcelable("submissionsResult", model);
+        arg.putBoolean("fromSubmission",fromSubmission);
         arg.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
         fragment.setArguments(arg);
         return fragment;
