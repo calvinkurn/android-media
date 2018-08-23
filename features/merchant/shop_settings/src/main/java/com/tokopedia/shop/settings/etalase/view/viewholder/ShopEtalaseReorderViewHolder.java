@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.touchhelper.OnStartDragListener;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.common.util.ShopDateUtil;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
@@ -38,16 +39,20 @@ public class ShopEtalaseReorderViewHolder extends AbstractViewHolder<ShopEtalase
     public void bind(ShopEtalaseViewModel shopEtalaseViewModel) {
         tvEtalaseName.setText(shopEtalaseViewModel.getName());
         tvEtalaseCount.setText(tvEtalaseCount.getContext().getString(R.string.x_products, shopEtalaseViewModel.getCount()));
-
-        handler.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener.onStartDrag(ShopEtalaseReorderViewHolder.this);
+        if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
+            handler.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                        onStartDragListener.onStartDrag(ShopEtalaseReorderViewHolder.this);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+            handler.setVisibility(View.VISIBLE);
+        } else {
+            handler.setVisibility(View.GONE);
+        }
     }
 
 }

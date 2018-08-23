@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.etalase.view.adapter.factory;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleViewModel;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
 
 /**
@@ -8,4 +9,5 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
  */
 public abstract class BaseShopEtalaseFactory extends BaseAdapterTypeFactory {
     public abstract int type(ShopEtalaseViewModel model);
+    public abstract int type(ShopEtalaseTitleViewModel model);
 }

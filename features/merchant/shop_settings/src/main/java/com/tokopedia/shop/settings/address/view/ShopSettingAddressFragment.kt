@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -86,6 +87,9 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     override fun onErrorLoadAddresses(throwable: Throwable?) {
+        hideLoading()
+        val message = ErrorHandler.getErrorMessage(context, throwable)
+        NetworkErrorHelper.showEmptyState(context, view, message) { presenter.getShopAddress() }
     }
 
     override fun onSuccessDeleteAddress(string: String?) {

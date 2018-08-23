@@ -12,7 +12,7 @@ import com.tokopedia.shop.common.constant.ShopStatusLevelDef;
  * Created by hendry on 08/08/18.
  */
 
-public class ShopBasicDataModel implements Parcelable{
+public class ShopBasicDataModel implements Parcelable {
 
     @SerializedName("domain")
     @Expose
@@ -61,11 +61,11 @@ public class ShopBasicDataModel implements Parcelable{
     }
 
     public String getCloseSchedule() {
-        return closeSchedule.startsWith("-") ? "":closeSchedule;
+        return closeSchedule.startsWith("-") ? "" : closeSchedule;
     }
 
     public String getOpenSchedule() {
-        return openSchedule.startsWith("-") ? "":openSchedule;
+        return openSchedule.startsWith("-") ? "" : openSchedule;
     }
 
     public String getTagline() {
@@ -92,11 +92,25 @@ public class ShopBasicDataModel implements Parcelable{
         return expired;
     }
 
-    public boolean isOpen() { return status == ShopStatusDef.OPEN; }
-    public boolean isClosed() { return status == ShopStatusDef.CLOSED; }
-    public boolean isRegular() { return level == ShopStatusLevelDef.LEVEL_REGULAR; }
-    public boolean isGold() { return level == ShopStatusLevelDef.LEVEL_GOLD; }
-    public boolean isOfficialStore() { return level == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE; }
+    public boolean isOpen() {
+        return status == ShopStatusDef.OPEN;
+    }
+
+    public boolean isClosed() {
+        return status == ShopStatusDef.CLOSED;
+    }
+
+    public boolean isRegular() {
+        return level == ShopStatusLevelDef.LEVEL_REGULAR;
+    }
+
+    public boolean isGold() {
+        return level == ShopStatusLevelDef.LEVEL_GOLD;
+    }
+
+    public boolean isOfficialStore() {
+        return level == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE;
+    }
 
     @Override
     public int describeContents() {

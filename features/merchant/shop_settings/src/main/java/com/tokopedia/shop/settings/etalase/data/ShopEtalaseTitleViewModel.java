@@ -1,23 +1,21 @@
 package com.tokopedia.shop.settings.etalase.data;
 
 import android.os.Parcel;
-import android.os.Parcelable;
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.BaseShopEtalaseFactory;
 
 /**
  * Created by hendry on 20/08/18.
  */
-public class ShopEtalaseViewModel extends BaseShopEtalaseViewModel{
-    public ShopEtalaseViewModel(){
+public class ShopEtalaseTitleViewModel extends BaseShopEtalaseViewModel{
+    public ShopEtalaseTitleViewModel(String name){
         super();
+        setName(name);
     }
 
-    public ShopEtalaseViewModel(ShopEtalaseModel shopEtalaseModel, boolean isPrimaryEtalase){
-        super(shopEtalaseModel, isPrimaryEtalase);
+    public ShopEtalaseTitleViewModel(Parcel in) {
+        super(in);
     }
 
     @Override
@@ -25,14 +23,10 @@ public class ShopEtalaseViewModel extends BaseShopEtalaseViewModel{
         return typeFactory.type(this);
     }
 
-    public ShopEtalaseViewModel(Parcel in) {
-        super(in);
-    }
-
     public static final Creator<BaseShopEtalaseViewModel> CREATOR = new Creator<BaseShopEtalaseViewModel>() {
         @Override
         public BaseShopEtalaseViewModel createFromParcel(Parcel source) {
-            return new ShopEtalaseViewModel(source);
+            return new ShopEtalaseTitleViewModel(source);
         }
 
         @Override

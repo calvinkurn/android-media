@@ -77,6 +77,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
                 if (TextUtils.isEmpty(text)){
                     isValid = false
                     text_input_layout_title.error = getString(R.string.shop_etalase_title_required)
+                //TODO ignore case?
                 } else if (text in existedEtalase){
                     isValid = false
                     text_input_layout_title.error = getString(R.string.shop_etalase_title_already_exist)

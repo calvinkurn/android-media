@@ -32,6 +32,9 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
     @Inject
     public UpdateShopScheduleUseCase(@ApplicationContext Context context) {
         graphQLUseCase = new SingleGraphQLUseCase<CloseShopScheduleMutation>(context, CloseShopScheduleMutation.class) {
+
+            public static final String MAX_CLOSE_END = "253402275599"; //Epoch for 31 Dec 999
+
             @Override
             protected int getGraphQLRawResId() {
                 return R.raw.gql_mutation_close_shop_schedule;
@@ -43,26 +46,28 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
                 int action = requestParams.getInt(ACTION, 0);
                 variables.put(ACTION, action);
 
-                String closeStart = requestParams.getString(CLOSE_START, "");
-                if (!TextUtils.isEmpty(closeStart)) {
-                    variables.put(CLOSE_START, String.valueOf (Long.parseLong(closeStart) / 1000L));
-                }
                 String closeEnd = requestParams.getString(CLOSE_END, "");
                 if (!TextUtils.isEmpty(closeEnd)) {
-                    variables.put(CLOSE_END, String.valueOf (Long.parseLong(closeEnd) / 1000L));
+                    variables.put(CLOSE_END, String.valueOf(Long.parseLong(closeEnd) / 1000L));
                 }
-                if (action == ShopScheduleActionDef.CLOSED) {
-                    if (!TextUtils.isEmpty(closeStart) &&
-                            !TextUtils.isEmpty(closeEnd)) {
-                        variables.put(CLOSE_NOW, false);
-                    } else {
-                        variables.put(CLOSE_NOW, true);
+
+                boolean closeNow = requestParams.getBoolean(CLOSE_NOW, false);
+                variables.put(CLOSE_NOW, closeNow);
+
+                if (closeNow) {
+                    // closeNow true must have end date; the business currently does not allow empty end date
+                    if (TextUtils.isEmpty(closeEnd)) {
+                        variables.put(CLOSE_END, MAX_CLOSE_END);
+                    }
+                } else {
+                    String closeStart = requestParams.getString(CLOSE_START, "");
+                    if (!TextUtils.isEmpty(closeStart)) {
+                        variables.put(CLOSE_START, String.valueOf(Long.parseLong(closeStart) / 1000L));
                     }
                 }
+
                 String closeNote = requestParams.getString(CLOSE_NOTE, "");
-                if (!TextUtils.isEmpty(closeNote)) {
-                    variables.put(CLOSE_NOTE, closeNote);
-                }
+                variables.put(CLOSE_NOTE, closeNote);
                 return variables;
             }
         };
@@ -72,7 +77,7 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
     public Observable<String> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLSuccessMapper());
-                //TODO remove below, just for test.
+        //TODO remove below, just for test.
 //                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
 //                    @Override
 //                    public Observable<? extends String> call(Throwable throwable) {
@@ -86,11 +91,13 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
 
 
     public static RequestParams createRequestParams(@ShopScheduleActionDef int action,
+                                                    boolean closeNow,
                                                     String closeStart,
                                                     String closeEnd,
                                                     String closeNote) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(ACTION, action);
+        requestParams.putBoolean(CLOSE_NOW, closeNow);
         requestParams.putString(CLOSE_START, closeStart);
         requestParams.putString(CLOSE_END, closeEnd);
         requestParams.putString(CLOSE_NOTE, closeNote);

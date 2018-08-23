@@ -4,6 +4,7 @@ query ShopShowcases($withDefault: Boolean) {
       id
       name
       count
+      type
     }
     error {
       message

@@ -27,6 +27,16 @@ public class ShopDateUtil {
         return now.getTime();
     }
 
+    public static Date getTomorrowDate() {
+        return getCurrentDateWithOffset(1);
+    }
+
+    public static Date getCurrentDateWithOffset(int dayOffset) {
+        Calendar cal = getCurrentCalendar();
+        cal.add(Calendar.DATE, dayOffset);
+        return cal.getTime();
+    }
+
     public static Date stringToDate(String format, String input) {
         DateFormat fromFormat = new SimpleDateFormat(format, DEFAULT_LOCALE);
         try {

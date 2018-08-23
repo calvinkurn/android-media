@@ -56,12 +56,13 @@ public class UpdateShopShedulePresenter extends BaseDaggerPresenter<UpdateShopSh
     }
 
     public void updateShopSchedule(@ShopScheduleActionDef int action,
+                                   boolean closeNow,
                                    String closeStart,
                                    String closeEnd,
                                    String closeNote) {
         updateShopScheduleUseCase.unsubscribe();
         updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.createRequestParams(
-                action, closeStart, closeEnd, closeNote
+                action, closeNow, closeStart, closeEnd, closeNote
         ), createUpdateShopScheduleSubscriber());
     }
 

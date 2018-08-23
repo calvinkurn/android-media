@@ -28,23 +28,25 @@ import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
+import com.tokopedia.shop.settings.etalase.data.BaseShopEtalaseViewModel;
+import com.tokopedia.shop.settings.etalase.data.ShopEtalaseTitleViewModel;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseAddEditActivity;
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory;
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter;
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder;
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
-import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 
-public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<ShopEtalaseViewModel, ShopEtalaseFactory>
+public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<BaseShopEtalaseViewModel, ShopEtalaseFactory>
         implements ShopSettingEtalaseListPresenter.View, ShopEtalaseViewHolder.OnShopEtalaseViewHolderListener {
 
     private static final int REQUEST_CODE_ADD_ETALASE = 605;
@@ -101,20 +103,22 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Shop
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
+        // if not etalase for reorder, show add only
+        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0 ||
+                !hasAnyCustomEtalase(shopEtalaseViewModels)) {
             inflater.inflate(R.menu.menu_shop_etalase_list_no_data, menu);
-        } else {
+        } else { // if there is etalase with reorder, will show reorder icon.
             inflater.inflate(R.menu.menu_shop_etalase_list, menu);
         }
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItemReorder = menu.findItem(R.id.menu_reorder);
-        if (menuItemReorder != null) {
-            menuItemReorder.setVisible(true);
+    private boolean hasAnyCustomEtalase(@NonNull List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModelList) {
+            if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
+                return true;
+            }
         }
-        super.onPrepareOptionsMenu(menu);
+        return false;
     }
 
     @Override
@@ -126,7 +130,16 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Shop
             if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
                 return true;
             }
-            onShopSettingsEtalaseFragmentListener.goToReorderFragment(shopEtalaseViewModels);
+            ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelListCustomOnly = new ArrayList<>();
+            for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModels) {
+                if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
+                    shopEtalaseViewModelListCustomOnly.add(shopEtalaseViewModel);
+                }
+            }
+            if (shopEtalaseViewModelListCustomOnly.size() == 0) {
+                return true;
+            }
+            onShopSettingsEtalaseFragmentListener.goToReorderFragment(shopEtalaseViewModelListCustomOnly);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -193,28 +206,43 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Shop
 
     @NonNull
     @Override
-    protected BaseListAdapter<ShopEtalaseViewModel, ShopEtalaseFactory> createAdapterInstance() {
+    protected BaseListAdapter<BaseShopEtalaseViewModel, ShopEtalaseFactory> createAdapterInstance() {
         shopEtalaseAdapter = new ShopEtalaseAdapter(getAdapterTypeFactory(), this);
         return shopEtalaseAdapter;
     }
 
     @Override
-    public void onItemClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
-        goToEditEtalase(shopEtalaseViewModel);
+    public void onItemClicked(BaseShopEtalaseViewModel baseShopEtalaseViewModel) {
+        if (baseShopEtalaseViewModel instanceof ShopEtalaseViewModel) {
+            goToEditEtalase((ShopEtalaseViewModel) baseShopEtalaseViewModel);
+        }
     }
 
     private void goToEditEtalase(ShopEtalaseViewModel shopEtalaseViewModel) {
-        //TODO string etalase
         Intent intent = ShopSettingsEtalaseAddEditActivity.createIntent(getContext(), true,
-                new ArrayList<>(), shopEtalaseViewModel);
+                getEtalaseIdList(), shopEtalaseViewModel);
         startActivityForResult(intent, REQUEST_CODE_EDIT_ETALASE);
     }
 
     private void goToAddEtalase() {
-        //TODO string etalase
         Intent intent = ShopSettingsEtalaseAddEditActivity.createIntent(getContext(),
-                false, new ArrayList<>(), new ShopEtalaseViewModel());
+                false, getEtalaseIdList(), new ShopEtalaseViewModel());
         startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE);
+    }
+
+    private ArrayList<String> getEtalaseIdList() {
+        ArrayList<String> etalaseIdList = new ArrayList<>();
+        List<BaseShopEtalaseViewModel> data = shopEtalaseAdapter.getData();
+
+        if (data != null) {
+            for (BaseShopEtalaseViewModel shopEtalaseViewModel : data) {
+                String id = shopEtalaseViewModel.getId();
+                if (!TextUtils.isEmpty(id)) {
+                    etalaseIdList.add(id);
+                }
+            }
+        }
+        return etalaseIdList;
     }
 
     @Override
@@ -275,24 +303,33 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Shop
     public void onSearchSubmitted(String text) {
         shopEtalaseAdapter.clearAllElements();
         isLoadingInitialData = true;
-        ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels;
-        if (this.shopEtalaseViewModels == null) {
-            shopEtalaseViewModels = new ArrayList<>();
-        } else if (this.shopEtalaseViewModels.size() > 0 &&
-                !TextUtils.isEmpty(text)) {
+        boolean flagHasAddedDefaultEtalase = false;
+        boolean flagHasAddedOtherEtalase = false;
+        ArrayList<BaseShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
+        if (this.shopEtalaseViewModels.size() > 0) {
             String textLowerCase = text.toLowerCase();
-            shopEtalaseViewModels = new ArrayList<>();
             for (ShopEtalaseViewModel shopEtalaseViewModel : this.shopEtalaseViewModels) {
-                if (shopEtalaseViewModel.getName().toLowerCase().contains(textLowerCase) ) {
+                if (shopEtalaseViewModel.getName().toLowerCase().contains(textLowerCase)) {
+                    if (shopEtalaseViewModel.isPrimaryEtalase()) {
+                        if (!flagHasAddedDefaultEtalase) {
+                            shopEtalaseViewModels.add(new ShopEtalaseTitleViewModel(getString(R.string.primary_etalase)));
+                            flagHasAddedDefaultEtalase = true;
+                        }
+                    } else { // custom
+                        if (!flagHasAddedOtherEtalase) {
+                            shopEtalaseViewModels.add(new ShopEtalaseTitleViewModel(getString(R.string.other_etalase)));
+                            flagHasAddedOtherEtalase = true;
+                        }
+                    }
                     shopEtalaseViewModels.add(shopEtalaseViewModel);
                 }
             }
-        } else {
-            shopEtalaseViewModels = this.shopEtalaseViewModels;
         }
         renderList(shopEtalaseViewModels, false);
         showSearchViewWithDataSizeCheck();
     }
+
+
 
     @Override
     public void onSearchTextChanged(String text) {
@@ -324,8 +361,8 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Shop
     @Override
     public void onSuccessDeleteShopEtalase(String successMessage) {
         hideSubmitLoading();
-        String deleteMessage = TextUtils.isEmpty(shopEtalaseNameToDelete)?
-                getString(R.string.etalase_success_delete):
+        String deleteMessage = TextUtils.isEmpty(shopEtalaseNameToDelete) ?
+                getString(R.string.etalase_success_delete) :
                 getString(R.string.etalase_x_success_delete, shopEtalaseNameToDelete);
         ToasterNormal.make(getActivity().findViewById(android.R.id.content),
                 deleteMessage, BaseToaster.LENGTH_LONG)

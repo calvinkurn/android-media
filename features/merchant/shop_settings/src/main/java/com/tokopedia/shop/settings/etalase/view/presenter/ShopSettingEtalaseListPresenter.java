@@ -20,6 +20,7 @@ import rx.Subscriber;
 public class ShopSettingEtalaseListPresenter extends BaseDaggerPresenter<ShopSettingEtalaseListPresenter.View> {
     private GetShopEtalaseUseCase getShopEtalaseUseCase;
     private DeleteShopEtalaseUseCase deleteShopEtalaseUseCase;
+    public static final int PRIMARY_ETALASE_LIMIT = 5;
 
     public interface View extends CustomerView {
         void onSuccessGetShopEtalase(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels);
@@ -55,8 +56,11 @@ public class ShopSettingEtalaseListPresenter extends BaseDaggerPresenter<ShopSet
             public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
                 if (isViewAttached()) {
                     ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
+                    int countPrimaryEtalase = 0;
                     for (ShopEtalaseModel shopEtalaseModel: shopEtalaseModels) {
-                        shopEtalaseViewModels.add(new ShopEtalaseViewModel (shopEtalaseModel));
+                        shopEtalaseViewModels.add(new ShopEtalaseViewModel (shopEtalaseModel,
+                                countPrimaryEtalase < PRIMARY_ETALASE_LIMIT));
+                        countPrimaryEtalase++;
                     }
                     getView().onSuccessGetShopEtalase(shopEtalaseViewModels);
                 }

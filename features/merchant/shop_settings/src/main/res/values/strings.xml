@@ -97,4 +97,6 @@
     <string name="x_products">%1$d Produk</string>
     <string name="etalase_success_delete">Etalase berhasil dihapus</string>
     <string name="etalase_x_success_delete">Etalase %1$s berhasil dihapus</string>
+    <string name="primary_etalase">Etalase Utama</string>
+    <string name="other_etalase">Etalase Lainnya</string>
 </resources>

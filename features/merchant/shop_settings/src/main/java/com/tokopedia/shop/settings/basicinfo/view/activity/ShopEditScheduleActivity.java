@@ -80,7 +80,19 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         if (savedInstanceState != null) {
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE);
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE);
+        } else {
+            if (shopBasicDataModel != null) {
+                String closeSchedule = shopBasicDataModel.getCloseSchedule();
+                if (!TextUtils.isEmpty(closeSchedule)) {
+                    selectedStartCloseUnixTimeMs = Long.parseLong(closeSchedule) * 1000L;
+                }
+                String openSchedule = shopBasicDataModel.getOpenSchedule();
+                if (!TextUtils.isEmpty(openSchedule)) {
+                    selectedEndCloseUnixTimeMs = Long.parseLong(openSchedule) * 1000L;
+                }
+            }
         }
+
         super.onCreate(savedInstanceState);
 
         DaggerShopSettingsComponent.builder()
@@ -104,6 +116,16 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 if (isChecked) {
                     labelClosed.setChecked(false);
                     labelStartClose.setEnabled(true);
+                    // if user has select the date, close it
+                    if (scheduleSwitch.isChecked() &&
+                            selectedStartCloseUnixTimeMs > 0 &&
+                            selectedStartCloseUnixTimeMs <= System.currentTimeMillis()) {
+                        selectedStartCloseUnixTimeMs = 0;
+                        selectedEndCloseUnixTimeMs = 0;
+                        labelStartClose.setContent(null);
+                        labelEndClose.setContent(null);
+                        scheduleSwitch.setChecked(false);
+                    }
                 }
             }
         });
@@ -113,6 +135,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 if (isChecked) {
                     labelOpen.setChecked(false);
                     labelStartClose.setEnabled(false);
+                    scheduleSwitch.setChecked(true);
                     setStartCloseDate(ShopDateUtil.getCurrentDate());
                 }
             }
@@ -137,7 +160,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         labelStartClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date minDate = ShopDateUtil.getCurrentDate();
+                Date minDate = ShopDateUtil.getTomorrowDate();
                 Date selectedDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTimeMs);
                 showStartDatePickerDialog(selectedDate, minDate);
             }
@@ -153,9 +176,9 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 }
                 Date selectedDate;
                 if (selectedEndCloseUnixTimeMs == 0) {
-                    selectedDate = ShopDateUtil.unixToDate(selectedEndCloseUnixTimeMs);
-                } else {
                     selectedDate = ShopDateUtil.unixToDate(System.currentTimeMillis());
+                } else {
+                    selectedDate = ShopDateUtil.unixToDate(selectedEndCloseUnixTimeMs);
                 }
                 showEndDatePickerDialog(selectedDate, minDate);
             }
@@ -212,7 +235,11 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         selectedEndCloseUnixTimeMs = date.getTime();
         labelEndClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
         if (selectedStartCloseUnixTimeMs == 0) {
-            setStartCloseDate(ShopDateUtil.getCurrentDate());
+            if (labelOpen.isChecked()) {
+                setStartCloseDate(ShopDateUtil.getTomorrowDate());
+            } else {
+                setStartCloseDate(ShopDateUtil.getCurrentDate());
+            }
         }
     }
 
@@ -227,16 +254,17 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
 
     private void onSaveButtonClicked() {
         showSubmitLoading(getString(R.string.title_loading));
-        @ShopScheduleActionDef int shopAction =
-                labelOpen.isChecked() ?
-                        ShopScheduleActionDef.OPEN :
-                        ShopScheduleActionDef.CLOSED;
         boolean isScheduleSwitch = scheduleSwitch.isChecked();
+        @ShopScheduleActionDef int shopAction =
+                labelClosed.isChecked() ?
+                        ShopScheduleActionDef.CLOSED :
+                        ShopScheduleActionDef.OPEN;
         long closeStart = isScheduleSwitch ? selectedStartCloseUnixTimeMs : 0;
         long closeEnd = isScheduleSwitch ? selectedEndCloseUnixTimeMs : 0;
         String closeNote = isScheduleSwitch ? etShopCloseNote.getText().toString() : "";
         updateShopShedulePresenter.updateShopSchedule(
                 shopAction,
+                labelClosed.isChecked(),
                 closeStart == 0 ? null : String.valueOf(closeStart),
                 closeEnd == 0 ? null : String.valueOf(closeEnd),
                 closeNote);
@@ -313,7 +341,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         String shopCloseSchedule = shopBasicDataModel.getCloseSchedule();
         String shopOpenSchedule = shopBasicDataModel.getOpenSchedule();
         if (!TextUtils.isEmpty(shopCloseSchedule) ||
-                !TextUtils.isEmpty(shopCloseSchedule)) {
+                !TextUtils.isEmpty(shopOpenSchedule)) {
             scheduleSwitch.setChecked(true);
             if (!TextUtils.isEmpty(shopCloseSchedule)) {
                 long shopCloseScheduleUnixMs = Long.parseLong(shopCloseSchedule) * 1000L;

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.graphql.domain.usecase.base;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
@@ -51,13 +52,15 @@ public abstract class SingleGraphQLUseCase<T> extends UseCase<T> {
             @Override
             public Observable<T> call(GraphqlResponse graphqlResponse) {
                 T data = graphqlResponse.getData(tClass);
-                if (data == null) {
-                    List<GraphqlError> graphqlErrorList = graphqlResponse.getError(tClass);
-                    if (graphqlErrorList != null && graphqlErrorList.size() > 0) {
-                        GraphqlError graphqlError = graphqlErrorList.get(0);
-                        return Observable.error(new MessageErrorException(graphqlError.getMessage()));
+                List<GraphqlError> graphqlErrorList = graphqlResponse.getError(tClass);
+                if (graphqlErrorList != null && graphqlErrorList.size() > 0) {
+                    GraphqlError graphqlError = graphqlErrorList.get(0);
+                    String errorMessage = graphqlError.getMessage();
+                    if (TextUtils.isEmpty(errorMessage)) {
+                        return Observable.just(data);
+                    } else {
+                        return Observable.error(new MessageErrorException(errorMessage));
                     }
-                    return Observable.just(null);
                 } else {
                     return Observable.just(data);
                 }
