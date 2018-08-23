@@ -64,6 +64,10 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
 
     private PurchaseTabAdapter adapter;
 
+    public static Intent newInstance(Context context) {
+        return new Intent(context, PurchaseActivity.class);
+    }
+
     @DeepLink(ApplinkConst.ORDER_LIST)
     public static Intent getIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
