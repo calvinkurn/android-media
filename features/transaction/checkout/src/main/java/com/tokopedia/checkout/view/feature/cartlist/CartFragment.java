@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -367,6 +368,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onShopItemCheckChanged(int itemPosition, boolean checked) {
+        cartAdapter.setShopSelected(itemPosition, checked);
+        onNeedUpdateViewItem(itemPosition);
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+    }
+
+    @Override
     public void onCartItemRemarkEditChange(CartItemData cartItemData, String remark, int position, int parentPosition) {
 
     }
@@ -508,6 +516,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onQuantityChanged() {
 
+    }
+
+    @Override
+    public void onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
+        boolean needToUpdateParent = cartAdapter.setItemSelected(position, parentPosition, checked);
+        if (needToUpdateParent) {
+            onNeedUpdateViewItem(parentPosition);
+        }
+        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
     }
 
     @Override
@@ -1145,5 +1162,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onStart() {
         super.onStart();
         cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+    }
+
+    public void onNeedUpdateViewItem(final int position) {
+        if (cartRecyclerView.isComputingLayout()) {
+            cartRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    cartAdapter.notifyItemChanged(position);
+                }
+            });
+        } else {
+            cartAdapter.notifyItemChanged(position);
+        }
     }
 }

@@ -25,6 +25,7 @@ public class CartItemHolderData implements Parcelable {
     private String errorFormItemValidationMessage;
     private boolean editableRemark;
     private boolean stateRemarkExpanded;
+    private boolean selected;
 
     public CartItemData getCartItemData() {
         return cartItemData;
@@ -33,7 +34,6 @@ public class CartItemHolderData implements Parcelable {
     public void setCartItemData(CartItemData cartItemData) {
         this.cartItemData = cartItemData;
     }
-
 
     public int getErrorFormItemValidationType() {
         if (cartItemData.getUpdatedData().getRemark().length() > cartItemData.getUpdatedData().getMaxCharRemark()) {
@@ -79,6 +79,14 @@ public class CartItemHolderData implements Parcelable {
         this.stateRemarkExpanded = stateRemarkExpanded;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     public CartItemHolderData() {
     }
 
@@ -95,6 +103,7 @@ public class CartItemHolderData implements Parcelable {
         dest.writeString(this.errorFormItemValidationMessage);
         dest.writeByte(this.editableRemark ? (byte) 1 : (byte) 0);
         dest.writeByte(this.stateRemarkExpanded ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
     }
 
     private CartItemHolderData(Parcel in) {
@@ -103,6 +112,7 @@ public class CartItemHolderData implements Parcelable {
         this.errorFormItemValidationMessage = in.readString();
         this.editableRemark = in.readByte() != 0;
         this.stateRemarkExpanded = in.readByte() != 0;
+        this.selected = in.readByte() != 0;
     }
 
     public static final Creator<CartItemHolderData> CREATOR = new Creator<CartItemHolderData>() {

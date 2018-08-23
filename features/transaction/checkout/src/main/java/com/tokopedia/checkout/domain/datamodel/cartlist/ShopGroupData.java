@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.cartlist;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
 
 public class ShopGroupData implements Parcelable {
 
-    private List<CartItemData> cartItemDataList = new ArrayList<>();
+    private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
     private boolean isError;
     private String errorMessage;
     private String shopName;
@@ -30,7 +32,7 @@ public class ShopGroupData implements Parcelable {
     }
 
     protected ShopGroupData(Parcel in) {
-        cartItemDataList = in.createTypedArrayList(CartItemData.CREATOR);
+        cartItemHolderDataList = in.createTypedArrayList(CartItemHolderData.CREATOR);
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         shopName = in.readString();
@@ -42,7 +44,7 @@ public class ShopGroupData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(cartItemDataList);
+        dest.writeTypedList(cartItemHolderDataList);
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeString(shopName);
@@ -69,12 +71,20 @@ public class ShopGroupData implements Parcelable {
         }
     };
 
-    public List<CartItemData> getCartItemDataList() {
-        return cartItemDataList;
+    public List<CartItemHolderData> getCartItemDataList() {
+        return cartItemHolderDataList;
     }
 
     public void setCartItemDataList(List<CartItemData> cartItemDataList) {
-        this.cartItemDataList = cartItemDataList;
+        for (CartItemData cartItemData : cartItemDataList) {
+            CartItemHolderData cartItemHolderData = new CartItemHolderData();
+            cartItemHolderData.setCartItemData(cartItemData);
+            cartItemHolderData.setEditableRemark(false);
+            cartItemHolderData.setErrorFormItemValidationMessage("");
+            cartItemHolderData.setEditableRemark(false);
+            cartItemHolderData.setSelected(true);
+            cartItemHolderDataList.add(cartItemHolderData);
+        }
     }
 
     public boolean isError() {

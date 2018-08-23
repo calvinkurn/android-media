@@ -116,6 +116,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setProductImage(data.getProduct().getProductImage().getImageSrc200Square());
                 cartItemDataOrigin.setCategory(data.getProduct().getCategory());
                 cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
+                cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {

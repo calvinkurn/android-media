@@ -45,10 +45,6 @@ public class CartListData implements Parcelable {
         this.promoCouponActive = promoCouponActive;
     }
 
-//    public List<CartItemData> getCartItemDataList() {
-//        return cartItemDataList;
-//    }
-
     public CartPromoSuggestion getCartPromoSuggestion() {
         return cartPromoSuggestion;
     }

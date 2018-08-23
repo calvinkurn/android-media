@@ -9,7 +9,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartItemViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
@@ -121,7 +120,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setSelected(false);
+            cartShopHolderData.setSelected(true);
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
         }
@@ -151,18 +150,62 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return cartItemDataList;
     }
 
+    public void setShopSelected(int position, boolean selected) {
+        Object object = cartDataList.get(position);
+        if (object instanceof CartShopHolderData) {
+            CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
+            cartShopHolderData.setSelected(selected);
+            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                cartItemHolderData.setSelected(selected);
+            }
+        }
+    }
+
+    public boolean setItemSelected(int position, int parentPosition, boolean selected) {
+        boolean needToUpdateParent = false;
+        Object object = cartDataList.get(parentPosition);
+        if (object instanceof CartShopHolderData) {
+            CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
+            boolean shopAlreadySelected = cartShopHolderData.isSelected();
+            int selectedCount = 0;
+            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                if (cartItemHolderData.isSelected()) {
+                    selectedCount++;
+                }
+            }
+
+            if (selectedCount == 0) {
+                cartShopHolderData.setSelected(false);
+                needToUpdateParent = shopAlreadySelected;
+            } else if (selectedCount > 0 && selectedCount < cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                cartShopHolderData.setSelected(true);
+//                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+//                    cartItemHolderData.setSelectionType(false);
+//                }
+//                cartShopHolderData.getShopGroupData().getCartItemDataList().get(position).setSelectionType(selected);
+                needToUpdateParent = !shopAlreadySelected;
+            } else {
+                cartShopHolderData.setSelected(true);
+                needToUpdateParent = !shopAlreadySelected;
+            }
+        }
+
+        return needToUpdateParent;
+    }
+
     public void increaseQuantity(int position, int parentPosition) {
         if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
-                    .getCartItemDataList().get(position).getUpdatedData().increaseQuantity();
+                    .getCartItemDataList().get(position).getCartItemData().getUpdatedData().increaseQuantity();
         }
+        // Todo : validate data
 //        checkForShipmentForm();
     }
 
     public void decreaseQuantity(int position, int parentPosition) {
         if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
-                    .getCartItemDataList().get(position).getUpdatedData().decreaseQuantity();
+                    .getCartItemDataList().get(position).getCartItemData().getUpdatedData().decreaseQuantity();
         }
 //        checkForShipmentForm();
     }
@@ -170,7 +213,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void resetQuantity(int position, int parentPosition) {
         if (getItemViewType(parentPosition) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
-                    .getCartItemDataList().get(position).getUpdatedData().resetQuantity();
+                    .getCartItemDataList().get(position).getCartItemData().getUpdatedData().resetQuantity();
         }
 //        checkForShipmentForm();
     }
@@ -286,6 +329,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public interface ActionListener extends CartAdapterActionListener {
 
         void onCartShopNameClicked(CartShopHolderData cartShopHolderData);
+
+        void onShopItemCheckChanged(int itemPosition, boolean checked);
 
     }
 }

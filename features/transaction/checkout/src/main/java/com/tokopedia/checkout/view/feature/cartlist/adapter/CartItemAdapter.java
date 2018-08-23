@@ -62,14 +62,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         compositeSubscription.unsubscribe();
     }
 
-    public void addDataList(List<CartItemData> cartItemDataList) {
-        for (CartItemData cartItemData : cartItemDataList) {
-            CartItemHolderData cartItemHolderData = new CartItemHolderData();
-            cartItemHolderData.setCartItemData(cartItemData);
-            cartItemHolderData.setEditableRemark(false);
-            cartItemHolderData.setErrorFormItemValidationMessage("");
-            cartItemHolderData.setEditableRemark(false);
-            cartItemHolderDataList.add(cartItemHolderData);
+    public void addDataList(List<CartItemHolderData> cartItemHolderDataList, boolean selected) {
+        for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+            cartItemHolderData.setSelected(selected);
+            this.cartItemHolderDataList.add(cartItemHolderData);
         }
         notifyDataSetChanged();
     }
@@ -119,6 +115,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemLabelInputRemarkClicked();
 
         void onQuantityChanged();
+
+        void onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
     }
 }

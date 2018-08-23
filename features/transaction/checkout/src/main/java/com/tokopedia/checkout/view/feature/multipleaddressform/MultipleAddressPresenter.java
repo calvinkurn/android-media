@@ -18,6 +18,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -136,11 +137,13 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     @Override
     public List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
-            CartListData cartListData,
-            RecipientAddressModel recipientAddressModel) {
+            CartListData cartListData, RecipientAddressModel recipientAddressModel) {
+
         List<CartItemData> cartItemDataList = new ArrayList<>();
         for (ShopGroupData shopGroupData : cartListData.getShopGroupDataList()) {
-            cartItemDataList.addAll(shopGroupData.getCartItemDataList());
+            for (CartItemHolderData cartItemHolderData : shopGroupData.getCartItemDataList()) {
+                cartItemDataList.add(cartItemHolderData.getCartItemData());
+            }
         }
         List<MultipleAddressAdapterData> adapterModels = new ArrayList<>();
         for (int i = 0; i < cartItemDataList.size(); i++) {

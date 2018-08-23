@@ -189,5 +189,6 @@
     <string name="label_hardcoded_shipping_duration_info">Durasi dihitung sejak barang diserahkan ke kurir</string>
     <string name="label_title_showcase_shipping_duration">Pengiriman</string>
     <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
+    <string name="label_button_change_note">Ubah Catatan</string>
 
 </resources>

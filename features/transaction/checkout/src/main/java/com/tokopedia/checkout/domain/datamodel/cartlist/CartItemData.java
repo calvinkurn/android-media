@@ -111,6 +111,7 @@ public class CartItemData implements Parcelable {
         private List<WholesalePrice> wholesalePrice;
         private String trackerAttribution;
         private String trackerListName;
+        private String originalRemark;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -123,10 +124,6 @@ public class CartItemData implements Parcelable {
         public int getPricePlanInt() {
             return pricePlanInt;
         }
-
-//        public String getShopType() {
-//            return shopType;
-//        }
 
         public void setPricePlanInt(int pricePlanInt) {
             this.pricePlanInt = pricePlanInt;
@@ -164,10 +161,6 @@ public class CartItemData implements Parcelable {
             this.cartId = cartId;
         }
 
-//        public String getShopName() {
-//            return shopName;
-//        }
-
         public String getCategoryId() {
             return categoryId;
         }
@@ -175,10 +168,6 @@ public class CartItemData implements Parcelable {
         public void setCategoryId(String categoryId) {
             this.categoryId = categoryId;
         }
-
-//        public String getShopId() {
-//            return shopId;
-//        }
 
         public boolean isPreOrder() {
             return isPreOrder;
@@ -348,20 +337,20 @@ public class CartItemData implements Parcelable {
             this.wholesalePriceFormatted = wholesalePriceFormatted;
         }
 
-//        public boolean isGoldMerchant() {
-//            return isGoldMerchant;
-//        }
-
-//        public boolean isOfficialStore() {
-//            return isOfficialStore;
-//        }
-
         public String getProductCashBack() {
             return productCashBack;
         }
 
         public void setProductCashBack(String productCashBack) {
             this.productCashBack = productCashBack;
+        }
+
+        public String getOriginalRemark() {
+            return originalRemark;
+        }
+
+        public void setOriginalRemark(String originalRemark) {
+            this.originalRemark = originalRemark;
         }
 
         public OriginData() {
@@ -403,6 +392,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
             dest.writeString(this.productCashBack);
+            dest.writeString(this.originalRemark);
         }
 
         protected OriginData(Parcel in) {
@@ -435,6 +425,7 @@ public class CartItemData implements Parcelable {
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
             this.productCashBack = in.readString();
+            this.originalRemark = in.readString();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
