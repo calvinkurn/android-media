@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.router;
 
 import android.app.Activity;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 
@@ -62,4 +63,6 @@ public interface ICheckoutModuleRouter {
     PublicKey checkoutModuleRouterGeneratePublicKey();
 
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
+
+    void goToPurchasePage(Activity activity);
 }

@@ -40,7 +40,7 @@ import com.tokopedia.home.account.presentation.activity.StoreSettingActivity;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.adapter.setting.GeneralSettingAdapter;
 import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
-import com.tokopedia.home.account.presentation.view.LogoutView;
+import com.tokopedia.home.account.presentation.listener.LogoutView;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
 

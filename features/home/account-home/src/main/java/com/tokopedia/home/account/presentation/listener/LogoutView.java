@@ -1,7 +1,10 @@
-package com.tokopedia.home.account.presentation.view;
+package com.tokopedia.home.account.presentation.listener;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 
+/**
+ * @author hadi putra
+ */
 public interface LogoutView extends CustomerView {
     void logoutFacebook();
 
