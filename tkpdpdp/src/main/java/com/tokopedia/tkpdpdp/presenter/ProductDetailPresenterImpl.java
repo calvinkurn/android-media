@@ -174,13 +174,14 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void getCostEstimation(String rawQuery, float productWeight, String shopDomain){
-        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productWeight, shopDomain),
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productWeight, shopDomain),
                 new Subscriber<RatesEstimationModel>() {
                     @Override
                     public void onCompleted() { }
 
                     @Override
                     public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
                     }
 
                     @Override

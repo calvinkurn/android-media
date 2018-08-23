@@ -30,7 +30,7 @@ class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase, // fo
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(null).map { graphqlResponse ->
-            graphqlResponse.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java).ratesEstimation
+            graphqlResponse.getData<RatesEstimationModel.Response>(RatesEstimationModel.Response::class.java).data.ratesEstimation.get(0)
         }
     }
 
@@ -39,6 +39,7 @@ class GetRateEstimationUseCase(private val graphqlUseCase: GraphqlUseCase, // fo
         private val PARAM_PRODUCT_WEIGHT = "weight"
         private val PARAM_SHOP_DOMAIN = "domain"
 
+        @JvmStatic
         fun createRequestParams(query: String, productWeight: Float, shopDomain: String): RequestParams {
             return RequestParams.create().apply {
                 putString(PARAM_QUERY, query)

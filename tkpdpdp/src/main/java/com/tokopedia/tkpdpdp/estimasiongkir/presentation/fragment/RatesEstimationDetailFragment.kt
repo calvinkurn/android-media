@@ -25,6 +25,7 @@ import com.tokopedia.tkpdpdp.estimasiongkir.presentation.presenter.RatesEstimati
 import com.tokopedia.tkpdpdp.estimasiongkir.presentation.adapter.RatesEstimationServiceAdapter
 import kotlinx.android.synthetic.main.fragment_rates_estimation_detail.*
 import kotlinx.android.synthetic.main.partial_header_rate_estimation.*
+import java.text.DecimalFormat
 
 import javax.inject.Inject
 
@@ -63,8 +64,9 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         recycler_view.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recycler_view.adapter = adapter
         recycler_view.addItemDecoration(DividerItemDecoration(activity))
+        recycler_view.isNestedScrollingEnabled = false
 
-        shipping_weight.text = getString(R.string.rate_est_detail_weight_fmt, productWeight,
+        shipping_weight.text = getString(R.string.rate_est_detail_weight_fmt, DecimalFormat("#.####").format(productWeight),
                 if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit)
 
         getCostEstimation()
@@ -105,13 +107,14 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         val ratesEstimation = ratesEstimationModel.rates
 
         shipping_destination.text = getString(R.string.rate_est_detail_dest_fmt, ratesEstimation.texts.textDestination)
-        val title = getString(R.string.shipping_receiver_text, userSession.name, "Alamat Kantor")
+//        val title = getString(R.string.shipping_receiver_text, userSession.name, "Alamat Kantor")
+        val title = userSession.name
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(activity!!, R.color.font_black_disabled_38)),
-                userSession.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(activity!!, R.color.font_black_disabled_38)),
+//                userSession.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         shipping_receiver_name.text = spannableString
-        shipping_receiver_address.text = String.format("%s\n%s", "0817 1234 5678",
+        shipping_receiver_address.text = String.format("%s\n%s", address.phone,
                 "${address.address}, ${address.districtName}, ${address.cityName}, ${address.provinceName}, ${address.postalCode}")
         adapter.updateShippingServices(ratesEstimation.attributes)
         setViewState(VIEW_CONTENT)
