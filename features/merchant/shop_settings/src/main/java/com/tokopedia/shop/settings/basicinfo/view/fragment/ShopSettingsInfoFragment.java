@@ -207,7 +207,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             stringBuilder.append(getString(R.string.label_close));
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
             if (!TextUtils.isEmpty(openScheduleUnixString)) {
-                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
+                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE_TIME, openScheduleUnixString);
                 stringBuilder.append(", ");
                 stringBuilder.append(getString(R.string.reopen_at, openString));
             }

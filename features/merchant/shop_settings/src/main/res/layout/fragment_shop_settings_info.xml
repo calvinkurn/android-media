@@ -36,7 +36,9 @@
                     app:lv_content_color="@color/tkpd_main_green"
                     app:lv_sub_title_text_size="@dimen/sp_12"
                     app:lv_title="@string/shop_status_label"
-                    tools:lv_sub_title="Buka" />
+                    tools:lv_sub_title="Buka"
+                    android:clipToPadding="false"
+                    android:clipChildren="false"/>
             </android.support.v7.widget.CardView>
 
             <include layout="@layout/partial_shop_settings_info_membership" />

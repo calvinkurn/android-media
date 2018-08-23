@@ -46,6 +46,7 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
                 int action = requestParams.getInt(ACTION, 0);
                 variables.put(ACTION, action);
 
+                // close end, to shop to start open
                 String closeEnd = requestParams.getString(CLOSE_END, "");
                 if (!TextUtils.isEmpty(closeEnd)) {
                     variables.put(CLOSE_END, String.valueOf(Long.parseLong(closeEnd) / 1000L));
@@ -59,7 +60,7 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
                     if (TextUtils.isEmpty(closeEnd)) {
                         variables.put(CLOSE_END, MAX_CLOSE_END);
                     }
-                } else {
+                } else { // open with schedule start
                     String closeStart = requestParams.getString(CLOSE_START, "");
                     if (!TextUtils.isEmpty(closeStart)) {
                         variables.put(CLOSE_START, String.valueOf(Long.parseLong(closeStart) / 1000L));
@@ -89,7 +90,15 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
 
     }
 
-
+    /**
+     * update shop schedule
+     *
+     * @param action     1:to open; 0: to close
+     * @param closeNow   true means close start = today
+     * @param closeStart schedule for shop to close
+     * @param closeEnd   schedule for shop to open
+     * @param closeNote  close note for open
+     */
     public static RequestParams createRequestParams(@ShopScheduleActionDef int action,
                                                     boolean closeNow,
                                                     String closeStart,
