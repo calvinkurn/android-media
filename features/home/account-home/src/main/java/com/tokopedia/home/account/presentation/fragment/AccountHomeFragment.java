@@ -202,6 +202,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
+    public void showErroNoConnection() {
+        showError(getString(R.string.error_no_internet_connection));
+    }
+
+    @Override
     public void onScrollToTop() {
         Fragment currentFragment = adapter.getItem(viewPager.getCurrentItem());
         if (currentFragment != null && currentFragment instanceof FragmentListener) {

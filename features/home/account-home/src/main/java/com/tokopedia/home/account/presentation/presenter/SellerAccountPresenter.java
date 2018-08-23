@@ -3,9 +3,11 @@ package com.tokopedia.home.account.presentation.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.home.account.domain.GetSellerAccountUseCase;
 import com.tokopedia.home.account.presentation.SellerAccount;
+import com.tokopedia.home.account.presentation.subscriber.GetSellerAccountSubscriber;
 import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
 import com.tokopedia.usecase.RequestParams;
 
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -49,24 +51,7 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
         requestParams.putString(QUERY, query);
         requestParams.putObject(VARIABLES, new HashMap<>());
 
-        getSellerAccountUseCase.execute(requestParams, new Subscriber<SellerViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                view.showError(throwable.getLocalizedMessage());
-                view.hideLoading();
-            }
-
-            @Override
-            public void onNext(SellerViewModel model) {
-                view.loadSellerData(model);
-                view.hideLoading();
-            }
-        });
+        getSellerAccountUseCase.execute(requestParams, new GetSellerAccountSubscriber(view));
     }
 
 

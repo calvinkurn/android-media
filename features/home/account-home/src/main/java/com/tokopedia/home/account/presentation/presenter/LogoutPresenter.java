@@ -2,7 +2,7 @@ package com.tokopedia.home.account.presentation.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 
-import com.tokopedia.home.account.presentation.view.LogoutView;
+import com.tokopedia.home.account.presentation.listener.LogoutView;
 import com.tokopedia.logout.domain.model.LogoutDomain;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
 import com.tokopedia.navigation_common.model.WalletPref;
