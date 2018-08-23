@@ -31,7 +31,6 @@ public class CartResponse {
     private Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public static CartResponse factory(String strResponse) throws IOException {
-        Log.d("CARTAPI SUCCESS = ", strResponse);
         CartResponse cartResponse = new CartResponse();
         JsonElement jsonElement = new JsonParser().parse(strResponse);
         JsonObject jsonResponse = jsonElement.getAsJsonObject();
