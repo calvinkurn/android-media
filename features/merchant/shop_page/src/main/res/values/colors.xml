@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="green_ticker">#cde4c3</color>
-    <color name="yellow_ticker">#ecdb77</color>
+    <color name="green_ticker">#87d58b</color>
+    <color name="yellow_ticker">#ffc107</color>
+    <color name="red_overlay_moderated">#c0d50000</color>
+    <color name="green_overlay_closed">#c027782c</color>
+    <color name="grey_overlay_inactive">#cc9b9b9b</color>
+    <color name="grey_status_stroke">#e0e0e0</color>
     <color name="white_overlay_transparent">#7fffffff</color>
     <color name="black_38">#60000000</color>
 </resources>

@@ -83,6 +83,7 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     private void setupChatBubbleAlignment(View chatBalloon, ImageUploadViewModel element) {
         if (element.isSender()) {
             setChatRight(chatBalloon);
+            setReadStatus(element);
         } else {
             setChatLeft(chatBalloon);
         }
@@ -127,8 +128,6 @@ public class ImageUploadViewHolder extends BaseChatViewHolder<ImageUploadViewMod
     protected void prerequisiteUISetup(ImageUploadViewModel element) {
         action.setVisibility(View.GONE);
         progressBarSendImage.setVisibility(View.GONE);
-
-        setReadStatus(element);
 
         if (element.getFromRole() != null
                 && !TextUtils.isEmpty(element.getFromRole())
