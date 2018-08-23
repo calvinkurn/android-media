@@ -351,7 +351,10 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @OnClick(R2.id.iv_upload_img)
     void onClickUpload() {
-        showImagePickerDialog();
+        if (rvSelectedImages.getVisibility() != View.VISIBLE)
+            showImagePickerDialog();
+        else
+            rvSelectedImages.setVisibility(View.GONE);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
