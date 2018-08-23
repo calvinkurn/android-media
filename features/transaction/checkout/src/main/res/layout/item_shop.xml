@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardElevation="@dimen/dp_2"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?selectableItemBackground"
+            android:paddingBottom="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16">
+
+            <CheckBox
+                android:id="@+id/cb_select_shop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/dp_8"
+                android:theme="@style/TransactionCheckbox" />
+
+            <TextView
+                android:id="@+id/tv_label_shop_name"
+                style="@style/TextSmallMediumBlack38"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/cb_select_shop"
+                android:lineSpacingExtra="@dimen/sp_5"
+                android:text="@string/label_seller"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:id="@+id/tv_shop_name"
+                style="@style/TextSmallMediumBlack70"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dp_4"
+                android:layout_marginRight="@dimen/dp_4"
+                android:layout_toRightOf="@+id/tv_label_shop_name"
+                android:lineSpacingExtra="@dimen/sp_5"
+                tools:ignore="RelativeOverlap"
+                tools:text="Loaa Store df" />
+
+            <ImageView
+                android:id="@+id/img_shop_badge"
+                android:layout_width="@dimen/dp_18"
+                android:layout_height="@dimen/dp_18"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/tv_shop_name"
+                tools:src="@drawable/ic_badge_official" />
+
+        </RelativeLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_cart_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

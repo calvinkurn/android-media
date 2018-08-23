@@ -2,8 +2,8 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.GoldMerchant;
-import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.OfficialStore;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.GoldMerchant;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.OfficialStore;
 
 /**
  * @author anggaprasetiyo on 31/01/18.

@@ -36,6 +36,10 @@ public class CartRepository implements ICartRepository {
         this.cartApi = cartApi;
     }
 
+    /**
+     * Deprecated since version 2.29 (customerapp)
+     * */
+    @Deprecated
     @Override
     public Observable<CartDataListResponse> getCartList(Map<String, String> param) {
         return cartApi.getCartList(param).map(
@@ -45,6 +49,16 @@ public class CartRepository implements ICartRepository {
                         return cartResponseResponse.body().convertDataObj(CartDataListResponse.class);
                     }
                 });
+    }
+
+    @Override
+    public Observable<CartDataListResponse> getShopGroupList(Map<String, String> param) {
+        return cartApi.getShopGroupList(param).map(new Func1<Response<CartResponse>, CartDataListResponse>() {
+            @Override
+            public CartDataListResponse call(Response<CartResponse> cartResponseResponse) {
+                return cartResponseResponse.body().convertDataObj(CartDataListResponse.class);
+            }
+        });
     }
 
     @Override

@@ -208,7 +208,7 @@ class TopAdsKeywordNewChooseGroupFragment : TopAdsNewBaseStepperFragment<TopAdsK
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState?.run {
+        outState.run {
             putString(SAVED_GROUP_ID, chosenId)
             putString(SAVED_GROUP_NAME, choose_group_auto_text.text?.toString() ?: "")
             putInt(SAVED_KEYWORD_COUNT, keywordCount)

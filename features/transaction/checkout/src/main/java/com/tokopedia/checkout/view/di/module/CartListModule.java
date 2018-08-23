@@ -1,25 +1,22 @@
 package com.tokopedia.checkout.view.di.module;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 
-import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
-import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
+import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 
 import dagger.Module;
@@ -34,11 +31,13 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartListAdapter.ActionListener cartListActionListener;
+    private final CartAdapter.ActionListener cartActionListener;
+    private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
-        this.cartListActionListener = cartFragment;
+        this.cartActionListener = cartFragment;
+        this.cartItemActionListener = cartFragment;
     }
 
     @Provides
@@ -73,8 +72,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartListAdapter provideCartListAdapter() {
-        return new CartListAdapter(cartListActionListener);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
 }

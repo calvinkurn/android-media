@@ -2,8 +2,8 @@ package com.tokopedia.transactiondata.entity.response.cartlist;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.Donation;
-import com.tokopedia.transactiondata.entity.response.cartlist.cartlistnew.ShopGroup;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.Donation;
+import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,9 @@ public class CartDataListResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
+//    @SerializedName("cart_list")
+//    @Expose
+//    private List<CartList> cartList = new ArrayList<>();
 
     public int getIsCouponActive() {
         return isCouponActive;

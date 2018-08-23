@@ -98,8 +98,6 @@ public class CartItemData implements Parcelable {
         private double weightPlan;
         private int weightUnit;
         private String weightFormatted;
-        private String shopName;
-        private String shopId;
         private boolean isPreOrder;
         private boolean isFreeReturn;
         private boolean isCashBack;
@@ -113,9 +111,6 @@ public class CartItemData implements Parcelable {
         private List<WholesalePrice> wholesalePrice;
         private String trackerAttribution;
         private String trackerListName;
-        private String shopType;
-        private boolean isGoldMerchant;
-        private boolean isOfficialStore;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -129,13 +124,9 @@ public class CartItemData implements Parcelable {
             return pricePlanInt;
         }
 
-        public String getShopType() {
-            return shopType;
-        }
-
-        public void setShopType(String shopType) {
-            this.shopType = shopType;
-        }
+//        public String getShopType() {
+//            return shopType;
+//        }
 
         public void setPricePlanInt(int pricePlanInt) {
             this.pricePlanInt = pricePlanInt;
@@ -173,9 +164,9 @@ public class CartItemData implements Parcelable {
             this.cartId = cartId;
         }
 
-        public String getShopName() {
-            return shopName;
-        }
+//        public String getShopName() {
+//            return shopName;
+//        }
 
         public String getCategoryId() {
             return categoryId;
@@ -185,17 +176,9 @@ public class CartItemData implements Parcelable {
             this.categoryId = categoryId;
         }
 
-        public void setShopName(String shopName) {
-            this.shopName = shopName;
-        }
-
-        public String getShopId() {
-            return shopId;
-        }
-
-        public void setShopId(String shopId) {
-            this.shopId = shopId;
-        }
+//        public String getShopId() {
+//            return shopId;
+//        }
 
         public boolean isPreOrder() {
             return isPreOrder;
@@ -365,21 +348,13 @@ public class CartItemData implements Parcelable {
             this.wholesalePriceFormatted = wholesalePriceFormatted;
         }
 
-        public boolean isGoldMerchant() {
-            return isGoldMerchant;
-        }
+//        public boolean isGoldMerchant() {
+//            return isGoldMerchant;
+//        }
 
-        public void setGoldMerchant(boolean goldMerchant) {
-            this.isGoldMerchant = goldMerchant;
-        }
-
-        public boolean isOfficialStore() {
-            return isOfficialStore;
-        }
-
-        public void setOfficialStore(boolean officialStore) {
-            this.isOfficialStore = officialStore;
-        }
+//        public boolean isOfficialStore() {
+//            return isOfficialStore;
+//        }
 
         public String getProductCashBack() {
             return productCashBack;
@@ -415,8 +390,6 @@ public class CartItemData implements Parcelable {
             dest.writeDouble(this.weightPlan);
             dest.writeInt(this.weightUnit);
             dest.writeString(this.weightFormatted);
-            dest.writeString(this.shopName);
-            dest.writeString(this.shopId);
             dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isCashBack ? (byte) 1 : (byte) 0);
@@ -429,9 +402,6 @@ public class CartItemData implements Parcelable {
             dest.writeTypedList(this.wholesalePrice);
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
-            dest.writeString(this.shopType);
-            dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
             dest.writeString(this.productCashBack);
         }
 
@@ -452,8 +422,6 @@ public class CartItemData implements Parcelable {
             this.weightPlan = in.readDouble();
             this.weightUnit = in.readInt();
             this.weightFormatted = in.readString();
-            this.shopName = in.readString();
-            this.shopId = in.readString();
             this.isPreOrder = in.readByte() != 0;
             this.isFreeReturn = in.readByte() != 0;
             this.isCashBack = in.readByte() != 0;
@@ -466,9 +434,6 @@ public class CartItemData implements Parcelable {
             this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
-            this.shopType = in.readString();
-            this.isGoldMerchant = in.readByte() != 0;
-            this.isOfficialStore = in.readByte() != 0;
             this.productCashBack = in.readString();
         }
 
