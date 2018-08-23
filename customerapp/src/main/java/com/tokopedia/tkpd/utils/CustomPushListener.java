@@ -131,6 +131,7 @@ public class CustomPushListener extends PushMessageListener {
                     .setCustomBigContentView(remoteView)
                     .setContentTitle(context.getResources().getString(R.string.app_name))
                     .setContentIntent(contentIntent)
+                    .setOngoing(true)
                     .setWhen(when);
         }
 
