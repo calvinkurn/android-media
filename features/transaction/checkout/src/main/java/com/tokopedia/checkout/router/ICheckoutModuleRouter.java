@@ -64,5 +64,5 @@ public interface ICheckoutModuleRouter {
 
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
 
-    Intent goToPurchasePage(Activity activity);
+    void goToPurchasePage(Activity activity);
 }

@@ -1951,7 +1951,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent goToPurchasePage(Activity activity) {
+    public void goToPurchasePage(Activity activity) {
         activity.startActivity(PurchaseActivity.newInstance(activity));
         if(!(activity instanceof MainParentActivity)) {
             activity.finish();
