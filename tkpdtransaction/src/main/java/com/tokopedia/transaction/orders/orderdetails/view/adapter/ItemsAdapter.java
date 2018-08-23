@@ -141,6 +141,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private LinearLayout actionLayout;
         private View clCard;
         private View llValid;
+        private View llTanggalEvent;
+        private TextView tvEventDate;
         private TextView tvRightTypeofEvents;
         private TextView tvRightAddress;
         private TextView tvRightCategoryTicket;
@@ -172,6 +174,8 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tvRightAddress = itemView.findViewById(R.id.right_text2);
                 tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
                 tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
+                llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
+                tvEventDate = itemView.findViewById(R.id.tv_start_date);
             }
             progressBar = itemView.findViewById(R.id.prog_bar);
 
@@ -202,10 +206,16 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 }
                 if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
                     if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
-                        validDate.setText(" " .concat(metaDataInfo.getEndDate()));
+                        validDate.setText(" ".concat(metaDataInfo.getEndDate()));
                         llValid.setVisibility(View.VISIBLE);
                     } else {
                         llValid.setVisibility(View.GONE);
+                    }
+                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+                        llTanggalEvent.setVisibility(View.VISIBLE);
+                    } else {
+                        llTanggalEvent.setVisibility(View.GONE);
                     }
                 }
 

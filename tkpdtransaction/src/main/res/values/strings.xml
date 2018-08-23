@@ -78,6 +78,7 @@
     <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
     <string name="label_transaction_bank_account_source">Rekening Anda</string>
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
+    <string name="label_event_date">Tanggal Event</string>
     <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
     <string name="label_seller_shop">Penjual: </string>
