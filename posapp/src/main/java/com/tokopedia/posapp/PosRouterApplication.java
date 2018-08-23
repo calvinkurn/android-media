@@ -31,6 +31,7 @@ import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCategoryDetailPassData;
@@ -93,21 +94,6 @@ public class PosRouterApplication extends MainApplication implements
         super.onCreate();
         initializeDagger();
         initDaggerInjector();
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult) {
-
-    }
-
-    @Override
-    public void removeInstopedToken() {
-
     }
 
     @Override
@@ -452,6 +438,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getChangePasswordIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -548,6 +539,11 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart) {
+        return null;
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
         return null;
     }
 
@@ -761,6 +757,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getSettingBankIntent(Context context) {
 //        There is no setting bank in pos
+        return null;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
         return null;
     }
 }

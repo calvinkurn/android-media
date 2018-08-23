@@ -66,6 +66,8 @@ public interface RegisterInitial {
         void onErrorConnectionSnackbar(String message);
 
         void setTempPhoneNumber(String maskedPhoneNumber);
+
+        void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData);
     }
 
     interface Presenter extends CustomerPresenter<View> {

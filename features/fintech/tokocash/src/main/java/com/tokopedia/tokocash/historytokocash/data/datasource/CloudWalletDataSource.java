@@ -41,6 +41,7 @@ public class CloudWalletDataSource implements WalletDataSource {
                 });
     }
 
+    @Deprecated
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
         String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash_2.json");
@@ -48,6 +49,7 @@ public class CloudWalletDataSource implements WalletDataSource {
                 HelpHistoryTokoCashEntity[].class)));
     }
 
+    @Deprecated
     @Override
     public Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams) {
         return walletApi.postHelpHistory(mapParams)

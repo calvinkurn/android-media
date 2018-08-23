@@ -40,7 +40,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
     @Override
     public void bind(TrainPassengerViewModel trainPassengerViewModel) {
         headerLabel.setTitle(trainPassengerViewModel.getHeaderTitle());
-        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.colorPrimary));
+        headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.green_400));
         if (trainPassengerViewModel.getName() != null) {
             passengerDetailLayout.setVisibility(View.VISIBLE);
             headerLabel.setContent(getString(R.string.train_btn_change_passenger_data));

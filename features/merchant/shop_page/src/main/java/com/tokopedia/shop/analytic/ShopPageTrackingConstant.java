@@ -28,6 +28,7 @@ public class ShopPageTrackingConstant {
     public static final String TOP_SECTION_GENERAL_CLICK = "- top section - general - click";
     public static final String TOP_SECTION_SOCIAL_MEDIA_CLICK = "- top section - social media - click";
     public static final String TOP_SECTION_LIST_FAVOURITE_CLICK = "- top section - list of favourites - click";
+    public static final String TOP_SECTION_LIST_FAVOURITE_IMPRESSION = "- top section - list of favourites - impression";
     public static final String TOP_SECTION_SHOP_SPEED_CLICK = "- top section - shop speed - click";
     public static final String TOP_SECTION_SHOP_INFORMATION_CLICK = "- top section - shop information - click";
     public static final String TOP_SECTION_IMPRESSION = "- top section - impression";
@@ -45,6 +46,8 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SHARE_SHOP = "click share button";
     public static final String CLICK_MESSAGE_BRAND = "click message brand";
     public static final String CLICK_FAVOURITE_SHOP = "click favourite shop - ";
+    public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
+    public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
     public static final String FAVOURITE = "favourite";
     public static final String UNFAVOURITE = "unfavourite";
     public static final String CLICK_LIST_OF_FAVOURITE = "click list of favourites";
@@ -83,6 +86,8 @@ public class ShopPageTrackingConstant {
     public static final String IMPRESSION_OF_TOP_PRODUCT_LIST = "impression of top products list";
     public static final String TOP_CONTENT_CLICK = " - top content - click";
     public static final String CLICK_TOP_CONTENT = "click top content";
+    public static final String CLICK_DISCUSSION = "Lihat diskusi toko";
+    public static final String CLICK_AND_MOVE_OTHER_SCREEN = "Click & move to other Screen";
 
     //key
     public static final String EVENT = "event";
@@ -96,6 +101,9 @@ public class ShopPageTrackingConstant {
     public static final String CLICK = "click";
     public static final String ACTION_FIELD = "actionField";
     public static final String SHOPPAGE_PRODUCT = "/shoppage - product ";
+    public static final String SHOPPAGE = "/shoppage";
+    public static final String SEARCH = "search";
+    public static final String PRODUCT = "product";
     public static final String PRODUCT_FEATURED = " - Produk Unggulan";
     public static final String PRODUCT_ETALASE = " - Etalase ";
     public static final String PRODUCTS = "products";
@@ -129,6 +137,6 @@ public class ShopPageTrackingConstant {
     public static final String TOP_CONTENT_IMPRESSION = " - top content - impression";
     public static final String PRODUCT_CLICK = "productClick";
     public static final String PRODUCT_VIEW = "productView";
-    public static final int DEFAULT_PER_PAGE = 10;
     public static final String SHOP_PAGE_TYPE = "/shoppage";
+    public static final String ALL_ETALASE = "Semua Etalase";
 }
