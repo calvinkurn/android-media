@@ -180,7 +180,7 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put("id", dealDetails.getId());
             productMap.put("name", dealDetails.getDisplayName());
-            productMap.put("price", dealDetails.getSalesPrice());
+            productMap.put("price", (dealDetails.getSalesPrice()*CURRENT_QUANTITY));
             productMap.put("category", "deals");
             productMap.put("quantity", CURRENT_QUANTITY);
             HashMap<String, Object> add = new HashMap<>();

@@ -94,13 +94,13 @@ public class SelectLocationFragment extends BaseDaggerFragment implements
 
     @Override
     public void onSearchSubmitted(String text) {
-        dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
+        dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_QUERY_LOCATION, text);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-        dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_QUERY_LOCATION, Utils.getSingletonInstance().getLocation(getContext()).getName()), text);
+        dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_QUERY_LOCATION, text);
         mPresenter.searchTextChanged(text);
 
     }

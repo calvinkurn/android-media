@@ -283,7 +283,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
             HashMap<String, Object> productMap = new HashMap<>();
             productMap.put("id", dealDetails.getId());
             productMap.put("name", dealDetails.getDisplayName());
-            productMap.put("price", dealDetails.getSalesPrice());
+            productMap.put("price", (quantity * dealDetails.getSalesPrice()));
             productMap.put("category", "deals");
             productMap.put("quantity", quantity);
             List<HashMap<String, Object>> productMaps = new ArrayList<>();

@@ -23,7 +23,7 @@ public class DealsAnalytics {
     public static String DIGITAL_DEALS = "digital - deals";
 
 
-    public static String EVENT_QUERY_LOCATION = "query %s";
+    public static String EVENT_QUERY_LOCATION = "cari lokasi";
     public static String EVENT_CLICK_ON_POPULAR_LOCATION = "click on popular location";
     public static String EVENT_CLICK_ON_LOCATION = "click on %s";
     public static String EVENT_NO_LOCATION = "view no locations found";
