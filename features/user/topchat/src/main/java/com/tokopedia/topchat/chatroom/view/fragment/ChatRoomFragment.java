@@ -686,7 +686,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+                    if(TextUtils.isEmpty(senderId)) {
+                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+                    }
+                    presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
                             getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
                 }
@@ -1543,7 +1547,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
 
         headerMenu.setItemMenuList(listMenu);
-        headerMenu.setActionText(getString(R.string.cancel));
+        headerMenu.setActionText(getString(R.string.cancel_bottom_sheet));
         headerMenu.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1556,8 +1560,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (itemMenus.title.equalsIgnoreCase(getString(R.string.delete_conversation))) {
                     showDeleteChatDialog();
                 } else if (pos == 0) {
-                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE), getArguments().getString(ChatRoomActivity.PARAM_SOURCE));
+                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+                    if(TextUtils.isEmpty(senderId)) {
+                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+                    }
+                    presenter.onGoToDetail(senderId,
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
                         itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
