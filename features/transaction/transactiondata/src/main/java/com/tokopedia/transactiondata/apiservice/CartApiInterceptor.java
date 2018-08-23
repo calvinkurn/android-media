@@ -6,9 +6,9 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.io.IOException;
@@ -32,28 +32,42 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
         String responseError = response.body().string();
-        Log.d("CARTAPI ERROR = ", responseError);
         if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
             CartErrorResponse cartErrorResponse = new Gson().fromJson(
                     responseError, CartErrorResponse.class
             );
             if (cartErrorResponse.getCartHeaderResponse() != null) {
+                String message = cartErrorResponse.getCartHeaderResponse().getMessageFormatted();
+                if (message == null || message.isEmpty()) {
+                    switch (response.code()) {
+                        case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                            message = ErrorNetMessage.MESSAGE_ERROR_SERVER;
+                            break;
+                        case ResponseStatus.SC_FORBIDDEN:
+                            message = ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN;
+                            break;
+                        case ResponseStatus.SC_REQUEST_TIMEOUT:
+                        case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                            message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                            break;
+                        default:
+                            message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                            break;
+                    }
+                }
                 throw new CartResponseErrorException(
                         response.code(),
-                        cartErrorResponse.getCartHeaderResponse());
+                        cartErrorResponse.getCartHeaderResponse().getErrorCode(),
+                        message);
             }
         }
-        throw new HttpErrorException(response.code());
+        throw new CartHttpErrorException(response.code());
     }
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method,
                                                String authKey, String contentTypeHeader) {
-        Log.d("CARTAPI PATH = ", path);
-        Log.d("CARTAPI PARAM QUERY = ", strParam);
-        Log.d("CARTAPI METHOD = ", method);
-        Log.d("CARTAPI AUTH KEY = ", authKey);
-        Log.d("CARTAPI CONTENT TYPE = ", contentTypeHeader);
+
         Map<String, String> mapHeader = AuthUtil.getDefaultHeaderMap(
                 path,
                 strParam,
@@ -62,10 +76,6 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
                 authKey,
                 "EEE, dd MMM yyyy HH:mm:ss ZZZ", userSession.getUserId());
 
-        mapHeader.put("X-APP-VERSION", GlobalConfig.VERSION_NAME);
-        mapHeader.put("Tkpd-UserId", userSession.getUserId());
-        mapHeader.put("X-Device", "android");
-        mapHeader.put("Tkpd-SessionId", userSession.getDeviceId());
 
         for (Map.Entry<String, String> entry : mapHeader.entrySet()) {
             String key = entry.getKey();
