@@ -4,12 +4,13 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 
-interface ShopSettingRouter{
-    fun goToShopEditor(context: Context)
+interface ShopSettingRouter {
 
-    fun goToManageShopEtalase(context: Context)
+    fun getManageShopBasicDataIntent(context: Context): Intent
 
-    fun goToManageShopNotes(context: Context)
+    fun getManageShopEtalaseIntent(context: Context): Intent
+
+    fun getManageShopNotesIntent(context: Context): Intent
 
     fun getManageShopLocationIntent(context: Context): Intent
 

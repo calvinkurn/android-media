@@ -45,11 +45,11 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
 
                 String closeStart = requestParams.getString(CLOSE_START, "");
                 if (!TextUtils.isEmpty(closeStart)) {
-                    variables.put(CLOSE_START, closeStart);
+                    variables.put(CLOSE_START, String.valueOf (Long.parseLong(closeStart) / 1000L));
                 }
                 String closeEnd = requestParams.getString(CLOSE_END, "");
                 if (!TextUtils.isEmpty(closeEnd)) {
-                    variables.put(CLOSE_END, closeEnd);
+                    variables.put(CLOSE_END, String.valueOf (Long.parseLong(closeEnd) / 1000L));
                 }
                 if (action == ShopScheduleActionDef.CLOSED) {
                     if (!TextUtils.isEmpty(closeStart) &&
@@ -71,16 +71,16 @@ public class UpdateShopScheduleUseCase extends UseCase<String> {
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
-                .flatMap(new GraphQLSuccessMapper())
+                .flatMap(new GraphQLSuccessMapper());
                 //TODO remove below, just for test.
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-                    @Override
-                    public Observable<? extends String> call(Throwable throwable) {
-                        String jsonString = "{\"closeShopSchedule\":{\"success\":true,\"message\":\"Success\"}}";
-                        CloseShopScheduleMutation response = new Gson().fromJson(jsonString, CloseShopScheduleMutation.class);
-                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
-                    }
-                });
+//                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
+//                    @Override
+//                    public Observable<? extends String> call(Throwable throwable) {
+//                        String jsonString = "{\"closeShopSchedule\":{\"success\":true,\"message\":\"Success\"}}";
+//                        CloseShopScheduleMutation response = new Gson().fromJson(jsonString, CloseShopScheduleMutation.class);
+//                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
+//                    }
+//                });
 
     }
 

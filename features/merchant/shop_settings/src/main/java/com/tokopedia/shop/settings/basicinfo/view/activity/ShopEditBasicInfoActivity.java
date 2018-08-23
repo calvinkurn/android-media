@@ -3,9 +3,11 @@ package com.tokopedia.shop.settings.basicinfo.view.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -53,6 +55,8 @@ public class ShopEditBasicInfoActivity extends BaseSimpleActivity implements Upd
     private static final int MAX_FILE_SIZE_IN_KB = 10240;
     private static final int REQUEST_CODE_IMAGE = 846;
 
+    public static final String EXTRA_SHOP_MODEL = "shop_model";
+
     @Inject
     UpdateShopSettingsInfoPresenter updateShopSettingsInfoPresenter;
 
@@ -70,11 +74,20 @@ public class ShopEditBasicInfoActivity extends BaseSimpleActivity implements Upd
     private boolean needUpdatePhotoUI;
     private View vgRoot;
 
+    public static Intent createIntent(Context context, @Nullable ShopBasicDataModel shopBasicDataModel){
+        Intent intent = new Intent(context, ShopEditBasicInfoActivity.class);
+        intent.putExtra(EXTRA_SHOP_MODEL, shopBasicDataModel);
+        return intent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         if (savedInstanceState != null) {
             savedLocalImageUrl = savedInstanceState.getString(SAVED_IMAGE_PATH);
+        }
+        if (getIntent().hasExtra(EXTRA_SHOP_MODEL)) {
+            shopBasicDataModel = getIntent().getParcelableExtra(EXTRA_SHOP_MODEL);
         }
         super.onCreate(savedInstanceState);
 
@@ -122,7 +135,11 @@ public class ShopEditBasicInfoActivity extends BaseSimpleActivity implements Upd
         });
         vgRoot.requestFocus();
 
-        loadShopBasicData();
+        if (shopBasicDataModel == null) {
+            loadShopBasicData();
+        } else {
+            onSuccessGetShopBasicData(shopBasicDataModel);
+        }
     }
 
     private void onSaveButtonClicked(){
@@ -242,11 +259,15 @@ public class ShopEditBasicInfoActivity extends BaseSimpleActivity implements Upd
 
     private void setUIShopBasicData(ShopBasicDataModel shopBasicDataModel) {
         updatePhotoUI(shopBasicDataModel);
-        etShopSlogan.setText(shopBasicDataModel.getTagline());
-        etShopSlogan.setSelection(etShopSlogan.getText().length());
-
-        etShopDesc.setText(shopBasicDataModel.getDescription());
-        etShopDesc.setSelection(etShopDesc.getText().length());
+        //to reserve saveInstanceState from edittext
+        if (TextUtils.isEmpty(etShopSlogan.getText())) {
+            etShopSlogan.setText(shopBasicDataModel.getTagline());
+            etShopSlogan.setSelection(etShopSlogan.getText().length());
+        }
+        if (TextUtils.isEmpty(etShopDesc.getText())) {
+            etShopDesc.setText(shopBasicDataModel.getDescription());
+            etShopDesc.setSelection(etShopDesc.getText().length());
+        }
     }
 
     private void updatePhotoUI(ShopBasicDataModel shopBasicDataModel){
@@ -312,5 +333,6 @@ public class ShopEditBasicInfoActivity extends BaseSimpleActivity implements Upd
     protected int getLayoutRes() {
         return R.layout.activity_shop_edit_basic_info;
     }
+
 
 }

@@ -1,5 +1,8 @@
 package com.tokopedia.shop.common.graphql.data.shopbasicdata;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
@@ -9,7 +12,7 @@ import com.tokopedia.shop.common.constant.ShopStatusLevelDef;
  * Created by hendry on 08/08/18.
  */
 
-public class ShopBasicDataModel {
+public class ShopBasicDataModel implements Parcelable{
 
     @SerializedName("domain")
     @Expose
@@ -58,11 +61,11 @@ public class ShopBasicDataModel {
     }
 
     public String getCloseSchedule() {
-        return closeSchedule;
+        return closeSchedule.startsWith("-") ? "":closeSchedule;
     }
 
     public String getOpenSchedule() {
-        return openSchedule;
+        return openSchedule.startsWith("-") ? "":openSchedule;
     }
 
     public String getTagline() {
@@ -94,5 +97,54 @@ public class ShopBasicDataModel {
     public boolean isRegular() { return level == ShopStatusLevelDef.LEVEL_REGULAR; }
     public boolean isGold() { return level == ShopStatusLevelDef.LEVEL_GOLD; }
     public boolean isOfficialStore() { return level == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE; }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.domain);
+        dest.writeString(this.name);
+        dest.writeInt(this.status);
+        dest.writeString(this.closeSchedule);
+        dest.writeString(this.closeNote);
+        dest.writeString(this.openSchedule);
+        dest.writeString(this.tagline);
+        dest.writeString(this.description);
+        dest.writeString(this.logo);
+        dest.writeInt(this.level);
+        dest.writeString(this.expired);
+    }
+
+    public ShopBasicDataModel() {
+    }
+
+    protected ShopBasicDataModel(Parcel in) {
+        this.domain = in.readString();
+        this.name = in.readString();
+        this.status = in.readInt();
+        this.closeSchedule = in.readString();
+        this.closeNote = in.readString();
+        this.openSchedule = in.readString();
+        this.tagline = in.readString();
+        this.description = in.readString();
+        this.logo = in.readString();
+        this.level = in.readInt();
+        this.expired = in.readString();
+    }
+
+    public static final Creator<ShopBasicDataModel> CREATOR = new Creator<ShopBasicDataModel>() {
+        @Override
+        public ShopBasicDataModel createFromParcel(Parcel source) {
+            return new ShopBasicDataModel(source);
+        }
+
+        @Override
+        public ShopBasicDataModel[] newArray(int size) {
+            return new ShopBasicDataModel[size];
+        }
+    };
 }
 

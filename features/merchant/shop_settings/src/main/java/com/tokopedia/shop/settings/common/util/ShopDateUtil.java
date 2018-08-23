@@ -46,17 +46,17 @@ public class ShopDateUtil {
         }
     }
 
-    public static String toReadableString(String format, String unixTime) {
+    public static String toReadableString(String format, String unixTimeSeconds) {
         try {
-            return toReadableString(format, new Date(Long.parseLong(unixTime)));
-        }catch (Exception e) {
-            return unixTime;
+            return toReadableString(format, new Date(Long.parseLong(unixTimeSeconds) * 1000L));
+        } catch (Exception e) {
+            return unixTimeSeconds;
         }
     }
 
     public static Date toDate(int year, int month, int dayOfMonth) {
         try {
-            Calendar now =  getCurrentCalendar();
+            Calendar now = getCurrentCalendar();
             now.set(Calendar.YEAR, year);
             now.set(Calendar.MONTH, month);
             now.set(Calendar.DATE, dayOfMonth);
@@ -66,9 +66,9 @@ public class ShopDateUtil {
         }
     }
 
-    public static Date unixToDate(long unixTime) {
+    public static Date unixToDate(long unixTimeMs) {
         try {
-            return new Date(unixTime);
+            return new Date(unixTimeMs);
         } catch (Exception e) {
             return getCurrentDate();
         }

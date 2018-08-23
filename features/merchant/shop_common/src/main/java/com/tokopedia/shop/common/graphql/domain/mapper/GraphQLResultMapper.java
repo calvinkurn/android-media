@@ -18,15 +18,11 @@ public class GraphQLResultMapper<T> implements Func1<HasGraphQLResult<T>, Observ
     public Observable<T> call(HasGraphQLResult<T> graphQLResultParent) {
         GraphQLResult<T> graphQLResult = graphQLResultParent.getResult();
         T result = graphQLResult.getResult();
-        if (result == null) {
-            GraphQLDataError graphQLDataError = graphQLResult.getGraphQLDataError();
-            if (graphQLDataError!= null && !TextUtils.isEmpty(graphQLDataError.getMessage())) {
-                return Observable.error(new MessageErrorException(graphQLDataError.getMessage()));
-            } else {
-                return Observable.just(null);
-            }
-        } else {
+        GraphQLDataError graphQLDataError = graphQLResult.getGraphQLDataError();
+        if (graphQLDataError == null || TextUtils.isEmpty(graphQLDataError.getMessage())) {
             return Observable.just(result);
+        } else {
+            return Observable.error(new MessageErrorException(graphQLDataError.getMessage()));
         }
     }
 }

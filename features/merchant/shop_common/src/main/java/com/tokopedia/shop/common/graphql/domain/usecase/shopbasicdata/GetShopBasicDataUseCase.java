@@ -33,16 +33,16 @@ public class GetShopBasicDataUseCase extends UseCase<ShopBasicDataModel> {
     @Override
     public Observable<ShopBasicDataModel> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
-                .flatMap(new GraphQLResultMapper<>())
+                .flatMap(new GraphQLResultMapper<>());
                 //TODO remove below, just for test.
-        .onErrorResumeNext(new Func1<Throwable, Observable<? extends ShopBasicDataModel>>() {
-            @Override
-            public Observable<? extends ShopBasicDataModel> call(Throwable throwable) {
-                String jsonString = "{\"shopBasicData\":{\"result\":{\"domain\":\"tokoku\",\"name\":\"Toko Ku\",\"status\":1,\"closeSchedule\":\"1530403200\",\"closeNote\": \"Udah Kaya\",\"openSchedule\":\"1530403300\",\"tagline\":\"awesome\",\"description\":\"Toko Awesome\",\"logo\":\"https://imagerouter.tokopedia.com/img/100-square/default_picture_user/default_toped-18.jpg\",\"level\":0,\"expired\":\"1530403200\"}}}";
-                ShopBasicDataQuery response = new Gson().fromJson(jsonString, ShopBasicDataQuery.class);
-                return Observable.just(response).flatMap(new GraphQLResultMapper<>());
-            }
-        });
+//        .onErrorResumeNext(new Func1<Throwable, Observable<? extends ShopBasicDataModel>>() {
+//            @Override
+//            public Observable<? extends ShopBasicDataModel> call(Throwable throwable) {
+//                String jsonString = "{\"shopBasicData\":{\"result\":{\"domain\":\"tokoku\",\"name\":\"Toko Ku\",\"status\":1,\"closeSchedule\":\"1530403200\",\"closeNote\": \"Udah Kaya\",\"openSchedule\":\"1530403300\",\"tagline\":\"awesome\",\"description\":\"Toko Awesome\",\"logo\":\"https://imagerouter.tokopedia.com/img/100-square/default_picture_user/default_toped-18.jpg\",\"level\":0,\"expired\":\"1530403200\"}}}";
+//                ShopBasicDataQuery response = new Gson().fromJson(jsonString, ShopBasicDataQuery.class);
+//                return Observable.just(response).flatMap(new GraphQLResultMapper<>());
+//            }
+//        });
 
     }
 

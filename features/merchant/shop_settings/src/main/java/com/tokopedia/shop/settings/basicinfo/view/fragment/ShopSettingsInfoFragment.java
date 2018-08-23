@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -55,6 +56,8 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private TextView tvMembershipDescription;
     private boolean needReload;
     private View vgShopInfoContainer;
+    private ShopBasicDataModel shopBasicDataModel;
+    private ImageView ivShopLogo;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -86,11 +89,12 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         tvMembershipName = view.findViewById(R.id.tvMembershipName);
         tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription);
         vgShopInfoContainer = view.findViewById(R.id.vgShopInfoContainer);
+        ivShopLogo = view.findViewById(R.id.ivShopLogo);
 
         vgShopInfoContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ShopEditBasicInfoActivity.class);
+                Intent intent = ShopEditBasicInfoActivity.createIntent(getContext(), shopBasicDataModel);
                 startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO);
             }
         });
@@ -98,7 +102,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         lvShopStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ShopEditScheduleActivity.class);
+                Intent intent = ShopEditScheduleActivity.createIntent(getContext(), shopBasicDataModel);
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
             }
         });
@@ -159,6 +163,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
 
     @Override
     public void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel) {
+        this.shopBasicDataModel = shopBasicDataModel;
         hideLoading();
         setUIShopBasicData(shopBasicDataModel);
         setUIStatus(shopBasicDataModel);
@@ -170,6 +175,12 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         tvShopDomain.setText(shopBasicDataModel.getDomain());
         tvShopSlogan.setText(shopBasicDataModel.getTagline());
         tvShopDescription.setText(shopBasicDataModel.getDescription());
+        String logoUrl = shopBasicDataModel.getLogo();
+        if (TextUtils.isEmpty(logoUrl)) {
+            ivShopLogo.setImageResource(R.drawable.ic_default_shop_ava);
+        } else {
+            ImageHandler.LoadImage(ivShopLogo, logoUrl);
+        }
     }
 
     private void setUIStatus(ShopBasicDataModel shopBasicDataModel) {
@@ -197,6 +208,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
             if (!TextUtils.isEmpty(openScheduleUnixString)) {
                 String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
+                stringBuilder.append(", ");
                 stringBuilder.append(getString(R.string.reopen_at, openString));
             }
             lvShopStatus.setSubTitle(stringBuilder.toString());
@@ -245,7 +257,9 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
             ivShopMembership.setPadding(0, 0, 0, 0);
             tvMembershipName.setText(getString(R.string.label_gold_merchant));
-            tvMembershipDescription.setText(getString(R.string.valid_until_x, shopBasicDataModel.getExpired()));
+            tvMembershipDescription.setText(getString(R.string.valid_until_x,
+                    ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, shopBasicDataModel.getExpired())));
+            //TODO nvaigate to GM?
         }
     }
 

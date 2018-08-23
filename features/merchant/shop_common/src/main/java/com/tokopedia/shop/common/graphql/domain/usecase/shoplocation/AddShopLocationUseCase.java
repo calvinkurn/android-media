@@ -71,16 +71,16 @@ public class AddShopLocationUseCase extends UseCase<String> {
     @Override
     public Observable<String> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
-                .flatMap(new GraphQLSuccessMapper())
+                .flatMap(new GraphQLSuccessMapper());
                 //TODO remove below, just for test.
-                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-                    @Override
-                    public Observable<? extends String> call(Throwable throwable) {
-                        String jsonString = "{\"addShopLocation\":{\"success\":true,\"message\":\"Success\"}}";
-                        AddShopLocationMutation response = new Gson().fromJson(jsonString, AddShopLocationMutation.class);
-                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
-                    }
-                });
+//                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
+//                    @Override
+//                    public Observable<? extends String> call(Throwable throwable) {
+//                        String jsonString = "{\"addShopLocation\":{\"success\":true,\"message\":\"Success\"}}";
+//                        AddShopLocationMutation response = new Gson().fromJson(jsonString, AddShopLocationMutation.class);
+//                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
+//                    }
+//                });
 
     }
 

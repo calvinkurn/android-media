@@ -4,8 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,6 +41,8 @@ import javax.inject.Inject;
 public class ShopEditScheduleActivity extends BaseSimpleActivity
         implements UpdateShopShedulePresenter.View {
 
+    public static final String EXTRA_SHOP_MODEL = "shop_model";
+
     public static final String SAVED_SELECTED_START_DATE = "svd_selected_start_date";
     public static final String SAVED_SELECTED_END_DATE = "svd_selected_end_date";
 
@@ -55,15 +60,26 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
     private ImageLabelView labelStartClose;
     private ImageLabelView labelEndClose;
 
-    private long selectedStartCloseUnixTime;
-    private long selectedEndCloseUnixTime;
+    private long selectedStartCloseUnixTimeMs;
+    private long selectedEndCloseUnixTimeMs;
+
+    private ShopBasicDataModel shopBasicDataModel;
+
+    public static Intent createIntent(Context context, @Nullable ShopBasicDataModel shopBasicDataModel) {
+        Intent intent = new Intent(context, ShopEditScheduleActivity.class);
+        intent.putExtra(EXTRA_SHOP_MODEL, shopBasicDataModel);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
+        if (getIntent().hasExtra(EXTRA_SHOP_MODEL)) {
+            shopBasicDataModel = getIntent().getParcelableExtra(EXTRA_SHOP_MODEL);
+        }
         if (savedInstanceState != null) {
-            selectedStartCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_START_DATE);
-            selectedEndCloseUnixTime = savedInstanceState.getLong(SAVED_SELECTED_END_DATE);
+            selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE);
+            selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE);
         }
         super.onCreate(savedInstanceState);
 
@@ -111,30 +127,45 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 }
             }
         });
+
+        if (shopBasicDataModel == null) {
+            loadShopBasicData();
+        } else {
+            onSuccessGetShopBasicData(shopBasicDataModel);
+        }
+
         labelStartClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Date minDate = ShopDateUtil.getCurrentDate();
-                Date selectedDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTime);
+                Date selectedDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTimeMs);
                 showStartDatePickerDialog(selectedDate, minDate);
             }
         });
         labelEndClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Date minDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTime);
-                Date selectedDate = ShopDateUtil.unixToDate(selectedEndCloseUnixTime);
+                Date minDate;
+                if (selectedStartCloseUnixTimeMs == 0) {
+                    minDate = ShopDateUtil.unixToDate(System.currentTimeMillis());
+                } else {
+                    minDate = ShopDateUtil.unixToDate(selectedStartCloseUnixTimeMs);
+                }
+                Date selectedDate;
+                if (selectedEndCloseUnixTimeMs == 0) {
+                    selectedDate = ShopDateUtil.unixToDate(selectedEndCloseUnixTimeMs);
+                } else {
+                    selectedDate = ShopDateUtil.unixToDate(System.currentTimeMillis());
+                }
                 showEndDatePickerDialog(selectedDate, minDate);
             }
         });
-        scheduleSwitch.setVisibility(View.GONE);
         tvSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onSaveButtonClicked();
             }
         });
-        loadShopBasicData();
     }
 
     public void showStartDatePickerDialog(Date selectedDate, Date minDate) {
@@ -168,18 +199,21 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
     }
 
     private void setStartCloseDate(Date date) {
-        selectedStartCloseUnixTime = date.getTime();
+        selectedStartCloseUnixTimeMs = date.getTime();
         labelStartClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
         // move end date to start date, if the end < start
-        if (selectedEndCloseUnixTime > 0 &&
-                selectedEndCloseUnixTime < selectedStartCloseUnixTime) {
-            setEndCloseDate(new Date(selectedStartCloseUnixTime));
+        if (selectedEndCloseUnixTimeMs > 0 &&
+                selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
+            setEndCloseDate(new Date(selectedStartCloseUnixTimeMs));
         }
     }
 
     private void setEndCloseDate(Date date) {
-        selectedEndCloseUnixTime = date.getTime();
+        selectedEndCloseUnixTimeMs = date.getTime();
         labelEndClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
+        if (selectedStartCloseUnixTimeMs == 0) {
+            setStartCloseDate(ShopDateUtil.getCurrentDate());
+        }
     }
 
     private void hideCloseScheduleContent() {
@@ -198,8 +232,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                         ShopScheduleActionDef.OPEN :
                         ShopScheduleActionDef.CLOSED;
         boolean isScheduleSwitch = scheduleSwitch.isChecked();
-        long closeStart = isScheduleSwitch ? selectedStartCloseUnixTime : 0;
-        long closeEnd = isScheduleSwitch ? selectedEndCloseUnixTime : 0;
+        long closeStart = isScheduleSwitch ? selectedStartCloseUnixTimeMs : 0;
+        long closeEnd = isScheduleSwitch ? selectedEndCloseUnixTimeMs : 0;
         String closeNote = isScheduleSwitch ? etShopCloseNote.getText().toString() : "";
         updateShopShedulePresenter.updateShopSchedule(
                 shopAction,
@@ -228,6 +262,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
     }
 
     private void loadShopBasicData() {
+        scheduleSwitch.setVisibility(View.GONE);
         updateShopShedulePresenter.getShopBasicData();
     }
 
@@ -259,6 +294,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
 
     @Override
     public void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel) {
+        this.shopBasicDataModel = shopBasicDataModel;
         scheduleSwitch.setVisibility(View.VISIBLE);
         setUIShopSchedule(shopBasicDataModel);
         tvSave.setVisibility(View.VISIBLE);
@@ -280,13 +316,13 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
                 !TextUtils.isEmpty(shopCloseSchedule)) {
             scheduleSwitch.setChecked(true);
             if (!TextUtils.isEmpty(shopCloseSchedule)) {
-                long shopCloseScheduleUnix = Long.parseLong(shopCloseSchedule);
-                Date shopCloseDate = ShopDateUtil.unixToDate(shopCloseScheduleUnix);
+                long shopCloseScheduleUnixMs = Long.parseLong(shopCloseSchedule) * 1000L;
+                Date shopCloseDate = ShopDateUtil.unixToDate(shopCloseScheduleUnixMs);
                 setStartCloseDate(shopCloseDate);
             }
             if (!TextUtils.isEmpty(shopOpenSchedule)) {
-                long shopOpenScheduleUnix = Long.parseLong(shopOpenSchedule);
-                Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnix);
+                long shopOpenScheduleUnixMs = Long.parseLong(shopOpenSchedule) * 1000L;
+                Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnixMs);
                 setEndCloseDate(shopOpenDate);
             }
         } else {
@@ -328,8 +364,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong(SAVED_SELECTED_START_DATE, selectedStartCloseUnixTime);
-        outState.putLong(SAVED_SELECTED_END_DATE, selectedEndCloseUnixTime);
+        outState.putLong(SAVED_SELECTED_START_DATE, selectedStartCloseUnixTimeMs);
+        outState.putLong(SAVED_SELECTED_END_DATE, selectedEndCloseUnixTimeMs);
     }
 
     @Override

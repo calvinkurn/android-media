@@ -35,16 +35,16 @@ public class GetShopNotesUseCase extends UseCase<ArrayList<ShopNoteModel>> {
     @Override
     public Observable<ArrayList<ShopNoteModel>> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
-                .flatMap(new GraphQLResultMapper<>())
+                .flatMap(new GraphQLResultMapper<>());
                 //TODO remove below, just for test.
-        .onErrorResumeNext(new Func1<Throwable, Observable<? extends ArrayList<ShopNoteModel>>>() {
-            @Override
-            public Observable<? extends ArrayList<ShopNoteModel>> call(Throwable throwable) {
-                String jsonString = "{\"shopNotes\":{\"result\":[{\"id\":\"123\",\"title\":\"Catatan 1\",\"content\":\"<b>Isi Catatan 1</b>\",\"isTerms\":true,\"updateTime\":\"1530403200\"},{\"id\":\"123\",\"title\":\"Catatan 2\",\"content\":\"<b>Isi Catatan 2</b>\",\"isTerms\":false,\"updateTime\":\"1530403200\"}],\"error\":{\"message\":\"error message\"}}}";
-                ShopNoteQuery response = new Gson().fromJson(jsonString, ShopNoteQuery.class);
-                return Observable.just(response).flatMap(new GraphQLResultMapper<>());
-            }
-        });
+//        .onErrorResumeNext(new Func1<Throwable, Observable<? extends ArrayList<ShopNoteModel>>>() {
+//            @Override
+//            public Observable<? extends ArrayList<ShopNoteModel>> call(Throwable throwable) {
+//                String jsonString = "{\"shopNotes\":{\"result\":[{\"id\":\"123\",\"title\":\"Catatan 1\",\"content\":\"<b>Isi Catatan 1</b>\",\"isTerms\":true,\"updateTime\":\"1530403200\"},{\"id\":\"123\",\"title\":\"Catatan 2\",\"content\":\"<b>Isi Catatan 2</b>\",\"isTerms\":false,\"updateTime\":\"1530403200\"}],\"error\":{\"message\":\"error message\"}}}";
+//                ShopNoteQuery response = new Gson().fromJson(jsonString, ShopNoteQuery.class);
+//                return Observable.just(response).flatMap(new GraphQLResultMapper<>());
+//            }
+//        });
 
     }
 

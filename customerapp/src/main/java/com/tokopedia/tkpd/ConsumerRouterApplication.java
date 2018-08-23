@@ -2299,18 +2299,18 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToShopEditor(Context context) {
-
+    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+        return new Intent(context, ShopSettingsEtalaseActivity.class);
     }
 
     @Override
-    public void goToManageShopEtalase(Context context) {
-
+    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+        return new Intent(context, ShopSettingsNotesActivity.class);
     }
 
     @Override
-    public void goToManageShopNotes(Context context) {
-
+    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+        return new Intent(context, ShopSettingsInfoActivity.class);
     }
 
     @Override
