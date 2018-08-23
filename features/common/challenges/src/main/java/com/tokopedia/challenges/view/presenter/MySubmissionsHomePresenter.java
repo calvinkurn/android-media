@@ -27,6 +27,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
     private boolean isLastPage;
     private int pageStart = 0;
     private int pageSize = 20;
+    private int totalItems = 20;
 
     @Inject
     public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase, PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
@@ -38,7 +39,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         if (isFirst) {
             getView().showProgressBarView();
         }
-        isLoading=true;
+        isLoading = true;
         getMySubmissionsListUseCase.setRequestParams(pageStart, pageSize);
         getMySubmissionsListUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
@@ -61,6 +62,9 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 SubmissionResponse mainDataObject = res1.getData();
                 isLoading = false;
                 getView().removeFooter();
+                if (mainDataObject != null) {
+                    totalItems = mainDataObject.getFound();
+                }
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
                     pageStart += mainDataObject.getSubmissionResults().size();
                     getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
@@ -102,10 +106,6 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         checkIfToLoad(layoutManager);
     }
 
-    public void setPageStart(int start) {
-        this.pageStart = start;
-    }
-
     private void checkIfToLoad(LinearLayoutManager layoutManager) {
         int visibleItemCount = layoutManager.getChildCount();
         int totalItemCount = layoutManager.getItemCount();
@@ -114,7 +114,10 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         if (!isLoading && !isLastPage) {
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0) {
-                getMySubmissionsList(false);
+                if (pageStart + pageSize <= totalItems)
+                    getMySubmissionsList(false);
+                else
+                    getView().removeFooter();
             } else {
                 getView().addFooter();
             }

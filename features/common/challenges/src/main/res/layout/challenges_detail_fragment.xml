@@ -126,21 +126,21 @@
                             tools:text="Due date: 30th July 2018" />
 
 
-                        <TextView
-                            android:id="@+id/tv_participated"
-                            style="@style/TextView.Micro11.FontMedium"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="@dimen/dp_16"
-                            android:background="@drawable/bg_round_solid_green_radius_huge"
-                            android:gravity="center_vertical"
-                            android:paddingBottom="@dimen/dp_4"
-                            android:paddingLeft="@dimen/dp_16"
-                            android:paddingRight="@dimen/dp_16"
-                            android:paddingTop="@dimen/dp_2"
-                            tools:text="Participated" />
+                    <TextView
+                        android:id="@+id/tv_participated"
+                        style="@style/TextView.Micro11.FontMedium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:background="@drawable/bg_round_solid_green_radius_huge"
+                        android:gravity="center_vertical"
+                        android:paddingBottom="@dimen/dp_6"
+                        android:paddingLeft="@dimen/dp_10"
+                        android:paddingRight="@dimen/dp_10"
+                        android:paddingTop="@dimen/dp_4"
+                        tools:text="Participated" />
 
                         <android.support.constraint.ConstraintLayout
                             android:id="@+id/cl_timer"
