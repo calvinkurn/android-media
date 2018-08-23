@@ -51,6 +51,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -744,6 +745,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         if (messageItem instanceof GroupChatQuickReplyViewModel) {
             setQuickReply(((GroupChatQuickReplyViewModel) messageItem).getList());
+        }
+
+        if(messageItem instanceof ImageAnnouncementViewModel){
+            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem)
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
