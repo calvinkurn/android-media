@@ -198,12 +198,12 @@ public class Utils {
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
         } else if ("Declined".equalsIgnoreCase(status)) {
-            tvStatus.setText("Rejected");
+            tvStatus.setText(context.getResources().getString(R.string.rejected));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.declined_red_textcolor));
 
         } else if ("Waiting".equalsIgnoreCase(status)) {
-            tvStatus.setText("Pending");
+            tvStatus.setText(context.getResources().getString(R.string.pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
         } else if ("Completed".equalsIgnoreCase(status)) {

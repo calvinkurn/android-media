@@ -2,6 +2,7 @@ package com.tokopedia.challenges.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -61,9 +62,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
     void bind(SubmissionResult challengesResult) {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
+        Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
+        tvPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
-        //imgLikes
-//        tvStatus.setText(submissionsResult.getStatus());
 
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         if ("Approved".equalsIgnoreCase(submissionsResult.getStatus())) {
@@ -75,9 +76,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             }
         } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
             imgShare.setVisibility(View.GONE);
-        } else if ("Waiting".equalsIgnoreCase(submissionsResult.getStatus())) {
         }
-
         ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
     }
 

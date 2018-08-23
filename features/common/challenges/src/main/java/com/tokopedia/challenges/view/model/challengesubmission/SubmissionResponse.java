@@ -10,7 +10,15 @@ import com.tokopedia.challenges.view.model.Collection;
 
 import java.util.List;
 
-public class SubmissionResponse implements Parcelable{
+public class SubmissionResponse implements Parcelable {
+    @SerializedName("Start")
+    private int start;
+    @SerializedName("Size")
+    private int size;
+    @SerializedName("Count")
+    private int count;
+    @SerializedName("Found")
+    private int found;
     @SerializedName("Results")
     @Expose
     private List<SubmissionResult> submissionResults;
@@ -22,6 +30,10 @@ public class SubmissionResponse implements Parcelable{
     private Collection collection;
 
     protected SubmissionResponse(Parcel in) {
+        start = in.readInt();
+        size = in.readInt();
+        count = in.readInt();
+        found = in.readInt();
         submissionResults = in.createTypedArrayList(SubmissionResult.CREATOR);
         channel = in.readParcelable(Channel.class.getClassLoader());
         collection = in.readParcelable(Collection.class.getClassLoader());
@@ -63,6 +75,38 @@ public class SubmissionResponse implements Parcelable{
         this.collection = collection;
     }
 
+    public int getStart() {
+        return start;
+    }
+
+    public void setStart(int start) {
+        this.start = start;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public int getFound() {
+        return found;
+    }
+
+    public void setFound(int found) {
+        this.found = found;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,6 +114,10 @@ public class SubmissionResponse implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(start);
+        parcel.writeInt(size);
+        parcel.writeInt(count);
+        parcel.writeInt(found);
         parcel.writeTypedList(submissionResults);
         parcel.writeParcelable(channel, i);
         parcel.writeParcelable(collection, i);
