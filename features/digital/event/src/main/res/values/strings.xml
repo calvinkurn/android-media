@@ -85,6 +85,11 @@
     <string name="kunci_filter">Silakan lakukan pencarian dengan kata kunci / filter lain</string>
     <string name="sale_not_started">Belum Mulai</string>
     <string name="login_daftar_transaksi">Masuk ke Tokopedia untuk melihat daftar transaksi Anda</string>
+    <string name="rincian_harga">Rincian Harga</string>
+    <string name="biaya_layanan">Biaya Layanan</string>
+    <string name="total_diskon">Total Diskon</string>
+    <string name="discount">- Rp %1$d</string>
+
 
     <!-- need to changed -->
 

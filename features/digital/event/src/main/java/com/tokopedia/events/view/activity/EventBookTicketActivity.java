@@ -182,12 +182,14 @@ public class EventBookTicketActivity
     public void showProgressBar() {
         progBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
+        buttonPayTickets.setClickable(false);
     }
 
     @Override
     public void hideProgressBar() {
         progBar.setVisibility(View.GONE);
         progressBarLayout.setVisibility(View.GONE);
+        buttonPayTickets.setClickable(true);
     }
 
     @Override

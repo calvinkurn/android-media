@@ -173,7 +173,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         this.mSelectedSeatViewModel = selectedSeatViewModel;
         RequestParams params = RequestParams.create();
         params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
-        params.putBoolean("ispromocodecase", true);
+        params.putBoolean("ispromocodecase", false);
         if (isEventOmsEnabled()) {
             postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
                 @Override
