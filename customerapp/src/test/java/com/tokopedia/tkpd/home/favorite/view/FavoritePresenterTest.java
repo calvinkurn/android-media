@@ -13,7 +13,7 @@ import com.tokopedia.tkpd.home.favorite.domain.interactor.GetAllDataFavoriteUseC
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetFavoriteShopUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetInitialDataPageUsecase;
 import com.tokopedia.tkpd.home.favorite.domain.interactor.GetTopAdsShopUseCase;
-import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUsecase;
+import com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil;
 import com.tokopedia.tkpd.home.favorite.domain.model.DomainWishlist;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
 import com.tokopedia.tkpd.home.favorite.domain.model.TopAdsShop;
@@ -172,8 +172,8 @@ public class FavoritePresenterTest {
         getTopAdsShopUseCase
                 = new GetTopAdsShopUseCase(jobExecutor, postExecutionThread, repository);
 
-        GetWishlistUsecase getWishlistUsecase
-                = new GetWishlistUsecase(jobExecutor, postExecutionThread, repository);
+        GetWishlistUtil getWishlistUtil
+                = new GetWishlistUtil(repository);
 
         addFavoriteShopUseCase
                 = new AddFavoriteShopUseCase(jobExecutor, postExecutionThread, repository);
@@ -182,11 +182,11 @@ public class FavoritePresenterTest {
                 = new GetFavoriteShopUsecase(jobExecutor, postExecutionThread, repository);
 
         getAllDataFavoriteUseCase = new GetAllDataFavoriteUseCase(context,
-                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUsecase,
+                jobExecutor, postExecutionThread, getFavoriteShopUsecase, getWishlistUtil,
                 getTopAdsShopUseCase);
 
         getInitialDataPageUsecase = new GetInitialDataPageUsecase(context, jobExecutor, postExecutionThread,
-                getFavoriteShopUsecase, getWishlistUsecase, getTopAdsShopUseCase);
+                getFavoriteShopUsecase, getWishlistUtil, getTopAdsShopUseCase);
     }
 
 }

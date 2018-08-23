@@ -8,6 +8,7 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.Html;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -245,6 +246,7 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
                 etRemark.setVisibility(View.VISIBLE);
                 tvLabelRemarkOption.setVisibility(View.GONE);
                 data.setStateRemarkExpanded(true);
+                tvNoteCharCounter.setVisibility(View.VISIBLE);
             }
         });
 
@@ -265,6 +267,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (data.isStateRemarkExpanded()) {
             this.etRemark.setVisibility(View.VISIBLE);
             this.tvLabelRemarkOption.setVisibility(View.GONE);
+            this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+        } else {
+            this.tvNoteCharCounter.setVisibility(View.GONE);
         }
 
         this.ivProductImage.setOnClickListener(getOnClickProductItemListener(getAdapterPosition(), data));
@@ -339,6 +344,9 @@ public class CartListItemViewHolder extends RecyclerView.ViewHolder {
         if (!TextUtils.isEmpty(etQty.getText().toString())) {
             checkQtyMustDisabled(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
         }
+        this.etRemark.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(data.getCartItemData().getUpdatedData().getMaxCharRemark())
+        });
         this.etRemark.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
         this.etQty.addTextChangedListener(new QuantityTextWatcher(quantityTextwatcherListener));
 

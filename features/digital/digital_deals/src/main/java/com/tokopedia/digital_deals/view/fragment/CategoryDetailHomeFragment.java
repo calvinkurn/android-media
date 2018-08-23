@@ -9,6 +9,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -281,13 +282,14 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+
+        if(getActivity()==null)
+            return;
         switch (requestCode) {
-
-
             case DealsHomeActivity.REQUEST_CODE_DEALSSEARCHACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!locationName.equals(location1.getName())) {
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location!=null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getCategoryDetails(true);
                         mPresenter.getBrandsList(true);
                     }
@@ -296,8 +298,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
                 break;
             case DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    Location location1 = Utils.getSingletonInstance().getLocation(getActivity());
-                    if (!locationName.equals(location1.getName())) {
+                    Location location = Utils.getSingletonInstance().getLocation(getActivity());
+                    if (location!=null && !TextUtils.isEmpty(locationName) && !TextUtils.isEmpty(location.getName()) && !locationName.equals(location.getName())) {
                         mPresenter.getCategoryDetails(true);
                         mPresenter.getBrandsList(true);
                     } else {

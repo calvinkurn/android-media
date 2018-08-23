@@ -28,6 +28,7 @@ public class ActivationActivity extends BasePresenterActivity {
 
     public static final String INTENT_EXTRA_PARAM_EMAIL = "email";
     public static final String INTENT_EXTRA_PARAM_PW = "pw";
+    private RegisterAnalytics analytics;
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -65,6 +66,12 @@ public class ActivationActivity extends BasePresenterActivity {
             fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         }
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
     }
 
     private void setToolbar() {
@@ -119,4 +126,9 @@ public class ActivationActivity extends BasePresenterActivity {
         return callingIntent;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        analytics.eventClickBackEmailActivation();
+    }
 }

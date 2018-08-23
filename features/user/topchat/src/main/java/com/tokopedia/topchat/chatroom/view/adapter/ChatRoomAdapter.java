@@ -59,7 +59,11 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         if (list.get(position) instanceof BaseChatViewModel) {
-            showTimeBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
+            showDateBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
+            showTimeBaseChat(holder.getAdapterPosition());
+        }
+        if(list.get(position) instanceof SendableViewModel) {
+            showRoleBaseChat(holder.itemView.getContext(), holder.getAdapterPosition());
         }
         holder.bind(list.get(holder.getAdapterPosition()));
     }
@@ -80,7 +84,7 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         }
     }
 
-    private void showTimeBaseChat(Context context, int position) {
+    private void showDateBaseChat(Context context, int position) {
         if (position != list.size() - 1) {
             try {
                 BaseChatViewModel now = (BaseChatViewModel) list.get(position);
@@ -93,14 +97,92 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 }
 
                 if (compareTime(context, myTime, prevTime)) {
-                    ((BaseChatViewModel) list.get(position)).setShowTime(false);
+                    ((BaseChatViewModel) list.get(position)).setShowDate(false);
                 } else {
-                    ((BaseChatViewModel) list.get(position)).setShowTime(true);
+                    ((BaseChatViewModel) list.get(position)).setShowDate(true);
                 }
             } catch (NumberFormatException | ClassCastException e) {
-                ((BaseChatViewModel) list.get(position)).setShowTime(false);
+                ((BaseChatViewModel) list.get(position)).setShowDate(false);
             }
         } else {
+            try {
+                ((BaseChatViewModel) list.get(position)).setShowDate(true);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showRoleBaseChat(Context context, int position) {
+        if (position != list.size() - 1) {
+            try {
+                SendableViewModel now = (SendableViewModel) list.get(position);
+                if(!now.isSender()) {
+                    now.setShowRole(false);
+                    return;
+                }
+
+                SendableViewModel prev = null;
+                long myTime = Long.parseLong(now.getReplyTime());
+                long prevTime = 0;
+
+                if (list.get(position + 1) != null && list.get(position + 1) instanceof SendableViewModel) {
+                    prev = (SendableViewModel) list.get(position + 1);
+                    prevTime = Long.parseLong(prev.getReplyTime());
+                }
+
+                if (prev != null
+                        && compareSender(now,prev)
+                        && compareHour(myTime, prevTime)) {
+                    ((SendableViewModel) list.get(position)).setShowRole(false);
+                } else {
+                    ((SendableViewModel) list.get(position)).setShowRole(true);
+                }
+            } catch (NumberFormatException | ClassCastException e) {
+                ((SendableViewModel) list.get(position)).setShowRole(false);
+            }
+        } else {
+            try {
+                ((SendableViewModel) list.get(position)).setShowRole(true);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void showTimeBaseChat(int position){
+        if(position != 0) {
+            try {
+                boolean isSender = true;
+                BaseChatViewModel now = (BaseChatViewModel) list.get(position);
+                BaseChatViewModel next = (BaseChatViewModel) list.get(position - 1);
+                if(now instanceof SendableViewModel) {
+                    isSender = ((SendableViewModel) now).isSender();
+                }
+                long myTime = Long.parseLong(now.getReplyTime());
+                long nextItemTime = 0;
+
+                if (list.get(position - 1) != null && list.get(position - 1) instanceof
+                        BaseChatViewModel) {
+                    next = (BaseChatViewModel) list.get(position - 1);
+                    nextItemTime = Long.parseLong(next.getReplyTime());
+                }
+
+                if(next != null &&
+                        now != null &&
+                        compareHour(nextItemTime,myTime) &&
+                        (compareSender(now,next))) {
+                    ((BaseChatViewModel) list.get(position)).setShowTime(false);
+                }
+                else {
+                    ((BaseChatViewModel) list.get(position)).setShowTime(true);
+                }
+
+            } catch (NumberFormatException | ClassCastException e) {
+                ((BaseChatViewModel) list.get(position)).setShowTime(true);
+            }
+        }
+        else {
             try {
                 ((BaseChatViewModel) list.get(position)).setShowTime(true);
             } catch (ClassCastException e) {
@@ -114,9 +196,33 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
                 .equals(DateFormat.getLongDateFormat(context).format(new Date(calBefore)));
     }
 
-    private boolean compareHour(Context context, String calCurrent, String calBefore) {
-        return calCurrent.equals(calBefore);
+    private boolean compareHour(long calCurrent, long calBefore) {
+        long MILIS = 1000;
+        long SECONDS = 60;
+        long MINUTES = MILIS * SECONDS;
+        return (calCurrent/MINUTES == calBefore/MINUTES);
     }
+
+    private boolean compareSender(BaseChatViewModel current, BaseChatViewModel compare){
+
+        if(current == null || compare == null ) return false;
+
+        boolean currentIsSender = false;
+        boolean compareIsSender = false;
+        if(current instanceof SendableViewModel && compare instanceof SendableViewModel){
+            currentIsSender = ((SendableViewModel) current).isSender();
+            compareIsSender = ((SendableViewModel) compare).isSender();
+            if(!currentIsSender) return currentIsSender == compareIsSender;
+        }
+
+        if(current.getFromRole() == null || compare.getFromRole() == null) {
+            return false;
+        }
+        else {
+            return current.getFromRole().equals(compare.getFromRole());
+        }
+    }
+
 
     @Override
     public int getItemViewType(int position) {
@@ -180,6 +286,9 @@ public class ChatRoomAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     public void addReply(Visitable item) {
         this.list.add(0, item);
         notifyItemInserted(0);
+        if(list.size() > 1) {
+            notifyItemChanged(1);
+        }
     }
 
     public void addReply(List<ImageUploadViewModel> list) {

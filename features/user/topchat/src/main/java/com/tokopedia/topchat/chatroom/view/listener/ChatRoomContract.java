@@ -15,6 +15,8 @@ import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.adapter.ChatRoomAdapter;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ChatRoomViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.ChatShopInfoViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageupload.ImageUploadViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyListViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.quickreply.QuickReplyViewModel;
@@ -57,7 +59,7 @@ public class ChatRoomContract {
 
         void hideMainLoading();
 
-        void setOnlineDesc(String s);
+        void setOnlineDesc(String s, boolean isOnline);
 
         WebSocketInterface getInterface();
 
@@ -140,6 +142,9 @@ public class ChatRoomContract {
 
         void onQuickReplyClicked(QuickReplyViewModel quickReply);
 
+        void onChatActionBalloonSelected(ChatActionBubbleViewModel message, Visitable
+                modelToBeRemoved);
+
         void showQuickReplyView(QuickReplyListViewModel model);
 
         void onInvoiceSelected(InvoiceLinkPojo selectedInvoice);
@@ -163,6 +168,16 @@ public class ChatRoomContract {
         void enableWebSocket();
 
         void showReasonRating(String messageId, long replyTimeNano, ArrayList<String> reasons);
+
+        void setUserStatus(String status, boolean isOnline);
+
+        void successDeleteChat();
+
+        void setChatShopInfoData(ChatShopInfoViewModel viewModel);
+
+        void setMenuVisible(boolean isVisible);
+
+        void toggleFollowSuccess();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
@@ -194,5 +209,13 @@ public class ChatRoomContract {
         void getExistingChat();
 
         void sendReasonRating(String messageId, long replyTimeNano, String reason);
+
+        void getUserStatus(String userId, String role);
+
+        void deleteChat(String messageId);
+
+        void getFollowStatus(String shopId);
+
+        void doFollowUnfollowToggle(String shopId);
     }
 }

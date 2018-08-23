@@ -4,6 +4,7 @@ import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -48,7 +49,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private static final int SINGLE_DATA_SIZE = 1;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
-    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 500;
+    private static final int TEXTWATCHER_NOTE_DEBOUNCE_TIME = 100;
 
     private TextView shippingIndex;
     private TextViewCompat pseudoEditButton;
@@ -66,6 +67,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     private EditText etQty;
     private TextView tvErrorQtyValidation;
     private TextView tvErrorNoteValidation;
+    private TextView tvNoteCharCounter;
 
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
     private NoteTextWatcher.NoteTextwatcherListener noteTextwatcherListener;
@@ -92,6 +94,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         etQty = itemView.findViewById(R.id.et_qty);
         tvErrorQtyValidation = itemView.findViewById(R.id.tv_error_qty_validation);
         tvErrorNoteValidation = itemView.findViewById(R.id.tv_error_note_validation);
+        tvNoteCharCounter = itemView.findViewById(R.id.tv_note_char_counter);
         phoneNumber = itemView.findViewById(R.id.tv_recipient_phone);
         phoneNumber.setVisibility(View.GONE);
 
@@ -120,7 +123,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         multipleAddressItemData = itemData;
         renderHeader(itemData, listener, itemDataList, getAdapterPosition());
         renderAddress(itemData, listener, parentPosition);
-        renderQuantity(itemData, getAdapterPosition());
+        renderQuantity(itemData, listener, getAdapterPosition());
         renderNotes(itemData);
     }
 
@@ -189,9 +192,11 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
 
     private void itemNoteTextWatcherAction(Editable editable, MultipleAddressItemData data) {
         if (!editable.toString().equalsIgnoreCase(data.getProductNotes())) {
+            String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                    editable.length(), data.getMaxRemark());
+            tvNoteCharCounter.setText(noteCounter);
             data.setProductNotes(editable.toString());
             validateNote(data);
-            multipleAddressItemAdapter.notifyItemChanged(getAdapterPosition());
         }
     }
 
@@ -350,12 +355,20 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderNotes(MultipleAddressItemData itemData) {
+        etNotesForSeller.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(itemData.getMaxRemark())
+        });
+
         if (StringUtils.isBlank(itemData.getProductNotes())) {
             etNotesForSeller.setText("");
         } else {
             etNotesForSeller.setText(itemData.getProductNotes());
             etNotesForSeller.setSelection(etNotesForSeller.length());
         }
+
+        String noteCounter = String.format(tvNoteCharCounter.getContext().getString(R.string.note_counter_format),
+                itemData.getProductNotes().length(), itemData.getMaxRemark());
+        tvNoteCharCounter.setText(noteCounter);
 
         if (noteTextwatcherListener != null) {
             etNotesForSeller.addTextChangedListener(new NoteTextWatcher(noteTextwatcherListener));
@@ -370,10 +383,13 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         validateNote(itemData);
     }
 
-    private void renderQuantity(MultipleAddressItemData itemData, int position) {
+    private void renderQuantity(MultipleAddressItemData itemData,
+                                MultipleAddressItemAdapter.MultipleAddressItemAdapterListener listener,
+                                int position) {
         btnQtyPlus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onClickPlusQuantityButton();
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty + 1;
@@ -390,6 +406,7 @@ public class MultipleAddressItemViewHolder extends RecyclerView.ViewHolder {
         btnQtyMin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listener.onClickMinQuantityButton();
                 try {
                     int qty = Integer.parseInt(multipleAddressItemData.getProductQty());
                     qty = qty - 1;

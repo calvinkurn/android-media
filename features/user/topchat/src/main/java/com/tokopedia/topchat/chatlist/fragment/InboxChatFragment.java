@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -28,6 +29,7 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
@@ -44,7 +46,10 @@ import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.Chat;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
@@ -121,6 +126,19 @@ public class InboxChatFragment extends BaseDaggerFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.inbox_chat_organize, menu);
+        MenuItem organize = menu.findItem(R.id.action_organize);
+        if(organize != null) {
+            organize.setIcon(getDetailMenuItem());
+            organize.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+    }
+
+    private Drawable getDetailMenuItem() {
+        TextDrawable drawable = new TextDrawable(getContext());
+        drawable.setText(getResources().getString(R.string.option_organize));
+        drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        drawable.setTextSize(16.0f);
+        return drawable;
     }
 
     @Override
@@ -534,6 +552,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
             }
+        } else if(requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
+                  resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
+                  data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID) ) {
+            presenter.refreshData();
         }
 
         presenter.createWebSocket();

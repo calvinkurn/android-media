@@ -29,7 +29,7 @@ import rx.functions.Func3;
 public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
 
     private GetFavoriteShopUsecase getFavoriteShopUsecase;
-    private GetWishlistUsecase getWishlistUsecase;
+    private GetWishlistUtil getWishlistUtil;
     private final GetTopAdsShopUseCase getTopAdsShopUseCase;
     private final Context context;
     private final CacheHandler cacheHandler;
@@ -38,13 +38,13 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     public GetInitialDataPageUsecase(Context context, ThreadExecutor threadExecutor,
                                      PostExecutionThread postExecutionThread,
                                      GetFavoriteShopUsecase getFavoriteShopUsecase,
-                                     GetWishlistUsecase getWishlistUsecase,
+                                     GetWishlistUtil getWishlistUtil,
                                      GetTopAdsShopUseCase getTopAdsShopUseCase) {
 
         super(threadExecutor, postExecutionThread);
         this.context = context;
         this.getFavoriteShopUsecase = getFavoriteShopUsecase;
-        this.getWishlistUsecase = getWishlistUsecase;
+        this.getWishlistUtil = getWishlistUtil;
         this.getTopAdsShopUseCase = getTopAdsShopUseCase;
         this.cacheHandler = new CacheHandler(context, CacheHandler.TOP_ADS_CACHE);
         random = new Random();
@@ -92,9 +92,9 @@ public class GetInitialDataPageUsecase extends UseCase<DataFavorite> {
     }
 
     public Observable<DomainWishlist> getWishlist() {
-        RequestParams params = GetWishlistUsecase.getDefaultParams();
-        params.putBoolean(GetWishlistUsecase.KEY_IS_FORCE_REFRESH, false);
-        return getWishlistUsecase.createObservable(params);
+        RequestParams params = GetWishlistUtil.getDefaultParams();
+        params.putBoolean(GetWishlistUtil.KEY_IS_FORCE_REFRESH, false);
+        return getWishlistUtil.getWishListData(params);
     }
 
     public Observable<TopAdsShop> getTopAdsShop() {

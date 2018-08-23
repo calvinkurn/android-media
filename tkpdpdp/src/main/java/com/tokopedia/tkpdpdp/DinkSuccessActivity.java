@@ -10,13 +10,10 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.tokopedia.core.app.TActivity;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 
 /**
@@ -25,13 +22,10 @@ import butterknife.OnClick;
 
 public class DinkSuccessActivity extends TActivity {
 
-
-    @BindView(R2.id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(R2.id.toolbar)
     Toolbar toolbar;
-    @BindView(R2.id.tv_title)
     TextView tvTitle;
+    View buttonTopAds;
 
     public static final String EXTRA_PRODUCT = "EXTRA_PRODUCT";
     private static final String ads_url = "https://www.tokopedia.com/iklan?medium=android&source=dink";
@@ -40,7 +34,15 @@ public class DinkSuccessActivity extends TActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dink_success);
-        ButterKnife.bind(this);
+        toolbarTitle = findViewById(R.id.toolbar_title);
+        toolbar = findViewById(R.id.toolbar);
+        tvTitle = findViewById(R.id.tv_title);
+        buttonTopAds = findViewById(R.id.button_use_topads);
+        buttonTopAds.setOnClickListener(view -> {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(ads_url));
+            startActivity(i);
+        });
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -71,10 +73,4 @@ public class DinkSuccessActivity extends TActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @OnClick(R2.id.button_use_topads)
-    public void onViewClicked() {
-        Intent i = new Intent(Intent.ACTION_VIEW);
-        i.setData(Uri.parse(ads_url));
-        startActivity(i);
-    }
 }

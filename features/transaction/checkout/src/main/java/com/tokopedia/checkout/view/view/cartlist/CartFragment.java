@@ -71,7 +71,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.view.TopAdsView;
+import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -132,6 +132,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             throw new ClassCastException(getActivity().toString() +
                     " must implement OnPassingCartDataListener");
         }
+    }
+
+    @Override
+    public void onDetach() {
+        if (getActivity() != null && getCartDataList() != null && getCartDataList().size() > 0) {
+            Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
+            service.putParcelableArrayListExtra(UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getCartDataList()));
+            getActivity().startService(service);
+        }
+        super.onDetach();
     }
 
     @Override
@@ -590,6 +600,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
         cartItemPromoHolderData.setDefaultSelectedTabString(cartListData.getDefaultPromoDialogTab());
         cartListAdapter.addPromoVoucherData(cartItemPromoHolderData);
 
+        if (cartListData.getCartPromoSuggestion().isVisible()) {
+            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
+        }
+
         if (cartListData.isError()) {
             cartListAdapter.addCartTickerError(
                     new CartItemTickerErrorHolderData.Builder()
@@ -597,9 +611,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                             .build()
             );
         }
-        if (cartListData.getCartPromoSuggestion().isVisible()) {
-            cartListAdapter.addPromoSuggestion(cartListData.getCartPromoSuggestion());
-        }
+
         cartListAdapter.addDataList(cartListData.getCartItemDataList());
         dPresenter.reCalculateSubTotal(cartListAdapter.getDataList());
 

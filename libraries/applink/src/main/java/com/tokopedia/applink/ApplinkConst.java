@@ -22,6 +22,7 @@ public interface ApplinkConst {
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -44,6 +45,7 @@ public interface ApplinkConst {
     String DIGITAL_SMARTCARD = "tokopedia://digital/smartcard";
     String DIGITAL_CART = "tokopedia://digital/cart";
     String DIGITAL_CATEGORY = "tokopedia://digital/category";
+    String TRAIN_HOMEPAGE = "tokopedia://kereta";
     String DISCOVERY_PAGE = "tokopedia://discovery/{page_id}";
     String PROMO = "tokopedia://promo";
     String PROMO_CATEGORY = "tokopedia://promo/{promo_id}";

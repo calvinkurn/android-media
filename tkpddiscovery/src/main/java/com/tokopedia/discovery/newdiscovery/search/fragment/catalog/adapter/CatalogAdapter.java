@@ -15,7 +15,9 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFac
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.adapter.factory.CatalogTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogHeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.model.CatalogViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,15 +174,14 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
         return mVisitables;
     }
 
-    public void showEmptyState(String message) {
-        emptyModel.setMessage(message);
-        getItemList().add(emptyModel);
-        notifyDataSetChanged();
-    }
-
     public boolean isCatalogHeader(int position) {
         if (checkDataSize(position))
             return getItemList().get(position) instanceof CatalogHeaderViewModel;
         return false;
+    }
+
+    @Override
+    public boolean isEmptyItem(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchModel;
     }
 }
