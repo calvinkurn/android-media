@@ -94,7 +94,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         toolbar.getNavigationIcon().setColorFilter(ContextCompat.getColor(getActivity(), R.color.tkpd_dark_gray_toolbar), PorterDuff.Mode.SRC_ATOP);
-        toolbar.setTitle(getActivity().getResources().getString(R.string.submissions));
+        toolbar.setTitle(getActivity().getResources().getString(R.string.title_all_submissions));
         recyclerview = view.findViewById(R.id.rv_submissions);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         baseMainContent = view.findViewById(R.id.base_main_content);

@@ -11,35 +11,39 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_5">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/img_challenge"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_160"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:background="@color/grey_200"
             android:clickable="false"
-            android:background="@color/grey_200"/>
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
+            style="@style/TextView.Title.FontMedium.BlackPrimary"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_challenge" />
 
         <TextView
             android:id="@+id/tv_hastags"
-            android:layout_width="wrap_content"
+            style="@style/TextView.Micro.Green"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_5"
-            android:textColor="@color/tkpd_main_green"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
         <View
@@ -47,48 +51,50 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_margin="@dimen/dp_16"
-            android:background="@color/gray_background"
+            android:background="@color/grey_300"
             app:layout_constraintTop_toBottomOf="@+id/tv_hastags" />
 
-        <TextView
-            android:id="@+id/tv_time_remaining"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:drawablePadding="@dimen/dp_5"
-            android:paddingBottom="@dimen/dp_3"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8"
-            android:visibility="visible"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_line" />
-
-        <ImageView
-            android:id="@+id/img_share"
-            android:layout_width="@dimen/dp_24"
-            android:layout_height="@dimen/dp_24"
+            android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:src="@drawable/ic_share_via_card"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_line" />
-
-        <TextView
-            android:id="@+id/tv_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_2"
-            android:paddingBottom="@dimen/dp_4"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_line" />
+            app:layout_constraintTop_toBottomOf="@+id/view_line">
+
+            <TextView
+                android:id="@+id/tv_time_remaining"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/img_share"
+                android:layout_marginTop="@dimen/dp_4"
+                android:drawablePadding="@dimen/dp_5"
+                android:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/img_share"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
+                android:padding="@dimen/dp_3"
+                android:src="@drawable/ic_share_via_card"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_status"
+                style="@style/TextView.Micro11.FontMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="@dimen/dp_4"
+                android:paddingBottom="@dimen/dp_4"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_2"
+                android:visibility="gone" />
+        </RelativeLayout>
 
 
     </android.support.constraint.ConstraintLayout>

@@ -68,7 +68,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             Utils.setTextViewBackground(context, tvStatus, "Participated");
         } else {
             RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
-            tvTimeRemaining.setText(daysFormatter.getRemainingDays() + " days Remaining");
+            tvTimeRemaining.setText(String.format(context.getResources().getString(R.string.text_remaining_days), daysFormatter.getRemainingDays()));
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }

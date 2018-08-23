@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 
@@ -20,6 +21,7 @@ public class ChallengesSubmitActivity extends BaseActivity {
     }
     @Override
     protected Fragment getNewFragment() {
+        updateTitle(getResources().getString(R.string.join_the_challenge));
         return ChallengesSubmitFragment.newInstance(getIntent().getExtras());
     }
 }

@@ -5,10 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/white"
     tools:context=".view.activity.ChallengesHomeActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
+        android:background="@color/white"
         android:layout_height="wrap_content">
 
 
@@ -21,7 +23,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/grey_200"></View>
+            android:background="@color/grey_300"/>
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/tab_challenges"
@@ -32,8 +34,8 @@
             app:layout_constraintTop_toBottomOf="@+id/toolbar"
             app:tabIndicatorColor="@color/tkpd_main_green"
             app:tabMode="scrollable"
-            app:tabTextAppearance="@style/Tabs.Secondary"
-            android:paddingBottom="@dimen/dp_2"
+            app:tabTextAppearance="@style/Tabs.Challenges"
+            android:paddingBottom="@dimen/dp_0"
             android:paddingTop="@dimen/dp_2"
             app:tabTextColor="@color/black_38"
             app:tabSelectedTextColor="@color/tkpd_main_green">
@@ -42,14 +44,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="Challenges"
+                android:text="@string/challenges"
                 android:textAlignment="textStart" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="My Submissions"
+                android:text="@string/my_submissions"
                 android:textAlignment="textStart" />
         </com.tokopedia.design.component.Tabs>
     </android.support.design.widget.AppBarLayout>

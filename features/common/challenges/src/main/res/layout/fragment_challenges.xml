@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="@dimen/dp_12"
+    android:paddingTop="@dimen/dp_16"
     tools:context=".view.fragments.ChallengesFragment">
 
     <LinearLayout
@@ -19,23 +19,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_ch_bubble_selected"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_8"
-            android:text="Active Challenges" />
+            android:paddingBottom="@dimen/dp_12"
+            style="@style/TextView.Small"
+            android:textColor="@color/grey_tabs"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_12"
+            android:text="@string/active_challenges" />
 
         <TextView
             android:id="@+id/tv_past_challenges"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_15"
+            android:layout_marginLeft="@dimen/dp_8"
             android:background="@drawable/bg_ch_bubble_default"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_12"
-            android:paddingRight="@dimen/dp_12"
-            android:paddingTop="@dimen/dp_8"
-            android:text="Past Challenges" />
+            android:paddingBottom="@dimen/dp_12"
+            style="@style/TextView.Small"
+            android:textColor="@color/grey_tabs"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_12"
+            android:text="@string/completed" />
     </LinearLayout>
 
     <LinearLayout

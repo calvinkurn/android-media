@@ -436,15 +436,15 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void onClick(View v) {
         if (v.getId() == R.id.seemorebutton_description) {
             if (shortDescription.getVisibility() == View.VISIBLE) {
-                seeMoreButtonDesc.setText(R.string.collapse);
+                seeMoreButtonDesc.setText(R.string.see_less);
                 MarkdownProcessor m = new MarkdownProcessor();
                 String html = m.markdown(challengeResult.getDescription());
                 longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
                 shortDescription.setVisibility(View.GONE);
                 longDescription.setVisibility(View.VISIBLE);
             } else {
-                seeMoreButtonDesc.setText(R.string.expand);
-                seeMoreButtonDesc.setText(R.string.collapse);
+                seeMoreButtonDesc.setText(R.string.see_more);
+                seeMoreButtonDesc.setText(R.string.see_less);
                 shortDescription.setVisibility(View.VISIBLE);
                 longDescription.setVisibility(View.GONE);
                 nestedScrollView.scrollTo(0, 0);

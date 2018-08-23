@@ -10,6 +10,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -64,6 +65,6 @@ public class SubmitDetailActivity extends BaseActivity {
             toolbar.setElevation(10);
         }
 
-        updateTitle("Post");
+        updateTitle(getResources().getString(R.string.post_detail));
     }
 }

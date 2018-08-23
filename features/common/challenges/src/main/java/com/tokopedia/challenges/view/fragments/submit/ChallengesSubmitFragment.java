@@ -21,7 +21,6 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.customview.ExpandableTextView;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
@@ -138,9 +137,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             @Override
             public void onClick(View v) {
                 if (mChallengeDescription.isExpanded()) {
-                    mShowMore.setText(R.string.expand);
+                    mShowMore.setText(R.string.see_more);
                 } else {
-                    mShowMore.setText(R.string.collapse);
+                    mShowMore.setText(R.string.see_less);
                 }
                 mChallengeDescription.toggle();
             }

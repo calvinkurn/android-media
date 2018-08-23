@@ -190,6 +190,11 @@ public class Utils {
     public static void setTextViewBackground(Context context, TextView tvStatus, String status) {
         tvStatus.setText(status);
         if ("Approved".equalsIgnoreCase(status) || "Participated".equalsIgnoreCase(status)) {
+            if("Participated".equalsIgnoreCase(status)){
+                tvStatus.setText(context.getResources().getString(R.string.participated));
+            }else{
+                tvStatus.setText(context.getResources().getString(R.string.approved));
+            }
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
         } else if ("Declined".equalsIgnoreCase(status)) {
@@ -202,6 +207,7 @@ public class Utils {
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
         } else if ("Completed".equalsIgnoreCase(status)) {
+            tvStatus.setText(context.getResources().getString(R.string.completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
         }

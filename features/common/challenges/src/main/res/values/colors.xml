@@ -17,4 +17,5 @@
     <color name="yellow">#ffe38f</color>
     <color name="status_bg_color">#daf5db</color>
     <color name="black_56">#8f000000</color>
+    <color name="grey_tabs">#8f000000</color>
 </resources>
