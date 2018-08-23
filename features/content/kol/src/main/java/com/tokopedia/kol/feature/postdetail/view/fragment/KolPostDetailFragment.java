@@ -170,7 +170,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
                         KolPostDetailActivity.PARAM_POST_ID,
                         KolPostDetailActivity.DEFAULT_POST_ID)
                 );
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 if (getActivity() != null) {
                     getActivity().finish();
                 }
