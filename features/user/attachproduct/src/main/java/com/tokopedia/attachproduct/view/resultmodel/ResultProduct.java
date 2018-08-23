@@ -1,9 +1,9 @@
-package com.tokopedia.topchat.attachproduct.view.resultmodel;
+package com.tokopedia.attachproduct.view.resultmodel;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.topchat.attachproduct.view.viewmodel.AttachProductItemViewModel;
+import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
 
 /**
  * Created by Hendri on 19/02/18.
