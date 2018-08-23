@@ -84,7 +84,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="-4dp"
                                 android:background="@drawable/shape_bg_rounded_white_rectangle"
-                                app:drawableLeftCompat="@drawable/ic_rating_gold_micro"
+                                app:drawableLeftCompat="@drawable/star_yellow"
                                 android:drawablePadding="4dp"
                                 android:padding="4dp"
                                 android:text="4.6"

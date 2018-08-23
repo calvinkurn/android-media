@@ -4,12 +4,12 @@
 show a unfilled cookie. -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/ic_rating_gold_micro" android:state_pressed="true" android:state_window_focused="true" />
+    <item android:drawable="@drawable/star_yellow" android:state_pressed="true" android:state_window_focused="true" />
 
-    <item android:drawable="@drawable/ic_rating_gold_micro" android:state_focused="true" android:state_window_focused="true" />
+    <item android:drawable="@drawable/star_yellow" android:state_focused="true" android:state_window_focused="true" />
 
-    <item android:drawable="@drawable/ic_rating_gold_micro" android:state_selected="true" android:state_window_focused="true" />
+    <item android:drawable="@drawable/star_yellow" android:state_selected="true" android:state_window_focused="true" />
 
-    <item android:drawable="@drawable/ic_rating_gold_micro" />
+    <item android:drawable="@drawable/star_yellow" />
 
 </selector>

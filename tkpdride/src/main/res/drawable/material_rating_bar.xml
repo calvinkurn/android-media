@@ -7,5 +7,5 @@
         android:drawable="@drawable/star_half" />
     <item
         android:id="@+android:id/progress"
-        android:drawable="@drawable/ic_rating_gold_micro" />
+        android:drawable="@drawable/star_yellow" />
 </layer-list>
