@@ -131,7 +131,6 @@ public class CartFragment extends BaseCheckoutFragment implements
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -625,6 +624,7 @@ public class CartFragment extends BaseCheckoutFragment implements
         }
         cartListAdapter.checkForShipmentForm();
         setVisibilityRemoveButton(true);
+        notifyBottomCartParent();
     }
 
     private void showErrorLayout(String message) {
@@ -895,6 +895,7 @@ public class CartFragment extends BaseCheckoutFragment implements
             topAdsView.loadTopAds();
         }
         setVisibilityRemoveButton(false);
+        notifyBottomCartParent();
     }
 
     private void setVisibilityRemoveButton(boolean state) {
@@ -905,7 +906,6 @@ public class CartFragment extends BaseCheckoutFragment implements
                 ((ToolbarRemoveWithBackView)toolbar).setVisibilityRemove(state);
             }
         }
-        notifyBottomCartParent();
     }
 
     @Override
@@ -1148,12 +1148,6 @@ public class CartFragment extends BaseCheckoutFragment implements
 //        }
 //    }
 
-//    public interface ActionListener {
-//
-//        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
-//
-//    }
-
     @Override
     protected String getScreenName() {
         return ConstantTransactionAnalytics.ScreenName.CART;
@@ -1176,6 +1170,7 @@ public class CartFragment extends BaseCheckoutFragment implements
                     .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
                     .addToBackStack(null)
                     .commit();
+            setVisibilityRemoveButton(false);
         }
     }
 
@@ -1206,6 +1201,7 @@ public class CartFragment extends BaseCheckoutFragment implements
             ((RemoveCartItemFragment)fragment).getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
             getChildFragmentManager().beginTransaction().remove(fragment).commit();
             getChildFragmentManager().popBackStack();
+            setVisibilityRemoveButton(true);
         } else {
             getCartPageAnalytics().eventClickAtcCartClickArrowBack();
             getActivity().onBackPressed();
