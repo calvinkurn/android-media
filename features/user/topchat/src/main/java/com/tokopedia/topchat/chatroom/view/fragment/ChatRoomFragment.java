@@ -39,7 +39,6 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -889,7 +888,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
             case REQUEST_CODE_CHAT_IMAGE:
                 if (resultCode != Activity.RESULT_OK || data == null) {
                     return;

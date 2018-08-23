@@ -1,6 +1,7 @@
 package com.tokopedia.shop.product.view.mapper;
 
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
