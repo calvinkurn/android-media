@@ -5,6 +5,7 @@
     <application>
         <activity android:name=".view.activity.ChallengesSubmitActivity"
             android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.White.PopupTransparent"/>
         <activity
             android:name=".view.activity.ChallengesHomeActivity"

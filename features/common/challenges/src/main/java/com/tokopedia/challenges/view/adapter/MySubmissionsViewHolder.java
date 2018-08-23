@@ -30,7 +30,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
     private SubmissionResult submissionsResult;
 
-    MySubmissionsViewHolder(Context context, View view, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
+    MySubmissionsViewHolder(Context context, View view) {
         super(view);
         this.context = context;
         tvTitle = view.findViewById(R.id.tv_title);
@@ -39,34 +39,20 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes = view.findViewById(R.id.img_likes);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        view.setOnClickListener(view1 -> {
-            Intent intent = new Intent(view1.getContext(), SubmitDetailActivity.class);
-            intent.putExtra("submissionsResult", submissionsResult);
-            view.getContext().startActivity(intent);
-        });
-        //imgShare.setOnClickListener(v -> ((ChallengesModuleRouter) (((Activity) context).getApplication())).generateBranchUrlForChallenge(context, ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionsResult.getTitle(), submissionsResult.getThumbnailUrl(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage()));
-        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false));
-        imgLikes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
-                if (submissionsResult.getMe().isLiked()) {
-                    imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
-                } else {
-                    imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
-                }
-            }
-        });
     }
 
-    void bind(SubmissionResult challengesResult) {
+    void bind(SubmissionResult challengesResult,ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
         Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
         tvPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
+        ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
 
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
+        imgLikes.setVisibility(View.GONE);
+        imgShare.setVisibility(View.VISIBLE);
+
         if ("Approved".equalsIgnoreCase(submissionsResult.getStatus())) {
             imgLikes.setVisibility(View.VISIBLE);
             if (submissionsResult.getMe().isLiked()) {
@@ -77,7 +63,21 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
             imgShare.setVisibility(View.GONE);
         }
-        ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
+
+        itemView.setOnClickListener(view1 -> {
+            Intent intent = new Intent(context, SubmitDetailActivity.class);
+            intent.putExtra("submissionsResult", submissionsResult);
+            context.startActivity(intent);
+        });
+        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false));
+        imgLikes.setOnClickListener(v -> {
+            ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
+            if (submissionsResult.getMe().isLiked()) {
+                imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
+            } else {
+                imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
+            }
+        });
     }
 
     public interface ISubmissionsViewHolderListner {

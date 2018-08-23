@@ -115,6 +115,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private Boolean isPastChallenge;
     private FloatingActionButton btnShare;
     private boolean isWinnerList = false;
+    private View bottomMarginView;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -202,10 +203,12 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButtonTnc.setOnClickListener(this);
         longDescription = view.findViewById(R.id.markdownView);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
+        bottomMarginView = view.findViewById(R.id.bottom_margin_view);
         mPresenter.attachView(this);
         if (isPastChallenge) {
             btnShare.setVisibility(View.GONE);
             submitButton.setVisibility(View.GONE);
+            bottomMarginView.setVisibility(View.GONE);
         } else {
             btnShare.setOnClickListener(this);
             submitButton.setOnClickListener(this);

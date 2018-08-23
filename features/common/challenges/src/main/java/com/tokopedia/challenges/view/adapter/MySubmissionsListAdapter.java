@@ -43,7 +43,7 @@ public class MySubmissionsListAdapter extends RecyclerView.Adapter<RecyclerView.
         switch (viewType) {
             case ITEM:
                 v = inflater.inflate(R.layout.home_submissions_list_item, parent, false);
-                holder = new MySubmissionsViewHolder(context, v, ISubmissionsViewHolderListner);
+                holder = new MySubmissionsViewHolder(context, v);
                 break;
             case FOOTER:
                 v = inflater.inflate(R.layout.footer_layout, parent, false);
@@ -61,8 +61,7 @@ public class MySubmissionsListAdapter extends RecyclerView.Adapter<RecyclerView.
 
         switch (getItemViewType(position)) {
             case ITEM:
-                ((MySubmissionsViewHolder) holder).bind(submissionsResultList.get(position));
-
+                ((MySubmissionsViewHolder) holder).bind(submissionsResultList.get(position), ISubmissionsViewHolderListner);
                 break;
             default:
                 break;

@@ -66,7 +66,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView.setLayoutManager(layoutManager);
         listAdpater = new MySubmissionsListAdapter(getActivity(), null, this);
         recyclerView.setAdapter(listAdpater);
-        recyclerView.addOnScrollListener(rvOnScrollListener);
+        //recyclerView.addOnScrollListener(rvOnScrollListener);
         recyclerView.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
         //mySubmissionsHomePresenter.getMySubmissionsList();

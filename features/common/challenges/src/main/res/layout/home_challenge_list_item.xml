@@ -19,7 +19,6 @@
             android:layout_height="@dimen/dp_160"
             android:adjustViewBounds="true"
             android:background="@color/grey_200"
-            android:clickable="false"
             android:scaleType="centerCrop" />
 
         <TextView

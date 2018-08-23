@@ -26,8 +26,8 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
     private boolean isLoading;
     private boolean isLastPage;
     private int pageStart = 0;
-    private int pageSize = 20;
-    private int totalItems = 20;
+    private int pageSize = 30;
+    private int totalItems = 30;
 
     @Inject
     public MySubmissionsHomePresenter(GetMySubmissionsListUseCase getMySubmissionsListUseCase, PostSubmissionLikeUseCase postSubmissionLikeUseCase) {
@@ -73,7 +73,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                     if (pageStart == 0)
                         getView().renderEmptyList();
                 }
-                checkIfToLoad(getView().getLayoutManager());
+                //checkIfToLoad(getView().getLayoutManager());
             }
         });
     }
