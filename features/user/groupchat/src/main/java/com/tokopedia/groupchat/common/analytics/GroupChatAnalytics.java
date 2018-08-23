@@ -229,7 +229,7 @@ public class GroupChatAnalytics {
     public void eventClickQuickReply(String channelId) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                "click on quick relpy component",
+                "click on quick reply component",
                 channelId
         );
     }

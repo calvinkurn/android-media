@@ -748,7 +748,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         }
 
         if(messageItem instanceof ImageAnnouncementViewModel){
-            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem)
+            analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem);
         }
 
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
