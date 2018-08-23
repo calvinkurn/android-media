@@ -1,8 +1,16 @@
 package com.tokopedia.navigation.domain.subscriber;
 
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
+import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.presentation.view.NotificationView;
+
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 
 import rx.Subscriber;
 
@@ -24,8 +32,7 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
 
     @Override
     public void onError(Throwable e) {
-        this.notificationView.onHideLoading();
-        this.notificationView.onError(e.getMessage());
+        handleErrorinitCartList(e);
     }
 
     @Override
@@ -33,6 +40,22 @@ public class DrawerNotificationSubscriber extends Subscriber<NotificationEntity>
         if (entity != null) {
             this.notificationView.renderNotification(entity.getNotifications(),
                     NotificationMapper.isHasShop(entity));
+        }
+    }
+
+    private void handleErrorinitCartList(Throwable e) {
+        if (e instanceof UnknownHostException) {
+            this.notificationView.onError(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+        } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+            this.notificationView.onError(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+        } else if (e instanceof ResponseErrorException) {
+            this.notificationView.onError(e.getMessage());
+        } else if (e instanceof ResponseDataNullException) {
+            this.notificationView.onError(e.getMessage());
+        } else if (e instanceof HttpErrorException) {
+            this.notificationView.onError(e.getMessage());
+        } else {
+            this.notificationView.onError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 }

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -33,6 +34,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.*;
 public class NotificationFragment extends BaseParentFragment implements NotificationView {
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View emptyLayout;
 
     private NotificationAdapter adapter;
 
@@ -61,6 +63,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout = parentView.findViewById(R.id.swipe);
         RecyclerView recyclerView = parentView.findViewById(R.id.recyclerview);
+        emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
@@ -96,7 +99,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     @Override
     public void onError(String message) {
-        CommonUtils.dumper(message);
+        emptyLayout.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), emptyLayout, message, () ->
+                presenter.getDrawerNotification());
     }
 
     @Override
@@ -118,6 +124,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     @Override
     public void renderNotification(NotificationsModel data, boolean isHasShop) {
+        emptyLayout.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         if (!isHasAdded) {
             if (isHasShop) {
                 adapter.add(sellerData(), PENJUALAN);

@@ -21,9 +21,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
     public void onCompleted() { }
 
     @Override
-    public void onError(Throwable e) {
-
-    }
+    public void onError(Throwable e) { }
 
     @Override
     public void onNext(NotificationEntity notificationEntity) {

@@ -31,7 +31,6 @@ public class InboxSubscriber extends Subscriber<NotificationEntity> {
 
     @Override
     public void onError(Throwable e) {
-        this.inboxView.onHideLoading();
         handleErrorinitCartList(e);
     }
 
