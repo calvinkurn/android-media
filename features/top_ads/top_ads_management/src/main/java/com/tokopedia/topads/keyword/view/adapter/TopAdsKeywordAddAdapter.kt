@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.item_top_ads_keyword_add_new.view.*
 class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>() {
     val localKeywords: MutableList<AddKeywordDomainModelDatum> = mutableListOf()
     var listener: OnKeywordRemovedListener? = null
-    val errorList: MutableList<String> = mutableListOf()
+    private val errorList: MutableList<String> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): TopAdsKeywordAddViewHolder {
         return TopAdsKeywordAddViewHolder(parent.inflateLayout(R.layout.item_top_ads_keyword_add_new))
@@ -41,9 +41,15 @@ class TopAdsKeywordAddAdapter: RecyclerView.Adapter<TopAdsKeywordAddViewHolder>(
 
     private fun remove(position: Int){
         Log.e("tes remove", "$position")
-        localKeywords.removeAt(position)
-        notifyItemRemoved(position)
-        notifyItemRangeChanged(position, getItemCount())
+        if(isWithinDataset(position)) {
+            localKeywords.removeAt(position)
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemCount)
+        }
+    }
+
+    private fun isWithinDataset(position: Int): Boolean {
+        return position >= 0 && position <= localKeywords.size - 1
     }
 
     fun addBulk(keywords: List<AddKeywordDomainModelDatum>){

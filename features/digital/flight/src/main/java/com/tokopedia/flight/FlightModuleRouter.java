@@ -52,12 +52,6 @@ public interface FlightModuleRouter {
 
     Interceptor getChuckInterceptor();
 
-    Intent getGalleryIntent(Activity activity);
-
-    String getGalleryExtraSelectionPathResultKey();
-
-    FlightCancellationCameraPassData startCaptureWithCamera(FragmentActivity activity);
-
     Intent getLoyaltyWithCoupon(Activity activity, String platform, String categoryId, String cartId);
 
     Intent getLoyaltyWithCouponTabSelected(Activity activity, String platform, String categoryId, String cartId);

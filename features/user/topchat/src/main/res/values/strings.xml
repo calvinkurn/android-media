@@ -68,4 +68,11 @@ yang ditemukan</string>
     <string name="topchat_online_hours_ago">Terakhir online %1$d jam yang lalu</string>
     <string name="topchat_online_days_ago">Terakhir online %1$d hari yang lalu</string>
     <string name="topchat_online_months_ago">Terakhir online %1$d bulan yang lalu</string>
+    <string name="delete_chat_default_error_message">Hapus chat gagal!</string>
+    <string name="follow_store">Follow Toko</string>
+    <string name="already_follow_store">Following</string>
+    <string name="view_profile_container_string">Lihat Profil %1$s</string>
+    <string name="delete_conversation">Hapus Percakapan</string>
+    <string name="delete_chat_question">Hapus chat?</string>
+    <string name="delete_chat_warning_message">Chat akan terhapus selamanya</string>
 </resources>

@@ -45,12 +45,14 @@ public class WalletRepository implements IWalletRepository {
                 .map(tokoCashHistoryMapper);
     }
 
+    @Deprecated
     @Override
     public Observable<List<HelpHistoryTokoCash>> getHelpHistoryData() {
         return walletDataSourceFactory.create().getHelpHistoryData()
                 .map(helpHistoryDataMapper);
     }
 
+    @Deprecated
     @Override
     public Observable<Boolean> submitHelpHistory(HashMap<String, String> mapParams) {
         return walletDataSourceFactory.create().submitHelpTokoCash(mapParams);

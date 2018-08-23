@@ -21,9 +21,7 @@ import android.view.View;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.abstraction.constant.TkpdState;
-import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.applink.ApplinkConst;
-
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -286,8 +284,6 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_SENDER_ROLE, role);
         bundle.putInt(InboxMessageConstant.PARAM_MODE, mode);
         bundle.putString(InboxMessageConstant.PARAM_KEYWORD, keyword);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
-        bundle.putBoolean(PARAM_WEBSOCKET, true);
         intent.putExtras(bundle);
         return intent;
     }
@@ -307,9 +303,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_SOURCE, source);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, ROLE_SELLER);
         bundle.putString(PARAM_SENDER_ROLE, SELLER);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_IMAGE, avatar);
-        bundle.putBoolean(PARAM_WEBSOCKET, false);
         intent.putExtras(bundle);
         return intent;
     }
@@ -322,7 +316,6 @@ public class ChatRoomActivity extends BasePresenterActivity
         Bundle bundle = intent.getExtras();
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
         intent.putExtras(bundle);
         return intent;
     }
@@ -337,9 +330,7 @@ public class ChatRoomActivity extends BasePresenterActivity
         bundle.putString(PARAM_SOURCE, source);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_TAG, ROLE_USER);
         bundle.putString(PARAM_SENDER_ROLE, USER);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
         bundle.putString(InboxMessageConstant.PARAM_SENDER_IMAGE, avatar);
-        bundle.putBoolean(PARAM_WEBSOCKET, false);
         intent.putExtras(bundle);
         return intent;
     }
@@ -351,7 +342,6 @@ public class ChatRoomActivity extends BasePresenterActivity
         Bundle bundle = intent.getExtras();
         bundle.putString(PARAM_CUSTOM_SUBJECT, customSubject);
         bundle.putString(PARAM_CUSTOM_MESSAGE, customMessage);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, false);
         intent.putExtras(bundle);
         return intent;
     }
@@ -361,8 +351,6 @@ public class ChatRoomActivity extends BasePresenterActivity
         Bundle bundle = new Bundle();
         bundle.putString(InboxMessageConstant.PARAM_MESSAGE_ID, messageId);
         bundle.putBoolean(TkpdInboxRouter.IS_CHAT_BOT, true);
-        bundle.putBoolean(IS_HAS_ATTACH_BUTTON, true);
-        bundle.putBoolean(PARAM_WEBSOCKET, true);
         intent.putExtras(bundle);
         return intent;
     }
