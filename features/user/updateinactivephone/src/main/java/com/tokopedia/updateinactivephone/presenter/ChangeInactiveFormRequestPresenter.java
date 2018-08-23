@@ -11,6 +11,9 @@ import com.tokopedia.updateinactivephone.usecase.UploadChangePhoneNumberRequestU
 import com.tokopedia.updateinactivephone.usecase.ValidateUserDataUseCase;
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.inject.Inject;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.ID;
@@ -23,6 +26,7 @@ import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConsta
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.EMAIL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.PHONE;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.USER_ID;
+import static com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter.PHONE_MATCHER;
 
 public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<ChangeInactiveFormRequest.View>
         implements ChangeInactiveFormRequest.Presenter {
@@ -114,18 +118,28 @@ public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<Chan
     }
 
     private boolean isValidPhone(String phoneNumber) {
-        boolean isValid = true;
-        if (TextUtils.isEmpty(phoneNumber)) {
-            getView().showErrorPhoneNumber(R.string.error_field_required);
-            isValid = false;
-        } else if (phoneNumber.length() < 8) {
-            getView().showErrorPhoneNumber(R.string.phone_number_invalid_min_8);
-            isValid = false;
-        } else if (phoneNumber.length() > 15) {
-            getView().showErrorPhoneNumber(R.string.phone_number_invalid_max_15);
-            isValid = false;
-        }
-        return isValid;
+            boolean isValid = true;
+            boolean check;
+            Pattern p;
+            Matcher m;
+            p = Pattern.compile(PHONE_MATCHER);
+            m = p.matcher(phoneNumber);
+            check = m.matches();
+
+            if (TextUtils.isEmpty(phoneNumber)) {
+                getView().showErrorPhoneNumber(R.string.error_field_required);
+                isValid = false;
+            } else if (check && phoneNumber.length() < 8) {
+                getView().showErrorPhoneNumber(R.string.phone_number_invalid_min_8);
+                isValid = false;
+            } else if (check && phoneNumber.length() > 15) {
+                getView().showErrorPhoneNumber(R.string.phone_number_invalid_max_15);
+                isValid = false;
+            } else if (!check) {
+                getView().showErrorPhoneNumber(R.string.invalid_phone_number);
+                isValid = false;
+            }
+            return isValid;
     }
 
     @Override
