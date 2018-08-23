@@ -24,7 +24,7 @@ import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.home.account.di.component.EmailNotificationSettingComponent;
 import com.tokopedia.home.account.presentation.adapter.setting.EmailNotifAdapter;
 import com.tokopedia.home.account.presentation.presenter.EmailNotificationPresenter;
-import com.tokopedia.home.account.presentation.view.EmailNotificationView;
+import com.tokopedia.home.account.presentation.listener.EmailNotificationView;
 import com.tokopedia.home.account.presentation.viewmodel.EmailNotifViewModel;
 
 import java.util.ArrayList;
