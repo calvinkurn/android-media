@@ -125,6 +125,12 @@ public class KolPostFragment extends BaseDaggerFragment implements
         fetchDataFirstTime();
     }
 
+    @Override
+    public void onDestroy() {
+        presenter.detachView();
+        super.onDestroy();
+    }
+
     private void initVar() {
         userId = getArguments().getString(PARAM_USER_ID);
     }
