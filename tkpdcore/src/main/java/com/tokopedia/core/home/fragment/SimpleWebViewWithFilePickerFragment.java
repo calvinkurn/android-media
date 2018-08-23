@@ -202,7 +202,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
+            if(callbackAfterL != null) callbackAfterL.onReceiveValue(results);
             callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
