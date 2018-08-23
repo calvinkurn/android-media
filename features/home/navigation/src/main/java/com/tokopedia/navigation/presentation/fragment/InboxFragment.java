@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation_common.listener.NotificationListener;
@@ -56,6 +57,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private ImageButton menuItemNotification;
     private TextView toolbarTitle;
     private BadgeView badgeView;
+    private View emptyLayout;
 
     private int badgeNumber;
 
@@ -77,6 +79,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
         adapter = new InboxAdapter(getActivity());
 
+        emptyLayout = view.findViewById(R.id.empty_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -122,7 +125,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.TOPCHAT_IDLESS);
                 break;
             case DISCUSSION_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.TALK);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTalkCallingIntent(getActivity()));
@@ -132,7 +134,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
                 RouteManager.route(getActivity(), ApplinkConst.REPUTATION);
                 break;
             case HELP_MENU:
-//                RouteManager.route(getActivity(), ApplinkConst.INBOX_TICKET);
                 if (getActivity().getApplication() instanceof GlobalNavRouter) {
                     startActivity(((GlobalNavRouter) getActivity().getApplication())
                             .getInboxTicketCallingIntent(getActivity()));
@@ -181,7 +182,13 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+        emptyLayout.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), emptyLayout, message, () ->
+                presenter.getInboxData());
+
+    }
 
     @Override
     public void onHideLoading() {
@@ -191,6 +198,8 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     @Override
     public void onRenderNotifInbox(NotificationsModel entity) {
+        emptyLayout.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         adapter.updateValue(entity);
     }
 
