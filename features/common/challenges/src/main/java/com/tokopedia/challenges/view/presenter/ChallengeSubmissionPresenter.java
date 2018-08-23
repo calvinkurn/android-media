@@ -97,7 +97,6 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
                 @Override
                 public void onError(Throwable e) {
-                    CommonUtils.dumper("enter error");
                     e.printStackTrace();
                     getView().hideProgressBar();
                     getView().hideCollapsingHeader();
@@ -153,7 +152,6 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         getWinnersUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
             }
 
             @Override

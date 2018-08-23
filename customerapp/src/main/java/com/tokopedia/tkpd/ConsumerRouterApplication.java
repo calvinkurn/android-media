@@ -34,6 +34,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.common.IndiSession;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
@@ -1017,6 +1018,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
         new FlightDeleteDashboardCacheUseCase(appComponent.context()).executeSync();
+        new IndiSession(appComponent.context()).doLogout();
     }
 
     @Override

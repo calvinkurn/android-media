@@ -79,12 +79,7 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
 
         final String finalType = type;
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.onItemClick(finalType);
-            }
-        });
+        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(finalType));
     }
 
     @Override
@@ -99,8 +94,8 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
         ShareViewHolder(View itemView) {
             super(itemView);
-            iconView = itemView.findViewById(R.id.mac_item_activity_icon);
-            labelView = itemView.findViewById(R.id.mac_item_activity_label);
+            iconView = itemView.findViewById(R.id.item_icon);
+            labelView = itemView.findViewById(R.id.item_label);
         }
 
     }

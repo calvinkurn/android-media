@@ -4,11 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
@@ -17,6 +22,7 @@ import com.tokopedia.challenges.view.activity.BaseActivity;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetContract;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetPresenter;
 import com.tokopedia.core.util.ClipboardHandler;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.component.BottomSheets;
 
 import java.util.ArrayList;
@@ -25,7 +31,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAdapter.OnItemClickListener, ShareBottomSheetContract.View {
+public class ShareBottomSheet extends BottomSheetDialogFragment implements BottomSheetShareAdapter.OnItemClickListener, ShareBottomSheetContract.View {
 
     public static final String KEY_COPY = "salinlink";
 
@@ -43,7 +49,7 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     public ShareBottomSheetPresenter presenter;
     private ChallengesComponent challengesComponent;
     private ProgressDialog progress;
-
+    private View closeButton;
 
     public static ShareBottomSheet newInstance(String url, String title, String og_url, String og_title, String og_image, String submissionId, String deepLink, boolean isChallenge) {
         ShareBottomSheet fragment = new ShareBottomSheet();
@@ -64,8 +70,11 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
         newInstance(url, title, og_url, og_title, og_image, submissionId, deepLink, isChallenge).show(fragmentManager, "");
     }
 
+    @Nullable
     @Override
-    protected void configView(View parentView) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.bottomsheet_share_layout, container, false);
+
         url = getArguments().getString("url");
         title = getArguments().getString("title");
         og_url = getArguments().getString("og_url");
@@ -74,23 +83,20 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
         submissionId = getArguments().getString("submission_id");
         deepLink = getArguments().getString("deep_link");
         isChallenge = getArguments().getBoolean("is_challenge");
+        initView(view);
+        closeButton = view.findViewById(R.id.item_close);
+        closeButton.setOnClickListener(v -> dismiss());
 
-        super.configView(parentView);
+        return view;
     }
 
-    @Override
-    public int getLayoutResourceId() {
-        return R.layout.bottomsheet_share_layout;
-    }
 
-    @Override
     public void initView(View view) {
         challengesComponent = ((BaseActivity) getActivity()).getComponent();
         challengesComponent.inject(this);
 
         presenter.attachView(this);
 
-        Intent intent = getIntent("");
         mRecyclerView = view.findViewById(R.id.recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -126,13 +132,12 @@ public class ShareBottomSheet extends BottomSheets implements BottomSheetShareAd
     }
 
 
-
     @Override
     public void onItemClick(String packageName) {
-        if(url ==null){
+        if (url == null) {
             url = deepLink;
         }
-        presenter.createAndShareUrl(packageName,url,submissionId,deepLink,isChallenge,title,og_url,og_title,og_image);
+        presenter.createAndShareUrl(packageName, url, submissionId, deepLink, isChallenge, title, og_url, og_title, og_image);
     }
 
     @Override

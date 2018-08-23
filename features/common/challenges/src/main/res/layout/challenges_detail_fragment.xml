@@ -69,118 +69,367 @@
             app:srcCompat="@drawable/ic_share_via_card"
             tools:ignore="VectorDrawableCompat" />
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/nested_scroll_view"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_80"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:orientation="vertical">
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/base_main_content"
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/nested_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:paddingTop="@dimen/dp_36"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/tv_title"
-                    style="@style/TextView.TitleBig.FontMedium.BlackPrimary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    tools:text="Show me the Slice!" />
-
-                <TextView
-                    android:id="@+id/tv_hashtag"
-                    style="@style/TextView.Micro.Green"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_title"
-                    tools:text="#challenge" />
-
-                <RelativeLayout
-                    android:id="@+id/cl_expiry"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dp_8"
-                    app:layout_constraintTop_toBottomOf="@+id/tv_hashtag">
-
-                    <TextView
-                        android:id="@+id/tv_expiry_date"
-                        style="@style/TextView.Micro.Black40"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_8"
-                        tools:text="Due date: 30th July 2018" />
-
-
-                    <TextView
-                        android:id="@+id/tv_participated"
-                        style="@style/TextView.Micro11.FontMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:background="@drawable/bg_round_solid_green_radius_huge"
-                        android:gravity="center_vertical"
-                        android:paddingBottom="@dimen/dp_4"
-                        android:paddingLeft="@dimen/dp_16"
-                        android:paddingRight="@dimen/dp_16"
-                        android:paddingTop="@dimen/dp_2"
-                        tools:text="Participated" />
-
-                    <android.support.constraint.ConstraintLayout
-                        android:id="@+id/cl_timer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:gravity="center_vertical"
-                        android:visibility="gone">
-
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_marginTop="@dimen/dp_16"
-                            android:indeterminate="false"
-                            android:progress="50"
-                            android:progressDrawable="@drawable/background_progress_timer"
-                            app:layout_constraintLeft_toLeftOf="@+id/count_down"
-                            app:layout_constraintRight_toRightOf="@+id/count_down" />
-
-                        <com.tokopedia.challenges.view.customview.CountDownView
-                            android:id="@+id/count_down"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="@dimen/dp_8"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                            app:layout_constraintBottom_toBottomOf="@+id/progressBar"
-                            app:layout_constraintLeft_toLeftOf="parent"
-                            app:layout_constraintRight_toRightOf="parent"
-                            app:layout_constraintTop_toTopOf="@+id/progressBar" />
-                    </android.support.constraint.ConstraintLayout>
-                </RelativeLayout>
-
+                android:layout_weight="1"
+                android:paddingBottom="@dimen/dp_5"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_about"
+                    android:id="@+id/base_main_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_expiry">
+                    android:layout_height="match_parent"
+                    android:paddingTop="@dimen/dp_36"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_title"
+                        style="@style/TextView.TitleBig.FontMedium.BlackPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        tools:text="Show me the Slice!" />
+
+                    <TextView
+                        android:id="@+id/tv_hashtag"
+                        style="@style/TextView.Micro.Green"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_8"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+                        tools:text="#challenge" />
+
+                    <RelativeLayout
+                        android:id="@+id/cl_expiry"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dp_8"
+                        app:layout_constraintTop_toBottomOf="@+id/tv_hashtag">
+
+                        <TextView
+                            android:id="@+id/tv_expiry_date"
+                            style="@style/TextView.Micro.Black40"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_8"
+                            tools:text="Due date: 30th July 2018" />
+
+
+                        <TextView
+                            android:id="@+id/tv_participated"
+                            style="@style/TextView.Micro11.FontMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:background="@drawable/bg_round_solid_green_radius_huge"
+                            android:gravity="center_vertical"
+                            android:paddingBottom="@dimen/dp_4"
+                            android:paddingLeft="@dimen/dp_16"
+                            android:paddingRight="@dimen/dp_16"
+                            android:paddingTop="@dimen/dp_2"
+                            tools:text="Participated" />
+
+                        <android.support.constraint.ConstraintLayout
+                            android:id="@+id/cl_timer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentEnd="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:gravity="center_vertical"
+                            android:visibility="gone">
+
+                            <ProgressBar
+                                android:id="@+id/progressBar"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="0dp"
+                                android:layout_height="28dp"
+                                android:layout_marginTop="@dimen/dp_16"
+                                android:indeterminate="false"
+                                android:progress="50"
+                                android:progressDrawable="@drawable/background_progress_timer"
+                                app:layout_constraintLeft_toLeftOf="@+id/count_down"
+                                app:layout_constraintRight_toRightOf="@+id/count_down" />
+
+                            <com.tokopedia.challenges.view.customview.CountDownView
+                                android:id="@+id/count_down"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:padding="@dimen/dp_8"
+                                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                                app:layout_constraintBottom_toBottomOf="@+id/progressBar"
+                                app:layout_constraintLeft_toLeftOf="parent"
+                                app:layout_constraintRight_toRightOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/progressBar" />
+                        </android.support.constraint.ConstraintLayout>
+                    </RelativeLayout>
+
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_about"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_expiry">
+
+                        <View
+                            android:id="@+id/divider"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_200"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_about"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/about"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+                        <TextView
+                            android:id="@+id/short_description"
+                            style="@style/TextView.Small.Black40"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:ellipsize="end"
+                            android:lines="3"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_about"
+                            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " />
+
+                        <WebView
+                            android:id="@+id/markdownView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:visibility="gone"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/short_description" />
+
+                        <TextView
+                            android:id="@+id/seemorebutton_description"
+                            style="@style/TextView.Micro.Green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:text="@string/see_more"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/markdownView" />
+                    </android.support.constraint.ConstraintLayout>
+
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_video_player"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_about">
+
+                        <View
+                            android:id="@+id/divider2"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_200"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_video"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/video"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider2" />
+
+
+                        <com.tokopedia.challenges.view.customview.CustomVideoPlayer
+                            android:id="@+id/video_player"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_240"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:padding="@dimen/dp_8"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_video" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_awards"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_video_player">
+
+                        <View
+                            android:id="@+id/divider5"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_200"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_awards"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/awards"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider5" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_awards"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:clipToPadding="false"
+                            android:paddingLeft="@dimen/dp_8"
+                            android:paddingRight="@dimen/dp_8"
+                            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_awards"
+                            tools:listitem="@layout/challenges_award_item" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_winners"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_awards">
+
+
+                        <View
+                            android:id="@+id/divider7"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_200"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_winners"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/challenege_winners"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider7" />
+
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_winners"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:clipToPadding="false"
+                            android:paddingLeft="@dimen/dp_8"
+                            android:paddingRight="@dimen/dp_8"
+                            app:layout_constraintTop_toBottomOf="@id/tv_winners" />
+                    </android.support.constraint.ConstraintLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_submissions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        app:layout_constraintTop_toBottomOf="@+id/cl_winners">
+
+
+                        <View
+                            android:id="@+id/divider3"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dp_1"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:background="@color/grey_200"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_submissions"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/recent_submissions"
+                            app:layout_constraintLeft_toLeftOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/divider3" />
+
+                        <TextView
+                            android:id="@+id/tv_see_all"
+                            style="@style/TextView.Micro.Green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:text="@string/see_all"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_submissions"
+                            app:layout_constraintRight_toRightOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tv_submissions" />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rv_submissions"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:clipToPadding="false"
+                            android:paddingLeft="@dimen/dp_8"
+                            android:paddingRight="@dimen/dp_8"
+                            app:layout_constraintTop_toBottomOf="@id/tv_submissions" />
+                    </android.support.constraint.ConstraintLayout>
+
 
                     <View
-                        android:id="@+id/divider"
+                        android:id="@+id/divider4"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
                         android:layout_marginLeft="@dimen/dp_16"
@@ -189,67 +438,54 @@
                         android:background="@color/grey_200"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/cl_submissions" />
 
-                    <TextView
-                        android:id="@+id/tv_about"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/about"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
-                    <TextView
-                        android:id="@+id/short_description"
-                        style="@style/TextView.Small.Black40"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:ellipsize="end"
-                        android:lines="3"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_about"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. " />
-
-                    <WebView
-                        android:id="@+id/markdownView"
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_how_buzzpoints"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
                         android:visibility="gone"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/short_description" />
+                        app:layout_constraintTop_toBottomOf="@+id/divider4">
 
-                    <TextView
-                        android:id="@+id/seemorebutton_description"
-                        style="@style/TextView.Micro.Green"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:text="@string/see_more"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/markdownView" />
-                </android.support.constraint.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/tv_how_buzz_points"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/generate_buzz_points"
+                            app:layout_constraintTop_toTopOf="parent" />
 
+                        <TextView
+                            android:id="@+id/tv_how_buzz_points_text"
+                            style="@style/TextView.Small.Black40"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:ellipsize="end"
+                            android:lines="3"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points"
+                            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />
 
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_video_player"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_about">
+                        <TextView
+                            android:id="@+id/seemorebutton_buzzpoints"
+                            style="@style/TextView.Micro.Green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:text="@string/see_more"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points_text" />
+                    </android.support.constraint.ConstraintLayout>
 
                     <View
-                        android:id="@+id/divider2"
+                        android:id="@+id/divider6"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_1"
                         android:layout_marginLeft="@dimen/dp_16"
@@ -258,305 +494,75 @@
                         android:background="@color/grey_200"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints" />
 
-                    <TextView
-                        android:id="@+id/tv_video"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/video"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider2" />
-
-
-                    <com.tokopedia.challenges.view.customview.CustomVideoPlayer
-                        android:id="@+id/video_player"
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/cl_tnc"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_240"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:padding="@dimen/dp_8"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_video" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintLeft_toLeftOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/divider6">
 
+                        <TextView
+                            android:id="@+id/tv_tnc"
+                            style="@style/TextView.Medium.FontMedium.BlackPrimary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:text="@string/terms_conditions"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_tnc_text"
+                            style="@style/TextView.Small.Black40"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dp_16"
+                            android:layout_marginRight="@dimen/dp_16"
+                            android:layout_marginTop="@dimen/dp_16"
+                            android:ellipsize="end"
+                            android:lines="3"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_tnc"
+                            tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />
+
+                        <TextView
+                            android:id="@+id/seemorebutton_tnc"
+                            style="@style/TextView.Micro.Green"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/dp_8"
+                            android:text="@string/see_more"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_tnc_text" />
+                    </android.support.constraint.ConstraintLayout>
                 </android.support.constraint.ConstraintLayout>
+            </android.support.v4.widget.NestedScrollView>
 
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_awards"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_video_player">
-
-                    <View
-                        android:id="@+id/divider5"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/grey_200"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_awards"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/awards"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider5" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_awards"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:clipToPadding="false"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_8"
-                        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_awards"
-                        tools:listitem="@layout/challenges_award_item" />
-                </android.support.constraint.ConstraintLayout>
-
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_winners"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_awards">
-
-
-                    <View
-                        android:id="@+id/divider7"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/grey_200"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_winners"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/challenege_winners"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider7" />
-
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_winners"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:clipToPadding="false"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_8"
-                        app:layout_constraintTop_toBottomOf="@id/tv_winners" />
-                </android.support.constraint.ConstraintLayout>
-
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_submissions"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_winners">
-
-
-                    <View
-                        android:id="@+id/divider3"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_1"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:background="@color/grey_200"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_submissions"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/recent_submissions"
-                        app:layout_constraintLeft_toLeftOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/divider3" />
-
-                    <TextView
-                        android:id="@+id/tv_see_all"
-                        style="@style/TextView.Micro.Green"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:text="@string/see_all"
-                        app:layout_constraintBottom_toBottomOf="@+id/tv_submissions"
-                        app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toTopOf="@+id/tv_submissions" />
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_submissions"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:clipToPadding="false"
-                        android:paddingLeft="@dimen/dp_8"
-                        android:paddingRight="@dimen/dp_8"
-                        app:layout_constraintTop_toBottomOf="@id/tv_submissions" />
-                </android.support.constraint.ConstraintLayout>
-
-
-                <View
-                    android:id="@+id/divider4"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_200"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_submissions" />
-
-
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_how_buzzpoints"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:visibility="gone"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider4">
-
-                    <TextView
-                        android:id="@+id/tv_how_buzz_points"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/generate_buzz_points"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_how_buzz_points_text"
-                        style="@style/TextView.Small.Black40"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:ellipsize="end"
-                        android:lines="3"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />
-
-                    <TextView
-                        android:id="@+id/seemorebutton_buzzpoints"
-                        style="@style/TextView.Micro.Green"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:text="@string/see_more"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points_text" />
-                </android.support.constraint.ConstraintLayout>
-
-                <View
-                    android:id="@+id/divider6"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_1"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:background="@color/grey_200"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cl_how_buzzpoints" />
-
-                <android.support.constraint.ConstraintLayout
-                    android:id="@+id/cl_tnc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:visibility="gone"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider6">
-
-                    <TextView
-                        android:id="@+id/tv_tnc"
-                        style="@style/TextView.Medium.FontMedium.BlackPrimary"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/terms_conditions"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <TextView
-                        android:id="@+id/tv_tnc_text"
-                        style="@style/TextView.Small.Black40"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/dp_16"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:layout_marginTop="@dimen/dp_16"
-                        android:ellipsize="end"
-                        android:lines="3"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_tnc"
-                        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam…" />
-
-                    <TextView
-                        android:id="@+id/seemorebutton_tnc"
-                        style="@style/TextView.Micro.Green"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dp_8"
-                        android:text="@string/see_more"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_tnc_text" />
-                </android.support.constraint.ConstraintLayout>
-            </android.support.constraint.ConstraintLayout>
-        </android.support.v4.widget.NestedScrollView>
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/ll_continue"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_80"
-            android:layout_gravity="bottom"
-            android:visibility="gone"
-            app:cardBackgroundColor="@color/white"
-            app:cardElevation="@dimen/dp_8">
-
-            <TextView
-                android:id="@+id/submit_photo"
-                style="@style/TextView.Small.White"
+            <android.support.v7.widget.CardView
+                android:id="@+id/ll_continue"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/dp_14"
-                android:background="@drawable/background_submit_btn"
-                android:gravity="center"
-                android:text="@string/submit_photo" />
-        </android.support.v7.widget.CardView>
+                android:layout_height="@dimen/dp_80"
+                android:layout_gravity="bottom"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/white"
+                app:cardElevation="@dimen/dp_8">
 
+                <TextView
+                    android:id="@+id/submit_photo"
+                    style="@style/TextView.Small.White"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dp_14"
+                    android:background="@drawable/background_submit_btn"
+                    android:gravity="center"
+                    android:text="@string/submit_photo" />
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
 
     <FrameLayout

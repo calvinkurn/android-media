@@ -315,7 +315,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
-        submitButton.setVisibility(View.VISIBLE);
+        if(!isPastChallenge){
+            submitButton.setVisibility(View.VISIBLE);
+
+        }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
     }

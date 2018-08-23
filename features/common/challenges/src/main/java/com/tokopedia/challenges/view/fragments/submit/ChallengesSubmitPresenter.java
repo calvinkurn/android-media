@@ -61,8 +61,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     @Override
     public void onSubmitButtonClick() {
-        String title = getView().getImageTitle();
-        String description = getView().getDescription();
+        String title = getView().getImageTitle().trim();
+        String description = getView().getDescription().trim();
         String filePath = getView().getImage();
         if (filePath == null || filePath.isEmpty()) {
             getView().setSnackBarErrorMessage("Please select image");
@@ -149,7 +149,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     private boolean isValidateDescription(@NonNull String description) {
-        if (description.length() <= 0 || description.length() > 300)
+        if (description.length() <= 0 || description.length() >= 300)
             return false;
         else
             return true;
