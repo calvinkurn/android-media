@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,7 +102,6 @@ public class KolPostFragment extends BaseDaggerFragment implements
         initVar();
         initView(parentView);
         setViewListener();
-        presenter.initView(userId);
 
         if (getActivity().getApplicationContext() instanceof KolRouter) {
             kolRouter = (KolRouter) getActivity().getApplicationContext();
@@ -117,6 +117,12 @@ public class KolPostFragment extends BaseDaggerFragment implements
         }
 
         return parentView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        fetchDataFirstTime();
     }
 
     private void initVar() {
@@ -147,10 +153,18 @@ public class KolPostFragment extends BaseDaggerFragment implements
                 if (topVisibleItemPosition >= adapter.getItemCount() - LOAD_MORE_THRESHOLD &&
                         canLoadMore &&
                         !adapter.isLoading()) {
-                    presenter.getKolPost(userId);
+                    fetchData();
                 }
             }
         });
+    }
+
+    protected void fetchDataFirstTime() {
+        presenter.initView(userId);
+    }
+
+    protected void fetchData() {
+        presenter.getKolPost(userId);
     }
 
     @Override
@@ -211,7 +225,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
         adapter.showErrorNetwork(message, new ErrorNetworkModel.OnRetryListener() {
             @Override
             public void onRetryClicked() {
-                presenter.getKolPost(userId);
+                fetchData();
             }
         });
     }

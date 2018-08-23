@@ -165,10 +165,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void initVar() {
         if (getArguments() != null) {
-            postId = Integer.valueOf(getArguments().getString(
-                    KolPostDetailActivity.PARAM_POST_ID,
-                    KolPostDetailActivity.DEFAULT_POST_ID)
-            );
+            try {
+                postId = Integer.valueOf(getArguments().getString(
+                        KolPostDetailActivity.PARAM_POST_ID,
+                        KolPostDetailActivity.DEFAULT_POST_ID)
+                );
+            } catch (Exception e) {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+                postId = 0;
+            }
         }
     }
 
