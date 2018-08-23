@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -36,22 +37,28 @@ import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.payment.utils.ErrorNetMessage;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
+import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.CheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -257,7 +264,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 } else {
                                     getView().hideInitialLoading();
                                 }
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                if (e instanceof UnknownHostException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof CartResponseErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartResponseDataNullException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartHttpErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof ResponseCartApiErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else {
+                                    getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
                             }
 
                             @Override
@@ -331,7 +356,26 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 getView().hideLoading();
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+
+                                if (e instanceof UnknownHostException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof CartResponseErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartResponseDataNullException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartHttpErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof ResponseCartApiErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else {
+                                    getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
                             }
 
                             @Override
@@ -411,7 +455,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void processReloadCheckoutPageBecauseOfError() {
         getView().showLoading();
-        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm = new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
+        com.tokopedia.abstraction.common.utils.TKPDMapParam<String, String> paramGetShipmentForm =
+                new com.tokopedia.abstraction.common.utils.TKPDMapParam<>();
         paramGetShipmentForm.put("lang", "id");
 
         RequestParams requestParams = RequestParams.create();
@@ -543,8 +588,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         public void onError(Throwable e) {
                                             e.printStackTrace();
                                             getView().hideLoading();
-                                            getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
-                                        }
+                                            if (e instanceof UnknownHostException) {
+                                                getView().showToastError(
+                                                        ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                                );
+                                            } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                                getView().showToastError(
+                                                        ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                                );
+                                            } else if (e instanceof CartResponseErrorException) {
+                                                getView().showToastError(e.getMessage());
+                                            } else if (e instanceof CartResponseDataNullException) {
+                                                getView().showToastError(e.getMessage());
+                                            } else if (e instanceof CartHttpErrorException) {
+                                                getView().showToastError(e.getMessage());
+                                            } else if (e instanceof ResponseCartApiErrorException) {
+                                                getView().showToastError(e.getMessage());
+                                            } else {
+                                                getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                            }                                        }
 
                                         @Override
                                         public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -764,7 +826,27 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             @Override
                             public void onError(Throwable e) {
                                 e.printStackTrace();
-                                getView().renderErrorCheckPromoShipmentData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                if (e instanceof UnknownHostException) {
+                                    getView().renderErrorCheckPromoShipmentData(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    getView().renderErrorCheckPromoShipmentData(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof CartResponseErrorException) {
+                                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
+                                } else if (e instanceof CartResponseDataNullException) {
+                                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
+                                } else if (e instanceof CartHttpErrorException) {
+                                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
+                                } else if (e instanceof ResponseCartApiErrorException) {
+                                    getView().renderErrorCheckPromoShipmentData(e.getMessage());
+                                } else {
+                                    getView().renderErrorCheckPromoShipmentData(
+                                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                                    );
+                                }
                             }
 
                             @Override
@@ -897,7 +979,27 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 e.printStackTrace();
                                 getView().hideLoading();
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                if (e instanceof UnknownHostException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof CartResponseErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartResponseDataNullException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartHttpErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof ResponseCartApiErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                                    );
+                                }
                             }
 
                             @Override
@@ -1118,7 +1220,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             public void onError(Throwable e) {
                                 getView().hideLoading();
                                 e.printStackTrace();
-                                getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                if (e instanceof UnknownHostException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION
+                                    );
+                                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                    getView().showToastError(
+                                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                    );
+                                } else if (e instanceof CartResponseErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartResponseDataNullException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof CartHttpErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else if (e instanceof ResponseCartApiErrorException) {
+                                    getView().showToastError(e.getMessage());
+                                } else {
+                                    getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                }
                             }
 
                             @Override

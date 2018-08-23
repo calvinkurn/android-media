@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -13,9 +14,16 @@ import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartPr
 import com.tokopedia.checkout.view.view.cartlist.removecartitem.viewmodel.CartProductItemViewModel;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
+import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
+import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -110,11 +118,29 @@ public class RemoveCartItemPresenter extends BaseDaggerPresenter<RemoveCartItemC
                             }
 
                             @Override
-                            public void onError(Throwable throwable) {
-                                throwable.printStackTrace();
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
                                 if (isViewAttached()) {
                                     getView().hideLoading();
-                                    getView().showError(getView().getActivity().getString(R.string.default_request_error_unknown));
+                                    if (e instanceof UnknownHostException) {
+                                        getView().showError(
+                                                ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                                        );
+                                    } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                                        getView().showError(
+                                                ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                                        );
+                                    } else if (e instanceof CartResponseErrorException) {
+                                        getView().showError(e.getMessage());
+                                    } else if (e instanceof CartResponseDataNullException) {
+                                        getView().showError(e.getMessage());
+                                    } else if (e instanceof CartHttpErrorException) {
+                                        getView().showError(e.getMessage());
+                                    } else if (e instanceof ResponseCartApiErrorException) {
+                                        getView().showError(e.getMessage());
+                                    } else {
+                                        getView().showError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                                    }
                                 }
                             }
 

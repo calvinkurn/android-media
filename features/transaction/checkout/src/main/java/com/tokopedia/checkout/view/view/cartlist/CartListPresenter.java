@@ -4,11 +4,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
-import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
+import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -23,15 +20,16 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
-import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCheckout;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
+import com.tokopedia.transactiondata.apiservice.CartHttpErrorException;
+import com.tokopedia.transactiondata.apiservice.CartResponseDataNullException;
+import com.tokopedia.transactiondata.apiservice.CartResponseErrorException;
 import com.tokopedia.transactiondata.entity.request.RemoveCartRequest;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
@@ -252,49 +250,52 @@ public class CartListPresenter implements ICartListPresenter {
                     }
                 }
 
-            totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
-            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-            boolean hasCalculateWholesalePrice = false;
-            if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                double subTotalWholesalePrice = 0;
-                double itemCashback = 0;for (WholesalePrice wholesalePrice : wholesalePrices) {
-                    if (itemQty >= wholesalePrice.getQtyMin() ) {
-                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                        hasCalculateWholesalePrice = true;
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
-                        break;
+                totalAllCartItemQty = totalAllCartItemQty + data.getCartItemData().getUpdatedData().getQuantity();
+                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                boolean hasCalculateWholesalePrice = false;
+                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                    double subTotalWholesalePrice = 0;
+                    double itemCashback = 0;
+                    for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                            hasCalculateWholesalePrice = true;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                            break;
+                        }
                     }
-                }
-                if (!hasCalculateWholesalePrice) {
-                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
-                    } else {
-                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                    if (!hasCalculateWholesalePrice) {
+                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                        } else {
+                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
                     }
-                }
-                if (data.getCartItemData().getOriginData().isCashBack()) {
+                    if (data.getCartItemData().getOriginData().isCashBack()) {
                         String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                         double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                         itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
                     }
                     if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                }
-            if (!cashbackWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                    }
+                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
                         cashbackWholesalePriceMap.put(parentId, itemCashback);
-                    }} else {
-                if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
-                    double itemPrice =itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                    if (data.getCartItemData().getOriginData().isCashBack()) {
+                    }
+                } else {
+                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                        double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        if (data.getCartItemData().getOriginData().isCashBack()) {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                             double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
                             cashback = cashback + itemCashback;
                         }
-                        subtotalPrice = subtotalPrice + itemPrice;data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                    cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
+                        subtotalPrice = subtotalPrice + itemPrice;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data);
                     } else {
                         CartItemHolderData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
                         if (calculatedHolderData.getCartItemData().getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
@@ -313,11 +314,11 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
-            if (!subtotalWholesalePriceMap.isEmpty()) {
-                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                    subtotalPrice += item.getValue();
-                }
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                subtotalPrice += item.getValue();
             }
+        }
 
         if (!cashbackWholesalePriceMap.isEmpty()) {
             for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
@@ -426,60 +427,44 @@ public class CartListPresenter implements ICartListPresenter {
 
     private void handleErrorinitCartList(Throwable e) {
         if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
             view.renderErrorNoConnectionInitialGetCartListData(
                     ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
             );
         } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
             view.renderErrorTimeoutConnectionInitialGetCartListData(
                     ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
             );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
+        } else if (e instanceof CartResponseErrorException) {
             view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+        } else if (e instanceof CartResponseDataNullException) {
             view.renderErrorInitialGetCartListData(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-            code http errornya bisa diambil
-            e.getErrorCode */
+        } else if (e instanceof CartHttpErrorException) {
             view.renderErrorHttpInitialGetCartListData(e.getMessage());
         } else if (e instanceof ResponseCartApiErrorException) {
             view.renderErrorInitialGetCartListData(e.getMessage());
         } else {
-            /* Ini diluar dari segalanya hahahaha */
             view.renderErrorHttpInitialGetCartListData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
 
     private void handleErrorCartList(Throwable e) {
         if (e instanceof UnknownHostException) {
-            /* Ini kalau ga ada internet */
             view.renderErrorNoConnectionActionDeleteCartData(
                     ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
             );
         } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
-            /* Ini kalau timeout */
             view.renderErrorTimeoutConnectionActionDeleteCartData(
                     ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
             );
-        } else if (e instanceof ResponseErrorException) {
-            /* Ini kalau error dari API kasih message error */
+        } else if (e instanceof CartResponseErrorException) {
             view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof ResponseDataNullException) {
-            /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
+        } else if (e instanceof CartResponseDataNullException) {
             view.renderErrorActionDeleteCartData(e.getMessage());
-        } else if (e instanceof HttpErrorException) {
-            /* Ini Http error, misal 403, 500, 404,
-            code http errornya bisa diambil
-            e.getErrorCode */
+        } else if (e instanceof CartHttpErrorException) {
             view.renderErrorHttpActionDeleteCartData(e.getMessage());
         } else if (e instanceof ResponseCartApiErrorException) {
             view.renderErrorActionDeleteCartData(e.getMessage());
         } else {
-            /* Ini diluar dari segalanya hahahaha */
             view.renderErrorHttpActionDeleteCartData(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
         }
     }
@@ -559,7 +544,25 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
-                view.showToastMessageRed(ErrorHandler.getErrorMessage(view.getActivity(), e));
+                if (e instanceof UnknownHostException) {
+                    view.showToastMessageRed(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                    );
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    view.showToastMessageRed(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof CartResponseErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof CartResponseDataNullException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof CartHttpErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    view.showToastMessageRed(e.getMessage());
+                } else {
+                    view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
                 processInitialGetCartData();
             }
 
@@ -622,6 +625,27 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 e.printStackTrace();
                 view.hideProgressLoading();
+                if (e instanceof UnknownHostException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
+                            ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL
+                    );
+                } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
+                            ErrorNetMessage.MESSAGE_ERROR_TIMEOUT
+                    );
+                } else if (e instanceof CartResponseErrorException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
+                } else if (e instanceof CartResponseDataNullException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
+                } else if (e instanceof CartHttpErrorException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
+                } else if (e instanceof ResponseCartApiErrorException) {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(e.getMessage());
+                } else {
+                    view.renderErrorCheckPromoCodeFromSuggestedPromo(
+                            ErrorNetMessage.MESSAGE_ERROR_DEFAULT
+                    );
+                }
             }
 
             @Override

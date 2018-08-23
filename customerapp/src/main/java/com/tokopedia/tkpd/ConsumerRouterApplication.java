@@ -36,7 +36,6 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
@@ -51,7 +50,6 @@ import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
-import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -76,16 +74,10 @@ import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.instoped.model.InstagramMediaModel;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
-import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.digital_deals.DealsModuleRouter;
-import com.tokopedia.digital_deals.di.DaggerDealsComponent;
-import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
+import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
+import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.coverters.StringResponseConverter;
@@ -112,11 +104,11 @@ import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
+import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
@@ -320,7 +312,6 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.usecase.UseCase;
 
 import java.io.File;
@@ -396,7 +387,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         BankRouter,
         ChangePasswordRouter,
-        TrainRouter{
+        TrainRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1806,22 +1797,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize) {
-        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
-        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
-        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(
-                GetCouponListCartMarketPlaceUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, tkpdMapParam, userSession.getUserId(), userSession.getDeviceId()
-                )
-        );
-        return CartComponentInjector.newInstance(this)
-                .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
-    }
-
-    @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
@@ -2214,7 +2189,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getUserPhoneNumber(){
+    public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
 
@@ -2422,10 +2397,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)){
+        if (remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)) {
             return ChangePasswordActivity.Companion.createIntent(context);
-        }else{
-            return  new Intent(context, ManagePasswordActivity.class);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
         }
     }
 
@@ -2472,7 +2447,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
