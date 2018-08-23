@@ -16,7 +16,6 @@ import android.view.View;
 
 import com.tokopedia.common.travel.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.design.component.NumberPickerWithCounterView;
 
 /**
  * Created by alvarisi on 10/25/17.
