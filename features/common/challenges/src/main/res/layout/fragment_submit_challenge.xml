@@ -8,9 +8,10 @@
 
 
     <ScrollView
-        android:layout_alignParentTop="true"
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/constraint_layout"
@@ -20,6 +21,7 @@
 
             <TextView
                 android:id="@+id/challenge_title"
+                style="@style/TextView.TitleBig.FontMedium.BlackPrimary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dp_8"
@@ -27,35 +29,44 @@
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif"
-                tools:text="Workout Photo Challenge"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Workout Photo Challenge" />
 
-            <com.tokopedia.challenges.view.customview.ExpandableTextView
+            <TextView
                 android:id="@+id/challenge_description"
+                style="@style/TextView.Small.Black40"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_8"
                 android:layout_marginTop="@dimen/dp_12"
+                android:ellipsize="end"
                 android:lineSpacingExtra="3sp"
                 android:maxLines="4"
-                android:ellipsize="end"
-                tools:text="The focus of this year's Challenge is Plants and Animal of California We are asking UCI students to capture,through a photographic image, the flora and fauna of our state. Exapmle images can be seen in the introductory Video ..."
-                android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/challenge_title" />
+                app:layout_constraintTop_toBottomOf="@id/challenge_title"
+                tools:text="The focus of this year's Challenge is Plants and Animal of California We are asking UCI students to capture,through a photographic image, the flora and fauna of our state. Exapmle images can be seen in the introductory Video ..." />
+
+            <WebView
+                android:id="@+id/markdownView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/challenge_description" />
 
             <TextView
                 android:id="@+id/show_more"
+                style="@style/TextView.Micro.Green"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
@@ -65,11 +76,9 @@
                 android:lineSpacingExtra="3sp"
                 android:maxLines="4"
                 android:text="@string/see_more"
-                android:textColor="@color/accepted_green_textcolor"
-                android:textSize="14sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/challenge_description" />
+                app:layout_constraintTop_toBottomOf="@id/markdownView" />
 
             <TextView
                 android:id="@+id/txt_choose_image_title"
@@ -77,11 +86,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_16"
                 android:text="@string/choose_an_image_title"
-                android:textColor="@color/grey_600"
-                android:textSize="@dimen/sp_17"
-                android:textStyle="bold"
+                style="@style/TextView.Medium.FontMedium.BlackPrimary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/show_more" />
 
@@ -91,9 +98,9 @@
                 android:layout_height="@dimen/dp_80"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                android:focusable="true"
                 android:layout_marginTop="@dimen/dp_12"
                 android:background="@drawable/rounded_rectangle_grey_border"
+                android:focusable="true"
                 android:scaleType="centerInside"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txt_choose_image_title"
@@ -104,10 +111,10 @@
                 android:id="@+id/delete_image"
                 android:layout_width="@dimen/dp_18"
                 android:layout_height="@dimen/dp_18"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="@id/selected_image"
                 app:layout_constraintTop_toTopOf="@id/selected_image"
                 app:srcCompat="@drawable/ic_black_cross"
-                android:visibility="gone"
                 tools:ignore="VectorDrawableCompat" />
 
 
@@ -117,11 +124,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif"
                 android:text="@string/title"
-                android:textColor="@color/black4_text"
-                android:textSize="@dimen/sp_12"
-                android:textStyle="normal"
+                android:textColor="@color/black_56"
+                style="@style/TextView.Micro"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selected_image" />
 
@@ -136,9 +141,10 @@
                 android:layout_marginTop="@dimen/dp_12"
                 android:hint="@string/image_title"
                 android:inputType="textPersonName"
-                android:textColor="@color/black3_text"
-                android:textSize="@dimen/sp_16"
                 android:maxLength="50"
+                android:textColor="@color/black_39"
+                android:textColorHint="@color/black_18"
+                android:textSize="@dimen/sp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/img_title" />
@@ -148,12 +154,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_24"
-                android:fontFamily="sans-serif"
+                android:layout_marginTop="@dimen/dp_4"
                 android:text="@string/about"
-                android:textColor="@color/black4_text"
                 android:textSize="@dimen/sp_12"
-                android:textStyle="normal"
+                android:textColor="@color/black_56"
+                style="@style/TextView.Micro"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/edt_image_title" />
 
@@ -165,23 +170,25 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginTop="@dimen/dp_4"
                 android:hint="@string/image_description"
                 android:inputType="textMultiLine"
                 android:maxLength="300"
-                android:textColor="@color/black3_text"
+                android:textColor="@color/black_39"
+                android:textColorHint="@color/black_18"
                 android:textSize="@dimen/sp_16"
-                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/txt_image_description" />
+
             <LinearLayout
                 android:id="@+id/bottom_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginTop="@dimen/dp_20"
-                app:layout_constraintTop_toBottomOf="@+id/edt_image_description"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/edt_image_description">
 
                 <TextView
                     android:id="@+id/btn_submit"
@@ -191,7 +198,6 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginStart="@dimen/dp_16"
-
                     android:background="@drawable/bg_button_green"
                     android:gravity="center"
                     android:text="@string/submit"
@@ -211,7 +217,7 @@
                     android:background="@drawable/bg_button_white_border"
                     android:gravity="center"
                     android:text="@string/cancel"
-                    android:textColor="@color/grey_800"
+                    android:textColor="@color/black_38"
                     android:textSize="@dimen/sp_13" />
             </LinearLayout>
         </android.support.constraint.ConstraintLayout>

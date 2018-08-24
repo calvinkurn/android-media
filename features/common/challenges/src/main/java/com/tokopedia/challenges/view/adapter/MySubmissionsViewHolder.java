@@ -53,14 +53,14 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes.setVisibility(View.GONE);
         imgShare.setVisibility(View.VISIBLE);
 
-        if ("Approved".equalsIgnoreCase(submissionsResult.getStatus())) {
+        if (Utils.STATUS_APPROVED.equalsIgnoreCase(submissionsResult.getStatus())) {
             imgLikes.setVisibility(View.VISIBLE);
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_checked);
             } else {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);
             }
-        } else if ("Declined".equalsIgnoreCase(submissionsResult.getStatus())) {
+        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(submissionsResult.getStatus())) {
             imgShare.setVisibility(View.GONE);
         }
 

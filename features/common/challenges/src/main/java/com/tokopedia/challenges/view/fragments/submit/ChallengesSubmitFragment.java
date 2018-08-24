@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
+import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -22,6 +24,7 @@ import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.customview.ExpandableTextView;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
+import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
@@ -58,7 +61,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private TextView mBtnSubmit;
     private TextView mBtnCancel;
     private TextView mShowMore;
-
+    WebView longDescription;
     private ImagePickerBuilder imagePickerBuilder;
     public static final int REQUEST_IMAGE_SELECT = 1;
     private static final int REQUEST_CODE_VIDEO = 2;
@@ -66,13 +69,13 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private String mAttachmentPath;
     private  ProgressDialog progress;
     private View parent;
-
+    private ScrollView scrollView;
 
     @Inject
     ChallengesSubmitPresenter presenter;
     private TextView mChallengeTitle;
     private ChallengeSettings challengeSettings;
-    private ExpandableTextView mChallengeDescription;
+    private TextView descriptionShort;
     private String channelId;
     private String channelTitle;
     private String channelDesc;
@@ -104,7 +107,6 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_submit_challenge, container, false);
         initView(view);
-        mChallengeDescription.setInterpolator(new OvershootInterpolator());
         presenter.attachView(this);
         setClickListener();
         return view;
@@ -136,12 +138,19 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mShowMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mChallengeDescription.isExpanded()) {
-                    mShowMore.setText(R.string.see_more);
-                } else {
+                if (descriptionShort.getVisibility() == View.VISIBLE) {
                     mShowMore.setText(R.string.see_less);
+                    MarkdownProcessor m = new MarkdownProcessor();
+                    String html = m.markdown(channelDesc);
+                    longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
+                    descriptionShort.setVisibility(View.GONE);
+                    longDescription.setVisibility(View.VISIBLE);
+                } else {
+                    mShowMore.setText(R.string.see_more);
+                    descriptionShort.setVisibility(View.VISIBLE);
+                    longDescription.setVisibility(View.GONE);
+                    scrollView.scrollTo(0, 0);
                 }
-                mChallengeDescription.toggle();
             }
         });
 
@@ -232,7 +241,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void setChallengeData() {
         mChallengeTitle.setText(channelTitle);
-        mChallengeDescription.setText(channelDesc);
+        descriptionShort.setText(channelDesc);
     }
 
     @Override
@@ -259,8 +268,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnCancel = view.findViewById(R.id.btn_cancel);
         parent = view.findViewById(R.id.constraint_layout);
         mChallengeTitle = view.findViewById(R.id.challenge_title);
-        mChallengeDescription = view.findViewById(R.id.challenge_description);
+        descriptionShort = view.findViewById(R.id.challenge_description);
         mShowMore = view.findViewById(R.id.show_more);
+        longDescription = view.findViewById(R.id.markdownView);
+        scrollView = view.findViewById(R.id.scroll_view);
     }
 
     private void showImagePickerDialog() {

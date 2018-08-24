@@ -134,13 +134,13 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             return;
         }
         if (isPastChallenge) {
-            getView().setCountDownView("Completed");
+            getView().setCountDownView(Utils.STATUS_COMPLETED);
             getWinnerList();
         } else {
             if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
                     && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
                     || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0)) {
-                    getView().setCountDownView("Participated");
+                    getView().setCountDownView(Utils.STATUS_PARTICIPATED);
             } else {
                 getView().setCountDownView("");
             }

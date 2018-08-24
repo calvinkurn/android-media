@@ -36,6 +36,12 @@ public class Utils {
     public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
     public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
     public static final String QUERY_PARAM_IS_PAST_CHALLENGE = "isPastChallenge";
+    public static final String STATUS_APPROVED = "Approved";
+    public static final String STATUS_REJECTED = "Rejected";
+    public static final String STATUS_COMPLETED = "Completed";
+    public static final String STATUS_PARTICIPATED = "Participated";
+    public static final String STATUS_DECLINED = "Declined";
+    public static final String STATUS_WAITING = "Waiting";
     public static boolean FROMNOCACHE;
 
 
@@ -189,24 +195,24 @@ public class Utils {
 
     public static void setTextViewBackground(Context context, TextView tvStatus, String status) {
         tvStatus.setText(status);
-        if ("Approved".equalsIgnoreCase(status) || "Participated".equalsIgnoreCase(status)) {
-            if("Participated".equalsIgnoreCase(status)){
+        if (STATUS_APPROVED.equalsIgnoreCase(status) || STATUS_PARTICIPATED.equalsIgnoreCase(status)) {
+            if(STATUS_PARTICIPATED.equalsIgnoreCase(status)){
                 tvStatus.setText(context.getResources().getString(R.string.participated));
             }else{
                 tvStatus.setText(context.getResources().getString(R.string.approved));
             }
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
-        } else if ("Declined".equalsIgnoreCase(status)) {
+        } else if (STATUS_DECLINED.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.rejected));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.declined_red_textcolor));
 
-        } else if ("Waiting".equalsIgnoreCase(status)) {
+        } else if (STATUS_WAITING.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
-        } else if ("Completed".equalsIgnoreCase(status)) {
+        } else if (STATUS_COMPLETED.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));

@@ -450,7 +450,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 longDescription.setVisibility(View.VISIBLE);
             } else {
                 seeMoreButtonDesc.setText(R.string.see_more);
-                seeMoreButtonDesc.setText(R.string.see_less);
                 shortDescription.setVisibility(View.VISIBLE);
                 longDescription.setVisibility(View.GONE);
                 nestedScrollView.scrollTo(0, 0);
