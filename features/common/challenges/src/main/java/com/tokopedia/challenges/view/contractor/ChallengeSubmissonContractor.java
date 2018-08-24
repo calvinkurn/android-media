@@ -62,13 +62,15 @@ public class ChallengeSubmissonContractor {
         void setChallengeResult(Result challengeResult);
 
         String getChallengeId();
+
+        void setIsPastChallenge(boolean value);
     }
 
     public interface Presenter extends CustomerPresenter<ChallengeSubmissonContractor.View> {
 
         void initialize(boolean loadFromApi, Result challengeResult);
 
-        void onSubmitButtonClick();
+        void onSubmitButtonClick(boolean isPastChallenge);
 
         void onDestroy();
 

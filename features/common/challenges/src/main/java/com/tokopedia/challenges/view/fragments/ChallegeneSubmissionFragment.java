@@ -117,6 +117,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private FloatingActionButton btnShare;
     private boolean isWinnerList = false;
     private View bottomMarginView;
+    private TextView submitPhoto;
     @Inject
     public ChallengesAnalytics analytics;
 
@@ -207,6 +208,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         longDescription = view.findViewById(R.id.markdownView);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         bottomMarginView = view.findViewById(R.id.bottom_margin_view);
+        submitPhoto = view.findViewById(R.id.submit_photo);
         mPresenter.attachView(this);
         if (isPastChallenge) {
             btnShare.setVisibility(View.GONE);
@@ -332,6 +334,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void setCountDownView(String participatedText) {
         if (TextUtils.isEmpty(participatedText)) {
+            submitPhoto.setText("Submit video or phopto");
             try {
                 countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
                 countDownView.start(timerProgressBar);
@@ -342,6 +345,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvParticipated.setVisibility(View.GONE);
         } else {
             Utils.setTextViewBackground(getContext(), tvParticipated, participatedText);
+            submitPhoto.setText("View Submission");
         }
     }
 
@@ -463,7 +467,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesAnalytics.EVENT_ACTION_CLICK, "");
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
         } else if (v.getId() == R.id.ll_continue) {
-            mPresenter.onSubmitButtonClick();
+            mPresenter.onSubmitButtonClick(isPastChallenge);
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {
@@ -528,5 +532,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void onDestroyView() {
         mPresenter.onDestroy();
         super.onDestroyView();
+    }
+
+    @Override
+    public void setIsPastChallenge(boolean value) {
+        isPastChallenge = value;
     }
 }
