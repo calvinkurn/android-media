@@ -54,6 +54,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class ShopProductListFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements ShopProductDedicatedListView, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
+        implements ShopProductDedicatedListView, WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, EtalaseChipAdapter.OnEtalaseChipAdapterListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -187,7 +188,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         super.onCreate(savedInstanceState);
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
-        shopProductListPresenter.attachView(this);
+        shopProductListPresenter.attachView(this, this);
     }
 
     @Nullable
@@ -490,32 +491,32 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onErrorAddToWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        if (!shopProductListPresenter.isLogin()) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddToWishList(String productId, Boolean value) {
+    public void onSuccessAddWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, true);
     }
 
     @Override
-    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, false);
     }
 
     @Override
-    public void onErrorRemoveFromWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
+    public void onErrorAddToWishList(Throwable e) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 

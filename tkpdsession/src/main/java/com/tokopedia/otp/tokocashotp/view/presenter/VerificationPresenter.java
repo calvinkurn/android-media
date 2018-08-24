@@ -11,9 +11,9 @@ import com.tokopedia.otp.tokocashotp.view.subscriber.VerifyOtpTokoCashSubscriber
 import com.tokopedia.otp.tokocashotp.view.viewlistener.Verification;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerificationViewModel;
 import com.tokopedia.otp.tokocashotp.view.viewmodel.VerifyOtpTokoCashViewModel;
+import com.tokopedia.session.login.loginphonenumber.domain.interactor.LoginPhoneNumberUseCase;
+import com.tokopedia.session.login.loginphonenumber.view.subscriber.LoginTokoCashSubscriber;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.AccountTokocash;
-
-import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -26,12 +26,15 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
 
     private final RequestOtpTokoCashUseCase requestTokoCashOTPUseCase;
     private final VerifyOtpTokoCashUseCase verifyTokoCashOTPUseCase;
+    private final LoginPhoneNumberUseCase loginTokoCashUseCase;
 
     @Inject
     public VerificationPresenter(RequestOtpTokoCashUseCase requestTokoCashOTPUseCase,
-                                 VerifyOtpTokoCashUseCase verifyTokoCashOTPUseCase) {
+                                 VerifyOtpTokoCashUseCase verifyTokoCashOTPUseCase,
+                                 LoginPhoneNumberUseCase loginPhoneNumberUseCase) {
         this.requestTokoCashOTPUseCase = requestTokoCashOTPUseCase;
         this.verifyTokoCashOTPUseCase = verifyTokoCashOTPUseCase;
+        this.loginTokoCashUseCase = loginPhoneNumberUseCase;
     }
 
     public void attachView(Verification.View view) {
@@ -43,6 +46,7 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         super.detachView();
         requestTokoCashOTPUseCase.unsubscribe();
         verifyTokoCashOTPUseCase.unsubscribe();
+        loginTokoCashUseCase.unsubscribe();
     }
 
     @Override
@@ -71,5 +75,21 @@ public class VerificationPresenter extends BaseDaggerPresenter<Verification.View
         getView().showLoadingProgress();
         verifyTokoCashOTPUseCase.execute(VerifyOtpTokoCashUseCase.getParam(phoneNumber, otpCode), new
                 VerifyOtpTokoCashSubscriber(getView()));
+    }
+
+    @Override
+    public void autoLogin(String key, VerifyOtpTokoCashViewModel viewModel) {
+        AccountTokocash accountTokocash = viewModel.getList().get(0);
+        loginWithTokocash(key, accountTokocash);
+    }
+
+    public void loginWithTokocash(String key, AccountTokocash accountTokocash) {
+        getView().showLoadingProgress();
+        loginTokoCashUseCase.execute(LoginPhoneNumberUseCase.getParam(
+                key,
+                accountTokocash.getEmail(),
+                accountTokocash.getUserId()
+        ), new LoginTokoCashSubscriber
+                (getView(), accountTokocash));
     }
 }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
+import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 
 import java.util.ArrayList;
@@ -43,11 +44,17 @@ public interface CatalogListItemContract {
         void showConfirmRedeemDialog(String cta, String code, String title);
 
         void showValidationMessageDialog(CatalogsValueEntity item, String title, String message, int resCode);
+
+        void refreshCatalog(List<CatalogStatusItem> items);
+
+        void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void destroyView();
 
         void getCatalog(int categoryId, int sortId);
+
+        void fetchLatestStatus(List<Integer> catalogsIds);
     }
 }

@@ -21,7 +21,7 @@ import javax.inject.Inject;
 
 /**
  * @author Irfan Khoirul on 07/03/18
- *         Originally Authored by Kris, Aghny
+ * Originally Authored by Kris, Aghny
  */
 
 public class ShipmentDataRequestConverter {
@@ -176,6 +176,18 @@ public class ShipmentDataRequestConverter {
     private ProductDataCheckoutRequest convertToProductDataCheckout(CartItemModel cartItem) {
         return new ProductDataCheckoutRequest.Builder()
                 .productId(cartItem.getProductId())
+                .productName(cartItem.getAnalyticsProductCheckoutData().getProductName())
+                .productPrice(cartItem.getAnalyticsProductCheckoutData().getProductPrice())
+                .productBrand(cartItem.getAnalyticsProductCheckoutData().getProductBrand())
+                .productCategory(cartItem.getAnalyticsProductCheckoutData().getProductCategory())
+                .productVariant(cartItem.getAnalyticsProductCheckoutData().getProductVariant())
+                .productQuantity(cartItem.getAnalyticsProductCheckoutData().getProductQuantity())
+                .productShopId(cartItem.getAnalyticsProductCheckoutData().getProductShopId())
+                .productShopType(cartItem.getAnalyticsProductCheckoutData().getProductShopType())
+                .productShopName(cartItem.getAnalyticsProductCheckoutData().getProductShopName())
+                .productCategoryId(cartItem.getAnalyticsProductCheckoutData().getProductCategoryId())
+                .productListName(cartItem.getAnalyticsProductCheckoutData().getProductListName())
+                .productAttribution(cartItem.getAnalyticsProductCheckoutData().getProductAttribution())
                 .build();
     }
 

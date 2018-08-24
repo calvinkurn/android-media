@@ -1,7 +1,6 @@
 package com.tokopedia.posapp;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -548,7 +547,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, Token token) {
+    public Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart) {
         return null;
     }
 
@@ -728,6 +727,11 @@ public class PosRouterApplication extends MainApplication implements
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return false;
     }
 
     public PosAppComponent getPosAppComponent() {
