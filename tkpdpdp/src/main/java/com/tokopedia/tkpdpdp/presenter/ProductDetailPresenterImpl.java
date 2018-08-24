@@ -164,7 +164,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     /* context for testing only since API hasn't been ready yet */
     @Override
     public void initGetRateEstimationUseCase(Context context){
-        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase(), context);
+        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
     }
 
     @Override
