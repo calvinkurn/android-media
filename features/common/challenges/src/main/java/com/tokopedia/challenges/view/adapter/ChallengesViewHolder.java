@@ -61,11 +61,11 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining.setVisibility(View.GONE);
         tvStatus.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
-            Utils.setTextViewBackground(context, tvStatus, "Completed");
+            Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_COMPLETED);
 //            tvStatus.setTextAppearance(context, R.style.TextView_Completed);
             imgShare.setVisibility(View.GONE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
-            Utils.setTextViewBackground(context, tvStatus, "Participated");
+            Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_PARTICIPATED);
         } else {
             RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
             tvTimeRemaining.setText(String.format(context.getResources().getString(R.string.text_remaining_days), daysFormatter.getRemainingDays()));

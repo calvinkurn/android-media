@@ -34,7 +34,6 @@ import javax.inject.Inject;
 
 public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View, CustomVideoPlayer.CustomVideoPlayerListener {
     private LinearLayout statusView;
-    private ImageView closeBtn;
     private TextView statusText;
     private LinearLayout profileLayout;
     private ImageView profilePic;
@@ -75,7 +74,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
         statusView = view.findViewById(R.id.conditional_status);
         statusText = view.findViewById(R.id.status_text);
-        closeBtn = view.findViewById(R.id.close_status);
 
         profileLayout = view.findViewById(R.id.profile);
         profilePic = view.findViewById(R.id.profile_pic);
@@ -142,11 +140,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     private void setClickListeners() {
-        closeBtn.setOnClickListener(view -> {
-            closeBtn.setVisibility(View.GONE);
-            statusView.setVisibility(View.GONE);
-        });
-
         btnShare.setOnClickListener(v -> {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
 
@@ -161,7 +154,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void showStatusInfo() {
-        closeBtn.setVisibility(View.VISIBLE);
         statusView.setVisibility(View.VISIBLE);
     }
 
@@ -189,12 +181,14 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setApprovedView(String approveText) {
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
-        if ("Approved".equalsIgnoreCase(approveText)) {
+        if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
-        } else if ("Declined".equalsIgnoreCase(approveText)) {
+        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
+        } else if (Utils.STATUS_WAITING.equalsIgnoreCase(approveText)) {
+            showStatusInfo();
         }
     }
 

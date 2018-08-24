@@ -14,49 +14,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/card_share"
-        android:paddingBottom="@dimen/dp_5"
         android:background="@color/white"
-        android:visibility="visible"
-        android:scrollbars="none">
+        android:paddingBottom="@dimen/dp_5"
+        android:scrollbars="none"
+        android:visibility="visible">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white">
 
-            <LinearLayout
-                android:id="@+id/conditional_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
-                android:background="@drawable/background_lightyellow_voucher"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <View
-                    android:layout_width="@dimen/dp_3"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dp_1"
-                    android:layout_marginLeft="@dimen/dp_1"
-                    android:layout_marginTop="@dimen/dp_1"
-                    android:background="@drawable/line_yellow" />
-
-                <TextView
-                    android:id="@+id/status_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_8"
-                    android:layout_marginRight="@dimen/dp_32"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:padding="@dimen/dp_8"
-                    android:text="@string/approval_wait"
-                    android:textColor="#8a000000"
-                    android:textSize="11sp" />
-            </LinearLayout>
 
             <ImageView
                 android:id="@+id/close_status"
@@ -65,8 +32,7 @@
                 android:layout_margin="@dimen/dp_8"
                 android:src="@drawable/yellow_close_btn"
                 android:visibility="gone"
-                app:layout_constraintRight_toRightOf="@+id/conditional_status"
-                app:layout_constraintTop_toTopOf="@id/conditional_status" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <LinearLayout
                 android:id="@+id/profile"
@@ -77,7 +43,7 @@
                 android:paddingLeft="@dimen/dp_16"
                 android:paddingRight="@dimen/dp_16"
                 android:paddingTop="@dimen/dp_8"
-                app:layout_constraintTop_toBottomOf="@+id/conditional_status">
+                app:layout_constraintTop_toBottomOf="parent">
 
                 <ImageView
                     android:id="@+id/profile_pic"
@@ -112,14 +78,14 @@
                     style="@style/TextView.Small.White"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_20"
+                    android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
+                    android:layout_marginEnd="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:background="@drawable/ic_winner_badge"
                     android:gravity="center_horizontal"
                     android:textSize="@dimen/sp_10"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </RelativeLayout>
 
@@ -129,20 +95,19 @@
                 android:layout_height="@dimen/dp_50"
                 android:layout_marginBottom="@dimen/dp_8"
                 android:layout_marginRight="@dimen/dp_16"
+                android:visibility="gone"
                 app:backgroundTint="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/challenge_img_layout"
                 app:layout_constraintRight_toRightOf="parent"
                 app:srcCompat="@drawable/ic_wishlist_unchecked"
-                android:visibility="gone"
                 tools:ignore="VectorDrawableCompat" />
 
             <TextView
                 android:id="@+id/challenge_title"
+                style="@style/TextView.TitleBig.FontMedium.BlackPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
-                android:textColor="@color/black_39"
-                android:textSize="@dimen/sp_20"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_img_layout" />
 
             <ImageView
@@ -161,9 +126,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_12"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="0"
                 app:layout_constraintLeft_toRightOf="@+id/points_img"
-                app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
+                app:layout_constraintTop_toBottomOf="@+id/challenge_title"
+                tools:text="0" />
 
 
             <ImageView
@@ -183,26 +148,59 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="0"
                 app:layout_constraintLeft_toRightOf="@+id/likes_img"
-                app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
+                app:layout_constraintTop_toBottomOf="@+id/challenge_title"
+                tools:text="0" />
 
 
             <TextView
                 android:id="@+id/approved"
+                style="@style/TextView.Micro11.FontMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_12"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                style="@style/TextView.Micro11.FontMedium"
-                android:visibility="visible"
                 android:paddingBottom="@dimen/dp_6"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_4"
+                android:visibility="visible"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
+
+            <LinearLayout
+                android:id="@+id/conditional_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:background="@drawable/background_light_bluish_grey"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_10"
+                android:paddingRight="@dimen/dp_8"
+                android:visibility="gone"
+                android:paddingTop="@dimen/dp_16"
+                app:layout_constraintTop_toBottomOf="@+id/points_img">
+
+                <ImageView
+                    android:layout_width="@dimen/dp_24"
+                    android:layout_height="@dimen/dp_24"
+                    android:src="@drawable/ic_info_black"
+                    android:tint="#999999" />
+
+
+                <TextView
+                    android:id="@+id/status_text"
+                    style="@style/TextView.Micro.Black40"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_8"
+                    android:text="@string/approval_wait" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/detail_title"
@@ -210,21 +208,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:text="@string/about"
                 android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/about"
                 android:textColor="#000000"
                 android:textSize="@dimen/sp_16"
-                app:layout_constraintTop_toBottomOf="@+id/approved" />
+                app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
 
             <TextView
                 android:id="@+id/detail_content"
-                style="@style/TextView.Micro.FontMedium.BlackSecondary"
+                style="@style/TextView.Small.FontMedium.BlackPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_8"
-                android:textSize="@dimen/sp_14"
                 app:layout_constraintTop_toBottomOf="@+id/detail_title" />
 
             <TextView
@@ -234,14 +231,14 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:textColor="@color/black"
                 android:text="@string/participate_in"
+                android:textColor="@color/black"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintTop_toBottomOf="@+id/detail_content" />
 
             <TextView
                 android:id="@+id/participate_content"
-                style="@style/TextView.Micro.FontMedium.BlackSecondary"
+                style="@style/TextView.Small.FontMedium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_16"
@@ -260,8 +257,8 @@
     <android.support.v7.widget.CardView
         android:id="@+id/card_share"
         android:layout_width="match_parent"
-        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         app:cardElevation="@dimen/dp_8">
 
         <LinearLayout
@@ -275,6 +272,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:text="@string/buzz_point_request" />
 
             <TextView
@@ -282,27 +280,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/bg_round_corner_solid_green"
+                android:paddingBottom="@dimen/dp_12"
                 android:paddingLeft="@dimen/dp_32"
                 android:paddingRight="@dimen/dp_32"
                 android:paddingTop="@dimen/dp_12"
-                android:paddingBottom="@dimen/dp_12"
                 android:text="@string/share_submission"
                 android:textAlignment="center"
                 android:textColor="@color/white" />
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/btn_submit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/dp_12"
-            android:visibility="gone"
-            android:paddingTop="@dimen/dp_12"
-            android:paddingBottom="@dimen/dp_12"
             android:background="@drawable/bg_round_corner_solid_green"
             android:gravity="center"
+            android:paddingBottom="@dimen/dp_12"
+            android:paddingTop="@dimen/dp_12"
             android:text="Resubmit other content"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="gone" />
     </android.support.v7.widget.CardView>
 
     <FrameLayout
@@ -310,8 +309,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black_12"
-        android:elevation="@dimen/dp_18"
         android:clickable="true"
+        android:elevation="@dimen/dp_18"
         android:focusable="true"
         android:visibility="gone">
 
@@ -326,9 +325,11 @@
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="@dimen/dp_18"
         android:background="@color/white"
-        android:orientation="vertical">
+        android:elevation="@dimen/dp_18"
+        android:orientation="vertical"
+        android:visibility="gone">
+
         <include layout="@layout/details_loader" />
     </LinearLayout>
 
