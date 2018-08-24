@@ -211,12 +211,6 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         llValid.setVisibility(View.GONE);
                     }
-                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
-                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
-                        llTanggalEvent.setVisibility(View.VISIBLE);
-                    } else {
-                        llTanggalEvent.setVisibility(View.GONE);
-                    }
                 }
 
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
@@ -255,7 +249,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
                     }
-
+                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+                        llTanggalEvent.setVisibility(View.VISIBLE);
+                    } else {
+                        llTanggalEvent.setVisibility(View.GONE);
+                    }
                 }
 
             }
