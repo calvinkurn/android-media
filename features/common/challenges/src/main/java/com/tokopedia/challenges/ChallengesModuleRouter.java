@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+
 import permissions.dispatcher.PermissionRequest;
 
 public interface ChallengesModuleRouter {

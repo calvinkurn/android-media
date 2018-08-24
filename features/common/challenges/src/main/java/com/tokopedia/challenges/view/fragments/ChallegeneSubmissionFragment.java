@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
@@ -116,6 +117,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private FloatingActionButton btnShare;
     private boolean isWinnerList = false;
     private View bottomMarginView;
+    @Inject
+    public ChallengesAnalytics analytics;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -318,7 +321,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
-        if(!isPastChallenge){
+        if (!isPastChallenge) {
             submitButton.setVisibility(View.VISIBLE);
 
         }
@@ -455,12 +458,18 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 nestedScrollView.scrollTo(0, 0);
             }
         } else if (v.getId() == R.id.tv_see_all) {
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION_SEE_ALL,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK, "");
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
         } else if (v.getId() == R.id.ll_continue) {
             mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK, ChallengesAnalytics.EVENT_TNC);
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);

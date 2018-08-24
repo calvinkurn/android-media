@@ -10,6 +10,7 @@ import android.support.v4.util.SparseArrayCompat;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.view.fragments.ChallengesFragment;
 import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
 
@@ -36,5 +37,15 @@ public class ChallengesHomeAdapter extends FragmentStatePagerAdapter {
                 return new MySubmissionsFragment();
         }
         return new ChallengesFragment();
+    }
+
+    @Nullable
+    @Override
+    public CharSequence getPageTitle(int position) {
+        if (position == 0) {
+            return ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES;
+        } else {
+            return ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS;
+        }
     }
 }

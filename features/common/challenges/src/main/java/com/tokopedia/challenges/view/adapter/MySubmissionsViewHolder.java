@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
@@ -29,6 +30,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
     private Context context;
 
     private SubmissionResult submissionsResult;
+    private ChallengesAnalytics analytics;
 
     MySubmissionsViewHolder(Context context, View view) {
         super(view);
@@ -39,9 +41,10 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes = view.findViewById(R.id.img_likes);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
+        analytics = new ChallengesAnalytics(context);
     }
 
-    void bind(SubmissionResult challengesResult,ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
+    void bind(SubmissionResult challengesResult, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
         Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
@@ -65,12 +68,31 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         }
 
         itemView.setOnClickListener(view1 -> {
+
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK,
+                    challengesResult.getTitle());
+
             Intent intent = new Intent(context, SubmitDetailActivity.class);
             intent.putExtra("submissionsResult", submissionsResult);
             context.startActivity(intent);
         });
-        imgShare.setOnClickListener(v -> ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false));
+        imgShare.setOnClickListener(v -> {
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false);
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesAnalytics.EVENT_ACTION_SHARE,
+                    challengesResult.getTitle());
+        });
         imgLikes.setOnClickListener(v -> {
+            String action=ChallengesAnalytics.EVENT_ACTION_LIKE;
+            if(submissionsResult.getMe().isLiked())
+                action=ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
+                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
+                    action,
+                    challengesResult.getTitle());
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);

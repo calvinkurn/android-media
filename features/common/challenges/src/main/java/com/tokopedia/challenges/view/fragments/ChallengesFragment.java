@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
@@ -37,6 +38,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private TextView tvPastChallenges;
     private LinearLayout emptyLayout;
     private View progressBar;
+    @Inject
+    ChallengesAnalytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK,
+                    ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES);
 
         });
 
@@ -69,7 +76,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getPastChallenges();
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
-
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK,
+                    ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES);
         });
 
         challengeHomePresenter.getOpenChallenges();

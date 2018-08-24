@@ -36,9 +36,7 @@
     <string name="title_image">Gambar</string>
     <string name="detail_title_text">Description</string>
     <string name="detail_content_text">Its\' time to GO SNAP! We are looking for some beautiful snapshot from our Orange County community in this month.</string>
-    <string name="approved">Disetujui</string>
-    <string name="rejected">Ditolak</string>
-    <string name="pending">Menunggu</string>
+
     <string name="about">Deskripsi</string>
     <string name="video">Video</string>
     <string name="awards">Hadiah</string>
@@ -51,8 +49,13 @@
     <string name="my_submissions">Saya Ikuti</string>
     <string name="active_challenges">Sedang Berlangsung</string>
     <string name="text_remaining_days">Berakhir %d hari lagi</string>
+
     <string name="completed">Telah Berakhir</string>
     <string name="participated">Saya Ikuti</string>
+    <string name="approved">Disetujui</string>
+    <string name="rejected">Ditolak</string>
+    <string name="pending">Menunggu</string>
+
     <string name="title_all_submissions">Peserta Tantangan</string>
     <string name="post_detail">Post Detail</string>
     <string name="join_the_challenge">Ikut Tantangan</string>
