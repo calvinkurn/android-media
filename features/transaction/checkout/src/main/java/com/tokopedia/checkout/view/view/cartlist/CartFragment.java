@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,8 @@ import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
@@ -867,6 +870,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
                     );
                     getActivity().finish();
                 }
+            });
+            TextView btnAddFromWishList = emptyState.findViewById(R.id.btn_add_from_whislist);
+            btnAddFromWishList.setOnClickListener(v -> {
+                String routingAppLink;
+                routingAppLink = ApplinkConst.WISHLIST;
+                Uri.Builder uriBuilder = new Uri.Builder();
+                routingAppLink += uriBuilder.toString();
+                RouteManager.route(getActivity(), routingAppLink);
             });
             TopAdsParams params = new TopAdsParams();
             params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);

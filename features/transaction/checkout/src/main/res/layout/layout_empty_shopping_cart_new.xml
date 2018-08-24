@@ -93,6 +93,16 @@
                 android:textSize="12sp"
                 android:textStyle="normal"
                 android:visibility="gone" />
+            <TextView
+                android:id="@+id/btn_add_from_whislist"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_44"
+                android:background="@drawable/medium_green_button_rounded"
+                android:gravity="center"
+                android:text="@string/checkout_module_tambahkan_dari_wishlist"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/btn_shopping_now"
