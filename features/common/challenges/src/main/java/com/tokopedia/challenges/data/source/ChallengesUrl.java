@@ -30,13 +30,15 @@ public class ChallengesUrl {
 
 
 
-
-        public interface Upload {
+        interface Upload {
             String PRIVATE_CHANNENGE_ID = PRIVATE + CHALLENGE_ID;
             String CHALLENGE_SETTING = PRIVATE_CHANNENGE_ID + "/upload/settings";
             String CHALLENGE_TERMS = PRIVATE_CHANNENGE_ID + "/upload/terms";
             String CHALLENGE_INTIALIZE_MULTIPART = PRIVATE_CHANNENGE_ID + "/upload/initialize";
             String CHALLENGE_GET_NEXT_PART = PRIVATE_CHANNENGE_ID + "/upload/getnextpart";
+            String TERMS_N_CONDITIONS = "private/%s/upload/terms";
+            String DELETE_POST = "private/%s/upload/delete";
+
         }
 
     }
@@ -44,12 +46,8 @@ public class ChallengesUrl {
     public interface Me {
         String SUBMISSIONS = "private/me/submissions?sort=recent";
         String SUBMISSIONS_NOCACHE = "/private/me/submissions/nocache?sort=recent";
-        String SUBMISSIONS_IN_CHALLENGE = "private/me/submissions/me?sort=recent";
+        String SUBMISSIONS_IN_CHALLENGE = "private/%s/submissions/me?sort=recent";
 
-    }
-
-    public interface Upload {
-        String TERMS_N_CONDITIONS = "private/%s/upload/terms";
     }
 
     public interface AppLink {

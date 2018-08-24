@@ -37,7 +37,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private TextView tvPastChallenges;
     private LinearLayout emptyLayout;
     private View progressBar;
-    private boolean isLoader = true;
+    private List<Result> openChallenges;
+    private List<Result> pastChallenges;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,20 +61,20 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         tvActiveChallenges.setOnClickListener(v -> {
-            challengeHomePresenter.getOpenChallenges(isLoader);
+            challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
 
         });
 
         tvPastChallenges.setOnClickListener(v -> {
-            challengeHomePresenter.getPastChallenges(isLoader);
+            challengeHomePresenter.getPastChallenges();
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
 
         });
 
-        challengeHomePresenter.getOpenChallenges(isLoader);
+        challengeHomePresenter.getOpenChallenges();
         return view;
     }
 
@@ -91,19 +92,28 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
         recyclerView.setVisibility(View.VISIBLE);
         emptyLayout.setVisibility(View.GONE);
-        listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setAdapter(listAdpater);
-        isLoader =false;
+        if (isPastChallenge) {
+            pastChallenges = resultList;
+        } else {
+            openChallenges = resultList;
+        }
+        if (listAdpater != null) {
+            listAdpater.setData(resultList);
+            listAdpater.notifyDataSetChanged();
+        } else {
+            listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setAdapter(listAdpater);
+        }
     }
 
     @Override
     public void showErrorNetwork(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
-                "title",
-                "message",
+                "",
+                "Network problem",
                 "choba lagi", 0,
                 getChallengesRetryListener()
         );
@@ -140,5 +150,15 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
             }
         };
+    }
+
+    @Override
+    public List<Result> getOpenChallenges() {
+        return openChallenges;
+    }
+
+    @Override
+    public List<Result> getPastChallenges() {
+        return pastChallenges;
     }
 }

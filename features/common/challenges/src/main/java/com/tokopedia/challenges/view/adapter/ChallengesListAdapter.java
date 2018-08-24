@@ -41,4 +41,7 @@ public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHo
         return challengesResultList.size();
     }
 
+    public void setData(List<Result> resultList) {
+        this.challengesResultList = resultList;
+    }
 }

@@ -70,7 +70,7 @@ public class ChallengeSubmissonContractor {
 
         void initialize(boolean loadFromApi, Result challengeResult);
 
-        void onSubmitButtonClick(boolean isPastChallenge);
+        void onSubmitButtonClick();
 
         void onDestroy();
 

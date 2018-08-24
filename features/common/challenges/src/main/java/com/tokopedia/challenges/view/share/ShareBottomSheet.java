@@ -137,6 +137,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
             url = deepLink;
         }
         presenter.createAndShareUrl(packageName, url, submissionId, deepLink, isChallenge, title, og_url, og_title, og_image);
+        dismiss();
     }
 
     @Override

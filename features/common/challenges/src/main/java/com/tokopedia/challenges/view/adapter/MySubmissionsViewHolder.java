@@ -47,7 +47,8 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
         tvPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
-        ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100);
+        //ImageHandler.LoadImage(imgChallenge, challengesResult.getThumbnailUrl());
 
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         imgLikes.setVisibility(View.GONE);

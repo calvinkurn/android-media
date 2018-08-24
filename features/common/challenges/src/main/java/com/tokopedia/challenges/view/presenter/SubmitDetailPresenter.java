@@ -2,12 +2,14 @@ package com.tokopedia.challenges.view.presenter;
 
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
+import com.tokopedia.challenges.domain.usecase.PostDeleteSubmissionUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.model.Result;
@@ -29,14 +31,17 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     private PostBuzzPointEventUseCase postBuzzPointEventUseCase;
     private GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
     private GetChallengeDetailsAndSttingsUseCase getChallengeDetailsAndSttingsUseCase;
+    private PostDeleteSubmissionUseCase postDeleteSubmissionUseCase;
 
 
     @Inject
-    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase, GetChallengeDetailsAndSttingsUseCase getChallengeDetailsAndSttingsUseCase) {
+    public SubmitDetailPresenter(PostSubmissionLikeUseCase postSubmissionLikeUseCase, PostBuzzPointEventUseCase postBuzzPointEventUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase,
+                                 GetChallengeDetailsAndSttingsUseCase getChallengeDetailsAndSttingsUseCase, PostDeleteSubmissionUseCase postDeleteSubmissionUseCase) {
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
         this.postBuzzPointEventUseCase = postBuzzPointEventUseCase;
         this.getDetailsSubmissionsUseCase = getDetailsSubmissionsUseCase;
         this.getChallengeDetailsAndSttingsUseCase = getChallengeDetailsAndSttingsUseCase;
+        this.postDeleteSubmissionUseCase = postDeleteSubmissionUseCase;
     }
 
     @Override
@@ -57,9 +62,9 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
         getView().setParticipateTitle(model.getCollection().getTitle());
-        if(model.getAwards()!=null){
-            int position=Utils.getWinnerPosition(model.getAwards());
-            if(position!=-1)
+        if (model.getAwards() != null) {
+            int position = Utils.getWinnerPosition(model.getAwards());
+            if (position != -1)
                 getView().setWinnerPosition(String.valueOf(position));
         }
     }
@@ -170,6 +175,30 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 } else {
                     getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, result.getId(), result.getTitle(), result.getDescription()));
                 }
+            }
+        });
+    }
+
+    public void deleteSubmittedPost(String submissionId) {
+        getView().showProgressBar();
+        postDeleteSubmissionUseCase.setRequestParams(submissionId);
+        postDeleteSubmissionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hidProgressBar();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                getView().hidProgressBar();
+                Toast.makeText(getView().getActivity(), "Post has been deleted", Toast.LENGTH_SHORT).show();
+                getView().getActivity().finish();
+                Utils.FROMNOCACHE = true;
             }
         });
     }

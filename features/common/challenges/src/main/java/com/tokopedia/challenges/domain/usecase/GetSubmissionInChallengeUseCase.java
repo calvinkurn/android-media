@@ -17,25 +17,22 @@ import javax.inject.Inject;
 
 public class GetSubmissionInChallengeUseCase extends RestRequestSupportInterceptorUseCase {
 
-    private int start = 0;
-    private int size = 1;
+  private String challengeId;
 
     @Inject
     public GetSubmissionInChallengeUseCase(IndiAuthInterceptor interceptor, @ApplicationContext Context context) {
         super(interceptor, context);
     }
 
-    public GetSubmissionInChallengeUseCase setRequestParams(int start, int size) {
-        this.start = start;
-        this.size = size;
+    public GetSubmissionInChallengeUseCase setRequestParams(String challengeId) {
+        this.challengeId = challengeId;
         return this;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_IN_CHALLENGE + "&status=all&start=" + start + "&size=" + size;
-
+        String url = ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.Me.SUBMISSIONS_IN_CHALLENGE, challengeId) + "&status=all&start=0&size=1";
         RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class)
                 .build();
 

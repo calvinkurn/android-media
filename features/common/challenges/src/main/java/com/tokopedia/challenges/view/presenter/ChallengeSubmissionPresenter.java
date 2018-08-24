@@ -56,38 +56,13 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     @Override
-    public void onSubmitButtonClick(boolean isPastChallenge) {
-        getView().showProgressBar();
-        getSubmissionInChallengeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
+    public void onSubmitButtonClick() {
+        if(isParticipated(getView().getChallengeResult())){
+            getSubmissionInChallenge();
+        }else{
+            checkSettings();
+        }
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                getView().hideProgressBar();
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> restResponse) {
-
-                RestResponse res1 = restResponse.get(SubmissionResponse.class);
-                SubmissionResponse mainDataObject = res1.getData();
-
-                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
-                    getView().hideProgressBar();
-                    Intent detailsIntent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
-                    detailsIntent.putExtra("submissionsResult", mainDataObject.getSubmissionResults().get(0));
-                    detailsIntent.putExtra("isPastChallenge", isPastChallenge);
-                    getView().navigateToActivity(detailsIntent);
-                } else {
-                    checkSettings();
-                }
-
-            }
-        });
     }
 
     @Override
@@ -152,14 +127,18 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             getView().setCountDownView(Utils.STATUS_COMPLETED);
             getWinnerList();
         } else {
-            if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
-                    && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
-                    || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0)) {
-                    getView().setCountDownView(Utils.STATUS_PARTICIPATED);
+            if (isParticipated(challengeResult)) {
+                getView().setCountDownView(Utils.STATUS_PARTICIPATED);
             } else {
                 getView().setCountDownView("");
             }
         }
+    }
+
+    private boolean isParticipated(Result challengeResult) {
+        return challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
+                && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
+                || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0);
     }
 
     private void getWinnerList() {
@@ -230,7 +209,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
     private void checkSettings() {
 
-        //getView().showProgressBar();
+        getView().showProgressBar();
         getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
         getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
 
@@ -246,6 +225,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
+                getView().hideProgressBar();
                 RestResponse res1 = restResponse.get(ChallengeSettings.class);
                 ChallengeSettings settings = res1.getData();
                 if (!settings.isUploadAllowed()) {
@@ -257,7 +237,38 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         });
     }
 
-    private boolean checkIsPastChallenge(Result challengeResult){
+    private boolean checkIsPastChallenge(Result challengeResult) {
         return (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate()));
+    }
+
+    private void getSubmissionInChallenge(){
+        getView().showProgressBar();
+        getSubmissionInChallengeUseCase.setRequestParams(getView().getChallengeId());
+        getSubmissionInChallengeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressBar();
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> restResponse) {
+
+                RestResponse res1 = restResponse.get(SubmissionResponse.class);
+                SubmissionResponse mainDataObject = res1.getData();
+
+                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
+                    getView().hideProgressBar();
+                    Intent detailsIntent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
+                    detailsIntent.putExtra("submissionsResult", mainDataObject.getSubmissionResults().get(0));
+                    getView().navigateToActivity(detailsIntent);
+                }
+            }
+        });
     }
 }

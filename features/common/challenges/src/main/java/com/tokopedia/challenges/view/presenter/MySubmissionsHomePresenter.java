@@ -40,7 +40,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
             getView().showProgressBarView();
         }
         isLoading = true;
-        getMySubmissionsListUseCase.setRequestParams(pageStart, pageSize);
+        getMySubmissionsListUseCase.setRequestParams(0, pageSize);
         getMySubmissionsListUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -66,11 +66,11 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                     totalItems = mainDataObject.getFound();
                 }
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
-                    pageStart += mainDataObject.getSubmissionResults().size();
+                    //pageStart += mainDataObject.getSubmissionResults().size();
                     getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
                 } else {
                     isLastPage = true;
-                    if (pageStart == 0)
+                    //if (pageStart == 0)
                         getView().renderEmptyList();
                 }
                 //checkIfToLoad(getView().getLayoutManager());

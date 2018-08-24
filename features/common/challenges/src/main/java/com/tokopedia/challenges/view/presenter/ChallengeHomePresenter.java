@@ -29,10 +29,13 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         this.getPastChallengesUseCase = getPastChallengesUseCase;
     }
 
-    public void getOpenChallenges(boolean isLoaderShow) {
-        if(isLoaderShow) {
+    public void getOpenChallenges() {
+        if (getView().getOpenChallenges() != null) {
+            getView().setChallengeDataToUI(getView().getOpenChallenges(),false);
+        }else {
             getView().showProgressBarView();
         }
+        getPastChallengesUseCase.unsubscribe();
         getActiveChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -54,20 +57,22 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
                 int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
-                    getView().setChallengeDataToUI(mainDataObject.getResults(),false);
+                    getView().setChallengeDataToUI(mainDataObject.getResults(), false);
                 } else {
                     getView().renderEmptyList();
                 }
-                CommonUtils.dumper("data data data data data data data");
 
             }
         });
     }
 
-    public void getPastChallenges(boolean isLoaderShow) {
-        if(isLoaderShow) {
+    public void getPastChallenges() {
+        if (getView().getPastChallenges() != null) {
+            getView().setChallengeDataToUI(getView().getPastChallenges(),true);
+        }else {
             getView().showProgressBarView();
         }
+        getActiveChallengesUseCase.unsubscribe();
         getPastChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -82,14 +87,12 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                //Success scenario e.g. HTTP 200 OK
                 RestResponse res1 = restResponse.get(Challenge.class);
-                int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
-                    getView().setChallengeDataToUI(mainDataObject.getResults() , true);
+                    getView().setChallengeDataToUI(mainDataObject.getResults(), true);
                 } else {
-                   getView().renderEmptyList();
+                    getView().renderEmptyList();
                 }
                 getView().removeProgressBarView();
             }

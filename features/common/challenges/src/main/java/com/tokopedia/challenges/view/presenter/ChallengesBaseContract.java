@@ -21,6 +21,10 @@ public interface ChallengesBaseContract {
         void showProgressBarView();
 
         Context getActivity();
+
+        List<Result> getOpenChallenges();
+
+        List<Result> getPastChallenges();
     }
 
     interface Presenter extends CustomerPresenter<View> {

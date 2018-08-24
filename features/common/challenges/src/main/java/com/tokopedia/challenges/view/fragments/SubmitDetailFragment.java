@@ -1,13 +1,22 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.text.Layout;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.AlignmentSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -62,6 +71,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private boolean fromSubmission;
     private TextView tvWinnerNumber;
     private View progressBar;
+    private Menu mMenu;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -118,7 +128,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
             }
         }
-
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -314,5 +324,30 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setWinnerPosition(String s) {
         tvWinnerNumber.setVisibility(View.VISIBLE);
         tvWinnerNumber.setText(s);
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_submission_detail, menu);
+        mMenu = menu;
+        for (int i = 0; i < mMenu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            SpannableString s = new SpannableString(item.getTitle());
+            s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            item.setTitle(s);
+        }
+
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_delete && submissionResult != null) {
+            presenter.deleteSubmittedPost(submissionResult.getId());
+        }
+        return true;
     }
 }

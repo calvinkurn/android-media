@@ -461,7 +461,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.tv_see_all) {
             fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
         } else if (v.getId() == R.id.ll_continue) {
-            mPresenter.onSubmitButtonClick(isPastChallenge);
+            mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.seemorebutton_tnc) {

@@ -42,16 +42,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
 
-        view.setOnClickListener(view1 -> {
-            Intent intent = new Intent(view1.getContext(), ChallengeDetailActivity.class);
-            intent.putExtra("challengesResult", challengesResult);
-            intent.putExtra("isPastChallenge", isPastChallenge);
-            view1.getContext().startActivity(intent);
-        });
 
-        imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), true);
-        });
     }
 
     void bind(Result challengesResult) {
@@ -72,7 +63,19 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }
-        ImageHandler.loadImage(context, imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
+        //loadImageWithIdWithoutPlaceholder
+        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100);
+
+        itemView.setOnClickListener(view1 -> {
+            Intent intent = new Intent(context, ChallengeDetailActivity.class);
+            intent.putExtra("challengesResult", challengesResult);
+            intent.putExtra("isPastChallenge", isPastChallenge);
+            context.startActivity(intent);
+        });
+
+        imgShare.setOnClickListener(v -> {
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), true);
+        });
     }
 
 }
