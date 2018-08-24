@@ -58,11 +58,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
-                    ClipboardHandler.CopyToClipboard(getView().getActivity(), branchUrl);
                     copyToClipboard(getShareContents(isChallenge, branchUrl, title));
                 } else {
                     ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
-
                 }
             }
         });
@@ -81,6 +79,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, title, og_url, og_title, og_image, deepLink, new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
+                    getView().hideProgress();
                     getView().setNewUrl(shareUri);
                     if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
                         copyToClipboard(getShareContents(isChallenge, shareUri, title));
@@ -89,7 +88,6 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                     } else {
                         postMapBranchUrl(submissionId, shareUri, packageName, title, isChallenge);
                     }
-                    getView().hideProgress();
                 }
             });
         }
