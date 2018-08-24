@@ -2,7 +2,7 @@ package com.tokopedia.shop.settings.notes.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.ReorderShopEtalaseUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.ReorderShopNoteUseCase;
 
 import java.util.ArrayList;
 
@@ -14,7 +14,7 @@ import rx.Subscriber;
  * Created by hendry on 16/08/18.
  */
 public class ShopSettingNoteListReorderPresenter extends BaseDaggerPresenter<ShopSettingNoteListReorderPresenter.View> {
-    private ReorderShopEtalaseUseCase reorderShopEtalaseUseCase;
+    private ReorderShopNoteUseCase reorderShopNoteUseCase;
 
     public interface View extends CustomerView {
         void onSuccessReorderShopNote(String successMessage);
@@ -22,13 +22,13 @@ public class ShopSettingNoteListReorderPresenter extends BaseDaggerPresenter<Sho
     }
 
     @Inject
-    public ShopSettingNoteListReorderPresenter(ReorderShopEtalaseUseCase reorderShopEtalaseUseCase) {
-        this.reorderShopEtalaseUseCase = reorderShopEtalaseUseCase;
+    public ShopSettingNoteListReorderPresenter(ReorderShopNoteUseCase reorderShopNoteUseCase) {
+        this.reorderShopNoteUseCase = reorderShopNoteUseCase;
     }
 
     public void reorderShopNotes(ArrayList<String> noteIdList){
-        reorderShopEtalaseUseCase.unsubscribe();
-        reorderShopEtalaseUseCase.execute(ReorderShopEtalaseUseCase.createRequestParams(noteIdList),
+        reorderShopNoteUseCase.unsubscribe();
+        reorderShopNoteUseCase.execute(ReorderShopNoteUseCase.createRequestParams(noteIdList),
                 new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -54,6 +54,6 @@ public class ShopSettingNoteListReorderPresenter extends BaseDaggerPresenter<Sho
     @Override
     public void detachView() {
         super.detachView();
-        reorderShopEtalaseUseCase.unsubscribe();
+        reorderShopNoteUseCase.unsubscribe();
     }
 }

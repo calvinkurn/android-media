@@ -3,10 +3,10 @@ package com.tokopedia.shop.settings.etalase.view.presenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.DeleteShopEtalaseUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase;
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopEtalaseUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopNoteUseCase;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
-import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 

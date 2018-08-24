@@ -5,13 +5,12 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.shop.common.R;
-import com.tokopedia.shop.common.graphql.data.shopnote.gql.ReorderShopNoteMutation;
+import com.tokopedia.shop.common.graphql.data.shopnote.gql.DeleteShopNoteMutation;
 import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLSuccessMapper;
 import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.inject.Inject;
@@ -19,25 +18,24 @@ import javax.inject.Inject;
 import rx.Observable;
 import rx.functions.Func1;
 
-public class ReorderShopEtalaseUseCase extends UseCase<String> {
-    public static final String IDS = "ids";
+public class DeleteShopNoteUseCase extends UseCase<String> {
+    public static final String ID = "id";
 
-    private SingleGraphQLUseCase<ReorderShopNoteMutation> graphQLUseCase;
+    private SingleGraphQLUseCase<DeleteShopNoteMutation> graphQLUseCase;
 
     @Inject
-    public ReorderShopEtalaseUseCase(@ApplicationContext Context context) {
-        graphQLUseCase = new SingleGraphQLUseCase<ReorderShopNoteMutation>(context, ReorderShopNoteMutation.class) {
+    public DeleteShopNoteUseCase(@ApplicationContext Context context) {
+        graphQLUseCase = new SingleGraphQLUseCase<DeleteShopNoteMutation>(context, DeleteShopNoteMutation.class) {
             @Override
             protected int getGraphQLRawResId() {
-                return R.raw.gql_mutation_reorder_shop_note;
+                return R.raw.gql_mutation_delete_shop_note;
             }
 
-            @SuppressWarnings("unchecked")
             @Override
             protected HashMap<String, Object> createGraphQLVariable(RequestParams requestParams) {
                 HashMap<String, Object> variables = new HashMap<>();
-                ArrayList<String> ids = (ArrayList<String>) requestParams.getObject(IDS);
-                variables.put(IDS, ids);
+                String name = requestParams.getString(ID, "");
+                variables.put(ID, name);
                 return variables;
             }
         };
@@ -51,17 +49,17 @@ public class ReorderShopEtalaseUseCase extends UseCase<String> {
 //                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
 //                    @Override
 //                    public Observable<? extends String> call(Throwable throwable) {
-//                        String jsonString = "{\"reorderShopNote\":{\"success\":true,\"message\":\"Success\"}}";
-//                        ReorderShopNoteMutation response = new Gson().fromJson(jsonString, ReorderShopNoteMutation.class);
+//                        String jsonString = "{\"deleteShopNote\":{\"success\":true,\"message\":\"Success\"}}";
+//                        DeleteShopNoteMutation response = new Gson().fromJson(jsonString, DeleteShopNoteMutation.class);
 //                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
 //                    }
 //                });
 
     }
 
-    public static RequestParams createRequestParams(ArrayList<String> noteIdList) {
+    public static RequestParams createRequestParams(String noteId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(IDS, noteIdList);
+        requestParams.putString(ID, noteId);
         return requestParams;
     }
 

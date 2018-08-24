@@ -2,7 +2,8 @@ package com.tokopedia.shop.settings.etalase.view.presenter;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.ReorderShopEtalaseUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.ReorderShopEtalaseUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.ReorderShopNoteUseCase;
 
 import java.util.ArrayList;
 

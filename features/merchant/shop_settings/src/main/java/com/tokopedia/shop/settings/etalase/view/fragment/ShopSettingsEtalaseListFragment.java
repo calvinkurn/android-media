@@ -99,23 +99,30 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideSearchInputView();
+        searchInputView.setSearchHint(getString(R.string.search_etalase));
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        // if not etalase for reorder, show add only
-        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0 ||
-                !hasAnyCustomEtalase(shopEtalaseViewModels)) {
+        if (shopEtalaseViewModels == null) {
+            menu.clear();
+        } else if (shopEtalaseViewModels.size() == 0 ||
+                !hasCustomEtalaseAtLeast2(shopEtalaseViewModels)) {
+            // if not etalase for reorder, show add only
             inflater.inflate(R.menu.menu_shop_etalase_list_no_data, menu);
         } else { // if there is etalase with reorder, will show reorder icon.
             inflater.inflate(R.menu.menu_shop_etalase_list, menu);
         }
     }
 
-    private boolean hasAnyCustomEtalase(@NonNull List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+    private boolean hasCustomEtalaseAtLeast2(@NonNull List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        int count = 0;
         for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModelList) {
             if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
-                return true;
+                count++;
+                if (count >= 2) {
+                    return true;
+                }
             }
         }
         return false;

@@ -29,15 +29,16 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity;
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter;
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,6 +59,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private OnShopSettingsNoteFragmentListener onShopSettingsNoteFragmentListener;
+
     public interface OnShopSettingsNoteFragmentListener {
         void goToReorderFragment(ArrayList<ShopNoteViewModel> shopNoteViewModels);
     }
@@ -86,31 +88,38 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         super.onCreate(savedInstanceState);
         GraphqlClient.init(getContext());
         shopSettingNoteListPresenter.getShopNotes();
-
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         hideSearchInputView();
+        searchInputView.setSearchHint(getString(R.string.search_note));
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (shopNoteModels == null || shopNoteModels.size() == 0) {
+        if (shopNoteModels == null) {
+            menu.clear();
+        } else if (shopNoteModels.size() == 0 ||
+                !hasNonTermsAtLeast2(shopNoteModels)) {
             inflater.inflate(R.menu.menu_shop_note_list_no_data, menu);
         } else {
             inflater.inflate(R.menu.menu_shop_note_list, menu);
         }
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        MenuItem menuItemReorder = menu.findItem(R.id.menu_reorder);
-        if (menuItemReorder != null) {
-            menuItemReorder.setVisible(true);
+    private boolean hasNonTermsAtLeast2(@NonNull List<ShopNoteViewModel> shopNoteViewModels) {
+        int count = 0;
+        for (ShopNoteViewModel shopNoteViewModel : shopNoteViewModels) {
+            if (!shopNoteViewModel.getTerms()) {
+                count++;
+                if (count >= 2) {
+                    return true;
+                }
+            }
         }
-        super.onPrepareOptionsMenu(menu);
+        return false;
     }
 
     @Override
@@ -219,6 +228,11 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     }
 
     private void goToAddNote(boolean isTerms) {
+        // can only add if the list has no terms.
+        if (shopNoteModels != null && shopNoteModels.size() > 0 && shopNoteModels.get(0).getTerms()) {
+            ToasterError.showClose(getActivity(), getString(R.string.can_only_have_one_term));
+            return;
+        }
         Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
                 isTerms, false, new ShopNoteViewModel());
         startActivityForResult(intent, REQUEST_CODE_ADD_NOTE);
@@ -344,7 +358,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         }
     }
 
-    public void refreshData(){
+    public void refreshData() {
         loadInitialData();
     }
 
@@ -352,14 +366,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     public void onErrorDeleteShopNote(Throwable throwable) {
         hideSubmitLoading();
         String message = ErrorHandler.getErrorMessage(getContext(), throwable);
-        ToasterError.make(getActivity().findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
-                }).show();
+        ToasterError.showClose(getActivity(), message);
     }
 
     public void showSubmitLoading(String message) {

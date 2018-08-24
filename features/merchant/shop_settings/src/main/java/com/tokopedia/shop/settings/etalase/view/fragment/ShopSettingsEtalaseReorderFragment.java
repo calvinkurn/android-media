@@ -30,6 +30,7 @@ import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter;
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -117,7 +118,8 @@ public class ShopSettingsEtalaseReorderFragment extends BaseListFragment<ShopEta
     public void saveReorder(){
         showSubmitLoading(getString(R.string.title_loading));
         ArrayList<String> shopNoteList = new ArrayList<>();
-        for (ShopEtalaseViewModel shopEtalaseViewModel: shopNoteModels){
+        List<ShopEtalaseViewModel> sortDataList = adapter.getData();
+        for (ShopEtalaseViewModel shopEtalaseViewModel: sortDataList){
             shopNoteList.add(shopEtalaseViewModel.getId());
         }
         shopSettingEtalaseListReorderPresenter.reorderShopNotes(shopNoteList);

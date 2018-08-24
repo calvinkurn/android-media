@@ -99,4 +99,7 @@
     <string name="etalase_x_success_delete">Etalase %1$s berhasil dihapus</string>
     <string name="primary_etalase">Etalase Utama</string>
     <string name="other_etalase">Etalase Lainnya</string>
+    <string name="can_only_have_one_term">Anda hanya boleh memiliki 1 Kebijakan Pengembalian Produk</string>
+    <string name="search_note">Cari Catatan</string>
+    <string name="search_etalase">Cari Etalase</string>
 </resources>

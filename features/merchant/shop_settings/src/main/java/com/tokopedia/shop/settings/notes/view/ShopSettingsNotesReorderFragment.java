@@ -27,6 +27,7 @@ import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -40,6 +41,7 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
     @Inject
     ShopSettingNoteListReorderPresenter shopSettingNoteListReorderPresenter;
     private ArrayList<ShopNoteViewModel> shopNoteModels;
+    private List<ShopNoteViewModel> shopNoteModelsWithoutTerms;
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private ShopNoteReorderAdapter adapter;
@@ -103,7 +105,14 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
 
     @Override
     public void loadData(int page) {
-        renderList(shopNoteModels, false);
+        if (shopNoteModels!=null && shopNoteModels.size() > 0) {
+            if (shopNoteModels.get(0).getTerms()) {
+                shopNoteModelsWithoutTerms = shopNoteModels.subList(1, shopNoteModels.size());
+            } else {
+                shopNoteModelsWithoutTerms = shopNoteModels;
+            }
+        }
+        renderList(shopNoteModelsWithoutTerms, false);
     }
 
     @Override
@@ -114,7 +123,8 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
     public void saveReorder(){
         showSubmitLoading(getString(R.string.title_loading));
         ArrayList<String> shopNoteList = new ArrayList<>();
-        for (ShopNoteViewModel shopNoteViewModel: shopNoteModels){
+        List<ShopNoteViewModel> sortDataList = getAdapter().getData();
+        for (ShopNoteViewModel shopNoteViewModel: sortDataList){
             shopNoteList.add(shopNoteViewModel.getId());
         }
         shopSettingNoteListReorderPresenter.reorderShopNotes(shopNoteList);

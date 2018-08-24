@@ -1,8 +1,8 @@
 mutation reorderShopNote($ids:[String!]!){
-  reorderShopNote(input: {
-      ids: $ids
-    }) {
-      success
-      message
-    }
+ reorderShopNote(input: {
+  ids: $ids
+  }) {
+    success
+    message
+  }
 }

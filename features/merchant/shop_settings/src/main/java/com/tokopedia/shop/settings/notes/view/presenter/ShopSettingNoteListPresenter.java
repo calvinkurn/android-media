@@ -3,7 +3,7 @@ package com.tokopedia.shop.settings.notes.view.presenter;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel;
-import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopEtalaseUseCase;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.DeleteShopNoteUseCase;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.GetShopNotesUseCase;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.usecase.RequestParams;
@@ -19,7 +19,7 @@ import rx.Subscriber;
  */
 public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettingNoteListPresenter.View> {
     private GetShopNotesUseCase getShopNotesUseCase;
-    private DeleteShopEtalaseUseCase deleteShopEtalaseUseCase;
+    private DeleteShopNoteUseCase deleteShopNoteUseCase;
 
     public interface View extends CustomerView {
         void onSuccessGetShopNotes(ArrayList<ShopNoteViewModel> shopNoteModels);
@@ -30,9 +30,9 @@ public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettin
 
     @Inject
     public ShopSettingNoteListPresenter(GetShopNotesUseCase getShopNotesUseCase,
-                                        DeleteShopEtalaseUseCase deleteShopEtalaseUseCase) {
+                                        DeleteShopNoteUseCase deleteShopNoteUseCase) {
         this.getShopNotesUseCase = getShopNotesUseCase;
-        this.deleteShopEtalaseUseCase = deleteShopEtalaseUseCase;
+        this.deleteShopNoteUseCase = deleteShopNoteUseCase;
     }
 
     public void getShopNotes(){
@@ -64,8 +64,8 @@ public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettin
     }
 
     public void deleteShopNote(String noteId){
-        deleteShopEtalaseUseCase.unsubscribe();
-        deleteShopEtalaseUseCase.execute(DeleteShopEtalaseUseCase.createRequestParams(noteId),
+        deleteShopNoteUseCase.unsubscribe();
+        deleteShopNoteUseCase.execute(DeleteShopNoteUseCase.createRequestParams(noteId),
                 new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -92,6 +92,6 @@ public class ShopSettingNoteListPresenter extends BaseDaggerPresenter<ShopSettin
     public void detachView() {
         super.detachView();
         getShopNotesUseCase.unsubscribe();
-        deleteShopEtalaseUseCase.unsubscribe();
+        deleteShopNoteUseCase.unsubscribe();
     }
 }
