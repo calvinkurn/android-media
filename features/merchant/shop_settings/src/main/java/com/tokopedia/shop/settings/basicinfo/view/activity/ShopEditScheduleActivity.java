@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef;
 import com.tokopedia.shop.common.constant.ShopStatusDef;
@@ -83,11 +84,11 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         } else {
             if (shopBasicDataModel != null) {
                 String closeSchedule = shopBasicDataModel.getCloseSchedule();
-                if (!TextUtils.isEmpty(closeSchedule)) {
+                if (!StringUtils.isEmptyNumber(closeSchedule)) {
                     selectedStartCloseUnixTimeMs = Long.parseLong(closeSchedule) * 1000L;
                 }
                 String openSchedule = shopBasicDataModel.getOpenSchedule();
-                if (!TextUtils.isEmpty(openSchedule)) {
+                if (!StringUtils.isEmptyNumber(openSchedule)) {
                     selectedEndCloseUnixTimeMs = Long.parseLong(openSchedule) * 1000L;
                 }
             }
@@ -340,15 +341,16 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         }
         String shopCloseSchedule = shopBasicDataModel.getCloseSchedule();
         String shopOpenSchedule = shopBasicDataModel.getOpenSchedule();
-        if (!TextUtils.isEmpty(shopCloseSchedule) ||
-                !TextUtils.isEmpty(shopOpenSchedule)) {
+        boolean hasCloseSchedule = !StringUtils.isEmptyNumber(shopCloseSchedule);
+        boolean hasOpenSchedule = !StringUtils.isEmptyNumber(shopOpenSchedule);
+        if (hasCloseSchedule || hasOpenSchedule) {
             scheduleSwitch.setChecked(true);
-            if (!TextUtils.isEmpty(shopCloseSchedule)) {
+            if (hasCloseSchedule) {
                 long shopCloseScheduleUnixMs = Long.parseLong(shopCloseSchedule) * 1000L;
                 Date shopCloseDate = ShopDateUtil.unixToDate(shopCloseScheduleUnixMs);
                 setStartCloseDate(shopCloseDate);
             }
-            if (!TextUtils.isEmpty(shopOpenSchedule)) {
+            if (hasOpenSchedule) {
                 long shopOpenScheduleUnixMs = Long.parseLong(shopOpenSchedule) * 1000L;
                 Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnixMs);
                 setEndCloseDate(shopOpenDate);

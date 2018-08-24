@@ -61,11 +61,11 @@ public class ShopBasicDataModel implements Parcelable {
     }
 
     public String getCloseSchedule() {
-        return closeSchedule.startsWith("-") ? "" : closeSchedule;
+        return closeSchedule;
     }
 
     public String getOpenSchedule() {
-        return openSchedule.startsWith("-") ? "" : openSchedule;
+        return openSchedule;
     }
 
     public String getTagline() {

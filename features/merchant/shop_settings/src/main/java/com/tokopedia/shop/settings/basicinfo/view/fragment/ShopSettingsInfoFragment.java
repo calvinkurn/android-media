@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.common.router.ShopSettingRouter;
@@ -189,14 +190,14 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             stringBuilder.append(getString(R.string.label_open));
 
             String closeScheduleUnixString = shopBasicDataModel.getCloseSchedule();
-            if (!TextUtils.isEmpty(closeScheduleUnixString)) {
+            if (!StringUtils.isEmptyNumber(closeScheduleUnixString)) {
                 String closeString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, closeScheduleUnixString);
                 stringBuilder.append(", ");
                 stringBuilder.append(getString(R.string.closed_schedule, closeString));
             }
 
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
-            if (!TextUtils.isEmpty(openScheduleUnixString)) {
+            if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
                 String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
                 stringBuilder.append(" - ");
                 stringBuilder.append(openString);
@@ -206,10 +207,10 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(getString(R.string.label_close));
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
-            if (!TextUtils.isEmpty(openScheduleUnixString)) {
-                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE_TIME, openScheduleUnixString);
+            if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
+                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
                 stringBuilder.append(", ");
-                stringBuilder.append(getString(R.string.reopen_at, openString));
+                stringBuilder.append(getString(R.string.closed_until, openString));
             }
             lvShopStatus.setSubTitle(stringBuilder.toString());
         }
