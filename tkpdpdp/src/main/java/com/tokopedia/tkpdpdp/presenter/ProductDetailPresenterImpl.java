@@ -181,7 +181,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
                     @Override
                     public void onError(Throwable throwable) {
-                        throwable.printStackTrace();
                     }
 
                     @Override

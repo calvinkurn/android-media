@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.tkpdpdp.R
-import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel
 import com.tokopedia.tkpdpdp.estimasiongkir.constant.RatesEstimationConstant
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel
 import com.tokopedia.tkpdpdp.estimasiongkir.di.RatesEstimationComponent
