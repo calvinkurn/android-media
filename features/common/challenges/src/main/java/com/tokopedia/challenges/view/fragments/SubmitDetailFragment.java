@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -72,6 +73,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView tvWinnerNumber;
     private View progressBar;
     private Menu mMenu;
+    @Inject
+    public ChallengesAnalytics analytics;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -128,7 +131,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
             }
         }
-        setHasOptionsMenu(true);
+
 
         return view;
     }
@@ -151,11 +154,23 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                    ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
+                    ChallengesAnalytics.EVENT_ACTION_SHARE,
+                    submissionResult.getTitle());
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
 
         });
 
         likeBtn.setOnClickListener(v -> {
+            if (submissionResult.getMe() != null) {
+                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+                if (submissionResult.getMe().isLiked())
+                    action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
+                        ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
+                        action, submissionResult.getTitle());
+            }
             presenter.likeBtnClick(submissionResult);
             if (submissionResult.getMe() != null) {
                 setLikes(!submissionResult.getMe().isLiked());

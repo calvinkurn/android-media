@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -79,6 +80,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private String channelId;
     private String channelTitle;
     private String channelDesc;
+    @Inject
+    public ChallengesAnalytics analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -117,6 +120,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                        ChallengesAnalytics.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                        ChallengesAnalytics.EVENT_SUBMIT);
                 presenter.onSubmitButtonClick();
             }
         });
@@ -124,6 +131,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                        ChallengesAnalytics.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                        ChallengesAnalytics.EVENT_CANCEL);
                 presenter.onCancelButtonClick();
             }
         });

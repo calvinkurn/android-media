@@ -2,7 +2,6 @@ package com.tokopedia.challenges.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
@@ -20,6 +20,7 @@ import com.tokopedia.challenges.view.utils.Utils;
 
 class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
+    private final ChallengesAnalytics analytics;
     private TextView tvTitle;
     private TextView tvHastags;
     private ImageView imgChallenge;
@@ -41,6 +42,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining = view.findViewById(R.id.tv_time_remaining);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
+        analytics = new ChallengesAnalytics(context);
 
 
     }
@@ -53,7 +55,6 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvStatus.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_COMPLETED);
-//            tvStatus.setTextAppearance(context, R.style.TextView_Completed);
             imgShare.setVisibility(View.GONE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_PARTICIPATED);
@@ -71,10 +72,32 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra("challengesResult", challengesResult);
             intent.putExtra("isPastChallenge", isPastChallenge);
             context.startActivity(intent);
+            if (isPastChallenge) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                        ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                        challengesResult.getTitle());
+            } else {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                        ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                        challengesResult.getTitle());
+            }
         });
 
         imgShare.setOnClickListener(v -> {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), true);
+            if (isPastChallenge) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                        ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesAnalytics.EVENT_ACTION_SHARE,
+                        challengesResult.getTitle());
+            } else {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                        ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesAnalytics.EVENT_ACTION_SHARE,
+                        challengesResult.getTitle());
+            }
         });
     }
 

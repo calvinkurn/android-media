@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
@@ -44,6 +45,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private int orientation;
     private boolean isPastChallenge;
     private boolean isWinner;
+    private ChallengesAnalytics analytics;
 
 
     public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation, boolean isPastChallenge) {
@@ -64,6 +66,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
+        analytics = new ChallengesAnalytics(context);
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -172,7 +175,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     public void isWinnerLayout(boolean isWinner) {
-        this.isWinner=isWinner;
+        this.isWinner = isWinner;
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -216,9 +219,9 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
                 tvBuzzPoints.setVisibility(View.GONE);
             }
-            if(isWinner){
+            if (isWinner) {
                 tvWinnerNumber.setVisibility(View.VISIBLE);
-                tvWinnerNumber.setText(String.valueOf(getIndex()+1));
+                tvWinnerNumber.setText(String.valueOf(getIndex() + 1));
             }
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);
@@ -245,8 +248,19 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                        ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
+                        ChallengesAnalytics.EVENT_ACTION_SHARE,
+                        categoryItems.get(getIndex()).getTitle());
                 ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
             } else if (v.getId() == R.id.iv_like) {
+                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+                if (categoryItems.get(getIndex()).getMe().isLiked())
+                    action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
+                        ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
+                        action, categoryItems.get(getIndex()).getTitle());
+
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
                 if (categoryItems.get(getIndex()).getMe() != null) {
                     if (categoryItems.get(getIndex()).getMe().isLiked()) {

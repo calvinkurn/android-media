@@ -11,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
@@ -23,6 +24,7 @@ import com.tokopedia.design.utils.TabUtil;
 public class ChallengesHomeActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    ChallengesAnalytics analytics;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -55,11 +57,33 @@ public class ChallengesHomeActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        analytics = new ChallengesAnalytics(this);
         tabLayout = findViewById(R.id.tab_challenges);
         viewPager = findViewById(R.id.pager);
-        viewPager.setAdapter(new ChallengesHomeAdapter(getSupportFragmentManager()));
+        ChallengesHomeAdapter adapter = new ChallengesHomeAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(viewPager));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                        ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
+                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                        String.valueOf(adapter.getPageTitle(position)));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
