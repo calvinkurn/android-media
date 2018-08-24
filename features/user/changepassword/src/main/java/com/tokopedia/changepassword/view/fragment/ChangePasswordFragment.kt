@@ -63,7 +63,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     private fun onGoToForgotPass() {
         if (activity != null && activity!!.applicationContext != null) {
             val intent = (activity!!.applicationContext as ChangePasswordRouter)
-                    .getForgotPasswordIntent(activity!!, presenter.userSession.email ?: "")
+                    .getForgotPasswordIntent(activity!!, presenter.userSession.email)
             startActivity(intent)
             activity!!.finish()
         }
