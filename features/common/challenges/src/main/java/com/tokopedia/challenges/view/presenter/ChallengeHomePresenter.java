@@ -29,9 +29,10 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         this.getPastChallengesUseCase = getPastChallengesUseCase;
     }
 
-    public void getOpenChallenges() {
-        getView().showProgressBarView();
-
+    public void getOpenChallenges(boolean isLoaderShow) {
+        if(isLoaderShow) {
+            getView().showProgressBarView();
+        }
         getActiveChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
@@ -63,8 +64,10 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         });
     }
 
-    public void getPastChallenges() {
-        getView().showProgressBarView();
+    public void getPastChallenges(boolean isLoaderShow) {
+        if(isLoaderShow) {
+            getView().showProgressBarView();
+        }
         getPastChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {

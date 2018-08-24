@@ -34,7 +34,6 @@ import javax.inject.Inject;
 public class ShareBottomSheet extends BottomSheetDialogFragment implements BottomSheetShareAdapter.OnItemClickListener, ShareBottomSheetContract.View {
 
     public static final String KEY_COPY = "salinlink";
-
     private static final String TYPE = "text/plain";
     private String url;
     private String title;

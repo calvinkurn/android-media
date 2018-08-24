@@ -37,6 +37,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private TextView tvPastChallenges;
     private LinearLayout emptyLayout;
     private View progressBar;
+    private boolean isLoader = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,20 +60,20 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         tvActiveChallenges.setOnClickListener(v -> {
-            challengeHomePresenter.getOpenChallenges();
+            challengeHomePresenter.getOpenChallenges(isLoader);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
 
         });
 
         tvPastChallenges.setOnClickListener(v -> {
-            challengeHomePresenter.getPastChallenges();
+            challengeHomePresenter.getPastChallenges(isLoader);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
 
         });
 
-        challengeHomePresenter.getOpenChallenges();
+        challengeHomePresenter.getOpenChallenges(isLoader);
         return view;
     }
 
@@ -94,6 +95,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setAdapter(listAdpater);
+        isLoader =false;
     }
 
     @Override
@@ -135,6 +137,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
+
             }
         };
     }

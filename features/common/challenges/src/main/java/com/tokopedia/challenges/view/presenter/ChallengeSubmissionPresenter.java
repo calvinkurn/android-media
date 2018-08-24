@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.content.Intent;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
@@ -8,9 +9,11 @@ import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetSubmissionChallengesUseCase;
+import com.tokopedia.challenges.domain.usecase.GetSubmissionInChallengeUseCase;
 import com.tokopedia.challenges.domain.usecase.GetTermsNConditionUseCase;
 import com.tokopedia.challenges.domain.usecase.GetWinnersUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
+import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.TermsNCondition;
@@ -33,14 +36,18 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     GetTermsNConditionUseCase getTermsNConditionUseCase;
     GetChallengeDetailsUseCase getChallengeDetailsUseCase;
     GetWinnersUseCase getWinnersUseCase;
+    GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase;
 
     @Inject
-    public ChallengeSubmissionPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallengeDetailsUseCase getChallengeDetailsUseCase, GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase, GetWinnersUseCase getWinnersUseCase) {
+    public ChallengeSubmissionPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallengeDetailsUseCase getChallengeDetailsUseCase,
+                                        GetSubmissionChallengesUseCase getSubmissionChallengesUseCase, GetTermsNConditionUseCase getTermsNConditionUseCase,
+                                        GetWinnersUseCase getWinnersUseCase, GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase) {
         this.getChallengeSettingUseCase = mGetChallengeSettingUseCase;
         this.getSubmissionChallengesUseCase = getSubmissionChallengesUseCase;
         this.getTermsNConditionUseCase = getTermsNConditionUseCase;
         this.getChallengeDetailsUseCase = getChallengeDetailsUseCase;
         this.getWinnersUseCase = getWinnersUseCase;
+        this.getSubmissionInChallengeUseCase = getSubmissionInChallengeUseCase;
     }
 
     @Override
@@ -49,30 +56,36 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
     @Override
-    public void onSubmitButtonClick() {
+    public void onSubmitButtonClick(boolean isPastChallenge) {
         getView().showProgressBar();
-        getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
-        getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-
+        getSubmissionInChallengeUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                getView().hideProgressBar();
+
             }
 
             @Override
             public void onError(Throwable e) {
                 getView().hideProgressBar();
+                e.printStackTrace();
             }
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-                RestResponse res1 = restResponse.get(ChallengeSettings.class);
-                ChallengeSettings settings = res1.getData();
-                if (!settings.isUploadAllowed()) {
-                    getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+
+                RestResponse res1 = restResponse.get(SubmissionResponse.class);
+                SubmissionResponse mainDataObject = res1.getData();
+
+                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
+                    getView().hideProgressBar();
+                    Intent detailsIntent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
+                    detailsIntent.putExtra("submissionsResult", mainDataObject.getSubmissionResults().get(0));
+                    detailsIntent.putExtra("isPastChallenge", isPastChallenge);
+                    getView().navigateToActivity(detailsIntent);
                 } else {
-                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
+                    checkSettings();
                 }
+
             }
         });
     }
@@ -112,12 +125,14 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                     RestResponse res1 = typeRestResponseMap.get(Result.class);
                     Result challengeResult = res1.getData();
+                    boolean isPastChallenge = checkIsPastChallenge(challengeResult);
+                    getView().setIsPastChallenge(isPastChallenge);
                     getView().hideProgressBar();
                     getView().showCollapsingHeader();
                     getView().setChallengeResult(challengeResult);
                     getView().renderChallengeDetail(challengeResult);
                     getTermsNCondition(challengeResult.getId());
-                    loadCountdownView(challengeResult, false);
+                    loadCountdownView(challengeResult, isPastChallenge);
                     loadSubmissions();
                 }
             });
@@ -140,7 +155,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
             if (challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
                     && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
                     || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0)) {
-                    getView().setCountDownView("Participated");
+                getView().setCountDownView("Participated");
             } else {
                 getView().setCountDownView("");
             }
@@ -211,5 +226,38 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                 getView().renderTnC(termsNCondition);
             }
         });
+    }
+
+    private void checkSettings() {
+
+        //getView().showProgressBar();
+        getChallengeSettingUseCase.setCHALLENGE_ID(getView().getChallengeId());
+        getChallengeSettingUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+
+            @Override
+            public void onCompleted() {
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                getView().hideProgressBar();
+            }
+
+            @Override
+            public void onNext(Map<Type, RestResponse> restResponse) {
+                RestResponse res1 = restResponse.get(ChallengeSettings.class);
+                ChallengeSettings settings = res1.getData();
+                if (!settings.isUploadAllowed()) {
+                    getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
+                } else {
+                    getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, getView().getChallengeResult().getId(), getView().getChallengeResult().getTitle(), getView().getChallengeResult().getDescription()));
+                }
+            }
+        });
+    }
+
+    private boolean checkIsPastChallenge(Result challengeResult){
+        return (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeResult.getEndDate()));
     }
 }

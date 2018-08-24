@@ -185,6 +185,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         if (!progress.isShowing()) {
             progress.setMessage(message);
             progress.setIndeterminate(true);
+            progress.setCanceledOnTouchOutside(false);
             progress.show();
         }
     }

@@ -26,7 +26,7 @@ public interface ChallengesModuleRouter {
     void onNeverAskAgain(Context context,  String permission);
     void generateBranchUrlForChallenge(Activity context, String url, String title, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener branchLinkGenerateListener);
 
-    public interface BranchLinkGenerateListener {
+    interface BranchLinkGenerateListener {
         void onGenerateLink(String shareContents, String shareUri);
     }
 
