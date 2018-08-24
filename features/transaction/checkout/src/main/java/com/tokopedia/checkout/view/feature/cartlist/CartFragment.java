@@ -202,7 +202,33 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 @Override
                 public void onClick(View view) {
                     cartPageAnalytics.eventClickAtcCartClickHapusOnTopRightCorner();
-//                    mDataPasserListener.onRemoveAllCartMenuClicked(cartAdapter.getCartItemDataList());
+                    List<CartItemData> cartItemDataList = cartAdapter.getSelectedData();
+                    if (cartItemDataList.size() > 0) {
+                        final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(cartItemDataList.size());
+                        dialog.setOnOkClickListener(v -> {
+                            if (cartItemDataList.size() > 0) {
+                                dPresenter.processDeleteAndRefreshCart(cartItemDataList, true);
+                                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(
+                                        dPresenter.generateCartDataAnalytics(
+                                                cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
+                                        )
+                                );
+                            }
+                            dialog.dismiss();
+                        });
+                        dialog.setOnCancelClickListener(v -> {
+                            if (cartItemDataList.size() > 0) {
+                                dPresenter.processDeleteAndRefreshCart(cartItemDataList, false);
+                                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
+                                        dPresenter.generateCartDataAnalytics(
+                                                cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
+                                        )
+                                );
+                            }
+                            dialog.dismiss();
+                        });
+                        dialog.show();
+                    }
                 }
             });
         }
