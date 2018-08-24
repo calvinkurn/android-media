@@ -120,7 +120,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setSelected(true);
+            cartShopHolderData.setAllSelected(true);
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
         }
@@ -154,7 +154,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Object object = cartDataList.get(position);
         if (object instanceof CartShopHolderData) {
             CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
-            cartShopHolderData.setSelected(selected);
+            cartShopHolderData.setAllSelected(selected);
             for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                 cartItemHolderData.setSelected(selected);
             }
@@ -166,26 +166,30 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         Object object = cartDataList.get(parentPosition);
         if (object instanceof CartShopHolderData) {
             CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
-            boolean shopAlreadySelected = cartShopHolderData.isSelected();
+            boolean shopAlreadySelected = cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected();
             int selectedCount = 0;
-            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+            for (int i = 0; i < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); i++) {
+                CartItemHolderData cartItemHolderData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i);
+                if (i == position) {
+                    cartItemHolderData.setSelected(selected);
+                }
+
                 if (cartItemHolderData.isSelected()) {
                     selectedCount++;
                 }
             }
 
             if (selectedCount == 0) {
-                cartShopHolderData.setSelected(false);
+                cartShopHolderData.setAllSelected(false);
+                cartShopHolderData.setPartialSelected(false);
                 needToUpdateParent = shopAlreadySelected;
             } else if (selectedCount > 0 && selectedCount < cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
-                cartShopHolderData.setSelected(true);
-//                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-//                    cartItemHolderData.setSelectionType(false);
-//                }
-//                cartShopHolderData.getShopGroupData().getCartItemDataList().get(position).setSelectionType(selected);
+                cartShopHolderData.setAllSelected(false);
+                cartShopHolderData.setPartialSelected(true);
                 needToUpdateParent = !shopAlreadySelected;
             } else {
-                cartShopHolderData.setSelected(true);
+                cartShopHolderData.setAllSelected(true);
+                cartShopHolderData.setPartialSelected(false);
                 needToUpdateParent = !shopAlreadySelected;
             }
         }

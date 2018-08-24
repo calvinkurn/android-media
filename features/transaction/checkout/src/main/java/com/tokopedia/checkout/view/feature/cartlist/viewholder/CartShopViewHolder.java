@@ -67,30 +67,35 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         }
 
         cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, getAdapterPosition());
-        cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList(),
-                cartShopHolderData.isSelected());
+        cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
         rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
         rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 
-        cbSelectShop.setChecked(cartShopHolderData.isSelected());
+        cbSelectShop.setChecked(cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected());
+        cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
+        rlShopHeader.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
+    }
 
-        cbSelectShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private View.OnClickListener cbSelectShopClickListener(CartShopHolderData cartShopHolderData) {
+        return new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                cartShopHolderData.setSelected(isChecked);
+            public void onClick(View v) {
+                boolean isChecked = false;
+                if (cartShopHolderData.isPartialSelected()) {
+                    isChecked = false;
+                    cartShopHolderData.setAllSelected(false);
+                    cartShopHolderData.setPartialSelected(false);
+                } else {
+                    isChecked = !cartShopHolderData.isAllSelected();
+                }
+                cbSelectShop.setChecked(isChecked);
+                cartShopHolderData.setAllSelected(isChecked);
                 if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                     cartAdapterListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
                 }
             }
-        });
-
-        rlShopHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cbSelectShop.setChecked(!cartShopHolderData.isSelected());
-            }
-        });
+        };
     }
 
 }

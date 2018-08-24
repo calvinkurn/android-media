@@ -109,6 +109,7 @@ public class CartListPresenter implements ICartListPresenter {
         view.renderLoadGetCartData();
 
         RequestParams requestParams = RequestParams.create();
+        TKPDMapParam<String, String> mapParam = view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList());
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
@@ -226,7 +227,7 @@ public class CartListPresenter implements ICartListPresenter {
         double totalPrice = 0;
         int totalItemQty = 0;
         for (CartShopHolderData cartShopHolderData : dataList) {
-            if (cartShopHolderData.isSelected()) {
+            if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
                 for (int i = 0; i < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); i++) {
                     if (cartShopHolderData.getShopGroupData().getCartItemDataList().get(i).isSelected()) {
                         CartItemData cartItemData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i).getCartItemData();

@@ -12,20 +12,23 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 public class CartShopHolderData implements Parcelable {
 
     private ShopGroupData shopGroupData;
-    private boolean selected;
+    private boolean allSelected;
+    private boolean partialSelected;
 
     public CartShopHolderData() {
     }
 
     protected CartShopHolderData(Parcel in) {
         shopGroupData = in.readParcelable(ShopGroupData.class.getClassLoader());
-        selected = in.readByte() != 0;
+        allSelected = in.readByte() != 0;
+        partialSelected = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(shopGroupData, flags);
-        dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (allSelected ? 1 : 0));
+        dest.writeByte((byte) (partialSelected ? 1 : 0));
     }
 
     @Override
@@ -53,12 +56,19 @@ public class CartShopHolderData implements Parcelable {
         this.shopGroupData = shopGroupData;
     }
 
-    public boolean isSelected() {
-        return selected;
+    public boolean isAllSelected() {
+        return allSelected;
     }
 
-    public void setSelected(boolean selected) {
-        this.selected = selected;
+    public void setAllSelected(boolean allSelected) {
+        this.allSelected = allSelected;
     }
 
+    public boolean isPartialSelected() {
+        return partialSelected;
+    }
+
+    public void setPartialSelected(boolean partialSelected) {
+        this.partialSelected = partialSelected;
+    }
 }

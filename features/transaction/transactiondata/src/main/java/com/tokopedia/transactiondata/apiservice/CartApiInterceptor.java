@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 
 import java.io.IOException;
@@ -76,6 +77,10 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
                 authKey,
                 "EEE, dd MMM yyyy HH:mm:ss ZZZ", userSession.getUserId());
 
+        mapHeader.put("X-APP-VERSION", GlobalConfig.VERSION_NAME);
+        mapHeader.put("Tkpd-UserId", userSession.getUserId());
+        mapHeader.put("X-Device", "android");
+        mapHeader.put("Tkpd-SessionId", userSession.getDeviceId());
 
         for (Map.Entry<String, String> entry : mapHeader.entrySet()) {
             String key = entry.getKey();

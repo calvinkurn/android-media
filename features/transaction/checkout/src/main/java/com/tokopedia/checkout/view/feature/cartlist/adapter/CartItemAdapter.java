@@ -62,11 +62,9 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         compositeSubscription.unsubscribe();
     }
 
-    public void addDataList(List<CartItemHolderData> cartItemHolderDataList, boolean selected) {
-        for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
-            cartItemHolderData.setSelected(selected);
-            this.cartItemHolderDataList.add(cartItemHolderData);
-        }
+    public void addDataList(List<CartItemHolderData> cartItemHolderDataList) {
+        this.cartItemHolderDataList.clear();
+        this.cartItemHolderDataList.addAll(cartItemHolderDataList);
         notifyDataSetChanged();
     }
 
