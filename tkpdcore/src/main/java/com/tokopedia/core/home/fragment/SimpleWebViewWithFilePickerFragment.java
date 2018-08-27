@@ -150,12 +150,17 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
 
 
         protected boolean onOverrideUrl(Uri url) {
+            String urlString = url.toString();
             try {
                 if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
                                     Bundle());
+                    return true;
+                } else if (urlString.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, url);
+                    startActivity(intent);
                     return true;
                 } else {
                     return false;
@@ -202,7 +207,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
+            if(callbackAfterL != null) callbackAfterL.onReceiveValue(results);
             callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {

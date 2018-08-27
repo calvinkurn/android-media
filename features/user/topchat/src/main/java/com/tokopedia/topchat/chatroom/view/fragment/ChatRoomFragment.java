@@ -687,7 +687,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 @Override
                 public void onClick(View v) {
                     presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
                 }
             });
 
@@ -1556,7 +1557,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     showDeleteChatDialog();
                 } else if (pos == 0) {
                     presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE));
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE), getArguments().getString(ChatRoomActivity.PARAM_SOURCE));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
                         itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));
@@ -1619,5 +1620,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
         }
     }
 
-
+    @Override
+    public void finishActivity() {
+        getActivity().finish();
+    }
 }
