@@ -20,6 +20,7 @@ import com.tokopedia.topads.dashboard.data.model.data.Cell;
 import com.tokopedia.topads.dashboard.data.model.data.DashboardPopulateResponse;
 import com.tokopedia.topads.dashboard.data.model.data.DataStatistic;
 import com.tokopedia.topads.dashboard.data.model.data.TotalAd;
+import com.tokopedia.topads.dashboard.data.model.ticker.Data;
 import com.tokopedia.topads.dashboard.data.model.ticker.ResponseTickerTopads;
 import com.tokopedia.topads.dashboard.data.model.ticker.TopAdsTicker;
 import com.tokopedia.topads.dashboard.domain.interactor.DeleteTopAdsStatisticsUseCase;
@@ -283,9 +284,15 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
     public void getTickerTopAds(Resources resources){
         GraphqlUseCase graphqlUseCase = new GraphqlUseCase();
         Map<String, Object> variables = new HashMap<>();
-        variables.put(TopAdsConstant.SHOP_ID, userSession.getShopId());
+        int shopId;
+        try {
+            shopId = Integer.parseInt(userSession.getShopId());
+        }catch (Exception e){
+            shopId = 0;
+        }
+        variables.put(TopAdsConstant.SHOP_ID, shopId);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.query_ticker), TopAdsTicker.class, variables);
+                R.raw.query_ticker), Data.class, variables);
         graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(graphqlRequest);
         graphqlUseCase.execute(new Subscriber<GraphqlResponse>() {
@@ -303,8 +310,8 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
 
             @Override
             public void onNext(GraphqlResponse graphqlResponse) {
-                TopAdsTicker topAdsTicker = graphqlResponse.getData(TopAdsTicker.class);
-                getView().onSuccessGetTicker(topAdsTicker.getData().getMessage());
+                Data topAdsTicker = graphqlResponse.getData(Data.class);
+                getView().onSuccessGetTicker(topAdsTicker.getTopAdsTicker().getData().getMessage());
             }
         });
     }

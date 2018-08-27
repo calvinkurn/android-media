@@ -15,6 +15,7 @@
 
         <TextView
             android:id="@+id/text_message_ticker"
+            android:textColorLink="@color/tkpd_main_green"
             style="@style/TextView.Small"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"

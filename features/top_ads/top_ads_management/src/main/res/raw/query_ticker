@@ -1,4 +1,4 @@
-query topAdsTickerTes($shopId : String!) {
+query topAdsTicker($shopId : Int!) {
     topAdsTicker(shop_id:$shopId,limit:4){
         data{
             message

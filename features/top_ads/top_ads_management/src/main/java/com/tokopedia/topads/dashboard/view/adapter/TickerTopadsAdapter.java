@@ -2,14 +2,19 @@ package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.topads.R;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +59,14 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
         }
 
         public void bind(String message) {
-            textViewMessage.setText(MethodChecker.fromHtml(message));
+
+            try {
+                textViewMessage.setClickable(true);
+                textViewMessage.setMovementMethod (LinkMovementMethod.getInstance());
+                textViewMessage.setText(MethodChecker.fromHtml(URLDecoder.decode(message, "UTF-8")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
