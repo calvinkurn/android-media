@@ -334,7 +334,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this, this);
-        this.presenter.initGetRateEstimationUseCase(getActivity());
+        this.presenter.initGetRateEstimationUseCase();
     }
 
     @Override
