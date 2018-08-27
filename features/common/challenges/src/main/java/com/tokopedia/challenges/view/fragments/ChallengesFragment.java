@@ -108,7 +108,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             openChallenges = resultList;
         }
         if (listAdpater != null) {
-            listAdpater.setData(resultList);
+            listAdpater.setData(resultList,isPastChallenge);
             listAdpater.notifyDataSetChanged();
         } else {
             listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);

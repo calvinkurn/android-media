@@ -28,14 +28,11 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
     private TextView tvStatus;
     private ImageView imgShare;
 
-    private Result challengesResult;
     private Context context;
-    private boolean isPastChallenge;
 
-    ChallengesViewHolder(Context context, View view, boolean isPastChallenge) {
+    ChallengesViewHolder(Context context, View view) {
         super(view);
         this.context = context;
-        this.isPastChallenge = isPastChallenge;
         tvTitle = view.findViewById(R.id.tv_title);
         tvHastags = view.findViewById(R.id.tv_hastags);
         imgChallenge = view.findViewById(R.id.img_challenge);
@@ -43,12 +40,9 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
         analytics = new ChallengesAnalytics(context);
-
-
     }
 
-    void bind(Result challengesResult) {
-        this.challengesResult = challengesResult;
+    void bind(Result challengesResult,boolean isPastChallenge) {
         tvTitle.setText(challengesResult.getTitle());
         tvHastags.setText(challengesResult.getHashTag());
         tvTimeRemaining.setVisibility(View.GONE);

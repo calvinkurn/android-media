@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -19,8 +21,11 @@ public class FullScreenVideoActivity extends BaseActivity implements CustomMedia
 
     private VideoView videoView;
     private MediaController mediaController;
-    String videoUrl;
-    int pos;
+    private String videoUrl;
+    private int pos;
+    private ImageView videoThumbnail;
+    private ImageView playIcon;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +42,15 @@ public class FullScreenVideoActivity extends BaseActivity implements CustomMedia
 
         videoUrl = getIntent().getStringExtra("videoUrl");
         pos = getIntent().getIntExtra("seekPos", 0);
-
+        videoThumbnail  = findViewById(R.id.video_thumbnail);
+        playIcon = findViewById(R.id.play_icon);
         startVideoPlay(videoUrl);
     }
 
     public void startVideoPlay(String videoUrl) {
         videoView.setVideoURI(Uri.parse(videoUrl));
-
+        videoThumbnail.setVisibility(View.GONE);
+        playIcon.setVisibility(View.GONE);
         mediaController = new CustomMediaController(this, videoUrl, pos, true, this);
         mediaController.setAnchorView(videoView);
 

@@ -28,12 +28,12 @@ public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHo
 
     @Override
     public ChallengesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ChallengesViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false),isPastChallenge);
+        return new ChallengesViewHolder(context, LayoutInflater.from(context).inflate(R.layout.home_challenge_list_item, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ChallengesViewHolder holder, int position) {
-        holder.bind(challengesResultList.get(position));
+        holder.bind(challengesResultList.get(position),isPastChallenge);
     }
 
     @Override
@@ -41,7 +41,8 @@ public class ChallengesListAdapter extends RecyclerView.Adapter<ChallengesViewHo
         return challengesResultList.size();
     }
 
-    public void setData(List<Result> resultList) {
+    public void setData(List<Result> resultList, boolean isPastChallenge) {
+        this.isPastChallenge = isPastChallenge;
         this.challengesResultList = resultList;
     }
 }

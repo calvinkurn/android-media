@@ -21,7 +21,7 @@ import rx.Subscriber;
 public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseContract.View> implements ChallengesBaseContract.Presenter {
 
     private GetActiveChallengesUseCase getActiveChallengesUseCase;
-    GetPastChallengesUseCase getPastChallengesUseCase;
+    private GetPastChallengesUseCase getPastChallengesUseCase;
 
     @Inject
     public ChallengeHomePresenter(GetActiveChallengesUseCase getActiveChallengesUseCase, GetPastChallengesUseCase getPastChallengesUseCase) {
