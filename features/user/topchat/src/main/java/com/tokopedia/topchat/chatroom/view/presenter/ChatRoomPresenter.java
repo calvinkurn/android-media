@@ -36,6 +36,7 @@ import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomDeleteMessageSubsciber;
 import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomGetShopInfoSubscriber;
@@ -202,7 +203,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                 Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
                         ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                getView().startActivity(intent);
+                getView().startActivityForResult(intent, ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST);
             } else {
                 if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
                     getView().startActivity(
@@ -666,7 +667,7 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void getFollowStatus(String shopId) {
-        if (getChatShopInfoUseCase != null) {
+        if (getChatShopInfoUseCase != null && !TextUtils.isEmpty(shopId)) {
             getChatShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
                     new ChatRoomGetShopInfoSubscriber(this, getView()));
         }

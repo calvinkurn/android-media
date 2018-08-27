@@ -131,6 +131,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final int MAX_SIZE_IMAGE_PICKER = 5;
     public static final int CHAT_DELETED_RESULT_CODE = 101;
+    public static final int CHAT_GO_TO_SHOP_DETAILS_REQUEST = 202;
 
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
@@ -969,6 +970,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY);
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice));
                 break;
+            case ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST:
+                presenter.getFollowStatus(getArguments().getString(ChatRoomActivity
+                        .PARAM_SENDER_ID, ""));
             default:
                 break;
         }
