@@ -22,6 +22,9 @@ data class AddressModel(
         @SerializedName("address")
         @Expose
         val address: String = "",
+        @SerializedName("phone")
+        @Expose
+        val phone: String = "",
         @SerializedName("lat")
         @Expose
         val lat: Float = 0f,

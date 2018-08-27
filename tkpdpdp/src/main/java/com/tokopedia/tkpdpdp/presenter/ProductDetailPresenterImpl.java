@@ -161,10 +161,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.retrofitInteractor = new RetrofitInteractorImpl();
     }
 
-    /* context for testing only since API hasn't been ready yet */
     @Override
-    public void initGetRateEstimationUseCase(Context context){
-        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase(), context);
+    public void initGetRateEstimationUseCase(){
+        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
     }
 
     @Override
@@ -174,7 +173,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     @Override
     public void getCostEstimation(String rawQuery, float productWeight, String shopDomain){
-        getRateEstimationUseCase.execute(GetRateEstimationUseCase.Companion.createRequestParams(rawQuery, productWeight, shopDomain),
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productWeight, shopDomain),
                 new Subscriber<RatesEstimationModel>() {
                     @Override
                     public void onCompleted() { }

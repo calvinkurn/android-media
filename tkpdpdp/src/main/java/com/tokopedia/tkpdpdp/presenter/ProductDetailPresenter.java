@@ -27,8 +27,7 @@ import java.util.Map;
  */
 public interface ProductDetailPresenter {
 
-    /* context for testing only since API hasn't been ready yet */
-    void initGetRateEstimationUseCase(Context context);
+    void initGetRateEstimationUseCase();
 
     void processDataPass(@NonNull ProductPass productPass);
 

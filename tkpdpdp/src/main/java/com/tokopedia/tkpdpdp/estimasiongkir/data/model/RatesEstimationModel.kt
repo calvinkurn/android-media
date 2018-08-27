@@ -12,9 +12,15 @@ data class RatesEstimationModel (
     @Expose
     val rates: RatesModel = RatesModel()){
 
-    data class Response (
-        @SerializedName("rates_estimate")
+    data class Data (
+        @SerializedName("data")
         @Expose
-        val ratesEstimation: RatesEstimationModel = RatesEstimationModel()
+        val ratesEstimation: ArrayList<RatesEstimationModel> = ArrayList()
+    )
+
+    data class Response (
+            @SerializedName("rates_estimate")
+            @Expose
+            val data: Data = Data()
     )
 }
