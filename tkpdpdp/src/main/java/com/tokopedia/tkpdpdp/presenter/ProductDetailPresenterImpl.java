@@ -161,9 +161,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         this.retrofitInteractor = new RetrofitInteractorImpl();
     }
 
-    /* context for testing only since API hasn't been ready yet */
     @Override
-    public void initGetRateEstimationUseCase(Context context){
+    public void initGetRateEstimationUseCase(){
         getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
     }
 
