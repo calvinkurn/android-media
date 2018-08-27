@@ -21,7 +21,7 @@ class SettingBankActivity : BaseSimpleActivity() {
     }
 
     companion object {
-        open fun createIntent(context: Context): Intent {
+        fun createIntent(context: Context): Intent {
             return Intent(context, SettingBankActivity::class.java)
         }
     }
