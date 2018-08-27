@@ -463,6 +463,7 @@ public class HotlistFragment extends SearchSectionFragment
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
+                .setId(aliasHotlist)
                 .build();
 
         shareData.setType(ShareData.HOTLIST_TYPE);
