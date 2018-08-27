@@ -1,4 +1,4 @@
-package com.tokopedia.flight.booking.widget;
+package com.tokopedia.common.travel.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,8 +11,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common.travel.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.flight.R;
 
 import java.util.Calendar;
 import java.util.Date;
