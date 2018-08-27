@@ -96,9 +96,9 @@
     <string name="label_menu_shipping">Sedang Dikirim</string>
     <string name="label_menu_delivered">Sampai Tujuan</string>
     <string name="title_menu_buyer_complain">Komplain Sebagai Pembeli</string>
-    <string name="label_menu_buyer_complain">Selesaikan komplain belanja anda</string>
+    <string name="label_menu_buyer_complain">Lihat status komplain</string>
     <string name="title_menu_seller_complain">Komplain Sebagai Penjual</string>
-    <string name="label_menu_seller_complain">Lihat status komplain di sini</string>
+    <string name="label_menu_seller_complain">Lihat status komplain</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
