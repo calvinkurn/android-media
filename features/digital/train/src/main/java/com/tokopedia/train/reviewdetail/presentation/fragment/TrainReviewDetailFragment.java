@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.constant.IRouterConstant;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ticker.TickerView;
@@ -47,7 +48,6 @@ import com.tokopedia.train.scheduledetail.presentation.activity.TrainScheduleDet
 import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 import com.tokopedia.train.search.presentation.model.TrainScheduleBookingPassData;
 import com.tokopedia.train.search.presentation.model.TrainScheduleViewModel;
-import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 
 import java.util.ArrayList;
 import java.util.Date;
