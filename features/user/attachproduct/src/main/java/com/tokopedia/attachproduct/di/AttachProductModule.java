@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -16,16 +17,19 @@ import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.attachproduct.domain.model.mapper.DataModelToDomainModelMapper;
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
+import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.network.utils.AuthUtil;
+
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -46,18 +50,6 @@ public class AttachProductModule {
     @Provides
     public ErrorResponseInterceptor provideErrorResponseInterceptor() {
         return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
-    }
-
-    @AttachProductScope
-    @Provides
-    public HttpLoggingInterceptor provideHttpLoggingInterceptor() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-        } else {
-            logging.setLevel(HttpLoggingInterceptor.Level.NONE);
-        }
-        return logging;
     }
 
     @AttachProductScope
@@ -84,27 +76,35 @@ public class AttachProductModule {
         return retrofit.create(TomeGetShopProductAPI.class);
     }
 
+    @Provides
+    @ChuckInterceptorAttachProductQualifier
+    public static ChuckInterceptor provideChuck(@ApplicationContext Context context){
+        return new ChuckInterceptor(context);
+    }
+
     @AttachProductScope
     @Provides
     @AttachProductQualifier
     OkHttpClient provideOkHttpClient(OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     @ApplicationContext Context context) {
+                                     @ApplicationContext Context context,
+                                     @ChuckInterceptorAttachProductQualifier ChuckInterceptor
+                                             chuckInterceptor,
+                                     @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor) {
         UserSession userSession = new UserSession(context);
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(new FingerprintInterceptor((NetworkRouter)context,userSession))
                 .addInterceptor(new CacheApiInterceptor())
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(new TkpdAuthInterceptor(context,(NetworkRouter)context,userSession))
+                .addInterceptor(new TkpdAuthInterceptor())
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS);
-//TODO Implement chuck
-//        if (GlobalConfig.isAllowDebuggingTools()) {
-//            builder.addInterceptor(chuckInterceptor)
-//                    .addInterceptor(httpLoggingInterceptor);
-//        }
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(chuckInterceptor);
+        }
         return builder.build();
     }
 
