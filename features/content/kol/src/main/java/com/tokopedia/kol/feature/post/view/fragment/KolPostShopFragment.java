@@ -16,21 +16,37 @@ import javax.inject.Inject;
 public class KolPostShopFragment extends KolPostFragment implements KolPostShopContract.View,
         KolPostShopContract.View.Like {
 
+    private static final String PARAM_SHOP_ID = "shop_id";
+
     private String shopId;
+
+    public static KolPostShopFragment newInstance(String shopId) {
+        KolPostShopFragment fragment = new KolPostShopFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_SHOP_ID, shopId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Inject
     KolPostShopContract.Presenter presenter;
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+        initVar();
         presenter.attachView(this);
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     @Override
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();
+    }
+
+    private void initVar() {
+        shopId = getArguments().getString(PARAM_SHOP_ID);
     }
 
     @Override

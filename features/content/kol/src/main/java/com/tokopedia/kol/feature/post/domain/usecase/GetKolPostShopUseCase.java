@@ -3,9 +3,13 @@ package com.tokopedia.kol.feature.post.domain.usecase;
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kol.R;
 import com.tokopedia.usecase.RequestParams;
+
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -58,7 +62,7 @@ public class GetKolPostShopUseCase {
         }
     }
 
-    public static RequestParams getFeedDetailParam(String shopId, String cursor) {
+    public static RequestParams getParams(String shopId, String cursor) {
         RequestParams params = RequestParams.create();
         params.putInt(GetKolPostShopUseCase.PARAM_SHOP_ID, Integer.valueOf(shopId));
         params.putString(GetKolPostShopUseCase.PARAM_CURSOR, cursor);

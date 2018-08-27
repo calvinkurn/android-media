@@ -2,7 +2,6 @@ package com.tokopedia.kol.feature.post.view.listener;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
 /**
@@ -10,7 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
  */
 
 public interface KolPostShopContract {
-    interface View extends CustomerView {
+    interface View extends KolPostListener.View {
 
         interface Like {
             Context getContext();
@@ -23,9 +22,9 @@ public interface KolPostShopContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
-        void initView(String userId);
+        void initView(String shopId);
 
-        void getKolPostShop(String userId);
+        void getKolPostShop(String shopId);
 
         void updateCursor(String lastCursor);
     }
