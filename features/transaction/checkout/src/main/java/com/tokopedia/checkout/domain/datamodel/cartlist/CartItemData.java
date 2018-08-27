@@ -14,10 +14,21 @@ public class CartItemData implements Parcelable {
     private OriginData originData;
     private UpdatedData updatedData;
     private MessageErrorData errorData;
+    private boolean singleChild;
     private boolean isError;
     private boolean isWarning;
-    private String warningMessage;
-    private String errorMessage;
+    private String warningMessageTitle;
+    private String warningMessageDescription;
+    private String errorMessageTitle;
+    private String errorMessageDescription;
+
+    public boolean isSingleChild() {
+        return singleChild;
+    }
+
+    public void setSingleChild(boolean singleChild) {
+        this.singleChild = singleChild;
+    }
 
     public boolean isError() {
         return isError;
@@ -31,24 +42,40 @@ public class CartItemData implements Parcelable {
         isWarning = warning;
     }
 
-    public String getWarningMessage() {
-        return warningMessage;
+    public String getWarningMessageTitle() {
+        return warningMessageTitle;
     }
 
-    public void setWarningMessage(String warningMessage) {
-        this.warningMessage = warningMessage;
+    public void setWarningMessageTitle(String warningMessageTitle) {
+        this.warningMessageTitle = warningMessageTitle;
     }
 
     public void setError(boolean error) {
         isError = error;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getErrorMessageTitle() {
+        return errorMessageTitle;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setErrorMessageTitle(String errorMessageTitle) {
+        this.errorMessageTitle = errorMessageTitle;
+    }
+
+    public String getWarningMessageDescription() {
+        return warningMessageDescription;
+    }
+
+    public void setWarningMessageDescription(String warningMessageDescription) {
+        this.warningMessageDescription = warningMessageDescription;
+    }
+
+    public String getErrorMessageDescription() {
+        return errorMessageDescription;
+    }
+
+    public void setErrorMessageDescription(String errorMessageDescription) {
+        this.errorMessageDescription = errorMessageDescription;
     }
 
     public OriginData getOriginData() {
@@ -661,8 +688,8 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.errorData, flags);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
-        dest.writeString(this.warningMessage);
-        dest.writeString(this.errorMessage);
+        dest.writeString(this.warningMessageTitle);
+        dest.writeString(this.errorMessageTitle);
     }
 
     protected CartItemData(Parcel in) {
@@ -671,8 +698,8 @@ public class CartItemData implements Parcelable {
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.isError = in.readByte() != 0;
         this.isWarning = in.readByte() != 0;
-        this.warningMessage = in.readString();
-        this.errorMessage = in.readString();
+        this.warningMessageTitle = in.readString();
+        this.errorMessageTitle = in.readString();
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

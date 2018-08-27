@@ -120,7 +120,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setAllSelected(true);
+            cartShopHolderData.setAllSelected(!shopGroupData.isError());
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
         }
@@ -316,7 +316,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         break;
                     } else if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected()) {
+                            if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
                                 if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
                                         cartItemHolderData.getCartItemData().isError()) {
                                     canProcess = false;
