@@ -1,11 +1,7 @@
 package com.tokopedia.product.manage.item.variant.dialog;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -43,7 +39,7 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
 
     private SpinnerCounterInputView counterInputPrice;
 
-    private @CurrencyTypeDef int currencyType;
+    private @CurrencyTypeDef int currencyType = CurrencyTypeDef.TYPE_IDR;
     private boolean isOfficialStore;
     private boolean isGoldMerchant;
 
@@ -179,8 +175,9 @@ public class ProductChangeVariantPriceDialogFragment extends DialogFragment {
             CommonUtils.hideKeyboard(getActivity(), getView());
             return;
         }
-        onProductChangeVariantPriceFragmentListener.onChangeAllPriceVariantSubmit(currencyType,
-                counterInputPrice.getCounterValue());
+        if(onProductChangeVariantPriceFragmentListener!=null){
+            onProductChangeVariantPriceFragmentListener.onChangeAllPriceVariantSubmit(currencyType, counterInputPrice.getCounterValue());
+        }
         this.dismiss();
     }
 
