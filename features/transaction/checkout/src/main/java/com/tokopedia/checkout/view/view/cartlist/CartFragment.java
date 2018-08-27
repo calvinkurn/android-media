@@ -860,19 +860,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartListAdapte
             }
 
             TextView shop = emptyState.findViewById(R.id.btn_shopping_now);
-            shop.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
-                    navigateToActivity(
-                            ((ICheckoutModuleRouter) getActivity().getApplication())
-                                    .getHomeFeedIntent(getActivity())
-                    );
-                    getActivity().finish();
-                }
+            shop.setOnClickListener(view -> {
+                cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+                navigateToActivity(
+                        ((ICheckoutModuleRouter) getActivity().getApplication())
+                                .getHomeFeedIntent(getActivity())
+                );
+                getActivity().finish();
             });
             TextView btnAddFromWishList = emptyState.findViewById(R.id.btn_add_from_whislist);
             btnAddFromWishList.setOnClickListener(v -> {
+                cartPageAnalytics.eventClickAtcCartClickAddFromWishlistOnEmptyCart();
                 String routingAppLink;
                 routingAppLink = ApplinkConst.WISHLIST;
                 Uri.Builder uriBuilder = new Uri.Builder();
