@@ -431,6 +431,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             startActivityForResult(WelcomePageActivity.newInstance(getActivity()),
                     REQUEST_WELCOME_PAGE);
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            sessionHandler.clearUserData(getActivity());
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else {
