@@ -11,8 +11,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
@@ -66,7 +68,7 @@ import static com.tokopedia.core.router.discovery.BrowseProductRouter.EXTRAS_SEA
 
 @RuntimePermissions
 public class SearchActivity extends DiscoveryActivity
-        implements SearchContract.View, RedirectionListener, BottomSheetListener {
+        implements SearchContract.View, RedirectionListener, BottomSheetListener, SearchNavigationListener {
 
     public static final int TAB_THIRD_POSITION = 2;
     public static final int TAB_SECOND_POSITION = 1;
@@ -83,6 +85,8 @@ public class SearchActivity extends DiscoveryActivity
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
+    private TextView buttonFilter;
+    private TextView buttonSort;
 
     private String productTabTitle;
     private String catalogTabTitle;
@@ -90,6 +94,7 @@ public class SearchActivity extends DiscoveryActivity
     private boolean forceSwipeToShop;
 
     private BottomSheetFilterView bottomSheetFilterView;
+    private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
     @Inject
     SearchPresenter searchPresenter;
@@ -431,6 +436,8 @@ public class SearchActivity extends DiscoveryActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         viewPager = (ViewPager) findViewById(R.id.pager);
         bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
+        buttonFilter = findViewById(R.id.button_filter);
+        buttonSort = findViewById(R.id.button_sort);
     }
 
     @Override
@@ -456,6 +463,26 @@ public class SearchActivity extends DiscoveryActivity
             }
         });
         initBottomSheetListener();
+        initSearchNavigationListener();
+    }
+
+    private void initSearchNavigationListener() {
+        buttonFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onFilterClick();
+                }
+            }
+        });
+        buttonSort.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (searchNavigationClickListener != null) {
+                    searchNavigationClickListener.onSortClick();
+                }
+            }
+        });
     }
 
     @Override
@@ -481,7 +508,6 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onHide() {
                 enableAutoShowBottomNav();
-                forceShowBottomNav();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -508,15 +534,6 @@ public class SearchActivity extends DiscoveryActivity
                 FilterDetailActivityRouter.launchDetailActivity(SearchActivity.this, filter, true);
             }
         });
-    }
-
-    private void forceShowBottomNav() {
-        SearchSectionFragment selectedFragment
-                = (SearchSectionFragment) searchSectionPagerAdapter.getItem(viewPager.getCurrentItem());
-
-        if (selectedFragment != null) {
-            selectedFragment.showBottomBarNavigation(true);
-        }
     }
 
     private void sendBottomSheetHideEventForProductList() {
@@ -606,5 +623,10 @@ public class SearchActivity extends DiscoveryActivity
 
     private Context getActivityContext() {
         return this;
+    }
+
+    @Override
+    public void setupSearchNavigation(ClickListener clickListener) {
+        this.searchNavigationClickListener = clickListener;
     }
 }

@@ -158,7 +158,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         if (isViewAttached()) {
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().unSetTopAdsEndlessListener();
-                                getView().showBottomBarNavigation(false);
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 list.addAll(productViewModel.getProductList());
@@ -166,7 +165,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 if (getView().isEvenPage()) {
                                     getView().addGuidedSearch();
                                 }
-                                getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() >= searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
                                 }
@@ -187,7 +185,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         if (isViewAttached()) {
                             getView().hideRefreshLayout();
                             getView().showNetworkError(searchParameter.getStartRow());
-                            getView().showBottomBarNavigation(false);
                         }
                     }
                 });
@@ -222,7 +219,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         if (isViewAttached()) {
                             getView().showNetworkError(0);
                             getView().hideRefreshLayout();
-                            getView().showBottomBarNavigation(false);
                         }
                     }
 
@@ -234,7 +230,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().setEmptyProduct();
                                 getView().setTotalSearchResultCount("0");
-                                getView().showBottomBarNavigation(false);
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
@@ -242,7 +237,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
                                 getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-                                getView().showBottomBarNavigation(true);
                                 if (getView().getStartFrom() > searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
                                 }
