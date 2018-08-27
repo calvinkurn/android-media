@@ -116,6 +116,9 @@ public interface ApplinkConst {
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
+    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+
+
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";
         String SALES = "sellerapp://sales";
