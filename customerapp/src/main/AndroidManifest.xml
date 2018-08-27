@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tokopedia.tkpd">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.tkpd">
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
@@ -314,6 +314,12 @@
         <activity
             android:name=".home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
+
+        <receiver android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.utils.delete" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

@@ -162,7 +162,7 @@ public class Menus extends BaseBottomSheetView {
                     holder.icon.setImageResource(itemMenus.icon);
                     holder.icon.setVisibility(View.VISIBLE);
                 } else {
-                    holder.icon.setVisibility(View.GONE);
+                    holder.icon.setVisibility(View.INVISIBLE);
                 }
                 holder.title.setText(itemMenus.title);
 
