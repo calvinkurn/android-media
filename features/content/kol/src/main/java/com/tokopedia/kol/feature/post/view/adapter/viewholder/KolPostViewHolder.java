@@ -76,7 +76,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
     public void bind(KolPostViewModel element) {
         baseKolView.bind(element);
 
-        if (type == Type.PROFILE && getAdapterPosition() == 0) {
+        if (element.isShowTopShadow() && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
         } else {
             topShadow.setVisibility(View.GONE);
