@@ -64,7 +64,9 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     override fun getScreenName(): String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_address_add, container, false)
+        val v = inflater.inflate(R.layout.fragment_shop_address_add, container, false)
+        v.requestFocus()
+        return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

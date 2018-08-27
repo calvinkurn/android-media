@@ -45,7 +45,6 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            text = getString( if(!isEdit) R.string.save else R.string.label_change)
             setOnClickListener { (fragment as ShopSettingsEtalaseAddEditFragment).saveAddEditEtalase() }
             visibility = View.VISIBLE
         }

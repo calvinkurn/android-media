@@ -29,7 +29,7 @@
     <string name="shop_close_note">Catatan</string>
     <string name="closed_note_information">Penutupan Toko akan berlaku mulai pukul 00:00 dan berakhir pada pukul 23:59 sesuai tanggal yang telah ditentukan.</string>
     <string name="hint_date">Day, dd/mm/yyyy</string>
-    <string name="shop_address_line_2_placeholder">%1$s, %2$s, %3$s, %4$s</string>
+    <string name="shop_address_line_2_placeholder">%1$s, %2$s, %3$s, %4$d</string>
     <string name="title_action_add_address">Tambah Alamat</string>
     <string name="shop_address_label_name">Label Lokasi</string>
     <string name="shop_address_name_placeholder">Nama Toko Fisik</string>

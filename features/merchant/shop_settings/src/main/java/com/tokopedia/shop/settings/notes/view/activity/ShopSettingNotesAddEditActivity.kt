@@ -45,7 +45,6 @@ class ShopSettingNotesAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSe
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            text = getString( if(!isEdit) R.string.save else R.string.label_change)
             setOnClickListener { (fragment as ShopSettingsNotesAddEditFragment).saveAddEditNote() }
             visibility = View.VISIBLE
         }

@@ -68,7 +68,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     override fun getAdapterTypeFactory() = ShopLocationTypeFactory(this)
 
     override fun onItemClicked(t: ShopLocationViewModel?) {
-
+        t?.run { editShopAddress(this) }
     }
 
     override fun isLoadMoreEnabledByDefault() = false

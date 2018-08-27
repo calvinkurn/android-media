@@ -40,7 +40,6 @@ class ShopSettingAddressAddEditActivity: BaseSimpleActivity(), HasComponent<Shop
         super.onCreate(savedInstanceState)
 
         saveTextView?.run {
-            text = getString( if(isAddNew) R.string.save else R.string.label_change)
             setOnClickListener { (fragment as ShopSettingAddressAddEditFragment).saveAddEditAddress() }
             visibility = View.VISIBLE
         }
