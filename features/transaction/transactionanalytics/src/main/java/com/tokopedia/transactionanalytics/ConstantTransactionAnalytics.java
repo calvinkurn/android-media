@@ -16,6 +16,7 @@ public interface ConstantTransactionAnalytics {
 
     interface EventName {
         String CLICK_ATC = "clickATC";
+        String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
@@ -162,6 +163,9 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click + from ubah from kirim ke beberapa alamat";
         String CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click - from ubah from kirim ke beberapa alamat";
         String CLICK_TOP_DONASI = "click top donasi";
+
+        String CLICK_CHECKOUT = "click checkout";
+        String CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk";
     }
 
     interface EventLabel {
@@ -169,6 +173,9 @@ public interface ConstantTransactionAnalytics {
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
+        String FAILED = "failed";
+        String CHECKLIST = "checklist";
+        String UN_CHECKLIST = "unchecklist";
     }
 
     interface ScreenName {

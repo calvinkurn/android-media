@@ -298,4 +298,32 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
         sendEnhancedEcommerce(dataLayer);
     }
+
+    //PHASE 2
+    public void eventClickCheckoutCartClickCheckoutFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_CHECKOUT,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickCheckoutCartClickPilihSemuaProdukChecklist() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                EventLabel.CHECKLIST
+        );
+    }
+
+    public void eventClickCheckoutCartClickPilihSemuaProdukUnChecklist() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                EventLabel.UN_CHECKLIST
+        );
+    }
 }
