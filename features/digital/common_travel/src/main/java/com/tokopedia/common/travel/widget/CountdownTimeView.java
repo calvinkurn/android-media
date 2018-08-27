@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -140,5 +141,9 @@ public class CountdownTimeView extends BaseCustomView {
             countdown = (millisUntilFinished / (1000 * 60)) % 60 + " " + minutesLabel + " " + (millisUntilFinished / (1000)) % 60 + " " + secondsLabel;
         }
         return countdown;
+    }
+
+    public void setStyle(@StyleRes int style) {
+        timeTextView.setTextAppearance(getContext(), style);
     }
 }

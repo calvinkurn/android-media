@@ -202,6 +202,8 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
 
         viewTrainReviewDetailPriceSection.showScheduleTripsPrice(trainSoftbook);
 
+        countdownTimeView.setStyle(R.style.TextView_Small_Green_Bold);
+
         return rootview;
     }
 

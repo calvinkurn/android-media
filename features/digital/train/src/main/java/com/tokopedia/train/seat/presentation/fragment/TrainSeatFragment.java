@@ -142,6 +142,8 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             }
         });
         trainSeatHeader.setActionListener(this);
+
+        countdownTimeView.setStyle(R.style.TextView_Small_Green_Bold);
     }
 
     @NonNull
