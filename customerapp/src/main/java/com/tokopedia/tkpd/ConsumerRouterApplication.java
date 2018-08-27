@@ -262,6 +262,7 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
+import com.tokopedia.seller.product.manage.view.activity.CustomerProductManageActivity;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -805,7 +806,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToManageProduct(Context context) {
-        Intent intent = new Intent(context, ProductManageActivity.class);
+        Intent intent;
+        if(GlobalConfig.isCustomerApp()) {
+            intent = new Intent(context, CustomerProductManageActivity.class);
+        } else {
+            intent = new Intent(context, ProductManageActivity.class);
+        }
         context.startActivity(intent);
     }
 

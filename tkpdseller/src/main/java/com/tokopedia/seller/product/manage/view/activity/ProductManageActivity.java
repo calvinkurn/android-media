@@ -21,7 +21,6 @@ import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFrag
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-@DeepLink(ApplinkConst.PRODUCT_MANAGE)
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();
