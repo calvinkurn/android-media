@@ -256,11 +256,18 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             );
             viewListener.getContext().startActivity(intent);
 
-            doEnhancedTracking(element);
+            doClickPlayTracking(element);
         };
     }
 
-    private void doEnhancedTracking(KolPostYoutubeViewModel element) {
+    private void doClickPlayTracking(KolPostYoutubeViewModel element) {
+        analyticTracker.sendEventTracking(
+                KolEventTracking.Event.EVENT_CLICK_FEED,
+                KolEventTracking.Category.CONTENT_FEED,
+                KolEventTracking.Action.CLICK_YOUTUBE_VIDEO,
+                String.valueOf(element.getKolId())
+        );
+
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
 
         promotionList.add(new KolEnhancedTracking.Promotion(
