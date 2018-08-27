@@ -23,27 +23,27 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     override fun getItem(position: Int): Fragment {
         if (TextUtils.isEmpty(shopId)) {
             return when (position) {
-                0 -> ShopProductListLimitedFragment.createInstance(shopAttribution)
-                1 -> ShopInfoFragment.createInstance()
+                ShopPageActivity.TAB_POSITION_HOME -> ShopProductListLimitedFragment.createInstance(shopAttribution)
+                ShopPageActivity.TAB_POSITION_INFO -> ShopInfoFragment.createInstance()
                 else -> Fragment()
             }
         }else{
             return when (position) {
-                0 -> {
+                ShopPageActivity.TAB_POSITION_HOME -> {
                     var f = ShopProductListLimitedFragment.createInstance(shopAttribution)
                     shopPageActivity.shopInfo?.run {
                         f.setShopInfo(this)
                     }
                     return f
                 }
-                1 -> {
+                ShopPageActivity.TAB_POSITION_FEED -> router.getKolPostShopFragment(shopId);
+                ShopPageActivity.TAB_POSITION_INFO -> {
                     var f = ShopInfoFragment.createInstance()
                     shopPageActivity.shopInfo?.run {
                         f.shopInfo = this
                     }
                     return f
                 }
-                2 -> router.getKolPostShopFragment(shopId);
                 else -> Fragment()
             }
         }

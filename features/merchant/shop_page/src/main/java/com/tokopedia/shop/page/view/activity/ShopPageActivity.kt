@@ -81,7 +81,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
         const val EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION"
         const val TAB_POSITION_HOME = 0
-        const val TAB_POSITION_INFO = 1
+        const val TAB_POSITION_FEED = 1
+        const val TAB_POSITION_INFO = 2
         const val SHOP_STATUS_FAVOURITE = "SHOP_STATUS_FAVOURITE"
         private const val REQUEST_CODER_USER_LOGIN = 100
         private const val REQUEST_CODE_FOLLOW = 101
@@ -136,7 +137,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
-                    getString(R.string.shop_info_title_tab_info))
+                getString(R.string.shop_info_title_tab_feed),
+                getString(R.string.shop_info_title_tab_info))
         intent.run {
             shopId = getStringExtra(SHOP_ID)
             shopDomain = getStringExtra(SHOP_DOMAIN)
@@ -285,7 +287,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     }
                     shopPageTracking.eventTypeKeywordSearchProduct(getString(R.string.shop_info_title_tab_product),
                             text, info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
-                    val etalaseId = (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
+                    val etalaseId = (shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME) as ShopProductListLimitedFragment)
                             .selectedEtalaseId
                     startActivity(ShopProductListActivity.createIntent(this@ShopPageActivity, info.shopId,
                             text, etalaseId, shopAttribution))
@@ -301,28 +303,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
-            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
             if (productListFragment != null) {
                 (productListFragment as ShopProductListLimitedFragment).displayProduct(this)
             }
 
-            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(1)
+            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_INFO)
             if (shopInfoFragment != null) {
                 (shopInfoFragment as ShopInfoFragment).updateShopInfo(this)
             }
 
         }
         swipeToRefresh.isRefreshing = false
-        addFeed()
-    }
-
-    private fun addFeed() {
-        if (!titles.contains(getString(R.string.shop_info_title_tab_post))) {
-            titles += getString(R.string.shop_info_title_tab_post)
-            viewPager.offscreenPageLimit = titles.size;
-            shopPageViewPagerAdapter.titles = this.titles
-            shopPageViewPagerAdapter.notifyDataSetChanged()
-        }
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
