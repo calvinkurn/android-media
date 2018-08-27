@@ -33,7 +33,7 @@ public class KolPostShopPresenter extends BaseDaggerPresenter<KolPostShopContrac
         getView().showLoading();
         getKolPostShopUseCase.execute(
                 GetKolPostShopUseCase.getParams(shopId, lastCursor),
-                new GetKolPostShopSubscriber()
+                new GetKolPostShopSubscriber(getView())
         );
     }
 

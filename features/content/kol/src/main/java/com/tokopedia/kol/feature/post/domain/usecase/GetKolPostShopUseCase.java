@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.post.data.pojo.shop.ContentListData;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.Map;
@@ -51,7 +52,7 @@ public class GetKolPostShopUseCase {
         //TODO milhamj change response class.
         GraphqlRequest feedDetailGraphqlRequest =
                 new GraphqlRequest(query,
-                        GetKolPostShopUseCase.class,
+                        ContentListData.class,
                         variables);
 
         graphqlUseCase.addRequest(feedDetailGraphqlRequest);
