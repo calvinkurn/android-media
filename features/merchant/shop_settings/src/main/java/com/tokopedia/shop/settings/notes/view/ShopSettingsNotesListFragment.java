@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
@@ -48,6 +49,7 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
 
     private static final int REQUEST_CODE_ADD_NOTE = 818;
     private static final int REQUEST_CODE_EDIT_NOTE = 819;
+    public static final int MIN_DATA_TO_REORDER = 2;
     @Inject
     ShopSettingNoteListPresenter shopSettingNoteListPresenter;
     private ArrayList<ShopNoteViewModel> shopNoteModels;
@@ -102,28 +104,26 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
         if (shopNoteModels == null) {
             menu.clear();
         } else if (shopNoteModels.size() == 0 ||
-                !hasNonTermsAtLeast2(shopNoteModels)) {
+                getNonTermsCount(shopNoteModels) < MIN_DATA_TO_REORDER) {
             inflater.inflate(R.menu.menu_shop_note_list_no_data, menu);
         } else {
             inflater.inflate(R.menu.menu_shop_note_list, menu);
         }
     }
 
-    private boolean hasNonTermsAtLeast2(@NonNull List<ShopNoteViewModel> shopNoteViewModels) {
+    private int getNonTermsCount(@NonNull List<ShopNoteViewModel> shopNoteViewModels) {
         int count = 0;
         for (ShopNoteViewModel shopNoteViewModel : shopNoteViewModels) {
             if (!shopNoteViewModel.getTerms()) {
                 count++;
-                if (count >= 2) {
-                    return true;
-                }
             }
         }
-        return false;
+        return count;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        KeyboardHandler.DropKeyboard(getContext(), getView());
         if (item.getItemId() == R.id.menu_add) {
             onAddNoteButtonClicked();
             return true;
@@ -228,10 +228,16 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     }
 
     private void goToAddNote(boolean isTerms) {
-        // can only add if the list has no terms.
-        if (shopNoteModels != null && shopNoteModels.size() > 0 && shopNoteModels.get(0).getTerms()) {
-            ToasterError.showClose(getActivity(), getString(R.string.can_only_have_one_term));
-            return;
+        if (isTerms) { // can only has 1 term
+            if (shopNoteModels != null && shopNoteModels.size() > 0 && shopNoteModels.get(0).getTerms()) {
+                ToasterError.showClose(getActivity(), getString(R.string.can_only_have_one_term));
+                return;
+            }
+        } else { // can only has 3 notes maks
+            if (shopNoteModels != null && getNonTermsCount(shopNoteModels) >= 3) {
+                ToasterError.showClose(getActivity(), getString(R.string.can_only_have_three_note));
+                return;
+            }
         }
         Intent intent = ShopSettingNotesAddEditActivity.createIntent(getContext(),
                 isTerms, false, new ShopNoteViewModel());

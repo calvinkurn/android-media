@@ -88,8 +88,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     override fun onErrorLoadAddresses(throwable: Throwable?) {
         hideLoading()
-        val message = ErrorHandler.getErrorMessage(context, throwable)
-        NetworkErrorHelper.showEmptyState(context, view, message) { presenter.getShopAddress() }
+        super.showGetListError(throwable);
     }
 
     override fun onSuccessDeleteAddress(string: String?) {

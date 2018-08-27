@@ -69,6 +69,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
         if (isEdit){
             existedEtalase.remove(etalase.name)
             edit_text_title.setText(etalase.name)
+            edit_text_title.setSelection(edit_text_title.text.length)
         }
 
         edit_text_title.addTextChangedListener(object : TextWatcher {

@@ -23,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.component.ToasterError;
@@ -130,6 +131,7 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        KeyboardHandler.DropKeyboard(getContext(), getView());
         if (item.getItemId() == R.id.menu_add) {
             onAddEtalaseButtonClicked();
             return true;

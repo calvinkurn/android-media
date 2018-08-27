@@ -74,6 +74,8 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
         if (isEdit){
             edit_text_title.setText(shopNote.title)
             edit_text_desc.setText(shopNote.content)
+            edit_text_title.setSelection(edit_text_title.text.length)
+            edit_text_desc.setSelection(edit_text_desc.text.length)
         }
     }
 
