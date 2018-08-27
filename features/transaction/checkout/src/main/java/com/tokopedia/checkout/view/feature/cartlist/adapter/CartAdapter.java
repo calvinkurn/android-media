@@ -138,19 +138,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return cartShopHolderDataFinalList;
     }
 
-    public List<CartItemData> getCartItemDataList() {
-        List<CartItemData> cartItemDataList = new ArrayList<>();
-        for (Object object : cartDataList) {
-            if (object instanceof CartItemHolderData) {
-                CartItemHolderData cartItemHolderData = (CartItemHolderData) object;
-                cartItemDataList.add(cartItemHolderData.getCartItemData());
-            }
-        }
-
-        return cartItemDataList;
-    }
-
-    public List<CartItemData> getSelectedData() {
+    public List<CartItemData> getSelectedCartItemData() {
         List<CartItemData> cartItemDataList = new ArrayList<>();
         if (cartDataList != null) {
             for (Object data : cartDataList) {
@@ -223,8 +211,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
                     .getCartItemDataList().get(position).getCartItemData().getUpdatedData().increaseQuantity();
         }
-        // Todo : validate data
-//        checkForShipmentForm();
+        checkForShipmentForm();
     }
 
     public void decreaseQuantity(int position, int parentPosition) {
@@ -232,7 +219,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
                     .getCartItemDataList().get(position).getCartItemData().getUpdatedData().decreaseQuantity();
         }
-//        checkForShipmentForm();
+        checkForShipmentForm();
     }
 
     public void resetQuantity(int position, int parentPosition) {
@@ -240,7 +227,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             ((CartShopHolderData) cartDataList.get(parentPosition)).getShopGroupData()
                     .getCartItemDataList().get(position).getCartItemData().getUpdatedData().resetQuantity();
         }
-//        checkForShipmentForm();
+        checkForShipmentForm();
     }
 
     public void notifyItems(int position) {
@@ -321,10 +308,26 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void checkForShipmentForm() {
         boolean canProcess = true;
         for (Object object : cartDataList) {
-            if (object instanceof CartItemHolderData) {
-                if (((CartItemHolderData) object).getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY
-                        || ((CartItemHolderData) object).getCartItemData().isError()) {
-                    canProcess = false;
+            if (object instanceof CartShopHolderData) {
+                CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
+                if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
+                    if (cartShopHolderData.getShopGroupData().isError()) {
+                        canProcess = false;
+                        break;
+                    } else if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (cartItemHolderData.isSelected()) {
+                                if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
+                                        cartItemHolderData.getCartItemData().isError()) {
+                                    canProcess = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!canProcess) {
+                            break;
+                        }
+                    }
                 }
             }
         }
