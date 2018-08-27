@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.post.domain.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -32,7 +33,8 @@ public class GetKolPostShopUseCase {
     private final GraphqlUseCase graphqlUseCase;
 
     @Inject
-    public GetKolPostShopUseCase(Context context, GraphqlUseCase graphqlUseCase) {
+    GetKolPostShopUseCase(@ApplicationContext Context context,
+                          GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
     }

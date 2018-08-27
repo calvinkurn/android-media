@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import java.util.Map;
 
@@ -17,6 +16,8 @@ public interface ShopModuleRouter {
     Fragment getShopReputationFragmentShop(String shopId, String shopDomain);
 
     Fragment getShopTalkFragment();
+
+    Fragment getKolPostShopFragment(String shopId);
 
     void goToEditShop(Context context);
 

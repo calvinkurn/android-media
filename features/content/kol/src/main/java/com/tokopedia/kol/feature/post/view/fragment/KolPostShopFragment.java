@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
+import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 
 import javax.inject.Inject;
@@ -43,6 +46,15 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     public void onDestroy() {
         presenter.detachView();
         super.onDestroy();
+    }
+
+    @Override
+    protected void initInjector() {
+        DaggerKolProfileComponent.builder()
+                .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
+                .kolProfileModule(new KolProfileModule(this))
+                .build()
+                .inject(this);
     }
 
     private void initVar() {

@@ -9,41 +9,41 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.text.TextUtils
 import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkRouter
+import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
+import com.tokopedia.shop.ShopModuleRouter
+import com.tokopedia.shop.analytic.ShopPageTracking
+import com.tokopedia.shop.common.constant.ShopUrl
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
+import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
 import com.tokopedia.shop.page.di.component.DaggerShopPageComponent
 import com.tokopedia.shop.page.di.module.ShopPageModule
 import com.tokopedia.shop.page.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.page.view.holder.ShopPageHeaderViewHolder
 import com.tokopedia.shop.page.view.listener.ShopPageView
 import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
+import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
 import javax.inject.Inject
-import android.view.MenuItem
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.ApplinkRouter
-import com.tokopedia.design.text.SearchInputView
-import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTracking
-import com.tokopedia.shop.common.constant.ShopUrl
-import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
-import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
-import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageView, ShopPageHeaderViewHolder.ShopPageHeaderListener {
@@ -61,10 +61,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
 
-    private val titles by lazy {
-        arrayOf(getString(R.string.shop_info_title_tab_product),
-                getString(R.string.shop_info_title_tab_info))
-    }
+    private lateinit var titles: Array<String>;
 
     private var tabPosition = 0
 
@@ -138,6 +135,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
+        titles = arrayOf(getString(R.string.shop_info_title_tab_product),
+                    getString(R.string.shop_info_title_tab_info))
         intent.run {
             shopId = getStringExtra(SHOP_ID)
             shopDomain = getStringExtra(SHOP_DOMAIN)
@@ -222,7 +221,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
-                shopId, shopAttribution)
+                shopId, shopAttribution, (application as ShopModuleRouter))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -274,6 +273,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopInfo?.run {
             this@ShopPageActivity.shopInfo = this
             shopId = info.shopId
+            shopPageViewPagerAdapter.shopId = shopId
             shopDomain = info.shopDomain
             shopPageViewHolder.bind(this, presenter.isMyShop(shopId!!))
             searchInputView.setSearchHint(getString(R.string.shop_product_search_hint_2,
@@ -306,8 +306,18 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
             (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragment)
                     .updateShopInfo(this)
+
         }
         swipeToRefresh.isRefreshing = false
+        addFeed()
+    }
+
+    private fun addFeed() {
+        if (!titles.contains(getString(R.string.shop_info_title_tab_post))) {
+            this.titles += getString(R.string.shop_info_title_tab_post)
+            shopPageViewPagerAdapter.titles = this.titles
+            shopPageViewPagerAdapter.notifyDataSetChanged()
+        }
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {

@@ -18,7 +18,7 @@ public class KolPostShopPresenter extends BaseDaggerPresenter<KolPostShopContrac
     private String lastCursor;
 
     @Inject
-    KolPostShopPresenter(GetKolPostShopUseCase getKolPostShopUseCase) {
+    public KolPostShopPresenter(GetKolPostShopUseCase getKolPostShopUseCase) {
         this.getKolPostShopUseCase = getKolPostShopUseCase;
     }
 
