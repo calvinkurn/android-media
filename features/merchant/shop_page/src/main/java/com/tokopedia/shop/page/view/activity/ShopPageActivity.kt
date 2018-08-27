@@ -221,7 +221,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     fun initAdapter() {
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager, titles,
-                shopId, shopAttribution, (application as ShopModuleRouter))
+                shopId, shopAttribution, (application as ShopModuleRouter), this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -318,7 +318,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     private fun addFeed() {
         if (!titles.contains(getString(R.string.shop_info_title_tab_post))) {
-            this.titles += getString(R.string.shop_info_title_tab_post)
+            titles += getString(R.string.shop_info_title_tab_post)
+            viewPager.offscreenPageLimit = titles.size;
             shopPageViewPagerAdapter.titles = this.titles
             shopPageViewPagerAdapter.notifyDataSetChanged()
         }

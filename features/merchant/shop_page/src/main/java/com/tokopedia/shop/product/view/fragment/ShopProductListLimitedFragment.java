@@ -205,6 +205,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         loadInitialData();
     }
 
+    public void setShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
+    }
+
     // load data promo/featured/etalase
     protected void loadInitialData() {
         shopProductAdapter.clearAllNonDataElement();

@@ -8,13 +8,15 @@ import android.text.TextUtils
 import android.view.ViewGroup
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
+import com.tokopedia.shop.page.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 
 class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                                var titles: Array<String>,
                                var shopId: String?,
                                val shopAttribution: String?,
-                               val router: ShopModuleRouter) : FragmentStatePagerAdapter(fragmentManager) {
+                               val router: ShopModuleRouter,
+                               val shopPageActivity: ShopPageActivity) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
@@ -27,8 +29,20 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
             }
         }else{
             return when (position) {
-                0 -> ShopProductListLimitedFragment.createInstance(shopAttribution)
-                1 -> ShopInfoFragment.createInstance()
+                0 -> {
+                    var f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                    shopPageActivity.shopInfo?.run {
+                        f.setShopInfo(this)
+                    }
+                    return f
+                }
+                1 -> {
+                    var f = ShopInfoFragment.createInstance()
+                    shopPageActivity.shopInfo?.run {
+                        f.shopInfo = this
+                    }
+                    return f
+                }
                 2 -> router.getKolPostShopFragment(shopId);
                 else -> Fragment()
             }
