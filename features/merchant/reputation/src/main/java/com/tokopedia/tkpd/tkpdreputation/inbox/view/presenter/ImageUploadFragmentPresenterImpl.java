@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.UIThread;
@@ -229,16 +227,6 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
         viewListener.getActivity().finish();
 
 
-    }
-
-    @Override
-    public void openImageGallery() {
-        imageUploadHandler.actionImagePicker();
-    }
-
-    @Override
-    public void openCamera() {
-        cameraFileLoc = imageUploadHandler.actionCamera2();
     }
 
     @Override

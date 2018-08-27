@@ -42,6 +42,7 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagonContract.View, TrainSeatAdapterTypeFactory.ActionListener, TrainSeatPopupAdapter.ActionListener, TrainSeatListener {
     private static final String EXTRA_WAGON = "EXTRA_WAGON";
+    private static final Float DEFAULT_DIM_OPACITY = 0.7f;
     private TrainWagonViewModel trainWagonViewModel;
     private List<TrainSeatViewModel> selectedSeatsInWagon;
     private RecyclerView seatsRecyclerView;
@@ -83,6 +84,8 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
         List<TrainSeatPassengerViewModel> getOriginPassengers();
 
         void onPassengerSeatChange(TrainSeatPassengerViewModel passenger, TrainSeatViewModel seat, String wagonCode);
+
+        int getToolbarHeight();
     }
 
     @Override
@@ -230,7 +233,6 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
             bindView(popupView);
             setupRecyclerView(viewModel);
             preparePopUp(viewModel, height, left, top, popupHeight, popupView);
-            dimScreenBehind(popupWindow, 0.7f);
 
             popupView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -243,27 +245,39 @@ public class TrainWagonFragment extends BaseDaggerFragment implements TrainWagon
 
         private void preparePopUp(TrainSeatViewModel viewModel, int height, int left, int top, int popupHeight, View popupView) {
             int newTop = 0;
-            if (top > popupHeight) {
-                // top view
-                newTop = top - popupHeight + height;
-                topSeatLayout.setVisibility(View.GONE);
-                topSeatArrow.setVisibility(View.GONE);
-                bottomSeatLayout.setX(left);
-                bottomSeatLayout.setLeft(left);
-                AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
-                bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
-            } else {
-                // bottom view
-                newTop = top;
-                topSeatLayout.setX(left);
-                topSeatArrow.setLeft(left);
-                bottomSeatLayout.setVisibility(View.GONE);
-                bottomSeatArrow.setVisibility(View.GONE);
-                AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
-                topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+            if (top > interaction.getToolbarHeight()) {
+                if (top > popupHeight) {
+                    // top view
+                    newTop = top - popupHeight + height;
+                    renderTopPopUpView(viewModel, left, popupView);
+                } else {
+                    // bottom view
+                    newTop = top;
+                    renderBottomPopUpView(viewModel, left, popupView);
+                }
+
+                popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, newTop);
+                dimScreenBehind(popupWindow, DEFAULT_DIM_OPACITY);
             }
 
-            popupWindow.showAtLocation(getView(), Gravity.TOP | Gravity.LEFT, 0, newTop);
+        }
+
+        private void renderBottomPopUpView(TrainSeatViewModel viewModel, int left, View popupView) {
+            topSeatLayout.setX(left);
+            topSeatLayout.setLeft(left);
+            bottomSeatLayout.setVisibility(View.GONE);
+            bottomSeatArrow.setVisibility(View.GONE);
+            AppCompatTextView topSeatTextView = popupView.findViewById(R.id.tv_top_seat_label);
+            topSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
+        }
+
+        private void renderTopPopUpView(TrainSeatViewModel viewModel, int left, View popupView) {
+            topSeatLayout.setVisibility(View.GONE);
+            topSeatArrow.setVisibility(View.GONE);
+            bottomSeatLayout.setX(left);
+            bottomSeatLayout.setLeft(left);
+            AppCompatTextView bottomSeatTextView = popupView.findViewById(R.id.tv_bottom_seat_label);
+            bottomSeatTextView.setText(String.format("%d%s", viewModel.getRow(), viewModel.getColumn()));
         }
 
         private void setupRecyclerView(TrainSeatViewModel viewModel) {
