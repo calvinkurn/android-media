@@ -47,11 +47,8 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -70,10 +67,10 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -1446,16 +1443,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank", true))
-            return SettingBankActivity.Companion.createIntent(context);
-        else {
-            return ManagePeopleBankActivity.createInstance(context);
-        }
+        return SettingBankActivity.Companion.createIntent(context);
     }
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-            return ChangePasswordActivity.Companion.createIntent(context);
+        return ChangePasswordActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -1475,7 +1468,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
