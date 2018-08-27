@@ -5,10 +5,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -69,5 +72,16 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     @Override
     protected void fetchData() {
         presenter.getKolPostShop(shopId);
+    }
+
+    @Override
+    public void onSuccessGetKolPostShop(List<Visitable> visitables, String lastCursor) {
+        presenter.updateCursor(lastCursor);
+        adapter.addList(visitables);
+    }
+
+    @Override
+    public void onErrorGetKolPostShop(String message) {
+        adapter.showErrorNetwork(message, this::fetchData);
     }
 }

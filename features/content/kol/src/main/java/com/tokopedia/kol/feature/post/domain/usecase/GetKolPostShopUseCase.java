@@ -49,7 +49,6 @@ public class GetKolPostShopUseCase {
 
         Map<String, Object> variables = requestParams.getParameters();
 
-        //TODO milhamj change response class.
         GraphqlRequest feedDetailGraphqlRequest =
                 new GraphqlRequest(query,
                         ContentListData.class,
