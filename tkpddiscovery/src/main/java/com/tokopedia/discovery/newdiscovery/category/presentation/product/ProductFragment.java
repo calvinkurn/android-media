@@ -44,6 +44,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -73,7 +74,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  * @author by alifa on 10/26/17.
  */
 
-public class ProductFragment extends SearchSectionFragment
+public class ProductFragment extends BrowseSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
         ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
         DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {

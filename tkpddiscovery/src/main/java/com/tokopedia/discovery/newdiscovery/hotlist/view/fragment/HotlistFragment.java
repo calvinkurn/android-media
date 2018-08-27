@@ -55,6 +55,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderView
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -86,7 +87,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLI
  * Created by hangnadi on 10/6/17.
  */
 
-public class HotlistFragment extends SearchSectionFragment
+public class HotlistFragment extends BrowseSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
