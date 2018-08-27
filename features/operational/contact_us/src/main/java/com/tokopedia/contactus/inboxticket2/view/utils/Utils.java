@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.text.style.BackgroundColorSpan;
 import android.util.TypedValue;
 
@@ -88,8 +90,28 @@ public class Utils {
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         try {
             Date date = inputFormat.parse(isoTime);
-            String dateMonth = dateFormat.format(date);
-            return dateMonth;
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return e.getLocalizedMessage();
+        }
+
+    }
+
+    public String getDateTimeYear(String isoTime) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", getLocale());
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm 'WIB'", getLocale());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        try {
+            Date date = inputFormat.parse(isoTime);
+            if (DateUtils.isToday(date.getTime()))
+                return timeFormat.format(date);
+            else if (isYesterday(date.getTime())) {
+                return "Kemarin";
+            } else {
+                return dateFormat.format(date);
+            }
         } catch (ParseException e) {
             e.printStackTrace();
             return e.getLocalizedMessage();
@@ -109,6 +131,20 @@ public class Utils {
         if (mLocale == null)
             mLocale = new Locale("in", "ID", "");
         return mLocale;
+    }
+
+    private boolean isYesterday(long when) {
+        Time time = new Time();
+        time.set(when);
+
+        int thenYear = time.year;
+        int thenMonth = time.month;
+        int thenMonthDay = time.monthDay;
+
+        time.set(System.currentTimeMillis());
+        return (thenYear == time.year)
+                && (thenMonth == time.month)
+                && (thenMonthDay == time.monthDay - 1);
     }
 }
 

@@ -155,10 +155,10 @@ dinilaiwbckwbvkbwvwkwbkjewvrrevervrevrvvvrvrrevrvrvevebvwv" />
         android:id="@+id/rv_message_list"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/text_toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHeight_default="spread"
         app:layout_constraintTop_toBottomOf="@+id/top_divider"
-        tools:listitem="@layout/layout_collapsed_msg" />
+        tools:listitem="@layout/layout_item_ticket" />
 
     <include
         android:id="@+id/text_toolbar"

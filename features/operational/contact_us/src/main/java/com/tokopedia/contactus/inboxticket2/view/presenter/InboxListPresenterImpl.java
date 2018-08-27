@@ -124,12 +124,6 @@ public class InboxListPresenterImpl
         final int READ = 4;
         final int CLOSED = 5;
         String selectedFilter = "";
-        /*        <item>Semua</item>
-        <item>Belum dibaca</item>
-        <item>Belum dinilai</item>
-        <item>Dalam proses</item>
-        <item>Sudah dibaca</item>
-        <item>Ditutup</item>*/
         fromFilter = true;
         switch (position) {
             case ALL:

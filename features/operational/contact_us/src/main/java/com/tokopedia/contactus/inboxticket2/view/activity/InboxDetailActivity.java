@@ -153,6 +153,8 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
                     getResources().getColor(R.color.yellow_110),
                     getResources().getColor(R.color.black_38), 11));
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
 
         } else if (ticketDetail.getStatus().equalsIgnoreCase("closed")
                 && !ticketDetail.isShowRating()) {
@@ -168,7 +170,8 @@ public class InboxDetailActivity extends InboxBaseActivity
             viewHelpRate.setVisibility(View.VISIBLE);
             textToolbar.setVisibility(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
-            rvMessageList.setPadding(0, 0, 0, viewHelpRate.getHeight());
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.help_rate_height));
         }
 
         if (!TextUtils.isEmpty(ticketDetail.getNumber())) {
@@ -353,8 +356,11 @@ public class InboxDetailActivity extends InboxBaseActivity
     void onClickUpload() {
         if (rvSelectedImages.getVisibility() != View.VISIBLE)
             showImagePickerDialog();
-        else
+        else {
             rvSelectedImages.setVisibility(View.GONE);
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
+        }
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickAttachImage,
@@ -428,6 +434,8 @@ public class InboxDetailActivity extends InboxBaseActivity
     public void addimage(ImageUpload image) {
         if (rvSelectedImages.getVisibility() != View.VISIBLE) {
             rvSelectedImages.setVisibility(View.VISIBLE);
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_expanded));
         }
         imageUploadAdapter.addImage(image);
     }
@@ -446,14 +454,16 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void toggleTextToolbar(int visibility) {
-        View view = textToolbar;
         if (visibility == View.VISIBLE) {
             viewHelpRate.setVisibility(View.GONE);
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
         } else {
             viewHelpRate.setVisibility(View.VISIBLE);
-            view = viewHelpRate;
+            rvMessageList.setPadding(0, 0, 0,
+                    getResources().getDimensionPixelSize(R.dimen.help_rate_height));
         }
-        rvMessageList.setPadding(0, 0, 0, view.getHeight());
+
         textToolbar.setVisibility(visibility);
     }
 
@@ -464,7 +474,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         edMessage.clearComposingText();
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
-        rvMessageList.setPadding(0, 0, 0, textToolbar.getHeight());
+        rvMessageList.setPadding(0, 0, 0,
+                getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
         isCustomReason = true;
     }
 
@@ -473,7 +484,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.VISIBLE);
-        rvMessageList.setPadding(0, 0, 0, viewLinkBottom.getHeight());
+        rvMessageList.setPadding(0, 0, 0,
+                getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
     }
 
     @Override

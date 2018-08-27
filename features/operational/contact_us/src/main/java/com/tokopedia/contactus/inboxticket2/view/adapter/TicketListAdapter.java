@@ -13,6 +13,7 @@ import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
+import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private TicketsItem footerItem = new TicketsItem();
     private Context mContext;
     private InboxListContract.InboxListPresenter mPresenter;
+    private Utils utils;
     private boolean isFooterAdded;
     private static final int ITEM = 1;
     private static final int FOOTER = 2;
@@ -42,6 +44,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         itemList = data;
         mPresenter = presenter;
         selectedItems = new ArrayList<>(itemList.size());
+        utils = new Utils(context);
     }
 
     @Override
@@ -180,7 +183,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             }
             tvTicketTitle.setText(item.getSubject());
             tvTicketDesc.setText(item.getLastMessagePlaintext());
-            tvTicketDate.setText(item.getCreateTimeFmt2());
+            tvTicketDate.setText(utils.getDateTimeYear(item.getLastUpdate()));
             if (item.getStatusId() == 1) {
                 tvTicketStatus.setBackgroundResource(R.drawable.rounded_rect_yellow);
                 tvTicketStatus.setText(R.string.on_going);
