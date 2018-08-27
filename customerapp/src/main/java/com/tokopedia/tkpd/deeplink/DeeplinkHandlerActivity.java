@@ -61,6 +61,8 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
@@ -126,7 +128,8 @@ import io.branch.referral.BranchError;
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
         InstantLoanAppLinkModule.class,
-        ChangePasswordDeeplinkModule.class
+        ChangePasswordDeeplinkModule.class,
+        SettingBankApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -166,7 +169,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TopChatAppLinkModuleLoader(),
                 new TokopointApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
-                new ChangePasswordDeeplinkModuleLoader()
+                new ChangePasswordDeeplinkModuleLoader(),
+                new SettingBankApplinkModuleLoader()
         );
     }
 
