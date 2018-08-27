@@ -301,11 +301,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
-            (shopPageViewPagerAdapter.getRegisteredFragment(0) as ShopProductListLimitedFragment)
-                    .displayProduct(this)
+            val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(0)
+            if (productListFragment != null) {
+                (productListFragment as ShopProductListLimitedFragment).displayProduct(this)
+            }
 
-            (shopPageViewPagerAdapter.getRegisteredFragment(1) as ShopInfoFragment)
-                    .updateShopInfo(this)
+            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(1)
+            if (shopInfoFragment != null) {
+                (shopInfoFragment as ShopInfoFragment).updateShopInfo(this)
+            }
 
         }
         swipeToRefresh.isRefreshing = false
