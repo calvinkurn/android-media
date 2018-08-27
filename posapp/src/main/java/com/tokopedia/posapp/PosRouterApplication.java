@@ -543,6 +543,11 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
+    public Intent getWithdrawIntent(Context context) {
+        return null;
+    }
+
+    @Override
     public String getStringRemoteConfig(String key) {
         return null;
     }
@@ -752,6 +757,11 @@ public class PosRouterApplication extends MainApplication implements
     @Override
     public Intent getSettingBankIntent(Context context) {
 //        There is no setting bank in pos
+        return null;
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
         return null;
     }
 }

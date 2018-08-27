@@ -15,6 +15,7 @@ import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
 import com.tokopedia.tokocash.accountsetting.domain.GetOAuthInfoTokoCashUseCase;
 import com.tokopedia.tokocash.accountsetting.domain.PostUnlinkTokoCashUseCase;
 import com.tokopedia.tokocash.activation.data.ActivateRepository;
+import com.tokopedia.tokocash.activation.domain.GetRefreshWalletTokenUseCase;
 import com.tokopedia.tokocash.activation.domain.LinkedTokoCashUseCase;
 import com.tokopedia.tokocash.activation.domain.RequestOtpTokoCashUseCase;
 import com.tokopedia.tokocash.autosweepmf.data.source.cloud.api.AutoSweepApi;
@@ -239,5 +240,11 @@ public class TokoCashModule {
     @Provides
     InputFilter[] provideInputFilterForAutoSweepLimit(SetAutoSweepLimitPresenter presenter) {
         return new InputFilter[]{new InputFilterMinMax(0, (int) presenter.getAutoSweepMaxLimit())};
+    }
+
+    @TokoCashScope
+    @Provides
+    GetRefreshWalletTokenUseCase provideGetRefreshWalletTokenUseCase(ActivateRepository repository) {
+        return new GetRefreshWalletTokenUseCase(repository);
     }
 }
