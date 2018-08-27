@@ -126,8 +126,6 @@
     <string name="add_product_label_alert_dialog_video">Fitur upload video hanya tersedia untuk Gold Merchant. Berlangganan Gold Merchant sekarang?</string>
     <string name="add_product_label_alert_save_as_draft_dollar_and_video">%s Jika ya, produk akan disimpan sebagai Draft</string>
 
-    <string name="product_manage_you_have_x_unfinished_product">Anda memiliki %1$d draft produk yang belum terselesaikan.<![CDATA[<br /><font color=\"#42b549\">Cek Sekarang</font>]]></string>
-
     <string name="app_widget_title_new_order">Order</string>
     <string name="app_widget_new_order_wording_empty">Belum ada data</string>
     <string name="app_widget_label_today">Hari ini</string>
@@ -233,8 +231,6 @@
     <string name="product_grosir_not_available_if_has_variant">Harga grosir tidak berlaku jika memiliki varian produk.</string>
     <string name="change_all_variant_price">Ubah Semua Harga Varian</string>
     <string name="product_add_sku_title">SKU (Stock Keeping Unit)</string>
-    <string name="product_manage_cashback_limited_title">Pemakaian Cashback Terbatas</string>
-    <string name="product_manage_cashback_limited_desc">Anda telah memakai cashback sebanyak 5 kali. Dapatkan cashback tanpa minimum pemakaian dengan berlangganan Gold Merchant.</string>
     <string name="choose_shop_picture">Pilih Gambar Toko</string>
 
     <string name="sticker_shop_link">https://tokopedia.com/%s</string>

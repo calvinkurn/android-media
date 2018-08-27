@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.data.source;
+package com.tokopedia.product.manage.list.data.source;
 
 import android.content.Context;
 
@@ -6,10 +6,10 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.product.manage.item.common.data.mapper.SimpleDataResponseMapper;
-import com.tokopedia.seller.product.manage.data.mapper.DeleteProductCloudMapper;
-import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
-import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
-import com.tokopedia.seller.product.manage.data.mapper.EditPriceCloudMapper;
+import com.tokopedia.product.manage.list.data.mapper.DeleteProductCloudMapper;
+import com.tokopedia.product.manage.list.data.model.ResponseDeleteProductData;
+import com.tokopedia.product.manage.list.data.model.ResponseEditPriceData;
+import com.tokopedia.product.manage.list.data.mapper.EditPriceCloudMapper;
 
 import javax.inject.Inject;
 

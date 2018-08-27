@@ -1,13 +1,13 @@
-package com.tokopedia.seller.product.manage.view.presenter;
+package com.tokopedia.product.manage.list.view.presenter;
 
 import android.content.Context;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.manage.view.listener.ProductManageSortView;
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
+import com.tokopedia.product.manage.list.R;
+import com.tokopedia.product.manage.list.constant.SortProductOption;
+import com.tokopedia.product.manage.list.view.listener.ProductManageSortView;
+import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
 
 import java.util.ArrayList;
 import java.util.List;

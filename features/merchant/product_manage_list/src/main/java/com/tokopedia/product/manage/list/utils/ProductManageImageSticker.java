@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.utils;
+package com.tokopedia.product.manage.list.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

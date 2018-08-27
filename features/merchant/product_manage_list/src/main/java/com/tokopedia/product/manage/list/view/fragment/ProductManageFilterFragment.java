@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.fragment;
+package com.tokopedia.product.manage.list.view.fragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,7 +18,7 @@ import android.widget.Button;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
@@ -28,12 +28,12 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
-import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
-import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
+import com.tokopedia.product.manage.list.constant.CatalogProductOption;
+import com.tokopedia.product.manage.list.constant.ConditionProductOption;
+import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
+import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.product.manage.list.view.model.ProductManageCategoryViewModel;
+import com.tokopedia.product.manage.list.view.model.ProductManageFilterModel;
 
 import java.util.ArrayList;
 

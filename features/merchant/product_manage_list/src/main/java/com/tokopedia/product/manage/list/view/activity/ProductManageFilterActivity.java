@@ -1,18 +1,17 @@
-package com.tokopedia.seller.product.manage.view.activity;
+package com.tokopedia.product.manage.list.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageFilterFragment;
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
+import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageFilterFragment;
+import com.tokopedia.product.manage.list.view.model.ProductManageFilterModel;
 
 /**
  * Created by zulfikarrahman on 9/26/17.

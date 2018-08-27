@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.fragment;
+package com.tokopedia.product.manage.list.view.fragment;
 
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -14,7 +14,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.fragment;
+package com.tokopedia.product.manage.list.view.fragment;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -50,7 +50,7 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
@@ -65,24 +65,24 @@ import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 //import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
-import com.tokopedia.seller.product.manage.constant.CashbackOption;
-import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
-import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
-import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.manage.constant.StatusProductOption;
-import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
-import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.utils.ProductManageImageSticker;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageFilterActivity;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageSortActivity;
-import com.tokopedia.seller.product.manage.view.adapter.ProductManageListAdapter;
-import com.tokopedia.seller.product.manage.view.listener.ProductManageView;
-import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
-import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
-import com.tokopedia.seller.product.manage.view.presenter.ProductManagePresenter;
+import com.tokopedia.product.manage.list.constant.CashbackOption;
+import com.tokopedia.product.manage.list.constant.CatalogProductOption;
+import com.tokopedia.product.manage.list.constant.ConditionProductOption;
+import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
+import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.product.manage.list.constant.SortProductOption;
+import com.tokopedia.product.manage.list.constant.StatusProductOption;
+import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
+import com.tokopedia.product.manage.list.di.ProductManageModule;
+import com.tokopedia.product.manage.list.utils.ProductManageImageSticker;
+import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivity;
+import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
+import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
+import com.tokopedia.product.manage.list.view.listener.ProductManageView;
+import com.tokopedia.product.manage.list.view.model.ProductManageFilterModel;
+import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
+import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
+import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.io.File;
@@ -187,7 +187,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty_pml);
         emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
         emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
         return emptyDataBinder;
@@ -195,10 +195,10 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product_pml);
         emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
-        emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_add_product_to_sell));
-        emptyDataBinder.setEmptyButtonItemText(getString(R.string.product_manage_label_add_product));
+        emptyDataBinder.setEmptyContentText(getString(R.string.pml_product_manage_label_add_product_to_sell));
+        emptyDataBinder.setEmptyButtonItemText(getString(R.string.pml_product_manage_label_add_product));
         emptyDataBinder.setCallback(new BaseEmptyDataBinder.Callback() {
             @Override
             public void onEmptyContentItemTextClicked() {
@@ -215,7 +215,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error_pml);
     }
 
     @Override
@@ -743,11 +743,11 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             @Override
             public void onResourceReady(Bitmap bitmap, GlideAnimation<? super Bitmap> glideAnimation) {
                 String price = (productManageViewModel.getProductCurrencyId() == CurrencyTypeDef.TYPE_USD) ? productManageViewModel.getProductPricePlain() : productManageViewModel.getProductPrice();
-                String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.sticker_cashback, productManageViewModel.getProductCashback()) : "";
+                String cashback = (productManageViewModel.getProductCashback() > 0) ? getString(R.string.pml_sticker_cashback, productManageViewModel.getProductCashback()) : "";
                 ProductManageImageSticker productManageImageSticker = new ProductManageImageSticker.Builder()
                         .setName(productManageViewModel.getProductName() )
                         .setPrice(productManageViewModel.getProductCurrencySymbol() + " " + price)
-                        .setShop_link(getString(R.string.sticker_shop_link, shopDomain))
+                        .setShop_link(getString(R.string.pml_sticker_shop_link, shopDomain))
                         .setCashback(cashback)
                         .build();
 
@@ -814,7 +814,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
         alertDialog.setTitle(R.string.product_manage_cashback_limited_title);
         alertDialog.setMessage(R.string.product_manage_cashback_limited_desc);
-        alertDialog.setPositiveButton(R.string.label_subscribe, new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(R.string.pml_label_subscribe, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (getActivity().getApplication() instanceof SellerModuleRouter) {

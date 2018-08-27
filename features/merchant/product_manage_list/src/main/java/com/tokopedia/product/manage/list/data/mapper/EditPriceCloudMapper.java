@@ -1,6 +1,6 @@
-package com.tokopedia.seller.product.manage.data.mapper;
+package com.tokopedia.product.manage.list.data.mapper;
 
-import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
+import com.tokopedia.product.manage.list.data.model.ResponseEditPriceData;
 
 import rx.functions.Func1;
 

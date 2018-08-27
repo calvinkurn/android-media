@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.manage.constant;
+package com.tokopedia.product.manage.list.constant;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef.NOTE_PRE_ORDER;
-import static com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef.PRE_ORDER;
+import static com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef.NOTE_PRE_ORDER;
+import static com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef.PRE_ORDER;
 
 /**
  * Created by zulfikarrahman on 9/22/17.

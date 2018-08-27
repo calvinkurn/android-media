@@ -11,8 +11,8 @@ import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProduct
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
-import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.di.ProductManageScope;
+import com.tokopedia.product.manage.list.di.ProductManageModule;
+import com.tokopedia.product.manage.list.di.ProductManageScope;
 
 import dagger.Module;
 import dagger.Provides;

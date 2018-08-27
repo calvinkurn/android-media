@@ -26,7 +26,7 @@ import com.tokopedia.seller.product.draft.view.fragment.ProductDraftListFragment
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 
 import java.util.ArrayList;
 import java.util.List;

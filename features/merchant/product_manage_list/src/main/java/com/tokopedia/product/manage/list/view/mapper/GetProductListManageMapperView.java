@@ -1,10 +1,8 @@
-package com.tokopedia.seller.product.manage.view.mapper;
+package com.tokopedia.product.manage.list.view.mapper;
 
-import com.tokopedia.seller.product.manage.view.model.ProductListManageModelView;
-import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
-import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
-import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel;
-import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView;
+import com.tokopedia.product.manage.list.data.model.ProductListSellerModel;
+import com.tokopedia.product.manage.list.view.model.ProductListManageModelView;
+import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

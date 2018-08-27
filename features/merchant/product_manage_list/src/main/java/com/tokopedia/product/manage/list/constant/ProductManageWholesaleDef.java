@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.manage.constant;
+package com.tokopedia.product.manage.list.constant;
 
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef.NOT_WHOLESALE;
-import static com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef.WHOLESALE;
+import static com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef.NOT_WHOLESALE;
+import static com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef.WHOLESALE;
 
 /**
  * Created by zulfikarrahman on 9/22/17.

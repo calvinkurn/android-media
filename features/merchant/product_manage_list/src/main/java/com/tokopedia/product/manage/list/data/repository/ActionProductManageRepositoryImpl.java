@@ -1,8 +1,8 @@
-package com.tokopedia.seller.product.manage.data.repository;
+package com.tokopedia.product.manage.list.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.seller.product.manage.data.source.ActionProductManageDataSource;
-import com.tokopedia.seller.product.manage.domain.ActionProductManageRepository;
+import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
+import com.tokopedia.product.manage.list.domain.ActionProductManageRepository;
 
 import rx.Observable;
 

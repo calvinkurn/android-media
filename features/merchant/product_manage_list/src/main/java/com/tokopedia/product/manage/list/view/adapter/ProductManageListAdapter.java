@@ -1,15 +1,15 @@
-package com.tokopedia.seller.product.manage.view.adapter;
+package com.tokopedia.product.manage.list.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseMultipleCheckListAdapter;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
-import com.tokopedia.seller.product.manage.constant.StatusProductOption;
-import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
+import com.tokopedia.product.manage.list.constant.StatusProductOption;
+import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 
 import java.util.ArrayList;
 import java.util.Iterator;

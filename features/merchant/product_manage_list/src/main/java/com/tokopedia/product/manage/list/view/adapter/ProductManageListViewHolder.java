@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.adapter;
+package com.tokopedia.product.manage.list.view.adapter;
 
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -8,15 +8,15 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseMultipleCheckViewHolder;
 import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 import com.tokopedia.product.manage.item.common.util.FreeReturnTypeDef;
-import com.tokopedia.seller.product.manage.constant.ProductManagePreOrderDef;
-import com.tokopedia.seller.product.manage.constant.ProductManageStockDef;
-import com.tokopedia.seller.product.manage.constant.ProductManageWholesaleDef;
-import com.tokopedia.seller.product.manage.constant.StatusProductOption;
-import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
+import com.tokopedia.product.manage.list.constant.ProductManagePreOrderDef;
+import com.tokopedia.product.manage.list.constant.ProductManageStockDef;
+import com.tokopedia.product.manage.list.constant.ProductManageWholesaleDef;
+import com.tokopedia.product.manage.list.constant.StatusProductOption;
+import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
@@ -108,7 +108,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         boolean statusStockEmpty = productManageViewModel.getProductStatus().equals(StatusProductOption.EMPTY);
         titleTextView.setText(MethodChecker.fromHtml(productManageViewModel.getProductName()));
         priceTextView.setText(priceTextView.getContext().getString(
-                R.string.price_format_text, productManageViewModel.getProductCurrencySymbol(),
+                R.string.pml_price_format_text, productManageViewModel.getProductCurrencySymbol(),
                 CurrencyUtils.getPriceFormatted(productManageViewModel.getProductCurrencyId(), productManageViewModel.getProductPricePlain())));
         if (productManageViewModel.getProductCashback() > 0) {
             cashbackTextView.setText(cashbackTextView.getContext().getString(
@@ -133,7 +133,7 @@ public class ProductManageListViewHolder extends BaseMultipleCheckViewHolder<Pro
         if (!statusStockEmpty && productManageViewModel.getProductUsingStock() == ProductManageStockDef.USING_STOCK) {
             stockTextView.setVisibility(View.VISIBLE);
             if (productManageViewModel.isProductVariant()) {
-                stockTextView.setText(itemView.getContext().getString(R.string.product_variant_stock_limited));
+                stockTextView.setText(itemView.getContext().getString(R.string.pml_product_variant_stock_limited));
             } else {
                 stockTextView.setText(itemView.getContext().getString(R.string.product_manage_label_stock_counter, productManageViewModel.getProductStock()));
             }

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.domain.model;
+package com.tokopedia.product.manage.list.domain.model;
 
 import java.util.ArrayList;
 import java.util.List;

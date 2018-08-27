@@ -257,6 +257,7 @@ ext {
             shopPage              : "com.tokopedia.shop:shop-page:${tkpdShopVersion}",
             shopOpen              : "com.tokopedia.shop:shop-open:${tkpdShopVersion}",
             productManageItem           : "com.tokopedia.product:product-manage-item:${tkpdProductVersion}",
+            productManageList           : "com.tokopedia.product:product-manage-list:${tkpdProductVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",

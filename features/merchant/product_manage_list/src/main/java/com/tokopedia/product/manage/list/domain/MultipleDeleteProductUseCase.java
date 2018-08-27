@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.manage.domain;
+package com.tokopedia.product.manage.list.domain;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.domain.model.MultipleDeleteProductModel;
+import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel;
 
 import java.util.ArrayList;
 import java.util.List;

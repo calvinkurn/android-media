@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.manage.di;
+package com.tokopedia.product.manage.list.di;
 
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSortFragment;
+import com.tokopedia.product.manage.list.constant.ProductManageListRouter;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageFragment;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageSortFragment;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 
 import dagger.Component;
@@ -21,5 +21,5 @@ public interface ProductManageComponent {
 
     GetShopInfoUseCase getShopInfoUseCase();
 
-    SellerModuleRouter getSellerModuleRouter();
+    ProductManageListRouter getProductManageListRouter();
 }

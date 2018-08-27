@@ -1,21 +1,21 @@
-package com.tokopedia.seller.product.manage.view.fragment;
+package com.tokopedia.product.manage.list.view.fragment;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
-import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.manage.di.DaggerProductManageComponent;
-import com.tokopedia.seller.product.manage.di.ProductManageModule;
-import com.tokopedia.seller.product.manage.view.adapter.ProductManageSortAdapter;
-import com.tokopedia.seller.product.manage.view.listener.ProductManageSortView;
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
-import com.tokopedia.seller.product.manage.view.presenter.ProductManageSortPresenter;
+import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.product.manage.list.constant.SortProductOption;
+import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
+import com.tokopedia.product.manage.list.di.ProductManageModule;
+import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter;
+import com.tokopedia.product.manage.list.view.listener.ProductManageSortView;
+import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
+import com.tokopedia.product.manage.list.view.presenter.ProductManageSortPresenter;
 
 import java.util.List;
 

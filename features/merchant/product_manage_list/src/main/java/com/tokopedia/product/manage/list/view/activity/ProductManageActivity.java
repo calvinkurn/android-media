@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.activity;
+package com.tokopedia.product.manage.list.view.activity;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,10 +10,10 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
+import com.tokopedia.product.manage.list.view.fragment.ProductManageSellerFragment;
 
 /**
  * Created by zulfikarrahman on 9/25/17.

@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.manage.view.listener;
+package com.tokopedia.product.manage.list.view.listener;
 
 import android.support.annotation.NonNull;
 
-import com.tokopedia.seller.base.view.listener.BaseListViewListener;
-import com.tokopedia.seller.product.manage.view.model.ProductManageViewModel;
+import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 
 import java.util.List;
 
@@ -11,7 +11,11 @@ import java.util.List;
  * Created by zulfikarrahman on 9/22/17.
  */
 
-public interface ProductManageView extends BaseListViewListener<ProductManageViewModel> {
+public interface ProductManageView extends CustomerView {
+
+    void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem);
+
+    void onLoadSearchError(Throwable t);
 
     void onSearchLoaded(@NonNull List<ProductManageViewModel> list, int totalItem, boolean hasNextPage);
 

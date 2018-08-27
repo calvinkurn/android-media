@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.domain;
+package com.tokopedia.product.manage.list.domain;
 
 
 import com.tokopedia.core.base.domain.RequestParams;

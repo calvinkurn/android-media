@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerDynamicFragment;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
+import com.tokopedia.product.manage.list.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
 

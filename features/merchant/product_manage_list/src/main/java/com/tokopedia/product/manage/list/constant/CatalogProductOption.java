@@ -1,13 +1,13 @@
-package com.tokopedia.seller.product.manage.constant;
+package com.tokopedia.product.manage.list.constant;
 
 import android.support.annotation.StringDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.WITH_AND_WITHOUT;
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.WITHOUT_CATALOG;
-import static com.tokopedia.seller.product.manage.constant.CatalogProductOption.WITH_CATALOG;
+import static com.tokopedia.product.manage.list.constant.CatalogProductOption.WITH_AND_WITHOUT;
+import static com.tokopedia.product.manage.list.constant.CatalogProductOption.WITHOUT_CATALOG;
+import static com.tokopedia.product.manage.list.constant.CatalogProductOption.WITH_CATALOG;
 
 /**
  * Created by zulfikarrahman on 9/22/17.

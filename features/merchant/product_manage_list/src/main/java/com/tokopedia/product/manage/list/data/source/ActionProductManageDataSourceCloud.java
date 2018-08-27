@@ -1,9 +1,9 @@
-package com.tokopedia.seller.product.manage.data.source;
+package com.tokopedia.product.manage.list.data.source;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
-import com.tokopedia.seller.product.manage.data.model.ResponseDeleteProductData;
-import com.tokopedia.seller.product.manage.data.model.ResponseEditPriceData;
+import com.tokopedia.product.manage.list.data.model.ResponseDeleteProductData;
+import com.tokopedia.product.manage.list.data.model.ResponseEditPriceData;
 
 import javax.inject.Inject;
 

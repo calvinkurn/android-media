@@ -1,12 +1,12 @@
-package com.tokopedia.seller.product.manage.view.adapter;
+package com.tokopedia.product.manage.list.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.product.manage.constant.SortProductOption;
-import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
+import com.tokopedia.product.manage.list.constant.SortProductOption;
+import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
 
 /**
  * Created by zulfikarrahman on 9/26/17.

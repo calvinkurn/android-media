@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.manage.view.fragment;
+package com.tokopedia.product.manage.list.view.fragment;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.text.SpinnerCounterInputView;
 import com.tokopedia.design.text.SpinnerTextView;
-import com.tokopedia.seller.R;
+import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils;
 import com.tokopedia.product.manage.item.common.util.CurrencyIdrTextWatcher;
