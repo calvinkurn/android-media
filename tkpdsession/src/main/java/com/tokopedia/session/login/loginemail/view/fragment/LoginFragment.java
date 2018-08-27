@@ -848,6 +848,7 @@ public class LoginFragment extends BaseDaggerFragment
             sessionHandler.clearUserData(getActivity());
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

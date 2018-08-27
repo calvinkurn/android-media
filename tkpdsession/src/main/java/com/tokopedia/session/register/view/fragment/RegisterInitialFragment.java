@@ -434,6 +434,7 @@ public class RegisterInitialFragment extends BaseDaggerFragment
             sessionHandler.clearUserData(getActivity());
             dismissProgressBar();
             getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
