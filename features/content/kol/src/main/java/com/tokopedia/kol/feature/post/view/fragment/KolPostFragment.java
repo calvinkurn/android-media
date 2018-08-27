@@ -63,10 +63,10 @@ public class KolPostFragment extends BaseDaggerFragment implements
     private RecyclerView kolRecyclerView;
     private LinearLayoutManager layoutManager;
 
+    protected boolean canLoadMore = true;
     private AbstractionRouter abstractionRouter;
     private KolRouter kolRouter;
     private String userId;
-    private boolean canLoadMore = true;
     private Intent resultIntent;
 
     public static KolPostFragment newInstance(String userId) {

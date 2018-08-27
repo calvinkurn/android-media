@@ -3,6 +3,7 @@ package com.tokopedia.kol.feature.post.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -76,8 +77,14 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
     @Override
     public void onSuccessGetKolPostShop(List<Visitable> visitables, String lastCursor) {
+        canLoadMore = !TextUtils.isEmpty(lastCursor);
         presenter.updateCursor(lastCursor);
-        adapter.addList(visitables);
+
+        if (adapter.getList().isEmpty() && visitables.isEmpty()) {
+            adapter.showEmpty();
+        } else {
+            adapter.addList(visitables);
+        }
     }
 
     @Override
