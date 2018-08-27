@@ -19,6 +19,7 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
@@ -212,6 +213,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
+        AttachProductUrl.URL = SellerAppBaseUrl.BASE_TOME_DOMAIN;
 
         TopChatUrl.TOPCHAT_JS_API = SellerAppBaseUrl.BASE_JS_DOMAIN;
     }

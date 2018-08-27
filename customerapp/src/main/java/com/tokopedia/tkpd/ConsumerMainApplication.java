@@ -30,6 +30,7 @@ import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.analytics.Analytics;
+import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
@@ -251,6 +252,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
+
+        AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
