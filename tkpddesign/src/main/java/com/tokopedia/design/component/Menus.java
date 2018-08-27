@@ -195,7 +195,7 @@ public class Menus extends BaseBottomSheetView {
                 });
                 header.tvTitle.setText(title);
             } else if (viewHolder instanceof ViewHolder) {
-                final ItemMenus itemMenus = itemMenusList.get(i);
+                final ItemMenus itemMenus = itemMenusList.get(i - headerCount());
                 final ViewHolder holder = (ViewHolder) viewHolder;
                 if (itemMenus.icon != 0) {
                     holder.icon.setImageResource(itemMenus.icon);

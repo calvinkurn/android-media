@@ -1,8 +1,8 @@
 <resources>
-    <string name="shop_settings_manage_shop_info">Informasi Toko</string>
-    <string name="shop_settings_manage_address">Pengaturan Alamat Toko</string>
-    <string name="shop_settings_manage_etalase">Pengaturan Etalase Toko</string>
-    <string name="shop_settings_manage_notes">Pengaturan Catatan</string>
+    <string name="shop_settings_manage_shop_info">Informasi</string>
+    <string name="shop_settings_manage_address">Lokasi</string>
+    <string name="shop_settings_manage_etalase">Etalase</string>
+    <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
     <string name="shop_slogan_hint">Masukkan slogan toko</string>
     <string name="shop_slogan_label">Slogan Toko</string>
@@ -21,8 +21,9 @@
     <string name="shop_desc_must_be_filled">Deskripsi Toko harus diisi.</string>
     <string name="shop_status_current_label">Status Toko Saat ini</string>
     <string name="shop_settings_shop_status">Status Toko</string>
-    <string name="label_close_now">Tutup Sekarang</string>
+    <string name="label_close_shop_now">Tutup Toko Sekarang</string>
     <string name="schedule_your_shop_close">Jadwalkan Tutup Toko</string>
+    <string name="schedule_shop_close">Jadwal Tutup Toko</string>
     <string name="date_start_shop_close">Tanggal Mulai Tutup</string>
     <string name="date_end_shop_close">Tanggal berakhir</string>
     <string name="shop_close_note">Catatan</string>
@@ -62,7 +63,7 @@
     <string name="content_shop_settings_empty_address">Tambah Alamat Kontak agar toko lebih terpercaya &amp; mudah dihubungi</string>
     <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
     <string name="closed_schedule">Jadwal Tutup: %1$s</string>
-    <string name="closed_until">sampai tanggal %1$s</string>
+    <string name="closed_until">Tutup sampai tanggal %1$s</string>
     <string name="shop_has_no_notes">Toko Anda belum memiliki Catatan</string>
     <string name="shop_has_no_etalase">Toko Anda belum memiliki Etalase</string>
     <string name="shop_notes_info"><![CDATA[Tambah Catatan untuk menuliskan informasi Syarat & Ketentuan Toko]]></string>
@@ -103,4 +104,10 @@
     <string name="can_only_have_three_note">Anda sudah memiliki maksimum 3 Catatan</string>
     <string name="search_note">Cari Catatan</string>
     <string name="search_etalase">Cari Etalase</string>
+    <string name="shop_settings_manage_status">Atur Status Toko</string>
+    <string name="change_schedule">Ubah Jadwal</string>
+    <string name="remove_schedule">Hapus Jadwal</string>
+    <string name="label_open_shop_now">Buka Toko Sekarang</string>
+    <string name="remove_schedule_message">Jadwal tutup toko Anda akan terhapus.\nLanjutkan</string>
+    <string name="note_must_be_filled">Catatan harus diisi</string>
 </resources>

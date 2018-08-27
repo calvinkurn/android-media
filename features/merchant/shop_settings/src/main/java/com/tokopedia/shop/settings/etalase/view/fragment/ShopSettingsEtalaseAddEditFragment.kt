@@ -114,6 +114,8 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
     override fun onErrorAddEdit(throwable: Throwable?) {
         if (view != null && activity != null)
             ToasterError.make(view, ErrorHandler.getErrorMessage(activity, throwable), BaseToaster.LENGTH_LONG)
-                    .setAction(R.string.title_retry){ presenter.saveEtalase(etalase, isEdit) }.show()
+                    .setAction(R.string.title_retry){
+                        saveAddEditEtalase()
+                    }.show()
     }
 }

@@ -15,17 +15,4 @@ public class ShopEtalaseAdapter extends BaseListAdapter<BaseShopEtalaseViewModel
                               OnAdapterInteractionListener<BaseShopEtalaseViewModel> onAdapterInteractionListener) {
         super(baseListAdapterTypeFactory, onAdapterInteractionListener);
     }
-
-    public void deleteEtalase(String etalaseId) {
-        List<BaseShopEtalaseViewModel> data = getData();
-
-        for (int i = 0, sizei = data.size(); i < sizei; i++) {
-            BaseShopEtalaseViewModel model = data.get(i);
-            if (model.getId().equalsIgnoreCase(etalaseId)) {
-                this.clearElement(model);
-                notifyItemChanged(i);
-                break;
-            }
-        }
-    }
 }

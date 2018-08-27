@@ -13,17 +13,4 @@ public class ShopNoteAdapter extends BaseListAdapter<ShopNoteViewModel, ShopNote
     public ShopNoteAdapter(ShopNoteFactory baseListAdapterTypeFactory, OnAdapterInteractionListener<ShopNoteViewModel> onAdapterInteractionListener) {
         super(baseListAdapterTypeFactory, onAdapterInteractionListener);
     }
-
-    public void deleteNote(String noteId) {
-        List<ShopNoteViewModel> data = getData();
-
-        for (int i = 0, sizei = data.size(); i < sizei; i++) {
-            ShopNoteViewModel model = data.get(i);
-            if (model.getId().equalsIgnoreCase(noteId)) {
-                this.clearElement(model);
-                notifyItemChanged(i);
-                break;
-            }
-        }
-    }
 }

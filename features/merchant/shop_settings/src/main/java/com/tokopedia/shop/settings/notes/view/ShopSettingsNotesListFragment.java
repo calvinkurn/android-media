@@ -347,21 +347,8 @@ public class ShopSettingsNotesListFragment extends BaseSearchListFragment<ShopNo
     @Override
     public void onSuccessDeleteShopNote(String successMessage) {
         hideSubmitLoading();
-        ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                getString(R.string.note_success_delete), BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
-                }).show();
-        // if somehow id is not there, or if size is 1, we want to reload, so empty state can be shown.
-        if (TextUtils.isEmpty(shopNoteIdToDelete) ||
-                shopNoteAdapter.getDataSize() == 1) {
-            loadInitialData();
-        } else {
-            shopNoteAdapter.deleteNote(shopNoteIdToDelete);
-        }
+        ToasterNormal.showClose(getActivity(),getString(R.string.note_success_delete));
+        loadInitialData();
     }
 
     public void refreshData() {

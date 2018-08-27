@@ -40,6 +40,7 @@ import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory;
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter;
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder;
+import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -373,21 +374,9 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
         String deleteMessage = TextUtils.isEmpty(shopEtalaseNameToDelete) ?
                 getString(R.string.etalase_success_delete) :
                 getString(R.string.etalase_x_success_delete, shopEtalaseNameToDelete);
-        ToasterNormal.make(getActivity().findViewById(android.R.id.content),
-                deleteMessage, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
-                }).show();
-        // if somehow id is not there, or if size is 1, we want to reload, so empty state can be shown.
-        if (TextUtils.isEmpty(shopEtalaseIdToDelete) ||
-                shopEtalaseAdapter.getDataSize() == 1) {
-            loadInitialData();
-        } else {
-            shopEtalaseAdapter.deleteEtalase(shopEtalaseIdToDelete);
-        }
+        ToasterNormal.showClose(getActivity(),
+                deleteMessage);
+        loadInitialData();
     }
 
     public void refreshData() {

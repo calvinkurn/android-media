@@ -29,7 +29,10 @@ import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolde
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
         ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
 
-    @Inject lateinit var presenter: ShopLocationPresenter
+    @Inject
+    lateinit var presenter: ShopLocationPresenter
+
+    var shopLocationViewModelList: List<ShopLocationViewModel>? = null
 
     companion object {
         private const val REQUEST_CODE_ADD_ADDRESS = 1
@@ -83,7 +86,9 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     override fun onSuccessLoadAddresses(addresses: List<ShopLocationViewModel>?) {
+        shopLocationViewModelList = addresses
         super.renderList(addresses ?: listOf())
+        activity?.invalidateOptionsMenu()
     }
 
     override fun onErrorLoadAddresses(throwable: Throwable?) {
@@ -93,17 +98,23 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     override fun onSuccessDeleteAddress(string: String?) {
         ToasterNormal.make(view, getString(R.string.success_delete_shop_address), BaseToaster.LENGTH_SHORT)
-                .setAction(R.string.close){}.show()
+                .setAction(R.string.close) {}.show()
         loadInitialData()
     }
 
     override fun onErrorDeleteAddress(throwable: Throwable?) {
-        throwable?.let {ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
-                .setAction(R.string.close){}.show()}
+        throwable?.let {
+            ToasterError.make(view, ErrorHandler.getErrorMessage(activity, it), BaseToaster.LENGTH_SHORT)
+                    .setAction(R.string.close) {}.show()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
-        inflater?.inflate(R.menu.menu_add_shop_address, menu)
+        if (shopLocationViewModelList == null) {
+            menu?.clear()
+        } else {
+            inflater?.inflate(R.menu.menu_add_shop_address, menu)
+        }
     }
 
     override fun onDestroyView() {
@@ -112,7 +123,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == R.id.menu_add){
+        if (item?.itemId == R.id.menu_add) {
             createAddress()
             return true
         }
@@ -120,9 +131,11 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     private fun createAddress() {
-        if (isValidToAdd()){
-            activity?.run {startActivityForResult(ShopSettingAddressAddEditActivity
-                    .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)}
+        if (isValidToAdd()) {
+            activity?.run {
+                startActivityForResult(ShopSettingAddressAddEditActivity
+                        .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)
+            }
         } else {
             Toast.makeText(activity, getString(R.string.error_max_shop_address), Toast.LENGTH_SHORT).show()
         }
@@ -134,12 +147,18 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
                 setActionText(getString(R.string.close))
                 setOnActionClickListener { dismiss() }
-                setOnItemMenuClickListener { itemMenus, pos -> when(pos){
-                    0 -> {editShopAddress(item)
-                            dismiss()}
-                    1 -> {deleteShopAddress(item)
-                            dismiss()}
-                } }
+                setOnItemMenuClickListener { itemMenus, pos ->
+                    when (pos) {
+                        0 -> {
+                            editShopAddress(item)
+                            dismiss()
+                        }
+                        1 -> {
+                            deleteShopAddress(item)
+                            dismiss()
+                        }
+                    }
+                }
                 show()
             }
         }
@@ -152,7 +171,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
                 setDesc(getString(R.string.desc_dialog_delete_shop_address, item.name))
                 setBtnOk(getString(R.string.action_delete))
                 setBtnCancel(getString(R.string.cancel))
-                setOnOkClickListener { presenter.deleteItem(item); dismiss()}
+                setOnOkClickListener { presenter.deleteItem(item); dismiss() }
                 setOnCancelClickListener { dismiss() }
                 show()
             }
@@ -173,10 +192,10 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
         if (resultCode == Activity.RESULT_OK && data != null && (requestCode == REQUEST_CODE_ADD_ADDRESS || requestCode == REQUEST_CODE_EDIT_ADDRESS)) {
             val isSuccess = data.getBooleanExtra(PARAM_EXTRA_IS_SUCCESS, false)
             val isNew = data.getBooleanExtra(PARAM_EXTRA_IS_ADD_NEW, false)
-            if (isSuccess){
+            if (isSuccess) {
                 loadInitialData()
                 ToasterNormal.make(view, getString(if (isNew) R.string.success_add_address else R.string.success_edit_address),
-                        BaseToaster.LENGTH_SHORT).setAction(R.string.close){}.show()
+                        BaseToaster.LENGTH_SHORT).setAction(R.string.close) {}.show()
             }
         }
     }

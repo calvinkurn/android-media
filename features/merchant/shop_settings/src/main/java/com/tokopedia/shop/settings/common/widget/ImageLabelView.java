@@ -73,7 +73,8 @@ public class ImageLabelView extends FrameLayout {
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.ImageLabelView);
         try {
             titleText = styledAttributes.getString(R.styleable.ImageLabelView_ilv_title);
-            titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            titleColorValue = styledAttributes.getColor(R.styleable.ImageLabelView_ilv_title_color,
+                    ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             titleTextStyleValue = styledAttributes.getInt(R.styleable.ImageLabelView_ilv_title_text_style, Typeface.NORMAL);
             titleTextSize = styledAttributes.getDimension(R.styleable.ImageLabelView_ilv_title_text_size, getResources().getDimension(R.dimen.sp_12));
             drawableRes = styledAttributes.getResourceId(R.styleable.ImageLabelView_ilv_drawable, 0);
@@ -108,8 +109,10 @@ public class ImageLabelView extends FrameLayout {
         setClickable(enabled);
         if (enabled) {
             tvContent.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
+            titleTextView.setTextColor(titleColorValue);
         } else {
             tvContent.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
+            titleTextView.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_disabled_38));
         }
     }
 

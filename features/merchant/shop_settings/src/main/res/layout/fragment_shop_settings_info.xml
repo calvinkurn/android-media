@@ -24,22 +24,7 @@
 
             <include layout="@layout/partial_shop_settings_info_basic" />
 
-            <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_16">
-
-                <com.tokopedia.design.label.LabelView
-                    android:id="@+id/lvShopStatus"
-                    style="@style/LabelLayout"
-                    app:lv_content="@string/label_manage"
-                    app:lv_content_color="@color/tkpd_main_green"
-                    app:lv_sub_title_text_size="@dimen/sp_12"
-                    app:lv_title="@string/shop_status_label"
-                    tools:lv_sub_title="Buka"
-                    android:clipToPadding="false"
-                    android:clipChildren="false"/>
-            </android.support.v7.widget.CardView>
+            <include layout="@layout/partial_shop_settings_info_status" />
 
             <include layout="@layout/partial_shop_settings_info_membership" />
         </LinearLayout>

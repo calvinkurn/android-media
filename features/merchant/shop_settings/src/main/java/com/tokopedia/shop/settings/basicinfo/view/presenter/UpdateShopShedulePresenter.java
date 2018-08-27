@@ -14,45 +14,16 @@ import rx.Subscriber;
 
 public class UpdateShopShedulePresenter extends BaseDaggerPresenter<UpdateShopShedulePresenter.View> {
 
-    private GetShopBasicDataUseCase getShopBasicDataUseCase;
     private UpdateShopScheduleUseCase updateShopScheduleUseCase;
 
     public interface View extends CustomerView {
         void onSuccessUpdateShopSchedule(String successMessage);
         void onErrorUpdateShopSchedule(Throwable throwable);
-        void onSuccessGetShopBasicData(ShopBasicDataModel shopBasicDataModel);
-        void onErrorGetShopBasicData(Throwable throwable);
     }
 
     @Inject
-    public UpdateShopShedulePresenter(GetShopBasicDataUseCase getShopBasicDataUseCase,
-                                      UpdateShopScheduleUseCase updateShopScheduleUseCase) {
-        this.getShopBasicDataUseCase = getShopBasicDataUseCase;
+    public UpdateShopShedulePresenter(UpdateShopScheduleUseCase updateShopScheduleUseCase) {
         this.updateShopScheduleUseCase = updateShopScheduleUseCase;
-    }
-
-    public void getShopBasicData(){
-        getShopBasicDataUseCase.unsubscribe();
-        getShopBasicDataUseCase.execute(RequestParams.EMPTY, new Subscriber<ShopBasicDataModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().onErrorGetShopBasicData(e);
-                }
-            }
-
-            @Override
-            public void onNext(ShopBasicDataModel shopBasicDataModel) {
-                if (isViewAttached()) {
-                    getView().onSuccessGetShopBasicData(shopBasicDataModel);
-                }
-            }
-        });
     }
 
     public void updateShopSchedule(@ShopScheduleActionDef int action,
@@ -92,7 +63,6 @@ public class UpdateShopShedulePresenter extends BaseDaggerPresenter<UpdateShopSh
     @Override
     public void detachView() {
         super.detachView();
-        getShopBasicDataUseCase.unsubscribe();
         updateShopScheduleUseCase.unsubscribe();
     }
 

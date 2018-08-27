@@ -1,5 +1,5 @@
 mutation addShopShowcase($name:String!){
-  addShopShowcase(name:$name) {
+  addShopShowcase(input: {name:$name}) {
       success
       message
     }

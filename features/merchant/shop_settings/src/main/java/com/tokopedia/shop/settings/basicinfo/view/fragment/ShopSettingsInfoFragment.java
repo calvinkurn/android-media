@@ -1,11 +1,14 @@
 package com.tokopedia.shop.settings.basicinfo.view.fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextPaint;
@@ -25,9 +28,11 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.label.LabelView;
+import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.shop.common.constant.ShopScheduleActionDef;
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel;
 import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.settings.R;
@@ -36,6 +41,9 @@ import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditScheduleActiv
 import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPresenter;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.common.util.ShopDateUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -51,14 +59,18 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private TextView tvShopDomain;
     private TextView tvShopSlogan;
     private TextView tvShopDescription;
-    private LabelView lvShopStatus;
     private ImageView ivShopMembership;
     private TextView tvMembershipName;
     private TextView tvMembershipDescription;
+    private TextView tvShopStatus;
+    private TextView tvShopCloseSchedule;
+
     private boolean needReload;
     private View vgShopInfoContainer;
     private ShopBasicDataModel shopBasicDataModel;
     private ImageView ivShopLogo;
+
+    private ProgressDialog progressDialog;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -85,7 +97,9 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         tvShopDomain = view.findViewById(R.id.tvShopDomain);
         tvShopSlogan = view.findViewById(R.id.tvShopSlogan);
         tvShopDescription = view.findViewById(R.id.tvShopDescription);
-        lvShopStatus = view.findViewById(R.id.lvShopStatus);
+        View vgShopStatusContainer = view.findViewById(R.id.vgShopStatusContainer);
+        tvShopStatus = view.findViewById(R.id.tvShopStatus);
+        tvShopCloseSchedule = view.findViewById(R.id.tvShopCloseSchedule);
         ivShopMembership = view.findViewById(R.id.ivShopMembership);
         tvMembershipName = view.findViewById(R.id.tvMembershipName);
         tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription);
@@ -100,14 +114,84 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             }
         });
 
-        lvShopStatus.setOnClickListener(new View.OnClickListener() {
+        vgShopStatusContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = ShopEditScheduleActivity.createIntent(getContext(), shopBasicDataModel);
-                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
+                showShopStatusManageMenu();
             }
         });
         return view;
+    }
+
+    private void showShopStatusManageMenu() {
+        if (shopBasicDataModel == null) {
+            return;
+        }
+        Menus menus = new Menus(getContext());
+        menus.setTitle(getString(R.string.shop_settings_manage_status));
+
+        List<Menus.ItemMenus> itemMenusList = new ArrayList<>();
+        if (shopBasicDataModel.isOpen()) {
+            if (StringUtils.isEmptyNumber(shopBasicDataModel.getCloseSchedule())) {
+                itemMenusList.add(new Menus.ItemMenus(getString(R.string.schedule_your_shop_close)));
+            } else {
+                itemMenusList.add(new Menus.ItemMenus(getString(R.string.change_schedule)));
+                itemMenusList.add(new Menus.ItemMenus(getString(R.string.remove_schedule)));
+            }
+            itemMenusList.add(new Menus.ItemMenus(getString(R.string.label_close_shop_now)));
+        } else {
+            itemMenusList.add(new Menus.ItemMenus(getString(R.string.change_schedule)));
+            itemMenusList.add(new Menus.ItemMenus(getString(R.string.label_open_shop_now)));
+        }
+        menus.setItemMenuList(itemMenusList);
+        menus.setOnItemMenuClickListener(new Menus.OnItemMenuClickListener() {
+            @Override
+            public void onClick(Menus.ItemMenus itemMenus, int pos) {
+                if (itemMenus.title.equalsIgnoreCase(getString(R.string.schedule_your_shop_close))) {
+                    Intent intent = ShopEditScheduleActivity.createIntent(getContext(), shopBasicDataModel,
+                            getString(R.string.schedule_shop_close), false);
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.label_close_shop_now))) {
+                    Intent intent = ShopEditScheduleActivity.createIntent(getContext(), shopBasicDataModel,
+                            getString(R.string.label_close_shop_now), true);
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.change_schedule))) {
+                    Intent intent = ShopEditScheduleActivity.createIntent(getContext(), shopBasicDataModel,
+                            getString(R.string.schedule_shop_close), false);
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE);
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.remove_schedule))) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(),
+                            R.style.AppCompatAlertDialogStyle);
+                    builder.setTitle(R.string.remove_schedule);
+                    builder.setMessage(R.string.remove_schedule_message);
+                    builder.setCancelable(true);
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setPositiveButton(R.string.label_remove, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //remove schedule
+                            showSubmitLoading(getString(R.string.title_loading));
+                            shopSettingsInfoPresenter.updateShopSchedule(
+                                    shopBasicDataModel.isClosed() ?
+                                            ShopScheduleActionDef.CLOSED :
+                                            ShopScheduleActionDef.OPEN,
+                                    false, "", "", "");
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.label_open_shop_now))) {
+                    // open now
+                    showSubmitLoading(getString(R.string.title_loading));
+                    shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false, "", "", "");
+                }
+                menus.dismiss();
+            }
+        });
+        menus.show();
     }
 
     public void showLoading() {
@@ -186,13 +270,12 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
 
     private void setUIStatus(ShopBasicDataModel shopBasicDataModel) {
         if (shopBasicDataModel.isOpen()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(getString(R.string.label_open));
+            tvShopStatus.setText(getString(R.string.label_open));
 
+            StringBuilder stringBuilder = new StringBuilder();
             String closeScheduleUnixString = shopBasicDataModel.getCloseSchedule();
             if (!StringUtils.isEmptyNumber(closeScheduleUnixString)) {
                 String closeString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, closeScheduleUnixString);
-                stringBuilder.append(", ");
                 stringBuilder.append(getString(R.string.closed_schedule, closeString));
             }
 
@@ -202,17 +285,29 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
                 stringBuilder.append(" - ");
                 stringBuilder.append(openString);
             }
-            lvShopStatus.setSubTitle(stringBuilder.toString());
+            String closeSchedulString = stringBuilder.toString();
+            if (TextUtils.isEmpty(closeSchedulString)) {
+                tvShopCloseSchedule.setVisibility(View.GONE);
+            } else {
+                tvShopCloseSchedule.setText(stringBuilder.toString());
+                tvShopCloseSchedule.setVisibility(View.VISIBLE);
+            }
         } else {
+            tvShopStatus.setText(getString(R.string.label_close));
+
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(getString(R.string.label_close));
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
             if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
                 String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
-                stringBuilder.append(", ");
                 stringBuilder.append(getString(R.string.closed_until, openString));
             }
-            lvShopStatus.setSubTitle(stringBuilder.toString());
+            String closeScheduleString = stringBuilder.toString();
+            if (TextUtils.isEmpty(closeScheduleString)) {
+                tvShopCloseSchedule.setVisibility(View.GONE);
+            } else {
+                tvShopCloseSchedule.setText(stringBuilder.toString());
+                tvShopCloseSchedule.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -278,6 +373,43 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
                 loadShopBasicData();
             }
         });
+    }
+
+    @Override
+    public void onSuccessUpdateShopSchedule(String successMessage) {
+        hideSubmitLoading();
+        getActivity().setResult(Activity.RESULT_OK);
+        loadShopBasicData();
+    }
+
+    @Override
+    public void onErrorUpdateShopSchedule(Throwable throwable) {
+        hideSubmitLoading();
+        showSnackbarErrorSubmitEdit(throwable);
+    }
+
+    private void showSnackbarErrorSubmitEdit(Throwable throwable) {
+        String message = ErrorHandler.getErrorMessage(getContext(), throwable);
+        ToasterError.showClose(getActivity(), message);
+    }
+
+    public void showSubmitLoading(String message) {
+        if (progressDialog == null) {
+            progressDialog = new ProgressDialog(getContext());
+        }
+        if (!progressDialog.isShowing()) {
+            progressDialog.setMessage(message);
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
+        }
+    }
+
+    public void hideSubmitLoading() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+            progressDialog = null;
+        }
     }
 
     @Override

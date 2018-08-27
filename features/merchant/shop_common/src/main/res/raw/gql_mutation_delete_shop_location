@@ -1,5 +1,7 @@
 mutation deleteShopLocation($id:String!){
-  deleteShopLocation(id:$id) {
+  deleteShopLocation(input: {
+   id:$id
+  }) {
       success
       message
     }
