@@ -972,6 +972,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvTotalPrice.setText(subtotalPrice);
         tvItemCount.setText(String.format(getActivity().getString(R.string.cart_item_count_format), qty));
+        btnToShipment.setText(String.format(getActivity().getString(R.string.cart_item_button_checkout_count_format), qty));
     }
 
     @Override

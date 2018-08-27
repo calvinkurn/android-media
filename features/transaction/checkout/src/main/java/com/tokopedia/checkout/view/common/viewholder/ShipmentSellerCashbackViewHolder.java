@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.feature.shipment.viewholder;
+package com.tokopedia.checkout.view.common.viewholder;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

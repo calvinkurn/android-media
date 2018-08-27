@@ -109,7 +109,6 @@ public class CartListPresenter implements ICartListPresenter {
         view.renderLoadGetCartData();
 
         RequestParams requestParams = RequestParams.create();
-        TKPDMapParam<String, String> mapParam = view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList());
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
@@ -347,7 +346,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false));
         if (totalCashback > 0) {
             view.updateCashback(totalCashback);
         }

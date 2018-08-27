@@ -48,13 +48,24 @@ public class CartMapper implements ICartMapper {
         CartListData cartListData = new CartListData();
         String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
         boolean hasError = false;
+        int errorItemCount = 0;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             if (shopGroup.getErrors() != null && shopGroup.getErrors().size() > 0) {
                 hasError = true;
                 if (TextUtils.isEmpty(errorMessage)) {
                     errorMessage = mapperUtil.convertToString(shopGroup.getErrors());
                 }
-                break;
+            }
+            if (shopGroup.getCartDetails().size() > 0) {
+                for (CartDetail cartDetail : shopGroup.getCartDetails()) {
+                    if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
+                        hasError = true;
+                        errorItemCount++;
+                        if (TextUtils.isEmpty(errorMessage)) {
+                            errorMessage = mapperUtil.convertToString(cartDetail.getErrors());
+                        }
+                    }
+                }
             }
         }
         cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
@@ -62,7 +73,7 @@ public class CartMapper implements ICartMapper {
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
                     new CartTickerErrorData.Builder()
-                            .errorInfo(context.getString(R.string.cart_error_message))
+                            .errorInfo(String.format(context.getString(R.string.cart_error_message), errorItemCount))
                             .actionInfo(context.getString(R.string.cart_error_action))
                             .build()
             );

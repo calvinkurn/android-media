@@ -353,7 +353,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (long) cartItemModel.getPrice(), true));
+                (long) cartItemModel.getPrice(), false));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),
@@ -437,7 +437,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             }
             tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
             String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false);
             tvCourierPrice.setText(courierPrice);
             tvCourierPrice.setVisibility(View.VISIBLE);
             tvDash.setVisibility(View.VISIBLE);
@@ -516,7 +516,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
             tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true));
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
@@ -569,7 +569,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             subTotalPrice = totalItemPrice;
         }
-        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, true));
+        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false));
         tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
@@ -869,7 +869,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(price, false);
         }
     }
 
