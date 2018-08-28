@@ -45,7 +45,10 @@ import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.Chat;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
@@ -539,6 +542,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
             }
+        } else if(requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
+                  resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
+                  data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID) ) {
+            presenter.refreshData();
         }
 
         presenter.createWebSocket();

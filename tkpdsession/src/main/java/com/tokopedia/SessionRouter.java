@@ -20,4 +20,6 @@ public interface SessionRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     boolean isLoginInactivePhoneLinkEnabled();
+
+    Intent getWithdrawIntent(Context context);
 }

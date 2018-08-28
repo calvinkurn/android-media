@@ -3,8 +3,8 @@ package com.tokopedia.session.login.loginemail.view.subscriber;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -58,17 +58,20 @@ public class LoginSubscriber extends Subscriber<LoginEmailDomain> {
 
     @Override
     public void onNext(LoginEmailDomain loginEmailDomain) {
-        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+        if (!loginEmailDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
             view.onGoToCreatePasswordPage(loginEmailDomain.getInfo()
                     .getGetUserInfoDomainData());
         } else if (loginEmailDomain.getLoginResult() != null
                 && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && (isMsisdnVerified(loginEmailDomain.getInfo()) || GlobalConfig.isSellerApp())) {
+                && (!view.isFromRegister() || GlobalConfig.isSellerApp())) {
             view.dismissLoadingLogin();
             view.setSmartLock();
             view.onSuccessLoginEmail();
-        } else if (!goToSecurityQuestion(loginEmailDomain.getLoginResult())
-                && !isMsisdnVerified(loginEmailDomain.getInfo())) {
+        } else if (loginEmailDomain.getLoginResult() != null
+                && !goToSecurityQuestion(loginEmailDomain.getLoginResult())
+                && !isMsisdnVerified(loginEmailDomain.getInfo())
+                && view.isFromRegister()) {
             view.setSmartLock();
             view.onGoToPhoneVerification();
         } else if (goToSecurityQuestion(loginEmailDomain.getLoginResult())) {
