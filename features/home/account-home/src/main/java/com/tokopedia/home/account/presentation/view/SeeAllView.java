@@ -53,7 +53,7 @@ public class SeeAllView extends BottomSheets {
                         LinearLayoutManager.VERTICAL,
                         false));
         holder.addItemDecoration(
-                new MenuGridSpacingDecoration(4,0,false));
+                new MenuGridSpacingDecoration(4,0, 16,true));
 
         adapter.setNewData(list);
     }
