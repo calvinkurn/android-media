@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.list.view.listener;
 
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
+import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 
 import java.util.List;
 

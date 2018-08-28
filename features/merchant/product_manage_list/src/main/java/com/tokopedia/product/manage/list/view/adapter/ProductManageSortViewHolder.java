@@ -6,8 +6,8 @@ import android.widget.TextView;
 
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
-import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 
 /**
  * Created by zulfikarrahman on 9/29/17.

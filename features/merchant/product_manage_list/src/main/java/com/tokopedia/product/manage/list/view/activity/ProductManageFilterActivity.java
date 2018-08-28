@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageFilterFragment;
-import com.tokopedia.product.manage.list.view.model.ProductManageFilterModel;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 
 /**
  * Created by zulfikarrahman on 9/26/17.

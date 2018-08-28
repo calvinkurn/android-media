@@ -10,9 +10,9 @@ import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
 import com.tokopedia.product.manage.list.view.fragment.ProductManageSortFragment;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
 
 /**
  * Created by zulfikarrahman on 9/26/17.

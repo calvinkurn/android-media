@@ -5,8 +5,8 @@ import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.product.manage.item.common.util.ProductNetworkConstant;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
 import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 import java.util.ArrayList;
 import java.util.List;

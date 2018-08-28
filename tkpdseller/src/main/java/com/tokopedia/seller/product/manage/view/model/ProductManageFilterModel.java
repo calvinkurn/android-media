@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.list.view.model;
+package com.tokopedia.seller.product.manage.view.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.product.manage.list.constant.CatalogProductOption;
-import com.tokopedia.product.manage.list.constant.ConditionProductOption;
-import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 
 /**
  * Created by zulfikarrahman on 9/29/17.

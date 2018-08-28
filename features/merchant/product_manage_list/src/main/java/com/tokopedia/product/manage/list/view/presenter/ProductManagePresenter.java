@@ -1,11 +1,11 @@
 package com.tokopedia.product.manage.list.view.presenter;
 
 import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.product.manage.list.constant.CatalogProductOption;
-import com.tokopedia.product.manage.list.constant.ConditionProductOption;
-import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
 
 import java.util.List;
 

@@ -1,13 +1,12 @@
-package com.tokopedia.product.manage.list.view.adapter;
+package com.tokopedia.seller.product.manage.view.adapter;
 
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.product.manage.list.R;
+import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseViewHolder;
-import com.tokopedia.product.manage.list.view.model.ProductManageCategoryViewModel;
-import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
+import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
 
 /**
  * Created by zulfikarrahman on 9/29/17.

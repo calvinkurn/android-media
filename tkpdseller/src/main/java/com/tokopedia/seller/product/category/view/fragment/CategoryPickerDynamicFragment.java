@@ -14,11 +14,8 @@ import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.common.widget.DividerItemDecoration;
-import com.tokopedia.product.manage.list.view.adapter.ProductManageCategoryPickerAdapter;
-import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter;
-import com.tokopedia.product.manage.list.view.model.ProductManageCategoryViewModel;
-
-import org.parceler.Parcels;
+import com.tokopedia.seller.product.manage.view.adapter.ProductManageCategoryPickerAdapter;
+import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

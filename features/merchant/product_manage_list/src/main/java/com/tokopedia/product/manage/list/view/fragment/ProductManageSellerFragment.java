@@ -16,8 +16,8 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
 import com.tokopedia.product.manage.list.R;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListCountComponent;
-import com.tokopedia.seller.product.draft.di.module.ProductDraftListCountModule;
+import com.tokopedia.product.manage.list.di.DaggerProductDraftListCountComponent;
+import com.tokopedia.product.manage.list.di.ProductDraftListCountModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListCountView;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
@@ -26,7 +26,6 @@ import javax.inject.Inject;
 
 public class ProductManageSellerFragment extends ProductManageFragment implements ProductDraftListCountView {
 
-    public static final boolean DEFAULT_NEED_COMPRESS_TKPD = true;
     private BroadcastReceiver draftBroadCastReceiver;
 
     @Inject

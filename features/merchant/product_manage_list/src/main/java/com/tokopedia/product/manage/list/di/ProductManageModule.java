@@ -18,7 +18,6 @@ import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
-import com.tokopedia.product.manage.list.constant.ProductManageListRouter;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
@@ -29,6 +28,7 @@ import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.picker.data.api.GetProductListSellerApi;
 import com.tokopedia.seller.product.picker.data.repository.GetProductListSellingRepositoryImpl;
 import com.tokopedia.seller.product.picker.data.source.GetProductListSellingDataSource;
@@ -62,12 +62,12 @@ public class ProductManageModule {
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
-                                                                ProductManageListRouter productManageListRouter,
+                                                                SellerModuleRouter sellerModuleRouter,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase){
         return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
-                deleteProductUseCase, getProductListManageMapperView,productManageListRouter, multipleDeleteProductUseCase,
+                deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase,
                 topAdsAddSourceTaggingUseCase, setCashbackUseCase);
     }
 
@@ -186,9 +186,9 @@ public class ProductManageModule {
 
     @Provides
     @ProductManageScope
-    public ProductManageListRouter provideSellerModuleRouter(@ApplicationContext Context context){
-        if(context instanceof ProductManageListRouter){
-            return ((ProductManageListRouter)context);
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
         }else{
             return null;
         }

@@ -1,8 +1,8 @@
 package com.tokopedia.product.manage.list.view.mapper;
 
-import com.tokopedia.product.manage.list.data.model.ProductListSellerModel;
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
+import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.draft.di.module;
+package com.tokopedia.product.manage.list.di;
 
 import android.content.Context;
 
@@ -11,8 +11,6 @@ import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProduct
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl;
-import com.tokopedia.product.manage.list.di.ProductManageModule;
-import com.tokopedia.product.manage.list.di.ProductManageScope;
 
 import dagger.Module;
 import dagger.Provides;

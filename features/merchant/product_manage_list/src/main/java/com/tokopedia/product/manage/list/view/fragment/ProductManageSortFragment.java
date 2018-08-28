@@ -8,14 +8,14 @@ import com.tokopedia.product.manage.list.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageSortAdapter;
 import com.tokopedia.product.manage.list.view.listener.ProductManageSortView;
-import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
 import com.tokopedia.product.manage.list.view.presenter.ProductManageSortPresenter;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 
 import java.util.List;
 

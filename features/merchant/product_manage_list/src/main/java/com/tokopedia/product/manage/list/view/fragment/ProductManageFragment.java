@@ -66,11 +66,6 @@ import com.tokopedia.product.manage.item.common.util.ViewUtils;
 //import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.product.manage.list.constant.CashbackOption;
-import com.tokopedia.product.manage.list.constant.CatalogProductOption;
-import com.tokopedia.product.manage.list.constant.ConditionProductOption;
-import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
-import com.tokopedia.product.manage.list.constant.ProductManageConstant;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
 import com.tokopedia.product.manage.list.constant.StatusProductOption;
 import com.tokopedia.product.manage.list.di.DaggerProductManageComponent;
 import com.tokopedia.product.manage.list.di.ProductManageModule;
@@ -79,10 +74,15 @@ import com.tokopedia.product.manage.list.view.activity.ProductManageFilterActivi
 import com.tokopedia.product.manage.list.view.activity.ProductManageSortActivity;
 import com.tokopedia.product.manage.list.view.adapter.ProductManageListAdapter;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
-import com.tokopedia.product.manage.list.view.model.ProductManageFilterModel;
-import com.tokopedia.product.manage.list.view.model.ProductManageSortModel;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
+import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.io.File;
@@ -187,7 +187,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected NoResultDataBinder getEmptyViewNoResultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty_pml);
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_variant_empty);
         emptyDataBinder.setEmptyTitleText(getString(R.string.title_no_result));
         emptyDataBinder.setEmptyContentText(getString(R.string.product_manage_label_change_search));
         return emptyDataBinder;
@@ -195,7 +195,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected NoResultDataBinder getEmptyViewDefaultBinder() {
-        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product_pml);
+        EmptyDataBinder emptyDataBinder = new EmptyDataBinder(adapter, R.drawable.ic_empty_featured_product);
         emptyDataBinder.setEmptyTitleText(getString(R.string.product_manage_label_product_list_empty));
         emptyDataBinder.setEmptyContentText(getString(R.string.pml_product_manage_label_add_product_to_sell));
         emptyDataBinder.setEmptyButtonItemText(getString(R.string.pml_product_manage_label_add_product));
@@ -215,7 +215,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     public RetryDataBinder getRetryViewDataBinder(BaseListAdapter adapter) {
-        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error_pml);
+        return new BaseRetryDataBinder(adapter, R.drawable.ic_cloud_error);
     }
 
     @Override

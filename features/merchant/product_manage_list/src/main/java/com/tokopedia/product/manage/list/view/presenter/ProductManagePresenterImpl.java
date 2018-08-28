@@ -6,20 +6,20 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
-import com.tokopedia.product.manage.list.constant.CatalogProductOption;
-import com.tokopedia.product.manage.list.constant.ConditionProductOption;
-import com.tokopedia.product.manage.list.constant.PictureStatusProductOption;
-import com.tokopedia.product.manage.list.constant.ProductManageListRouter;
-import com.tokopedia.product.manage.list.constant.SortProductOption;
-import com.tokopedia.product.manage.list.data.model.ProductListSellerModel;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
 import com.tokopedia.product.manage.list.domain.MultipleDeleteProductUseCase;
-import com.tokopedia.product.manage.list.domain.model.GMFeaturedProductDomainModel;
 import com.tokopedia.product.manage.list.domain.model.MultipleDeleteProductModel;
 import com.tokopedia.product.manage.list.view.listener.ProductManageView;
 import com.tokopedia.product.manage.list.view.mapper.GetProductListManageMapperView;
 import com.tokopedia.product.manage.list.view.model.ProductListManageModelView;
+import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
+import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
+import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
+import com.tokopedia.seller.product.manage.constant.PictureStatusProductOption;
+import com.tokopedia.seller.product.manage.constant.SortProductOption;
+import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
@@ -41,7 +41,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final EditPriceProductUseCase editPriceProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final GetProductListManageMapperView getProductListManageMapperView;
-    private final ProductManageListRouter productManageListRouter;
+    private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private SetCashbackUseCase setCashbackUseCase;
@@ -51,7 +51,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
-                                      ProductManageListRouter productManageListRouter,
+                                      SellerModuleRouter sellerModuleRouter,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                       SetCashbackUseCase setCashbackUseCase) {
@@ -60,7 +60,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.editPriceProductUseCase = editPriceProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.getProductListManageMapperView = getProductListManageMapperView;
-        this.productManageListRouter = productManageListRouter;
+        this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
         this.setCashbackUseCase = setCashbackUseCase;
@@ -170,7 +170,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void getListFeaturedProduct() {
-        productManageListRouter.getFeaturedProduct().subscribe(getSubscriberGetListFeaturedProduct());
+        sellerModuleRouter.getFeaturedProduct().subscribe(getSubscriberGetListFeaturedProduct());
     }
 
     @Override
