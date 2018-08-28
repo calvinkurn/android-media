@@ -310,6 +310,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return true;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }

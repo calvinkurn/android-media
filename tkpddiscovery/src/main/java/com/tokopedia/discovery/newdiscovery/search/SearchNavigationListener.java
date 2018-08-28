@@ -1,7 +1,7 @@
 package com.tokopedia.discovery.newdiscovery.search;
 
 public interface SearchNavigationListener {
-    void setupSearchNavigation(ClickListener clickListener);
+    void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled);
 
     void refreshMenuItemGridIcon(int titleResId, int iconResId);
 

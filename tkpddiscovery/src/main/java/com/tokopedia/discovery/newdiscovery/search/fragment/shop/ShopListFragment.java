@@ -329,6 +329,11 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return false;
+    }
+
+    @Override
     public void launchLoginActivity(Bundle extras) {
         Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
                 (getActivity());

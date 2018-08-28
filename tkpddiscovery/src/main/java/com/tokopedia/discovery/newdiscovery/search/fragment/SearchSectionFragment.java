@@ -207,7 +207,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                     public void onChangeGridClick() {
                         switchLayoutType();
                     }
-                });
+                }, isSortEnabled());
     }
 
     protected GridLayoutManager getGridLayoutManager() {
@@ -499,6 +499,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     protected abstract SearchSectionFragmentPresenter getPresenter();
 
     protected abstract GridLayoutManager.SpanSizeLookup onSpanSizeLookup();
+
+    protected abstract boolean isSortEnabled();
 
     protected void onFirstTimeLaunch() {
 

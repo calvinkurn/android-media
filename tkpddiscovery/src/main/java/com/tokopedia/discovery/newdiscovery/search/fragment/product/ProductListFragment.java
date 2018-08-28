@@ -408,6 +408,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);

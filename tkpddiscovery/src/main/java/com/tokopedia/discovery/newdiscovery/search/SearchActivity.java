@@ -89,6 +89,7 @@ public class SearchActivity extends DiscoveryActivity
     private SearchSectionPagerAdapter searchSectionPagerAdapter;
     private TextView buttonFilter;
     private TextView buttonSort;
+    private View searchNavDivider;
 
     private String productTabTitle;
     private String catalogTabTitle;
@@ -441,6 +442,7 @@ public class SearchActivity extends DiscoveryActivity
         bottomSheetFilterView = (BottomSheetFilterView) findViewById(R.id.bottomSheetFilter);
         buttonFilter = findViewById(R.id.button_filter);
         buttonSort = findViewById(R.id.button_sort);
+        searchNavDivider = findViewById(R.id.search_nav_divider);
     }
 
     @Override
@@ -629,7 +631,14 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
-    public void setupSearchNavigation(ClickListener clickListener) {
+    public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
+        if (isSortEnabled) {
+            buttonSort.setVisibility(View.VISIBLE);
+            searchNavDivider.setVisibility(View.VISIBLE);
+        } else {
+            buttonSort.setVisibility(View.GONE);
+            searchNavDivider.setVisibility(View.GONE);
+        }
         this.searchNavigationClickListener = clickListener;
     }
 
