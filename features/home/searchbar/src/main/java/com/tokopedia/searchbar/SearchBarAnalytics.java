@@ -40,7 +40,7 @@ public class SearchBarAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                SearchBarConstant.CLICK_TOP_NAV,
+                SearchBarConstant.CLICK_WISHLIST,
                 SearchBarConstant.TOP_NAV,
                 String.format("%s %s", SearchBarConstant.CLICK,
                         SearchBarConstant.WISHLIST),
