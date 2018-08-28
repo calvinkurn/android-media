@@ -6,65 +6,80 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
+    app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_2">
 
     <LinearLayout
+        android:id="@+id/ll_shop_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/rl_shop_header"
+        <include
+            android:id="@+id/ll_warning_and_error"
+            layout="@layout/layout_item_warning_and_error" />
+
+        <FrameLayout
+            android:id="@+id/fl_shop_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:foreground="?selectableItemBackground"
-            android:paddingBottom="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_10"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16">
+            android:layout_marginLeft="@dimen/dp_1"
+            android:layout_marginRight="@dimen/dp_1">
 
-            <CheckBox
-                android:id="@+id/cb_select_shop"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rl_shop_header"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="-5dp"
-                android:layout_marginTop="-5dp"
-                android:paddingRight="@dimen/dp_8"
-                android:theme="@style/TransactionCheckbox" />
+                android:foreground="?selectableItemBackground"
+                android:paddingBottom="@dimen/dp_16"
+                android:paddingLeft="@dimen/dp_9"
+                android:paddingRight="@dimen/dp_9"
+                android:paddingTop="@dimen/dp_16">
 
-            <TextView
-                android:id="@+id/tv_label_shop_name"
-                style="@style/TextSmallMediumBlack38"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/cb_select_shop"
-                android:lineSpacingExtra="@dimen/sp_5"
-                android:text="@string/label_seller"
-                tools:ignore="RtlSymmetry" />
+                <CheckBox
+                    android:id="@+id/cb_select_shop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="-5dp"
+                    android:layout_marginTop="-5dp"
+                    android:paddingRight="@dimen/dp_8"
+                    android:theme="@style/TransactionCheckbox" />
 
-            <TextView
-                android:id="@+id/tv_shop_name"
-                style="@style/TextSmallMediumBlack70"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_4"
-                android:layout_toRightOf="@+id/tv_label_shop_name"
-                android:lineSpacingExtra="@dimen/sp_5"
-                tools:ignore="RelativeOverlap"
-                tools:text="Loaa Store df" />
+                <TextView
+                    android:id="@+id/tv_label_shop_name"
+                    style="@style/TextSmallMediumBlack38"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/cb_select_shop"
+                    android:lineSpacingExtra="@dimen/sp_5"
+                    android:text="@string/label_seller"
+                    tools:ignore="RtlSymmetry" />
 
-            <ImageView
-                android:id="@+id/img_shop_badge"
-                android:layout_width="@dimen/dp_18"
-                android:layout_height="@dimen/dp_18"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@+id/tv_shop_name"
-                tools:src="@drawable/ic_badge_official" />
+                <TextView
+                    android:id="@+id/tv_shop_name"
+                    style="@style/TextSmallMediumBlack70"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:layout_toRightOf="@+id/tv_label_shop_name"
+                    android:lineSpacingExtra="@dimen/sp_5"
+                    tools:ignore="RelativeOverlap"
+                    tools:text="Loaa Store df" />
 
-        </RelativeLayout>
+                <ImageView
+                    android:id="@+id/img_shop_badge"
+                    android:layout_width="@dimen/dp_18"
+                    android:layout_height="@dimen/dp_18"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/tv_shop_name"
+                    tools:src="@drawable/ic_badge_official" />
+
+            </RelativeLayout>
+
+        </FrameLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_cart_item"

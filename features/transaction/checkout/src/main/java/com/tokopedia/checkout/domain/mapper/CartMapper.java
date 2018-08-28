@@ -15,7 +15,6 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
-import com.tokopedia.transactiondata.entity.response.cartlist.CartList;
 import com.tokopedia.transactiondata.entity.response.cartlist.Shop;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.CartDetail;
 import com.tokopedia.transactiondata.entity.response.cartlist.shopgroup.ShopGroup;
@@ -49,13 +48,24 @@ public class CartMapper implements ICartMapper {
         CartListData cartListData = new CartListData();
         String errorMessage = mapperUtil.convertToString(cartDataListResponse.getErrors());
         boolean hasError = false;
+        int errorItemCount = 0;
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             if (shopGroup.getErrors() != null && shopGroup.getErrors().size() > 0) {
                 hasError = true;
                 if (TextUtils.isEmpty(errorMessage)) {
                     errorMessage = mapperUtil.convertToString(shopGroup.getErrors());
                 }
-                break;
+            }
+            if (shopGroup.getCartDetails().size() > 0) {
+                for (CartDetail cartDetail : shopGroup.getCartDetails()) {
+                    if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
+                        hasError = true;
+                        errorItemCount++;
+                        if (TextUtils.isEmpty(errorMessage)) {
+                            errorMessage = mapperUtil.convertToString(cartDetail.getErrors());
+                        }
+                    }
+                }
             }
         }
         cartListData.setError(!TextUtils.isEmpty(errorMessage) || hasError);
@@ -63,7 +73,7 @@ public class CartMapper implements ICartMapper {
         if (cartListData.isError()) {
             cartListData.setCartTickerErrorData(
                     new CartTickerErrorData.Builder()
-                            .errorInfo(context.getString(R.string.cart_error_message))
+                            .errorInfo(String.format(context.getString(R.string.cart_error_message), errorItemCount))
                             .actionInfo(context.getString(R.string.cart_error_action))
                             .build()
             );
@@ -74,7 +84,7 @@ public class CartMapper implements ICartMapper {
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             ShopGroupData shopGroupData = new ShopGroupData();
             shopGroupData.setError(!mapperUtil.isEmpty(shopGroup.getErrors()));
-            shopGroupData.setErrorMessage(mapperUtil.convertToString(shopGroup.getErrors()));
+            shopGroupData.setErrorTitle(mapperUtil.convertToString(shopGroup.getErrors()));
             shopGroupData.setShopId(String.valueOf(shopGroup.getShop().getShopId()));
             shopGroupData.setShopName(shopGroup.getShop().getShopName());
             shopGroupData.setShopType(generateShopType(shopGroup.getShop()));
@@ -154,15 +164,47 @@ public class CartMapper implements ICartMapper {
                 cartItemData.setUpdatedData(cartItemDataUpdated);
                 cartItemData.setErrorData(cartItemMessageErrorData);
 
-                cartItemData.setError(!mapperUtil.isEmpty(data.getErrors()));
-                cartItemData.setErrorMessage(mapperUtil.convertToString(data.getErrors()));
+                cartItemData.setSingleChild(shopGroup.getCartDetails().size() == 1);
 
-                cartItemData.setWarning(!mapperUtil.isEmpty(data.getMessages()));
-                cartItemData.setWarningMessage(mapperUtil.convertToString(data.getMessages()));
+                if (data.getErrors() != null) {
+                    if (data.getErrors().size() > 0) {
+                        cartItemData.setError(true);
+                        cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+
+                        if (data.getErrors().size() > 1) {
+                            cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
+                                    data.getErrors().subList(1, data.getErrors().size() - 1)));
+                        }
+                    }
+                }
+
+                if (data.getMessages() != null) {
+                    if (data.getMessages().size() > 0) {
+                        cartItemData.setWarning(true);
+                        cartItemData.setWarningMessageTitle(data.getMessages().get(0));
+
+                        if (data.getMessages().size() > 1) {
+                            cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
+                                    data.getMessages().subList(1, data.getMessages().size() - 1)));
+                        }
+                    }
+                }
+
+                if (cartItemData.isSingleChild()) {
+                    if (cartItemData.isError()) {
+                        shopGroupData.setError(true);
+                        shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
+                        shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                    } else if (cartItemData.isWarning()) {
+                        shopGroupData.setWarning(true);
+                        shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
+                        shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                    }
+                }
 
                 cartItemDataList.add(cartItemData);
             }
-            shopGroupData.setCartItemDataList(cartItemDataList);
+            shopGroupData.setCartItemDataList(cartItemDataList, shopGroupData.isError());
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);

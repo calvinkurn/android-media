@@ -14,7 +14,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
@@ -120,7 +120,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
         for (ShopGroupData shopGroupData : shopGroupDataList) {
             CartShopHolderData cartShopHolderData = new CartShopHolderData();
-            cartShopHolderData.setAllSelected(true);
+            cartShopHolderData.setAllSelected(!shopGroupData.isError());
             cartShopHolderData.setShopGroupData(shopGroupData);
             cartDataList.add(cartShopHolderData);
         }
@@ -316,7 +316,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         break;
                     } else if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected()) {
+                            if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
                                 if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
                                         cartItemHolderData.getCartItemData().isError()) {
                                     canProcess = false;
@@ -345,7 +345,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 cartDataList.add(shipmentSellerCashbackModel);
             }
             shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
+            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
         }
 
         int index = cartDataList.indexOf(shipmentSellerCashbackModel);

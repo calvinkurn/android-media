@@ -4,10 +4,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -24,11 +26,20 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
     public static final int TYPE_VIEW_ITEM_SHOP = R.layout.item_shop;
 
+    private LinearLayout llWarningAndError;
+    private FrameLayout flShopItemContainer;
+    private LinearLayout llShopContainer;
     private RelativeLayout rlShopHeader;
     private CheckBox cbSelectShop;
     private TextView tvShopName;
     private ImageView imgShopBadge;
     private RecyclerView rvCartItem;
+    private LinearLayout layoutError;
+    private TextView tvErrorTitle;
+    private TextView tvErrorDescription;
+    private LinearLayout layoutWarning;
+    private TextView tvWarningTitle;
+    private TextView tvWarningDescription;
 
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
@@ -40,14 +51,31 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         this.cartAdapterListener = cartAdapterListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
 
+        llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
+        flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
+        llShopContainer = itemView.findViewById(R.id.ll_shop_container);
         rlShopHeader = itemView.findViewById(R.id.rl_shop_header);
         cbSelectShop = itemView.findViewById(R.id.cb_select_shop);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
         rvCartItem = itemView.findViewById(R.id.rv_cart_item);
+        layoutError = itemView.findViewById(R.id.layout_error);
+        tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
+        tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
+        layoutWarning = itemView.findViewById(R.id.layout_warning);
+        tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
+        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
     }
 
     public void bindData(CartShopHolderData cartShopHolderData) {
+        if (cartShopHolderData.getShopGroupData().isError() || cartShopHolderData.getShopGroupData().isWarning()) {
+            llWarningAndError.setVisibility(View.VISIBLE);
+        } else {
+            llWarningAndError.setVisibility(View.GONE);
+        }
+        renderErrorItemHeader(cartShopHolderData);
+        renderWarningItemHeader(cartShopHolderData);
+
         tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
         tvShopName.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,27 +100,68 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 
+        cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
         rlShopHeader.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
+    }
+
+    private void renderErrorItemHeader(CartShopHolderData data) {
+        if (data.getShopGroupData().isError()) {
+            cbSelectShop.setEnabled(false);
+            flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_disabled_item));
+            llShopContainer.setBackgroundResource(R.drawable.bg_error_shop);
+            tvErrorTitle.setText(data.getShopGroupData().getErrorTitle());
+            String errorDescription = data.getShopGroupData().getErrorDescription();
+            if (!TextUtils.isEmpty(errorDescription)) {
+                tvErrorDescription.setText(errorDescription);
+                tvErrorDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvErrorDescription.setVisibility(View.GONE);
+            }
+            layoutError.setVisibility(View.VISIBLE);
+        } else {
+            cbSelectShop.setEnabled(true);
+            flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
+            llShopContainer.setBackgroundResource(0);
+            layoutError.setVisibility(View.GONE);
+        }
+    }
+
+    private void renderWarningItemHeader(CartShopHolderData data) {
+        if (data.getShopGroupData().isWarning()) {
+            tvWarningTitle.setText(data.getShopGroupData().getWarningTitle());
+            String warningDescription = data.getShopGroupData().getWarningDescription();
+            if (!TextUtils.isEmpty(warningDescription)) {
+                tvWarningDescription.setText(warningDescription);
+                tvWarningDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvWarningDescription.setVisibility(View.GONE);
+            }
+            layoutWarning.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarning.setVisibility(View.GONE);
+        }
     }
 
     private View.OnClickListener cbSelectShopClickListener(CartShopHolderData cartShopHolderData) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean isChecked = false;
-                if (cartShopHolderData.isPartialSelected()) {
-                    isChecked = false;
-                    cartShopHolderData.setAllSelected(false);
-                    cartShopHolderData.setPartialSelected(false);
-                } else {
-                    isChecked = !cartShopHolderData.isAllSelected();
-                }
-                cbSelectShop.setChecked(isChecked);
-                cartShopHolderData.setAllSelected(isChecked);
-                if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                    cartAdapterListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
+                if (!cartShopHolderData.getShopGroupData().isError()) {
+                    boolean isChecked;
+                    if (cartShopHolderData.isPartialSelected()) {
+                        isChecked = false;
+                        cartShopHolderData.setAllSelected(false);
+                        cartShopHolderData.setPartialSelected(false);
+                    } else {
+                        isChecked = !cartShopHolderData.isAllSelected();
+                    }
+                    cbSelectShop.setChecked(isChecked);
+                    cartShopHolderData.setAllSelected(isChecked);
+                    if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                        cartAdapterListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
+                    }
                 }
             }
         };

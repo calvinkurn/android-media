@@ -140,7 +140,8 @@
     <string name="label_other_item_count_format" formatted="false">+%s Produk Lainnya</string>
     <string name="label_pay">Bayar</string>
     <string name="iotem_count_and_weight_format" formatted="false">%s barang (%s)</string>
-    <string name="cart_item_count_format" formatted="false">Total Harga (%s Barang)</string>
+    <string name="cart_item_count_format" formatted="false">Harga (%s Barang)</string>
+    <string name="cart_item_button_checkout_count_format" formatted="false">Checkout (%s)</string>
     <string name="label_weight_format" formatted="false">%s %s</string>
     <string name="label_change_address_failed">Gagal mengubah alamat</string>
     <string name="label_change_address_success">Berhasil mengubah alamat</string>
@@ -160,8 +161,8 @@
     <string name="label_showcase_multiple_address_message">Klik tombol untuk mengirim barang yang sama ke beda alamat.</string>
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
-    <string name="cart_error_message">Terjadi kendala pada pesanan Anda, lihat di bawah untuk info lebih lengkap.</string>
-    <string name="cart_error_action">Hapus produk yang berkendala</string>
+    <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
+    <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="checkout_module_title_error_empty_address">Terjadi Kesalahan</string>
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
     <string name="checkout_module_label_button_retry_error_empty_address">Tambah Alamat</string>

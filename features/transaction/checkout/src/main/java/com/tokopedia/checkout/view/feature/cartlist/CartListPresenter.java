@@ -109,7 +109,6 @@ public class CartListPresenter implements ICartListPresenter {
         view.renderLoadGetCartData();
 
         RequestParams requestParams = RequestParams.create();
-        TKPDMapParam<String, String> mapParam = view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList());
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
                 view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
@@ -229,7 +228,8 @@ public class CartListPresenter implements ICartListPresenter {
         for (CartShopHolderData cartShopHolderData : dataList) {
             if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
                 for (int i = 0; i < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); i++) {
-                    if (cartShopHolderData.getShopGroupData().getCartItemDataList().get(i).isSelected()) {
+                    CartItemHolderData cartItemHolderData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i);
+                    if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
                         CartItemData cartItemData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i).getCartItemData();
                         if (cartItemData != null && cartItemData.getOriginData() != null) {
                             if (cartItemData.getOriginData().getParentId().equals("0")) {
@@ -245,7 +245,7 @@ public class CartListPresenter implements ICartListPresenter {
                 Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
                 Map<String, CartItemData> cartItemParentIdMap = new HashMap<>();
                 for (CartItemHolderData data : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                    if (data.isSelected()) {
+                    if (data.isSelected() && !data.getCartItemData().isError()) {
                         if (data.getCartItemData().getOriginData() != null) {
                             String parentId = data.getCartItemData().getOriginData().getParentId();
                             String productId = data.getCartItemData().getOriginData().getProductId();
@@ -346,7 +346,7 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false));
         if (totalCashback > 0) {
             view.updateCashback(totalCashback);
         }

@@ -21,7 +21,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -73,10 +72,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private ShipmentAdapterActionListener mActionListener;
 
-    private TextViewCompat tvError;
-    private FrameLayout layoutError;
-    private TextViewCompat tvWarning;
-    private FrameLayout layoutWarning;
+    private LinearLayout layoutError;
+    private TextView tvErrorTitle;
+    private TextView tvErrorDescription;
+    private LinearLayout layoutWarning;
+    private TextView tvWarningTitle;
+    private TextView tvWarningDescription;
     private TextView tvTextSentBy;
     private TextView tvShopName;
     private ImageView imgShippingWarning;
@@ -177,10 +178,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void bindViewIds(View itemView) {
-        tvError = itemView.findViewById(R.id.tv_error);
         layoutError = itemView.findViewById(R.id.layout_error);
-        tvWarning = itemView.findViewById(R.id.tv_warning);
+        tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
+        tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
         layoutWarning = itemView.findViewById(R.id.layout_warning);
+        tvWarningTitle = itemView.findViewById(R.id.tv_warning_title);
+        tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
         tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
@@ -350,7 +353,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ImageHandler.LoadImage(ivProductImage, cartItemModel.getImageUrl());
         tvProductName.setText(cartItemModel.getName());
         tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                (long) cartItemModel.getPrice(), true));
+                (long) cartItemModel.getPrice(), false));
         tvItemCountAndWeight.setText(String.format(tvItemCountAndWeight.getContext()
                         .getString(R.string.iotem_count_and_weight_format),
                 String.valueOf(cartItemModel.getQuantity()),
@@ -434,7 +437,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             }
             tvCourierName.setText(shipmentDetailData.getSelectedCourier().getName());
             String courierPrice = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true);
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false);
             tvCourierPrice.setText(courierPrice);
             tvCourierPrice.setVisibility(View.VISIBLE);
             tvDash.setVisibility(View.VISIBLE);
@@ -513,7 +516,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             tvSelectedDurationRecommendation.setText(shipmentDetailData.getSelectedCourier().getEstimatedTimeDelivery());
             tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
             tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                    shipmentDetailData.getSelectedCourier().getShipperPrice(), true));
+                    shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
@@ -566,7 +569,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             subTotalPrice = totalItemPrice;
         }
-        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, true));
+        tvSubTotalPrice.setText(subTotalPrice == 0 ? "-" : CurrencyFormatUtil.convertPriceValueToIdrFormat(subTotalPrice, false));
         tvTotalItemPrice.setText(totalItemPrice == 0 ? "-" : getPriceFormat(tvTotalItem, tvTotalItemPrice, totalItemPrice));
         tvTotalItem.setText(totalItemLabel);
         tvShippingFee.setText(shippingFeeLabel);
@@ -828,7 +831,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderError(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isError()) {
-            tvError.setText(shipmentCartItemModel.getErrorMessage());
+            tvErrorTitle.setText(shipmentCartItemModel.getErrorTitle());
+            String errorDescription = shipmentCartItemModel.getErrorDescription();
+            if (!TextUtils.isEmpty(errorDescription)) {
+                tvErrorDescription.setText(errorDescription);
+                tvErrorDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvErrorDescription.setVisibility(View.GONE);
+            }
             layoutError.setVisibility(View.VISIBLE);
         } else {
             layoutError.setVisibility(View.GONE);
@@ -837,7 +847,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWarnings(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isWarning()) {
-            tvWarning.setText(shipmentCartItemModel.getWarningMessage());
+            tvWarningTitle.setText(shipmentCartItemModel.getWarningTitle());
+            String warningDescription = shipmentCartItemModel.getWarningDescription();
+            if (!TextUtils.isEmpty(warningDescription)) {
+                tvWarningDescription.setText(warningDescription);
+                tvWarningDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvWarningDescription.setVisibility(View.GONE);
+            }
             layoutWarning.setVisibility(View.VISIBLE);
         } else {
             layoutWarning.setVisibility(View.GONE);
@@ -852,7 +869,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(price, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(price, false);
         }
     }
 

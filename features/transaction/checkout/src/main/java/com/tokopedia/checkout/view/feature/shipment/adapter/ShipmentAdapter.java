@@ -27,7 +27,7 @@ import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationV
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentInsuranceTncViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentItemViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentRecipientAddressViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentInsuranceTncModel;
@@ -260,7 +260,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             if (cartItemCounter == shipmentCartItemModelList.size()) {
                 double priceTotal = shipmentCostModel.getTotalPrice() <= 0 ? 0 : shipmentCostModel.getTotalPrice();
-                String priceTotalFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat((long) priceTotal, true);
+                String priceTotalFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat((long) priceTotal, false);
                 shipmentAdapterActionListener.onTotalPaymentChange(priceTotalFormatted);
             } else {
                 shipmentAdapterActionListener.onTotalPaymentChange("-");
@@ -289,7 +289,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
             }
             shipmentSellerCashbackModel.setVisible(true);
-            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
+            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
             shipmentDataList.add(shipmentSellerCashbackModel);
         }
     }

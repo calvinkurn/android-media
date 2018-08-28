@@ -74,7 +74,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
 
         mTvTotalItemLabel.setText(getTotalItemLabel(mTvTotalItemLabel.getContext(), shipmentCost.getTotalItem()));
         mTvTotalItemPrice.setText(shipmentCost.getTotalItemPrice() == 0 ? "-" :
-                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), true));
+                CurrencyFormatUtil.convertPriceValueToIdrFormat((long) shipmentCost.getTotalItemPrice(), false));
         mTvShippingFeeLabel.setText(mTvShippingFeeLabel.getContext().getString(R.string.label_shipment_fee));
         mTvShippingFee.setText(getPriceFormat(mTvShippingFeeLabel, mTvShippingFee, shipmentCost.getShippingFee()));
         mTvInsuranceFee.setText(getPriceFormat(mTvInsuranceFeeLabel, mTvInsuranceFee, shipmentCost.getInsuranceFee()));
@@ -136,7 +136,7 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         } else {
             textViewLabel.setVisibility(View.VISIBLE);
             textViewPrice.setVisibility(View.VISIBLE);
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, true);
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat((long) price, false);
         }
     }
 

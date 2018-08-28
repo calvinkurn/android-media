@@ -127,9 +127,9 @@ public class ShipmentDataConverter {
         if (shipmentCartItemModel.isError()) {
             shipmentCartItemModel.setAllItemError(true);
         }
-        shipmentCartItemModel.setErrorMessage(groupShop.getErrorMessage());
+        shipmentCartItemModel.setErrorTitle(groupShop.getErrorMessage());
         shipmentCartItemModel.setWarning(groupShop.isWarning());
-        shipmentCartItemModel.setWarningMessage(groupShop.getWarningMessage());
+        shipmentCartItemModel.setWarningTitle(groupShop.getWarningMessage());
 
         if (!shipmentCartItemModel.isError()) {
             int productErrorCounter = 0;
@@ -140,7 +140,7 @@ public class ShipmentDataConverter {
             }
             if (productErrorCounter > 0) {
                 shipmentCartItemModel.setError(true);
-                shipmentCartItemModel.setErrorMessage("Terdapat kendala pada " + productErrorCounter + " produk");
+                shipmentCartItemModel.setErrorTitle("Terdapat kendala pada " + productErrorCounter + " produk");
             }
         }
 

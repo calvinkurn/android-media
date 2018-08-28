@@ -41,9 +41,9 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
                 outRect.bottom = 0;
             }
         } else if (viewHolder instanceof CartVoucherPromoViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_0);
         } else if (viewHolder instanceof CartTickerErrorViewHolder) {
-            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
+            outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_6);
         } else if (viewHolder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
             outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_14);
         } else {

@@ -509,7 +509,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (oldShipmentCartItemModel.equals(newShipmentCartItemModel)) {
                     oldShipmentCartItemModel.setError(newShipmentCartItemModel.isError());
                     oldShipmentCartItemModel.setAllItemError(newShipmentCartItemModel.isAllItemError());
-                    oldShipmentCartItemModel.setErrorMessage(newShipmentCartItemModel.getErrorMessage());
+                    oldShipmentCartItemModel.setErrorTitle(newShipmentCartItemModel.getErrorTitle());
                     for (CartItemModel newCartItemModel : newShipmentCartItemModel.getCartItemModels()) {
                         for (CartItemModel oldCartItemModel : oldShipmentCartItemModel.getCartItemModels()) {
                             if (newCartItemModel.getProductId() == oldCartItemModel.getProductId()) {
@@ -659,7 +659,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (int i = 0; i < newShipmentCartItemModelList.size(); i++) {
                 if (newShipmentCartItemModelList.get(i).isError()) {
                     oldShipmentCartItemModelList.get(i).setError(true);
-                    oldShipmentCartItemModelList.get(i).setErrorMessage(newShipmentCartItemModelList.get(i).getErrorMessage());
+                    oldShipmentCartItemModelList.get(i).setErrorTitle(newShipmentCartItemModelList.get(i).getErrorTitle());
                 }
                 for (int j = 0; j < newShipmentCartItemModelList.get(i).getCartItemModels().size(); j++) {
                     if (newShipmentCartItemModelList.get(i).isAllItemError()) {
