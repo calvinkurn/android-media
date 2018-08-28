@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 

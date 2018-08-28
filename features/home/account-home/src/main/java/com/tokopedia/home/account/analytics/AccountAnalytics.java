@@ -1,12 +1,11 @@
 package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 

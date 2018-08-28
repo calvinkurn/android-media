@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.presentation;
+package com.tokopedia.home.account;
 
 import android.app.Activity;
 import android.content.Context;

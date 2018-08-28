@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.R;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 
 /**
  * @author okasurya on 7/18/18.
