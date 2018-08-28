@@ -1,4 +1,4 @@
-package com.tokopedia.common_digital.cart.data.repository;
+package com.tokopedia.common_digital.cart.domain.usecase;
 
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository;
 import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;

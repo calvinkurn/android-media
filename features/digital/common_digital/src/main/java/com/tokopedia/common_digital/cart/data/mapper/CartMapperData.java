@@ -6,11 +6,13 @@ import com.tokopedia.common_digital.cart.data.entity.response.Detail;
 import com.tokopedia.common_digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.common_digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.cart.view.model.AttributesDigital;
 import com.tokopedia.common_digital.cart.view.model.CartAdditionalInfo;
 import com.tokopedia.common_digital.cart.view.model.CartAutoApplyVoucher;
 import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
 import com.tokopedia.common_digital.cart.view.model.CartItemDigital;
+import com.tokopedia.common_digital.cart.view.model.CheckoutDigitalData;
 import com.tokopedia.common_digital.cart.view.model.Relation;
 import com.tokopedia.common_digital.cart.view.model.RelationData;
 import com.tokopedia.common_digital.cart.view.model.Relationships;
@@ -126,6 +128,33 @@ public class CartMapperData implements ICartMapperData {
             cartDigitalInfoData.setRelationships(relationships);
 
             return cartDigitalInfoData;
+        } catch (Exception e) {
+            throw new MapperDataException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public CheckoutDigitalData transformCheckoutData(
+            ResponseCheckoutData responseCheckoutData
+    ) throws MapperDataException {
+        try {
+            CheckoutDigitalData checkoutDigitalData = new CheckoutDigitalData();
+            checkoutDigitalData.setFailedCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlFailed()
+            );
+            checkoutDigitalData.setSuccessCallbackUrl(
+                    responseCheckoutData.getAttributes().getCallbackUrlSuccess()
+            );
+            checkoutDigitalData.setRedirectUrl(
+                    responseCheckoutData.getAttributes().getRedirectUrl()
+            );
+            checkoutDigitalData.setStringQuery(
+                    responseCheckoutData.getAttributes().getQueryString()
+            );
+            checkoutDigitalData.setTransactionId(
+                    responseCheckoutData.getAttributes().getParameter().getTransactionId()
+            );
+            return checkoutDigitalData;
         } catch (Exception e) {
             throw new MapperDataException(e.getMessage(), e);
         }

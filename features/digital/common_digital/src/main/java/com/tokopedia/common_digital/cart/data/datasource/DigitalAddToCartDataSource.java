@@ -30,7 +30,7 @@ public class DigitalAddToCartDataSource {
         this.cartMapperData = cartMapperData;
     }
 
-    public Observable addToCart(
+    public Observable<CartDigitalInfoData> addToCart(
             RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader
     ) {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyAtcDigital));
