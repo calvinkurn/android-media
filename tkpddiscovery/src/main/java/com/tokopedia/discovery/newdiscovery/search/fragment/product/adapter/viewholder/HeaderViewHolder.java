@@ -52,6 +52,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public static final String ETALASE_NAME = "etalase_name";
     private ItemClickListener clickListener;
     private QuickFilterAdapter quickFilterAdapter;
+    private TextView resultCountText;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
@@ -60,6 +61,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
+        resultCountText = (TextView) itemView.findViewById(R.id.result_count_text_view);
         initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
     }
@@ -98,7 +100,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
             TextView suggestionText = (TextView) suggestionView.findViewById(R.id.suggestion_text_view);
-            TextView resultCountText = (TextView) suggestionView.findViewById(R.id.result_count_text_view);
             if (!TextUtils.isEmpty(element.getSuggestionModel().getSuggestionText())) {
                 suggestionText.setText(Html.fromHtml(element.getSuggestionModel().getSuggestionText()));
                 suggestionText.setOnClickListener(new View.OnClickListener() {
