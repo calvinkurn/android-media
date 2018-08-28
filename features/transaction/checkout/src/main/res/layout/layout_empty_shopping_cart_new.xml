@@ -81,15 +81,14 @@
                 android:textSize="@dimen/sp_16"
                 android:textStyle="normal"/>
 
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
                 android:paddingBottom="@dimen/dp_16"
+                android:text="@string/checkout_module_buat_impian_anda_jadi_kenyataan_sekarang"
                 android:textColor="@color/black_54"
-                android:textSize="@dimen/sp_12"
-                android:text="@string/checkout_module_buat_impian_anda_jadi_kenyataan_sekarang"/>
+                android:textSize="@dimen/sp_12"/>
 
             <TextView
                 android:id="@+id/btn_add_from_whislist"
@@ -122,4 +121,5 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
+
 </android.support.v4.widget.NestedScrollView>
