@@ -41,15 +41,20 @@ public class ShopNoteReorderViewHolder extends AbstractViewHolder<ShopNoteViewMo
         tvNoteName.setText(shopNoteViewModel.getTitle());
         tvLastUpdate.setText(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE_TIME, shopNoteViewModel.getUpdateTime()));
 
-        handler.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener.onStartDrag(ShopNoteReorderViewHolder.this);
+        if (shopNoteViewModel.getTerms()) {
+            handler.setVisibility(View.GONE);
+        } else {
+            handler.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                        onStartDragListener.onStartDrag(ShopNoteReorderViewHolder.this);
+                    }
+                    return false;
                 }
-                return false;
-            }
-        });
+            });
+            handler.setVisibility(View.VISIBLE);
+        }
     }
 
 }

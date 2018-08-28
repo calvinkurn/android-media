@@ -70,8 +70,8 @@ public class ShopSettingsEtalaseActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void goToReorderFragment(ArrayList<ShopEtalaseViewModel> models) {
-        ShopSettingsEtalaseReorderFragment fragment = ShopSettingsEtalaseReorderFragment.newInstance(models);
+    public void goToReorderFragment(ArrayList<ShopEtalaseViewModel> defaultModels, ArrayList<ShopEtalaseViewModel> models) {
+        ShopSettingsEtalaseReorderFragment fragment = ShopSettingsEtalaseReorderFragment.newInstance(defaultModels, models);
         replaceAndHideOldFragment(fragment,true, ShopSettingsEtalaseReorderFragment.TAG);
         tvSave.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();

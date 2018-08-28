@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -25,9 +27,6 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
 import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseReorderAdapter;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseReorderFactory;
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListReorderPresenter;
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
-import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter;
-import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,23 +39,30 @@ public class ShopSettingsEtalaseReorderFragment extends BaseListFragment<ShopEta
 
     public static final String TAG = ShopSettingsEtalaseReorderFragment.class.getSimpleName();
     public static final String EXTRA_ETALASE_LIST = "etalase_list";
+    public static final String EXTRA_DEFAULT_ETALASE_LIST = "def_etalase_list";
 
     @Inject
     ShopSettingEtalaseListReorderPresenter shopSettingEtalaseListReorderPresenter;
-    private ArrayList<ShopEtalaseViewModel> shopNoteModels;
+    private ArrayList<ShopEtalaseViewModel> shopEtalaseModels;
+    private ArrayList<ShopEtalaseViewModel> shopEtalaseModelsDefault;
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
     private ShopEtalaseReorderAdapter adapter;
+    private ShopEtalaseReorderAdapter adapterDefault;
     private ItemTouchHelper itemTouchHelper;
 
     private OnShopSettingsEtalaseReorderFragmentListener listener;
+    private RecyclerView recyclerViewDefault;
+
     public interface OnShopSettingsEtalaseReorderFragmentListener{
         void onSuccessReorderEtalase();
     }
 
-    public static ShopSettingsEtalaseReorderFragment newInstance(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels) {
+    public static ShopSettingsEtalaseReorderFragment newInstance(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelsDefault,
+                                                                 ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels) {
 
         Bundle args = new Bundle();
+        args.putParcelableArrayList(EXTRA_DEFAULT_ETALASE_LIST, shopEtalaseViewModelsDefault);
         args.putParcelableArrayList(EXTRA_ETALASE_LIST, shopEtalaseViewModels);
         ShopSettingsEtalaseReorderFragment fragment = new ShopSettingsEtalaseReorderFragment();
         fragment.setArguments(args);
@@ -79,6 +85,15 @@ public class ShopSettingsEtalaseReorderFragment extends BaseListFragment<ShopEta
         return adapter;
     }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_etalase_reorder_list, container, false);
+        recyclerViewDefault = view.findViewById(R.id.recyclerViewDefault);
+        recyclerViewDefault.setAdapter(adapterDefault);
+        return view;
+    }
+
     @Override
     protected String getScreenName() {
         return null;
@@ -86,9 +101,11 @@ public class ShopSettingsEtalaseReorderFragment extends BaseListFragment<ShopEta
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        shopNoteModels = getArguments().getParcelableArrayList(EXTRA_ETALASE_LIST);
+        shopEtalaseModelsDefault = getArguments().getParcelableArrayList(EXTRA_DEFAULT_ETALASE_LIST);
+        shopEtalaseModels = getArguments().getParcelableArrayList(EXTRA_ETALASE_LIST);
         super.onCreate(savedInstanceState);
         GraphqlClient.init(getContext());
+        adapterDefault = new ShopEtalaseReorderAdapter(new ShopEtalaseReorderFactory(null));
     }
 
     @Override
@@ -103,11 +120,19 @@ public class ShopSettingsEtalaseReorderFragment extends BaseListFragment<ShopEta
         ItemTouchHelper.Callback itemTouchHelperCallback = new SimpleItemTouchHelperCallback(adapter);
         itemTouchHelper = new ItemTouchHelper(itemTouchHelperCallback);
         itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        if (shopEtalaseModelsDefault == null || shopEtalaseModelsDefault.size() == 0) {
+            recyclerViewDefault.setVisibility(View.GONE);
+        } else {
+            adapterDefault.clearAllElements();
+            adapterDefault.addElement(shopEtalaseModelsDefault);
+            recyclerViewDefault.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
     public void loadData(int page) {
-        renderList(shopNoteModels, false);
+        renderList(shopEtalaseModels, false);
     }
 
     @Override

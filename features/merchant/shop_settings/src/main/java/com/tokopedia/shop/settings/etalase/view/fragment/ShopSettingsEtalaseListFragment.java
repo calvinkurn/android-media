@@ -68,7 +68,8 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
     private OnShopSettingsEtalaseFragmentListener onShopSettingsEtalaseFragmentListener;
 
     public interface OnShopSettingsEtalaseFragmentListener {
-        void goToReorderFragment(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels);
+        void goToReorderFragment(ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelsDefault,
+                                 ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels);
     }
 
     public static ShopSettingsEtalaseListFragment newInstance() {
@@ -147,16 +148,20 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
             if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
                 return true;
             }
+            ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelListDefaultOnly = new ArrayList<>();
             ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelListCustomOnly = new ArrayList<>();
             for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModels) {
                 if (shopEtalaseViewModel.getType() == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
                     shopEtalaseViewModelListCustomOnly.add(shopEtalaseViewModel);
+                } else {
+                    shopEtalaseViewModelListDefaultOnly.add(shopEtalaseViewModel);
                 }
             }
             if (shopEtalaseViewModelListCustomOnly.size() == 0) {
                 return true;
             }
-            onShopSettingsEtalaseFragmentListener.goToReorderFragment(shopEtalaseViewModelListCustomOnly);
+            onShopSettingsEtalaseFragmentListener.goToReorderFragment(shopEtalaseViewModelListDefaultOnly,
+                    shopEtalaseViewModelListCustomOnly);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -381,14 +386,7 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
     public void onErrorDeleteShopEtalase(Throwable throwable) {
         hideSubmitLoading();
         String message = ErrorHandler.getErrorMessage(getContext(), throwable);
-        ToasterError.make(getActivity().findViewById(android.R.id.content),
-                message, BaseToaster.LENGTH_LONG)
-                .setAction(getString(R.string.close), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // no-op
-                    }
-                }).show();
+        ToasterError.showClose(getActivity(), message);
     }
 
     public void showSubmitLoading(String message) {

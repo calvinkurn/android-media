@@ -7,7 +7,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
@@ -20,10 +22,10 @@ import com.tokopedia.design.touchhelper.OnStartDragListener;
 import com.tokopedia.design.touchhelper.SimpleItemTouchHelperCallback;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteReorderAdapter;
+import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteReorderFactory;
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListReorderPresenter;
 
 import java.util.ArrayList;
@@ -44,7 +46,9 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
     private List<ShopNoteViewModel> shopNoteModelsWithoutTerms;
     private ProgressDialog progressDialog;
     private RecyclerView recyclerView;
+    private RecyclerView recyclerViewTerms;
     private ShopNoteReorderAdapter adapter;
+    private ShopNoteReorderAdapter adapterTerms;
     private ItemTouchHelper itemTouchHelper;
 
     private OnShopSettingsNotesReorderFragmentListener listener;
@@ -78,15 +82,25 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
-    }
-
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         shopNoteModels = getArguments().getParcelableArrayList(EXTRA_NOTE_LIST);
         super.onCreate(savedInstanceState);
         GraphqlClient.init(getContext());
+        adapterTerms = new ShopNoteReorderAdapter(new ShopNoteReorderFactory(null));
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_note_reorder_list, container, false);
+        recyclerViewTerms = view.findViewById(R.id.recyclerViewTerms);
+        recyclerViewTerms.setAdapter(adapterTerms);
+        return view;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return null;
     }
 
     @Override
@@ -105,14 +119,25 @@ public class ShopSettingsNotesReorderFragment extends BaseListFragment<ShopNoteV
 
     @Override
     public void loadData(int page) {
+        ArrayList<ShopNoteViewModel> shopNoteModelsTerms = new ArrayList<>();
         if (shopNoteModels!=null && shopNoteModels.size() > 0) {
             if (shopNoteModels.get(0).getTerms()) {
                 shopNoteModelsWithoutTerms = shopNoteModels.subList(1, shopNoteModels.size());
+                shopNoteModelsTerms.add(shopNoteModels.get(0));
             } else {
                 shopNoteModelsWithoutTerms = shopNoteModels;
             }
         }
         renderList(shopNoteModelsWithoutTerms, false);
+
+        //render shop note with terms
+        if (shopNoteModelsTerms.size() == 0) {
+            recyclerViewTerms.setVisibility(View.GONE);
+        } else {
+            adapterTerms.clearAllElements();
+            adapterTerms.addElement(shopNoteModelsTerms);
+            recyclerViewTerms.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
