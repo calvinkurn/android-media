@@ -97,6 +97,12 @@ public class KolPostAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
         notifyDataSetChanged();
     }
 
+    public void showEmpty(boolean showTopShadhow) {
+        emptyModel.setShowTopShadow(showTopShadhow);
+        this.list.add(emptyModel);
+        notifyDataSetChanged();
+    }
+
     public void showEmpty() {
         this.list.add(emptyModel);
         notifyDataSetChanged();

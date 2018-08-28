@@ -223,7 +223,7 @@ public class KolPostFragment extends BaseDaggerFragment implements
     public void onEmptyKolPost() {
         adapter.removeErrorNetwork();
         adapter.removeLoading();
-        adapter.showEmpty();
+        adapter.showEmpty(true);
     }
 
     @Override
