@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Talk</string>
+
+    <string name="title_tab_talk_all">Semua</string>
+    <string name="title_tab_talk_my_product">Produk Saya</string>
+    <string name="title_tab_talk_follow">Ikuti</string>
+    <string name="title_product_discussion">Diskusi Produk</string>
+
 </resources>

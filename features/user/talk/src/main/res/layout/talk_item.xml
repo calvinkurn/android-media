@@ -22,9 +22,9 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/dp_10"
-            app:layout_constraintTop_toTopOf="@id/prof_pict"
-            app:layout_constraintBottom_toBottomOf="@id/prof_pict"
-            app:layout_constraintLeft_toRightOf="@id/prof_pict">
+            app:layout_constraintTop_toTopOf="@+id/prof_pict"
+            app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
+            app:layout_constraintLeft_toRightOf="@+id/prof_pict">
         <TextView
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
@@ -33,9 +33,9 @@
                 android:fontFamily="sans-serif"
                 android:textStyle="bold"
                 android:textColor="@color/black_70"
-                app:layout_constraintBottom_toBottomOf="@id/prof_pict"
-                app:layout_constraintBottom_toTopOf="@id/timestamp"
-                app:layout_constraintLeft_toRightOf="@id/prof_pict"
+                app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
+                app:layout_constraintBottom_toTopOf="@+id/timestamp"
+                app:layout_constraintLeft_toRightOf="@+id/prof_pict"
                 app:layout_constraintTop_toTopOf="@+id/menu"
                 tools:text="Lord Atep"/>
 

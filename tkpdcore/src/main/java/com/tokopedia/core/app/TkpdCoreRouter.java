@@ -197,4 +197,6 @@ public interface TkpdCoreRouter {
     Intent getSettingBankIntent(Context context);
 
     Intent getChangePasswordIntent(Context context);
+
+    Intent getTalkIntent(Context context);
 }

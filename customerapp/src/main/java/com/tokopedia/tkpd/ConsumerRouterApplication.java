@@ -88,6 +88,7 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
+import com.tokopedia.core.router.InboxRouter;
 import com.tokopedia.core.router.OtpRouter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -111,7 +112,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
@@ -147,7 +147,6 @@ import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
@@ -248,6 +247,7 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.talk.inboxtalk.InboxTalkActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -388,7 +388,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
-        OmsModuleRouter ,
+        OmsModuleRouter,
         BankRouter,
         ChangePasswordRouter,
         TrainRouter,
@@ -1983,7 +1983,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getWithdrawIntent(Context context){
+    public Intent getWithdrawIntent(Context context) {
         if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
             return WithdrawActivity.getCallingIntent(context);
         else {
@@ -2177,7 +2177,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public String getUserPhoneNumber(){
+    public String getUserPhoneNumber() {
         return SessionHandler.getPhoneNumber();
     }
 
@@ -2411,10 +2411,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)){
+        if (remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)) {
             return ChangePasswordActivity.Companion.createIntent(context);
-        }else{
-            return  new Intent(context, ManagePasswordActivity.class);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
         }
     }
 
@@ -2461,7 +2461,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
@@ -2487,6 +2487,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             return SettingBankActivity.Companion.createIntent(context);
         else {
             return ManagePeopleBankActivity.createInstance(context);
+        }
+    }
+
+    @Override
+    public Intent getTalkIntent(Context context) {
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true))
+            return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
         }
     }
 }

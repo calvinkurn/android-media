@@ -40,9 +40,10 @@
             android:textStyle="normal"
             android:textColor="@color/black_54"
             android:layout_marginLeft="@dimen/dp_16"
-            app:layout_constraintLeft_toRightOf="@id/q_a_logo"
+            app:layout_constraintLeft_toRightOf="@+id/q_a_logo"
             tools:text="Diskusikan dengan penjual atau pengguna lain"
-            app:layout_constraintTop_toTopOf="@+id/q_a_logo" app:layout_constraintBottom_toBottomOf="@+id/q_a_logo"
+            app:layout_constraintTop_toTopOf="@+id/q_a_logo"
+            app:layout_constraintBottom_toBottomOf="@+id/q_a_logo"
             android:layout_marginBottom="8dp"/>
 
     <TextView
@@ -69,7 +70,7 @@
             android:src="@drawable/universal_dashed_line"
             android:layout_marginTop="@dimen/dp_16"
             app:layout_constraintTop_toBottomOf="@+id/ask"
-            app:layout_constraintBottom_toTopOf="@id/bubble_logo"
+            app:layout_constraintBottom_toTopOf="@+id/bubble_logo"
             app:layout_constraintLeft_toLeftOf="parent"/>
 
     <ImageView
@@ -89,7 +90,7 @@
             android:textStyle="normal"
             android:textColor="@color/black_54"
             android:layout_marginLeft="@dimen/dp_16"
-            app:layout_constraintLeft_toRightOf="@id/q_a_logo"
+            app:layout_constraintLeft_toRightOf="@+id/q_a_logo"
             tools:text="Atau hubungi langsung penjual"
             app:layout_constraintTop_toTopOf="@+id/bubble_logo"
             app:layout_constraintBottom_toBottomOf="@+id/bubble_logo"
