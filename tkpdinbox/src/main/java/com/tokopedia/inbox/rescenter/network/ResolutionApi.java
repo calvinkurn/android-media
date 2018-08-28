@@ -76,6 +76,21 @@ public interface ResolutionApi {
     postCreateResolution(@Path(PATH_ORDER_ID) String orderId,
                          @Body Object object);
 
+    @GET(ResolutionUrl.GET_RESOLUTION_RECOMPLAINT_STEP_1)
+    Observable<Response<ResolutionResponse<ProductProblemListResponse>>>
+    getProductProblemListRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
+                          @QueryMap HashMap<String, Object> params);
+
+    @POST(ResolutionUrl.POST_RESOLUTION_RECOMPLAINT_STEP_2_3)
+    Observable<Response<ResolutionResponse<SolutionResponseResponse>>>
+    getSolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+                @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateResoWithoutAttachmentResponse>>>
+    postCreateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+                         @Body Object object);
+
     @GET(ResolutionUrl.GET_RESOLUTION_EDIT)
     Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getEditSolution(@Path(PATH_RESOLUTION_ID) String resoId);
@@ -104,6 +119,16 @@ public interface ResolutionApi {
     @POST(ResolutionUrl.BASE_RESOLUTION_SUBMIT)
     Observable<Response<ResolutionResponse<CreateSubmitResponse>>>
     postCreateSubmitResolution(@Path(PATH_ORDER_ID) String orderId,
+                               @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateValidateResponse>>>
+    postCreateValidateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+                                 @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateSubmitResponse>>>
+    postCreateSubmitResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
                                @Body Object object);
 
     //END of create section

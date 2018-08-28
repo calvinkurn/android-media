@@ -41,6 +41,9 @@ public class GetSolutionUseCase extends UseCase<SolutionResponseDomain> {
         RequestParams params = RequestParams.create();
         params.putString(ORDER_ID, resultViewModel.orderId);
         params.putObject(PARAM_COMPLAINT, problemObject);
+        if (resultViewModel.resolutionId != null) {
+            params.putString(PARAM_RESOLUTION_ID, resultViewModel.resolutionId);
+        }
 
         return params;
     }

@@ -14,10 +14,6 @@ public class ResolutionUrl {
     public static final String BASE_RESOLUTION_VERSION_2 = "resolution/v2/";
     public static final String BASE_RESOLUTION_VERSION_3 = "resolution/v3/";
     public static final String BASE_RESOLUTION_VERSION = BASE_RESOLUTION_VERSION_3;
-    public static final String BASE_INBOX_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "inbox";
-    public static final String BASE_INBOX_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "inbox";
-    public static final String BASE_DETAIL_RESOLUTION = BASE_RESOLUTION_VERSION_1 + "detail/{resolution_id}";
-    public static final String BASE_DETAIL_RESOLUTION_V2 = BASE_RESOLUTION_VERSION_2 + "detail/{resolution_id}";
 
     public static final String BASE_RESOLUTION_CREATE = BASE_RESOLUTION_VERSION + "create/{order_id}";
     public static final String BASE_RESOLUTION_VALIDATE = BASE_RESOLUTION_VERSION + "create/{order_id}";
@@ -29,6 +25,11 @@ public class ResolutionUrl {
     public static final String POST_RESOLUTION_EDIT = BASE_RESOLUTION_DETAIL + "/edit";
     public static final String GET_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL + "/appeal";
     public static final String POST_RESOLUTION_APPEAL = BASE_RESOLUTION_DETAIL + "/appeal";
+
+
+    public static final String BASE_RESOLUTION_RECOMPLAINT = BASE_RESOLUTION_DETAIL + "/recomplain";
+    public static final String GET_RESOLUTION_RECOMPLAINT_STEP_1 = BASE_RESOLUTION_RECOMPLAINT + "/step/1";
+    public static final String POST_RESOLUTION_RECOMPLAINT_STEP_2_3 = BASE_RESOLUTION_RECOMPLAINT + "/step/2";
 
 
     public static final String PATH_GENERATE_TOKEN_HOST_WITHOUT_HEADER = "generate_token_host.pl";

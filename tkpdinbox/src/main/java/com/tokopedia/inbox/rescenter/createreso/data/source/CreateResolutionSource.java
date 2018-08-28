@@ -34,6 +34,8 @@ import rx.Observable;
 
 public class CreateResolutionSource {
 
+    public static final String PARAM_RESOLUTION_ID = "resolutionID";
+
     private GetProductProblemMapper productProblemMapper;
     private SolutionMapper solutionMapper;
     private CreateResoWithoutAttachmentMapper createResoWithoutAttachmentMapper;
@@ -64,21 +66,38 @@ public class CreateResolutionSource {
     }
 
     public Observable<ProductProblemResponseDomain> getProductProblemList(RequestParams requestParams) {
-        return resolutionApi.getProductProblemList(
+        if (requestParams.getObject(PARAM_RESOLUTION_ID) != null)
+            return resolutionApi.getProductProblemListRecomplaint(
+                    requestParams.getString(GetProductProblemUseCase.PARAM_RESOLUTION_ID, ""),
+                    requestParams.getParameters())
+                    .map(productProblemMapper);
+        else
+            return resolutionApi.getProductProblemList(
                 requestParams.getString(GetProductProblemUseCase.ORDER_ID, ""),
                 requestParams.getParameters())
                 .map(productProblemMapper);
     }
 
     public Observable<CreateResoWithoutAttachmentDomain> createResoWithoutAttachmentResponse(RequestParams requestParams) {
-        return resolutionApi.postCreateResolution(requestParams.getString(
+        if (requestParams.getObject(PARAM_RESOLUTION_ID) != null)
+            return resolutionApi.postCreateResolutionRecomplaint(requestParams.getString(
+                    CreateResoWithoutAttachmentUseCase.PARAM_RESOLUTION_ID, ""),
+                    requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
+                    .map(createResoWithoutAttachmentMapper);
+        else
+            return resolutionApi.postCreateResolution(requestParams.getString(
                 CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
                 requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
                 .map(createResoWithoutAttachmentMapper);
     }
 
     public Observable<SolutionResponseDomain> getSolution(RequestParams requestParams) {
-        return resolutionApi.getSolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
+        if (requestParams.getObject(PARAM_RESOLUTION_ID) != null)
+            return resolutionApi.getSolutionRecomplaint(requestParams.getString(GetSolutionUseCase.PARAM_RESOLUTION_ID, ""),
+                    requestParams.getObject(GetSolutionUseCase.PARAM_COMPLAINT))
+                    .map(solutionMapper);
+        else
+            return resolutionApi.getSolution(requestParams.getString(GetSolutionUseCase.ORDER_ID, ""),
                 requestParams.getObject(GetSolutionUseCase.PARAM_COMPLAINT))
                 .map(solutionMapper);
     }
@@ -110,14 +129,26 @@ public class CreateResolutionSource {
     }
 
     public Observable<CreateValidateDomain> createValidate(RequestParams requestParams) {
-        return resolutionApi.postCreateValidateResolution(requestParams.getString(
+        if (requestParams.getObject(PARAM_RESOLUTION_ID) != null)
+            return resolutionApi.postCreateValidateResolutionRecomplaint(requestParams.getString(
+                    CreateResoWithoutAttachmentUseCase.PARAM_RESOLUTION_ID, ""),
+                    requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
+                    .map(createValidateMapper);
+        else
+            return resolutionApi.postCreateValidateResolution(requestParams.getString(
                 CreateResoWithoutAttachmentUseCase.ORDER_ID, ""),
                 requestParams.getObject(CreateResoWithoutAttachmentUseCase.PARAM_RESULT))
                 .map(createValidateMapper);
     }
 
     public Observable<CreateSubmitDomain> createSubmit(RequestParams requestParams) {
-        return resolutionApi.postCreateSubmitResolution(requestParams.getString(
+        if (requestParams.getObject(PARAM_RESOLUTION_ID) != null)
+            return resolutionApi.postCreateSubmitResolutionRecomplaint(requestParams.getString(
+                    GetSolutionUseCase.PARAM_RESOLUTION_ID, ""),
+                    requestParams.getObject(CreateSubmitUseCase.PARAM_JSON))
+                    .map(createSubmitMapper);
+        else
+            return resolutionApi.postCreateSubmitResolution(requestParams.getString(
                 GetSolutionUseCase.ORDER_ID, ""),
                 requestParams.getObject(CreateSubmitUseCase.PARAM_JSON))
                 .map(createSubmitMapper);
