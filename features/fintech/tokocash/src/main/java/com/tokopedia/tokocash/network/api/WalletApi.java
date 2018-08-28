@@ -34,6 +34,7 @@ public interface WalletApi {
 
     String IDENTIFIER = "identifier";
 
+    @Deprecated
     @POST(TkpdBaseURL.Wallet.POST_COMPLAINT)
     Observable<Response<DataResponse<HelpHistoryTokoCashEntity>>> postHelpHistory(@Body Map<String, String> params);
 

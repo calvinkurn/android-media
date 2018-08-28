@@ -30,12 +30,13 @@
             android:layout_alignParentBottom="true"
             android:layout_gravity="center"
             android:layout_marginTop="@dimen/dp_10"
-            android:fontFamily="sans-serif-medium"
+            android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:padding="@dimen/dp_12"
             android:text="@string/my_phone_number_is_inactive"
             android:textColor="@color/tkpd_main_green"
             android:textSize="@dimen/sp_13"
+            android:lineSpacingExtra="5sp"
             android:textStyle="normal"
             />
 
@@ -86,5 +87,4 @@
 
         </LinearLayout>
     </RelativeLayout>
-
 </RelativeLayout>

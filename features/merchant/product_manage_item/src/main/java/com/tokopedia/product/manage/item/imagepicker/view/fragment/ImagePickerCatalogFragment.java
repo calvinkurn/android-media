@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.imagepicker.view.fragment;
+package com.tokopedia.product.manage.item.imagepicker.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -18,16 +18,16 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.product.imagepicker.di.DaggerImagePickerCatalogComponent;
-import com.tokopedia.seller.product.imagepicker.di.ImagePickerCatalogModule;
-import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
-import com.tokopedia.seller.product.imagepicker.view.adapter.CatalogAdapterTypeFactory;
-import com.tokopedia.seller.product.imagepicker.view.adapter.CatalogImageViewHolder;
-import com.tokopedia.seller.product.imagepicker.view.adapter.ImageCatalogAdapter;
-import com.tokopedia.seller.product.imagepicker.view.model.CatalogModelView;
-import com.tokopedia.seller.product.imagepicker.view.presenter.ImagePickerCatalogContract;
-import com.tokopedia.seller.product.imagepicker.view.presenter.ImagePickerCatalogPresenter;
+import com.tokopedia.product.manage.item.R;
+import com.tokopedia.product.manage.item.imagepicker.di.DaggerImagePickerCatalogComponent;
+import com.tokopedia.product.manage.item.imagepicker.di.ImagePickerCatalogModule;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.product.manage.item.imagepicker.view.adapter.CatalogAdapterTypeFactory;
+import com.tokopedia.product.manage.item.imagepicker.view.adapter.CatalogImageViewHolder;
+import com.tokopedia.product.manage.item.imagepicker.view.adapter.ImageCatalogAdapter;
+import com.tokopedia.product.manage.item.imagepicker.view.model.CatalogModelView;
+import com.tokopedia.product.manage.item.imagepicker.view.presenter.ImagePickerCatalogContract;
+import com.tokopedia.product.manage.item.imagepicker.view.presenter.ImagePickerCatalogPresenter;
 
 import java.util.ArrayList;
 

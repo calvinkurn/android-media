@@ -1,4 +1,4 @@
-package com.tokopedia.seller.product.imagepicker.di;
+package com.tokopedia.product.manage.item.imagepicker.di;
 
 import android.content.Context;
 
@@ -8,15 +8,15 @@ import com.tokopedia.abstraction.common.network.exception.HeaderErrorListRespons
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.seller.product.imagepicker.data.repository.CatalogImageRepositoryImpl;
-import com.tokopedia.seller.product.imagepicker.data.source.CatalogApi;
-import com.tokopedia.seller.product.imagepicker.data.source.CatalogImageDataSource;
-import com.tokopedia.seller.product.imagepicker.domain.CatalogImageRepository;
-import com.tokopedia.seller.product.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
-import com.tokopedia.seller.product.imagepicker.domain.interactor.GetCatalogImageUseCase;
-import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
-import com.tokopedia.seller.product.imagepicker.view.presenter.ImagePickerCatalogPresenter;
-import com.tokopedia.topads.common.data.util.CacheApiTKPDResponseValidator;
+import com.tokopedia.product.manage.item.imagepicker.data.repository.CatalogImageRepositoryImpl;
+import com.tokopedia.product.manage.item.imagepicker.data.source.CatalogApi;
+import com.tokopedia.product.manage.item.imagepicker.data.source.CatalogImageDataSource;
+import com.tokopedia.product.manage.item.imagepicker.domain.CatalogImageRepository;
+import com.tokopedia.product.manage.item.imagepicker.domain.interactor.ClearCacheCatalogUseCase;
+import com.tokopedia.product.manage.item.imagepicker.domain.interactor.GetCatalogImageUseCase;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
+import com.tokopedia.product.manage.item.imagepicker.view.presenter.ImagePickerCatalogPresenter;
+import com.tokopedia.shop.common.util.CacheApiTKPDResponseValidator;
 
 import dagger.Module;
 import dagger.Provides;

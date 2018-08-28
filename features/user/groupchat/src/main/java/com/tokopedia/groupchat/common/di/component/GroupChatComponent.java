@@ -9,9 +9,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.groupchat.common.di.module.GroupChatModule;
 import com.tokopedia.groupchat.common.di.scope.GroupChatScope;
 import com.tokopedia.vote.data.VoteApi;
-import com.tokopedia.vote.di.VoteComponent;
-import com.tokopedia.vote.domain.source.VotingSource;
-import com.tokopedia.vote.domain.usecase.SendVoteUseCase;
 
 import dagger.Component;
 import okhttp3.OkHttpClient;
