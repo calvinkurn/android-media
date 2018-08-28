@@ -89,7 +89,10 @@
         android:layout_gravity="bottom|center_horizontal"
         android:gravity="center"
         android:layout_marginBottom="@dimen/dp_20"
-        android:padding="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_22"
+        android:paddingRight="@dimen/dp_22"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingBottom="@dimen/dp_12"
         android:orientation="horizontal">
 
         <TextView
