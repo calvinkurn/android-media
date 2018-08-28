@@ -318,6 +318,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
+import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
@@ -400,8 +401,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ChangePasswordRouter,
         TrainRouter,
         WithdrawRouter,
-        EventModuleRouter {
-          
+        EventModuleRouter,
+        TravelCalendarRouter {
+
     @Inject
     ReactNativeHost reactNativeHost;
     @Inject
