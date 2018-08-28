@@ -42,7 +42,6 @@ import com.tokopedia.shop.settings.etalase.view.adapter.ShopEtalaseAdapter;
 import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFactory;
 import com.tokopedia.shop.settings.etalase.view.presenter.ShopSettingEtalaseListPresenter;
 import com.tokopedia.shop.settings.etalase.view.viewholder.ShopEtalaseViewHolder;
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -321,24 +320,11 @@ public class ShopSettingsEtalaseListFragment extends BaseSearchListFragment<Base
     public void onSearchSubmitted(String text) {
         shopEtalaseAdapter.clearAllElements();
         isLoadingInitialData = true;
-        boolean flagHasAddedDefaultEtalase = false;
-        boolean flagHasAddedOtherEtalase = false;
         ArrayList<BaseShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
         if (this.shopEtalaseViewModels.size() > 0) {
             String textLowerCase = text.toLowerCase();
             for (ShopEtalaseViewModel shopEtalaseViewModel : this.shopEtalaseViewModels) {
                 if (shopEtalaseViewModel.getName().toLowerCase().contains(textLowerCase)) {
-                    if (shopEtalaseViewModel.isPrimaryEtalase()) {
-                        if (!flagHasAddedDefaultEtalase) {
-                            shopEtalaseViewModels.add(new ShopEtalaseTitleViewModel(getString(R.string.primary_etalase)));
-                            flagHasAddedDefaultEtalase = true;
-                        }
-                    } else { // custom
-                        if (!flagHasAddedOtherEtalase) {
-                            shopEtalaseViewModels.add(new ShopEtalaseTitleViewModel(getString(R.string.other_etalase)));
-                            flagHasAddedOtherEtalase = true;
-                        }
-                    }
                     shopEtalaseViewModels.add(shopEtalaseViewModel);
                 }
             }
