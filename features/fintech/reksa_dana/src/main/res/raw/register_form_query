@@ -1,0 +1,20 @@
+query () {
+register : mf_register_form_field() {
+  fieldData {
+    itemName
+    id
+    fieldType
+    defaultText
+    dropdownValues {
+      key
+      value
+    }
+
+  }
+  result {
+    code
+    message
+    success
+  }
+}
+}

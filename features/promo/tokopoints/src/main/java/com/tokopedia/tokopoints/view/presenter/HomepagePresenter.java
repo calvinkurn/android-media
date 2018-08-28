@@ -98,7 +98,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
             public void onNext(GraphqlResponse graphqlResponse) {
                 //Handling for main data
                 TokoPointDetailEntity data = graphqlResponse.getData(TokoPointDetailEntity.class);
-                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints());
+                getView().onSuccess(data.getTokoPoints().getStatus().getTier(), data.getTokoPoints().getStatus().getPoints(), data.getTokoPoints().getLobs());
 
                 //handling for lucky egg data
                 TokenDetailOuter tokenDetail = graphqlResponse.getData(TokenDetailOuter.class);
@@ -106,6 +106,14 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                         && tokenDetail.getTokenDetail() != null
                         && tokenDetail.getTokenDetail().getResultStatus().getCode() == CommonConstant.CouponRedemptionCode.SUCCESS) {
                     getView().onSuccessTokenDetail(tokenDetail.getTokenDetail());
+                }
+
+                if (data.getTokoPoints() == null
+                        || data.getTokoPoints().getTicker() == null
+                        || data.getTokoPoints().getTicker().getTickers() == null) {
+                    getView().onErrorTicker(null);
+                } else {
+                    getView().onSuccessTicker(data.getTokoPoints().getTicker().getTickers());
                 }
             }
         });
@@ -115,10 +123,12 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     public void getPromos() {
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.PAGE, 1);
-        variables.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.HOMEPAGE_PAGE_SIZE);  //For home page max page will be 1
+        variables.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, 10);  //For home page max page will be 1
         variables.put(CommonConstant.GraphqlVariableKeys.SORT_ID, CommonConstant.DEFAULT_SORT_TYPE); // 1 for all catalog
         variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, CommonConstant.DEFAULT_CATEGORY_TYPE); // zero for no filter
         variables.put(CommonConstant.GraphqlVariableKeys.POINTS_RANGE, 0); //zero for all catalog
+        variables.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
+        variables.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(), R.raw.tp_gql_tokopoint_promos),
                 TokoPointPromosEntity.class,
                 variables);
@@ -244,6 +254,18 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
+                } else {
+                    String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
+                    if (errorsMessage != null && errorsMessage.length > 0) {
+                        String title = errorsMessage[0];
+
+                        if (errorsMessage.length <= 2) {
+                            getView().showRedeemFullError(item, null, title);
+                        } else {
+                            String desc = errorsMessage[1];
+                            getView().showRedeemFullError(item, title, desc);
+                        }
+                    }
                 }
             }
         });

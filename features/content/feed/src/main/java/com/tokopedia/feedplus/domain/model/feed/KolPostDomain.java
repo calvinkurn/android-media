@@ -15,6 +15,21 @@ public class KolPostDomain {
 
     private final
     @Nullable
+    String videoUrl;
+
+
+    private final
+    @Nullable
+    String youtubeUrl;
+
+
+    private final
+    @Nullable
+    String type;
+
+
+    private final
+    @Nullable
     String description;
 
     private final int commentCount;
@@ -80,7 +95,7 @@ public class KolPostDomain {
     private final String cardType;
 
 
-    public KolPostDomain(int id, String imageUrl, String description, int commentCount,
+    public KolPostDomain(int id, String imageUrl, String videoUrl, String youtubeUrl, String type, String description, int commentCount,
                          int likeCount, boolean isLiked, boolean isFollowed, String createTime,
                          String productPrice, String contentLink, String contentUrl,
                          String userName, String userPhoto, String tagsType, String caption,
@@ -88,6 +103,9 @@ public class KolPostDomain {
                          boolean isShowComment, boolean isShowLike, String cardType) {
         this.id = id;
         this.imageUrl = imageUrl;
+        this.videoUrl = videoUrl;
+        this.youtubeUrl = youtubeUrl;
+        this.type = type;
         this.description = description;
         this.commentCount = commentCount;
         this.likeCount = likeCount;
@@ -118,6 +136,21 @@ public class KolPostDomain {
     @Nullable
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    @Nullable
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    @Nullable
+    public String getYoutubeUrl() {
+        return youtubeUrl;
+    }
+
+    @Nullable
+    public String getType() {
+        return type;
     }
 
     @Nullable

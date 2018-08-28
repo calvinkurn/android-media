@@ -46,7 +46,7 @@ import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
 import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
+import com.tokopedia.transaction.orders.orderlist.view.activity.SellerOrderListActivity;
 
 import rx.Observable;
 
@@ -204,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         CotpUrl.BASE_URL = SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
+        SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
 
     }
 
@@ -258,7 +259,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     @Override
     public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
+        return SellerOrderListActivity.getInstance(context);
     }
 
     @Override

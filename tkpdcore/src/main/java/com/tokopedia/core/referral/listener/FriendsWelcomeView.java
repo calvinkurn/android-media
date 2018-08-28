@@ -14,6 +14,4 @@ public interface FriendsWelcomeView {
 
     void closeView();
 
-    void renderReferralCode(String code);
-
 }

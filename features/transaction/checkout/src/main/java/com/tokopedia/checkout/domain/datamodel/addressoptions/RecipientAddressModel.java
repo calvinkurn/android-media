@@ -15,11 +15,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String id;
     private int addressStatus;
     private String addressName;
-    private String addressProvinceName;
-    private String addressPostalCode;
-    private String addressCityName;
-    private String addressStreet;
-    private String addressCountryName;
+    private String provinceName;
+    private String postalCode;
+    private String cityName;
+    private String street;
+    private String countryName;
     private String recipientName;
     private String recipientPhoneNumber;
     private String destinationDistrictId;
@@ -43,11 +43,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         id = in.readString();
         addressStatus = in.readInt();
         addressName = in.readString();
-        addressProvinceName = in.readString();
-        addressPostalCode = in.readString();
-        addressCityName = in.readString();
-        addressStreet = in.readString();
-        addressCountryName = in.readString();
+        provinceName = in.readString();
+        postalCode = in.readString();
+        cityName = in.readString();
+        street = in.readString();
+        countryName = in.readString();
         recipientName = in.readString();
         recipientPhoneNumber = in.readString();
         destinationDistrictId = in.readString();
@@ -75,11 +75,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeString(id);
         dest.writeInt(addressStatus);
         dest.writeString(addressName);
-        dest.writeString(addressProvinceName);
-        dest.writeString(addressPostalCode);
-        dest.writeString(addressCityName);
-        dest.writeString(addressStreet);
-        dest.writeString(addressCountryName);
+        dest.writeString(provinceName);
+        dest.writeString(postalCode);
+        dest.writeString(cityName);
+        dest.writeString(street);
+        dest.writeString(countryName);
         dest.writeString(recipientName);
         dest.writeString(recipientPhoneNumber);
         dest.writeString(destinationDistrictId);
@@ -145,44 +145,44 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.addressName = addressName;
     }
 
-    public String getAddressProvinceName() {
-        return addressProvinceName;
+    public String getProvinceName() {
+        return provinceName;
     }
 
-    public void setAddressProvinceName(String addressProvinceName) {
-        this.addressProvinceName = addressProvinceName;
+    public void setProvinceName(String provinceName) {
+        this.provinceName = provinceName;
     }
 
-    public String getAddressPostalCode() {
-        return addressPostalCode;
+    public String getPostalCode() {
+        return postalCode;
     }
 
-    public void setAddressPostalCode(String addressPostalCode) {
-        this.addressPostalCode = addressPostalCode;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
-    public String getAddressCityName() {
-        return addressCityName;
+    public String getCityName() {
+        return cityName;
     }
 
-    public void setAddressCityName(String addressCityName) {
-        this.addressCityName = addressCityName;
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
     }
 
-    public String getAddressStreet() {
-        return addressStreet;
+    public String getStreet() {
+        return street;
     }
 
-    public void setAddressStreet(String addressStreet) {
-        this.addressStreet = addressStreet;
+    public void setStreet(String street) {
+        this.street = street;
     }
 
-    public String getAddressCountryName() {
-        return addressCountryName;
+    public String getCountryName() {
+        return countryName;
     }
 
-    public void setAddressCountryName(String addressCountryName) {
-        this.addressCountryName = addressCountryName;
+    public void setCountryName(String countryName) {
+        this.countryName = countryName;
     }
 
     public String getRecipientName() {
@@ -292,15 +292,15 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
         if (getAddressName() != null ? !getAddressName().equals(that.getAddressName()) : that.getAddressName() != null)
             return false;
-        if (getAddressProvinceName() != null ? !getAddressProvinceName().equals(that.getAddressProvinceName()) : that.getAddressProvinceName() != null)
+        if (getProvinceName() != null ? !getProvinceName().equals(that.getProvinceName()) : that.getProvinceName() != null)
             return false;
-        if (getAddressPostalCode() != null ? !getAddressPostalCode().equals(that.getAddressPostalCode()) : that.getAddressPostalCode() != null)
+        if (getPostalCode() != null ? !getPostalCode().equals(that.getPostalCode()) : that.getPostalCode() != null)
             return false;
-        if (getAddressCityName() != null ? !getAddressCityName().equals(that.getAddressCityName()) : that.getAddressCityName() != null)
+        if (getCityName() != null ? !getCityName().equals(that.getCityName()) : that.getCityName() != null)
             return false;
-        if (getAddressStreet() != null ? !getAddressStreet().equals(that.getAddressStreet()) : that.getAddressStreet() != null)
+        if (getStreet() != null ? !getStreet().equals(that.getStreet()) : that.getStreet() != null)
             return false;
-        if (getAddressCountryName() != null ? !getAddressCountryName().equals(that.getAddressCountryName()) : that.getAddressCountryName() != null)
+        if (getCountryName() != null ? !getCountryName().equals(that.getCountryName()) : that.getCountryName() != null)
             return false;
         if (getRecipientName() != null ? !getRecipientName().equals(that.getRecipientName()) : that.getRecipientName() != null)
             return false;
@@ -320,11 +320,11 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         int result = getId() != null ? getId().hashCode() : 0;
         result = 31 * result + getAddressStatus();
         result = 31 * result + (getAddressName() != null ? getAddressName().hashCode() : 0);
-        result = 31 * result + (getAddressProvinceName() != null ? getAddressProvinceName().hashCode() : 0);
-        result = 31 * result + (getAddressPostalCode() != null ? getAddressPostalCode().hashCode() : 0);
-        result = 31 * result + (getAddressCityName() != null ? getAddressCityName().hashCode() : 0);
-        result = 31 * result + (getAddressStreet() != null ? getAddressStreet().hashCode() : 0);
-        result = 31 * result + (getAddressCountryName() != null ? getAddressCountryName().hashCode() : 0);
+        result = 31 * result + (getProvinceName() != null ? getProvinceName().hashCode() : 0);
+        result = 31 * result + (getPostalCode() != null ? getPostalCode().hashCode() : 0);
+        result = 31 * result + (getCityName() != null ? getCityName().hashCode() : 0);
+        result = 31 * result + (getStreet() != null ? getStreet().hashCode() : 0);
+        result = 31 * result + (getCountryName() != null ? getCountryName().hashCode() : 0);
         result = 31 * result + (getRecipientName() != null ? getRecipientName().hashCode() : 0);
         result = 31 * result + (getRecipientPhoneNumber() != null ? getRecipientPhoneNumber().hashCode() : 0);
         result = 31 * result + (getDestinationDistrictId() != null ? getDestinationDistrictId().hashCode() : 0);

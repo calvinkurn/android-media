@@ -7,10 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 
 /**
  * @author by milhamj on 20/02/18.
@@ -34,6 +36,11 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
     }
 
     @Override
+    public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
+        return KolPostYoutubeViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(ExploreViewModel exploreViewModel) {
         return ExploreViewHolder.LAYOUT;
     }
@@ -45,6 +52,10 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
             abstractViewHolder = new KolPostViewHolder(view,
                     viewListener,
                     KolPostViewHolder.Type.PROFILE);
+        } else if (viewType == KolPostYoutubeViewHolder.LAYOUT) {
+            abstractViewHolder = new KolPostYoutubeViewHolder(view,
+                    viewListener,
+                    KolPostYoutubeViewHolder.Type.PROFILE);
         }
         else if (viewType == EmptyKolPostViewHolder.LAYOUT)
             abstractViewHolder = new EmptyKolPostViewHolder(view);

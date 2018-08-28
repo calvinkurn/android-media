@@ -1,0 +1,23 @@
+query tapactions($param: [TapActionsArgs]!) {
+  orderDetailTapAction(input: $param) {
+    label
+    weight
+    control
+    header
+    buttonType
+    value
+    method
+    color{
+      textColor
+      border
+      background
+    }
+    key
+    name
+    body {
+     appURL
+     method
+     body
+    }
+  }
+}

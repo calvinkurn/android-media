@@ -45,7 +45,7 @@ public class CatalogBannerPagerAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup view, final int position) {
         ImageView banner = (ImageView) mInflater.inflate(R.layout.tp_item_catalog_banner, view, false);
-        ImageHandler.LoadImage(banner, mItems.get(position).getImageUrl());
+        ImageHandler.loadImageFit2(banner.getContext(), banner, mItems.get(position).getImageUrl());
         banner.setOnClickListener(view1 -> {
             mPresenter.getView().openWebView(mItems.get(position).getRedirectUrl());
         });

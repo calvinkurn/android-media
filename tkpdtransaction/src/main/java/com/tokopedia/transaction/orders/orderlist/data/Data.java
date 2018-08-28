@@ -10,16 +10,16 @@ public class Data {
     @Expose
     List<Order> orders;
 
-        public Data(List<Order> orders) {
-            this.orders = orders;
-        }
-
-        @Override
-        public String toString() {
-            return "[ orders : { " + orders + " } ]";
-        }
-
-        public List<Order> orders() {
-            return orders;
-        }
+    public Data(List<Order> orders) {
+        this.orders = orders;
     }
+
+    @Override
+    public String toString() {
+        return "[ orders : { " + orders + " } ]";
+    }
+
+    public List<Order> orders() {
+        return orders;
+    }
+}

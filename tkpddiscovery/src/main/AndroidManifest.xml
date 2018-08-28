@@ -103,6 +103,10 @@
             android:name=".imagesearch.search.ImageSearchActivity"
             android:label=""
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".similarsearch.view.SimilarSearchActivity"
+            android:label=""
+            android:theme="@style/noAnimTheme" />
         <activity android:name=".newdiscovery.category.presentation.CategoryActivity"></activity>
     </application>
 

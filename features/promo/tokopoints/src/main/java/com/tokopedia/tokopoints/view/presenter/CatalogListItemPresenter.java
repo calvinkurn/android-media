@@ -10,12 +10,14 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogListingOuter;
+import com.tokopedia.tokopoints.view.model.CatalogStatusOuter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -28,22 +30,41 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
+    private GraphqlUseCase mFetchCatalogStatusUseCase;
 
     @Inject
     public CatalogListItemPresenter(GraphqlUseCase getHomePageData,
                                     GraphqlUseCase saveCouponUseCase,
                                     GraphqlUseCase validateCouponUseCase,
+                                    GraphqlUseCase fetchCatalogStatusUseCase,
                                     GraphqlUseCase redeemCouponUseCase) {
         this.mGetHomePageData = getHomePageData;
         this.mSaveCouponUseCase = saveCouponUseCase;
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
+        this.mFetchCatalogStatusUseCase = fetchCatalogStatusUseCase;
     }
 
     @Override
     public void destroyView() {
         if (mGetHomePageData != null) {
             mGetHomePageData.unsubscribe();
+        }
+
+        if (mSaveCouponUseCase != null) {
+            mSaveCouponUseCase.unsubscribe();
+        }
+
+        if (mValidateCouponUseCase != null) {
+            mValidateCouponUseCase.unsubscribe();
+        }
+
+        if (mRedeemCouponUseCase != null) {
+            mRedeemCouponUseCase.unsubscribe();
+        }
+
+        if (mFetchCatalogStatusUseCase != null) {
+            mFetchCatalogStatusUseCase.unsubscribe();
         }
     }
 
@@ -192,6 +213,49 @@ public class CatalogListItemPresenter extends BaseDaggerPresenter<CatalogListIte
                     getView().showConfirmRedeemDialog(redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCta(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getCode(),
                             redeemCouponBaseEntity.getHachikoRedeem().getCoupons().get(0).getTitle());
+                } else {
+                    String[] errorsMessage = response.getError(RedeemCouponBaseEntity.class).get(0).getMessage().split("\\|");
+                    if (errorsMessage != null && errorsMessage.length > 0) {
+                        String title = errorsMessage[0];
+                        if (errorsMessage.length <= 2) {
+                            getView().showRedeemFullError(item, null, title);
+                        } else {
+                            String desc = errorsMessage[1];
+                            getView().showRedeemFullError(item, title, desc);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void fetchLatestStatus(List<Integer> catalogsIds) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_IDS, catalogsIds);
+
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tp_gql_catalog_status),
+                CatalogStatusOuter.class,
+                variables);
+        mFetchCatalogStatusUseCase.clearRequest();
+        mFetchCatalogStatusUseCase.addRequest(request);
+        mFetchCatalogStatusUseCase.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //NA
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                CatalogStatusOuter data = response.getData(CatalogStatusOuter.class);
+                if (data != null && data.getCatalogStatus() != null) {
+                    getView().refreshCatalog(data.getCatalogStatus().getCatalogs());
                 }
             }
         });

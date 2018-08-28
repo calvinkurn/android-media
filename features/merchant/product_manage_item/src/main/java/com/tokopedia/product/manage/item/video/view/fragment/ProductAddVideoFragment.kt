@@ -95,8 +95,8 @@ class ProductAddVideoFragment : BaseListFragment<ProductAddVideoBaseViewModel, P
         })
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onDestroy() {
+        super.onDestroy()
         productAddVideoPresenter.detachView()
     }
 

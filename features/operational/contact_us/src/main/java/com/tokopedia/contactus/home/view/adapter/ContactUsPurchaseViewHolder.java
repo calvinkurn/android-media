@@ -8,6 +8,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
+import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.orderquery.view.OrderQueryTicketActivity;
 
@@ -43,12 +44,13 @@ class ContactUsPurchaseViewHolder extends RecyclerView.ViewHolder {
 
     private BuyerPurchaseList buyerPurchaseList;
 
-    ContactUsPurchaseViewHolder(View view) {
+    ContactUsPurchaseViewHolder(View view, String type) {
         super(view);
         ButterKnife.bind(this, view);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                ContactUsTracking.eventHomeInvoiceClick(type,txtOrderId.getText().toString());
                 view.getContext().startActivity(OrderQueryTicketActivity.getOrderQueryTicketIntent(view.getContext(), buyerPurchaseList));
             }
         });
