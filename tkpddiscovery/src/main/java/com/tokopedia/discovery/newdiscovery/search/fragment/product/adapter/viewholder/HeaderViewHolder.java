@@ -24,7 +24,9 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -53,6 +55,8 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private ItemClickListener clickListener;
     private QuickFilterAdapter quickFilterAdapter;
     private TextView resultCountText;
+    private RecyclerView guidedSearchRecyclerView;
+    private GuidedSearchAdapter guidedSearchAdapter;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
@@ -62,6 +66,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
         resultCountText = (TextView) itemView.findViewById(R.id.result_count_text_view);
+        guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
+        guidedSearchAdapter = new GuidedSearchAdapter(clickListener);
+        guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
+        guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
         initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
     }
@@ -121,6 +129,14 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             suggestionContainer.addView(suggestionView);
         }
         quickFilterAdapter.setOptionList(element.getQuickFilterList());
+        if (element.getGuidedSearch() != null
+                && element.getGuidedSearch().getItemList() != null
+                && !element.getGuidedSearch().getItemList().isEmpty()) {
+            guidedSearchRecyclerView.setVisibility(View.VISIBLE);
+            guidedSearchAdapter.setItemList(element.getGuidedSearch().getItemList());
+        } else {
+            guidedSearchRecyclerView.setVisibility(View.GONE);
+        }
     }
 
     private void goToUrl(String url) {
@@ -215,6 +231,62 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                 @Override
                 public void onClick(View view) {
                     clickListener.onQuickFilterSelected(option);
+                }
+            });
+        }
+    }
+
+    private static class GuidedSearchAdapter extends RecyclerView.Adapter<GuidedSearchViewHolder> {
+
+        List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
+        ItemClickListener itemClickListener;
+
+        public GuidedSearchAdapter(ItemClickListener itemClickListener) {
+            this.itemClickListener = itemClickListener;
+        }
+
+        public void setItemList(List<GuidedSearchViewModel.Item> itemList) {
+            this.itemList = itemList;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public GuidedSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item, parent, false);
+            return new GuidedSearchViewHolder(view, itemClickListener);
+        }
+
+        @Override
+        public void onBindViewHolder(GuidedSearchViewHolder holder, int position) {
+            holder.bind(itemList.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return itemList.size();
+        }
+    }
+
+    private static class GuidedSearchViewHolder extends RecyclerView.ViewHolder {
+
+        TextView textView;
+        ItemClickListener itemClickListener;
+
+        public GuidedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.guided_search_text);
+            this.itemClickListener = itemClickListener;
+        }
+
+        public void bind(final GuidedSearchViewModel.Item item) {
+            textView.setText(item.getKeyword());
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Uri uri = Uri.parse(item.getUrl());
+                    String query = uri.getQueryParameter(BrowseApi.Q);
+                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    itemClickListener.onSearchGuideClicked(query);
                 }
             });
         }

@@ -396,7 +396,6 @@ public class ProductListFragment extends SearchSectionFragment
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isGuidedSearch(topAdsRecyclerAdapter.getOriginalPosition(position)) ||
                         topAdsRecyclerAdapter.isLoading(position) ||
                         topAdsRecyclerAdapter.isTopAdsViewHolder(position)) {
                     return spanCount;
@@ -795,21 +794,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void addGuidedSearch() {
-        String currentKey = productViewModel.getQuery();
-        String currentPage = String.valueOf(adapter.getStartFrom() / 12);
-
-        SearchTracking.eventImpressionGuidedSearch(
-                getActivity(),
-                currentKey,
-                currentPage
-        );
-        adapter.addGuidedSearch(currentKey, currentPage);
-    }
-
-    @Override
     public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
-        adapter.setGuidedSearch(guidedSearchViewModel);
+        adapter.updateGuidedSearch(guidedSearchViewModel);
     }
 
     @Override

@@ -162,9 +162,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
-                                if (getView().isEvenPage()) {
-                                    getView().addGuidedSearch();
-                                }
                                 if (getView().getStartFrom() >= searchResultModel.getTotalData()) {
                                     getView().unSetTopAdsEndlessListener();
                                 }
