@@ -102,6 +102,7 @@ public class SearchActivity extends DiscoveryActivity
     SearchPresenter searchPresenter;
 
     private SearchComponent searchComponent;
+    private MenuItem menuChangeGrid;
 
     public SearchComponent getSearchComponent() {
         return searchComponent;
@@ -633,8 +634,17 @@ public class SearchActivity extends DiscoveryActivity
     }
 
     @Override
+    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
+        if (menuChangeGrid != null) {
+            menuChangeGrid.setIcon(iconResId);
+            menuChangeGrid.setTitle(titleResId);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        menuChangeGrid = menu.findItem(R.id.action_change_grid);
         return true;
     }
 

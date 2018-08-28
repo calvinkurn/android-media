@@ -242,11 +242,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
-        refreshBottomBarGridIcon();
+        refreshMenuItemGridIcon();
     }
 
-    public void refreshBottomBarGridIcon() {
-
+    public void refreshMenuItemGridIcon() {
+        searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
     }
 
     public void setSpanCount(int spanCount) {
