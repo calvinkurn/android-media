@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.events.data.entity.response.checkoutreponse.CheckoutResponse;
 import com.tokopedia.events.data.entity.response.verifyresponse.Cart;
 import com.tokopedia.events.domain.EventRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -20,13 +20,12 @@ import rx.Observable;
  * Created by pranaymohapatra on 15/12/17.
  */
 
-public class PostPaymentUseCase extends UseCase<CheckoutResponse> {
+public class CheckoutPaymentUseCase extends UseCase<CheckoutResponse> {
 
     private final EventRepository eventRepository;
 
     @Inject
-    public PostPaymentUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread, EventRepository eventRepository) {
-        super(threadExecutor, postExecutionThread);
+    public CheckoutPaymentUseCase(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
     }
 
