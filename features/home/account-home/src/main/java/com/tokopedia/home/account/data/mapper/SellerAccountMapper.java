@@ -70,6 +70,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        if(accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
+            shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
+        }
         items.add(shopCard);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
