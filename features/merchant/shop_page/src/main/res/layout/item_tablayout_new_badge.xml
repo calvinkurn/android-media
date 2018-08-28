@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
@@ -23,11 +22,14 @@
         android:layout_marginBottom="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_6"
         android:layout_marginStart="@dimen/dp_6"
+        android:background="@drawable/bg_rounded_corners_red"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/dp_1"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
+        android:paddingTop="@dimen/dp_1"
         android:text="@string/tablayout_new_text"
-        android:background="@drawable/bg_rounded_corners_red"
-        android:padding="@dimen/dp_2"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_10"
         android:textStyle="normal" />
