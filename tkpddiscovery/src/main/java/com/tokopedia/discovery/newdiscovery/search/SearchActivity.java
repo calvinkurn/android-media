@@ -11,6 +11,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.webkit.MimeTypeMap;
@@ -628,5 +630,22 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     public void setupSearchNavigation(ClickListener clickListener) {
         this.searchNavigationClickListener = clickListener;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_change_grid, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_change_grid) {
+            if (searchNavigationClickListener != null) {
+                searchNavigationClickListener.onChangeGridClick();
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

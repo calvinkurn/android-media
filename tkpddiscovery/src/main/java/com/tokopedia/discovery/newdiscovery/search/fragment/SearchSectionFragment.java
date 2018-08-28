@@ -202,6 +202,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                     public void onSortClick() {
                         openSortActivity();
                     }
+
+                    @Override
+                    public void onChangeGridClick() {
+                        switchLayoutType();
+                    }
                 });
     }
 

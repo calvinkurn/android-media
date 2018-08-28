@@ -6,5 +6,6 @@ public interface SearchNavigationListener {
     interface ClickListener {
         void onFilterClick();
         void onSortClick();
+        void onChangeGridClick();
     }
 }
