@@ -159,6 +159,26 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return cartItemDataList;
     }
 
+    public void setAllShopSelected(boolean selected) {
+        if (cartDataList != null) {
+            for (int i = 0; i < cartDataList.size(); i++) {
+                if (cartDataList.get(i) instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = ((CartShopHolderData) cartDataList.get(i));
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null &&
+                            cartShopHolderData.getShopGroupData().getCartItemDataList().size() == 1) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
+                                setShopSelected(i, false);
+                            }
+                        }
+                    } else {
+                        setShopSelected(i, selected);
+                    }
+                }
+            }
+        }
+    }
+
     public void setShopSelected(int position, boolean selected) {
         Object object = cartDataList.get(position);
         if (object instanceof CartShopHolderData) {
@@ -307,6 +327,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void checkForShipmentForm() {
         boolean canProcess = true;
+        int checkedCount = 0;
         for (Object object : cartDataList) {
             if (object instanceof CartShopHolderData) {
                 CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
@@ -314,9 +335,12 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if (cartShopHolderData.getShopGroupData().isError()) {
                         canProcess = false;
                         break;
-                    } else if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                    }
+
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
+                            if (cartItemHolderData.isSelected()) {
+                                checkedCount++;
                                 if (cartItemHolderData.getErrorFormItemValidationType() != CartItemHolderData.ERROR_EMPTY ||
                                         cartItemHolderData.getCartItemData().isError()) {
                                     canProcess = false;
@@ -331,7 +355,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         }
-        if (canProcess) {
+        if (canProcess && checkedCount > 0) {
             cartActionListener.onCartDataEnableToCheckout();
         } else {
             cartActionListener.onCartDataDisableToCheckout();

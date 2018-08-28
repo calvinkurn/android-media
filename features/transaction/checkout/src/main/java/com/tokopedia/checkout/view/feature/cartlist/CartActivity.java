@@ -21,6 +21,9 @@ import java.util.List;
 
 public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
 
+    private static final int HAS_ELEVATION = 8;
+    private static final int NO_ELEVATION = 0;
+
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Intent intent = new Intent(context, CartActivity.class).putExtras(extras);
@@ -102,9 +105,19 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
+    public void onContentAvailabilityChanged(boolean available) {
+        if (getSupportActionBar() != null) {
+            if (available) {
+                getSupportActionBar().setElevation(NO_ELEVATION);
+            } else {
+                getSupportActionBar().setElevation(HAS_ELEVATION);
+            }
+        }
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return CartFragment.newInstance();
     }
-
 
 }

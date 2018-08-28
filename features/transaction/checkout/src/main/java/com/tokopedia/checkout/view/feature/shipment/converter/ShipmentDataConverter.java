@@ -102,7 +102,7 @@ public class ShipmentDataConverter {
         }
 
         if (shipmentCartItemModel != null) {
-            shipmentCartItemModel.setUseCourierRecommendation(true); // Temporary flag courier recommendation
+            shipmentCartItemModel.setUseCourierRecommendation(false); // Temporary flag courier recommendation
         }
         return shipmentCartItemModels;
     }

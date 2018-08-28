@@ -15,6 +15,7 @@
         android:orientation="vertical">
 
         <include
+            android:id="@+id/layout_warning_and_error"
             layout="@layout/layout_item_warning_and_error"
             tools:visibility="visible" />
 

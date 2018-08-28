@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -102,7 +103,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
     private LinearLayout llNetworkErrorView;
-    private LinearLayout llCheckoutButtonContainer;
+    private CardView cardFooter;
     private TextView tvTotalPayment;
     private TextView tvSelectPaymentMethod;
     private TkpdProgressDialog progressDialogNormal;
@@ -222,7 +223,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         rvShipment = view.findViewById(R.id.rv_shipment);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
-        llCheckoutButtonContainer = view.findViewById(R.id.ll_checkout_button_container);
+        cardFooter = view.findViewById(R.id.card_footer);
         tvTotalPayment = view.findViewById(R.id.tv_total_payment);
         tvSelectPaymentMethod = view.findViewById(R.id.tv_select_payment_method);
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
@@ -328,7 +329,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
             }
         }
-        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
+        cardFooter.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -405,7 +406,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderErrorPage(String message) {
         rvShipment.setVisibility(View.GONE);
-        llCheckoutButtonContainer.setVisibility(View.GONE);
+        cardFooter.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
         NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                 new NetworkErrorHelper.RetryClickedListener() {

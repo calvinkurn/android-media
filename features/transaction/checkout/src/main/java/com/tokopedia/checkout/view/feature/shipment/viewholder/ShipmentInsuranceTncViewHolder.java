@@ -55,12 +55,8 @@ public class ShipmentInsuranceTncViewHolder extends RecyclerView.ViewHolder {
             tvInsuranceTnc.setMovementMethod(LinkMovementMethod.getInstance());
             tvInsuranceTnc.setText(tosAgreementText);
             llContainer.setVisibility(View.VISIBLE);
-            tvInsuranceTnc.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    shipmentAdapterActionListener.onInsuranceTncClicked();
-                }
-            });
+            tvInsuranceTnc.setOnClickListener(view -> shipmentAdapterActionListener.onInsuranceTncClicked());
+            llContainer.setOnClickListener(v -> shipmentAdapterActionListener.onInsuranceTncClicked());
         } else {
             llContainer.setVisibility(View.GONE);
         }
