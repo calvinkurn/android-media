@@ -114,7 +114,8 @@ public class CustomPushListener extends PushMessageListener {
 
             ConfigurationProvider configurationProvider = ConfigurationProvider.getInstance(context);
             configurationProvider.updateNotificationId(NOTIFICATION_ID);
-            Intent deleteIntent = new Intent(DELETE_NOTIFY);
+            Intent deleteIntent = new Intent(context,NotificationBroadcast.class);
+            deleteIntent.setAction(DELETE_NOTIFY);
             deleteIntent.putExtra(EXTRA_DELETE_NOTIFICATION_ID, NOTIFICATION_ID);
             PendingIntent pIntent5 = PendingIntent.getBroadcast(
                     context,
