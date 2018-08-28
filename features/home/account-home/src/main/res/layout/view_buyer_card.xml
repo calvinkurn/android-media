@@ -42,8 +42,6 @@
                     android:id="@+id/image_profile"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="fitXY"
-                    android:padding="@dimen/dp_6"
                     android:layout_centerInParent="true"
                     tools:src="@drawable/ic_big_notif_customerapp"
                     tools:visibility="visible" />
