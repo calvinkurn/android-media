@@ -71,6 +71,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
     private ImageView ivShopLogo;
 
     private ProgressDialog progressDialog;
+    private View vgMembershipContainer;
 
     public static ShopSettingsInfoFragment newInstance() {
         return new ShopSettingsInfoFragment();
@@ -102,6 +103,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         tvShopCloseSchedule = view.findViewById(R.id.tvShopCloseSchedule);
         ivShopMembership = view.findViewById(R.id.ivShopMembership);
         tvMembershipName = view.findViewById(R.id.tvMembershipName);
+        vgMembershipContainer = view.findViewById(R.id.vgMembershipContainer);
         tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription);
         vgShopInfoContainer = view.findViewById(R.id.vgShopInfoContainer);
         ivShopLogo = view.findViewById(R.id.ivShopLogo);
@@ -342,6 +344,7 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             tvMembershipDescription.setMovementMethod(LinkMovementMethod.getInstance());
             tvMembershipDescription.setText(spannable);
 
+            vgMembershipContainer.setOnClickListener(null);
         } else if (shopBasicDataModel.isOfficialStore()) {
             ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official);
             int padding = getResources().getDimensionPixelOffset(R.dimen.dp_8);
@@ -349,13 +352,20 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
             tvMembershipName.setText(getString(R.string.label_official_store));
             tvMembershipDescription.setText(getString(R.string.valid_until_x,
                     ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, shopBasicDataModel.getExpired())));
+            vgMembershipContainer.setOnClickListener(null);
         } else if (shopBasicDataModel.isGold()) {
             ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm);
             ivShopMembership.setPadding(0, 0, 0, 0);
             tvMembershipName.setText(getString(R.string.label_gold_merchant));
             tvMembershipDescription.setText(getString(R.string.valid_until_x,
                     ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, shopBasicDataModel.getExpired())));
-            //TODO nvaigate to GM?
+
+            vgMembershipContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    navigateToAboutGM();
+                }
+            });
         }
     }
 

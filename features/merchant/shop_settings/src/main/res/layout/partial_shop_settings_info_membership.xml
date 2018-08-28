@@ -6,8 +6,10 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/dp_16">
     <LinearLayout android:layout_width="match_parent"
+        android:id="@+id/vgMembershipContainer"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="?android:attr/selectableItemBackground">
 
         <TextView
             style="@style/TextView.Title.Bold"

@@ -62,7 +62,10 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Use in reflection by TkpdRouter
  * If you want to rename the class or refactor its package, rename also the route
+ *
+ * use ShopSettings Module
  */
+@Deprecated
 public class EtalaseShopEditor extends TActivity {
 
     public static final String STUART = "STUART";

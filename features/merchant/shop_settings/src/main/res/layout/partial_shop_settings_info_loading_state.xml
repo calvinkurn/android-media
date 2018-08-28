@@ -42,7 +42,8 @@
     <include layout="@layout/partial_shimmering_label_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"/>
+        android:layout_marginTop="@dimen/dp_60"
+        android:layout_marginBottom="@dimen/dp_24"/>
 
     <include layout="@layout/partial_shimmering_list"
         android:layout_width="match_parent"
