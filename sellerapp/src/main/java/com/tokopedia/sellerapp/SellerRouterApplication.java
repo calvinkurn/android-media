@@ -62,6 +62,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
@@ -137,7 +138,6 @@ import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
 //import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
 //import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
-import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
