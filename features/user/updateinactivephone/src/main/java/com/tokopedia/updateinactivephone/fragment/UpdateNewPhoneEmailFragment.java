@@ -30,6 +30,8 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
     private EditText newPhoneEditText;
     private EditText newEmailEditText;
     private Button submissionButton;
+    private TextView emailHintTextView;
+    private TextView phoneHintTextView;
 
     private TextView phoneErrorTextView;
     private TextView emailErrorTextView;
@@ -83,6 +85,9 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
         newPhoneEditText = view.findViewById(R.id.new_phone_edit_text);
         submissionButton = view.findViewById(R.id.submission_button);
 
+        emailHintTextView = view.findViewById(R.id.email_hint_text_view);
+        phoneErrorTextView = view.findViewById(R.id.phone_hint_text_view);
+
         oldPhoneTextView.setText(oldPhoneNumber);
 
 
@@ -96,6 +101,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 setSubmissionButtonState();
                 emailErrorTextView.setVisibility(View.GONE);
+                emailHintTextView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -114,6 +120,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 setSubmissionButtonState();
                 phoneErrorTextView.setVisibility(View.GONE);
+                phoneHintTextView.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -155,11 +162,13 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
     public void showErrorPhone(int phoneErrorId) {
         phoneErrorTextView.setText(getString(phoneErrorId));
         phoneErrorTextView.setVisibility(View.VISIBLE);
+        phoneHintTextView.setVisibility(View.GONE);
     }
 
     public void showErrorEmail(int error_invalid_email) {
         emailErrorTextView.setText(getString(error_invalid_email));
         emailErrorTextView.setVisibility(View.VISIBLE);
+        emailHintTextView.setVisibility(View.GONE);
     }
 
     public interface UpdateNewPhoneEmailInteractor {

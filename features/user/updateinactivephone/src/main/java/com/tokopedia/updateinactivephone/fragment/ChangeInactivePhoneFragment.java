@@ -46,6 +46,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
     private EditText inputMobileNumber;
     private Button buttonContinue;
     private TextView errorText;
+    private TextView phoneHintTextView;
 
     private TkpdProgressDialog tkpdProgressDialog;
 
@@ -83,6 +84,7 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
         inputMobileNumber = view.findViewById(R.id.phone_number);
         buttonContinue = view.findViewById(R.id.button_continue);
+        phoneHintTextView = view.findViewById(R.id.phone_hint_text_view);
         errorText = view.findViewById(R.id.error);
         presenter.attachView(this);
         prepareView();
@@ -146,10 +148,12 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
 
     private void setErrorText(String text) {
         if (TextUtils.isEmpty(text)) {
-            errorText.setVisibility(View.INVISIBLE);
+            errorText.setVisibility(View.GONE);
+            phoneHintTextView.setVisibility(View.VISIBLE);
         } else {
             errorText.setText(text);
             errorText.setVisibility(View.VISIBLE);
+            phoneHintTextView.setVisibility(View.GONE);
         }
     }
 

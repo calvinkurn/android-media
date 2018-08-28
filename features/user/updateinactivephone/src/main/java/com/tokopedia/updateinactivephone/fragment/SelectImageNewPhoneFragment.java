@@ -208,6 +208,12 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
                     ));
             continueButton.setTextColor(MethodChecker.getColor(getActivity(),
                     R.color.white));
+            continueButton.setClickable(true);
+            continueButton.setEnabled(true);
+        } else {
+            continueButton.setClickable(false);
+            continueButton.setEnabled(false);
+            continueButton.setTextColor(getResources().getColor(R.color.black_26));
         }
     }
 

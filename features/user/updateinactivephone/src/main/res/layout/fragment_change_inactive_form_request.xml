@@ -169,7 +169,10 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="16dp"
             android:background="@drawable/grey_button_rounded"
+            android:clickable="false"
+            android:enabled="false"
             android:text="@string/title_next"
+            android:textAllCaps="false"
             android:textColor="@color/grey_500" />
     </android.support.v7.widget.CardView>
 

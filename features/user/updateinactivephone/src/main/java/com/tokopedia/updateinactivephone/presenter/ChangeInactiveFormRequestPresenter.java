@@ -83,7 +83,7 @@ public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<Chan
             isValid = false;
         } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             isValid = false;
-            getView().showErrorEmail(R.string.error_invalid_email);
+            getView().showErrorEmail(R.string.invalid_email_error);
         }
 
         return isValid;

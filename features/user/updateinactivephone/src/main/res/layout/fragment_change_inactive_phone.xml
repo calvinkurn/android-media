@@ -38,6 +38,7 @@
         android:inputType="phone" />
 
     <TextView
+        android:id="@+id/phone_hint_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif"
@@ -70,6 +71,7 @@
         android:gravity="center"
         android:text="@string/selanjutnya"
         android:textAlignment="center"
+        android:textAllCaps="false"
         android:textColor="@color/black_26"
         android:textSize="@dimen/text_size_medium"
         android:textStyle="bold" />
