@@ -1,8 +1,6 @@
 package com.tokopedia.shop.settings.notes.view.viewholder;
 
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.text.style.ForegroundColorSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -11,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.touchhelper.OnStartDragListener;
 import com.tokopedia.shop.settings.R;
 import com.tokopedia.shop.settings.common.util.ShopDateUtil;
-import com.tokopedia.shop.settings.common.util.SpanTextUtil;
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
 /**
