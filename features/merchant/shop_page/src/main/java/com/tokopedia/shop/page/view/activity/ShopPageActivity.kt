@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -43,6 +44,7 @@ import com.tokopedia.shop.page.view.presenter.ShopPagePresenter
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import kotlinx.android.synthetic.main.activity_shop_page.*
+import kotlinx.android.synthetic.main.item_tablayout_new_badge.view.*
 import javax.inject.Inject
 
 class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
@@ -156,6 +158,10 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         viewPager.adapter = shopPageViewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
+        val tabItemFeed: View = LayoutInflater
+                .from(this)
+                .inflate(R.layout.item_tablayout_new_badge, tabLayout, false);
+        tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabItemFeed)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
@@ -166,6 +172,12 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
                 }
+                val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
+                    R.color.tkpd_main_green else
+                    R.color.font_black_disabled_38
+                tabItemFeed.tabName.setTextColor(
+                        MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
+                )
             }
         })
         viewPager.currentItem = tabPosition
