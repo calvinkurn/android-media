@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
-import com.tokopedia.talk.R
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.talk.R
 import com.tokopedia.talk.inboxtalk.adapter.InboxTalkPagerAdapter
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_inbox_talk.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/27/18.
@@ -19,6 +21,9 @@ import kotlinx.android.synthetic.main.activity_inbox_talk.*
 class InboxTalkActivity : BaseSimpleActivity() {
 
     private lateinit var inboxTalkPagerAdapter: InboxTalkPagerAdapter
+
+    @Inject
+    lateinit var userSession: UserSession
 
     private val titles by lazy {
         arrayOf(getString(R.string.title_tab_talk_all),
@@ -50,7 +55,9 @@ class InboxTalkActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        initInjector()
         super.onCreate(savedInstanceState)
+
         initPagerAdapter()
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = inboxTalkPagerAdapter
@@ -65,6 +72,10 @@ class InboxTalkActivity : BaseSimpleActivity() {
 
             }
         })
+
+    }
+
+    private fun initInjector() {
 
     }
 
