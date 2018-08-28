@@ -1,10 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
                                             xmlns:app="http://schemas.android.com/apk/res-auto"
                                             xmlns:tools="http://schemas.android.com/tools"
+                                            android:id="@+id/scrollview_empty_cart"
                                             android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:background="@color/white">
+                                            android:background="@color/white"
+                                            android:visibility="visible"
+                                            tools:visibility="visible">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,7 +47,7 @@
                     android:layout_height="wrap_content"
                     android:padding="@dimen/dp_16"
                     app:srcCompat="@drawable/ic_ticker_action_close_12dp"
-                    tools:ignore="ContentDescription"/>
+                    tools:ignore="ContentDescription,VectorDrawableCompat"/>
 
             </LinearLayout>
 
@@ -68,7 +70,7 @@
                 android:layout_marginTop="@dimen/dp_5"
                 android:gravity="center_horizontal"
                 app:srcCompat="@drawable/ic_empty_cart"
-                tools:ignore="ContentDescription"/>
+                tools:ignore="ContentDescription,VectorDrawableCompat"/>
 
             <TextView
                 android:layout_width="wrap_content"
