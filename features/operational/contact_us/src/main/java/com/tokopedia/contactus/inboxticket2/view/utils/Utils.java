@@ -103,6 +103,7 @@ public class Utils {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", getLocale());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm 'WIB'", getLocale());
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        timeFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         try {
             Date date = inputFormat.parse(isoTime);
             if (DateUtils.isToday(date.getTime()))

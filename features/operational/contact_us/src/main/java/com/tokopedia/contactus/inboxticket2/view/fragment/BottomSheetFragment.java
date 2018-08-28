@@ -1,6 +1,9 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,14 +31,17 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     @BindView(R2.id.tv_bottom_sheet_title)
     TextView title;
 
+    private int titleID;
+
     RecyclerView.Adapter mAdapter;
 
 
     public BottomSheetFragment() {
     }
 
-    public void setAdapter(RecyclerView.Adapter adapter) {
+    public void setAdapter(RecyclerView.Adapter adapter, int titleid) {
         mAdapter = adapter;
+        titleID = titleid;
     }
 
     @Override
@@ -49,8 +55,14 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
         View contentView = inflater.inflate(R.layout.layout_bottom_sheet_fragment, container, false);
         ButterKnife.bind(this, contentView);
         rvBottomSheet.setAdapter(mAdapter);
-        title.setText(R.string.select_bad_reason);
+        title.setText(titleID);
+        getDialog().setOnShowListener(dialog -> {
+            BottomSheetDialog d = (BottomSheetDialog) dialog;
+            View bottomSheetInternal = d.findViewById(R.id.design_bottom_sheet);
+            BottomSheetBehavior.from(bottomSheetInternal).setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
         return contentView;
+
     }
 
     @OnClick(R2.id.tv_bottom_sheet_title)

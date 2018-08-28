@@ -133,7 +133,7 @@ public class InboxDetailPresenterImpl
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
         BottomSheetFragment bottomFragment = new BottomSheetFragment();
-        bottomFragment.setAdapter(getBadRatingAdapter());
+        bottomFragment.setAdapter(getBadRatingAdapter(),R.string.select_bad_reason);
         return bottomFragment;
     }
 
@@ -654,7 +654,7 @@ public class InboxDetailPresenterImpl
                 DataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
-                    mView.toggleTextToolbar(View.VISIBLE);
+                    getTicketDetails(mTicketDetail.getId());
                 } else {
                     mView.toggleTextToolbar(View.GONE);
                 }
