@@ -279,9 +279,9 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
                 stringBuilder.append(getString(R.string.closed_schedule, closeString));
             }
 
-            String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
-            if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
-                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
+            String closeUntilUnixString = shopBasicDataModel.getCloseUntil();
+            if (!StringUtils.isEmptyNumber(closeUntilUnixString)) {
+                String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, closeUntilUnixString);
                 stringBuilder.append(" - ");
                 stringBuilder.append(openString);
             }
@@ -295,17 +295,17 @@ public class ShopSettingsInfoFragment extends BaseDaggerFragment implements Shop
         } else {
             tvShopStatus.setText(getString(R.string.label_close));
 
-            StringBuilder stringBuilder = new StringBuilder();
             String openScheduleUnixString = shopBasicDataModel.getOpenSchedule();
+            String openScheduleString = null;
             if (!StringUtils.isEmptyNumber(openScheduleUnixString)) {
                 String openString = ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DATE, openScheduleUnixString);
-                stringBuilder.append(getString(R.string.closed_until, openString));
+                openScheduleString = getString(R.string.open_schedule, openString);
             }
-            String closeScheduleString = stringBuilder.toString();
-            if (TextUtils.isEmpty(closeScheduleString)) {
+
+            if (TextUtils.isEmpty(openScheduleString)) {
                 tvShopCloseSchedule.setVisibility(View.GONE);
             } else {
-                tvShopCloseSchedule.setText(stringBuilder.toString());
+                tvShopCloseSchedule.setText(openScheduleString);
                 tvShopCloseSchedule.setVisibility(View.VISIBLE);
             }
         }

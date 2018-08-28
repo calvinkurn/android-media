@@ -29,6 +29,9 @@ public class ShopBasicDataModel implements Parcelable {
     @SerializedName("closeNote")
     @Expose
     private String closeNote = "";
+    @SerializedName("closeUntil")
+    @Expose
+    private String closeUntil = "";
     @SerializedName("openSchedule")
     @Expose
     private String openSchedule = "";
@@ -64,8 +67,8 @@ public class ShopBasicDataModel implements Parcelable {
         return closeSchedule;
     }
 
-    public String getOpenSchedule() {
-        return openSchedule;
+    public String getCloseUntil() {
+        return closeUntil;
     }
 
     public String getTagline() {
@@ -112,6 +115,10 @@ public class ShopBasicDataModel implements Parcelable {
         return level == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE;
     }
 
+    public String getOpenSchedule() {
+        return openSchedule;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -124,6 +131,7 @@ public class ShopBasicDataModel implements Parcelable {
         dest.writeInt(this.status);
         dest.writeString(this.closeSchedule);
         dest.writeString(this.closeNote);
+        dest.writeString(this.closeUntil);
         dest.writeString(this.openSchedule);
         dest.writeString(this.tagline);
         dest.writeString(this.description);
@@ -141,6 +149,7 @@ public class ShopBasicDataModel implements Parcelable {
         this.status = in.readInt();
         this.closeSchedule = in.readString();
         this.closeNote = in.readString();
+        this.closeUntil = in.readString();
         this.openSchedule = in.readString();
         this.tagline = in.readString();
         this.description = in.readString();

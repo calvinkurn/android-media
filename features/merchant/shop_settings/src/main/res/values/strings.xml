@@ -64,6 +64,7 @@
     <string name="button_shop_settings_empty_address">Tambah Lokasi</string>
     <string name="closed_schedule">Jadwal Tutup: %1$s</string>
     <string name="closed_until">Tutup sampai tanggal %1$s</string>
+    <string name="open_schedule">Jadwal Buka: %1$s</string>
     <string name="shop_has_no_notes">Toko Anda belum memiliki Catatan</string>
     <string name="shop_has_no_etalase">Toko Anda belum memiliki Etalase</string>
     <string name="shop_notes_info"><![CDATA[Tambah Catatan untuk menuliskan informasi Syarat & Ketentuan Toko]]></string>

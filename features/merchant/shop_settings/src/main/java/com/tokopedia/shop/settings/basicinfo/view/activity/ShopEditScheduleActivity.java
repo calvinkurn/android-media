@@ -91,9 +91,9 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
             if (!StringUtils.isEmptyNumber(closeSchedule)) {
                 selectedStartCloseUnixTimeMs = Long.parseLong(closeSchedule) * 1000L;
             }
-            String openSchedule = shopBasicDataModel.getOpenSchedule();
-            if (!StringUtils.isEmptyNumber(openSchedule)) {
-                selectedEndCloseUnixTimeMs = Long.parseLong(openSchedule) * 1000L;
+            String closedUntil = shopBasicDataModel.getCloseUntil();
+            if (!StringUtils.isEmptyNumber(closedUntil)) {
+                selectedEndCloseUnixTimeMs = Long.parseLong(closedUntil) * 1000L;
             }
         }
 
@@ -283,9 +283,9 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
 
     private void setUIShopSchedule(ShopBasicDataModel shopBasicDataModel) {
         String shopCloseSchedule = shopBasicDataModel.getCloseSchedule();
-        String shopOpenSchedule = shopBasicDataModel.getOpenSchedule();
+        String shopCloseUntil = shopBasicDataModel.getCloseUntil();
 
-        boolean hasOpenSchedule = !StringUtils.isEmptyNumber(shopOpenSchedule);
+        boolean hasCloseUntil = !StringUtils.isEmptyNumber(shopCloseUntil);
         //set close schedule
         if (isClosedNow || shopBasicDataModel.isClosed()) {
             labelStartClose.setEnabled(false);
@@ -301,8 +301,8 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
         }
 
         //set open schedule.
-        if (hasOpenSchedule) {
-            long shopOpenScheduleUnixMs = Long.parseLong(shopOpenSchedule) * 1000L;
+        if (hasCloseUntil) {
+            long shopOpenScheduleUnixMs = Long.parseLong(shopCloseUntil) * 1000L;
             Date shopOpenDate = ShopDateUtil.unixToDate(shopOpenScheduleUnixMs);
             setEndCloseDate(shopOpenDate);
         }
@@ -335,7 +335,7 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.activity_shop_edit_schedule_new;
+        return R.layout.activity_shop_edit_schedule;
     }
 
 }
