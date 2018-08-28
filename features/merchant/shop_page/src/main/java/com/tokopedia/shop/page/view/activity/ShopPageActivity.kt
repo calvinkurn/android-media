@@ -62,6 +62,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
+    lateinit var tabItemFeed : View
 
     private lateinit var titles: Array<String>;
 
@@ -139,7 +140,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
-                getString(R.string.shop_info_title_tab_feed),
                 getString(R.string.shop_info_title_tab_info))
         intent.run {
             shopId = getStringExtra(SHOP_ID)
@@ -158,10 +158,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         viewPager.adapter = shopPageViewPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
-        val tabItemFeed: View = LayoutInflater
+        tabItemFeed = LayoutInflater
                 .from(this)
-                .inflate(R.layout.item_tablayout_new_badge, tabLayout, false);
-        tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabItemFeed)
+                .inflate(R.layout.item_tablayout_new_badge, tabLayout, false)
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
@@ -172,15 +171,16 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
                 }
-                val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
-                    R.color.tkpd_main_green else
-                    R.color.font_black_disabled_38
-                tabItemFeed.tabName.setTextColor(
-                        MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
-                )
+                shopInfo?.isShowFeed.run {
+                    val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
+                        R.color.tkpd_main_green else
+                        R.color.font_black_disabled_38
+                    tabItemFeed.tabName.setTextColor(
+                            MethodChecker.getColor(this@ShopPageActivity, tabNameColor)
+                    )
+                }
             }
         })
-        viewPager.currentItem = tabPosition
         swipeToRefresh.setOnRefreshListener { refreshData() }
 
         mainLayout.requestFocus()
@@ -315,18 +315,40 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
+            shouldAddFeed(shopInfo.isShowFeed)
+
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
             if (productListFragment != null) {
                 (productListFragment as ShopProductListLimitedFragment).displayProduct(this)
             }
 
-            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_INFO)
+            val shopInfoFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(getShopInfoPosition())
             if (shopInfoFragment != null) {
                 (shopInfoFragment as ShopInfoFragment).updateShopInfo(this)
             }
-
         }
+        viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) shopPageViewPagerAdapter.titles.size else tabPosition
         swipeToRefresh.isRefreshing = false
+    }
+
+    private fun shouldAddFeed(isShowFeed: Boolean) {
+        if (isShowFeed) {
+            titles = arrayOf(
+                    getString(R.string.shop_info_title_tab_product),
+                    getString(R.string.shop_info_title_tab_feed),
+                    getString(R.string.shop_info_title_tab_info)
+            )
+        } else {
+            titles = arrayOf(
+                    getString(R.string.shop_info_title_tab_product),
+                    getString(R.string.shop_info_title_tab_info)
+            )
+        }
+        shopPageViewPagerAdapter.titles = titles
+        shopPageViewPagerAdapter.notifyDataSetChanged()
+
+        val tabCustomView : View? = if (isShowFeed) tabItemFeed else null
+        tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabCustomView)
     }
 
     override fun onErrorGetShopInfo(e: Throwable?) {
@@ -379,12 +401,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 refreshData()
             }
         }
-    }
-
-    private fun refreshData() {
-        presenter.clearCache()
-        getShopInfo()
-        swipeToRefresh.isRefreshing = true
     }
 
     override fun getComponent() = ShopComponentInstance.getComponent(application)
@@ -449,4 +465,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopWebViewActivity.startIntent(this, url)
     }
 
+    private fun refreshData() {
+        presenter.clearCache()
+        getShopInfo()
+        swipeToRefresh.isRefreshing = true
+    }
+
+    fun getShopInfoPosition() : Int {
+        return if (shopInfo?.isShowFeed ?: false) TAB_POSITION_INFO else TAB_POSITION_INFO - 1
+    }
 }

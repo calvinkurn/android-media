@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
-import android.text.TextUtils
+import android.support.v4.view.PagerAdapter
 import android.view.ViewGroup
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
@@ -21,16 +21,10 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
-        if (TextUtils.isEmpty(shopId)) {
-            return when (position) {
-                ShopPageActivity.TAB_POSITION_HOME -> ShopProductListLimitedFragment.createInstance(shopAttribution)
-                ShopPageActivity.TAB_POSITION_INFO -> ShopInfoFragment.createInstance()
-                else -> Fragment()
-            }
-        }else{
+        if (shopPageActivity.shopInfo?.isShowFeed ?: false) {
             return when (position) {
                 ShopPageActivity.TAB_POSITION_HOME -> {
-                    var f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                    val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
                     shopPageActivity.shopInfo?.run {
                         f.setShopInfo(this)
                     }
@@ -38,12 +32,18 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                 }
                 ShopPageActivity.TAB_POSITION_FEED -> router.getKolPostShopFragment(shopId);
                 ShopPageActivity.TAB_POSITION_INFO -> {
-                    var f = ShopInfoFragment.createInstance()
+                    val f = ShopInfoFragment.createInstance()
                     shopPageActivity.shopInfo?.run {
                         f.shopInfo = this
                     }
                     return f
                 }
+                else -> Fragment()
+            }
+        }else{
+            return when (position) {
+                0 -> ShopProductListLimitedFragment.createInstance(shopAttribution)
+                1 -> ShopInfoFragment.createInstance()
                 else -> Fragment()
             }
         }
@@ -52,6 +52,10 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     override fun getPageTitle(position: Int) = titles[position]
 
     override fun getCount() = titles.size
+
+    override fun getItemPosition(`object`: Any): Int {
+        return PagerAdapter.POSITION_NONE;
+    }
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val o = super.instantiateItem(container, position)
