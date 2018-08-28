@@ -16,8 +16,8 @@
             android:background="@color/white"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/dp_10"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
             android:paddingTop="@dimen/dp_10">
 
             <LinearLayout
@@ -55,7 +55,7 @@
 
                 <TextView
                     android:id="@+id/see_reply_button"
-                    style="@style/TextView.Micro.BlackDisabled.Bold"
+                    style="@style/TextView.Micro.BlackSecondary.Bold"
                     android:layout_gravity="center"
                     android:text="@string/see_reply" />
 
@@ -78,8 +78,8 @@
             android:layout_marginBottom="@dimen/dp_10"
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_8"
+            android:paddingRight="@dimen/dp_8"
             android:visibility="gone"
             tools:visibility="visible">
 
@@ -102,7 +102,7 @@
 
                     <TextView
                         android:id="@+id/seller_reply_name"
-                        style="@style/TextView.Small.Bold.BlackSecondary"
+                        style="@style/TextView.Small.Bold"
                         android:ellipsize="end"
                         android:maxLines="1"
                         tools:text="Pretty Sugar Shop" />
@@ -118,7 +118,7 @@
 
                     <TextView
                         android:id="@+id/seller_label"
-                        style="@style/TextView.Micro.Green"
+                        style="@style/TextView.Micro.Green.Bold"
                         android:layout_marginEnd="@dimen/dp_5"
                         android:layout_marginRight="@dimen/dp_5"
                         android:background="@drawable/label_seller"
@@ -142,7 +142,7 @@
                 <TextView
                     android:id="@+id/seller_reply"
                     style="@style/TextView.Micro.BlackSecondary"
-                    android:layout_marginTop="@dimen/dp_5"
+                    android:layout_marginTop="@dimen/dp_10"
                     android:enabled="true"
                     android:focusable="true"
                     android:fontFamily="sans-serif"
