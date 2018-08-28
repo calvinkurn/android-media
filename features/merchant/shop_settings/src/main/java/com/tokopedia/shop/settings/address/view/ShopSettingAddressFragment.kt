@@ -132,7 +132,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
 
     private fun createAddress() {
         if (isValidToAdd()) {
-            activity?.run {
+            context?.run {
                 startActivityForResult(ShopSettingAddressAddEditActivity
                         .createIntent(this, null, true), REQUEST_CODE_ADD_ADDRESS)
             }
@@ -179,7 +179,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
     }
 
     private fun editShopAddress(item: ShopLocationViewModel) {
-        activity?.let {
+        context?.let {
             startActivityForResult(ShopSettingAddressAddEditActivity
                     .createIntent(it, item, false), REQUEST_CODE_EDIT_ADDRESS)
         }

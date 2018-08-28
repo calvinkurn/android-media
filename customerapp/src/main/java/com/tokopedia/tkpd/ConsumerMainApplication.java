@@ -215,6 +215,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GMCommonUrl.BASE_URL = ConsumerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         CatalogConstant.URL_HADES = ConsumerAppBaseUrl.BASE_HADES_DOMAIN;
 
+        com.tokopedia.network.constant.TkpdBaseURL.HOME_DATA_BASE_URL = ConsumerAppBaseUrl.HOME_DATA_BASE_URL;
+
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
     }

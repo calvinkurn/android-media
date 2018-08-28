@@ -2317,12 +2317,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getManageShopLocationIntent(Context context) {
+    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsAddressActivity.createIntent(context);
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity) {
+    public @NonNull Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
 }

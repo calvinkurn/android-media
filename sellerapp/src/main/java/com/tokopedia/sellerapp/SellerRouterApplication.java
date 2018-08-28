@@ -1434,13 +1434,15 @@ public abstract class SellerRouterApplication extends MainApplication
         return new Intent(context, ShopSettingsInfoActivity.class);
     }
 
+    @NonNull
     @Override
-    public Intent getManageShopLocationIntent(Context context) {
+    public Intent getManageShopLocationIntent(@NonNull Context context) {
         return ShopSettingsAddressActivity.createIntent(context);
     }
 
+    @NonNull
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity) {
+    public Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
 }

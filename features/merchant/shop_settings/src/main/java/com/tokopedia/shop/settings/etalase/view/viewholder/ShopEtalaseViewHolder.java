@@ -16,7 +16,7 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
  */
 public class ShopEtalaseViewHolder extends AbstractViewHolder<ShopEtalaseViewModel> {
 
-    public static final int LAYOUT = R.layout.item_shop_etalase;
+    public static final int LAYOUT = R.layout.item_shop_settings_etalase;
 
     private View ivMenuMore;
     private TextView tvEtalaseName;

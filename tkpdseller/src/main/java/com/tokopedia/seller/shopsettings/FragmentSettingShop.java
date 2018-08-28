@@ -79,10 +79,8 @@ public class FragmentSettingShop extends TkpdFragment{
 					Intent intent;
 					switch(pos) {
 						case 0:
-							intent = new Intent(getActivity(), ShopEditorActivity.class);
-							intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
 							UnifyTracking.eventManageShopInfo();
-							startActivityForResult(intent, 0);
+							startActivityForResult(router.getManageShopBasicDataIntent(getActivity()), 0);
 							break;
 						case 1:
 							intent = new Intent(getActivity(), EditShippingActivity.class);
@@ -91,13 +89,11 @@ public class FragmentSettingShop extends TkpdFragment{
 							break;
 						case 2:
 							UnifyTracking.eventManageShopEtalase();
-							intent = new Intent(getActivity(), EtalaseShopEditor.class);
-							startActivity(intent);
+							startActivity(router.getManageShopEtalaseIntent(getActivity()));
 							break;
 						case 3:
 							UnifyTracking.eventManageShopNotes();
-							intent = new Intent(getActivity(), ManageShopNotesActivity.class);
-							startActivity(intent);
+							startActivity(router.getManageShopNotesIntent(getActivity()));
 							break;
 						case 4:
 							UnifyTracking.eventManageShopLocation();
