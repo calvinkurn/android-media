@@ -138,7 +138,7 @@ public class HomePageTracking extends TrackingUtils {
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,
                 STATIC_VALUE_HOMEPAGE,
-                "lego banner view click all",
+                "lego banner click view all",
                 applink
         ).getEvent());
     }
