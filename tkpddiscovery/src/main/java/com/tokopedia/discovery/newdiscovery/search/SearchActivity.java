@@ -90,6 +90,7 @@ public class SearchActivity extends DiscoveryActivity
     private TextView buttonFilter;
     private TextView buttonSort;
     private View searchNavDivider;
+    private View searchNavContainer;
 
     private String productTabTitle;
     private String catalogTabTitle;
@@ -443,6 +444,7 @@ public class SearchActivity extends DiscoveryActivity
         buttonFilter = findViewById(R.id.button_filter);
         buttonSort = findViewById(R.id.button_sort);
         searchNavDivider = findViewById(R.id.search_nav_divider);
+        searchNavContainer = findViewById(R.id.search_nav_container);
     }
 
     @Override
@@ -507,12 +509,11 @@ public class SearchActivity extends DiscoveryActivity
             @Override
             public void onShow() {
                 hideBottomNavigation();
-                disableAutoShowBottomNav();
             }
 
             @Override
             public void onHide() {
-                enableAutoShowBottomNav();
+                showBottomNavigation();
                 sendBottomSheetHideEventForProductList();
             }
 
@@ -666,5 +667,15 @@ public class SearchActivity extends DiscoveryActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void showBottomNavigation() {
+        searchNavContainer.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBottomNavigation() {
+        searchNavContainer.setVisibility(View.GONE);
     }
 }

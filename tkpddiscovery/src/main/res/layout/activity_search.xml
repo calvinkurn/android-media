@@ -82,6 +82,7 @@
         android:layout_gravity="bottom" />
 
     <LinearLayout
+        android:id="@+id/search_nav_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/background_search_navigation"
@@ -95,6 +96,7 @@
             android:id="@+id/button_sort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             style="@style/TextView.Small.BlackPrimary"
             android:drawableLeft="@drawable/ic_sort"
             android:drawablePadding="@dimen/dp_4"
@@ -112,6 +114,7 @@
             android:id="@+id/button_filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center_vertical"
             style="@style/TextView.Small.BlackPrimary"
             android:drawableLeft="@drawable/ic_filter_black"
             android:drawablePadding="@dimen/dp_4"

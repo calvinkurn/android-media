@@ -157,14 +157,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onSearchViewShown() {
-        bottomNavigation.hideBottomNavigation();
+        hideBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(false);
         CommonUtils.forceShowKeyboard(this);
     }
 
     @Override
     public void onSearchViewClosed() {
-        bottomNavigation.restoreBottomNavigation();
+        showBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(true);
     }
 
@@ -410,7 +410,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 performRequestProduct(searchView.getLastQuery());
             }
         });
-        hideBottomNavigation();
     }
 
     @Override
