@@ -80,6 +80,7 @@ public class EditSolutionMapper implements Func1<Response<ResolutionResponse<Edi
         return new CurrentSolutionDomain(
                 response.getId(),
                 response.getName(),
+                response.getMessage(),
                 response.getIdentifier(),
                 response.getAmount() != null ?
                         mappingSolutionProblemAmountDomain(response.getAmount()) :

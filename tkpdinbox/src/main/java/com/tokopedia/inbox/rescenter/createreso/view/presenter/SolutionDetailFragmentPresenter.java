@@ -104,16 +104,11 @@ public class SolutionDetailFragmentPresenter
     public void submitEditAppeal(EditAppealSolutionModel editAppealSolutionModel) {
         if (editAppealSolutionModel.isEdit) {
             postEditSolutionUseCase.execute(PostEditSolutionUseCase.
-                            postEditSolutionUseCaseParams(editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution,
-                                    editAppealSolutionModel.refundAmount),
+                            postEditSolution(editAppealSolutionModel),
                     new EditSolutionWithRefundSubscriber(mainView));
         } else {
             postAppealSolutionUseCase.execute(PostAppealSolutionUseCase.
-                            postAppealSolutionUseCaseParams(
-                                    editAppealSolutionModel.resolutionId,
-                                    editAppealSolutionModel.solution,
-                                    editAppealSolutionModel.refundAmount),
+                            postAppealSolution(editAppealSolutionModel),
                     new AppealSolutionWithRefundSubscriber(mainView));
         }
     }

@@ -65,6 +65,7 @@ public class SolutionSubscriber extends Subscriber<SolutionResponseDomain> {
 
     private SolutionResponseViewModel mappingSolutionResponseViewModel(SolutionResponseDomain domain) {
         return new SolutionResponseViewModel(
+                null,
                 domain.getSolutions() != null ?
                         mappingSolutionViewModelList(domain.getSolutions()) :
                         new ArrayList<SolutionViewModel>(),

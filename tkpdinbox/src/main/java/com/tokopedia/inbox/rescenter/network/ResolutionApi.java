@@ -17,8 +17,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -87,19 +85,15 @@ public interface ResolutionApi {
     Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId);
 
-
-    @FormUrlEncoded
     @POST(ResolutionUrl.POST_RESOLUTION_EDIT)
     Observable<Response<ResolutionResponse<EditAppealSolutionResponse>>>
     postEditSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                     @FieldMap HashMap<String, Object> params);
+                     @Body Object object);
 
-
-    @FormUrlEncoded
     @POST(ResolutionUrl.POST_RESOLUTION_APPEAL)
     Observable<Response<ResolutionResponse<EditAppealSolutionResponse>>>
     postAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                       @FieldMap HashMap<String, Object> params);
+                       @Body Object object);
 
 
     @POST(ResolutionUrl.BASE_RESOLUTION_VALIDATE)

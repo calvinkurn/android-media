@@ -13,6 +13,9 @@ public class CurrentSolutionResponse {
     @SerializedName("name")
     private String name;
 
+    @SerializedName("message")
+    private String message;
+
     @SerializedName("identifier")
     private String identifier;
 
@@ -49,5 +52,13 @@ public class CurrentSolutionResponse {
 
     public void setAmount(SolutionProblemAmountResponse amount) {
         this.amount = amount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

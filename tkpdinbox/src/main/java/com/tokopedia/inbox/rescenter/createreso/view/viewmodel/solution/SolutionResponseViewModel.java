@@ -11,6 +11,7 @@ import java.util.List;
 
 public class SolutionResponseViewModel implements Parcelable {
 
+    private CurrentSolutionViewModel currentSolutionViewModel;
     private List<SolutionViewModel> solutionViewModelList;
     private RequireViewModel require;
     private FreeReturnViewModel freeReturn;
@@ -20,17 +21,27 @@ public class SolutionResponseViewModel implements Parcelable {
 
 
     public SolutionResponseViewModel(
+            CurrentSolutionViewModel currentSolutionViewModel,
             List<SolutionViewModel> solutionViewModelList,
             RequireViewModel require,
             FreeReturnViewModel freeReturn,
             List<SolutionComplaintModel> complaints,
             SolutionMessageViewModel message) {
+        this.currentSolutionViewModel = currentSolutionViewModel;
         this.solutionViewModelList = solutionViewModelList;
         this.require = require;
         this.freeReturn = freeReturn;
         this.complaints = complaints;
         this.message = message;
         this.selectedSolution = new SolutionViewModel();
+    }
+
+    public CurrentSolutionViewModel getCurrentSolution() {
+        return currentSolutionViewModel;
+    }
+
+    public void setCurrentSolutionViewModel(CurrentSolutionViewModel currentSolutionViewModel) {
+        this.currentSolutionViewModel = currentSolutionViewModel;
     }
 
     public SolutionViewModel getSelectedSolution() {
@@ -89,6 +100,7 @@ public class SolutionResponseViewModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(this.currentSolutionViewModel, flags);
         dest.writeTypedList(this.solutionViewModelList);
         dest.writeParcelable(this.require, flags);
         dest.writeParcelable(this.freeReturn, flags);
@@ -98,6 +110,7 @@ public class SolutionResponseViewModel implements Parcelable {
     }
 
     protected SolutionResponseViewModel(Parcel in) {
+        this.currentSolutionViewModel = in.readParcelable(CurrentSolutionViewModel.class.getClassLoader());
         this.solutionViewModelList = in.createTypedArrayList(SolutionViewModel.CREATOR);
         this.require = in.readParcelable(RequireViewModel.class.getClassLoader());
         this.freeReturn = in.readParcelable(FreeReturnViewModel.class.getClassLoader());

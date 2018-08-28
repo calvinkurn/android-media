@@ -18,6 +18,7 @@ import com.tokopedia.inbox.rescenter.createreso.domain.usecase.CreateResoWithout
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetProductProblemUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.GetSolutionUseCase;
+import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostAppealSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.PostEditSolutionUseCase;
 import com.tokopedia.inbox.rescenter.createreso.domain.usecase.createwithattach.CreateSubmitUseCase;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
@@ -96,7 +97,7 @@ public class CreateResolutionSource {
     postEditSolution(RequestParams requestParams) {
         return resolutionApi.postEditSolution(
                 requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
-                requestParams.getParameters())
+                requestParams.getObject(PostEditSolutionUseCase.PARAM_RESULT))
                 .map(editAppealResolutionResponseMapper);
     }
 
@@ -104,7 +105,7 @@ public class CreateResolutionSource {
     postAppealSolution(RequestParams requestParams) {
         return resolutionApi.postAppealSolution(
                 requestParams.getString(PostEditSolutionUseCase.RESO_ID, ""),
-                requestParams.getParameters())
+                requestParams.getObject(PostAppealSolutionUseCase.PARAM_RESULT))
                 .map(editAppealResolutionResponseMapper);
     }
 

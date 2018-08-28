@@ -122,6 +122,9 @@
     <string name="string_max_refund">Maksimal</string>
     <string name="string_fund_want_refunded">Dana yang ingin dikembalikan</string>
     <string name="string_total_refunded">Total Dana Bermasalah</string>
+    <string name="string_current_solution">Solusi Sekarang</string>
+    <string name="string_other_solution">Pilih Solusi Lain</string>
+    <string name="string_solution_message">$solution.message</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>

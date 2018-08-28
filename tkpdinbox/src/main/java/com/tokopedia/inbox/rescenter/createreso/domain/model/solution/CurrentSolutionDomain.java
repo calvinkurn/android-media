@@ -7,12 +7,14 @@ public class CurrentSolutionDomain {
 
     private int id;
     private String name;
+    private String message;
     private String identifier;
     private SolutionProblemAmountDomain amount;
 
-    public CurrentSolutionDomain(int id, String name, String identifier, SolutionProblemAmountDomain amount) {
+    public CurrentSolutionDomain(int id, String name, String message, String identifier, SolutionProblemAmountDomain amount) {
         this.id = id;
         this.name = name;
+        this.message = message;
         this.identifier = identifier;
         this.amount = amount;
     }
@@ -47,5 +49,13 @@ public class CurrentSolutionDomain {
 
     public void setAmount(SolutionProblemAmountDomain amount) {
         this.amount = amount;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

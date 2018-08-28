@@ -46,7 +46,7 @@ public class ProblemResult implements Parcelable {
                 if (quantity != 0) {
                     object.addProperty(PARAM_QTY, quantity);
                 }
-                if (!remark.equals("")) {
+                if (remark != null && !remark.equals("")) {
                     object.addProperty(PARAM_REMARK, remark);
                 }
             } else {

@@ -236,9 +236,12 @@ public class SolutionDetailFragment extends BaseDaggerFragment
             tvTitle.setText(getActivity().getString(R.string.string_appeal_title));
             tvMessage.setText(getActivity().getString(R.string.string_appeal_message));
         }
-
-        updateSolutionString(editAppealSolutionModel, tvSolution);
-
+        if (solutionResponseViewModel.getMessage() != null) {
+            updateSolutionString(editAppealSolutionModel, tvMessage);
+            tvSolution.setVisibility(View.GONE);
+        } else {
+            updateSolutionString(editAppealSolutionModel, tvSolution);
+        }
         btnBack.setOnClickListener(view -> dialog.dismiss());
         ivClose.setOnClickListener(view -> dialog.dismiss());
 
@@ -251,11 +254,22 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     public void updateSolutionString(EditAppealSolutionModel editAppealSolutionModel, TextView textView) {
-        textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null ?
-                editAppealSolutionModel.solutionName.replace(
-                        getActivity().getResources().getString(R.string.string_return_value),
-                        CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.refundAmount))) :
-                editAppealSolutionModel.getName());
+        if (solutionResponseViewModel.getMessage() == null) {
+            textView.setText(editAppealSolutionModel.refundAmount != 0 && editAppealSolutionModel.solutionName != null ?
+                    editAppealSolutionModel.solutionName.replace(
+                            getActivity().getResources().getString(R.string.string_return_value),
+                            CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.refundAmount))) :
+                    editAppealSolutionModel.getName());
+        } else {
+            textView.setText(MethodChecker.fromHtml(solutionResponseViewModel.getMessage().getMessage().replace(
+                    getActivity().getResources().getString(R.string.string_solution_message),
+                    editAppealSolutionModel.getRefundAmount() != 0 && editAppealSolutionModel.getSolutionName() != null ?
+                            editAppealSolutionModel.getSolutionName().replace(
+                                    getActivity().getResources().getString(R.string.string_return_value),
+                                    CurrencyFormatter.formatDotRupiah(String.valueOf(editAppealSolutionModel.getRefundAmount()))) :
+                            editAppealSolutionModel.getName()))
+            );
+        }
     }
 
     @Override

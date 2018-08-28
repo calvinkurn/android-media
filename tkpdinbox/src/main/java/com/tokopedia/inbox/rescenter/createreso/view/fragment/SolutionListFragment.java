@@ -31,14 +31,21 @@ import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemOrderResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -63,8 +70,8 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     RecyclerView rvSolution;
     SolutionListAdapter adapter;
-    LinearLayout llFreeReturn, llSolution;
-    TextView tvFreeReturn;
+    LinearLayout llFreeReturn, llSolution, llCurrentSolution;
+    TextView tvFreeReturn, tvCurrentSolution;
     ProgressBar progressBar;
 
     boolean isEditAppeal;
@@ -106,11 +113,14 @@ public class SolutionListFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_solution_list, container, false);
         rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
+        llCurrentSolution = (LinearLayout) view.findViewById(R.id.ll_current_solution);
+        tvCurrentSolution = (TextView) view.findViewById(R.id.tv_current_solution);
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
         tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
         llSolution = (LinearLayout) view.findViewById(R.id.solution_layout);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         llFreeReturn.setVisibility(View.GONE);
+        llCurrentSolution.setVisibility(View.GONE);
         presenter.attachView(this);
         return view;
     }
@@ -164,10 +174,51 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
+        if (solutionResponseViewModel.getCurrentSolution() != null) {
+            llCurrentSolution.setVisibility(View.VISIBLE);
+            if (solutionResponseViewModel.getCurrentSolution().getAmount() != null) {
+                tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage()
+                        .replace(
+                                getActivity().getResources().getString(R.string.string_return_value),
+                                solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()));
+            } else {
+                tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage());
+            }
+        }
+        if (isEditAppeal) {
+            editAppealSolutionModel.name = solutionResponseViewModel.getCurrentSolution().getName();
+            editAppealSolutionModel.solutionName = solutionResponseViewModel.getCurrentSolution().getMessage();
+            editAppealSolutionModel.complaints =
+                    convertComplaintResults(solutionResponseViewModel.getComplaints());
+        }
         llSolution.setVisibility(View.VISIBLE);
         this.solutionResponseViewModel = solutionResponseViewModel;
         presenter.updateLocalData(solutionResponseViewModel);
         populateDataToView(solutionResponseViewModel);
+    }
+
+    private List<ComplaintResult> convertComplaintResults(List<SolutionComplaintModel> dataList) {
+        List<ComplaintResult> resultList = new ArrayList<>();
+        for (SolutionComplaintModel data : dataList) {
+            ComplaintResult complaintResult = new ComplaintResult();
+            ProblemResult problemResult = new ProblemResult();
+            ProblemOrderResult orderResult = new ProblemOrderResult();
+            if (data.getOrder() != null) {
+                orderResult.detail.id = data.getOrder().getDetail().getId();
+                problemResult.id = data.getOrder().getDetail().getId();
+            }
+            problemResult.name = data.getProblem().getName();
+            problemResult.type = data.getProblem().getType();
+            problemResult.trouble = data.getProblem().getTrouble();
+            problemResult.quantity = data.getProblem().getQty();
+            problemResult.amount = data.getProblem().getAmount().getInteger();
+            problemResult.remark = data.getProblem().getRemark();
+
+            complaintResult.problem = problemResult;
+            complaintResult.order = orderResult;
+            resultList.add(complaintResult);
+        }
+        return resultList;
     }
 
     @Override
@@ -277,9 +328,12 @@ public class SolutionListFragment extends BaseDaggerFragment
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
-
-        updateSolutionString(solutionViewModel, tvSolution);
-
+        if (solutionResponseViewModel.getMessage() != null) {
+            updateSolutionString(solutionViewModel, tvMessage);
+            tvSolution.setVisibility(View.GONE);
+        } else {
+            updateSolutionString(solutionViewModel, tvSolution);
+        }
         if (editAppealSolutionModel.isEdit) {
             tvTitle.setText(getActivity().getString(R.string.string_edit_title));
             tvMessage.setText(getActivity().getString(R.string.string_edit_message));
@@ -288,37 +342,35 @@ public class SolutionListFragment extends BaseDaggerFragment
             tvMessage.setText(getActivity().getString(R.string.string_appeal_message));
         }
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnBack.setOnClickListener(view -> dialog.dismiss());
+        ivClose.setOnClickListener(view -> dialog.dismiss());
 
-        btnEditSolution.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLoading();
-                presenter.submitEditAppeal(solutionViewModel);
-                dialog.dismiss();
-            }
+        btnEditSolution.setOnClickListener(view -> {
+            showLoading();
+            presenter.submitEditAppeal(solutionViewModel);
+            dialog.dismiss();
         });
 
         dialog.show();
     }
 
     public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
-        textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
-                solutionViewModel.getSolutionName().replace(
-                        getActivity().getResources().getString(R.string.string_return_value),
-                        CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
-                solutionViewModel.getName());
+        if (solutionResponseViewModel.getMessage() == null) {
+            textView.setText(MethodChecker.fromHtml(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+                    solutionViewModel.getSolutionName().replace(
+                            getActivity().getResources().getString(R.string.string_return_value),
+                            CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
+                    solutionViewModel.getName()));
+        } else {
+            textView.setText(MethodChecker.fromHtml(solutionResponseViewModel.getMessage().getMessage().replace(
+                    getActivity().getResources().getString(R.string.string_solution_message),
+                    solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+                            solutionViewModel.getSolutionName().replace(
+                                    getActivity().getResources().getString(R.string.string_return_value),
+                                    CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
+                            solutionViewModel.getName()))
+            );
+        }
     }
 
     @Override
