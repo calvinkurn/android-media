@@ -1,4 +1,5 @@
-package com.tokoepdia.updateinactivephone.model.response;
+package com.tokopedia.updateinactivephone.model.response;
+
 
 public class ResponseUploadImage {
 

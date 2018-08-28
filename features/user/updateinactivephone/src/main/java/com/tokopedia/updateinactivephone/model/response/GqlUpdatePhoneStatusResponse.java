@@ -1,4 +1,4 @@
-package com.tokoepdia.updateinactivephone.model.response;
+package com.tokopedia.updateinactivephone.model.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

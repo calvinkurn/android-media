@@ -1,4 +1,4 @@
-package com.tokpedia.updateinactivephone.di;
+package com.tokopedia.updateinactivephone.di;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

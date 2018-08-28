@@ -1,4 +1,4 @@
-package com.tokopedia.updatinactivephone.data.factory;
+package com.tokopedia.updateinactivephone.data.factory;
 
 
 import com.tokopedia.updateinactivephone.data.mapper.UploadImageMapper;
