@@ -43,7 +43,7 @@ import javax.inject.Inject
 
 class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter.View {
     @Inject
-    internal var shopSettingsInfoPresenter: ShopSettingsInfoPresenter? = null
+    lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
     private var loadingView: View? = null
     private var scrollViewContent: View? = null
     private var tvShopName: TextView? = null
@@ -92,7 +92,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         ivShopLogo = view.findViewById(R.id.ivShopLogo)
 
         vgShopInfoContainer!!.setOnClickListener {
-            val intent = ShopEditBasicInfoActivity.createIntent(context, shopBasicDataModel)
+            val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
         }
 
@@ -101,75 +101,70 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun showShopStatusManageMenu() {
-        context?.let { context ->
-            shopBasicDataModel?.let{ shopBasicDataModel ->
-            shopSettingsInfoPresenter?.let{ shopSettingsInfoPresenter ->
+        val menus = Menus(context!!)
+        menus.setTitle(getString(R.string.shop_settings_manage_status))
 
-            val menus = Menus(context)
-            menus.setTitle(getString(R.string.shop_settings_manage_status))
-
-            val itemMenusList = ArrayList<Menus.ItemMenus>()
-            if (shopBasicDataModel.isOpen) {
-                if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
-                } else {
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
-                }
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
+        val itemMenusList = ArrayList<Menus.ItemMenus>()
+        if (shopBasicDataModel!!.isOpen) {
+            if (StringUtils.isEmptyNumber(shopBasicDataModel!!.closeSchedule)) {
+                itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
             } else {
                 itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
+                itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
             }
-            menus.itemMenuList = itemMenusList
-            menus.setOnItemMenuClickListener { itemMenus, pos ->
-                when {
-                    itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                        val intent = ShopEditScheduleActivity.createIntent(context, shopBasicDataModel,
-                                getString(R.string.schedule_shop_close), false)
-                        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                    }
-                    itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                        val intent = ShopEditScheduleActivity.createIntent(context, shopBasicDataModel,
-                                getString(R.string.label_close_shop_now), true)
-                        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                    }
-                    itemMenus.title.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                        val intent = ShopEditScheduleActivity.createIntent(context, shopBasicDataModel,
-                                getString(R.string.change_schedule), false)
-                        startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                    }
-                    itemMenus.title.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
-                        val builder = AlertDialog.Builder(activity!!,
-                                R.style.AppCompatAlertDialogStyle)
-                        builder.setTitle(R.string.remove_schedule)
-                        builder.setMessage(R.string.remove_schedule_message)
-                        builder.setCancelable(true)
-                        builder.setNegativeButton(R.string.cancel) { dialog, id -> dialog.cancel() }
-                        builder.setPositiveButton(R.string.label_remove) { dialog, id ->
-                            //remove schedule
-                            showSubmitLoading(getString(R.string.title_loading))
-                            shopSettingsInfoPresenter.updateShopSchedule(
-                                    if (shopBasicDataModel.isClosed)
-                                        ShopScheduleActionDef.CLOSED
-                                    else
-                                        ShopScheduleActionDef.OPEN,
-                                    false, "", "", "")
-                        }
-                        val alert = builder.create()
-                        alert.show()
-                    }
-                    itemMenus.title.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
-                        // open now
-                        showSubmitLoading(getString(R.string.title_loading))
-                        shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                                "", "", "")
-                    }
+            itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
+        } else {
+            itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
+            itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
+        }
+        menus.itemMenuList = itemMenusList
+        menus.setOnItemMenuClickListener { itemMenus, pos ->
+            when {
+                itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
+                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                            getString(R.string.schedule_shop_close), false)
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
                 }
-                menus.dismiss()
+                itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
+                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                            getString(R.string.label_close_shop_now), true)
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+                }
+                itemMenus.title.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
+                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                            getString(R.string.change_schedule), false)
+                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+                }
+                itemMenus.title.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
+                    val builder = AlertDialog.Builder(activity!!,
+                            R.style.AppCompatAlertDialogStyle)
+                    builder.setTitle(R.string.remove_schedule)
+                    builder.setMessage(R.string.remove_schedule_message)
+                    builder.setCancelable(true)
+                    builder.setNegativeButton(R.string.cancel) { dialog, id -> dialog.cancel() }
+                    builder.setPositiveButton(R.string.label_remove) { dialog, id ->
+                        //remove schedule
+                        showSubmitLoading(getString(R.string.title_loading))
+                        shopSettingsInfoPresenter.updateShopSchedule(
+                                if (shopBasicDataModel!!.isClosed)
+                                    ShopScheduleActionDef.CLOSED
+                                else
+                                    ShopScheduleActionDef.OPEN,
+                                false, "", "", "")
+                    }
+                    val alert = builder.create()
+                    alert.show()
+                }
+                itemMenus.title.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
+                    // open now
+                    showSubmitLoading(getString(R.string.title_loading))
+                    shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
+                            "", "", "")
+                }
             }
-            menus.show()
-        }}}
+            menus.dismiss()
+        }
+        menus.show()
     }
 
     fun showLoading() {
@@ -369,7 +364,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     fun hideSubmitLoading() {
-        if (progressDialog?.isShowing == true){
+        if (progressDialog?.isShowing == true) {
             progressDialog!!.dismiss()
             progressDialog = null
         }
@@ -377,7 +372,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoPresenter?.run { detachView()}
+        shopSettingsInfoPresenter?.run { detachView() }
     }
 
     companion object {

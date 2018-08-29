@@ -95,8 +95,8 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         @JvmStatic
         fun createRequestParams(@ShopScheduleActionDef action: Int,
                                 closeNow: Boolean,
-                                closeStart: String,
-                                closeEnd: String,
+                                closeStart: String?,
+                                closeEnd: String?,
                                 closeNote: String): RequestParams {
             val requestParams = RequestParams.create()
             requestParams.putInt(ACTION, action)

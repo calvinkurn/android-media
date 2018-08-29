@@ -22,8 +22,8 @@ constructor(private val updateShopScheduleUseCase: UpdateShopScheduleUseCase) : 
 
     fun updateShopSchedule(@ShopScheduleActionDef action: Int,
                            closeNow: Boolean,
-                           closeStart: String,
-                           closeEnd: String,
+                           closeStart: String?,
+                           closeEnd: String?,
                            closeNote: String) {
         updateShopScheduleUseCase.unsubscribe()
         updateShopScheduleUseCase.execute(UpdateShopScheduleUseCase.createRequestParams(
