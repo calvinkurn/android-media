@@ -8,10 +8,6 @@
         tools:node="remove"
         tools:selector="com.google.firebase"/>
 
-    <uses-permission
-        android:name="android.permission.NFC"
-        tools:node="remove" />
-
     <application
         android:name=".SellerMainApplication"
         android:allowBackup="true"
