@@ -162,6 +162,14 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    public void eventClickAtcCartClickAddFromWishlistOnEmptyCart() {
+        sendEventCategoryAction(
+                EventName.CLICK_ATC,
+                EventCategory.CART,
+                EventAction.CLICK_ADD_FROM_WISHLIST_ON_EMPTY_CART
+        );
+    }
+
     public void eventViewAtcCartImpressionCartEmpty() {
         sendEventCategoryAction(
                 EventName.VIEW_ATC,

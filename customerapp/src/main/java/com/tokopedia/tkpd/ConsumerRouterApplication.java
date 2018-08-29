@@ -114,7 +114,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
@@ -151,7 +150,6 @@ import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
@@ -270,6 +268,7 @@ import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
+import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -396,7 +395,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OtpModuleRouter,
         UnifiedOrderRouter,
         DealsModuleRouter,
-        OmsModuleRouter ,
+        OmsModuleRouter,
         BankRouter,
         ChangePasswordRouter,
         TrainRouter,
@@ -1822,6 +1821,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent checkoutModuleRouterGetWhislistIntent() {
+        return SimpleHomeActivity.newWishlistInstance(this);
+    }
+
+    @Override
     public Intent checkoutModuleRouterGetInsuranceTncActivityIntent() {
         return new Intent(this, InsuranceTnCActivity.class);
     }
@@ -2004,7 +2008,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getWithdrawIntent(Context context){
+    public Intent getWithdrawIntent(Context context) {
         if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
             return WithdrawActivity.getCallingIntent(context);
         else {
@@ -2432,10 +2436,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if(remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)){
+        if (remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)) {
             return ChangePasswordActivity.Companion.createIntent(context);
-        }else{
-            return  new Intent(context, ManagePasswordActivity.class);
+        } else {
+            return new Intent(context, ManagePasswordActivity.class);
         }
     }
 
@@ -2482,7 +2486,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();
