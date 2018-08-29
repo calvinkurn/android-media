@@ -205,13 +205,6 @@ public class ShopEditScheduleActivity extends BaseSimpleActivity
     private void setEndCloseDate(Date date) {
         selectedEndCloseUnixTimeMs = date.getTime();
         labelEndClose.setContent(ShopDateUtil.toReadableString(ShopDateUtil.FORMAT_DAY_DATE, date));
-//        if (selectedStartCloseUnixTimeMs == 0) {
-//            if (labelOpen.isChecked()) {
-//                setStartCloseDate(ShopDateUtil.getTomorrowDate());
-//            } else {
-//                setStartCloseDate(ShopDateUtil.getCurrentDate());
-//            }
-//        }
     }
 
     private void onSaveButtonClicked() {

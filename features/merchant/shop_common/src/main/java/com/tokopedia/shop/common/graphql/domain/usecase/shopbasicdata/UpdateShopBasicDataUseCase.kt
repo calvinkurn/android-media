@@ -76,8 +76,8 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
         @JvmStatic
         fun createRequestParams(tagline: String, description: String,
                 //optional, either code only, or (filePath & fileName) only
-                                logoCode: String,
-                                filePath: String, fileName: String): RequestParams {
+                                logoCode: String?,
+                                filePath: String?, fileName: String?): RequestParams {
             val requestParams = createRequestParams(tagline, description)
             requestParams.putString(LOGO_CODE, logoCode)
             requestParams.putString(FILE_PATH, filePath)

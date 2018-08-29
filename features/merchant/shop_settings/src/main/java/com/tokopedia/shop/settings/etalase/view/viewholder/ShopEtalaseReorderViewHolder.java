@@ -9,9 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.touchhelper.OnStartDragListener;
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.settings.R;
-import com.tokopedia.shop.settings.common.util.ShopDateUtil;
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel;
-import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel;
 
 /**
  * Created by hendry on 16/08/18.
