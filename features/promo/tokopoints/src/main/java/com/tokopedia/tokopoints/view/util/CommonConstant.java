@@ -19,6 +19,7 @@ public interface CommonConstant {
     int MY_COUPON_TAB = 1;
     int MAX_COUPON_TO_SHOW_COUNT = 9;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
+    String EXTRA_COUPON_COUNT = "extra_coupon_count";
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;
@@ -48,6 +49,11 @@ public interface CommonConstant {
         String TOKOPEDIA = "tokopedia";
         String CONTENT = "content";
         String URL = "url";
+    }
+
+    interface CouponMapKeys {
+        String TITLE = "title";
+        String SUB_TITLE = "subTitle";
     }
 
     class BaseUrl {

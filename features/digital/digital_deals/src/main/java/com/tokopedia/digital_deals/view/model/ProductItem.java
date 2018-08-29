@@ -238,99 +238,99 @@ public class ProductItem implements Parcelable {
         this.longRichDesc = longRichDesc;
     }
 
-    public Integer getMrp() {
+    public int getMrp() {
         return mrp;
     }
 
-    public void setMrp(Integer mrp) {
+    public void setMrp(int mrp) {
         this.mrp = mrp;
     }
 
-    public Integer getSalesPrice() {
+    public int getSalesPrice() {
         return salesPrice;
     }
 
-    public void setSalesPrice(Integer salesPrice) {
+    public void setSalesPrice(int salesPrice) {
         this.salesPrice = salesPrice;
     }
 
-    public Integer getQuantity() {
+    public int getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Integer getSoldQuantity() {
+    public int getSoldQuantity() {
         return soldQuantity;
     }
 
-    public void setSoldQuantity(Integer soldQuantity) {
+    public void setSoldQuantity(int soldQuantity) {
         this.soldQuantity = soldQuantity;
     }
 
-    public Integer getSellRate() {
+    public int getSellRate() {
         return sellRate;
     }
 
-    public void setSellRate(Integer sellRate) {
+    public void setSellRate(int sellRate) {
         this.sellRate = sellRate;
     }
 
-    public Integer getThumbsUp() {
+    public int getThumbsUp() {
         return thumbsUp;
     }
 
-    public void setThumbsUp(Integer thumbsUp) {
+    public void setThumbsUp(int thumbsUp) {
         this.thumbsUp = thumbsUp;
     }
 
-    public Integer getThumbsDown() {
+    public int getThumbsDown() {
         return thumbsDown;
     }
 
-    public void setThumbsDown(Integer thumbsDown) {
+    public void setThumbsDown(int thumbsDown) {
         this.thumbsDown = thumbsDown;
     }
 
-    public Integer getIsFeatured() {
+    public int getIsFeatured() {
         return isFeatured;
     }
 
-    public void setIsFeatured(Integer isFeatured) {
+    public void setIsFeatured(int isFeatured) {
         this.isFeatured = isFeatured;
     }
 
-    public Integer getMinStartDate() {
+    public int getMinStartDate() {
         return minStartDate;
     }
 
-    public void setMinStartDate(Integer minStartDate) {
+    public void setMinStartDate(int minStartDate) {
         this.minStartDate = minStartDate;
     }
 
-    public Integer getMaxEndDate() {
+    public int getMaxEndDate() {
         return maxEndDate;
     }
 
-    public void setMaxEndDate(Integer maxEndDate) {
+    public void setMaxEndDate(int maxEndDate) {
         this.maxEndDate = maxEndDate;
     }
 
-    public Integer getSaleStartDate() {
+    public int getSaleStartDate() {
         return saleStartDate;
     }
 
-    public void setSaleStartDate(Integer saleStartDate) {
+    public void setSaleStartDate(int saleStartDate) {
         this.saleStartDate = saleStartDate;
     }
 
-    public Integer getSaleEndDate() {
+    public int getSaleEndDate() {
         return saleEndDate;
     }
 
-    public void setSaleEndDate(Integer saleEndDate) {
+    public void setSaleEndDate(int saleEndDate) {
         this.saleEndDate = saleEndDate;
     }
 

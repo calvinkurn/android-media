@@ -85,7 +85,8 @@ import javax.inject.Inject;
 
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentAdapterActionListener, CourierBottomsheet.ActionListener,
-        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener {
+        ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
+        ShipmentContract.AnalyticsActionListener  {
 
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -412,6 +413,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
+                        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(false);
                     }
                 });
@@ -655,6 +657,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendAnalyticsOnClickChooseOtherAddressShipment() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickPilihAlamatLain();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickChooseToMultipleAddressShipment() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickKirimKeBanyakAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickTopDonation() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi();
+    }
+
+    @Override
     public void renderChangeAddressSuccess(RecipientAddressModel selectedAddress) {
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
@@ -858,6 +875,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onChangeAddress() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
+        sendAnalyticsOnClickChooseOtherAddressShipment();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
                 CartAddressChoiceActivity.TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST);
@@ -866,6 +884,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel) {
+        sendAnalyticsOnClickChooseToMultipleAddressShipment();
         Intent intent = MultipleAddressFormActivity.createInstance(getActivity(),
                 shipmentPresenter.getCartItemPromoHolderData(),
                 shipmentPresenter.getCartPromoSuggestion(),
@@ -1185,6 +1204,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onDonationChecked(boolean checked) {
         shipmentAdapter.updateDonation(checked);
+        if(checked) sendAnalyticsOnClickTopDonation();
     }
 
     @Override

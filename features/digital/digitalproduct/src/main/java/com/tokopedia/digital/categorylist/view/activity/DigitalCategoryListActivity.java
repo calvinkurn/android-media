@@ -1,6 +1,7 @@
 package com.tokopedia.digital.categorylist.view.activity;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -88,15 +89,9 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
 
     @Override
     protected void initView() {
-
-    }
-
-    @Override
-    protected void setViewListener() {
         Fragment fragment = getFragmentManager().findFragmentById(R.id.container);
         if (fragment == null || !(fragment instanceof DigitalCategoryListFragment)) {
-            DigitalCategoryListFragment digitalCategoryListFragment = null;
-
+            DigitalCategoryListFragment digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
 
             if (getIntent() != null) {
                 if (getIntent().hasExtra(Constants.FROM_APP_SHORTCUTS)) {
@@ -109,13 +104,17 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
                             getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
                     );
                 }
-            } else {
-                digitalCategoryListFragment = DigitalCategoryListFragment.newInstance();
             }
 
-            getFragmentManager().beginTransaction().replace(R.id.container,
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.container,
                     digitalCategoryListFragment).commit();
         }
+    }
+
+    @Override
+    protected void setViewListener() {
+
     }
 
     @Override
