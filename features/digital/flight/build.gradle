@@ -38,6 +38,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.imagePicker)
+    implementation project(rootProject.ext.features.commonTravel)
 
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
