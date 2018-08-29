@@ -45,16 +45,6 @@ public class AddShopEtalaseUseCase extends UseCase<String> {
     public Observable<String> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLSuccessMapper());
-                //TODO remove below, just for test.
-//                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-//                    @Override
-//                    public Observable<? extends String> call(Throwable throwable) {
-//                        String jsonString = "{\"addShopShowcase\":{\"success\":true,\"message\":\"Success\"}}";
-//                        AddShopEtalaseMutation response = new Gson().fromJson(jsonString, AddShopEtalaseMutation.class);
-//                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
-//                    }
-//                });
-
     }
 
     public static RequestParams createRequestParams(String etalaseName) {

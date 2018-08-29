@@ -39,10 +39,6 @@ public abstract class SingleGraphQLUseCase<T> extends UseCase<T> {
         GraphqlRequest graphqlRequest = new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
                 getGraphQLRawResId()), tClass, variables);
 
-        /*GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
-                .setSessionIncluded(true)
-                .build();*/
         graphqlUseCase.setCacheStrategy(createGraphQLCacheStrategy());
 
         graphqlUseCase.clearRequest();

@@ -47,15 +47,6 @@ public class ReorderShopNoteUseCase extends UseCase<String> {
     public Observable<String> createObservable(RequestParams requestParams) {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(new GraphQLSuccessMapper());
-                //TODO remove below, just for test.
-//                .onErrorResumeNext(new Func1<Throwable, Observable<? extends String>>() {
-//                    @Override
-//                    public Observable<? extends String> call(Throwable throwable) {
-//                        String jsonString = "{\"reorderShopNote\":{\"success\":true,\"message\":\"Success\"}}";
-//                        ReorderShopNoteMutation response = new Gson().fromJson(jsonString, ReorderShopNoteMutation.class);
-//                        return Observable.just(response).flatMap(new GraphQLSuccessMapper());
-//                    }
-//                });
 
     }
 

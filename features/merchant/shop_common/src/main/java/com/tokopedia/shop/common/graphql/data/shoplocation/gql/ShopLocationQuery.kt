@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.graphql.data.GraphQLResult
 import com.tokopedia.shop.common.graphql.data.shoplocation.ShopLocationModel
 import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLResult
+import java.util.ArrayList
 
 /**
  * Created by hendry on 08/08/18.
@@ -12,9 +13,9 @@ import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLResult
 
 data class ShopLocationQuery(@SerializedName("shopLocations")
                              @Expose
-                             private val shopLocationResult: GraphQLResult<List<ShopLocationModel>>? = null) : HasGraphQLResult<List<ShopLocationModel>> {
+                             internal val shopLocationResult: GraphQLResult<ArrayList<ShopLocationModel>>? = null) : HasGraphQLResult<ArrayList<ShopLocationModel>> {
 
-    override fun getResult(): GraphQLResult<List<ShopLocationModel>>? {
+    override fun getResult(): GraphQLResult<ArrayList<ShopLocationModel>>? {
         return shopLocationResult
     }
 }
