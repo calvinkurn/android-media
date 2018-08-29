@@ -84,7 +84,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
         try {
             if (data.get(position).getFileLoc() == null) {
-                ImageHandler.loadImageRounded2(holder.image.getContext(),holder.image, data.get(position).getPicSrc());
+                ImageHandler.loadImageRounded2(holder.image.getContext(), holder.image, data.get(position).getPicSrc());
             } else {
                 Glide.with(holder.image.getContext())
                         .load(new File(data.get(position).getFileLoc()))
