@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.talk.fragment.TalkProductFragment
 
 class TalkProductActivity : BaseSimpleActivity() {
 
@@ -14,7 +13,7 @@ class TalkProductActivity : BaseSimpleActivity() {
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return TalkProductFragment()
+        return ProductTalkFragment()
     }
 
     companion object {
