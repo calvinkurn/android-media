@@ -70,7 +70,7 @@
                 <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                     android:id="@+id/img_challenge"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/dp_180"
+                    android:layout_height="@dimen/dp_240"
                     android:layout_marginBottom="@dimen/dp_30" />
 
                 <TextView
