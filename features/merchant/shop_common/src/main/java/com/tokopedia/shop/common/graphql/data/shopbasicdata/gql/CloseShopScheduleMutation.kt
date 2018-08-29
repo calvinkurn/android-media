@@ -9,12 +9,9 @@ import com.tokopedia.shop.common.graphql.data.GraphQLSuccessMessage
  * Created by hendry on 08/08/18.
  */
 
-class CloseShopScheduleMutation : HasGraphQLSuccess {
-    @SerializedName("closeShopSchedule")
-    @Expose
-    private val graphQLSuccessMessage: GraphQLSuccessMessage? = null
+data class CloseShopScheduleMutation(@SerializedName("closeShopSchedule")
+                                     @Expose
+                                     override val graphQLSuccessMessage: GraphQLSuccessMessage? = null)
+    : HasGraphQLSuccess {
 
-    override fun getGraphQLSuccessMessage(): GraphQLSuccessMessage? {
-        return graphQLSuccessMessage
-    }
 }

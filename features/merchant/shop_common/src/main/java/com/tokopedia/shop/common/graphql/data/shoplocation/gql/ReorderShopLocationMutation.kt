@@ -11,9 +11,7 @@ import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLSuccess
 
 data class ReorderShopLocationMutation(@SerializedName("reorderShopLocation")
                                        @Expose
-                                       private val graphQLSuccessMessage: GraphQLSuccessMessage? = null) : HasGraphQLSuccess {
+                                       override val graphQLSuccessMessage: GraphQLSuccessMessage? = null)
+    : HasGraphQLSuccess {
 
-    override fun getGraphQLSuccessMessage(): GraphQLSuccessMessage? {
-        return graphQLSuccessMessage
-    }
 }

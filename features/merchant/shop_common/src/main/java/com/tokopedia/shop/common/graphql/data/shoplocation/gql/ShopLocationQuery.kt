@@ -13,9 +13,7 @@ import java.util.ArrayList
 
 data class ShopLocationQuery(@SerializedName("shopLocations")
                              @Expose
-                             internal val shopLocationResult: GraphQLResult<ArrayList<ShopLocationModel>>? = null) : HasGraphQLResult<ArrayList<ShopLocationModel>> {
+                             override val result: GraphQLResult<ArrayList<ShopLocationModel>>? = null) :
+        HasGraphQLResult<ArrayList<ShopLocationModel>> {
 
-    override fun getResult(): GraphQLResult<ArrayList<ShopLocationModel>>? {
-        return shopLocationResult
-    }
 }

@@ -7,5 +7,5 @@ import com.tokopedia.shop.common.graphql.data.GraphQLSuccessMessage
  */
 
 interface HasGraphQLSuccess {
-    val graphQLSuccessMessage: GraphQLSuccessMessage
+    val graphQLSuccessMessage: GraphQLSuccessMessage?
 }

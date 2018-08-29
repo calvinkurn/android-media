@@ -7,5 +7,5 @@ import com.tokopedia.shop.common.graphql.data.GraphQLResult
  */
 
 interface HasGraphQLResult<T> {
-    val result: GraphQLResult<T>
+    val result: GraphQLResult<T>?
 }

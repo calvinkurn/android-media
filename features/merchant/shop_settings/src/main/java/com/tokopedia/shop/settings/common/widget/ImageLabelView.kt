@@ -27,7 +27,7 @@ class ImageLabelView : FrameLayout {
     @ColorInt
     private var titleColorValue: Int = 0
 
-    internal var imageView: ImageView
+    internal var imageView: ImageView? = null
     private var drawableRes: Int = 0
     private var tvContent: TextView? = null
     private var contentHint: String? = null
@@ -82,10 +82,10 @@ class ImageLabelView : FrameLayout {
     fun setImage(drawableRes: Int) {
         this.drawableRes = drawableRes
         if (drawableRes == 0) {
-            imageView.visibility = View.GONE
+            imageView?.visibility = View.GONE
         } else {
-            imageView.setImageResource(drawableRes)
-            imageView.visibility = View.VISIBLE
+            imageView?.setImageResource(drawableRes)
+            imageView?.visibility = View.VISIBLE
         }
     }
 

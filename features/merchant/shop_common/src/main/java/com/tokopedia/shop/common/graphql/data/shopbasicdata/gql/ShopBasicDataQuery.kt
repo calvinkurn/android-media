@@ -12,9 +12,6 @@ import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLResult
 
 data class ShopBasicDataQuery(@SerializedName("shopBasicData")
                               @Expose
-                              internal var shopBasicDataResult: GraphQLResult<ShopBasicDataModel>? = null) : HasGraphQLResult<ShopBasicDataModel> {
-
-    override fun getResult(): GraphQLResult<ShopBasicDataModel>? {
-        return shopBasicDataResult
-    }
+                              override var result: GraphQLResult<ShopBasicDataModel>? = null)
+    : HasGraphQLResult<ShopBasicDataModel> {
 }

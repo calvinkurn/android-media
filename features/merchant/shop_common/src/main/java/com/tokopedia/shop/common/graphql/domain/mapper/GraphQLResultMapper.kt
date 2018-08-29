@@ -16,7 +16,12 @@ import rx.functions.Func1
 class GraphQLResultMapper<T> : Func1<HasGraphQLResult<T>, Observable<T>> {
 
     override fun call(graphQLResultParent: HasGraphQLResult<T>): Observable<T> {
-        val (result, graphQLDataError) = graphQLResultParent.result
+        val graphQLResult: GraphQLResult<T>? = graphQLResultParent.result
+        if (graphQLResult == null) {
+            return Observable.error(RuntimeException());
+        }
+        val result:T? = graphQLResult.result
+        val graphQLDataError:GraphQLDataError? = graphQLResult.graphQLDataError
         return if (graphQLDataError == null || TextUtils.isEmpty(graphQLDataError.message)) {
             Observable.just(result)
         } else {

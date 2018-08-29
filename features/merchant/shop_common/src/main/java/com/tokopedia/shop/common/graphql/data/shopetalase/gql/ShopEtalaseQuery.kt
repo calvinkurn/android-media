@@ -14,9 +14,7 @@ import java.util.ArrayList
 
 data class ShopEtalaseQuery(@SerializedName("shopShowcases")
                             @Expose
-                            internal var shopEtalaseResult: GraphQLResult<ArrayList<ShopEtalaseModel>>? = null) : HasGraphQLResult<ArrayList<ShopEtalaseModel>> {
+                            override var result: GraphQLResult<ArrayList<ShopEtalaseModel>>? = null)
+    : HasGraphQLResult<ArrayList<ShopEtalaseModel>> {
 
-    override fun getResult(): GraphQLResult<ArrayList<ShopEtalaseModel>>? {
-        return shopEtalaseResult
-    }
 }

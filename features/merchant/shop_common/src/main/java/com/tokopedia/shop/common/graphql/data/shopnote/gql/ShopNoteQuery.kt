@@ -14,9 +14,7 @@ import java.util.ArrayList
 
 data class ShopNoteQuery(@SerializedName("shopNotes")
                          @Expose
-                         internal var shopNotesResult: GraphQLResult<ArrayList<ShopNoteModel>>? = null) : HasGraphQLResult<ArrayList<ShopNoteModel>> {
+                         override var result: GraphQLResult<ArrayList<ShopNoteModel>>? = null)
+    : HasGraphQLResult<ArrayList<ShopNoteModel>> {
 
-    override fun getResult(): GraphQLResult<ArrayList<ShopNoteModel>>? {
-        return shopNotesResult
-    }
 }
