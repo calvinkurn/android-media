@@ -1,47 +1,38 @@
 package com.tokopedia.topads.keyword.domain.interactor;
 
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.topads.keyword.data.mapper.TopAdsKeywordActionBulkMapperToDomain;
-import com.tokopedia.topads.keyword.domain.TopAdsKeywordActionBulkRepository;
+import com.tokopedia.abstraction.common.data.model.request.DataRequest;
+import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
+import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
+import com.tokopedia.topads.keyword.domain.repository.TopAdsKeywordRepository;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
 import rx.Observable;
 
 /**
- * Created by zulfikarrahman on 5/29/17.
+ * Created by hadi.putra on 14/05/18.
  */
 
-public class TopAdsKeywordActionBulkUseCase extends UseCase<Boolean> {
+public class TopAdsKeywordActionBulkUseCase extends UseCase<PageDataResponse<DataBulkKeyword>> {
+    private static final String PARAM_KEY = "data";
 
-    private final TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository;
-    private final TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain;
+    private final TopAdsKeywordRepository repository;
 
     @Inject
-    public TopAdsKeywordActionBulkUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                          TopAdsKeywordActionBulkRepository topAdsKeywordActionBulkRepository,
-                                          TopAdsKeywordActionBulkMapperToDomain topAdsKeywordActionBulkMapperToDomain) {
-        super(threadExecutor, postExecutionThread);
-        this.topAdsKeywordActionBulkRepository = topAdsKeywordActionBulkRepository;
-        this.topAdsKeywordActionBulkMapperToDomain = topAdsKeywordActionBulkMapperToDomain;
+    public TopAdsKeywordActionBulkUseCase(TopAdsKeywordRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
-        return topAdsKeywordActionBulkRepository.actionBulk(requestParams)
-                .map(topAdsKeywordActionBulkMapperToDomain);
+    public Observable<PageDataResponse<DataBulkKeyword>> createObservable(RequestParams requestParams) {
+        return repository.bulkActionKeyword((DataRequest<DataBulkKeyword>) requestParams.getObject(PARAM_KEY));
     }
 
-    public static RequestParams createRequestParams(String adId, String groupId, String shopId, String action){
+    public static RequestParams createRequestParams(DataRequest<DataBulkKeyword> dataRequest){
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(TopAdsNetworkConstant.PARAM_KEYWORD_AD_ID, adId);
-        requestParams.putString(TopAdsNetworkConstant.PARAM_GROUP_ID, groupId);
-        requestParams.putString(TopAdsNetworkConstant.PARAM_SHOP_ID, shopId);
-        requestParams.putString(TopAdsNetworkConstant.PARAM_ACTION, action);
+        requestParams.putObject(PARAM_KEY, dataRequest);
         return requestParams;
     }
 }

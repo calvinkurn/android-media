@@ -1,5 +1,8 @@
 package com.tokopedia.tkpd.deeplink;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
@@ -7,5 +10,7 @@ import java.util.List;
  */
 
 public class Whitelist {
+    @SerializedName("data")
+    @Expose
     public List<WhitelistItem> data;
 }

@@ -8,11 +8,11 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactoryImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.typefactory.ProductListTypeFactory;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.EmptyViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.GuidedSearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.HeaderViewHolder;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ImageEmptySearchViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.viewholder.ListProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
@@ -63,7 +63,7 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
 
     @Override
     public int type(EmptySearchModel emptySearchModel) {
-        return EmptySearchViewHolder.LAYOUT;
+        return ImageEmptySearchViewHolder.LAYOUT;
     }
 
     @Override
@@ -75,8 +75,8 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
         } else if(type == HeaderViewHolder.LAYOUT){
             viewHolder = new HeaderViewHolder(view, itemClickListener, topAdsConfig);
-        } else if (type == EmptySearchViewHolder.LAYOUT) {
-            viewHolder = new EmptySearchViewHolder(view, itemClickListener, topAdsConfig);
+        } else if (type == ImageEmptySearchViewHolder.LAYOUT) {
+            viewHolder = new ImageEmptySearchViewHolder(view, itemClickListener, topAdsConfig);
         } else if (type == GuidedSearchViewHolder.LAYOUT) {
             viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
         } else {

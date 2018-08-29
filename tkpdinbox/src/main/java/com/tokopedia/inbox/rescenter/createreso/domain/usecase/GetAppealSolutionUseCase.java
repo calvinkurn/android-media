@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.AppealSolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.AppealSolutionResponseDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,18 +16,16 @@ import rx.Observable;
 public class GetAppealSolutionUseCase extends UseCase<AppealSolutionResponseDomain> {
     public static final String RESO_ID = "reso_id";
 
-    private AppealSolutionRepository appealSolutionRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public GetAppealSolutionUseCase(ThreadExecutor threadExecutor,
-                                    PostExecutionThread postExecutionThread,
-                                    AppealSolutionRepository appealSolutionRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.appealSolutionRepository = appealSolutionRepository;
+    @Inject
+    public GetAppealSolutionUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<AppealSolutionResponseDomain> createObservable(RequestParams requestParams) {
-        return appealSolutionRepository.getAppealSolutionFromCloud(requestParams);
+        return createResolutionSource.getAppealSolutionResponse(requestParams);
     }
 
     public RequestParams getAppealSolutionUseCaseParams(String resoId) {

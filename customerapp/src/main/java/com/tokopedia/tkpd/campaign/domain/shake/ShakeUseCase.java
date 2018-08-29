@@ -42,7 +42,7 @@ public class ShakeUseCase extends UseCase<CampaignResponseEntity> {
                         "false"));
         HashMap<String, RequestBody> requestBodyMap = new HashMap<>();
         requestBodyMap.put(IS_AUDIO, isAudio);
-        requestBodyMap.put(SCREEN_NAME,screenName);
+        requestBodyMap.put(SCREEN_NAME, screenName);
         return requestBodyMap;
     }
 

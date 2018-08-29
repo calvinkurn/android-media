@@ -1,6 +1,7 @@
 package com.tokopedia.core.remoteconfig;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -11,6 +12,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.base.data.executor.JobExecutor;
+import com.tokopedia.core.util.GlobalConfig;
 
 import java.util.concurrent.TimeUnit;
 
@@ -19,15 +21,19 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class FirebaseRemoteConfigImpl implements RemoteConfig {
+    private static final String CACHE_NAME = "RemoteConfigDebugCache";
     private static final long THREE_HOURS = TimeUnit.HOURS.toSeconds(3);
     private static final long CONFIG_CACHE_EXPIRATION = THREE_HOURS;
 
     private FirebaseRemoteConfig firebaseRemoteConfig;
-    private Context context;
+
+    private SharedPreferences.Editor editor;
+    private SharedPreferences sharedPrefs;
 
     public FirebaseRemoteConfigImpl(Context context) {
         this.firebaseRemoteConfig = getInstance(context);
-        this.context = context;
+        this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
+        this.editor = sharedPrefs.edit();
     }
 
     private FirebaseRemoteConfig getInstance(Context context) {
@@ -50,6 +56,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public boolean getBoolean(String key, Boolean defaultValue) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
+                return cacheValue.equalsIgnoreCase("true");
+            }
+        }
+
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getBoolean(key);
         }
@@ -89,6 +102,12 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public long getLong(String key, long defaultValue) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            String cacheValue = sharedPrefs.getString(key, String.valueOf(defaultValue));
+            if (!cacheValue.equalsIgnoreCase(String.valueOf(defaultValue)) && !cacheValue.isEmpty()) {
+                return Long.parseLong(cacheValue);
+            }
+        }
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getLong(key);
         }
@@ -102,10 +121,26 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
 
     @Override
     public String getString(String key, String defaultValue) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            String cacheValue = sharedPrefs.getString(key, defaultValue);
+            if (!cacheValue.equalsIgnoreCase(defaultValue) && !cacheValue.isEmpty()) {
+                return cacheValue;
+            }
+        }
         if (firebaseRemoteConfig != null) {
             return firebaseRemoteConfig.getString(key);
         }
         return defaultValue;
+    }
+
+    @Override
+    public void setString(String key, String value) {
+        if (!GlobalConfig.isAllowDebuggingTools()) {
+            return;
+        }
+        editor
+                .putString(key, value)
+                .apply();
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.tokopedia.loyalty.di.module;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.usecase.FlightCheckVoucherUseCase;
@@ -12,6 +11,7 @@ import com.tokopedia.loyalty.view.interactor.PromoCouponInteractor;
 import com.tokopedia.loyalty.view.presenter.IPromoCouponPresenter;
 import com.tokopedia.loyalty.view.presenter.PromoCouponPresenter;
 import com.tokopedia.loyalty.view.view.IPromoCouponView;
+import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
 import dagger.Provides;
@@ -20,7 +20,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * @author anggaprasetiyo on 27/11/17.
  */
-@Module(includes = {ServiceApiModule.class})
+@Module(includes = {RouterModule.class, ServiceApiModule.class, TransactionApiServiceModule.class})
 public class PromoCouponViewModule {
 
     private final IPromoCouponView view;
@@ -38,8 +38,9 @@ public class PromoCouponViewModule {
     @Provides
     @LoyaltyScope
     IPromoCouponInteractor provideIPromoCouponInteractor(CompositeSubscription compositeSubscription,
-                                                         TokoPointRepository loyaltyRepository) {
-        return new PromoCouponInteractor(compositeSubscription, loyaltyRepository);
+                                                         TokoPointRepository loyaltyRepository,
+                                                         ICartRepository cartRepository) {
+        return new PromoCouponInteractor(compositeSubscription, loyaltyRepository, cartRepository);
     }
 
     @Provides
@@ -50,7 +51,7 @@ public class PromoCouponViewModule {
 
 
     @Provides
-    LoyaltyModuleRouter provideLoyaltyViewModule(@ApplicationContext Context context) {
+    LoyaltyModuleRouter provideLoyaltyViewModule(Context context) {
         if (context instanceof LoyaltyModuleRouter) {
             return (LoyaltyModuleRouter) context;
         }

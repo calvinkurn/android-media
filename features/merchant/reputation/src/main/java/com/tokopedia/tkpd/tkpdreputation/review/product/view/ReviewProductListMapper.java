@@ -65,13 +65,13 @@ public class ReviewProductListMapper {
         for(Review review : dataResponseReviewHelpful.getList()){
             ReviewProductModelContent productReviewModelContent = new ReviewProductModelContent();
             productReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
-            productReviewModelContent.setResponseMessage(review.getReviewMessage());
+            productReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
             productReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
             productReviewModelContent.setReputationId(String.valueOf(review.getReputationId()));
             productReviewModelContent.setReviewerId(String.valueOf(review.getUser().getUserId()));
             productReviewModelContent.setReviewAttachment(generateImageAttachmentModel(review));
             productReviewModelContent.setReviewIsAnonymous(review.getReviewAnonymous() == 1);
-            productReviewModelContent.setReviewStar(review.getProductRating());
+            productReviewModelContent.setReviewStar(review.getReviewStar());
             productReviewModelContent.setSellerName(dataResponseReviewHelpful.getOwner().getUser().getUserFullName());
             productReviewModelContent.setReviewTime(getReviewCreateTime(review));
             productReviewModelContent.setReviewMessage(review.getReviewMessage());

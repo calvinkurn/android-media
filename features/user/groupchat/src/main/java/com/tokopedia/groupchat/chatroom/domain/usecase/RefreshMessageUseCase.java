@@ -19,7 +19,7 @@ import javax.inject.Inject;
  */
 
 public class RefreshMessageUseCase {
-    private static final int PARAM_LIMIT_MESSAGE = 30;
+    private static final int PARAM_LIMIT_MESSAGE = 20;
     private static final boolean PARAM_IS_REVERSE = true;
 
     public interface RefreshMessagesListener {

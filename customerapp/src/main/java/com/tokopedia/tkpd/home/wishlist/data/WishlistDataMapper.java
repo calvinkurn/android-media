@@ -82,8 +82,8 @@ public class WishlistDataMapper implements Func1<Response<WishlistData>, DataWis
     private ShopWishlistDomain mappingShop(Shop shop) {
         ShopWishlistDomain shopWishlistDomain = new ShopWishlistDomain();
         shopWishlistDomain.setName(shop.getName());
-        shopWishlistDomain.setGoldMerchant(shop.getIsGoldMerchant());
-        shopWishlistDomain.setOfficial(shop.getOfficial());
+        shopWishlistDomain.setGoldMerchant(shop.isGoldMerchant());
+        shopWishlistDomain.setOfficial(shop.isOfficial());
         shopWishlistDomain.setId(shop.getId());
         shopWishlistDomain.setLocation(shop.getLocation());
         shopWishlistDomain.setLuckiMerchant(shop.getLuckyMerchant());

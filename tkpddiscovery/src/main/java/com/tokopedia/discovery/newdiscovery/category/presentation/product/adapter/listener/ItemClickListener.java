@@ -10,5 +10,5 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmo
 public interface ItemClickListener {
     void onItemClicked(ProductItem item, int adapterPosition);
 
-    void onWishlistButtonClicked(ProductItem productItem, int adapterPosition);
+    void onWishlistButtonClicked(ProductItem productItem);
 }

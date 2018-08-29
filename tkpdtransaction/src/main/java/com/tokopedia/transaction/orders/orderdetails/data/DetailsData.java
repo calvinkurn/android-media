@@ -1,21 +1,25 @@
 package com.tokopedia.transaction.orders.orderdetails.data;
 
 
-import java.util.List;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 public class DetailsData {
-        OrderDetails orderDetails;
+    @SerializedName("orderDetails")
+    @Expose
 
-        public DetailsData(OrderDetails orderDetails) {
-            this.orderDetails = orderDetails;
-        }
+    OrderDetails orderDetails;
 
-        @Override
-        public String toString() {
-            return "[DetailsData:{" + orderDetails + "}]";
-        }
-
-        public OrderDetails orderDetails() {
-            return orderDetails;
-        }
+    public DetailsData(OrderDetails orderDetails) {
+        this.orderDetails = orderDetails;
     }
+
+    @Override
+    public String toString() {
+        return "[DetailsData:{" + orderDetails + "}]";
+    }
+
+    public OrderDetails orderDetails() {
+        return orderDetails;
+    }
+}

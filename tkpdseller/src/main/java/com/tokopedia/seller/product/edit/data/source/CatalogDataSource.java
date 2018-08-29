@@ -22,6 +22,4 @@ public class CatalogDataSource {
     public Observable<CatalogDataModel> fetchCatalog(String keyword, long prodDeptId, int start, int row) {
         return catalogCloud.fetchData(keyword, prodDeptId, start, row);
     }
-
-
 }

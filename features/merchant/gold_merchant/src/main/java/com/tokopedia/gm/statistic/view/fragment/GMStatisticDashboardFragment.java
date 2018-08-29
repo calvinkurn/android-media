@@ -18,7 +18,6 @@ import com.tokopedia.design.loading.LoadingStateView;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.R;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.common.datepicker.view.model.DatePickerViewModel;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;

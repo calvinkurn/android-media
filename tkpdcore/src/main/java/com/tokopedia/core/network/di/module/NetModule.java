@@ -7,24 +7,24 @@ import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.BearerAuth;
 import com.tokopedia.core.network.di.qualifier.BearerAuthTypeJsonUt;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
-import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
-import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
-import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
-import com.tokopedia.core.network.di.qualifier.TomeQualifier;
-import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuth;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoNoRetryAuth;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoSmallTimeoutNoAuth;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.NoAuth;
-import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
+import com.tokopedia.core.network.di.qualifier.TomeBearerAuth;
+import com.tokopedia.core.network.di.qualifier.TomeQualifier;
+import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Auth;
+import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
@@ -53,7 +53,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideWsV4RetrofitWithErrorHandler(@DefaultAuthWithErrorHandler OkHttpClient okHttpClient,
-                                        Retrofit.Builder retrofitBuilder){
+                                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN).client(okHttpClient).build();
     }
 
@@ -61,7 +61,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideAceRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                        Retrofit.Builder retrofitBuilder) {
+                                       Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACE_DOMAIN).client(okHttpClient).build();
     }
 
@@ -69,7 +69,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideMojitoRetrofit(@MojitoAuth OkHttpClient okHttpClient,
-                                       Retrofit.Builder retrofitBuilder) {
+                                          Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
     }
 
@@ -85,7 +85,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideMojitoWishlistActionRetrofit(@MojitoNoRetryAuth OkHttpClient okHttpClient,
-                                                     Retrofit.Builder retrofitBuilder) {
+                                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
     }
 
@@ -93,7 +93,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideHadesRetrofit(@NoAuth OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+                                         Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.HADES_DOMAIN).client(okHttpClient).build();
     }
 
@@ -101,7 +101,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideAccountsRetrofit(@BearerAuth OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
+                                            Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.ACCOUNTS_DOMAIN).client(okHttpClient).build();
     }
 
@@ -124,7 +124,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideTomeRetrofit(@TomeBearerAuth OkHttpClient okHttpClient,
-                                          Retrofit.Builder retrofitBuilder) {
+                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN).client(okHttpClient).build();
     }
 
@@ -140,7 +140,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideGoldMerchantRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
-                                                Retrofit.Builder retrofitBuilder){
+                                                Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.GOLD_MERCHANT_DOMAIN).client(okHttpClient).build();
     }
 
@@ -148,7 +148,7 @@ public class NetModule {
     @ApplicationScope
     @Provides
     public Retrofit provideCartRetrofit(@BearerAuthTypeJsonUt OkHttpClient okHttpClient,
-                                        Retrofit.Builder retrofitBuilder){
+                                        Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOKOPEDIA_CART_DOMAIN).client(okHttpClient).build();
     }
 
@@ -166,6 +166,5 @@ public class NetModule {
     public Retrofit provideTopAdsRetrofit(@TopAdsQualifier OkHttpClient okHttpClient,
                                           Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TkpdBaseURL.TOPADS_DOMAIN).client(okHttpClient).build();
-
     }
 }

@@ -3,10 +3,9 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,28 +52,28 @@ public class ResultViewModel implements Parcelable {
         message = new ProblemMessageResult();
     }
 
-    public JSONObject writeToJson() {
-        JSONObject object = new JSONObject();
+    public JsonObject writeToJson() {
+        JsonObject object = new JsonObject();
         try {
             if (problem.size() != 0) {
-                object.put(PARAM_PROBLEM, getProblemArray());
+                object.add(PARAM_PROBLEM, getProblemArray());
             }
             if (solution != 0) {
-                object.put(PARAM_SOLUTION, solution);
+                object.addProperty(PARAM_SOLUTION, solution);
             }
             if (refundAmount != 0) {
-                object.put(PARAM_REFUND, refundAmount);
+                object.addProperty(PARAM_REFUND, refundAmount);
             }
             if (attachmentCount != 0) {
-                object.put(PARAM_ATTACHMENT, attachmentCount);
+                object.addProperty(PARAM_ATTACHMENT, attachmentCount);
             }
             if (message != null) {
                 if (!message.remark.equals("")) {
-                    object.put(PARAM_MESSAGE, message.writeToJson());
+                    object.add(PARAM_MESSAGE, message.writeToJson());
                 }
             }
             if (resolutionId != null) {
-                object.put(PARAM_RESOLUTION_ID, Integer.valueOf(resolutionId));
+                object.addProperty(PARAM_RESOLUTION_ID, Integer.valueOf(resolutionId));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -82,11 +81,11 @@ public class ResultViewModel implements Parcelable {
         return object;
     }
 
-    public JSONArray getProblemArray() {
+    public JsonArray getProblemArray() {
         try {
-            JSONArray problemArray = new JSONArray();
+            JsonArray problemArray = new JsonArray();
             for (ProblemResult problemResult : problem) {
-                problemArray.put(problemResult.writeToJson());
+                problemArray.add(problemResult.writeToJson());
             }
             return problemArray;
         } catch (Exception e) {

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="GreenCheckbox" parent="Theme.AppCompat.Light">
+        <item name="colorAccent">#42b549</item>
+        <item name="android:textColorSecondary">#bfbfbf</item>
+    </style>
+
+</resources>

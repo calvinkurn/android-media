@@ -14,7 +14,7 @@ public class KolCommentProductViewModel implements Parcelable {
     private String price;
     private boolean isWishlisted;
 
-    public  KolCommentProductViewModel() {
+    public KolCommentProductViewModel() {
 
     }
 

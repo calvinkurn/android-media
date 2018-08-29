@@ -18,6 +18,9 @@ import com.tokopedia.tkpdreactnative.react.domain.UnifyReactNetworkRepository;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -32,6 +35,7 @@ import rx.subscriptions.CompositeSubscription;
  * @author ricoharisin .
  */
 public class ReactNetworkModule extends ReactContextBaseJavaModule {
+
 
     @Inject
     ReactNetworkRepository reactNetworkRepository;
@@ -85,7 +89,6 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void getResponse(String url, String method, String request, Boolean isAuth, final Promise promise) {
         try {
-            CommonUtils.dumper(url + " " + request);
             compositeSubscription.add(reactNetworkRepository.getResponse(url, method, convertStringRequestToHashMap(request), isAuth)
                     .subscribeOn(Schedulers.newThread())
                     .subscribe(new Subscriber<String>() {
@@ -108,6 +111,83 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
                             }
                         }
                     }));
+        } catch (UnknownMethodException e) {
+            promise.reject(e);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+    @ReactMethod
+    public void getResponseJson(String url, String method, String request, Boolean isAuth, final Promise promise) {
+        try {
+            CommonUtils.dumper(url + " " + request);
+            compositeSubscription.add(reactNetworkRepository.getResponseJson(url, method, request, isAuth)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject(e);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            if (getCurrentActivity() != null) {
+                                promise.resolve(s);
+                            } else {
+                                promise.resolve("");
+                            }
+                        }
+                    }));
+        } catch (UnknownMethodException e) {
+            promise.reject(e);
+        } catch (Exception e) {
+            promise.reject(e);
+        }
+    }
+
+
+    /**
+     * call api with <b>encoded</b> parameter query
+     * @param url
+     * @param method POST or GET
+     * @param encodedRequest the request data must be encoded
+     * @param isAuth
+     * @param promise
+     */
+    @ReactMethod
+    public void getResponseParam(String url, String method, String encodedRequest, Boolean isAuth, final Promise promise) {
+        try {
+            CommonUtils.dumper(url + " " + encodedRequest);
+            compositeSubscription.add(reactNetworkRepository
+                    .getResponseParam(url, method, encodedRequest, isAuth)
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(new Subscriber<String>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            promise.reject(e);
+                        }
+
+                        @Override
+                        public void onNext(String s) {
+                            if (getCurrentActivity() != null) {
+                                promise.resolve(s);
+                            } else {
+                                promise.resolve("");
+                            }
+                        }
+                    })
+            );
         } catch (UnknownMethodException e) {
             promise.reject(e);
         } catch (Exception e) {
@@ -176,5 +256,4 @@ public class ReactNetworkModule extends ReactContextBaseJavaModule {
             promise.reject(e);
         }
     }
-
 }

@@ -1,19 +1,18 @@
 package com.tokopedia.feedplus.data.source.cloud;
 
 import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
 import com.tokopedia.core.base.common.service.MojitoService;
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.database.CacheUtil;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
 import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
 import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
 
-import retrofit2.Response;
 import rx.Observable;
 import rx.functions.Action1;
 
@@ -40,7 +39,6 @@ public class CloudRecentProductDataSource {
         return mojitoService.getRecentProduct(
                 String.valueOf(requestParams.getParameters()
                         .get(GetRecentViewUseCase.PARAM_USER_ID)))
-                .doOnNext(validateError())
                 .map(recentProductMapper)
                 .doOnNext(saveToCache());
     }
@@ -65,17 +63,4 @@ public class CloudRecentProductDataSource {
             }
         };
     }
-
-    private Action1<Response<String>> validateError() {
-        return new Action1<Response<String>>() {
-            @Override
-            public void call(Response<String> stringResponse) {
-                if (stringResponse.code() != 200) {
-                    throw new RuntimeException(String.valueOf(stringResponse.code()));
-                }
-            }
-        };
-    }
-
-
 }

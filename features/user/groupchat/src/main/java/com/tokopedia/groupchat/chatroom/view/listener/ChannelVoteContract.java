@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 /**
  * @author by nisie on 2/6/18.
@@ -23,7 +23,7 @@ public interface ChannelVoteContract {
 
         void showSuccessVoted();
 
-        void onSuccessVote(VoteViewModel element, VoteStatisticViewModel voteStatisticViewModel);
+        void onSuccessVote(VoteViewModel element, VoteStatisticDomainModel voteStatisticViewModel);
 
         void onErrorVote(String errorMessage);
 

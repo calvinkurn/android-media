@@ -69,7 +69,7 @@ public class CampaignModule {
     }
 
     @Provides
-    OkHttpClient provideOkHttpClient(CampaignAuthInterceptor tkpdAuthInterceptor,HttpLoggingInterceptor httpLoggingInterceptor) {
+    OkHttpClient provideOkHttpClient(CampaignAuthInterceptor tkpdAuthInterceptor, HttpLoggingInterceptor httpLoggingInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(tkpdAuthInterceptor)
                 .addInterceptor(httpLoggingInterceptor)
@@ -85,9 +85,9 @@ public class CampaignModule {
 
     @Provides
     CampaignAuthInterceptor provideContactUsAuthInterceptor(@ApplicationContext Context context,
-                                                             AbstractionRouter abstractionRouter,
-                                                             UserSession userSession) {
-        return new CampaignAuthInterceptor(context,abstractionRouter,userSession);
+                                                            AbstractionRouter abstractionRouter,
+                                                            UserSession userSession) {
+        return new CampaignAuthInterceptor(context, abstractionRouter, userSession);
 
     }
 }

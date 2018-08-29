@@ -80,7 +80,6 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
 
         notifyDataSetChanged();
 
-        scrollToEnd();
     }
 
     public void setImageString(@NonNull List<String> imageStringList) {
@@ -125,8 +124,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         final ImageSelectModel imageSelectModel = imageSelectModelList.get(position);
         if (imageSelectModel.isValidURL()) {
             if (imageSelectModel.getWidth() != 0 && imageSelectModel.getHeight()!= 0) {
-                ImageHandler.loadImageFitCenter(holder.imageView.getContext(), holder.imageView,
-                        imageSelectModel.getUriOrPath());
+                ImageHandler.loadImageCenterCrop(holder.imageView, imageSelectModel.getUriOrPath());
             } else { // we want to load image, meanwhile also to know its width/height
                 ImageHandler.loadImageWithTarget(holder.imageView.getContext(), imageSelectModel.getUriOrPath(), new SimpleTarget<Bitmap>() {
                     @Override
@@ -150,7 +148,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
                 });
             }
         } else { // local Uri
-            ImageHandler.loadImageFromFileFitCenter(
+            ImageHandler.loadImageFromFile(
                     holder.itemView.getContext(),
                     holder.imageView,
                     new File(imageSelectModel.getUriOrPath())
@@ -178,6 +176,16 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
         return imageSelectModelList;
     }
 
+    public ArrayList<String> getImageStringList() {
+        ArrayList<String> imageList = new ArrayList<>();
+        if (imageSelectModelList!= null) {
+            for (ImageSelectModel imageSelectModel:imageSelectModelList) {
+                imageList.add(imageSelectModel.getUriOrPath());
+            }
+        }
+        return imageList;
+    }
+
     @Override
     public int getItemViewType(int position) {
         if (position == imageSelectModelList.size()) {
@@ -203,6 +211,7 @@ public class ImageSelectorAdapter extends RecyclerView.Adapter<ImageSelectorAdap
     }
 
     public class AddViewHolder extends ViewHolder{
+
         public AddViewHolder(View itemView) {
             super(itemView);
             imageView.setImageResource(addPictureDrawableRes);

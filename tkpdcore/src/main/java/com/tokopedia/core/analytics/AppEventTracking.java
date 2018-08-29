@@ -52,6 +52,7 @@ public interface AppEventTracking {
         String GIMMICK = "clickGimmick";
         String REGISTER_SUCCESS = "registerSuccess";
         String HOTLIST = "clickHotlist";
+        String HOTLIST_PAGE = "hotlist page";
         String FAVORITE = "clickFavorite";
         String SEARCH = "clickSearch";
         String IMAGE_SEARCH_CLICK = "imageSearchClick";
@@ -297,6 +298,7 @@ public interface AppEventTracking {
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";
         String MANAGE_PROFILE = "pengaturan profile";
+        String PROFILE_PAGE = "profile page";
         String RESOLUTION_CENTER_CHAT = "resolution chat";
 
         String PROMO_MICROSITE_PROMO_LIST = "promo microsite - promo list";
@@ -310,7 +312,7 @@ public interface AppEventTracking {
         String ECOMMERCE = "Ecommerce";
         String APPSHARE = "App share";
 
-        String DIGITAL_EVENT = "digital-event";
+        String DIGITAL_EVENT = "digital - event";
 
         String SEARCH_SHARE = "search share";
         String GRID_MENU = "grid menu";
@@ -337,6 +339,7 @@ public interface AppEventTracking {
         String REGISTER_SUCCESS = "Register Success";
         String REGISTER_ERROR = "Register Error";
         String NO_RESULT = "No Result";
+        String NO_SEARCH_RESULT = "no search result";
         String ABANDON = "Abandon";
         String DEEPLINK = "Deeplink";
         String RESET_SUCCESS = "Reset Success";
@@ -470,6 +473,9 @@ public interface AppEventTracking {
         String SELECT_CHANNEL = "select channel";
         String CLICK_KNOW_MORE = "click know more";
         String CLICK_EXPLORE_TOKOPEDIA = "click explore tokopedia";
+        String CLICK_WHAT_IS_TOKOCASH = "click apa itu tokocash";
+        String CLICK_SHARE_TEMAN = "click ajak teman";
+
 
         String CLICK_PRODUCT_PROBLEM = "click barang & masalah";
         String CLICK_SOLUTION = "click solution";
@@ -722,6 +728,7 @@ public interface AppEventTracking {
         String EXPAND_SUB_CATEGORY = "Expand Subcategory";
         String PAYMENT_AND_TOPUP = "Pembayaran dan Top Up";
         String DIGITAL_TRANSACTION_LIST = "Daftar Transaksi Digital";
+        String DIGITAL_MY_BILLS = "MyBills";
         String ADD_BALANCE = "Add Balance";
         String BALANCE_OPTION_50_RB = "Rp. 50,000";
         String BALANCE_OPTION_100_RB = "Rp. 100,000";
@@ -886,6 +893,8 @@ public interface AppEventTracking {
         String PINTEREST = "Pinterest";
         String INSTAGRAM = "Instagram";
         String GOOGLE_PLUS = "Google Plus";
+        String GMAIL = "Gmail";
+        String SMS = "Sms";
         String OTHER = "Other";
     }
 

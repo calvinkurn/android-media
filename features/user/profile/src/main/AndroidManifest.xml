@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.profile">
+          package="com.tokopedia.profile">
 
     <application
         android:allowBackup="true"

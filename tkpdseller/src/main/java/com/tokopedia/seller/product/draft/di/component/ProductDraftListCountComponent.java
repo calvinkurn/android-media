@@ -1,5 +1,6 @@
 package com.tokopedia.seller.product.draft.di.component;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.seller.product.manage.di.ProductManageScope;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 import com.tokopedia.seller.product.common.di.component.ProductComponent;

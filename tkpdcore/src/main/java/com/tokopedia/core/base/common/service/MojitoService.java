@@ -1,8 +1,9 @@
 package com.tokopedia.core.base.common.service;
 
+import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
+import com.tokopedia.core.network.entity.home.ProductItemData;
 import com.tokopedia.core.network.entity.wishlist.WishlistData;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
 import java.util.HashMap;
 
@@ -20,11 +21,7 @@ import rx.Observable;
 public interface MojitoService {
 
     @GET(TkpdBaseURL.Mojito.PATH_USER_RECENT_VIEW + "{userId}" + TkpdBaseURL.Mojito.PATH_RECENT_VIEW)
-    Observable<Response<String>> getRecentProduct(@Path("userId") String UserId);
-
-    @GET(TkpdBaseURL.Mojito.PATH_WISHLIST_PRODUCT)
-    Observable<Response<String>> getWishlist(@Path("userId") String UserId,
-                                             @QueryMap HashMap<String, Object> params);
+    Observable<Response<DataResponse<ProductItemData>>> getRecentProduct(@Path("userId") String UserId);
 
     @GET(TkpdBaseURL.Mojito.PATH_SEARCH_WISHLIST)
     Observable<Response<WishlistData>> searchWishlist(

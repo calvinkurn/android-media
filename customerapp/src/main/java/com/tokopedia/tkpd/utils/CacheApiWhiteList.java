@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.utils;
 
 import com.tokopedia.cacheapi.domain.model.CacheApiWhiteListDomain;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramCacheApiWhiteList;
 import com.tokopedia.seller.opportunity.common.util.OpportunityCacheApiWhiteList;
 import com.tokopedia.seller.product.common.utils.ProductCacheApiWhiteList;
 import com.tokopedia.seller.shop.common.utils.ShopOpenCacheApiWhiteList;
@@ -31,6 +32,7 @@ public class CacheApiWhiteList {
         cacheApiWhiteList.addAll(ShopCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(ProductCacheApiWhiteList.getWhiteList());
         cacheApiWhiteList.addAll(OpportunityCacheApiWhiteList.getWhiteList());
+        cacheApiWhiteList.addAll(InstagramCacheApiWhiteList.getWhiteList());
         return cacheApiWhiteList;
     }
 }

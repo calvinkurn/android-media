@@ -17,11 +17,13 @@ import android.widget.VideoView;
 import com.tokopedia.feedplus.R;
 
 
+
 /**
  * @author by nisie on 5/22/17.
  */
 
 public class TransparentVideoActivity extends AppCompatActivity {
+
 
 
     private static final String PARAM_VIDEO_URL = "PARAM_VIDEO_URL";

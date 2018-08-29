@@ -28,9 +28,17 @@ import com.tokopedia.discovery.search.view.adapter.ItemClickListener;
 
 public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements SearchTypeFactory {
 
+    private static final String DEFAULT_INSTANCE_TYPE = "unknown";
     private final ItemClickListener clickListener;
+    private final String tabName;
 
     public SearchAdapterTypeFactory(ItemClickListener clickListener) {
+        this.tabName = DEFAULT_INSTANCE_TYPE;
+        this.clickListener = clickListener;
+    }
+
+    public SearchAdapterTypeFactory(String tabName, ItemClickListener clickListener) {
+        this.tabName = tabName;
         this.clickListener = clickListener;
     }
 
@@ -84,11 +92,11 @@ public class SearchAdapterTypeFactory extends BaseAdapterTypeFactory implements 
         } else if(type == CategoryViewHolder.LAYOUT) {
             viewHolder = new CategoryViewHolder(parent, clickListener);
         } else if(type == InCategoryViewHolder.LAYOUT) {
-            viewHolder = new InCategoryViewHolder(parent, clickListener);
+            viewHolder = new InCategoryViewHolder(parent, clickListener, tabName);
         } else if(type == ShopViewHolder.LAYOUT) {
-            viewHolder = new ShopViewHolder(parent, clickListener);
+            viewHolder = new ShopViewHolder(parent, clickListener, tabName);
         } else if(type == AutoCompleteViewHolder.LAYOUT) {
-            viewHolder = new AutoCompleteViewHolder(parent, clickListener);
+            viewHolder = new AutoCompleteViewHolder(parent, clickListener, tabName);
         } else if(type == PopularViewHolder.LAYOUT) {
             viewHolder = new PopularViewHolder(parent, clickListener);
         } else if(type == RecentViewHolder.LAYOUT) {

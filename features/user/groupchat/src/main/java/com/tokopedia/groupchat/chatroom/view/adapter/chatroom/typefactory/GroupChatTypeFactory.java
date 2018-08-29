@@ -7,6 +7,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdminAnnouncemen
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;

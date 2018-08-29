@@ -23,6 +23,8 @@ import com.tokopedia.core.var.TkpdCache;
 
 import java.io.IOException;
 
+import javax.inject.Inject;
+
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -45,6 +47,10 @@ public class FingerprintInterceptor implements Interceptor {
     private static final String KEY_FINGERPRINT_HASH = "Fingerprint-Hash";
     private static final String BEARER = "Bearer ";
     private static final String KEY_ADSID = "X-GA-ID";
+
+    @Inject
+    public FingerprintInterceptor() {
+    }
 
     @Override
     public Response intercept(Chain chain) throws IOException {

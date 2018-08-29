@@ -1,6 +1,16 @@
 package com.tokopedia.loyalty.di.module;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.network.apiservices.transaction.TXVoucherService;
+import com.tokopedia.core.network.di.qualifier.CartQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.loyalty.di.LoyaltyScope;
 import com.tokopedia.loyalty.domain.apiservice.DigitalEndpointService;
 import com.tokopedia.loyalty.domain.apiservice.PromoEndpointService;
@@ -15,14 +25,20 @@ import com.tokopedia.loyalty.domain.repository.PromoRepository;
 import com.tokopedia.loyalty.domain.repository.PromoResponseMapper;
 import com.tokopedia.loyalty.domain.repository.TokoPointRepository;
 import com.tokopedia.loyalty.domain.repository.TokoPointResponseMapper;
+import com.tokopedia.transactiondata.apiservice.CartApiInterceptor;
+import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+
+import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
  */
-@Module(includes = CacheDBModule.class)
+@Module(includes = {CacheDBModule.class})
 public class ServiceApiModule {
 
     @Provides

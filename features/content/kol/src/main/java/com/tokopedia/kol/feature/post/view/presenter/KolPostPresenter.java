@@ -2,6 +2,7 @@ package com.tokopedia.kol.feature.post.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.subscriber.GetKolPostSubscriber;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
@@ -14,17 +15,22 @@ import javax.inject.Inject;
 
 public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
         implements KolPostListener.Presenter {
-    private final GetKolPostUseCase getKolPostUseCase;
 
-    private String lastCursor = "";
+    private final GetKolPostUseCase getKolPostUseCase;
+    private final LikeKolPostUseCase likeKolPostUseCase;
+
+    private String lastCursor;
 
     @Inject
-    public KolPostPresenter(GetKolPostUseCase getKolPostUseCase) {
+    public KolPostPresenter(GetKolPostUseCase getKolPostUseCase,
+                            LikeKolPostUseCase likeKolPostUseCase) {
         this.getKolPostUseCase = getKolPostUseCase;
+        this.likeKolPostUseCase = likeKolPostUseCase;
     }
 
     @Override
     public void initView(String userId) {
+        lastCursor = "";
         getKolPost(userId);
     }
 
@@ -54,14 +60,18 @@ public class KolPostPresenter extends BaseDaggerPresenter<KolPostListener.View>
     }
 
     @Override
-    public void likeKol(int id, int rowNumber, KolPostListener.View kolListener) {
-        getView().getKolRouter().doLikeKolPost(
-                id, new LikeKolPostSubscriber(getView(), rowNumber));
+    public void likeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
+        likeKolPostUseCase.execute(
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_LIKE),
+                new LikeKolPostSubscriber(likeListener, rowNumber)
+        );
     }
 
     @Override
-    public void unlikeKol(int id, int rowNumber, KolPostListener.View kolListener) {
-        getView().getKolRouter().doUnlikeKolPost(
-                id, new LikeKolPostSubscriber(getView(), rowNumber));
+    public void unlikeKol(int id, int rowNumber, KolPostListener.View.Like likeListener) {
+        likeKolPostUseCase.execute(
+                LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.ACTION_UNLIKE),
+                new LikeKolPostSubscriber(likeListener, rowNumber)
+        );
     }
 }

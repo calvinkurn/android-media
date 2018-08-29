@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
+import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.utils.StringUtils;
@@ -188,7 +189,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             @Override
             public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
                 Intent intent = getIntent(shareContents);
-                startActivity(Intent.createChooser(intent, getString(R.string.fb_cat_etc)));
+                startActivity(Intent.createChooser(intent, getString(R.string.other)));
 
                 sendTracker(packageName);
             }
@@ -231,8 +232,7 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             public void onReceive(Context context, Intent intent) {
                 Bundle bundle = intent.getExtras();
                 if (bundle != null) {
-                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG,
-                            TkpdState.ProductService.STATUS_ERROR);
+                    int status = bundle.getInt(TkpdState.ProductService.STATUS_FLAG, TkpdState.ProductService.STATUS_ERROR);
                     switch (status) {
                         case TkpdState.ProductService.STATUS_DONE:
                             setData(bundle);
@@ -343,6 +343,9 @@ public class ShareBottomSheet extends BottomSheets implements ShareAdapter.OnIte
             case ShareData.APP_SHARE_TYPE:
                 UnifyTracking.eventAppShareWhenReferralOff(AppEventTracking.Action.SELECT_CHANNEL,
                         channel);
+                break;
+            case ShareData.HOTLIST_TYPE:
+                HotlistPageTracking.eventShareHotlist(channel);
                 break;
             default:
                 UnifyTracking.eventShare(channel);

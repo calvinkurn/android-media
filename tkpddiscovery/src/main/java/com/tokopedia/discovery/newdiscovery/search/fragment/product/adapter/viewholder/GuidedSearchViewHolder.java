@@ -9,14 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tokopedia.core.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +92,7 @@ public class GuidedSearchViewHolder extends AbstractViewHolder<GuidedSearchViewM
                 public void onClick(View view) {
                     Uri uri = Uri.parse(item.getUrl());
                     String query = uri.getQueryParameter(BrowseApi.Q);
-                    SearchTracking.eventClickGuidedSearch(item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
+                    SearchTracking.eventClickGuidedSearch(textView.getContext(), item.getPreviousKey(), item.getCurrentPage(), item.getKeyword());
                     itemClickListener.onSearchGuideClicked(query);
                 }
             });

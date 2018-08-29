@@ -17,6 +17,9 @@ public class EventsCategoryDomain {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("media_url")
+    @Expose
+    private String mediaURL;
     @SerializedName("items")
     @Expose
     private List<EventsItemDomain> items = null;
@@ -35,6 +38,14 @@ public class EventsCategoryDomain {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getMediaURL() {
+        return mediaURL;
+    }
+
+    public void setMediaURL(String mediaURL) {
+        this.mediaURL = mediaURL;
     }
 
     public List<EventsItemDomain> getItems() {

@@ -21,12 +21,14 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 
+
 /**
  * Created by nisie on 2/7/17.
  */
 
 abstract class BaseActivity extends AppCompatActivity implements
         ErrorNetworkReceiver.ReceiveListener {
+
 
     public static final String FORCE_LOGOUT = "com.tokopedia.tkpd.FORCE_LOGOUT";
     public static final String SERVER_ERROR = "com.tokopedia.tkpd.SERVER_ERROR";
@@ -77,7 +79,7 @@ abstract class BaseActivity extends AppCompatActivity implements
             if(screenName ==  null) {
                 screenName = this.getClass().getSimpleName();
             }
-            ((AbstractionRouter) getApplication()).registerShake(screenName);
+            ((AbstractionRouter) getApplication()).registerShake(screenName,this);
         }
     }
 

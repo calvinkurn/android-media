@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.util.ImageUploadHandler;
@@ -17,8 +15,11 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.AttachmentViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by yoasfs on 31/08/17.
@@ -85,29 +86,22 @@ public class AttachmentFragmentPresenter extends BaseDaggerPresenter<AttachmentF
     }
 
     @Override
-    public void handleDefaultOldUploadImageHandlerResult(int resultCode, Intent data) {
-        switch (resultCode) {
-            case GalleryBrowser.RESULT_CODE:
-                if (data != null && data.getStringExtra(ImageGallery.EXTRA_URL) != null) {
-                    onAddImageAttachment(data.getStringExtra(ImageGallery.EXTRA_URL),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
-            case Activity.RESULT_OK:
-                if (uploadImageDialog != null && uploadImageDialog.getCameraFileloc() != null) {
-                    onAddImageAttachment(uploadImageDialog.getCameraFileloc(),
-                            AttachmentViewModel.FILE_IMAGE);
-                } else {
-                    onFailedAddAttachment();
-                }
-                break;
+    public void handleImageResult(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && data != null) {
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
+                onAddImageAttachment(imageUrlOrPathList.get(0),
+                        AttachmentViewModel.FILE_IMAGE);
+            }else{
+                onFailedAddAttachment();
+            }
+        }else{
+            onFailedAddAttachment();
         }
     }
 
     @Override
-    public void handleNewGalleryResult(int resultCode, Intent data) {
+    public void handleVideoResult(int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (data != null && data.getParcelableExtra("EXTRA_RESULT_SELECTION") != null) {
                 MediaItem item = data.getParcelableExtra("EXTRA_RESULT_SELECTION");

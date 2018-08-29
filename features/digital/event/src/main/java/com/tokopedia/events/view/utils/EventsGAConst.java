@@ -11,6 +11,7 @@ public class EventsGAConst {
     public static String EVENTS_PRODUCT_PAGE = "Events Product Detail Page";
     public static String EVENTS_TICKET_PAGE = "Events Tiket Detail Page";
     public static String EVENTS_CHECKOUT_PAGE = "Events Checkout Page";
+    public static String EVENTS_FAV_PAGE = "Events Favourite Page";
 
     public static String EVENT_CLICK_BACK = "click back";
     public static String EVENT_CLICK_SEARCH = "click search icon";
@@ -38,6 +39,9 @@ public class EventsGAConst {
     public static String EVENT_CHECKOUT = "checkout";
     public static String EVENT_SEARCH_CLICK = "search result click";
     public static String EVENT_SEARCH_IMPRESSION = "search result impression";
+    public static String EVENT_SHARE="click share";
+    public static String EVENT_LIKE="click love";
+
 
     public static String PAYMENT_SUCCESS = "payment success";
     public static String PAYMENT_FAILURE = "payment failure";

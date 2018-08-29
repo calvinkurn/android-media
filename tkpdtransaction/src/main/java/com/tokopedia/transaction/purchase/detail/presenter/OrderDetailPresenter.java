@@ -21,7 +21,7 @@ public interface OrderDetailPresenter {
 
     void fetchData(Context context, String orderId, int userMode);
 
-    void processInvoice(Context context, OrderDetailData data);
+    void processInvoice(Context context, OrderDetailData data, boolean seller);
 
     void processToShop(Context context, OrderDetailData data);
 

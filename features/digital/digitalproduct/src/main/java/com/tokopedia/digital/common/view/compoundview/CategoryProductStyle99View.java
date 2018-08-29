@@ -108,7 +108,7 @@ public class CategoryProductStyle99View extends
                 if (operatorSelected.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
                     renderDefaultProductSelected();
                 } else {
-                    showProducts();
+                    renderProductChooserOptions();
                 }
             }
         }
@@ -118,7 +118,7 @@ public class CategoryProductStyle99View extends
     @Override
     protected void onUpdateSelectedProductData() {
         if (operatorSelected.getRule().getProductViewStyle() != SINGLE_PRODUCT) {
-                this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
+            this.digitalProductChooserView.renderUpdateDataSelected(productSelected);
         }
     }
 
@@ -218,10 +218,6 @@ public class CategoryProductStyle99View extends
         }
         renderAdditionalInfoProduct();
         renderPriceProductInfo();
-    }
-
-    private void showProducts() {
-            renderProductChooserOptions();
     }
 
     private void renderProductChooserOptions() {

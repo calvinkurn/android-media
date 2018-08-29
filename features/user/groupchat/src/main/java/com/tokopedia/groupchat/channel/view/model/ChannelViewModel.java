@@ -10,7 +10,7 @@ import com.tokopedia.groupchat.channel.view.adapter.typefactory.ChannelTypeFacto
  * @author by StevenFredian on 13/02/18.
  **/
 
-public class ChannelViewModel implements Visitable<ChannelTypeFactory>,Parcelable {
+public class ChannelViewModel implements Visitable<ChannelTypeFactory>, Parcelable {
 
     private String id;
     private String adminName;

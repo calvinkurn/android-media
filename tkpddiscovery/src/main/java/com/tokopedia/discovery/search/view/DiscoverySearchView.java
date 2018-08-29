@@ -366,7 +366,9 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
                             mContext.getResources().getString(R.string.on_board_desc)),
                     ShowCaseContentPosition.UNDEFINED,
                     R.color.tkpd_main_green));
-            showCaseDialog.show(((Activity) mContext), showCaseTag, showCaseObjectList);
+            if(activity != null) {
+                showCaseDialog.show(activity, showCaseTag, showCaseObjectList);
+            }
 
         }
     }
@@ -684,14 +686,6 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
 
     public void showSearch(boolean finishOnClose, boolean animate) {
         this.finishOnClose = finishOnClose;
-        if (finishOnClose) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showKeyboard(mSearchSrcTextView);
-                }
-            }, 500);
-        }
         showSearch(animate);
         initShowCase();
     }

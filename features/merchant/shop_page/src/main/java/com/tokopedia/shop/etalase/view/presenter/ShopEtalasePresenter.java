@@ -33,10 +33,7 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
     public void getShopEtalase(String shopId) {
-        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel();
-        shopEtalaseRequestModel.setShopId(shopId);
-        shopEtalaseRequestModel.setUserId(userSession.getUserId());
-        shopEtalaseRequestModel.setDeviceId(userSession.getDeviceId());
+        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(shopId, userSession.getUserId(), userSession.getDeviceId());
         RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
         getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
             @Override
@@ -61,18 +58,12 @@ public class ShopEtalasePresenter extends BaseDaggerPresenter<ShopEtalaseView> {
     }
 
     private List<ShopEtalaseViewModel> mergeListOther(PagingListOther<EtalaseModel> pagingListOther) {
-        if(pagingListOther.getList()!=null&&!pagingListOther.getList().isEmpty()){
+        if (pagingListOther.getList() != null && !pagingListOther.getList().isEmpty()) {
             pagingListOther.getListOther().addAll(pagingListOther.getList());
         }
         List<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
         for (EtalaseModel etalaseModel : pagingListOther.getListOther()) {
-            ShopEtalaseViewModel model = new ShopEtalaseViewModel();
-            model.setEtalaseBadge(etalaseModel.getEtalaseBadge());
-            model.setEtalaseId(etalaseModel.getEtalaseId());
-            model.setEtalaseName(etalaseModel.getEtalaseName());
-            model.setEtalaseNumProduct(etalaseModel.getEtalaseNumProduct());
-            model.setEtalaseTotalProduct(etalaseModel.getEtalaseTotalProduct());
-            model.setUseAce(etalaseModel.getUseAce());
+            ShopEtalaseViewModel model = new ShopEtalaseViewModel(etalaseModel);
             shopEtalaseViewModels.add(model);
         }
 

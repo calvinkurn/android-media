@@ -29,6 +29,7 @@ import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.webview.listener.DeepLinkWebViewHandleListener;
@@ -131,6 +132,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     @Override
@@ -189,7 +191,7 @@ public class ProductInfoActivity extends BasePresenterNoLayoutActivity<ProductIn
     @Override
     public void shareProductInfo(@NonNull ShareData shareData) {
         presenter.processToShareProduct(this, shareData);
-        ShareBottomSheet.show(getSupportFragmentManager(), shareData);
+        new DefaultShare(this, shareData).show();
     }
 
     @Override

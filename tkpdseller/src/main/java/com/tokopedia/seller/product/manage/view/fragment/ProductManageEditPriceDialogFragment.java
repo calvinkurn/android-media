@@ -112,7 +112,7 @@ public class ProductManageEditPriceDialogFragment extends DialogFragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isPriceValid()) {
+                if (isPriceValid() && listenerDialogEditPrice != null) {
                     UnifyTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_menu_set_price) + " - " + saveButton.getText());
                     listenerDialogEditPrice.onSubmitEditPrice(productId,
                             formatDecimal(spinnerCounterInputViewPrice.getCounterValue()),

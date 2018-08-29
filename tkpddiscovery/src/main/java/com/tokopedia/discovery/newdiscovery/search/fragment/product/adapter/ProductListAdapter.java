@@ -17,6 +17,7 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Em
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,22 +91,39 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         this.startFrom = start;
     }
 
-    public void setWishlistButtonEnabled(int adapterPosition, boolean isEnabled) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
-            ((ProductItem) list.get(adapterPosition)).setWishlistButtonEnabled(isEnabled);
+    public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlistButtonEnabled(isEnabled);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlisted(isWishlisted);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
         }
     }
 
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
+        if (adapterPosition >= 0 && list.get(adapterPosition) instanceof ProductItem) {
             ((ProductItem) list.get(adapterPosition)).setWishlisted(isWishlisted);
+            notifyItemChanged(adapterPosition);
         }
-    }
-
-    public void showEmpty(String query) {
-        clearData();
-        list.add(mappingEmptySearch(query));
-        notifyDataSetChanged();
     }
 
     public void showEmpty() {
@@ -114,21 +132,11 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         notifyDataSetChanged();
     }
 
-
     private EmptySearchModel mappingEmptySearch() {
         emptySearchModel = new EmptySearchModel();
         emptySearchModel.setImageRes(R.drawable.ic_empty_search);
         emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
         emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
-        emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
-        return emptySearchModel;
-    }
-
-    private EmptySearchModel mappingEmptySearch(String query) {
-        emptySearchModel = new EmptySearchModel();
-        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
-        emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
-        emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
         emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
         return emptySearchModel;
     }

@@ -11,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -87,7 +87,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private TextView tvTitle;
     private ProgressDialog progressDialog;
 
-    public static final int REQUEST_CODE = TopPayActivity.class.hashCode();
+    public static final int REQUEST_CODE = 45675;
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
@@ -102,7 +102,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -176,12 +176,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
-                        && scroogeWebView.getUrl() != null
-                        && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment()))
-                    scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-                else
-                    onBackPressed();
+                onBackPressed();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -277,7 +272,11 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
 
     @Override
     public void onBackPressed() {
-        if (isEndThanksPage()) {
+        if (paymentModuleRouter != null && paymentModuleRouter.getBaseUrlDomainPayment() != null
+                && scroogeWebView.getUrl() != null
+                && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
+            scroogeWebView.loadUrl("javascript:handlePopAndroid();");
+        }else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();

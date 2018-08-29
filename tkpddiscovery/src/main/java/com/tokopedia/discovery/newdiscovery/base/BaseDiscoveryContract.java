@@ -44,6 +44,8 @@ public interface BaseDiscoveryContract {
         void showTimeoutErrorNetwork(String message);
 
         void onHandleImageSearchResponseSuccess();
+
+        void showImageNotSupportedError();
     }
 
     interface Presenter<D extends View> {

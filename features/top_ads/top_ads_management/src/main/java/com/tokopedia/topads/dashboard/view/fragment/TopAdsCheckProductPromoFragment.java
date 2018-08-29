@@ -2,14 +2,19 @@ package com.tokopedia.topads.dashboard.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant;
 import com.tokopedia.topads.dashboard.di.component.DaggerTopAdsCreatePromoComponent;
 import com.tokopedia.topads.dashboard.di.component.TopAdsComponent;
@@ -25,8 +30,9 @@ import javax.inject.Inject;
  * Created by hadi.putra on 17/04/18.
  */
 
-public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAdsCheckProductPromoPresenter>
+public class TopAdsCheckProductPromoFragment extends BaseDaggerFragment
         implements TopAdsCheckProductPromoView {
+
     @Inject TopAdsCheckProductPromoPresenter presenter;
     String shopId;
     private String itemId;
@@ -66,7 +72,6 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
 
     @Override
     protected void initInjector() {
-        super.initInjector();
         DaggerTopAdsCreatePromoComponent.builder()
                 .topAdsCreatePromoModule(new TopAdsCreatePromoModule())
                 .topAdsComponent(getComponent(TopAdsComponent.class))
@@ -74,15 +79,21 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
                 .inject(this);
     }
 
+    @Nullable
     @Override
-    protected void initialPresenter() {
-        super.initialPresenter();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         presenter.attachView(this);
+        return inflater.inflate(R.layout.fragment_top_ads_check_product_promo, container, false);
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initialVar();
+    }
+
     protected void initView(View view) {
-        super.initView(view);
         loadingLayout = view.findViewById(R.id.layout_loading);
         errorLayout = view.findViewById(R.id.layout_error);
         tvMessageRetry = view.findViewById(R.id.message_retry);
@@ -95,9 +106,7 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
         });
     }
 
-    @Override
     protected void initialVar() {
-        super.initialVar();
         shopId = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_EXTRA_SHOP_ID, "");
         itemId = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_EXTRA_ITEM_ID, "");
         source = getArguments().getString(TopAdsSourceTaggingConstant.PARAM_KEY_SOURCE, "");
@@ -143,11 +152,6 @@ public class TopAdsCheckProductPromoFragment extends BasePresenterFragment<TopAd
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_top_ads_check_product_promo;
     }
 
     @Override

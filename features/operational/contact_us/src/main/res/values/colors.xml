@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <color name="grey_text">#141414</color>
+    <color name="green_text">#399c3f</color>
+    <color name="medium_green_light">#54da5c</color>
+    <color name="yellow_1">#ffc107</color>
+    <color name="yellow_text">#f5a623</color>
+    <color name="red_text">#f44336</color>
+    <color name="grey2_text">#de000000</color>
+    <color name="black3_text">#b3000000</color>
+    <color name="black4_text">#8a000000</color>
+    <color name="black5_text">#2e000000</color>
+    <color name="black6_text">#61000000</color>
+    <color name="white_bg">#fafbfc</color>
+    <color name="grey_transparent">#a5ffffff</color>
 
     <color name="green_selected">#f3fef3</color>
     <color name="grey_time_machine">#fbfbfb</color>

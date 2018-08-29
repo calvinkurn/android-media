@@ -27,8 +27,6 @@ import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
-import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.fcm.applink.ApplinkBuildAndShowNotification;
@@ -46,10 +44,9 @@ import com.tokopedia.tkpd.fcm.notification.PurchaseShippedNotification;
 import com.tokopedia.tkpd.fcm.notification.PurchaseVerifiedNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterAdminBuyerReplyNotification;
 import com.tokopedia.tkpd.fcm.notification.ResCenterBuyerReplyNotification;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 import java.util.Map;
-
-import rx.Observable;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_CODE;
 

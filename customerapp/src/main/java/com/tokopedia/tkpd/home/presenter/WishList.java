@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.home.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.var.RecyclerViewItem;
 
 import java.util.List;
@@ -72,11 +74,11 @@ public interface WishList {
 
     void fetchDataFromCache(final Context context);
 
-    void setData(com.tokopedia.core.network.entity.wishlist.WishlistData wishlistData);
+    void setData(GqlWishListDataResponse.GqlWishList wishlistData);
 
     void deleteWishlist(Context context, String productId, int position);
 
-    void addToCart(Context context, String productId);
+    void addToCart(Activity activity, String productId);
 
     boolean isLoadedFirstPage();
 

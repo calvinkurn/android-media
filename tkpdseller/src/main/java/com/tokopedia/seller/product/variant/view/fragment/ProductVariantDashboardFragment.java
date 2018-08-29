@@ -80,6 +80,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
     private int defaultStockType;
     private boolean isOfficialStore;
     private boolean needRetainImage;
+    private boolean hasWholesale;
     private String defaultSku;
 
     private int indexOptionParentSizeChart = -1;
@@ -114,6 +115,7 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
         defaultStockType = activityIntent.getIntExtra(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, 0);
         isOfficialStore = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_IS_OFFICIAL_STORE, false);
         needRetainImage = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_NEED_RETAIN_IMAGE, false);
+        hasWholesale = activityIntent.getBooleanExtra(ProductVariantDashboardActivity.EXTRA_HAS_WHOLESALE, false);
         defaultSku = activityIntent.getStringExtra(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU);
 
         if (savedInstanceState == null) {
@@ -324,14 +326,14 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
                     productVariantViewModel.getVariantOptionParent(0).getName(),
                     productVariantViewModel.getVariantOptionParent(1).getName(),
                     currencyType, defaultStockType, isOfficialStore,
-                    needRetainImage);
+                    needRetainImage, hasWholesale);
         } else {
             ProductVariantDetailLevelLeafActivity.start(getContext(), this,
                     productVariantDashboardViewModel.getProductVariantCombinationViewModelList().get(0),
                     productVariantDashboardViewModel.getProductVariantOptionChildLv1(),
                     productVariantViewModel.getVariantOptionParent(0).getName(),
                     currencyType, defaultStockType, isOfficialStore,
-                    needRetainImage);
+                    needRetainImage, hasWholesale);
         }
     }
 
