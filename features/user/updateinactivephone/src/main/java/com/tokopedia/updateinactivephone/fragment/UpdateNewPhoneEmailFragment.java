@@ -86,7 +86,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
         submissionButton = view.findViewById(R.id.submission_button);
 
         emailHintTextView = view.findViewById(R.id.email_hint_text_view);
-        phoneErrorTextView = view.findViewById(R.id.phone_hint_text_view);
+        phoneHintTextView = view.findViewById(R.id.phone_hint_text_view);
 
         oldPhoneTextView.setText(oldPhoneNumber);
 
