@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatTextView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.DepartureTripLabelView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
@@ -30,10 +29,8 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
 
     @Inject
     FlightSearchReturnPresenter flightSearchReturnPresenter;
-    private AppCompatTextView departureHeaderLabel;
-    private TextView airlineName;
-    private TextView duration;
     private String selectedFlightDeparture;
+    private DepartureTripLabelView departureTripLabelView;
 
 
     public static FlightSearchReturnFragment newInstance(FlightSearchPassDataViewModel passDataViewModel, String selectedDepartureID) {
@@ -59,9 +56,7 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        airlineName = (TextView) view.findViewById(R.id.airline_name);
-        duration = (TextView) view.findViewById(R.id.duration);
-        departureHeaderLabel = (AppCompatTextView) view.findViewById(R.id.tv_departure_header_card_label);
+        departureTripLabelView = view.findViewById(R.id.departure_trip_label);
 
         flightSearchPresenter.getDetailDepartureFlight(selectedFlightDeparture);
     }
@@ -87,19 +82,19 @@ public class FlightSearchReturnFragment extends FlightSearchFragment implements 
     @Override
     public void onSuccessGetDetailFlightDeparture(FlightSearchViewModel flightSearchViewModel) {
         if (flightSearchViewModel.getAirlineList().size() > 1) {
-            airlineName.setText(getString(R.string.flight_label_multi_maskapai));
+            departureTripLabelView.setValueName(getString(R.string.flight_label_multi_maskapai));
         } else if (flightSearchViewModel.getAirlineList().size() == 1) {
-            airlineName.setText(flightSearchViewModel.getAirlineList().get(0).getName());
+            departureTripLabelView.setValueName(flightSearchViewModel.getAirlineList().get(0).getName());
         }
         if (flightSearchViewModel.getAddDayArrival() > 0) {
-            duration.setText(String.format("| %s - %s (+%sh)", flightSearchViewModel.getDepartureTime(),
+            departureTripLabelView.setValueDepartureTime(String.format(" | %s - %s (+%sh)", flightSearchViewModel.getDepartureTime(),
                     flightSearchViewModel.getArrivalTime(), String.valueOf(flightSearchViewModel.getAddDayArrival())));
         } else {
-            duration.setText(String.format("| %s - %s", flightSearchViewModel.getDepartureTime(),
+            departureTripLabelView.setValueDepartureTime(String.format(" | %s - %s", flightSearchViewModel.getDepartureTime(),
                     flightSearchViewModel.getArrivalTime()));
         }
 
-        departureHeaderLabel.setText(String.format("%s - %s", getString(R.string.flight_label_departure_flight), FlightDateUtil.formatToUi(flightSearchPassDataViewModel.getDepartureDate())));
+        departureTripLabelView.setValueTitle(String.format("%s - %s", getString(R.string.flight_label_departure_flight), FlightDateUtil.formatToUi(flightSearchPassDataViewModel.getDepartureDate())));
     }
 
     @Override
