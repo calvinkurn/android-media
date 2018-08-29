@@ -39,6 +39,10 @@
         <attr name="ctv_hour_title" format="string" />
     </declare-styleable>
 
+    <declare-styleable name="DepartureLabelView">
+        <attr name="dlv_icon" format="reference" />
+    </declare-styleable>
+
     <string name="mister">Tuan</string>
     <string name="misiz">Nyonya</string>
     <string name="miss">Nona</string>
