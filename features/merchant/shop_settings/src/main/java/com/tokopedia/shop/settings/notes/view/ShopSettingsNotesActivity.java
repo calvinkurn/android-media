@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.notes.view;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -70,8 +71,14 @@ public class ShopSettingsNotesActivity extends BaseSimpleActivity
     public void goToReorderFragment(ArrayList<ShopNoteViewModel> shopNoteViewModels) {
         ShopSettingsNotesReorderFragment fragment = ShopSettingsNotesReorderFragment.newInstance(shopNoteViewModels);
         replaceAndHideOldFragment(fragment,true, ShopSettingsNotesReorderFragment.TAG);
-        tvSave.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
+        // handler is to prevent flicker when invalidating option menu
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                tvSave.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.settings.etalase.view.activity;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -73,8 +74,14 @@ public class ShopSettingsEtalaseActivity extends BaseSimpleActivity
     public void goToReorderFragment(ArrayList<ShopEtalaseViewModel> defaultModels, ArrayList<ShopEtalaseViewModel> models) {
         ShopSettingsEtalaseReorderFragment fragment = ShopSettingsEtalaseReorderFragment.newInstance(defaultModels, models);
         replaceAndHideOldFragment(fragment,true, ShopSettingsEtalaseReorderFragment.TAG);
-        tvSave.setVisibility(View.VISIBLE);
         invalidateOptionsMenu();
+        // handler is to prevent flicker when invalidating option menu
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                tvSave.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

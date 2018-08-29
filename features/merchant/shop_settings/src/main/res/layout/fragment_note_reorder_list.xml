@@ -21,11 +21,24 @@
             app:layout_scrollFlags="scroll"/>
     </android.support.design.widget.AppBarLayout>
 
-    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-        android:id="@+id/recycler_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:clipToPadding="false"
-        android:clipChildren="false"/>
+        android:clipChildren="false">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_half"
+            android:background="@drawable/bg_line_separator_thin"
+            android:layout_marginLeft="@dimen/dp_16"/>
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:clipChildren="false"/>
+    </LinearLayout>
+
 </android.support.design.widget.CoordinatorLayout>
