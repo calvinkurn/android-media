@@ -49,7 +49,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     private OrderListComponent orderListComponent;
 
     @DeepLink({ApplinkConst.DEALS_ORDER, ApplinkConst.DIGITAL_ORDER,
-            ApplinkConst.EVENTS_DETAILS})
+            ApplinkConst.EVENTS_ORDER})
     public static Intent getOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
