@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.domain.mapper;
 
-import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.search.domain.comparator.FlightCheapestComparator;
 import com.tokopedia.flight.search.domain.comparator.FlightEarliestArrivalComparator;
 import com.tokopedia.flight.search.domain.comparator.FlightEarliestDepartureComparator;
@@ -24,7 +24,7 @@ import rx.functions.Func1;
 
 public class FlightSortMapper implements Func1<List<FlightSearchViewModel>, List<FlightSearchViewModel>> {
 
-    private @FlightSortOption int sortOptionId;
+    private @TravelSortOption int sortOptionId;
 
     @Inject
     public FlightSortMapper(){
@@ -39,30 +39,30 @@ public class FlightSortMapper implements Func1<List<FlightSearchViewModel>, List
     @Override
     public List<FlightSearchViewModel> call(List<FlightSearchViewModel> flightSearchViewModelList) {
         switch (sortOptionId) {
-            case FlightSortOption.NO_PREFERENCE:
+            case TravelSortOption.NO_PREFERENCE:
                 return flightSearchViewModelList;
-            case FlightSortOption.EARLIEST_DEPARTURE:
+            case TravelSortOption.EARLIEST_DEPARTURE:
                 Collections.sort(flightSearchViewModelList, new FlightEarliestDepartureComparator());
                 break;
-            case FlightSortOption.LATEST_DEPARTURE:
+            case TravelSortOption.LATEST_DEPARTURE:
                 Collections.sort(flightSearchViewModelList, new FlightLatestDepartureComparator());
                 break;
-            case FlightSortOption.SHORTEST_DURATION:
+            case TravelSortOption.SHORTEST_DURATION:
                 Collections.sort(flightSearchViewModelList, new FlightShortestDurationComparator());
                 break;
-            case FlightSortOption.LONGEST_DURATION:
+            case TravelSortOption.LONGEST_DURATION:
                 Collections.sort(flightSearchViewModelList, new FlightLongestDurationComparator());
                 break;
-            case FlightSortOption.EARLIEST_ARRIVAL:
+            case TravelSortOption.EARLIEST_ARRIVAL:
                 Collections.sort(flightSearchViewModelList, new FlightEarliestArrivalComparator());
                 break;
-            case FlightSortOption.LATEST_ARRIVAL:
+            case TravelSortOption.LATEST_ARRIVAL:
                 Collections.sort(flightSearchViewModelList, new FlightLatestArrivalComparator());
                 break;
-            case FlightSortOption.CHEAPEST:
+            case TravelSortOption.CHEAPEST:
                 Collections.sort(flightSearchViewModelList, new FlightCheapestComparator());
                 break;
-            case FlightSortOption.MOST_EXPENSIVE:
+            case TravelSortOption.MOST_EXPENSIVE:
                 Collections.sort(flightSearchViewModelList, new FlightMostExpensiveComparator());
                 break;
             default:

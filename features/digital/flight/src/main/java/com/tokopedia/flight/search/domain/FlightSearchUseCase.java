@@ -1,9 +1,9 @@
 package com.tokopedia.flight.search.domain;
 
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.airport.data.source.db.model.FlightAirportDB;
 import com.tokopedia.flight.common.domain.FlightRepository;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.cloud.model.response.Route;
 import com.tokopedia.flight.search.data.db.model.FlightSearchSingleRouteDB;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
@@ -39,7 +39,7 @@ public class FlightSearchUseCase extends UseCase<List<FlightSearchViewModel>> {
                                                       boolean isReturning,
                                                       boolean fromCache,
                                                       FlightFilterModel flightFilterModel,
-                                                      @FlightSortOption int sortOption) {
+                                                      @TravelSortOption int sortOption) {
         return FlightSearchParamUtil.generateRequestParams(
                 flightSearchApiRequestModel,
                 isReturning,

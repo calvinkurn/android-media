@@ -1,6 +1,6 @@
 package com.tokopedia.flight.search.domain;
 
-import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.search.util.FlightSearchParamUtil;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.resultstatistics.FlightSearchStatisticModel;
@@ -34,7 +34,7 @@ public class FlightSearchStatisticUseCase extends UseCase<FlightSearchStatisticM
 
     public static RequestParams generateRequestParams(boolean isReturning) {
         return FlightSearchParamUtil.generateRequestParams(null,
-                isReturning, true, null, FlightSortOption.NO_PREFERENCE);
+                isReturning, true, null, TravelSortOption.NO_PREFERENCE);
     }
 
     @Override

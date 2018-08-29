@@ -1,7 +1,7 @@
 package com.tokopedia.flight.search.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.search.domain.FlightFilterCountUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchStatisticUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchUseCase;
@@ -32,7 +32,7 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
         flightFilterCountUseCase.execute(FlightSearchUseCase.generateRequestParams(
                 null,
                 isReturning, isFromCache, flightFilterModel,
-                FlightSortOption.NO_PREFERENCE),
+                TravelSortOption.NO_PREFERENCE),
                 getSubscriberFlightCount());
     }
 
@@ -65,7 +65,7 @@ public class FlightFilterPresenter extends BaseDaggerPresenter<FlightFilterCount
         getView().showGetFilterStatisticLoading();
         flightSearchStatisticUseCase.execute(FlightSearchUseCase.generateRequestParams(
                 null,
-                getView().isReturning(), true, null, FlightSortOption.NO_PREFERENCE),
+                getView().isReturning(), true, null, TravelSortOption.NO_PREFERENCE),
                 getSubscriberSearchStatisticFlight());
     }
 

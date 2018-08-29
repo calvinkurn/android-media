@@ -3,6 +3,7 @@ package com.tokopedia.flight.search.presenter;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common.travel.constant.TravelSortOption;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.domain.FlightBookingGetSingleResultUseCase;
 import com.tokopedia.flight.common.constant.FlightErrorConstant;
@@ -12,7 +13,6 @@ import com.tokopedia.flight.common.data.model.FlightException;
 import com.tokopedia.flight.common.subscriber.OnNextSubscriber;
 import com.tokopedia.flight.common.util.FlightAnalytics;
 import com.tokopedia.flight.common.util.FlightDateUtil;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.domain.FlightAirlineHardRefreshUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchExpiredUseCase;
 import com.tokopedia.flight.search.domain.FlightSearchMetaUseCase;
@@ -85,7 +85,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
 
     public void searchAndSortFlight(final FlightSearchApiRequestModel flightSearchApiRequestModel,
                                     final boolean isReturning, boolean isFromCache, FlightFilterModel flightFilterModel,
-                                    @FlightSortOption int sortOptionId) {
+                                    @TravelSortOption int sortOptionId) {
         if (isViewAttached()) {
             getView().removeToolbarElevation();
         }
@@ -106,7 +106,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                             isReturning,
                             false,
                             null,
-                            FlightSortOption.NO_PREFERENCE),
+                            TravelSortOption.NO_PREFERENCE),
                     getSubscriberSearchFlightCloud());
         }
     }
@@ -124,7 +124,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
                         if (isViewAttached()) {
                             searchAndSortFlight(flightSearchApiRequestModel, isReturning,
                                     false, null,
-                                    FlightSortOption.NO_PREFERENCE);
+                                    TravelSortOption.NO_PREFERENCE);
                         }
                     }
                 });
@@ -235,7 +235,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
     }
 
     public void sortFlight(List<FlightSearchViewModel> flightSearchViewModelList,
-                           @FlightSortOption int sortOptionId) {
+                           @TravelSortOption int sortOptionId) {
         getView().removeToolbarElevation();
         flightSortUseCase.withList(flightSearchViewModelList).execute(FlightSearchUseCase.generateRequestParams(
                 null,
@@ -407,7 +407,7 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchView>
         deleteReturnFlightCache(selectedId);
     }
 
-    private void deleteReturnFlightCache(String selectedId){
+    private void deleteReturnFlightCache(String selectedId) {
         deleteFlightCache(true, getDeleteFlightReturnSubscriber(selectedId));
     }
 
