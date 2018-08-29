@@ -44,7 +44,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     private static final int MAX_PHONE_NUMBER = 15;
 
     private static final String REGEX_NUMERIC = "^[0-9\\s]*$";
-    private static final String REGEX_ALPHABET_AND_SPACE = "^[0-9\\s]*$";
+    private static final String REGEX_ALPHABET_AND_SPACE ="^[a-zA-Z\\s]*$";
 
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
@@ -177,7 +177,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                             List<TrainError> errors = ((TrainNetworkException) e).getErrorList();
                             if (errors.contains(new TrainError(TrainNetworkErrorConstant.SOLD_OUT)) ||
                                     errors.contains(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND)) ||
-                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURRS))) {
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK)) ||
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURS))) {
                                 getView().showNavigateToSearchDialog(e.getMessage());
                                 return;
                             }

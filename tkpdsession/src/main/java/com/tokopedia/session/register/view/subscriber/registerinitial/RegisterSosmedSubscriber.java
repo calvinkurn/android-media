@@ -3,6 +3,7 @@ package com.tokopedia.session.register.view.subscriber.registerinitial;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.profile.model.GetUserInfoDomainModel;
 import com.tokopedia.core.util.BranchSdkUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.network.ErrorCode;
 import com.tokopedia.network.ErrorHandler;
 import com.tokopedia.session.data.viewmodel.login.MakeLoginDomain;
@@ -16,6 +17,7 @@ import rx.Subscriber;
  */
 
 public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
+    private static final String CHARACTER_NOT_ALLOWED = "CHARACTER_NOT_ALLOWED";
     private final RegisterInitial.View viewListener;
     private final String methodName;
 
@@ -47,18 +49,23 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
 
     @Override
     public void onNext(LoginSosmedDomain registerSosmedDomain) {
-        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()) {
+        if (!registerSosmedDomain.getInfo().getGetUserInfoDomainData().isCreatedPassword()
+                && GlobalConfig.isSellerApp()) {
             viewListener.onGoToCreatePasswordPage(
                     registerSosmedDomain.getInfo().getGetUserInfoDomainData(),
                     methodName);
         } else if (registerSosmedDomain.getMakeLoginModel() != null
                 && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
-                && isMsisdnVerified(registerSosmedDomain.getInfo())) {
+                && !isMsisdnVerified(registerSosmedDomain.getInfo())
+                && GlobalConfig.isSellerApp()) {
+            viewListener.onGoToPhoneVerification();
+        } else if (registerSosmedDomain.getInfo().getGetUserInfoDomainData().getName().contains(CHARACTER_NOT_ALLOWED)) {
+            viewListener.onGoToAddName(registerSosmedDomain.getInfo()
+                    .getGetUserInfoDomainData());
+        } else if (registerSosmedDomain.getMakeLoginModel() != null
+                && !isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
             viewListener.onSuccessRegisterSosmed(methodName);
             sendRegisterEventToBranch(registerSosmedDomain.getInfo());
-        } else if (!isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())
-                && !isMsisdnVerified(registerSosmedDomain.getInfo())) {
-            viewListener.onGoToPhoneVerification();
         } else if (isGoToSecurityQuestion(registerSosmedDomain.getMakeLoginModel())) {
             viewListener.onGoToSecurityQuestion(
                     registerSosmedDomain.getMakeLoginModel().getSecurityDomain(),
@@ -75,11 +82,13 @@ public class RegisterSosmedSubscriber extends Subscriber<LoginSosmedDomain> {
     }
 
     private boolean isGoToSecurityQuestion(MakeLoginDomain makeLoginModel) {
-        return !makeLoginModel.isLogin() && makeLoginModel.getSecurityDomain() != null;
+        return makeLoginModel != null
+                && !makeLoginModel.isLogin()
+                && makeLoginModel.getSecurityDomain() != null;
     }
 
-    private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel){
-        if(userInfoDomainModel.getGetUserInfoDomainData()!=null) {
+    private void sendRegisterEventToBranch(GetUserInfoDomainModel userInfoDomainModel) {
+        if (userInfoDomainModel.getGetUserInfoDomainData() != null) {
             BranchSdkUtils.sendRegisterEvent(userInfoDomainModel.getGetUserInfoDomainData().getEmail(),
                     userInfoDomainModel.getGetUserInfoDomainData().getPhone());
         }

@@ -134,7 +134,11 @@ public class CheckoutDealPresenter
         for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                     .getAsJsonObject().addProperty("email", this.email);
-            if (dealDetail.getOutlets().get(0) != null)
+            if (dealDetail.getOutlets().size() > 1) {
+                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                        .getAsJsonObject().addProperty("name",
+                        String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), dealDetail.getOutlets().size()));
+            } else if (dealDetail.getOutlets().get(0) != null)
                 jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                         .getAsJsonObject().addProperty("name", dealDetail.getOutlets().get(0).getDistrict());
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());

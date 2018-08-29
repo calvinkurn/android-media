@@ -48,8 +48,8 @@
     </string-array>
 
     <string-array name="top_ads_keyword_type_list_entries">
-        <item>Phrase Match</item>
-        <item>Exact Match</item>
+        <item>Pencarian Luas</item>
+        <item>Pencarian Spesifik</item>
     </string-array>
     <string-array name="top_ads_keyword_type_positive_list_values">
         <item>11</item>

@@ -34,6 +34,7 @@ public class UploadImageDialog {
 
     private static final int REQUEST_CAMERA = 1;
     private static final int REQUEST_GALLERY = 2;
+    private static final int RESULT_CODE = 323;
     private final Context context;
     private final String resolutionID;
     private Activity activity;
@@ -135,7 +136,7 @@ public class UploadImageDialog {
     public void onResult(int requestCode, int resultCode, Intent intent, UploadImageDialogListener listener) {
         if(requestCode == REQUEST_CAMERA || requestCode == REQUEST_GALLERY) {
             switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
+                case RESULT_CODE:
                     BitmapFactory.Options options = new BitmapFactory.Options();
                     options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                     BitmapFactory.Options checksize = new BitmapFactory.Options();
