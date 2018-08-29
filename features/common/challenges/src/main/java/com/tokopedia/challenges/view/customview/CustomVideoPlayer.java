@@ -12,17 +12,16 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.VideoView;
+import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.FullScreenVideoActivity;
 
-public class CustomVideoPlayer extends FrameLayout implements CustomMediaController.ICurrentPos {
+public class CustomVideoPlayer extends RelativeLayout implements CustomMediaController.ICurrentPos {
 
-    private VideoView videoView;
+    private CustomVideoView videoView;
     private ImageView thumbNail;
     private ImageView playIcon;
     private CustomMediaController mediaController;
@@ -62,6 +61,7 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
         if (TextUtils.isEmpty(videoUrl)) {
             playIcon.setVisibility(GONE);
         }
+        videoView.setVideoDimensions(videoView.getWidth(), videoView.getHeight());
         startPlay(0);
     }
 
@@ -138,6 +138,12 @@ public class CustomVideoPlayer extends FrameLayout implements CustomMediaControl
             intent.putExtra("seekPos", getPosition());
             intent.putExtra("videoUrl", videoUrl);
             ((Activity) getContext()).startActivityForResult(intent, 100);
+        }
+    }
+
+    public void hideMediaController() {
+        if(mediaController!=null && mediaController.isShowing()){
+            mediaController.hide();
         }
     }
 

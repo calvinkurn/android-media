@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -229,6 +230,18 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
         mPresenter.loadCountdownView(challengeResult, isWinnerList);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+
+                    if (scrollY > oldScrollY || scrollY < oldScrollY || scrollY == 0 || scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                        if (videoPlayer != null)
+                            videoPlayer.hideMediaController();
+                    }
+                }
+            });
+        }
         return view;
     }
 

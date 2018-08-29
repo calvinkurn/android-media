@@ -39,14 +39,15 @@ public class CustomMediaController extends MediaController {
                         LayoutParams.WRAP_CONTENT);
 
         params.gravity = Gravity.RIGHT;
-        params.rightMargin = 80;
         params.topMargin = 40;
-        addView(fullScreen, params);
         if (isFullScreen) {
+            params.rightMargin = 80;
             fullScreen.setImageResource(R.drawable.ic_close_default);
         } else {
+            params.rightMargin = 40;
             fullScreen.setImageResource(R.drawable.fullscreen_icon);
         }
+        addView(fullScreen, params);
         fullScreen.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
