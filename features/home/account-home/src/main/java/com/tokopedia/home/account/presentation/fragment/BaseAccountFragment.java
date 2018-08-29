@@ -13,7 +13,7 @@ import com.tokopedia.home.account.AccountConstants;
 
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;

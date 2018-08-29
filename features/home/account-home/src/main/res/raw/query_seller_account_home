@@ -1,4 +1,4 @@
-query {
+query SellerAccountHome($shop_ids:[Int!]!){
   isAuthenticated
   saldo {
     deposit
@@ -30,5 +30,9 @@ query {
       shipped
       arriveAtDestination
     }
+  }
+  reputation_shops(shop_ids: $shop_ids) {
+    badge
+    badge_hd
   }
 }

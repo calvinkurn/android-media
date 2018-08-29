@@ -19,33 +19,42 @@
             android:layout_height="wrap_content">
 
             <RelativeLayout
-                android:id="@+id/holder_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:id="@+id/holder_photo_progress"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50">
+                <ImageView
+                    android:id="@+id/image_profile_completed"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="@dimen/dp_50"
+                    android:minWidth="@dimen/dp_50"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    tools:src="@drawable/ic_big_no" />
+
+                <ImageView
+                    android:id="@+id/image_profile_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:padding="@dimen/dp_10"
+                    tools:src="@drawable/ic_big_notif_customerapp"
+                    tools:visibility="visible" />
 
                 <ProgressBar
                     android:id="@+id/circular_progress_bar"
                     style="@style/ProgressBar.Tokopedia"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_centerVertical="true"
                     android:progressDrawable="@drawable/circular_progress_bar"
                     android:max="100"
                     android:progress="0"
                     android:rotation="-90"
                     tools:progress="55"
-                    tools:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/image_profile"
-                    android:layout_width="@dimen/dp_40"
-                    android:layout_height="@dimen/dp_40"
-                    android:scaleType="fitXY"
-                    android:padding="@dimen/dp_6"
-                    android:layout_centerInParent="true"
-                    tools:src="@drawable/ic_big_notif_customerapp"
-                    tools:visibility="visible" />
-
+                    tools:visibility="visible"
+                    android:layout_margin="0dp"
+                    android:padding="0dp"/>
             </RelativeLayout>
 
             <TextView
@@ -53,11 +62,11 @@
                 style="@style/TextView.TitleMedium.Bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
                 android:maxLines="1"
-                android:layout_toRightOf="@+id/holder_photo"
-                android:layout_toEndOf="@+id/holder_photo"
+                android:layout_toRightOf="@+id/holder_photo_progress"
+                android:layout_toEndOf="@+id/holder_photo_progress"
                 tools:text="Young Lex Le Bron James Syaiful Amir Hutagalung" />
 
             <TextView
@@ -65,11 +74,11 @@
                 style="@style/TextView.Micro.BlackSecondary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_4"
-                android:layout_marginStart="@dimen/dp_4"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginStart="@dimen/dp_16"
                 android:layout_below="@+id/text_username"
-                android:layout_toRightOf="@+id/holder_photo"
-                android:layout_toEndOf="@+id/holder_photo"
+                android:layout_toRightOf="@+id/holder_photo_progress"
+                android:layout_toEndOf="@+id/holder_photo_progress"
                 tools:text="Kelengkapan Profile 75%" />
 
         </RelativeLayout>
