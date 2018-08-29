@@ -25,6 +25,7 @@ import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.itemdecoration.LinearHorizontalSpacingDecoration;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
@@ -70,6 +71,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         guidedSearchAdapter = new GuidedSearchAdapter(clickListener);
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
         guidedSearchRecyclerView.setAdapter(guidedSearchAdapter);
+        guidedSearchRecyclerView.addItemDecoration(new LinearHorizontalSpacingDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+        ));
         initTopAds(topAdsConfig);
         initQuickFilterRecyclerView();
     }
@@ -99,6 +104,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         quickFilterAdapter = new QuickFilterAdapter(clickListener);
         quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
         quickFilterListView.setAdapter(quickFilterAdapter);
+        quickFilterListView.addItemDecoration(new LinearHorizontalSpacingDecoration(
+                context.getResources().getDimensionPixelSize(R.dimen.dp_8),
+                context.getResources().getDimensionPixelSize(R.dimen.dp_16)
+        ));
     }
 
     @Override

@@ -21,9 +21,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/guidedSearchRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/dp_16"
-        android:paddingRight="@dimen/dp_16"/>
+        android:layout_height="wrap_content"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -35,8 +33,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
             android:orientation="horizontal">
 
             <TextView
@@ -44,7 +40,7 @@
                 style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dp_3"
+                android:layout_marginLeft="@dimen/dp_16"
                 tools:text="7.828.192 Produk" />
 
             <android.support.v7.widget.RecyclerView
