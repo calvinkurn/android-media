@@ -24,13 +24,13 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ActionListener actionListener;
     private List<CartItemHolderData> cartItemHolderDataList = new ArrayList<>();
-    private CompositeSubscription compositeSubscription;
     private int parentPosition;
+    private CompositeSubscription compositeSubscription;
 
-    public CartItemAdapter(ActionListener actionListener, int parentPosition) {
+    public CartItemAdapter(ActionListener actionListener, CompositeSubscription compositeSubscription, int parentPosition) {
         this.actionListener = actionListener;
         this.parentPosition = parentPosition;
-        compositeSubscription = new CompositeSubscription();
+        this.compositeSubscription = compositeSubscription;
     }
 
     @Override
@@ -58,29 +58,10 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return cartItemHolderDataList.size();
     }
 
-    public void unsubscribeSubscription() {
-        compositeSubscription.unsubscribe();
-    }
-
     public void addDataList(List<CartItemHolderData> cartItemHolderDataList) {
         this.cartItemHolderDataList.clear();
         this.cartItemHolderDataList.addAll(cartItemHolderDataList);
         notifyDataSetChanged();
-    }
-
-    public void deleteItem(CartItemData cartItemData, int shopPosition) {
-        for (int i = 0; i < cartItemHolderDataList.size(); i++) {
-            CartItemHolderData data = cartItemHolderDataList.get(i);
-            if (data.getCartItemData().getOriginData().getCartId() ==
-                    cartItemData.getOriginData().getCartId()) {
-                cartItemHolderDataList.remove(i);
-                notifyItemRemoved(i);
-            }
-        }
-
-        if (cartItemHolderDataList.isEmpty()) {
-            actionListener.onCartItemListIsEmpty(shopPosition);
-        }
     }
 
     @Override

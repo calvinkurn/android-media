@@ -106,7 +106,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
-    //    private View bottomLayout;
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
     private RelativeLayout layoutUsedPromo;
@@ -159,8 +158,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onDestroy() {
-        // TODO : unsubscribe debouncer subscription
-//        cartAdapter.unsubscribeSubscription();
+        cartAdapter.unsubscribeSubscription();
         dPresenter.detachView();
         super.onDestroy();
     }

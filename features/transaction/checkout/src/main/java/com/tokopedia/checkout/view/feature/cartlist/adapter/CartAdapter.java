@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.cartlist.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * @author anggaprasetiyo on 18/01/18.
  */
@@ -35,6 +38,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final CartItemAdapter.ActionListener cartItemActionListener;
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
+    private CompositeSubscription compositeSubscription;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -42,6 +46,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.cartDataList = new ArrayList<>();
         this.cartActionListener = cartActionListener;
         this.cartItemActionListener = cartItemActionListener;
+        compositeSubscription = new CompositeSubscription();
     }
 
     @Override
@@ -61,12 +66,13 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
-            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener);
+            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);
@@ -84,11 +90,11 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false);
             return new ShipmentSellerCashbackViewHolder(view);
         }
-        return null;
+        throw new RuntimeException("No view holder type found");
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
         if (getItemViewType(position) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             final CartShopViewHolder holderView = (CartShopViewHolder) holder;
             final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
@@ -115,6 +121,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemCount() {
         return cartDataList.size();
+    }
+
+    public void unsubscribeSubscription() {
+        compositeSubscription.unsubscribe();
     }
 
     public void addDataList(List<ShopGroupData> shopGroupDataList) {
