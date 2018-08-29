@@ -16,9 +16,9 @@ public interface ContentExploreContract {
     interface View extends CustomerView {
         Context getContext();
 
-        void onSuccessGetExploreData(ExploreViewModel exploreViewModel);
+        void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData);
 
-        void onErrorGetExploreDataFirstPage();
+        void onErrorGetExploreDataFirstPage(String message);
 
         void onErrorGetExploreDataMore();
 

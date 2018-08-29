@@ -207,26 +207,35 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
-        loadImageData(exploreViewModel.getExploreImageViewModelList());
+    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData) {
+        if (!exploreViewModel.getExploreImageViewModelList().isEmpty()) {
+            loadImageData(exploreViewModel.getExploreImageViewModelList());
+        } else if (clearData) {
+            showEmpty();
+        }
 
         if (categoryAdapter.getList().isEmpty()) {
             loadTagData(exploreViewModel.getTagViewModelList());
         }
 
+        boolean isCategoryExist = false;
         for (int i = 0; i < categoryAdapter.getList().size(); i++) {
             ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
             if (categoryViewModel.getId() == categoryId) {
                 categoryViewModel.setActive(true);
                 categoryAdapter.notifyItemChanged(i);
                 exploreCategoryRv.scrollToPosition(i);
+                isCategoryExist = true;
                 break;
             }
+        }
+        if (!isCategoryExist && categoryId != Integer.valueOf(DEFAULT_CATEGORY)) {
+            onCategoryReset();
         }
     }
 
     @Override
-    public void onErrorGetExploreDataFirstPage() {
+    public void onErrorGetExploreDataFirstPage(String message) {
         NetworkErrorHelper.showEmptyState(getContext(), getView(), () -> {
             presenter.getExploreData(true);
         });
