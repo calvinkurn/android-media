@@ -1,10 +1,10 @@
 package com.tokopedia.updateinactivephone.subscriber;
 
-import com.tokoepdia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants;
+import com.tokopedia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
 
 import rx.Subscriber;
