@@ -44,7 +44,6 @@
     <string name="label_filter">Filter</string>
 
     <string name="button_cancel">Batal</string>
-
-
+    <string name="button_delete">Hapus</string>
 
 </resources>

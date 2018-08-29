@@ -8,5 +8,16 @@
 
     <string name="filter_all_talk">Semua Diskusi</string>
     <string name="filter_not_read">Belum Dibaca</string>
+    <string name="follow_talk_dialog_title">Ikuti Diskusi Ini?</string>
+    <string name="follow_talk_dialog_desc">Anda akan menerima notifikasi mengenai diskusi ini</string>
+    <string name="delete_talk_dialog_title">Hapus Diskusi?</string>
+    <string name="delete_talk_dialog_desc">Diskusi akan terhapus selamanya</string>
+    <string name="delete_comment_talk_dialog_title">Hapus Komentar?</string>
+    <string name="delete_comment_talk_dialog_desc">Komentar akan terhapus selamanya</string>
+    <string name="unfollow_talk_dialog_title">Berhenti Ikuti Diskusi Ini?</string>
+    <string name="unfollow_talk_dialog_desc">Anda tidak akan menerima notifikasi mengenai diskusi ini lagi</string>
+
+    <string name="button_follow_talk">Ikuti</string>
+    <string name="button_unfollow_talk">Berhenti Ikuti</string>
 
 </resources>
