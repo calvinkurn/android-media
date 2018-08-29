@@ -15,7 +15,7 @@ import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
  * Created by hendry on 16/08/18.
  */
 class ShopNoteReorderViewHolder(itemView: View,
-                                private val onStartDragListener: OnStartDragListener) : AbstractViewHolder<ShopNoteViewModel>(itemView) {
+                                private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopNoteViewModel>(itemView) {
 
     private val tvNoteName: TextView
     private val tvLastUpdate: TextView
@@ -37,7 +37,7 @@ class ShopNoteReorderViewHolder(itemView: View,
             handler.setOnTouchListener { _, event ->
                 @Suppress("DEPRECATION")
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener.onStartDrag(this@ShopNoteReorderViewHolder)
+                    onStartDragListener?.onStartDrag(this@ShopNoteReorderViewHolder)
                 }
                 false
             }

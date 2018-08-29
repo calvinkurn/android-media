@@ -9,4 +9,5 @@ import com.tokopedia.shop.settings.etalase.view.adapter.factory.ShopEtalaseFacto
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseAdapter(baseListAdapterTypeFactory: ShopEtalaseFactory,
-                         onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<BaseShopEtalaseViewModel>) : BaseListAdapter<BaseShopEtalaseViewModel, ShopEtalaseFactory>(baseListAdapterTypeFactory, onAdapterInteractionListener)
+                         onAdapterInteractionListener: BaseListAdapter.OnAdapterInteractionListener<BaseShopEtalaseViewModel>)
+    : BaseListAdapter<BaseShopEtalaseViewModel, ShopEtalaseFactory>(baseListAdapterTypeFactory, onAdapterInteractionListener)

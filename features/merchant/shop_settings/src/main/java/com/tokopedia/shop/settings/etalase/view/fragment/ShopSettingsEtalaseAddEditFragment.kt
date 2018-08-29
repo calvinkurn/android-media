@@ -39,6 +39,7 @@ class ShopSettingsEtalaseAddEditFragment: BaseDaggerFragment(), ShopSettingsEtal
 
         private const val PARAM_IS_SUCCESS = "IS_SUCCESS"
 
+        @JvmStatic
         fun createInstance(isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
                 ShopSettingsEtalaseAddEditFragment().apply { arguments = Bundle().apply {
                     putParcelable(PARAM_SHOP_ETALASE, etalase)

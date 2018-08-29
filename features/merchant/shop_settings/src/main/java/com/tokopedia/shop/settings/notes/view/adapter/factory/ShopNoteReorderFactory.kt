@@ -10,7 +10,7 @@ import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHold
 /**
  * Created by hendry on 16/08/18.
  */
-class ShopNoteReorderFactory(private val onStartDragListener: OnStartDragListener) : BaseShopNoteFactory() {
+class ShopNoteReorderFactory(private val onStartDragListener: OnStartDragListener?) : BaseShopNoteFactory() {
 
     override fun type(model: ShopNoteViewModel): Int {
         return ShopNoteReorderViewHolder.LAYOUT

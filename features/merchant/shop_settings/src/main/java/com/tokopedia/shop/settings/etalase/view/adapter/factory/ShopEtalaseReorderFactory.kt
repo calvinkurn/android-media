@@ -15,7 +15,7 @@ import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteReorderViewHold
 /**
  * Created by hendry on 16/08/18.
  */
-class ShopEtalaseReorderFactory(private val onStartDragListener: OnStartDragListener) : BaseShopEtalaseFactory() {
+class ShopEtalaseReorderFactory(private val onStartDragListener: OnStartDragListener?) : BaseShopEtalaseFactory() {
 
     override fun type(model: ShopEtalaseViewModel): Int {
         return ShopEtalaseReorderViewHolder.LAYOUT

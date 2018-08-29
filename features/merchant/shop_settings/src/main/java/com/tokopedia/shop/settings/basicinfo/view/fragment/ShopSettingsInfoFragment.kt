@@ -118,7 +118,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
         }
         menus.itemMenuList = itemMenusList
-        menus.setOnItemMenuClickListener { itemMenus, pos ->
+        menus.setOnItemMenuClickListener { itemMenus, _ ->
             when {
                 itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
                     val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
@@ -141,8 +141,8 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                     builder.setTitle(R.string.remove_schedule)
                     builder.setMessage(R.string.remove_schedule_message)
                     builder.setCancelable(true)
-                    builder.setNegativeButton(R.string.cancel) { dialog, id -> dialog.cancel() }
-                    builder.setPositiveButton(R.string.label_remove) { dialog, id ->
+                    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
+                    builder.setPositiveButton(R.string.label_remove) { _, _ ->
                         //remove schedule
                         showSubmitLoading(getString(R.string.title_loading))
                         shopSettingsInfoPresenter.updateShopSchedule(
@@ -201,7 +201,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun loadShopBasicData() {
         showLoading()
-        shopSettingsInfoPresenter!!.getShopBasicData()
+        shopSettingsInfoPresenter.getShopBasicData()
     }
 
     override fun initInjector() {
@@ -209,7 +209,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 .baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        shopSettingsInfoPresenter!!.attachView(this)
+        shopSettingsInfoPresenter.attachView(this)
     }
 
     override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
@@ -372,7 +372,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onDestroy() {
         super.onDestroy()
-        shopSettingsInfoPresenter?.run { detachView() }
+        shopSettingsInfoPresenter.run { detachView() }
     }
 
     companion object {

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.app.Activity
@@ -83,7 +85,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        updateShopShedulePresenter!!.attachView(this)
+        updateShopShedulePresenter.attachView(this)
 
         tvSave = findViewById(R.id.tvSave)
         labelStartClose = findViewById(R.id.labelStartClose)
@@ -133,7 +135,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
     fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
+        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
             setStartCloseDate(toDate(year, month, dayOfMonth))
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
@@ -144,9 +146,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
     fun showEndDatePickerDialog(selectedDate: Date, minDate: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = selectedDate
-        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { view, year, month, dayOfMonth ->
-            val selectedDate = toDate(year, month, dayOfMonth)
-            setEndCloseDate(selectedDate)
+        val datePicker = DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            setEndCloseDate(toDate(year, month, dayOfMonth))
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE))
         val datePicker1 = datePicker.datePicker
         datePicker1.minDate = minDate.time
@@ -181,7 +182,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             ShopScheduleActionDef.OPEN
         val closeStart = selectedStartCloseUnixTimeMs
         val closeEnd = selectedEndCloseUnixTimeMs
-        updateShopShedulePresenter!!.updateShopSchedule(
+        updateShopShedulePresenter.updateShopSchedule(
                 shopAction,
                 isClosedNow,
                 if (closeStart == 0L) null else closeStart.toString(),
@@ -214,9 +215,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     public override fun onDestroy() {
         super.onDestroy()
-        if (updateShopShedulePresenter != null) {
-            updateShopShedulePresenter!!.detachView()
-        }
+        updateShopShedulePresenter.detachView()
     }
 
     override fun onSuccessUpdateShopSchedule(successMessage: String) {

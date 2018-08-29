@@ -9,12 +9,10 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -25,27 +23,20 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
+import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.*
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-
-import java.util.ArrayList
-
 import javax.inject.Inject
-
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP
-import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA
-import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 
 class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPresenter.View {
 
@@ -96,7 +87,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
-        updateShopSettingsInfoPresenter!!.attachView(this)
+        updateShopSettingsInfoPresenter.attachView(this)
 
         vgRoot = findViewById(R.id.vgRoot)
         tvSave = findViewById(R.id.tvSave)
@@ -139,9 +130,9 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         val tagLine = etShopSlogan!!.text.toString()
         val desc = etShopDesc!!.text.toString()
         if (!TextUtils.isEmpty(savedLocalImageUrl)) {
-            updateShopSettingsInfoPresenter!!.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
+            updateShopSettingsInfoPresenter.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
         } else {
-            updateShopSettingsInfoPresenter!!.updateShopBasicData(tagLine, desc)
+            updateShopSettingsInfoPresenter.updateShopBasicData(tagLine, desc)
         }
     }
 
@@ -165,7 +156,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     }
 
     private fun loadShopBasicData() {
-        updateShopSettingsInfoPresenter!!.getShopBasicData()
+        updateShopSettingsInfoPresenter.getShopBasicData()
     }
 
     public override fun onResume() {
@@ -178,9 +169,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
 
     public override fun onDestroy() {
         super.onDestroy()
-        if (updateShopSettingsInfoPresenter != null) {
-            updateShopSettingsInfoPresenter!!.detachView()
-        }
+        updateShopSettingsInfoPresenter.detachView()
     }
 
     public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -15,7 +15,7 @@ import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
  * Created by hendry on 16/08/18.
  */
 class ShopEtalaseReorderViewHolder(itemView: View,
-                                   private val onStartDragListener: OnStartDragListener) : AbstractViewHolder<ShopEtalaseViewModel>(itemView) {
+                                   private val onStartDragListener: OnStartDragListener?) : AbstractViewHolder<ShopEtalaseViewModel>(itemView) {
 
     private val tvEtalaseName: TextView
     private val tvEtalaseCount: TextView
@@ -34,7 +34,7 @@ class ShopEtalaseReorderViewHolder(itemView: View,
             handler.setOnTouchListener { _, event ->
                 @Suppress("DEPRECATION")
                 if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                    onStartDragListener.onStartDrag(this@ShopEtalaseReorderViewHolder)
+                    onStartDragListener?.onStartDrag(this@ShopEtalaseReorderViewHolder)
                 }
                 false
             }
