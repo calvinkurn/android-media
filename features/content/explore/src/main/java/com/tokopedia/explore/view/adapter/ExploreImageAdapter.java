@@ -8,8 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.explore.R;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
 
 import java.util.ArrayList;
@@ -26,11 +29,15 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
     private List<Visitable> list;
     private ExploreImageTypeFactory typeFactory;
     private LoadingMoreModel loadingMoreModel;
+    private EmptyModel emptyModel;
 
     @Inject
-    public ExploreImageAdapter() {
+    public ExploreImageAdapter(@ApplicationContext Context context) {
         this.list = new ArrayList<>();
         this.loadingMoreModel = new LoadingMoreModel();
+        this.emptyModel = new EmptyModel();
+        this.emptyModel.setIconRes(com.tokopedia.design.R.drawable.ic_empty_search);
+        this.emptyModel.setContent(context.getString(R.string.explore_empty_result));
     }
 
     @NonNull
@@ -77,6 +84,12 @@ public class ExploreImageAdapter extends RecyclerView.Adapter<AbstractViewHolder
 
     public void dismissLoading() {
         remove(loadingMoreModel);
+    }
+
+    public void showEmpty() {
+        if (!list.contains(emptyModel)) {
+            add(emptyModel);
+        }
     }
 
     public boolean isLoading() {

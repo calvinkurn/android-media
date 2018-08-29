@@ -245,6 +245,7 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
         public static final int CATEGORY_NAVIGATION = 54;
         public static final int RESOLUTION_CENTER_BUYER = 55;
         public static final int RESOLUTION_CENTER_SELLER = 56;
+        public static final int MYBILLS = 57;
 
         public static final int FEATURED_PRODUCT = 99;
 
@@ -433,10 +434,6 @@ public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
-
-        // instoped view type
-        public static final int VIEW_INSTOPED = 11;
-
 
         public static final int VIEW_FIRST_TIME_USER = 123;
         public static final int VIEW_EMPTY = 0;

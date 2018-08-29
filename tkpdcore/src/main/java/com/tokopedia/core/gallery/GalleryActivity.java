@@ -25,7 +25,10 @@ import java.io.File;
 
 import javax.annotation.Nonnull;
 
-public class  GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
+/**
+ * Need to be moved to resolution module. Need for video picker
+ */
+public class GalleryActivity extends TActivity implements AlbumCollection.AlbumCallbacks, AdapterView
         .OnItemSelectedListener, GallerySelectedFragment.ListenerSelected {
 
     private static final String TAG = "hangnadi";

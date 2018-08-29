@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/header_origin_city_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            style="@style/TextView.Micro.BlackPrimary"
             android:gravity="center"
             tools:text="Jakarta"
             android:singleLine="true"
@@ -61,7 +61,7 @@
 
         <TextView
             android:id="@+id/header_destination_city_name"
-            style="@style/TextView.Micro.BlackSecondary"
+            style="@style/TextView.Micro.BlackPrimary"
             android:gravity="center"
             tools:text="Denpasar"
             android:singleLine="true"

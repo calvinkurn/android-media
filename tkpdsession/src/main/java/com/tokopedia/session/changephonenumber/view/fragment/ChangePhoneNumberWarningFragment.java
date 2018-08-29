@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.ChangePhoneNumberAnalytics;
@@ -18,7 +19,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.core.deposit.activity.WithdrawActivity;
 import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.di.SessionComponent;
@@ -131,7 +131,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
         withdrawButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getContext(), WithdrawActivity.class);
+                Intent intent = ((SessionRouter)getActivity().getApplicationContext()).getWithdrawIntent(getActivity());
                 Bundle bundle = new Bundle();
                 bundle.putString(DepositFragmentPresenterImpl.BUNDLE_TOTAL_BALANCE,
                         viewModel.getTokopediaBalance());

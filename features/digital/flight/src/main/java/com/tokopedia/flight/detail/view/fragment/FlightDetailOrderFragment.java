@@ -6,7 +6,9 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -16,6 +18,11 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +46,9 @@ import com.tokopedia.flight.booking.view.adapter.FlightSimpleAdapter;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationListActivity;
+import com.tokopedia.flight.cancellation.view.fragment.customview.FlightCancellationRefundBottomSheet;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
+import com.tokopedia.flight.common.constant.FlightUrl;
 import com.tokopedia.flight.common.util.FlightErrorUtil;
 import com.tokopedia.flight.dashboard.view.activity.FlightDashboardActivity;
 import com.tokopedia.flight.detail.presenter.ExpandableOnClickListener;
@@ -82,6 +91,9 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Inject
     FlightDetailOrderPresenter flightDetailOrderPresenter;
+    @Inject
+    FlightModuleRouter flightModuleRouter;
+
     private TextView orderId;
     private ImageView copyOrderId;
     private View containerDownloadEticket;
@@ -432,12 +444,7 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
 
     @Override
     public void navigateToWebview(String url) {
-        if (getActivity().getApplication() instanceof FlightModuleRouter
-                && ((FlightModuleRouter) getActivity().getApplication())
-                .getDefaultContactUsIntent(getActivity()) != null) {
-            startActivity(((FlightModuleRouter) getActivity().getApplication())
-                    .getDefaultContactUsIntent(getActivity()));
-        }
+        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
     }
 
     @Override
@@ -592,13 +599,14 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
     @SuppressLint("StringFormatMatches")
     @Override
     public void showLessThan6HoursDialog() {
-        int color = getContext().getResources().getColor(R.color.green_500);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(MethodChecker.fromHtml(getString(
-                R.string.flight_cancellation_recommendation_to_contact_airlines_description,
-                color, "#")));
-        dialog.setBtnOk("OK");
+        dialog.setDesc(buildAirlineContactInfo(
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description),
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description_mark)
+        ));
+        dialog.setDescMovementMethod();
+        dialog.setBtnOk(getString(R.string.flight_cancellation_less_than_6_hours_confirmation_dialog));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -606,6 +614,30 @@ public class FlightDetailOrderFragment extends BaseDaggerFragment implements Fli
             }
         });
         dialog.show();
+    }
+
+    @NonNull
+    private SpannableString buildAirlineContactInfo(String fullText, String mark) {
+        final int color = getContext().getResources().getColor(R.color.green_500);
+        int startIndex = fullText.indexOf(mark);
+        int stopIndex = fullText.length();
+        SpannableString description = new SpannableString(fullText);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                flightDetailOrderPresenter.onMoreAirlineInfoClicked();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            }
+        };
+        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return description;
     }
 
     @Override

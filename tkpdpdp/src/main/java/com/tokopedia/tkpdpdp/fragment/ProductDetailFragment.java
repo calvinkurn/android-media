@@ -1210,10 +1210,12 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             return true;
         } else if (i == R.id.action_share) {
             if (productData != null) {
+                String productName = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductName()).toString();
+                String productDesc = com.tokopedia.abstraction.common.utils.view.MethodChecker.fromHtml(productData.getInfo().getProductDescription()).toString();
                 ShareData shareData = ShareData.Builder.aShareData()
-                        .setName(productData.getInfo().getProductName())
-                        .setTextContent(productData.getInfo().getProductName())
-                        .setDescription(productData.getInfo().getProductDescription())
+                        .setName(productName)
+                        .setTextContent(productName)
+                        .setDescription(productDesc)
                         .setImgUri(productData.getProductImages().get(0).getImageSrc())
                         .setPrice(productData.getInfo().getProductPrice())
                         .setUri(productData.getInfo().getProductUrl())
@@ -1579,6 +1581,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productData != null && productData.getInfo() != null && productStock.isEnabled()) {
             productData.getInfo().setProductStockWording(productStockNonVariant.getStockWordingHtml());
             productData.getInfo().setLimitedStock(productStockNonVariant.isLimitedStock());
+            productData.getInfo().setAlwaysAvailable(productStock.isAlwaysAvailable());
             headerInfoView.renderStockAvailability(productData.getCampaign().getActive(),
                     productData.getInfo());
         }
@@ -2040,7 +2043,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void refreshData() {
-        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, false, useVariant);
+        presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, true, useVariant);
     }
     private void renderTopAds(int itemSize) {
         if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
