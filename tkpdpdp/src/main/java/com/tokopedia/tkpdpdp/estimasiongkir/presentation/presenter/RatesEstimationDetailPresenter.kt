@@ -12,7 +12,7 @@ import javax.inject.Inject
 import rx.Subscriber
 
 class RatesEstimationDetailPresenter @Inject
-constructor(private val useCase: GetRateEstimationUseCase, private val userSession: UserSession) : BaseDaggerPresenter<RatesEstimationDetailView>() {
+constructor(private val useCase: GetRateEstimationUseCase) : BaseDaggerPresenter<RatesEstimationDetailView>() {
 
     override fun detachView() {
         useCase.unsubscribe()

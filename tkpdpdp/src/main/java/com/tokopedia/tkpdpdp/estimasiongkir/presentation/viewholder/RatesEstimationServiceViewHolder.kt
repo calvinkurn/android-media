@@ -20,8 +20,14 @@ class RatesEstimationServiceViewHolder(itemView: View) : RecyclerView.ViewHolder
     }
 
     fun bind(shippingServiceModel: ShippingServiceModel) {
-        itemView.service_title.text = itemView.context.getString(R.string.service_title_format,
-                shippingServiceModel.name, shippingServiceModel.etd)
+        if(shippingServiceModel.etd.isEmpty()){
+            itemView.service_title.text = itemView.context.getString(R.string.service_title_format_empty,
+                    shippingServiceModel.name)
+        } else {
+            itemView.service_title.text = itemView.context.getString(R.string.service_title_format,
+                    shippingServiceModel.name, shippingServiceModel.etd)
+        }
+
         adapter.replaceProducts(shippingServiceModel.products)
     }
 }
