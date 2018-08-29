@@ -345,7 +345,8 @@ ext {
             digitalDeals          : ":features:digital:digital_deals",
             withdraw              : ":features:payment:withdraw",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            browse                : ":features:digital:digital_browse"
     ]
 
     libraries = [
