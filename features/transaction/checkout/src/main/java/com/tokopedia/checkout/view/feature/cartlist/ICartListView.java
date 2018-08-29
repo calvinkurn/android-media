@@ -98,5 +98,5 @@ public interface ICartListView extends IBaseView {
 
     Activity getActivity();
 
-    void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap);
+    void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap, String eventLabel);
 }

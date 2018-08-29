@@ -16,6 +16,7 @@ public interface ConstantTransactionAnalytics {
 
     interface EventName {
         String CLICK_ATC = "clickATC";
+        String CLICK_BUY = "clickBuy";
         String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
         String REMOVE_FROM_CART = "removeFromCart";
@@ -29,6 +30,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO = "viewPromo";
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
+        String CLICK_ADDRESS = "clickAddress";
     }
 
     interface EventCategory {
@@ -166,6 +168,9 @@ public interface ConstantTransactionAnalytics {
 
         String CLICK_CHECKOUT = "click checkout";
         String CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk";
+        String CLICK_BAYAR = "click bayar";
+        String CLICK_UBAH_KURIR = "click ubah kurir";
+        String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
     }
 
     interface EventLabel {
@@ -176,6 +181,13 @@ public interface ConstantTransactionAnalytics {
         String FAILED = "failed";
         String CHECKLIST = "checklist";
         String UN_CHECKLIST = "unchecklist";
+        String FAILED_DROPSHIPPER = "failed dropshipper";
+
+        String CHECKOUT_SUCCESS_DEFAULT = "success - default";
+        String CHECKOUT_SUCCESS_CHECK_ALL = "success - check all";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - shop and product";
     }
 
     interface ScreenName {

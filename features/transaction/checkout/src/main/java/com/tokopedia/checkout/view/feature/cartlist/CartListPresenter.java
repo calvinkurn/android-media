@@ -593,7 +593,7 @@ public class CartListPresenter implements ICartListPresenter {
                 } else {
                     view.renderToShipmentFormSuccess();
                 }
-                view.sendAnalyticsOnSuccessToShipment(generateCheckoutDataAnalytics(cartItemDataList));
+                view.sendAnalyticsOnSuccessToShipment(generateCheckoutDataAnalytics(cartItemDataList), "Somethings eventLabel");
             }
         };
     }
