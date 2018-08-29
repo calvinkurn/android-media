@@ -142,7 +142,6 @@ public class TrainSeatFragment extends BaseDaggerFragment implements TrainSeatCo
             }
         });
         trainSeatHeader.setActionListener(this);
-
     }
 
     @NonNull
