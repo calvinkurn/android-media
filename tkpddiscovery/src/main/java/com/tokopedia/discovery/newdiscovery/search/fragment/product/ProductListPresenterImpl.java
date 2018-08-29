@@ -208,6 +208,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     public void onCompleted() {
                         getView().getDynamicFilter();
                         getView().getQuickFilter();
+                        getView().getGuidedSearch();
                         getView().hideRefreshLayout();
                     }
 

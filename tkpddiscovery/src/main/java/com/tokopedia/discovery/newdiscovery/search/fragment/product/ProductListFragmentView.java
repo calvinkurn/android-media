@@ -59,4 +59,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void getQuickFilter();
 
     void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
+
+    void getGuidedSearch();
 }

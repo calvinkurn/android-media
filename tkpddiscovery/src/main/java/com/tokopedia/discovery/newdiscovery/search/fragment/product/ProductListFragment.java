@@ -111,6 +111,8 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager ;
     private ShowCaseDialog showCaseDialog;
 
+    private GuidedSearchViewModel cachedGuidedSearch;
+
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
@@ -428,7 +430,13 @@ public class ProductListFragment extends SearchSectionFragment
         getGuidedSearch();
     }
 
-    private void getGuidedSearch() {
+    @Override
+    public void getGuidedSearch() {
+        if (cachedGuidedSearch != null) {
+            onGetGuidedSearchComplete(cachedGuidedSearch);
+            return;
+        }
+
         String query = productViewModel.getQuery();
         if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionCurrentKeyword())) {
             query = productViewModel.getSuggestionModel().getSuggestionCurrentKeyword();
@@ -664,9 +672,6 @@ public class ProductListFragment extends SearchSectionFragment
         if (adapter == null) {
             return;
         }
-        if (!adapter.hasGuidedSearch()) {
-            getGuidedSearch();
-        }
         showRefreshLayout();
         adapter.clearData();
         initTopAdsParams();
@@ -795,7 +800,8 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
-        adapter.updateGuidedSearch(guidedSearchViewModel);
+        cachedGuidedSearch = guidedSearchViewModel;
+        adapter.updateGuidedSearch(cachedGuidedSearch);
     }
 
     @Override

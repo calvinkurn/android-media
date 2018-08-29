@@ -182,13 +182,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
-    public boolean hasGuidedSearch() {
-        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
-            return ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).getGuidedSearch() != null;
-        }
-        return false;
-    }
-
     public void updateQuickFilter(List<Option> quickFilterOptions) {
         if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
             ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
