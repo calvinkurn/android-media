@@ -6,4 +6,7 @@
     <string name="title_tab_talk_follow">Ikuti</string>
     <string name="title_product_discussion">Diskusi Produk</string>
 
+    <string name="filter_all_talk">Semua Diskusi</string>
+    <string name="filter_not_read">Belum Dibaca</string>
+
 </resources>

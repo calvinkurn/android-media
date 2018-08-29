@@ -41,16 +41,25 @@ class InboxTalkFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        icon_filter.setOnClickListener(showFilterDialog())
+        icon_filter.setButton1OnClickListener(showFilterDialog())
     }
 
     private fun showFilterDialog(): View.OnClickListener {
-        context?.let {
-
+        return View.OnClickListener {
+            context?.run {
+                val menuItem = arrayOf(resources.getString(R.string.filter_all_talk),
+                        resources.getString(R.string.filter_not_read))
+                val filterMenu = Menus(this)
+                filterMenu.setItemMenuList(menuItem)
+                filterMenu.setActionText(getString(R.string.button_cancel))
+                filterMenu.setOnActionClickListener { filterMenu.dismiss() }
+                filterMenu.setOnItemMenuClickListener { itemMenus, pos -> onFilterClicked(pos) }
+                filterMenu.show()
+            }
         }
-            val filterMenu = Menus(context)
+    }
 
-        }
+    private fun onFilterClicked(pos: Int) {
 
     }
 }
