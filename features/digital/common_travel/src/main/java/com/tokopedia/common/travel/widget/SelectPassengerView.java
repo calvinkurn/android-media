@@ -1,4 +1,4 @@
-package com.tokopedia.flight.dashboard.view.widget;
+package com.tokopedia.common.travel.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -14,8 +14,8 @@ import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.tokopedia.common.travel.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.flight.R;
 
 /**
  * Created by alvarisi on 10/25/17.

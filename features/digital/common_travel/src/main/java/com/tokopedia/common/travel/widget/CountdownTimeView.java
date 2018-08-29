@@ -1,18 +1,19 @@
-package com.tokopedia.flight.booking.widget;
+package com.tokopedia.common.travel.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StyleRes;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common.travel.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.flight.R;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -140,5 +141,9 @@ public class CountdownTimeView extends BaseCustomView {
             countdown = (millisUntilFinished / (1000 * 60)) % 60 + " " + minutesLabel + " " + (millisUntilFinished / (1000)) % 60 + " " + secondsLabel;
         }
         return countdown;
+    }
+
+    public void setStyle(@StyleRes int style) {
+        timeTextView.setTextAppearance(getContext(), style);
     }
 }

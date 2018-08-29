@@ -17,6 +17,7 @@ import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.tkpdtrain.R;
@@ -35,7 +36,6 @@ import com.tokopedia.train.seat.presentation.presenter.TrainSeatPresenter;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatPassengerViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainSeatViewModel;
 import com.tokopedia.train.seat.presentation.viewmodel.TrainWagonViewModel;
-import com.tokopedia.train.seat.presentation.widget.CountdownTimeView;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatChangesDialog;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPagerIndicator;
 import com.tokopedia.train.seat.presentation.widget.TrainSeatPassengerAndWagonView;

@@ -1,4 +1,4 @@
-package com.tokopedia.train.homepage.presentation.widget;
+package com.tokopedia.common.travel.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -10,15 +10,14 @@ import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.common.travel.R;
 import com.tokopedia.design.base.BaseCustomView;
-import com.tokopedia.tkpdtrain.R;
 
 /**
- * Created by Rizky on 13/03/18.
+ * @author by alvarisi on 10/25/17.
  */
 
 public class NumberPickerWithCounterView extends BaseCustomView {
-
     private static final int DEFAULT_VALUE = 0;
     private static final int DEFAULT_MIN_VALUE = 0;
     private static final int DEFAULT_MAX_VALUE = 100;
@@ -67,11 +66,11 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_train_number_picker_with_counter_view, this);
+        View view = inflate(getContext(), R.layout.widget_number_picker_with_counter_view, this);
 
-        numberInputView = view.findViewById(R.id.decimal_input_view);
-        plusImageButton = view.findViewById(R.id.image_button_plus);
-        minusImageButton = view.findViewById(R.id.image_button_minus);
+        numberInputView = (AppCompatTextView) view.findViewById(R.id.decimal_input_view);
+        plusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_plus);
+        minusImageButton = (AppCompatImageButton) view.findViewById(R.id.image_button_minus);
         numberInputView.setEnabled(false);
     }
 
@@ -144,5 +143,4 @@ public class NumberPickerWithCounterView extends BaseCustomView {
     public int getValue() {
         return Integer.parseInt(numberInputView.getText().toString().trim());
     }
-
 }
