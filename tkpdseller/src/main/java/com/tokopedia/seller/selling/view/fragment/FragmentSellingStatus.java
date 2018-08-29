@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialog;
@@ -14,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +28,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -34,7 +38,6 @@ import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
-import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
@@ -44,11 +47,8 @@ import com.tokopedia.seller.selling.presenter.SellingStatusTransaction;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionImpl;
 import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
-import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.StatusViewHolder;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,7 +113,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @Override
     protected void initPresenter() {
-        if(presenter==null) {
+        if (presenter == null) {
             presenter = new SellingStatusTransactionImpl(this, SellingStatusTransactionImpl.Type.STATUS);
         }
     }
@@ -171,10 +171,10 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     @Override
     public void onNetworkError(int type, Object... data) {
         swipeToRefresh.setRefreshing(false);
-        if(adapter.getListData().size() == 0) {
+        if (adapter.getListData().size() == 0) {
             adapter.setIsLoading(false);
             adapter.setIsRetry(true);
-        }else{
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity());
         }
     }
@@ -188,20 +188,21 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
     public void initHandlerAndAdapter() {
         setRetainInstance(true);
         mPaging = new PagingHandler();
-        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(),  R.layout.selling_transaction_list_item, StatusViewHolder.class) {
+        adapter = new BaseSellingAdapter<SellingStatusTxModel, StatusViewHolder>(SellingStatusTxModel.class, getActivity(), R.layout.selling_transaction_list_item, StatusViewHolder.class) {
             @Override
             protected void populateViewHolder(StatusViewHolder viewHolder, final SellingStatusTxModel model, int position) {
                 viewHolder.bindDataModel(getActivity(), model);
                 viewHolder.setOnItemClickListener(new BaseSellingViewHolder.OnItemClickListener() {
                     @Override
                     public void onItemClicked(int position) {
-                        if(adapter.isLoading()) {
+                        if (adapter.isLoading()) {
                             getPaging().setPage(getPaging().getPage() - 1);
                             presenter.finishConnection();
-                        };
+                        }
+                        ;
                         Intent intent = (
-                                (TransactionRouter)MainApplication
-                                .getAppContext())
+                                (TransactionRouter) MainApplication
+                                        .getAppContext())
                                 .goToOrderDetail(getActivity(), model.OrderId
                                 );
                         startActivity(intent);
@@ -333,7 +334,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                presenter.onScrollList(((LinearLayoutManager)recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
+                presenter.onScrollList(((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == recyclerView.getLayoutManager().getItemCount() - 1);
             }
         });
     }
@@ -477,9 +478,19 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
             @Override
             public void onTrack(SellingStatusTxModel model) {
-                Bundle bundle = new Bundle();
-                bundle.putString(ORDER_ID, model.OrderId);
-                getActivity().startActivity(TrackingActivity.createInstance(getActivity(),bundle));
+                String routingAppLink;
+                routingAppLink = ApplinkConst.ORDER_TRACKING;
+                Uri.Builder uriBuilder = new Uri.Builder();
+                uriBuilder.appendQueryParameter(
+                        ApplinkConst.Query.ORDER_TRACKING_ORDER_ID,
+                        model.OrderId);
+                if (!TextUtils.isEmpty(model.liveTracking)) {
+                    uriBuilder.appendQueryParameter(
+                            ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING,
+                            model.liveTracking);
+                }
+                routingAppLink += uriBuilder.toString();
+                RouteManager.route(getActivity(), routingAppLink);
             }
 
             @Override
@@ -541,31 +552,31 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.CAMERA);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
     }
 
     @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
     @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
     void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onPermissionDenied(getActivity(),listPermission);
+        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
     @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
@@ -574,7 +585,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
 
-        RequestPermissionUtil.onNeverAskAgain(getActivity(),listPermission);
+        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 
     private void createRetryPickupDialog(final String orderId, MenuItem retryMenu) {

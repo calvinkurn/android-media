@@ -428,14 +428,15 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableEnd="@drawable/ic_arrow_right"
-                            android:drawableRight="@drawable/ic_arrow_right"
-                            android:gravity="center"
+                            android:drawableStart="@drawable/promo_code"
+                            android:drawableLeft="@drawable/promo_code"
+                            android:drawablePadding="@dimen/dp_8"
+                            android:gravity="center_vertical"
                             android:includeFontPadding="false"
                             android:layout_marginLeft="@dimen/dp_16"
                             android:layout_marginStart="@dimen/dp_16"
                             android:text="@string/promo_section"
-                            android:textColor="@color/black_70"
+                            android:textColor="@color/green_nob"
                             android:textSize="@dimen/sp_14"
                             android:textStyle="bold" />
                     </LinearLayout>

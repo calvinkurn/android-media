@@ -44,6 +44,12 @@ public interface HotlistFragmentContract {
 
         void setShareUrl(String shareUrl);
 
+        void loadImageHeader(String bannerImageUrl);
+
+        void setTitleHeader(String title);
+
+        void setDescription(String description);
+
         void storeTotalData(int totalData);
 
         void setQueryModel(HotlistQueryModel queryModel);
@@ -73,6 +79,8 @@ public interface HotlistFragmentContract {
         void clearLastProductTracker(boolean clear);
 
         void trackImpressionProduct(Map<String, Object> dataLayer);
+
+        String getString(int resId);
     }
 
     interface Presenter extends SearchSectionFragmentPresenter<View> {

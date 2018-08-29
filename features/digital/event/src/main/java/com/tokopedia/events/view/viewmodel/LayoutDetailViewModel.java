@@ -60,7 +60,7 @@ public class LayoutDetailViewModel implements Parcelable {
         this.seat = in.createTypedArrayList(SeatViewModel.CREATOR);
     }
 
-    public static final Parcelable.Creator<LayoutDetailViewModel> CREATOR = new Parcelable.Creator<LayoutDetailViewModel>() {
+    public static final Creator<LayoutDetailViewModel> CREATOR = new Creator<LayoutDetailViewModel>() {
         @Override
         public LayoutDetailViewModel createFromParcel(Parcel source) {
             return new LayoutDetailViewModel(source);

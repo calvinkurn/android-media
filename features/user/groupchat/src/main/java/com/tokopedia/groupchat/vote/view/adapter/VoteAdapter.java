@@ -13,8 +13,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.groupchat.chatroom.view.viewmodel.GroupChatViewModel;
 import com.tokopedia.groupchat.vote.view.adapter.typefactory.VoteTypeFactory;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
-import com.tokopedia.groupchat.vote.view.model.VoteStatisticViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
+import com.tokopedia.vote.domain.model.VoteStatisticDomainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,12 +74,12 @@ public class VoteAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
     }
 
     public void change(GroupChatViewModel viewModel, VoteViewModel element,
-                       VoteStatisticViewModel voteStatisticViewModel) {
+                       VoteStatisticDomainModel voteStatisticViewModel) {
         change(viewModel.getChannelInfoViewModel().getVoteInfoViewModel(), element, voteStatisticViewModel);
     }
 
     public void change(VoteInfoViewModel viewModel, VoteViewModel element,
-                       VoteStatisticViewModel voteStatisticViewModel) {
+                       VoteStatisticDomainModel voteStatisticViewModel) {
         int index = list.indexOf(element);
         for (int i = 0; i < list.size(); i++) {
             VoteViewModel temp = (VoteViewModel) list.get(i);

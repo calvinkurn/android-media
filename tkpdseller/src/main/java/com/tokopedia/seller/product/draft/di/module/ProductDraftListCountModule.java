@@ -26,8 +26,8 @@ import dagger.Provides;
  * Created by User on 6/21/2017.
  */
 @ProductManageScope
-@Module
-public class ProductDraftListCountModule extends ProductManageModule {
+@Module(includes = ProductManageModule.class)
+public class ProductDraftListCountModule{
 
     @ProductManageScope
     @Provides

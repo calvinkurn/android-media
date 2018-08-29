@@ -77,7 +77,7 @@ public class ProductTalkViewAdapter extends TalkViewAdapter{
         if (talk.getCommentIsSeller() == 1) {
             holder.userView.setText(talk.getCommentShopName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentShopImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.VISIBLE);
             holder.reputationUser.setVisibility(View.GONE);
             ReputationLevelUtils.setReputationMedals(context, holder.reputation,
@@ -87,13 +87,13 @@ public class ProductTalkViewAdapter extends TalkViewAdapter{
         } else if (talk.getCommentIsModerator() == 1) {
             holder.userView.setText(talk.getCommentUserName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentUserImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.GONE);
             holder.reputationUser.setVisibility(View.GONE);
         } else {
             holder.userView.setText(talk.getCommentUserName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentUserImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.GONE);
             holder.reputationUser.setVisibility(View.VISIBLE);
             holder.textReputation.setText(String.format("%s%%", talk.getCommentUserReputation().getPositivePercentage()));

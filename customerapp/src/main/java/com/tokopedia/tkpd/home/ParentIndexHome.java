@@ -16,7 +16,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -34,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
@@ -44,8 +44,8 @@ import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.handler.AnalyticsCacheHandler;
@@ -62,7 +62,6 @@ import com.tokopedia.core.drawer2.data.pojo.UserData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
-import com.tokopedia.core.gallery.ImageGalleryEntry;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -73,6 +72,7 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
@@ -82,10 +82,10 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.component.Tabs;
 import com.tokopedia.digital.categorylist.view.activity.DigitalCategoryListActivity;
 import com.tokopedia.discovery.newdiscovery.search.SearchActivity;
+import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.shop.open.view.activity.ShopOpenDomainActivity;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
@@ -96,7 +96,6 @@ import com.tokopedia.tkpd.home.fragment.FragmentHotListV2;
 import com.tokopedia.tkpd.home.fragment.InappMessageDialogFragment;
 import com.tokopedia.tkpd.home.model.InAppMessageModel;
 import com.tokopedia.tkpd.qrscanner.QrScannerActivity;
-import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -147,7 +146,8 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     private boolean exit = false;
 
     private BroadcastReceiver hockeyBroadcastReceiver;
-    private NudgeView nudgeView;
+    private BroadcastReceiver cartNotificationBroadcastReceiver;
+    private NudgeView nudgeView ;
 
     @DeepLink(Constants.Applinks.HOME)
     public static TaskStackBuilder getApplinkCallingIntent(Context context, Bundle extras) {
@@ -411,8 +411,7 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
             @Override
             public void onSuccessGetUserAttr(UserData data) {
                 if (data != null)
-                    TrackingUtils.setMoEUserAttributesOld(data);
-                TrackingUtils.setMoEUserAttributes(data);
+                    TrackingUtils.setMoEUserAttributes(data);
             }
         };
 
@@ -486,6 +485,18 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
     public static Intent getHomeHotlistIntent(Context context) {
         Intent intent = new Intent(context, ParentIndexHome.class);
         intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOTLIST);
+        return intent;
+    }
+
+    public static Intent getHomeFeedIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_FEED);
+        return intent;
+    }
+
+    public static Intent getHomeIntent(Context context) {
+        Intent intent = new Intent(context, ParentIndexHome.class);
+        intent.putExtra(EXTRA_INIT_FRAGMENT, INIT_STATE_FRAGMENT_HOME);
         return intent;
     }
 
@@ -618,11 +629,10 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         HockeyAppHelper.checkForUpdate(this);
         RxUtils.getNewCompositeSubIfUnsubscribed(subscription);
         FCMCacheManager.checkAndSyncFcmId(getApplicationContext());
-        if (SessionHandler.isV4Login(this) && isUserFirstTimeLogin) {
-            initStateFragment = INIT_STATE_FRAGMENT_HOME;
-            adapter = new PagerAdapter(getSupportFragmentManager());
-            setupViewPager();
-            adapter.notifyDataSetChanged();
+        if (SessionHandler.isV4Login(this) ) {
+            if ( isUserFirstTimeLogin) {
+            adapter.notifyDataSetChanged();}
+            updateCartNotification();
         }
 
         isUserFirstTimeLogin = !SessionHandler.isV4Login(this);
@@ -648,33 +658,15 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG, messageTAG + "onResume");
-        ImageGalleryEntry.onActivityForResult(new ImageGalleryEntry.GalleryListener() {
-            @Override
-            public void onSuccess(ArrayList<String> imageUrls) {
-                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
-            }
-
-            @Override
-            public void onSuccess(String path) {
-                ArrayList<String> imageUrls = new ArrayList<>();
-                imageUrls.add(path);
-                ProductAddActivity.start(ParentIndexHome.this, imageUrls);
-            }
-
-            @Override
-            public void onFailed(String message) {
-                Snackbar.make(parentView, message, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public Context getContext() {
-                return ParentIndexHome.this;
-            }
-        }, requestCode, resultCode, data);
+        Log.d(TAG, messageTAG + "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == WISHLIST_REQUEST && resultCode == RESULT_OK) {
             mViewPager.setCurrentItem(INIT_STATE_FRAGMENT_HOTLIST);
+        } else if (requestCode == DrawerHelper.REQUEST_LOGIN && resultCode == RESULT_OK) {
+            initStateFragment = INIT_STATE_FRAGMENT_HOME;
+            adapter = new PagerAdapter(getSupportFragmentManager());
+            setupViewPager();
+            adapter.notifyDataSetChanged();
         }
     }
 
@@ -685,6 +677,16 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         Cache.applyEditor();
         invalidateOptionsMenu();
         MainApplication.resetCartStatus(false);
+    }
+
+    private void updateCartNotification() {
+        ((TransactionRouter) getApplication()).updateMarketplaceCartCounter(
+                new TransactionRouter.CartNotificationListener() {
+                    @Override
+                    public void onDataReady() {
+                        invalidateOptionsMenu();
+                    }
+                });
     }
 
     @Override
@@ -823,6 +825,14 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
                     DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
                     Intent applinkIntent = new Intent(this, ParentIndexHome.class);
                     applinkIntent.setData(Uri.parse(applink));
+                    if (getIntent() != null && getIntent().getExtras() != null) {
+                        Intent newIntent = getIntent();
+                        newIntent.removeExtra(DeepLink.IS_DEEP_LINK);
+                        newIntent.removeExtra(DeepLink.REFERRER_URI);
+                        newIntent.removeExtra(DeepLink.URI);
+                        newIntent.removeExtra(HomeRouter.EXTRA_APPLINK);
+                        if(newIntent.getExtras() != null) applinkIntent.putExtras(newIntent.getExtras());
+                    }
                     deepLinkDelegate.dispatchFrom(this, applinkIntent);
                 } catch (ActivityNotFoundException ex) {
                     ex.printStackTrace();

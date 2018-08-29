@@ -64,7 +64,6 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     private final AddToCartViewListener viewListener;
     private final KeroNetInteractorImpl keroNetInteractor;
     private static final String GOJEK_ID = "10";
-    private int minimumNoInsuranceCount = 0;
 
     public AddToCartPresenterImpl(AddToCartActivity addToCartActivity) {
         this.addToCartNetInteractor = new AddToCartNetInteractorImpl();
@@ -311,7 +310,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 locationPass.setLongitude(lon);
                 locationPass.setGeneratedAddress(orderData.getAddress().getGeoLocation(context));
             }
-            Intent intent = GeolocationActivity.createInstance(context, locationPass);
+            Intent intent = GeolocationActivity.createInstanceIntent(context, locationPass);
             viewListener.navigateToActivityRequest(intent,
                     AddToCartActivity.REQUEST_CHOOSE_LOCATION);
         } else {

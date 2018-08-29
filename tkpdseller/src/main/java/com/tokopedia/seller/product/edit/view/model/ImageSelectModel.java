@@ -3,8 +3,7 @@ package com.tokopedia.seller.product.edit.view.model;
 import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.tokopedia.seller.product.common.utils.UrlUtils;
+import android.webkit.URLUtil;
 
 import java.io.File;
 
@@ -57,7 +56,7 @@ public class ImageSelectModel implements Parcelable{
         this.uriOrPath = uriOrPath;
 
         // when uri change, recalculate its width/height
-        this.isValidURL = UrlUtils.isValidURL(uriOrPath);
+        this.isValidURL = URLUtil.isNetworkUrl(uriOrPath);
         calculateWidthAndHeight(isValidURL);
     }
 

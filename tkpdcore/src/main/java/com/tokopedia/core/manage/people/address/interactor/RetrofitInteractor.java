@@ -22,6 +22,8 @@ public interface RetrofitInteractor {
 
         void onSuccess(Context context, Map<String, String> params, GetPeopleAddress data);
 
+        void onEmptyList(Context context, Map<String, String> params, GetPeopleAddress data);
+
         void onTimeOut(NetworkErrorHelper.RetryClickedListener clickedListener);
 
         void onError(String message, NetworkErrorHelper.RetryClickedListener clickedListener);

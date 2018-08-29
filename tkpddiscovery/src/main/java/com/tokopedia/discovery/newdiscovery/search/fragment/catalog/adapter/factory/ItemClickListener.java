@@ -8,6 +8,4 @@ import com.tokopedia.discovery.newdiscovery.base.EmptyStateClickListener;
 
 public interface ItemClickListener extends EmptyStateClickListener {
     void setOnCatalogClicked(String catalogID, String catalogName);
-
-    void onBannerAdsClicked(String appLink);
 }

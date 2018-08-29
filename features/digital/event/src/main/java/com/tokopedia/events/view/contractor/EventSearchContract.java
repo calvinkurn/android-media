@@ -38,15 +38,15 @@ public class EventSearchContract {
 
         FragmentManager getFragmentManagerInstance();
 
-        void setTopEvents(List<SearchViewModel> searchViewModels);
+        void setTopEvents(List<CategoryItemsViewModel> searchViewModels);
 
-        void setSuggestions(List<SearchViewModel> suggestions, String highlight);
+        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight);
 
         void removeFooter();
 
         void addFooter();
 
-        void addEvents(List<SearchViewModel> searchViewModels);
+        void addEvents(List<CategoryItemsViewModel> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
     }
@@ -55,9 +55,13 @@ public class EventSearchContract {
 
         void getEventsListBySearch(String searchText);
 
+        void setupCallback(EventsContract.AdapterCallbacks callbacks);
+
         void initialize();
 
         void onDestroy();
+
+        void setEventLike(CategoryItemsViewModel model, int position);
 
         void searchTextChanged(String searchText);
 

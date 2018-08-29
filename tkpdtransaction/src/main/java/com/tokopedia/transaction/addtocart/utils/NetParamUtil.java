@@ -43,9 +43,15 @@ public class NetParamUtil {
         params.put("receiver_phone", orderData.getAddress().getReceiverPhone());
         params.put("shipping_id", orderData.getShipment());
         params.put("shipping_product", orderData.getShipmentPackage());
+        params.put("pickup_store_id", checkPickUpStoreId(orderData.getStoreId()));
         params.put("home_attribution", orderData.getHomeAttribution());
         params.put("list_name_product", orderData.getListNameProduct());
 
         return params;
+    }
+
+    private static String checkPickUpStoreId(int storeId) {
+        if (storeId == 0) return "";
+        else return String.valueOf(storeId);
     }
 }

@@ -52,6 +52,7 @@
     <string name="limit_balance_tokocash">Limit: %s/bulan</string>
     <string name="label_instant_payment_digital">Bayar Instan</string>
     <string name="label_btn_buy_digital">Beli</string>
+    <string name="additional_info_move_to_saldo">Dana dapat dipindahkan ke Akun Bank, melalui halaman Saldo Tokopedia.</string>
 
     <!-- scan QR Payment -->
     <string name="title_input_nominal">Nominal Pembayaran</string>

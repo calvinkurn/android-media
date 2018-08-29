@@ -1,5 +1,6 @@
 package com.tokopedia.core.gcm;
 
+import android.app.Application;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -12,6 +13,7 @@ import com.tokopedia.core.gcm.base.BaseNotificationMessagingService;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.core.router.posapp.PosAppRouter;
 import com.tokopedia.core.util.GlobalConfig;
 
 import io.hansel.hanselsdk.Hansel;
@@ -54,6 +56,23 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
     public static IAppNotificationReceiver createInstance() {
         if (GlobalConfig.isSellerApp()) {
             return SellerAppRouter.getAppNotificationReceiver();
+        } else if(GlobalConfig.isPosApp()) {
+            return new IAppNotificationReceiver() {
+                @Override
+                public void init(Application application) {
+                    // no-op
+                }
+
+                @Override
+                public void onNotificationReceived(String from, Bundle bundle) {
+                    // no-op
+                }
+
+                @Override
+                public void onMoengageNotificationReceived(RemoteMessage message) {
+                    // no-op
+                }
+            };
         } else {
             return HomeRouter.getAppNotificationReceiver();
         }

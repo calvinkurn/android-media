@@ -12,11 +12,17 @@ import java.io.InputStreamReader;
  */
 
 public class GraphqlHelper {
+    public static String QUERY = "query";
+    public static String VARIABLES = "variables";
+    public static String OPERATION_NAME = "operationName";
 
     public static String loadRawString(Resources resources, int resId) {
         InputStream rawResource = resources.openRawResource(resId);
         String content = streamToString(rawResource);
-        try {rawResource.close();} catch (IOException e) {}
+        try {
+            rawResource.close();
+        } catch (IOException e) {
+        }
         return content;
     }
 
@@ -28,7 +34,8 @@ public class GraphqlHelper {
             while ((temp = bufferedReader.readLine()) != null) {
                 stringBuilder.append(temp + "\n");
             }
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         return stringBuilder.toString();
     }
 }

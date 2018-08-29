@@ -36,7 +36,7 @@ import javax.inject.Inject;
 /**
  * Created by nabillasabbaha on 10/16/17.
  */
-
+@Deprecated
 public class HelpHistoryDetailFragment extends BaseDaggerFragment implements HelpHistoryDetailContract.View {
 
     private static final int MIN_CHAR_HELP_DETAIL = 30;

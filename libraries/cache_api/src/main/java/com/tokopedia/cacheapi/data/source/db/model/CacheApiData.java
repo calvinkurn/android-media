@@ -13,6 +13,8 @@ import com.tokopedia.cacheapi.data.source.db.DbFlowDatabase;
 @Table(database = DbFlowDatabase.class, updateConflict = ConflictAction.REPLACE, insertConflict = ConflictAction.REPLACE)
 public class CacheApiData extends BaseModel {
 
+    public static final String COLUMN_WHITE_LIST_ID = "white_list_id";
+
     @PrimaryKey
     @Column
     private String host;
@@ -37,6 +39,9 @@ public class CacheApiData extends BaseModel {
 
     @Column(name = "expired_time")
     public long expiredTime;
+
+    @Column(name = COLUMN_WHITE_LIST_ID)
+    public long whiteListId;
 
     public long getExpiredTime() {
         return expiredTime;
@@ -92,5 +97,13 @@ public class CacheApiData extends BaseModel {
 
     public void setResponseTime(long responseTime) {
         this.responseTime = responseTime;
+    }
+
+    public long getWhiteListId() {
+        return whiteListId;
+    }
+
+    public void setWhiteListId(long whiteListId) {
+        this.whiteListId = whiteListId;
     }
 }

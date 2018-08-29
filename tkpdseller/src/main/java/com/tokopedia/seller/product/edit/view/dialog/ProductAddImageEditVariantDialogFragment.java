@@ -21,9 +21,7 @@ public class ProductAddImageEditVariantDialogFragment extends DialogFragment {
     private OnImageEditListener mListener;
 
     public interface OnImageEditListener {
-        void clickEditImagePathFromCamera();
-        void clickEditImagePathFromGallery();
-        void clickEditImagePathFromInstagram();
+        void clickChangeImagePath();
 
         void clickImageEditor();
 
@@ -50,9 +48,7 @@ public class ProductAddImageEditVariantDialogFragment extends DialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         imageMenu = new CharSequence[]{
                 getString(R.string.title_img_delete),
-                getString(R.string.edit_from_camera_text_description),
-                getString(R.string.edit_from_gallery_text_description),
-                getString(R.string.edit_from_instagram_text_description),
+                getString(R.string.change_image),
                 getString(R.string.action_editor)};
         builder.setItems(imageMenu, getImageAddProductListener());
         return builder.create();
@@ -66,12 +62,8 @@ public class ProductAddImageEditVariantDialogFragment extends DialogFragment {
                     CharSequence stringClicked = imageMenu[which];
                     if (stringClicked.equals(getString(R.string.title_img_delete))) {
                         mListener.clickRemoveImage();
-                    } else if (stringClicked.equals(getString(R.string.edit_from_camera_text_description))) {
-                        mListener.clickEditImagePathFromCamera();
-                    } else if (stringClicked.equals(getString(R.string.edit_from_gallery_text_description))) {
-                        mListener.clickEditImagePathFromGallery();
-                    } else if (stringClicked.equals(getString(R.string.edit_from_instagram_text_description))) {
-                        mListener.clickEditImagePathFromInstagram();
+                    } else if (stringClicked.equals(getString(R.string.change_image))) {
+                        mListener.clickChangeImagePath();
                     } else if (stringClicked.equals(getString(R.string.action_editor))) {
                         mListener.clickImageEditor();
                     }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.tokopedia.design.test">
+    <application android:supportsRtl="true">
+        <activity android:name="com.tokopedia.design.text.test.TkpdHintTextInputLayoutTestActivity"
+            android:theme="@style/noAnimTheme"/>
+    </application>
+</manifest>

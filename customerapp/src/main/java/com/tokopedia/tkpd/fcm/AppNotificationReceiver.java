@@ -8,21 +8,16 @@ import android.support.v4.content.LocalBroadcastManager;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.moengage.push.PushManager;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.constant.TkpdState;
 import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.gcm.NotificationAnalyticsReceiver;
+import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
 import com.tokopedia.core.gcm.utils.ActivitiesLifecycleCallbacks;
-import com.tokopedia.inbox.inboxchat.ChatNotifInterface;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.pushnotif.model.ApplinkNotificationModel;
 import com.tokopedia.tkpd.ConsumerMainApplication;
-
-import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
-
-import rx.Observable;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
 
 /**
  * Created by alvarisi on 1/17/17.
@@ -105,7 +100,7 @@ public class AppNotificationReceiver implements IAppNotificationReceiver {
         LocalBroadcastManager.getInstance(mContext).sendBroadcast(loyaltyGroupChat);
     }
 
-    private boolean canBroadcastPointReceived(String tkpCode){
+    private boolean canBroadcastPointReceived(String tkpCode) {
         final String GROUP_CHAT_BROADCAST_TKP_CODE = "140";
         final String GROUP_CHAT_BROADCAST_TKP_CODE_GENERAL = "1400";
 

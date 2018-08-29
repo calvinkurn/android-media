@@ -12,9 +12,6 @@ public class UserData {
     @SerializedName("profile")
     @Expose
     private Profile profile;
-    @SerializedName("address")
-    @Expose
-    private Address address;
     @SerializedName("wallet")
     @Expose
     private Wallet wallet;
@@ -45,14 +42,6 @@ public class UserData {
 
     public void setProfile(Profile profile) {
         this.profile = profile;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
     }
 
     public Wallet getWallet() {

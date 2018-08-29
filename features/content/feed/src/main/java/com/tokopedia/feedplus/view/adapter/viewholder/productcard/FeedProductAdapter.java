@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
@@ -179,13 +178,13 @@ public class FeedProductAdapter extends RecyclerView.Adapter<FeedProductAdapter.
     }
 
     private void doTrackingEnhancedEcommerce() {
-        String loginIdString = SessionHandler.getLoginID(viewListener.getActivity());
+        String loginIdString = viewListener.getUserSession().getUserId();
         int loginIdInt = loginIdString.isEmpty() ? 0 : Integer.valueOf(loginIdString);
 
         String shopId = String.valueOf(activityCardViewModel.getHeader().getShopId());
         List<FeedEnhancedTracking.Promotion> list = new ArrayList<>();
         list.add(new FeedEnhancedTracking.Promotion(
-                activityCardViewModel.getHeader().getShopId(),
+                Integer.valueOf(activityCardViewModel.getFeedId()),
                 FeedEnhancedTracking.Promotion.createContentNameProductUpload(
                         activityCardViewModel.getTotalProduct()),
                 String.valueOf(activityCardViewModel.getTotalProduct()),

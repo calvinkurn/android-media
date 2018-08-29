@@ -1,7 +1,9 @@
 package com.tokopedia.feedplus.data.repository;
 
-import com.tokopedia.core.base.domain.RequestParams;
+
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 
@@ -19,6 +21,8 @@ public class FavoriteShopRepositoryImpl implements FavoriteShopRepository{
 
     @Override
     public Observable<Boolean> doFavoriteShop(RequestParams requestParams){
-        return factory.createCloudDoFavoriteShop().favoriteShop(requestParams.getParameters());
+        TKPDMapParam<String, Object> mapParam = new TKPDMapParam<>();
+        mapParam.putAll(requestParams.getParameters());
+        return factory.createCloudDoFavoriteShop().favoriteShop(mapParam);
     }
 }

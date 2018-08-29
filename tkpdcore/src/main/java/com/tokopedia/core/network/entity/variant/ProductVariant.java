@@ -186,4 +186,24 @@ public class ProductVariant implements Parcelable {
             return TextUtils.join(" - ", optionValues);
         }
     }
+
+    public List<String> generateVariantValueIntoList(Integer productId) {
+        List<String> optionValues = new ArrayList<>();
+
+        List<Integer> optionsIds = getChildFromProductId(productId).getOptionIds();
+
+        for (int i = 0; i < optionsIds.size(); i++) {
+            for (int j = 0; j < variant.size(); j++) {
+                for (int k = 0; k < variant.get(j).getOption().size(); k++) {
+                    Option objOption = variant.get(j).getOption().get(k);
+                    if (objOption.getId() == optionsIds.get(i)) {
+                        optionValues.add(objOption.getValue());
+                    }
+                }
+            }
+        }
+
+        return optionValues;
+    }
+
 }

@@ -165,12 +165,16 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void showLoading() {
-        progressDialog.showDialog();
+        if (!isFinishing()) {
+            progressDialog.showDialog();
+        }
     }
 
     @Override
     public void hideLoading() {
-        progressDialog.dismiss();
+        if (!isFinishing()) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override

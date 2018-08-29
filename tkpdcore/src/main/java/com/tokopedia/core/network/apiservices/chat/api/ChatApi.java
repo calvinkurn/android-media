@@ -25,6 +25,8 @@ import rx.Observable;
  */
 
 public interface ChatApi {
+    @GET(TkpdBaseURL.Chat.GET_EXISTING_CHAT)
+    Observable<Response<TkpdResponse>> getExistingChat(@QueryMap Map<String, Object> requestParams);
 
     @GET(TkpdBaseURL.Chat.GET_MESSAGE)
     Observable<Response<TkpdResponse>> getMessage(@QueryMap Map<String, Object> requestParams);

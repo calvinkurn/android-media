@@ -1,5 +1,7 @@
 package com.tokopedia.groupchat.chatroom.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.sendbird.android.AdminMessage;
@@ -8,6 +10,7 @@ import com.sendbird.android.UserMessage;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.groupchat.chatroom.domain.pojo.GeneratedMessagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.PinnedMessagePojo;
+import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.Channel;
 import com.tokopedia.groupchat.chatroom.domain.pojo.imageannouncement.AdminImagePojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.ActivePollPojo;
 import com.tokopedia.groupchat.chatroom.domain.pojo.poll.Option;
@@ -18,6 +21,8 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdminAnnouncemen
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GeneratedMessageViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
@@ -83,6 +88,8 @@ public class GroupChatMessagesMapper {
             return true;
         } else if (mappedMessage instanceof AdsViewModel) {
             return true;
+        } else if (mappedMessage instanceof GroupChatQuickReplyViewModel) {
+            return true;
         } else {
             return false;
         }
@@ -133,18 +140,48 @@ public class GroupChatMessagesMapper {
                 return mapToPinnedMessage(message, message.getData());
             case AdsViewModel.TYPE:
                 return mapToAds(message, message.getData());
+            case GroupChatQuickReplyViewModel.TYPE:
+                return mapToQuickReply(message, message.getData());
             default:
                 return mapToUserChat(message);
         }
     }
 
+    private Visitable mapToQuickReply(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new GroupChatQuickReplyViewModel();
+        }
+        Gson gson = new Gson();
+        Channel channel = gson.fromJson(json, Channel.class);
+        GroupChatQuickReplyViewModel model = new GroupChatQuickReplyViewModel();
+
+        List<GroupChatQuickReplyItemViewModel> list = new ArrayList<>();
+        if (channel!=null && channel.getListQuickReply() != null) {
+            int id = 1;
+            for (String quickReply : channel.getListQuickReply()) {
+                GroupChatQuickReplyItemViewModel item = new GroupChatQuickReplyItemViewModel(String.valueOf(id), quickReply);
+                list.add(item);
+                id++;
+            }
+        }
+        model.setList(list);
+
+        return model;
+    }
+
     private Visitable mapToAds(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new AdsViewModel("","","");
+        }
         Gson gson = new Gson();
         AdsViewModel adsViewModel = gson.fromJson(json, AdsViewModel.class);
         return adsViewModel;
     }
 
     private Visitable mapToPinnedMessage(UserMessage message, String json) {
+        if(TextUtils.isEmpty(json)){
+            return new PinnedMessageViewModel("","","","");
+        }
         Gson gson = new Gson();
         PinnedMessagePojo pinnedMessage = gson.fromJson(json, PinnedMessagePojo.class);
         return new PinnedMessageViewModel(pinnedMessage.getMessage(), pinnedMessage.getTitle(), pinnedMessage.getRedirectUrl(), pinnedMessage.getImageUrl());

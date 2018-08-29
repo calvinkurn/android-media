@@ -65,14 +65,6 @@ mendapatkan update produk terbaru di isini."/>
             android:textAllCaps="false"
             android:textColor="@color/white"/>
 
-        <include
-            android:id="@+id/official_store_layout"
-            layout="@layout/empty_feed_official_store"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_top_os_feed"
-            android:visibility="gone"/>
-
     </LinearLayout>
 
 </RelativeLayout>

@@ -27,6 +27,7 @@ public class AccountsParameter implements Parcelable {
     private ErrorModel errorModel;
     private String attempt;
     private String passwordType;
+    private String scope;
 
     public ErrorModel getErrorModel() {
         return errorModel;
@@ -173,6 +174,14 @@ public class AccountsParameter implements Parcelable {
         this.passwordType = passwordType;
     }
 
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
     public AccountsParameter() {
     }
 
@@ -201,6 +210,7 @@ public class AccountsParameter implements Parcelable {
         dest.writeParcelable(this.errorModel, flags);
         dest.writeString(this.attempt);
         dest.writeString(this.passwordType);
+        dest.writeString(this.scope);
     }
 
     protected AccountsParameter(Parcel in) {
@@ -222,6 +232,7 @@ public class AccountsParameter implements Parcelable {
         this.errorModel = in.readParcelable(ErrorModel.class.getClassLoader());
         this.attempt = in.readString();
         this.passwordType = in.readString();
+        this.scope = in.readString();
     }
 
     public static final Creator<AccountsParameter> CREATOR = new Creator<AccountsParameter>() {

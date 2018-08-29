@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class Profile {
 
-    @SerializedName("__typename")
-    @Expose
-    private String typename;
     @SerializedName("user_id")
     @Expose
     private String userId;
@@ -33,9 +30,6 @@ public class Profile {
     @SerializedName("phone")
     @Expose
     private String phone;
-    @SerializedName("phone_verified")
-    @Expose
-    private Boolean phoneVerified;
     @SerializedName("register_date")
     @Expose
     private String registerDate;
@@ -45,14 +39,6 @@ public class Profile {
     @SerializedName("completion")
     @Expose
     private Integer completion;
-
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
-    }
 
     public String getUserId() {
         return userId;
@@ -64,10 +50,6 @@ public class Profile {
 
     public String getFirstName() {
         return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public String getFullName() {
@@ -116,14 +98,6 @@ public class Profile {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public Boolean getPhoneVerified() {
-        return phoneVerified;
-    }
-
-    public void setPhoneVerified(Boolean phoneVerified) {
-        this.phoneVerified = phoneVerified;
     }
 
     public String getRegisterDate() {

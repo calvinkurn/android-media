@@ -29,7 +29,8 @@ import java.lang.annotation.RetentionPolicy;
         DigitalCategoryConstant.GIFT_CARD,
         DigitalCategoryConstant.RETRIBUTION,
         DigitalCategoryConstant.MTIX,
-        DigitalCategoryConstant.CREDIT_CARD
+        DigitalCategoryConstant.CREDIT_CARD,
+        DigitalCategoryConstant.ETOLL
 })
 public @interface DigitalCategoryConstant {
     String PULSA = "1";
@@ -50,6 +51,7 @@ public @interface DigitalCategoryConstant {
     String RETRIBUTION = "25";
     String MTIX = "31";
     String CREDIT_CARD = "26";
+    String ETOLL = "34";
 }
 
 

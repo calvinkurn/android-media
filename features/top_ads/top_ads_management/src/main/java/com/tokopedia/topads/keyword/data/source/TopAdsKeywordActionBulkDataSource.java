@@ -1,9 +1,9 @@
 package com.tokopedia.topads.keyword.data.source;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.topads.dashboard.data.model.response.PageDataResponse;
 import com.tokopedia.topads.keyword.data.model.cloud.bulkkeyword.DataBulkKeyword;
 import com.tokopedia.topads.keyword.data.source.cloud.TopAdsKeywordActionBulkDataSourceCloud;
+import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
 

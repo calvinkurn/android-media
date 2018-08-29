@@ -33,7 +33,6 @@ public class InputPriceHolderView extends LinearLayout {
     private long priceInput = 0;
     private ActionListener actionListener;
 
-
     public InputPriceHolderView(Context context) {
         super(context);
         init(context);
@@ -104,7 +103,7 @@ public class InputPriceHolderView extends LinearLayout {
                 e.printStackTrace();
             }
         }
-        return (priceInput > minPayment && priceInput < maxPayment);
+        return (priceInput >= minPayment && priceInput <= maxPayment);
     }
 
     public void bindView(String minPayment, String maxPayment) {

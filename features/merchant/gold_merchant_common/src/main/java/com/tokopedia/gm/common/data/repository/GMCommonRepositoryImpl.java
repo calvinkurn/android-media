@@ -24,4 +24,9 @@ public class GMCommonRepositoryImpl implements GMCommonRepository {
         return gmCommonDataSource.getFeaturedProductList(shopId);
     }
 
+    @Override
+    public Observable<Boolean> setCashback(String productId, int cashback) {
+        return gmCommonDataSource.setCashback(productId, cashback);
+    }
+
 }

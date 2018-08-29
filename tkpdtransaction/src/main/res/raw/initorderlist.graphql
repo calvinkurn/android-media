@@ -1,0 +1,6 @@
+query{
+  orderLabelCategoryList{
+    label
+    orderCategory
+  }
+}

@@ -9,19 +9,15 @@ import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.fragment.WishListFragment;
@@ -83,6 +79,7 @@ public class SimpleHomeActivity extends TActivity
         }
         setContentView(R.layout.activity_simple_home);
         initToolbar();
+        initGraphqlLib();
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -99,6 +96,10 @@ public class SimpleHomeActivity extends TActivity
         simpleHome.fetchExtras(getIntent());
         simpleHome.fetchDataAfterRotate(savedInstanceState);
 
+    }
+
+    private void initGraphqlLib() {
+        GraphqlClient.init(this);
     }
 
     @Override
@@ -186,8 +187,8 @@ public class SimpleHomeActivity extends TActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.home) {
-                Log.d(TAG, messageTAG + " R.id.home !!!");
-                return true;
+            Log.d(TAG, messageTAG + " R.id.home !!!");
+            return true;
         } else if (item.getItemId() == android.R.id.home) {
             Log.d(TAG, messageTAG + " android.R.id.home !!!");
             getSupportFragmentManager().popBackStack();

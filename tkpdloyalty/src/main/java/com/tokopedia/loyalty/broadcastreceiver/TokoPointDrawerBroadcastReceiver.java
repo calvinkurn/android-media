@@ -3,6 +3,7 @@ package com.tokopedia.loyalty.broadcastreceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.CommonUtils;
@@ -95,10 +96,10 @@ public class TokoPointDrawerBroadcastReceiver extends BroadcastReceiver {
                         DrawerActivityBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER,
                         DrawerActivityBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA
                 );
-                intentDrawerActivity.putExtra(
-                        DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA,
-                        topPointDrawerData
-                );
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(DrawerActivityBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA, topPointDrawerData);
+                intentDrawerActivity.putExtras(bundle);
                 context.sendBroadcast(intentDrawerActivity);
 
             }

@@ -34,7 +34,7 @@ public interface AbstractionRouter {
 
     void init();
 
-    void registerShake(String screenName);
+    void registerShake(String screenName,Activity activity);
 
     void unregisterShake();
 

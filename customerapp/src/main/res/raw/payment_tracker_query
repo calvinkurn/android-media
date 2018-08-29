@@ -5,6 +5,7 @@
     orders{
     	order_id
     	phone
+    	item_price
     	order_detail{
             order_detail_id
             product{

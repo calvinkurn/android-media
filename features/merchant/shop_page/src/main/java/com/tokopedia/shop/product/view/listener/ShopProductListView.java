@@ -1,21 +1,31 @@
 package com.tokopedia.shop.product.view.listener;
 
+import android.support.annotation.NonNull;
+
 import com.tokopedia.abstraction.base.view.listener.BaseListViewListener;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
+import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductPromoViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
-public interface ShopProductListView extends BaseListViewListener<ShopProductViewModel> {
+import java.util.List;
 
-    void onSuccessAddToWishList(String productId, Boolean value);
+public interface ShopProductListView extends BaseListViewListener<BaseShopProductViewModel> {
 
     void onErrorAddToWishList(Throwable e);
 
-    void onSuccessRemoveFromWishList(String productId, Boolean value);
+    void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel);
 
-    void onErrorRemoveFromWishList(Throwable e);
+    void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 
-    void onSuccessGetShopName(ShopInfo shopName);
+    void onErrorGetProductFeature(Throwable e);
 
-    void onSuccessGetEtalase(String etalaseId, String etalaseName);
+    void onSuccessGetProductFeature(@NonNull List<ShopProductViewModel> list);
 
+    void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList);
+
+    void onErrorGetEtalaseList(Throwable e);
+
+    List<ShopEtalaseViewModel> getShopEtalaseViewModelList();
 }
+

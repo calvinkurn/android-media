@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="@dimen/margin_vs"
+    android:background="@color/tkpd_bg_color"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -115,7 +116,7 @@
 
     </LinearLayout>
 
-    <com.tokopedia.topads.sdk.view.TopAdsBannerView
+    <com.tokopedia.topads.sdk.widget.TopAdsBannerView
         android:id="@+id/topAdsBannerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

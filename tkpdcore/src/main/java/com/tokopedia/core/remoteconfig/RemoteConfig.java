@@ -81,6 +81,11 @@ public interface RemoteConfig {
     String getString(String key, String defaultValue);
 
     /**
+    * This is for debugging only to set remote config locally
+    */
+    void setString(String key, String value);
+
+    /**
      * Fetch key value data
      * @param listener The listener that will be called when fetching data is complete
      *                 or if any error happened

@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class ShopInfoMoengage {
 
-    @SerializedName("__typename")
-    @Expose
-    private String typename;
     @SerializedName("info")
     @Expose
     private Info info;
@@ -18,14 +15,6 @@ public class ShopInfoMoengage {
     @SerializedName("stats")
     @Expose
     private Stats stats;
-
-    public String getTypename() {
-        return typename;
-    }
-
-    public void setTypename(String typename) {
-        this.typename = typename;
-    }
 
     public Info getInfo() {
         return info;

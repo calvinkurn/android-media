@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">product_edit</string>
+    <string name="title_activity_video">Video Produk</string>
+    <string name="title_activity_video_recommendation">Rekomendasi Video Produk</string>
+    <string name="product_from_to_video">%1$d dari %2$d Video</string>
+    <string name="label_video_add">Tambah Video Produk</string>
+    <string name="label_save">Simpan</string>
+    <string name="label_add">Tambah</string>
+    <string name="label_delete">Delete</string>
+    <string name="label_cancel">Batal</string>
+
+    <string name="product_add_tag_video_recommendation">rekomendasi</string>
+    <string name="product_add_information_video_recommendation">Pilih rekomendasi video untuk menjelaskan dan mendemokan produk Anda.</string>
+    <string name="product_add_title_video_recommendation">Rekomendasi Video Produk</string>
+    <string name="product_add_title_video_recommendation_show_more">Lihat Semua</string>
+    <string name="product_add_title_video_chosen">Video Produk Saya</string>
+    <string name="product_add_url_video">Tambah URL Video</string>
+    <string name="product_add_till_three_product_video">Tambah Hingga 3 Video Produk</string>
+    <string name="product_add_till_three_product_video_description">Untuk menjelaskan atau mendemokan produk ini</string>
+
+    <string name="product_add_title_dialog_add_video">Tambah Video</string>
+    <string name="product_add_description_dialog_add_video">Tambah video rekomendasi ini ke Video Produk Saya</string>
+
+    <string name="product_add_title_dialog_delete_video">Hapus Video</string>
+    <string name="product_add_description_dialog_delete_video">Hapus video ini dari Video Produk Saya</string>
+
+    <string name="product_add_message_exist_video_chosen">Video sudah ditambahkan sebelumnya</string>
+    <string name="product_add_message_success_add_video_recommendation">Video rekomendasi berhasil ditambahkan ke Video Produk Saya</string>
+    <string name="product_add_message_success_delete_video_chosen">Video berhasil dihapus</string>
+    <string name="product_add_message_success_add_video_chosen">Video berhasil ditambahkan</string>
+    <string name="product_add_message_success_change_video_recommendation">Perubahan berhasil disimpan</string>
+
+    <string name="product_add_message_slot_full_video_chosen">Slot video sudah penuh. Hapus sebagian video untuk menambahkan video lainnya</string>
+    <string name="product_add_message_remain_slot_video_chosen">Hanya %d slot video tersisa. Batalkan sebagian pilihan untuk menambahkan video</string>
+    <string name="product_add_message_empty_video_recommendation">Video rekomendasi tidak ditemukan untuk produk ini</string>
+
+    <string name="product_video_not_found">Video tidak ditemukan</string>
+    <string name="product_invalid_video_url">URL video tidak benar</string>
+    <string name="product_video_adult_warn">Video ini mengandung unsur konten dewasa</string>
+    <string name="product_video_same_warn">Anda sudah menambahkan video ini</string>
+    <string name="product_url_video">URL Video</string>
+    <string name="product_error_no_video_url_name">Url Video harus diisi</string>
+</resources>

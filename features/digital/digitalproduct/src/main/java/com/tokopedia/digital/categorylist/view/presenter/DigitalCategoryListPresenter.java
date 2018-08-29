@@ -47,7 +47,7 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     @Override
     public void processGetTokoCashData() {
         digitalCategoryListInteractor.getTokoCashData(getSubscriberFetchTokoCashData(),
-                digitalCategoryListView.getContext());
+                digitalCategoryListView.getAppContext());
     }
 
     @NonNull

@@ -26,17 +26,7 @@ public class CacheApiGetCacheDataUseCase extends UseCase<String> {
         final String host = requestParams.getString(CacheApiConstant.PARAM_HOST, "");
         final String path = requestParams.getString(CacheApiConstant.PARAM_PATH, "");
         final String requestParam = requestParams.getString(CacheApiConstant.PARAM_REQUEST_PARAM, "");
-        return cacheApiRepository.isInWhiteList(host, path).filter(new Func1<Boolean, Boolean>() {
-            @Override
-            public Boolean call(Boolean aBoolean) {
-                return aBoolean;
-            }
-        }).flatMap(new Func1<Boolean, Observable<String>>() {
-            @Override
-            public Observable<String> call(Boolean aBoolean) {
-                return cacheApiRepository.getCachedResponse(host, path, requestParam);
-            }
-        });
+        return cacheApiRepository.getCachedResponse(host, path, requestParam);
     }
 
     public static RequestParams createParams(String host, String path, String requestParam) {

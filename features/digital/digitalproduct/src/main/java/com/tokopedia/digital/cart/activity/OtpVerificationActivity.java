@@ -138,7 +138,7 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         OtpVerificationActivityPermissionsDispatcher.requestOtpFirstWithPermissionWithCheck(this);
     }
 
-    @NeedsPermission(Manifest.permission.READ_SMS)
+    @NeedsPermission(Manifest.permission.RECEIVE_SMS)
     void requestOtpFirstWithPermission() {
         presenter.processFirstRequestSmsOtp();
     }
@@ -190,21 +190,6 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         View view = findViewById(android.R.id.content);
         if (view != null) Snackbar.make(view, message, Snackbar.LENGTH_SHORT).show();
         else Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void dismissDialog(Dialog dialog) {
-
-    }
-
-    @Override
-    public void executeIntentService(Bundle bundle, Class<? extends IntentService> clazz) {
-
     }
 
     @Override
@@ -397,20 +382,20 @@ public class OtpVerificationActivity extends BasePresenterActivity<IOtpVerificat
         btnValidateOtp.performClick();
     }
 
-    @OnShowRationale(Manifest.permission.READ_SMS)
+    @OnShowRationale(Manifest.permission.RECEIVE_SMS)
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onShowRationale(this, request, Manifest.permission.RECEIVE_SMS);
     }
 
-    @OnPermissionDenied(Manifest.permission.READ_SMS)
+    @OnPermissionDenied(Manifest.permission.RECEIVE_SMS)
     void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onPermissionDenied(this, Manifest.permission.RECEIVE_SMS);
         presenter.processFirstRequestSmsOtp();
     }
 
-    @OnNeverAskAgain(Manifest.permission.READ_SMS)
+    @OnNeverAskAgain(Manifest.permission.RECEIVE_SMS)
     void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.READ_SMS);
+        RequestPermissionUtil.onNeverAskAgain(this, Manifest.permission.RECEIVE_SMS);
         presenter.processFirstRequestSmsOtp();
     }
 

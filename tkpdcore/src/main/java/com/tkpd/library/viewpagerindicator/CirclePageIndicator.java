@@ -345,7 +345,9 @@ public class CirclePageIndicator extends View implements PageIndicator {
 
                 mIsDragging = false;
                 mActivePointerId = INVALID_POINTER;
-                if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                try {
+                    if (mViewPager.isFakeDragging()) mViewPager.endFakeDrag();
+                }catch ( Exception ex){}
                 break;
 
             case MotionEventCompat.ACTION_POINTER_DOWN: {

@@ -33,7 +33,6 @@ import com.tokopedia.shop.product.domain.interactor.DeleteShopProductAceUseCase;
 import com.tokopedia.shop.product.domain.interactor.DeleteShopProductTomeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetProductCampaignsUseCase;
 import com.tokopedia.shop.product.domain.repository.ShopProductRepository;
-import com.tokopedia.shop.product.view.mapper.ShopProductMapper;
 import com.tokopedia.wishlist.common.constant.WishListCommonUrl;
 import com.tokopedia.wishlist.common.data.interceptor.WishListAuthInterceptor;
 import com.tokopedia.wishlist.common.data.repository.WishListCommonRepositoryImpl;
@@ -41,10 +40,10 @@ import com.tokopedia.wishlist.common.data.source.WishListCommonDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.WishListCommonCloudDataSource;
 import com.tokopedia.wishlist.common.data.source.cloud.api.WishListCommonApi;
 import com.tokopedia.wishlist.common.data.source.cloud.mapper.WishListProductListMapper;
-import com.tokopedia.wishlist.common.domain.interactor.AddToWishListUseCase;
 import com.tokopedia.wishlist.common.domain.interactor.GetWishListUseCase;
-import com.tokopedia.wishlist.common.domain.interactor.RemoveFromWishListUseCase;
 import com.tokopedia.wishlist.common.domain.repository.WishListCommonRepository;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -181,30 +180,30 @@ public class ShopProductModule {
 
     @ShopProductScope
     @Provides
-    public AddToWishListUseCase provideAddToWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new AddToWishListUseCase(wishListCommonRepository);
+    public AddWishListUseCase provideAddToWishListUseCase(@ApplicationContext Context context) {
+        return new AddWishListUseCase(context);
     }
 
     @ShopProductScope
     @Provides
-    public RemoveFromWishListUseCase provideRemoveFromWishListUseCase(WishListCommonRepository wishListCommonRepository) {
-        return new RemoveFromWishListUseCase(wishListCommonRepository);
+    public RemoveWishListUseCase provideRemoveFromWishListUseCase(@ApplicationContext Context context) {
+        return new RemoveWishListUseCase(context);
     }
 
     // Product
     @Provides
     public ShopOfficialStoreAuthInterceptor provideShopOfficialStoreAuthInterceptor(@ApplicationContext Context context,
-                                                                           AbstractionRouter abstractionRouter,
-                                                                           UserSession userSession) {
+                                                                                    AbstractionRouter abstractionRouter,
+                                                                                    UserSession userSession) {
         return new ShopOfficialStoreAuthInterceptor(context, abstractionRouter, userSession);
     }
 
     @ShopProductQualifier
     @Provides
     public OkHttpClient provideOfficialStoreOkHttpClient(ShopOfficialStoreAuthInterceptor shopOfficialStoreAuthInterceptor,
-                                                    @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                    HeaderErrorResponseInterceptor errorResponseInterceptor,
-                                                    CacheApiInterceptor cacheApiInterceptor) {
+                                                         @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                                         HeaderErrorResponseInterceptor errorResponseInterceptor,
+                                                         CacheApiInterceptor cacheApiInterceptor) {
         return new OkHttpClient.Builder()
                 .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(shopOfficialStoreAuthInterceptor)
@@ -230,12 +229,6 @@ public class ShopProductModule {
     @Provides
     public ShopProductRepository provideShopProductRepository(ShopProductCloudDataSource shopProductDataSource) {
         return new ShopProductRepositoryImpl(shopProductDataSource);
-    }
-
-    @ShopProductScope
-    @Provides
-    public ShopProductMapper provideShopProductMapper() {
-        return new ShopProductMapper();
     }
 
     @ShopProductScope

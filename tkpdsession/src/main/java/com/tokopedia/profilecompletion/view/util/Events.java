@@ -17,6 +17,11 @@ import rx.subjects.PublishSubject;
  */
 
 
+/**
+  * Use @EventsWatcher on abstraction
+ */
+
+@Deprecated
 public class Events {
 
     // no instances for helper class

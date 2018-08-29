@@ -20,6 +20,9 @@ public class FeedDomain {
     @Nullable
     private List<RecentViewProductDomain> recentProduct;
 
+    @Nullable
+    private WhitelistDomain whitelist;
+
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
                       boolean hasNext) {
         this.listFeed = listFeed;
@@ -47,5 +50,14 @@ public class FeedDomain {
     @Nullable
     public List<RecentViewProductDomain> getRecentProduct() {
         return recentProduct;
+    }
+
+    @Nullable
+    public WhitelistDomain getWhitelist() {
+        return whitelist;
+    }
+
+    public void setWhitelist(@Nullable WhitelistDomain whitelist) {
+        this.whitelist = whitelist;
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.common.util.TopAdsComponentUtils;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
@@ -156,6 +157,6 @@ public class TopAdsDetailGroupActivity extends BaseSimpleActivity
 
     @Override
     public TopAdsComponent getComponent() {
-        return TopAdsComponentUtils.getTopAdsComponent(this);
+        return TopAdsComponentInstance.getComponent(getApplication());
     }
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
@@ -62,6 +62,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     private ResultViewModel resultViewModel;
     private String orderId;
     private String resolutionId;
+
 
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
@@ -309,6 +310,6 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         super.detachView();
         getProductProblemUseCase.unsubscribe();
         createResoWithoutAttachmentUseCase.unsubscribe();
-        createResoWithAttachmentUseCase.unsubscribe();
+//        createResoWithAttachmentUseCase.unsubscribe();
     }
 }

@@ -28,6 +28,9 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
@@ -48,6 +51,11 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+
 /**
  * Created by yoasfs on 30/08/17.
  */
@@ -56,9 +64,10 @@ import permissions.dispatcher.RuntimePermissions;
 public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View, AttachmentAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
-    private static final int REQUEST_CODE_GALLERY = 1243;
+    private static final int REQUEST_CODE_VIDEO = 1243;
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int COUNT_MIN_STRING = 30;
+    private static final int REQUEST_CODE_IMAGE_REPUTATION = 3479;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -283,27 +292,42 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(context.getString(R.string.dialog_upload_option));
-            builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionImagePickerWithCheck(AttachmentFragment.this);
-                }
-            }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionCameraWithCheck(AttachmentFragment.this);
-                }
-            });
+            if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
-            Dialog dialog = builder.create();
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(context.getString(R.string.dialog_upload_option));
+                builder.setPositiveButton(context.getString(R.string.title_video), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        AttachmentFragmentPermissionsDispatcher.actionVideoPickerWithCheck(AttachmentFragment.this);
+                    }
+                }).setNegativeButton(context.getString(R.string.title_image), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openImagePicker();
+                    }
+                });
+
+                Dialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+            } else {
+                openImagePicker();
+            }
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }
 
+    }
+
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REPUTATION);
     }
 
     @Override
@@ -330,25 +354,23 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            startActivityForResult(
-                    GalleryActivity.createIntent(getActivity(), GalleryType.ofAll()),
-                    REQUEST_CODE_GALLERY
-            );
-        } else {
-            uploadImageDialog.actionImagePicker();
-        }
+    public void actionVideoPicker() {
+        startActivityForResult(
+                GalleryActivity.createIntent(getActivity(), GalleryType.ofVideoOnly()),
+                REQUEST_CODE_VIDEO
+        );
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ImageUploadHandler.REQUEST_CODE:
-                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+            case REQUEST_CODE_IMAGE_REPUTATION:
+                presenter.handleImageResult(resultCode, data);
                 break;
-            case REQUEST_CODE_GALLERY:
-                presenter.handleNewGalleryResult(resultCode, data);
+            case REQUEST_CODE_VIDEO:
+                presenter.handleVideoResult(resultCode, data);
                 break;
             default:
                 break;

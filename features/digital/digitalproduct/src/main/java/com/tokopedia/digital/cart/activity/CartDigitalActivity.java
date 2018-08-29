@@ -36,6 +36,12 @@ public class CartDigitalActivity extends BasePresenterActivity implements
                 .putExtra(EXTRA_PASS_DIGITAL_CART_DATA, passData);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        unregisterShake();
+    }
+
     public static Intent newInstance(Context context, Bundle bundle) {
         DigitalCheckoutPassData passData = new DigitalCheckoutPassData();
         passData.setAction(bundle.getString(DigitalCheckoutPassData.PARAM_ACTION));

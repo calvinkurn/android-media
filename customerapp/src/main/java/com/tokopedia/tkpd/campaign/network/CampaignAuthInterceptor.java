@@ -20,6 +20,7 @@ public class CampaignAuthInterceptor extends TkpdAuthInterceptor {
 
 
     Context mContext;
+
     public CampaignAuthInterceptor(Context context, AbstractionRouter abstractionRouter, UserSession userSession) {
         super(context, abstractionRouter, userSession);
         mContext = context;
@@ -27,24 +28,24 @@ public class CampaignAuthInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-            final Request originRequest = chain.request();
-            Request.Builder newRequest = chain.request().newBuilder();
+        final Request originRequest = chain.request();
+        Request.Builder newRequest = chain.request().newBuilder();
 
-            generateHmacAuthRequest(originRequest, newRequest);
-            newRequest.removeHeader("Authorization")
-                    .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
-                    .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
+        generateHmacAuthRequest(originRequest, newRequest);
+        newRequest.removeHeader("Authorization")
+                .addHeader("Authorization", "Bearer " + SessionHandler.getAccessToken())
+                .addHeader("Tkpd-UserId", SessionHandler.getLoginID(mContext));
 
-            final Request finalRequest = newRequest.build();
-            Response response = getResponse(chain, finalRequest);
+        final Request finalRequest = newRequest.build();
+        Response response = getResponse(chain, finalRequest);
 
-            if (!response.isSuccessful()) {
-                throwChainProcessCauseHttpError(response);
-            }
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
 
-            String bodyResponse = response.body().string();
-            checkResponse(bodyResponse, response);
+        String bodyResponse = response.body().string();
+        checkResponse(bodyResponse, response);
 
-            return createNewResponse(response, bodyResponse);
+        return createNewResponse(response, bodyResponse);
     }
 }

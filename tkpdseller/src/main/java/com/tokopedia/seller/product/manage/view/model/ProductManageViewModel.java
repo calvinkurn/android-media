@@ -15,6 +15,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
 
     private String productName;
     private String imageUrl;
+    private String imageFullUrl;
     private String productId;
     private String productPrice;
     private String productPricePlain;
@@ -218,6 +219,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.productName);
         dest.writeString(this.imageUrl);
+        dest.writeString(this.imageFullUrl);
         dest.writeString(this.productId);
         dest.writeString(this.productPrice);
         dest.writeString(this.productPricePlain);
@@ -239,6 +241,7 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
     protected ProductManageViewModel(Parcel in) {
         this.productName = in.readString();
         this.imageUrl = in.readString();
+        this.imageFullUrl = in.readString();
         this.productId = in.readString();
         this.productPrice = in.readString();
         this.productPricePlain = in.readString();
@@ -268,4 +271,12 @@ public class ProductManageViewModel implements ItemIdType, Parcelable {
             return new ProductManageViewModel[size];
         }
     };
+
+    public String getImageFullUrl() {
+        return imageFullUrl;
+    }
+
+    public void setImageFullUrl(String imageFullUrl) {
+        this.imageFullUrl = imageFullUrl;
+    }
 }

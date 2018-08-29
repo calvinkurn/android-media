@@ -175,6 +175,13 @@ public class ManagePeopleAddressFragmentImpl implements ManagePeopleAddressFragm
     }
 
     @Override
+    public void setOnEmptyAddressList(GetPeopleAddress data) {
+        fragmentListener.clearCurrentList();
+        fragmentListener.setNoResultView(true);
+        fragmentListener.setToken(data.getToken());
+    }
+
+    @Override
     public void setOnSuccessLoadMoreData(GetPeopleAddress data) {
         this.setNextPageStatus(data.getPaging());
         fragmentListener.addAddressItemList(data.getList());

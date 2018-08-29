@@ -21,9 +21,11 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
+import com.tokopedia.seller.product.edit.data.exception.ImageUploadErrorException;
 import com.tokopedia.seller.product.edit.di.component.DaggerAddProductServiceComponent;
 import com.tokopedia.seller.product.edit.di.module.AddProductserviceModule;
 import com.tokopedia.seller.product.edit.domain.listener.ProductSubmitNotificationListener;
+import com.tokopedia.seller.product.edit.utils.ErrorHandlerAddProduct;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
 import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
@@ -114,7 +116,7 @@ public class UploadProductService extends BaseService implements AddProductServi
 
     @Override
     public void onFailedAddProduct(Throwable t, ProductSubmitNotificationListener productSubmitNotificationListener) {
-        String errorMessage = ErrorHandler.getErrorMessage(getApplicationContext(), t);
+        String errorMessage = ErrorHandlerAddProduct.getErrorMessage(getApplicationContext(), t);
         Notification notification = buildFailedNotification(errorMessage, productSubmitNotificationListener.getId(), productSubmitNotificationListener.getSubmitStatus());
         notificationManager.notify(TAG, productSubmitNotificationListener.getId(), notification);
         removeNotificationFromList(productSubmitNotificationListener.getId());

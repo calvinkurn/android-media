@@ -1,0 +1,14 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+dependencies {
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.abstraction)
+    implementation rootProject.ext.playServicesDependencies.analytics;
+
+    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
+        exclude group: "com.android.support"
+    }
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+}

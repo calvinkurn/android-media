@@ -12,6 +12,7 @@ import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.URLParser;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -29,13 +30,11 @@ import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.session.model.AccountsModel;
 import com.tokopedia.core.session.model.AccountsParameter;
 import com.tokopedia.core.session.model.InfoModel;
 import com.tokopedia.core.session.model.SecurityModel;
-import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -294,6 +293,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openPromo(linkSegment);
                     screenName = "";
                     break;
+                case DeepLinkChecker.SALE:
+                    openSale(linkSegment);
+                    screenName = "";
+                    break;
                 default:
                     prepareOpenWebView(uriData);
                     screenName = AppScreen.SCREEN_DEEP_LINK;
@@ -313,9 +316,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent = ((TkpdCoreRouter) context.getApplication()).getInboxChannelsIntent(
                     context);
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
         context.startActivity(intent);
         context.finish();
     }
@@ -344,8 +345,33 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     private void openPromo(List<String> linkSegment) {
         LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
-        Intent intent = router.getPromoDetailIntent(context, linkSegment.get(1));
 
+        Intent intent;
+        if(linkSegment.size() <= 1) {
+            intent = router.getPromoListIntent(context);
+        }
+        else {
+            intent = router.getPromoDetailIntent(context, linkSegment.get(1));
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(intent);
+        context.finish();
+    }
+
+    private void openSale(List<String> linkSegment) {
+        Intent intent;
+        if(linkSegment.size() <= 1) {
+            LoyaltyRouter router = ((LoyaltyRouter) context.getApplication());
+            intent = router.getPromoListIntent(context);
+        } else {
+            String SLUG_PARAM = "{slug}";
+            String applink = ApplinkConst.PROMO_SALE_NO_SLASH.
+                    replace(SLUG_PARAM, linkSegment.get(1));
+            intent = new Intent(Intent.ACTION_VIEW, Uri.parse(applink));
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
