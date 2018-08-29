@@ -68,7 +68,11 @@ public class ChangeInactiveFormRequestPresenter extends BaseDaggerPresenter<Chan
 
     @Override
     public void validateUserData(String email, String phone, String userId) {
-        if (isValidEmail(email) && isValidPhone(phone)) {
+
+        boolean validEmail = isValidEmail(email);
+        boolean validPhone = isValidPhone(phone);
+
+        if (validPhone && validEmail) {
             getView().showLoading();
             validateUserDataUseCase.execute(phone, email, userId,
                     new ValidateUserDataSubscriber(getView()));
