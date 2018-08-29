@@ -75,6 +75,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
+    private CartListData cartListData;
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -102,6 +103,11 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void detachView() {
         compositeSubscription.unsubscribe();
+    }
+
+    @Override
+    public CartListData getCartListData() {
+        return cartListData;
     }
 
     @Override
@@ -261,7 +267,7 @@ public class CartListPresenter implements ICartListPresenter {
                                 }
                             }
 
-                            totalItemQtyPerShop = totalItemQtyPerShop + data.getCartItemData().getUpdatedData().getQuantity();
+                            totalItemQtyPerShop = totalItemQtyPerShop + 1;
                             List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
                             boolean hasCalculateWholesalePrice = false;
                             if (wholesalePrices != null && wholesalePrices.size() > 0) {
@@ -433,6 +439,7 @@ public class CartListPresenter implements ICartListPresenter {
 
             @Override
             public void onNext(CartListData cartListData) {
+                CartListPresenter.this.cartListData = cartListData;
                 view.renderLoadGetCartDataFinish();
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
@@ -540,6 +547,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         processInitialGetCartData();
                     } else {
+                        CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
                     }
                 } else {

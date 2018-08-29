@@ -6,6 +6,8 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
@@ -16,6 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -95,14 +99,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener {
 
+    private static final int TOP_ADS_COUNT = 4;
+
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
-    private View bottomLayout;
+    //    private View bottomLayout;
     private TextView tvItemCount;
     private TkpdProgressDialog progressDialogNormal;
     private RelativeLayout layoutUsedPromo;
     private RelativeLayout rlContent;
+    private LinearLayout llHeader;
+    private CheckBox cbSelectAll;
+    private CardView cardHeader;
+    private CardView cardFooter;
     private LinearLayout llNetworkErrorView;
 
     @Inject
@@ -250,10 +260,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
-        bottomLayout = view.findViewById(R.id.bottom_layout);
         tvItemCount = view.findViewById(R.id.tv_item_count);
         rlContent = view.findViewById(R.id.rl_content);
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view);
+        cardHeader = view.findViewById(R.id.card_header);
+        cardFooter = view.findViewById(R.id.card_footer);
+        llHeader = view.findViewById(R.id.ll_header);
+        cbSelectAll = view.findViewById(R.id.cb_select_all);
+        ViewCompat.setTranslationZ(cardFooter, getResources().getDimension(R.dimen.dp_16));
 
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
@@ -266,6 +280,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     protected void setViewListener() {
         btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
+        cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
+    }
+
+    private View.OnClickListener getOnClickCheckboxSelectAll() {
+        return v -> {
+            boolean checked = !dPresenter.getCartListData().isAllSelected();
+            dPresenter.getCartListData().setAllSelected(checked);
+            cbSelectAll.setChecked(checked);
+            cartAdapter.setAllShopSelected(checked);
+            cartAdapter.notifyDataSetChanged();
+            dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        };
     }
 
     @NonNull
@@ -663,6 +690,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        cbSelectAll.setChecked(cartListData.isAllSelected());
 
         if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
             mIsMenuVisible = true;
@@ -677,7 +705,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().invalidateOptionsMenu();
             refreshHandler.finishRefresh();
             rlContent.setVisibility(View.GONE);
+            cardHeader.setVisibility(View.GONE);
+            cardFooter.setVisibility(View.GONE);
             llNetworkErrorView.setVisibility(View.VISIBLE);
+            mDataPasserListener.onContentAvailabilityChanged(false);
             NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                     () -> {
                         llNetworkErrorView.setVisibility(View.GONE);
@@ -870,9 +901,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void renderEmptyCartData(CartListData cartListData) {
         sendAnalyticsOnDataCartIsEmpty();
         refreshHandler.finishRefresh();
-        bottomLayout.setVisibility(View.GONE);
+        cardHeader.setVisibility(View.GONE);
+        cardFooter.setVisibility(View.GONE);
+        mDataPasserListener.onContentAvailabilityChanged(false);
         mIsMenuVisible = false;
-        getActivity().invalidateOptionsMenu();
+        if (getActivity() != null) {
+            getActivity().invalidateOptionsMenu();
+        }
 
         CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
 
@@ -911,21 +946,23 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             TopAdsParams params = new TopAdsParams();
             params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
 
-            Config config = new Config.Builder()
-                    .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                    .setUserId(SessionHandler.getLoginID(getActivity()))
-                    .withPreferedCategory()
-                    .setEndpoint(Endpoint.PRODUCT)
-                    .displayMode(DisplayMode.FEED)
-                    .topAdsParams(params)
-                    .build();
+            if (getActivity() != null) {
+                Config config = new Config.Builder()
+                        .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                        .setUserId(SessionHandler.getLoginID(getActivity()))
+                        .withPreferedCategory()
+                        .setEndpoint(Endpoint.PRODUCT)
+                        .displayMode(DisplayMode.FEED)
+                        .topAdsParams(params)
+                        .build();
 
-            TopAdsView topAdsView = emptyState.findViewById(R.id.topads);
-            topAdsView.setConfig(config);
-            topAdsView.setDisplayMode(DisplayMode.FEED);
-            topAdsView.setMaxItems(4);
-            topAdsView.setAdsItemClickListener(this);
-            topAdsView.loadTopAds();
+                TopAdsView topAdsView = emptyState.findViewById(R.id.topads);
+                topAdsView.setConfig(config);
+                topAdsView.setDisplayMode(DisplayMode.FEED);
+                topAdsView.setMaxItems(TOP_ADS_COUNT);
+                topAdsView.setAdsItemClickListener(this);
+                topAdsView.loadTopAds();
+            }
         }
     }
 
@@ -972,13 +1009,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderLoadGetCartData() {
-        bottomLayout.setVisibility(View.GONE);
+        mDataPasserListener.onContentAvailabilityChanged(false);
     }
 
     @Override
     public void renderLoadGetCartDataFinish() {
         cartAdapter.resetData();
-        bottomLayout.setVisibility(View.VISIBLE);
+        cardHeader.setVisibility(View.VISIBLE);
+        cardFooter.setVisibility(View.VISIBLE);
+        mDataPasserListener.onContentAvailabilityChanged(true);
     }
 
     @Override
@@ -1260,6 +1299,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public interface ActionListener {
 
         void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+
+        void onContentAvailabilityChanged(boolean available);
 
     }
 

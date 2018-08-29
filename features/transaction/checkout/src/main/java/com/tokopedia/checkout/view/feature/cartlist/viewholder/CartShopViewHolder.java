@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
 /**
@@ -158,7 +159,13 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
                         isChecked = !cartShopHolderData.isAllSelected();
                     }
                     cbSelectShop.setChecked(isChecked);
-                    cartShopHolderData.setAllSelected(isChecked);
+                    boolean isAllSelected = true;
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
+                            isAllSelected = false;
+                        }
+                    }
+                    cartShopHolderData.setAllSelected(isAllSelected);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         cartAdapterListener.onShopItemCheckChanged(getAdapterPosition(), isChecked);
                     }

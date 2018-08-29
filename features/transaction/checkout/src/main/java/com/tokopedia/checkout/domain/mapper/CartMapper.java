@@ -127,6 +127,9 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setCategory(data.getProduct().getCategory());
                 cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
+                cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
+                cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
+                cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
                 if (data.getProduct().getWholesalePrice() != null) {
                     List<WholesalePrice> wholesalePrices = new ArrayList<>();
                     for (com.tokopedia.transactiondata.entity.response.cartlist.WholesalePrice wholesalePriceDataModel : data.getProduct().getWholesalePrice()) {
@@ -208,6 +211,7 @@ public class CartMapper implements ICartMapper {
             shopGroupDataList.add(shopGroupData);
         }
         cartListData.setShopGroupDataList(shopGroupDataList);
+        cartListData.setAllSelected(true);
         cartListData.setPromoCouponActive(cartDataListResponse.getIsCouponActive() == 1);
 
         CartPromoSuggestion cartPromoSuggestion = new CartPromoSuggestion();

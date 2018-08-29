@@ -139,6 +139,9 @@ public class CartItemData implements Parcelable {
         private String trackerAttribution;
         private String trackerListName;
         private String originalRemark;
+        private String shopName;
+        private boolean officialStore;
+        private boolean goldMerchant;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -378,6 +381,30 @@ public class CartItemData implements Parcelable {
 
         public void setOriginalRemark(String originalRemark) {
             this.originalRemark = originalRemark;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public void setShopName(String shopName) {
+            this.shopName = shopName;
+        }
+
+        public boolean isOfficialStore() {
+            return officialStore;
+        }
+
+        public void setOfficialStore(boolean officialStore) {
+            this.officialStore = officialStore;
+        }
+
+        public boolean isGoldMerchant() {
+            return goldMerchant;
+        }
+
+        public void setGoldMerchant(boolean goldMerchant) {
+            this.goldMerchant = goldMerchant;
         }
 
         public OriginData() {

@@ -204,8 +204,11 @@ public class RatesDataConverter {
 
     private List<ShipmentItemData> getShipmentItemDataList(RatesResponse ratesResponse) {
         List<ShipmentItemData> shipmentItemDataList = new ArrayList<>();
-        for (Attribute attribute : ratesResponse.getData().getAttributes()) {
-            shipmentItemDataList.add(getShipmentItemData(attribute));
+        if (ratesResponse != null && ratesResponse.getData() != null &&
+                ratesResponse.getData().getAttributes() != null) {
+            for (Attribute attribute : ratesResponse.getData().getAttributes()) {
+                shipmentItemDataList.add(getShipmentItemData(attribute));
+            }
         }
         return shipmentItemDataList;
     }

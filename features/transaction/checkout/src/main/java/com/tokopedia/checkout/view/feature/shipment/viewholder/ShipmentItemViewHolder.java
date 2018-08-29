@@ -166,6 +166,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvChangeSelectedCourierRecommendation;
     private LinearLayout llShipmentInfoTicker;
     private TextView tvTickerInfo;
+    private LinearLayout layoutWarningAndError;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -272,6 +273,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvChangeSelectedCourierRecommendation = itemView.findViewById(R.id.tv_change_selected_courier_recommendation);
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
+        layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
@@ -305,6 +307,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             if (showCaseObjectList.size() == 1) {
                 setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
             }
+        }
+        if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
+            layoutWarningAndError.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarningAndError.setVisibility(View.GONE);
         }
         renderError(shipmentCartItemModel);
         renderWarnings(shipmentCartItemModel);

@@ -20,6 +20,7 @@ public class CartListData implements Parcelable {
     private CartTickerErrorData cartTickerErrorData;
     private AutoApplyData autoApplyData;
     private String defaultPromoDialogTab;
+    private boolean allSelected;
 
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;
@@ -85,6 +86,14 @@ public class CartListData implements Parcelable {
         this.shopGroupDataList = shopGroupDataList;
     }
 
+    public boolean isAllSelected() {
+        return allSelected;
+    }
+
+    public void setAllSelected(boolean allSelected) {
+        this.allSelected = allSelected;
+    }
+
     public CartListData() {
     }
 
@@ -100,6 +109,7 @@ public class CartListData implements Parcelable {
         dest.writeTypedList(this.shopGroupDataList);
         dest.writeParcelable(this.cartPromoSuggestion, flags);
         dest.writeByte(this.promoCouponActive ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.allSelected ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.cartTickerErrorData, flags);
         dest.writeParcelable(this.autoApplyData, flags);
     }
@@ -110,6 +120,7 @@ public class CartListData implements Parcelable {
         this.shopGroupDataList = in.createTypedArrayList(ShopGroupData.CREATOR);
         this.cartPromoSuggestion = in.readParcelable(CartPromoSuggestion.class.getClassLoader());
         this.promoCouponActive = in.readByte() != 0;
+        this.allSelected = in.readByte() != 0;
         this.cartTickerErrorData = in.readParcelable(CartTickerErrorData.class.getClassLoader());
         this.autoApplyData = in.readParcelable(AutoApplyData.class.getClassLoader());
     }
