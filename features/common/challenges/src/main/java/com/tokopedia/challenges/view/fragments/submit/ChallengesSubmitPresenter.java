@@ -68,10 +68,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             getView().setSnackBarErrorMessage("Please select image");
             return;
         } else if (!isValidateTitle(title)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_title_size));  // TODO update messages
             return;
         } else if (!isValidateDescription(description)) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
             return;
         } else if (ImageUtils.isImageType(getView().getContext(), filePath)) {
             if (!isValidateImageSize(filePath)) {
@@ -124,11 +122,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         @Override
         public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
-                // launch home
-                getView().showMessage("Uploaded Successfully");
+                getView().showMessage("Konten Anda diterima!");
                 getView().hideProgress();
                 Utils.FROMNOCACHE = true;
-                // getView().finish();
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }
@@ -149,16 +145,24 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     private boolean isValidateDescription(@NonNull String description) {
-        if (description.length() <= 0 || description.length() >= 300)
+        if (description.length() <= 0){
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_desc_blank));
             return false;
-        else
+        }else if (description.length() > 50) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
+            return false;
+        } else
             return true;
     }
 
     private boolean isValidateTitle(@NonNull String title) {
-        if (title.length() <= 0 || title.length() > 50)
+        if (title.length() <= 0){
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_title_blank));
+        return false;
+        }else if (title.length() > 50) {
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_title_size));
             return false;
-        else
+        } else
             return true;
     }
 
@@ -173,15 +177,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
             getView().selectImageVideo();
         } else if (settings.isAllowPhotos()) {
-            if (settings.isAllowVideos() && settings.isAllowPhotos()) {
-                getView().selectImageVideo();
-            } else if (settings.isAllowPhotos()) {
-                getView().selectImage();
-                //update UI
-            } else if (settings.isAllowVideos()) {
-                // update UI
-                getView().selectVideo();
-            }
+            getView().selectImage();
+        } else if (settings.isAllowVideos()) {
+            getView().selectVideo();
         }
     }
 
@@ -215,5 +213,18 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 }
             }
         });
+    }
+
+    @Override
+    public void setSubmitButtonText() {
+        ChallengeSettings settings = getView().getChallengeSettings();
+        if (settings.isAllowVideos() && settings.isAllowPhotos()) {
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo_video));
+        } else if (settings.isAllowPhotos()) {
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo));
+        } else if (settings.isAllowVideos()) {
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_video));
+
+        }
     }
 }

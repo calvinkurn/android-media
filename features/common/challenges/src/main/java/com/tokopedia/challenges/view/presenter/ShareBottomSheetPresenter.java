@@ -1,5 +1,6 @@
 package com.tokopedia.challenges.view.presenter;
 
+import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.util.Log;
 import android.widget.Toast;
@@ -57,11 +58,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
-                    copyToClipboard(getShareContents(isChallenge, branchUrl, title));
-                } else {
-                    ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
-                }
+                shareLink(isChallenge, branchUrl,title, packageName);
             }
         });
     }
@@ -69,11 +66,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     public void createAndShareUrl(String packageName, final String url, String submissionId, String deepLink, final boolean isChallenge, String title, String og_url, String og_title, String og_image) {
 
         if (url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link")) {
-            if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
-                copyToClipboard(getShareContents(isChallenge, url, title));
-            } else {
-                ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, url, getShareContents(isChallenge, url, title));
-            }
+            shareLink(isChallenge, url, title, packageName);
         } else {
             getView().showProgress("Please wait");
             ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, title, og_url, og_title, og_image, deepLink, new ChallengesModuleRouter.BranchLinkGenerateListener() {
@@ -81,10 +74,8 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
                     getView().setNewUrl(shareUri);
-                    if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
-                        copyToClipboard(getShareContents(isChallenge, shareUri, title));
-                    } else if (isChallenge) {
-                        ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, url, getShareContents(isChallenge, shareUri, title));
+                    if (isChallenge) {
+                        shareLink(isChallenge, shareUri, title, packageName);
                     } else {
                         postMapBranchUrl(submissionId, shareUri, packageName, title, isChallenge);
                     }
@@ -115,5 +106,25 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     private void copyToClipboard(String contents) {
         ClipboardHandler.CopyToClipboard(getView().getActivity(), contents);
         Toast.makeText(getView().getActivity(), getView().getActivity().getResources().getString(R.string.copied_to_clipboard), Toast.LENGTH_LONG).show();
+    }
+
+    private void shareLink(boolean isChallenge, String branchUrl, String title, String packageName) {
+        if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_COPY)) {
+            copyToClipboard(getShareContents(isChallenge, branchUrl, title));
+        } else if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_OTHER)) {
+            Intent intent = getIntent(title, getShareContents(isChallenge, branchUrl, title));
+            getView().getActivity().startActivity(Intent.createChooser(intent, getView().getActivity().getString(R.string.other)));
+        } else {
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
+        }
+    }
+
+    private Intent getIntent(String title, String contains) {
+        final Intent mIntent = new Intent(Intent.ACTION_SEND);
+        mIntent.setType("text/plain");
+        mIntent.putExtra(Intent.EXTRA_TITLE, title);
+        mIntent.putExtra(Intent.EXTRA_SUBJECT, title);
+        mIntent.putExtra(Intent.EXTRA_TEXT, contains);
+        return mIntent;
     }
 }

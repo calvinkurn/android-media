@@ -171,7 +171,7 @@
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_4"
-                android:hint="@string/image_description"
+                android:hint="@string/img_description"
                 android:inputType="textMultiLine"
                 android:maxLength="300"
                 android:textColor="@color/black_39"

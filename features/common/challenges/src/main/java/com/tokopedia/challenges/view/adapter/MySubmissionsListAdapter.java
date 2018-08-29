@@ -98,15 +98,17 @@ public class MySubmissionsListAdapter extends RecyclerView.Adapter<RecyclerView.
     }
 
     public void addAll(List<SubmissionResult> items, Boolean... refreshItems) {
-        boolean refreshItem = true;
-        if (refreshItems.length > 0)
-            refreshItem = refreshItems[0];
-        if (items != null) {
-            for (SubmissionResult item : items) {
-                add(item, refreshItem);
-            }
-
-        }
+        this.submissionsResultList = items;
+        notifyDataSetChanged();
+//        boolean refreshItem = true;
+//        if (refreshItems.length > 0)
+//            refreshItem = refreshItems[0];
+//        if (items != null) {
+//            for (SubmissionResult item : items) {
+//                add(item, refreshItem);
+//            }
+//
+//        }
     }
 
     public void removeFooter() {

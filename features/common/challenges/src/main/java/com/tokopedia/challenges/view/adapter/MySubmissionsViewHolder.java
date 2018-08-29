@@ -70,21 +70,20 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
         itemView.setOnClickListener(view1 -> {
 
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK,
-                    challengesResult.getTitle());
-
             Intent intent = new Intent(context, SubmitDetailActivity.class);
             intent.putExtra("submissionsResult", submissionsResult);
             context.startActivity(intent);
+            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
+                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesAnalytics.EVENT_ACTION_CLICK,
+                    challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
                     ChallengesAnalytics.EVENT_ACTION_SHARE,
-                    challengesResult.getTitle());
+                    challengesResult.getCollection().getTitle());
         });
         imgLikes.setOnClickListener(v -> {
             String action=ChallengesAnalytics.EVENT_ACTION_LIKE;
@@ -93,7 +92,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
                     ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
                     action,
-                    challengesResult.getTitle());
+                    challengesResult.getCollection().getTitle());
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);
             if (submissionsResult.getMe().isLiked()) {
                 imgLikes.setImageResource(R.drawable.ic_wishlist_unchecked);

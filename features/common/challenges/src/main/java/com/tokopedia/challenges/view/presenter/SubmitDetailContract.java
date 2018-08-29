@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
@@ -12,6 +13,8 @@ public interface SubmitDetailContract {
         void setDataInFields(SubmissionResult model);
 
         void likeBtnClick(SubmissionResult result);
+
+        boolean isParticipated(SubmissionResult challengeResult);
     }
 
     public interface View extends CustomerView {
@@ -54,5 +57,7 @@ public interface SubmitDetailContract {
         void showProgressBar();
 
         void setWinnerPosition(String s);
+
+        void isParticipated(boolean participated);
     }
 }

@@ -69,40 +69,38 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Inject
     ChallengeSubmissionPresenter mPresenter;
-    ImageView challengeImage;
-    TextView challengeTitle;
-    TextView challengeDueDate;
-    TextView tvParticipated;
-    TextView seeMoreButtonDesc;
-    TextView seeMoreButtonBuzzPoints;
-    TextView seeMoreButtonTnc;
-    TextView shortDescription;
-    View submitButton;
-    RecyclerView submissionRecyclerView, awardRecylerView, winnerRecyclerView;
-    List<SubmissionResult> submissionResults, winnerResults;
-    CustomVideoPlayer videoPlayer;
-    ConstraintLayout timerView;
-    RelativeLayout rlExpiry;
-    ConstraintLayout clAbout;
-    ConstraintLayout clVideoPlayer;
-    ConstraintLayout clAwards;
-    ConstraintLayout clSubmissions;
-    ConstraintLayout clWinners;
-    ConstraintLayout clHowBuzzPoints;
-    ConstraintLayout clTnc;
-    ProgressBar timerProgressBar;
-    CountDownView countDownView;
-    TextView tvHashTag;
-    TextView tvTnCText;
-    WebView longDescription;
+    private ImageView challengeImage;
+    private TextView challengeTitle;
+    private TextView challengeDueDate;
+    private TextView tvParticipated;
+    private TextView seeMoreButtonDesc;
+    private TextView seeMoreButtonBuzzPoints;
+    private TextView shortDescription;
+    private View submitButton;
+    private RecyclerView submissionRecyclerView, awardRecylerView, winnerRecyclerView;
+    private List<SubmissionResult> submissionResults, winnerResults;
+    private CustomVideoPlayer videoPlayer;
+    private ConstraintLayout timerView;
+    private RelativeLayout rlExpiry;
+    private ConstraintLayout clAbout;
+    private ConstraintLayout clVideoPlayer;
+    private ConstraintLayout clAwards;
+    private ConstraintLayout clSubmissions;
+    private ConstraintLayout clWinners;
+    private ConstraintLayout clHowBuzzPoints;
+    private ProgressBar timerProgressBar;
+    private CountDownView countDownView;
+    private TextView tvHashTag;
+    private TextView tvTnc;
+    private WebView longDescription;
     private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
 
-    FrameLayout progressBar;
-    FrameLayout flHeader;
-    SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
-    CoordinatorLayout mainContent;
-    ConstraintLayout baseMainContent;
+    private FrameLayout progressBar;
+    private FrameLayout flHeader;
+    private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
+    private CoordinatorLayout mainContent;
+    private ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
     private Toolbar toolbar;
@@ -118,6 +116,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private boolean isWinnerList = false;
     private View bottomMarginView;
     private TextView submitPhoto;
+
     @Inject
     public ChallengesAnalytics analytics;
 
@@ -136,7 +135,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             this.challengeResult = getArguments().getParcelable("challengesResult");
         }
         this.isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE);
-
         isWinnerList = getArguments().getBoolean("isPastChallenge", false);
         setHasOptionsMenu(true);
     }
@@ -183,7 +181,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         clSubmissions = view.findViewById(R.id.cl_submissions);
         clWinners = view.findViewById(R.id.cl_winners);
         clHowBuzzPoints = view.findViewById(R.id.cl_how_buzzpoints);
-        clTnc = view.findViewById(R.id.cl_tnc);
         toolbar = view.findViewById(R.id.toolbar);
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
@@ -194,17 +191,16 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         seeMoreButtonDesc.setOnClickListener(this);
         view.findViewById(R.id.tv_see_all).setOnClickListener(this);
         videoPlayer = view.findViewById(R.id.video_player);
-        tvTnCText = view.findViewById(R.id.tv_tnc_text);
+        tvTnc = view.findViewById(R.id.tv_tnc);
         tvHowBuzzPointsText = view.findViewById(R.id.tv_how_buzz_points_text);
         seeMoreButtonBuzzPoints = view.findViewById(R.id.seemorebutton_buzzpoints);
-        seeMoreButtonTnc = view.findViewById(R.id.seemorebutton_tnc);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         flHeader = view.findViewById(R.id.fl_header);
         mainContent = view.findViewById(R.id.main_content);
         btnShare = view.findViewById(R.id.fab_share);
         baseMainContent = view.findViewById(R.id.base_main_content);
         seeMoreButtonBuzzPoints.setOnClickListener(this);
-        seeMoreButtonTnc.setOnClickListener(this);
+        tvTnc.setOnClickListener(this);
         longDescription = view.findViewById(R.id.markdownView);
         nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         bottomMarginView = view.findViewById(R.id.bottom_margin_view);
@@ -334,7 +330,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void setCountDownView(String participatedText) {
         if (TextUtils.isEmpty(participatedText)) {
-            submitPhoto.setText("Submit video or phopto");
+            submitPhoto.setText(R.string.submit_video_photo_text);
             try {
                 countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
                 countDownView.start(timerProgressBar);
@@ -345,7 +341,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvParticipated.setVisibility(View.GONE);
         } else {
             Utils.setTextViewBackground(getContext(), tvParticipated, participatedText);
-            submitPhoto.setText("View Submission");
+            submitPhoto.setText(R.string.view_post_text);
         }
     }
 
@@ -440,8 +436,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void renderTnC(TermsNCondition termsNCondition) {
         tncText = termsNCondition.getTerms();
         if (!TextUtils.isEmpty(tncText)) {
-            clTnc.setVisibility(View.VISIBLE);
-            tvTnCText.setText(tncText);
+            tvTnc.setVisibility(View.VISIBLE);
+            //tvTnCText.setText(tncText);
         }
     }
 
@@ -470,11 +466,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
-        } else if (v.getId() == R.id.seemorebutton_tnc) {
+        } else if (v.getId() == R.id.tv_tnc) {
+            fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
                     ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesAnalytics.EVENT_ACTION_CLICK, ChallengesAnalytics.EVENT_TNC);
-            fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
         }

@@ -54,11 +54,15 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
             getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
         }
+        if (isParticipated(model)) {
+            getView().isParticipated(true);
+            getView().setLikesCountView(String.valueOf(model.getLikes()));
+        } else {
+            getView().isParticipated(false);
+        }
         getView().setLikes(model.getMe().isLiked());
-        getView().setLikesCountView(String.valueOf(model.getLikes()));
+        getView().setApprovedView(model.getStatus());
         getView().setPointsView(String.valueOf(model.getPoints()));
-        String status = model.getStatus();
-        getView().setApprovedView(status);
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
         getView().setParticipateTitle(model.getCollection().getTitle());
@@ -174,6 +178,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                     getView().setSnackBarErrorMessage("Upload Not allowed for this Challenge"); // update challenge as per UX
                 } else {
                     getView().navigateToActivity(ChallengesSubmitActivity.getStartingIntent(getView().getActivity(), settings, result.getId(), result.getTitle(), result.getDescription()));
+                    getView().getActivity().finish();
                 }
             }
         });
@@ -201,5 +206,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 Utils.FROMNOCACHE = true;
             }
         });
+    }
+
+    @Override
+    public boolean isParticipated(SubmissionResult submissionResult) {
+        return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
+
     }
 }

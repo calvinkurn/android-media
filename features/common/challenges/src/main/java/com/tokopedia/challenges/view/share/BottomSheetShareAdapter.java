@@ -61,10 +61,14 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
         Drawable resources = null;
 
         if (isPositionCopy(position)) {
-            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_copy);
-            title = "Copy";
+            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_copy);
+            title = holder.labelView.getContext().getString(R.string.copy);
             type = ShareBottomSheet.KEY_COPY;
-        } else if (mActivities.size() > position) {
+        } else if (isPositionOther(position)) {
+            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_share_more);
+            title = holder.labelView.getContext().getString(R.string.other);
+            type = ShareBottomSheet.KEY_OTHER;
+        }else if (mActivities.size() > position) {
             final ResolveInfo activity = mActivities.get(position);
             resources = activity.loadIcon(mPackageManager);
             title = activity.loadLabel(mPackageManager);
@@ -84,7 +88,7 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
     @Override
     public int getItemCount() {
-        return mActivities.size() + 1; // for salin link and lainnya
+        return mActivities.size() + 2; // for salin link and lainnya
     }
 
     public static class ShareViewHolder extends RecyclerView.ViewHolder {

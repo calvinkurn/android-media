@@ -13,6 +13,7 @@ import java.util.List;
 public interface MySubmissionsBaseContract {
     interface View extends CustomerView {
         void setSubmissionsDataToUI(List<SubmissionResult> resultList);
+
         void showErrorNetwork(String errorMessage);
 
         void renderEmptyList();

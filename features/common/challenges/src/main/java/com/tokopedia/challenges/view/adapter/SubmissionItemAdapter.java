@@ -248,25 +248,28 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                        ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
-                        ChallengesAnalytics.EVENT_ACTION_SHARE,
-                        categoryItems.get(getIndex()).getTitle());
                 ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
+                if (categoryItems.get(getIndex()).getCollection() != null) {
+                    analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
+                            ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
+                            ChallengesAnalytics.EVENT_ACTION_SHARE,
+                            categoryItems.get(getIndex()).getCollection().getTitle());
+                }
             } else if (v.getId() == R.id.iv_like) {
-                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
-                if (categoryItems.get(getIndex()).getMe().isLiked())
-                    action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
-                        ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
-                        action, categoryItems.get(getIndex()).getTitle());
-
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
+                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
                 if (categoryItems.get(getIndex()).getMe() != null) {
                     if (categoryItems.get(getIndex()).getMe().isLiked()) {
                         setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
+                        action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
                     } else {
                         setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
+                        action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                    }
+                    if (categoryItems.get(getIndex()).getCollection() != null) {
+                        analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
+                                ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
+                                action, categoryItems.get(getIndex()).getCollection().getTitle());
                     }
                 }
 

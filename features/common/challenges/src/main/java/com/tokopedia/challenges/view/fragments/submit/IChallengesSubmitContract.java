@@ -45,6 +45,8 @@ public interface IChallengesSubmitContract {
 
         Activity getActivity();
 
+        void setSubmitButtonText(String text);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -53,5 +55,7 @@ public interface IChallengesSubmitContract {
         void onCancelButtonClick();
 
         void onSelectedImageClick();
+
+        void setSubmitButtonText();
     }
 }

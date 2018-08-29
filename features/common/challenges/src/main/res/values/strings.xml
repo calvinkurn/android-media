@@ -1,7 +1,7 @@
 <resources>
-    <string name="image_description">Deskripsi konten</string>
-    <string name="description">Description</string>
-    <string name="image_title">Judul konten</string>
+    <string name="img_description">deskripsi</string>
+    <string name="description">deskripsi post</string>
+    <string name="image_title">judul</string>
     <string name="title">Judul</string>
     <string name="submit">Daftarkan</string>
     <string name="cancel">Batal</string>
@@ -9,8 +9,10 @@
 
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
-    <string name="error_msg_wrong_title_size">Title length should between 1 to 50</string>
-    <string name="error_msg_wrong_descirption_size">Description length should between 1 to 300</string>
+    <string name="error_msg_wrong_title_size">Judul harus berkisar 1 sampai 50 karakter</string>
+    <string name="error_msg_title_blank">Isi judul post</string>
+    <string name="error_msg_desc_blank">Isi deskripsi post</string>
+    <string name="error_msg_wrong_descirption_size">Deskripsi harus berkisar 1 sampai 300 karakter</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="see_less">Lihat sedikit</string>
@@ -25,8 +27,8 @@
     <string name="most_recent">Terbaru</string>
     <string name="buzz_points">Buzz Point Terbanyak</string>
     <string name="see_all">Lihat Semua</string>
-    <string name="submit_photo">View or Submit your Photo</string>
-    <string name="participate_in">Participate In</string>
+    <string name="submit_photo">Daftarkan Foto</string>
+    <string name="participate_in">Berpartisipasi dalam Challenge:</string>
     <string name="challenge_title">Challenge Title</string>
     <string name="approval_wait">Waiting For Approval</string>
     <string name="buzz_point_request">Bagikan dan bantu konten ini mendapatkan Buzz Point!</string>
@@ -57,8 +59,12 @@
     <string name="pending">Menunggu</string>
 
     <string name="title_all_submissions">Peserta Tantangan</string>
-    <string name="post_detail">Post Detail</string>
+    <string name="post_detail">Rincian Pos</string>
     <string name="join_the_challenge">Ikut Tantangan</string>
     <string name="share_submission">Bagikan</string>
+    <string name="view_post_text">Lihat Konten Saya</string>
+    <string name="submit_video_photo_text">Daftarkan Foto atau Video</string>
+    <string name="submit_video">Daftarkan Video</string>
+    <string name="submit_photo_video">Daftarkan Foto atau Video</string>
 
 </resources>

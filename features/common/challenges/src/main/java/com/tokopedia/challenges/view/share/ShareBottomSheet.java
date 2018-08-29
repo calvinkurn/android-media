@@ -35,6 +35,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
     public static final String KEY_COPY = "salinlink";
     private static final String TYPE = "text/plain";
+    public static final String KEY_OTHER = "lainnya";
     private String url;
     private String title;
     private String og_url;

@@ -80,6 +80,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         return new SubmitDetailFragment();
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -154,26 +160,24 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
                     ChallengesAnalytics.EVENT_ACTION_SHARE,
-                    submissionResult.getTitle());
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
-
+                    submissionResult.getCollection().getTitle());
         });
 
         likeBtn.setOnClickListener(v -> {
-            if (submissionResult.getMe() != null) {
-                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
-                if (submissionResult.getMe().isLiked())
-                    action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
-                        ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
-                        action, submissionResult.getTitle());
-            }
             presenter.likeBtnClick(submissionResult);
+            String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
             if (submissionResult.getMe() != null) {
                 setLikes(!submissionResult.getMe().isLiked());
+                action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+            }
+            if (submissionResult.getCollection() != null) {
+                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
+                        ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
+                        action, submissionResult.getCollection().getTitle());
             }
         });
     }
@@ -259,7 +263,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     protected void initInjector() {
         getComponent(ChallengesComponent.class).inject(this);
-
         presenter.attachView(this);
 
     }
@@ -339,6 +342,22 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setWinnerPosition(String s) {
         tvWinnerNumber.setVisibility(View.VISIBLE);
         tvWinnerNumber.setText(s);
+    }
+
+    @Override
+    public void isParticipated(boolean participated) {
+        if (participated) {
+            likesCountView.setVisibility(View.VISIBLE);
+            approvedView.setVisibility(View.VISIBLE);
+            likesImageView.setVisibility(View.VISIBLE);
+
+        } else {
+            likesCountView.setVisibility(View.GONE);
+            approvedView.setVisibility(View.GONE);
+            likesImageView.setVisibility(View.GONE);
+
+
+        }
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

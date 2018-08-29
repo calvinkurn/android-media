@@ -112,6 +112,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         initView(view);
         presenter.attachView(this);
         setClickListener();
+        presenter.setSubmitButtonText();
         return view;
 
     }
@@ -376,5 +377,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public String getChallengeId() {
         return channelId;
+    }
+
+    @Override
+    public void setSubmitButtonText(String text) {
+        mBtnSubmit.setText(text);
     }
 }
