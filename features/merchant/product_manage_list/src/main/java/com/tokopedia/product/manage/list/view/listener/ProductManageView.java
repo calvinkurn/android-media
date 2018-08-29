@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.tokopedia.core.base.presentation.CustomerView;
 import com.tokopedia.product.manage.list.view.model.ProductManageViewModel;
+import com.tokopedia.topads.common.data.model.DataDeposit;
 
 import java.util.List;
 
@@ -38,4 +39,8 @@ public interface ProductManageView extends CustomerView {
     void showLoadingProgress();
 
     void hideLoadingProgress();
+
+    void onErrorGetFreeClaim(Throwable throwable);
+
+    void onSuccessGetFreeClaim(DataDeposit dataDeposit);
 }

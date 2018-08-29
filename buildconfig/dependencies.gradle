@@ -310,6 +310,7 @@ ext {
             shopOpen              : ":features:merchant:shop_open",
             productManageItem     : ":features:merchant:product_manage_item",
             productManageList     : ":features:merchant:product_manage_list",
+            topAdsFreeClaim       : ":features:top_ads:top_ads_free_claim",
             topAdsManagement      : ":features:top_ads:top_ads_management",
             topAdsManagementCommon    : ":features:top_ads:top_ads_management_common",
             topAdsSourceTagging   : ":features:top_ads:top_ads_management_sourcetagging",

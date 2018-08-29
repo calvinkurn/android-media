@@ -32,8 +32,10 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
@@ -47,6 +49,7 @@ import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
@@ -83,6 +86,10 @@ import com.tokopedia.seller.product.manage.constant.ProductManageConstant;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.manage.view.model.ProductManageFilterModel;
 import com.tokopedia.seller.product.manage.view.model.ProductManageSortModel;
+import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.topads.common.data.model.FreeDeposit;
+import com.tokopedia.topads.freeclaim.data.constant.TopAdsFreeClaimConstantKt;
+import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 
 import java.io.File;
@@ -110,6 +117,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     private BottomActionView bottomActionView;
     private ProgressDialog progressDialog;
     private CoordinatorLayout coordinatorLayout;
+    private TopAdsWidgetFreeClaim topAdsWidgetFreeClaim;
 
     private boolean hasNextPage;
     private boolean filtered;
@@ -159,6 +167,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        GraphqlClient.init(getContext());
     }
 
     @Override
@@ -183,6 +192,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
                 startActivityForResult(intent, ProductManageConstant.REQUEST_CODE_FILTER);
             }
         });
+        topAdsWidgetFreeClaim = view.findViewById(R.id.topads_free_claim_widget);
     }
 
     @Override
@@ -233,6 +243,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         hasNextPage = false;
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
     }
 
     @Override
@@ -573,6 +584,25 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void hideLoadingProgress() {
         progressDialog.hide();
+    }
+
+    @Override
+    public void onErrorGetFreeClaim(Throwable throwable) {
+        topAdsWidgetFreeClaim.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessGetFreeClaim(DataDeposit dataDeposit) {
+        FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
+
+        if (freeDeposit.getNominal() > 0 && freeDeposit.getStatus() == 1){
+            topAdsWidgetFreeClaim.setContent(MethodChecker.fromHtml(getString(R.string.free_claim_template, freeDeposit.getNominalFmt(),
+                    freeDeposit.getRemainingDays()+"", TopAdsFreeClaimConstantKt.TOPADS_FREE_CLAIM_URL)));
+            topAdsWidgetFreeClaim.setVisibility(View.VISIBLE);
+        } else {
+            topAdsWidgetFreeClaim.setVisibility(View.GONE);
+        }
+
     }
 
     private void showActionProductDialog(ProductManageViewModel productManageViewModel) {

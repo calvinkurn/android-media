@@ -18,6 +18,7 @@ import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.product.manage.list.data.repository.ActionProductManageRepositoryImpl;
 import com.tokopedia.product.manage.list.data.source.ActionProductManageDataSource;
 import com.tokopedia.product.manage.list.data.source.ProductActionApi;
@@ -36,6 +37,7 @@ import com.tokopedia.seller.product.picker.domain.GetProductListSellingRepositor
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
@@ -65,10 +67,11 @@ public class ProductManageModule {
                                                                 SellerModuleRouter sellerModuleRouter,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                                                TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase){
         return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
                 deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase,
-                topAdsAddSourceTaggingUseCase, setCashbackUseCase);
+                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, setCashbackUseCase);
     }
 
     @Provides
@@ -212,5 +215,10 @@ public class ProductManageModule {
         return new TopAdsSourceTaggingRepositoryImpl(dataSource);
     }
 
+    @Provides
+    @ProductManageScope
+    public GraphqlUseCase provideGraphqlUseCase(){
+        return new GraphqlUseCase();
+    }
 
 }

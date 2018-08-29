@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -34,6 +35,7 @@ import com.tokopedia.design.component.FloatingButton;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.DateLabelUtils;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -132,6 +134,12 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 .topAdsComponent(getComponent(TopAdsComponent.class))
                 .build()
                 .inject(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        GraphqlClient.init(getActivity());
     }
 
     @Nullable
@@ -420,7 +428,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void loadData() {
         swipeToRefresh.setRefreshing(true);
-        topAdsDashboardPresenter.getPopulateDashboardData();
+        topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit));
         topAdsDashboardPresenter.getShopInfo();
     }
 

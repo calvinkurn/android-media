@@ -53,20 +53,6 @@
         <!-- Product -->
         <!-- Product Manage -->
         <activity
-            android:name=".product.manage.view.activity.ProductManageActivity"
-            android:label="@string/title_activity_manage_product"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name=".product.manage.view.activity.ProductManageSortActivity"
-            android:label="@string/title_sort_by"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".product.manage.view.activity.ProductManageFilterActivity"
-            android:label="@string/title_filter_but"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".product.category.view.activity.CategoryPickerActivity"
             android:label="@string/title_activity_category_picker"
             android:screenOrientation="portrait" />

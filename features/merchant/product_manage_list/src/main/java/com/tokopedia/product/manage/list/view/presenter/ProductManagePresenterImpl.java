@@ -22,6 +22,8 @@ import com.tokopedia.seller.product.manage.constant.SortProductOption;
 import com.tokopedia.seller.product.picker.data.model.ProductListSellerModel;
 import com.tokopedia.seller.product.picker.domain.interactor.GetProductListSellingUseCase;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.topads.common.data.model.DataDeposit;
+import com.tokopedia.topads.common.domain.interactor.TopAdsGetShopDepositGraphQLUseCase;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 
@@ -44,6 +46,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private final TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase;
     private SetCashbackUseCase setCashbackUseCase;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
@@ -54,6 +57,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
                                       SellerModuleRouter sellerModuleRouter,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase,
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
+                                      TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
                                       SetCashbackUseCase setCashbackUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
@@ -63,6 +67,7 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
+        this.topAdsGetShopDepositGraphQLUseCase = topAdsGetShopDepositGraphQLUseCase;
         this.setCashbackUseCase = setCashbackUseCase;
     }
 
@@ -263,6 +268,31 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     }
 
     @Override
+    public void getFreeClaim(String graphqlQuery, String shopId) {
+        topAdsGetShopDepositGraphQLUseCase.execute(TopAdsGetShopDepositGraphQLUseCase.createRequestParams(graphqlQuery, shopId),
+                new Subscriber<DataDeposit>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        if (isViewAttached()){
+                            getView().onErrorGetFreeClaim(throwable);
+                        }
+                    }
+
+                    @Override
+                    public void onNext(DataDeposit dataDeposit) {
+                        if (isViewAttached()){
+                            getView().onSuccessGetFreeClaim(dataDeposit);
+                        }
+                    }
+                });
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         setCashbackUseCase.unsubscribe();
@@ -271,5 +301,6 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         deleteProductUseCase.unsubscribe();
         multipleDeleteProductUseCase.unsubscribe();
         topAdsAddSourceTaggingUseCase.unsubscribe();
+        topAdsGetShopDepositGraphQLUseCase.unsubscribe();
     }
 }

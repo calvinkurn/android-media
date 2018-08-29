@@ -31,4 +31,6 @@ public interface ProductManagePresenter extends CustomerPresenter<ProductManageV
     void deleteProduct(List<String> productIds);
 
     void saveSourceTagging(boolean isSellerApp);
+
+    void getFreeClaim(String graphqlQuery, String shopId);
 }

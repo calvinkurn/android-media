@@ -73,8 +73,9 @@ public class TopAdsDashboardPresenter extends BaseDaggerPresenter<TopAdsDashboar
         this.userSession = userSession;
     }
 
-    public void getPopulateDashboardData(){
-        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase.createRequestParams(userSession.getShopId()),
+    public void getPopulateDashboardData(String rawQuery){
+        topAdsGetPopulateDataAdUseCase.execute(TopAdsGetPopulateDataAdUseCase
+                        .createRequestParams(rawQuery, Integer.parseInt(userSession.getShopId())),
                 new Subscriber<DashboardPopulateResponse>() {
                     @Override
                     public void onCompleted() {
