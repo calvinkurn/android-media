@@ -32,5 +32,5 @@
         <item name="travel_search_sort_item_earliest_arrival">Waktu Tiba Terpagi</item>
         <item name="travel_search_sort_item_latest_arrival">Waktu Tiba Termalam</item>
     </string-array>
-    <string name="title_sort_search">Urutkan</string>
+    <string name="travel_title_sort_search">Urutkan</string>
 </resources>

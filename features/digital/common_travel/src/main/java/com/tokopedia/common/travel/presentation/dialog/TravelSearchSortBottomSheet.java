@@ -67,7 +67,7 @@ public class TravelSearchSortBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return getString(R.string.title_sort_search);
+        return getString(R.string.travel_title_sort_search);
     }
 
     public interface ActionListener {
