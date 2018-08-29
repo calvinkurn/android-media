@@ -5,14 +5,12 @@ import com.tokopedia.withdraw.domain.model.InfoDepositDomainModel;
 import com.tokopedia.withdraw.domain.model.InfoDepositPojo;
 import com.tokopedia.withdraw.view.model.BankAccount;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import retrofit2.Response;
 import rx.functions.Func1;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by StevenFredian on 30/07/18.
@@ -54,7 +52,9 @@ public class DepositInfoMapper implements Func1<Response<DataResponse<InfoDeposi
 
             list.add(item);
         }
-        list.get(0).setChecked(true);
+        if(list.size() > 0) {
+            list.get(0).setChecked(true);
+        }
         model.setBankAccount(list);
         return model;
     }
