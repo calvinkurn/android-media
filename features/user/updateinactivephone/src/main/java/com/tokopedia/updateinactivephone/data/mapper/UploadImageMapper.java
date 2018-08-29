@@ -1,7 +1,7 @@
 package com.tokopedia.updateinactivephone.data.mapper;
 
-import com.tokoepdia.updateinactivephone.model.response.UploadImageData;
 import com.tokopedia.updateinactivephone.model.request.UploadImageModel;
+import com.tokopedia.updateinactivephone.model.response.UploadImageData;
 
 import javax.inject.Inject;
 

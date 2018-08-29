@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.view;
 
-import com.tokoepdia.updateinactivephone.model.response.GqlValidateUserDataResponse;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 

@@ -1,7 +1,7 @@
 package com.tokopedia.updateinactivephone.data.repository;
 
+import com.tokopedia.updateinactivephone.data.factory.UploadImageSourceFactory;
 import com.tokopedia.updateinactivephone.model.request.UploadImageModel;
-import com.tokopedia.updatinactivephone.data.factory.UploadImageSourceFactory;
 
 import java.util.Map;
 

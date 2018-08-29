@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.model.request;
 
-import com.tokoepdia.updateinactivephone.model.response.UploadImageData;
+
+import com.tokopedia.updateinactivephone.model.response.UploadImageData;
 
 public class UploadImageModel {
     private boolean success;
