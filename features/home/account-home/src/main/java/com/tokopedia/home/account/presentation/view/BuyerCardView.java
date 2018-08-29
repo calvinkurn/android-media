@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -22,7 +23,8 @@ import com.tokopedia.home.account.R;
  */
 public class BuyerCardView extends BaseCustomView {
 
-    private ImageView imageProfile;
+    private ImageView imageProfileProgress;
+    private ImageView imageProfileCompleted;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointAmount;
@@ -47,7 +49,8 @@ public class BuyerCardView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.view_buyer_card, this);
-        imageProfile = view.findViewById(R.id.image_profile);
+        imageProfileProgress = view.findViewById(R.id.image_profile_progress);
+        imageProfileCompleted = view.findViewById(R.id.image_profile_completed);
         textUsername = view.findViewById(R.id.text_username);
         textProfileCompletion = view.findViewById(R.id.text_profile_completion);
         textTokopointAmount = view.findViewById(R.id.text_tokopoint_amount);
@@ -60,8 +63,28 @@ public class BuyerCardView extends BaseCustomView {
         textUsername.setText(name);
     }
 
-    public void setAvatarImageUrl(String imageUrl) {
-        ImageHandler.loadImageCircle2(getContext(), imageProfile, imageUrl, R.drawable.ic_big_notif_customerapp);
+    public void setAvatarImageUrl(int progress, String imageUrl) {
+        if(progress > 0 && progress < 100) {
+            imageProfileProgress.setVisibility(VISIBLE);
+            progressBar.setVisibility(VISIBLE);
+            imageProfileCompleted.setVisibility(GONE);
+
+            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar,
+                    "progress", 0, progress);
+            animation.setDuration(2000);
+            animation.setInterpolator(new DecelerateInterpolator());
+            animation.start();
+            textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
+            textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+            ImageHandler.loadImageCircle2(getContext(), imageProfileProgress, imageUrl, R.drawable.ic_big_notif_customerapp);
+        } else {
+            imageProfileCompleted.setVisibility(VISIBLE);
+            imageProfileProgress.setVisibility(GONE);
+            progressBar.setVisibility(GONE);
+            ImageHandler.loadImageCircle2(getContext(), imageProfileCompleted, imageUrl, R.drawable.ic_big_notif_customerapp);
+            textProfileCompletion.setText(R.string.verified_account);
+            textProfileCompletion.setTypeface(null, Typeface.ITALIC);
+        }
     }
 
     public void setTokopoint(String tokopoint) {
@@ -70,22 +93,6 @@ public class BuyerCardView extends BaseCustomView {
 
     public void setVoucher(String coupons) {
         textVoucherAmount.setText(coupons);
-    }
-
-    public void setProfileCompletion(int progress) {
-        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar,
-                "progress", 0, progress);
-        animation.setDuration(2000);
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.start();
-        if(progress > 0 && progress < 100) {
-            textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
-            textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        } else {
-            textProfileCompletion.setText(R.string.verified_account);
-            textProfileCompletion.setTypeface(null, Typeface.ITALIC);
-            progressBar.setVisibility(GONE);
-        }
     }
 
     public void setOnClickProfile(View.OnClickListener listener) {

@@ -1,6 +1,9 @@
 package com.tokopedia.home.account.presentation.presenter;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.home.account.domain.GetSellerAccountUseCase;
 import com.tokopedia.home.account.presentation.SellerAccount;
 import com.tokopedia.home.account.presentation.subscriber.GetSellerAccountSubscriber;
@@ -9,6 +12,7 @@ import com.tokopedia.usecase.RequestParams;
 
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -25,11 +29,14 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
         implements SellerAccount.Presenter{
 
     private GetSellerAccountUseCase getSellerAccountUseCase;
+    private UserSession userSession;
     private SellerAccount.View view;
 
     @Inject
-    public SellerAccountPresenter(GetSellerAccountUseCase getSellerAccountUseCase) {
+    public SellerAccountPresenter(GetSellerAccountUseCase getSellerAccountUseCase,
+                                  UserSession userSession) {
         this.getSellerAccountUseCase = getSellerAccountUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -49,7 +56,13 @@ public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.Vi
         RequestParams requestParams = RequestParams.create();
 
         requestParams.putString(QUERY, query);
-        requestParams.putObject(VARIABLES, new HashMap<>());
+        Map<String, Object> variables = new HashMap<>();
+        int[] shopId = new int[1];
+        if(!TextUtils.isEmpty(userSession.getShopId())) {
+            shopId[0] = Integer.parseInt(userSession.getShopId());
+        }
+        variables.put("shop_ids", shopId);
+        requestParams.putObject(VARIABLES, variables);
 
         getSellerAccountUseCase.execute(requestParams, new GetSellerAccountSubscriber(view));
     }
