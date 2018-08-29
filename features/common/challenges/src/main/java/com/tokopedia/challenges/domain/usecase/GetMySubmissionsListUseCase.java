@@ -35,7 +35,7 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start=" + start + "&size=" + size;
+        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_NOCACHE + "&status=all&start=" + start + "&size=" + size;
         if (Utils.FROMNOCACHE) {
             url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_NOCACHE + "&status=all&start=" + start + "&size=" + size;
             Utils.FROMNOCACHE = false;

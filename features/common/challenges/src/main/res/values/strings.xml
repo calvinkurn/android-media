@@ -24,6 +24,7 @@
     <string name="submissions">Submissions</string>
     <string name="title_activity_login">Masuk</string>
     <string name="text_due_date">Berakhir pada %s</string>
+    <string name="text_ended_date">Berakhir pada %s</string>
     <string name="most_recent">Terbaru</string>
     <string name="buzz_points">Buzz Point Terbanyak</string>
     <string name="see_all">Lihat Semua</string>

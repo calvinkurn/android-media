@@ -306,8 +306,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             challengeTitle.setVisibility(View.GONE);
         }
         if (!TextUtils.isEmpty(challengeResult.getEndDate())) {
-            challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
-                    Utils.convertUTCToString(challengeResult.getEndDate())));
+            if (isPastChallenge) {
+                challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
+                        Utils.convertUTCToString(challengeResult.getEndDate())));
+            } else {
+                challengeDueDate.setText(String.format(getResources().getString(R.string.text_ended_date),
+                        Utils.convertUTCToString(challengeResult.getEndDate())));
+            }
+
         }
         if (!TextUtils.isEmpty(challengeResult.getHashTag()))
             tvHashTag.setText(challengeResult.getHashTag());

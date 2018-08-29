@@ -31,7 +31,6 @@ public class ChallengesHomeActivity extends BaseActivity {
         Intent destination;
         try {
             String deepLink = extras.getString(DeepLink.URI);
-
             Uri.Builder uri = Uri.parse(deepLink).buildUpon();
             destination = new Intent(context, ChallengesHomeActivity.class)
                     .setData(uri.build())
@@ -103,4 +102,12 @@ public class ChallengesHomeActivity extends BaseActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if(viewPager.getCurrentItem()>0){
+            viewPager.setCurrentItem(0);
+        }else{
+            super.onBackPressed();
+        }
+    }
 }
