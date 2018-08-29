@@ -11,15 +11,14 @@ import android.text.style.ForegroundColorSpan
  * Created by hendry on 16/08/18.
  */
 fun getSpandableColorText(strToPut: String, stringToBold: String, color: ForegroundColorSpan): CharSequence {
-    var indexStartBold = -1
-    var indexEndBold = -1
     if (TextUtils.isEmpty(stringToBold)) {
         return strToPut
     }
     val strToPutLowerCase = strToPut.toLowerCase()
     val strToBoldLowerCase = stringToBold.toLowerCase()
     val spannableStringBuilder = SpannableStringBuilder(strToPut)
-    indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase)
+    var indexStartBold = strToPutLowerCase.indexOf(strToBoldLowerCase)
+    var indexEndBold: Int = -1
     if (indexStartBold != -1) {
         indexEndBold = indexStartBold + stringToBold.length
     }

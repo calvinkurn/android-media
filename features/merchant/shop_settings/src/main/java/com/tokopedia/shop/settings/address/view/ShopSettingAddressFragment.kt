@@ -147,7 +147,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
                 setActionText(getString(R.string.close))
                 setOnActionClickListener { dismiss() }
-                setOnItemMenuClickListener { itemMenus, pos ->
+                setOnItemMenuClickListener { _, pos ->
                     when (pos) {
                         0 -> {
                             editShopAddress(item)

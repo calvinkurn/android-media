@@ -23,18 +23,18 @@ public class ShopEtalaseReorderFactory extends BaseShopEtalaseFactory {
     }
 
     public int type(ShopEtalaseViewModel model) {
-        return ShopEtalaseReorderViewHolder.LAYOUT;
+        return ShopEtalaseReorderViewHolder.Companion.getLAYOUT();
     }
 
     public int type(ShopEtalaseTitleViewModel model) {
-        return ShopEtalaseTitleViewHolder.LAYOUT;
+        return ShopEtalaseTitleViewHolder.Companion.getLAYOUT();
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == ShopEtalaseReorderViewHolder.LAYOUT) {
+        if (type == ShopEtalaseReorderViewHolder.Companion.getLAYOUT()) {
             return new ShopEtalaseReorderViewHolder(parent, onStartDragListener);
-        } else if (type == ShopEtalaseTitleViewHolder.LAYOUT) {
+        } else if (type == ShopEtalaseTitleViewHolder.Companion.getLAYOUT()) {
             return new ShopEtalaseTitleViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);

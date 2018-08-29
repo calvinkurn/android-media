@@ -12,7 +12,7 @@ public class ShopSettingsInfoActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return ShopSettingsInfoFragment.newInstance();
+        return ShopSettingsInfoFragment.Companion.newInstance();
     }
 
 }

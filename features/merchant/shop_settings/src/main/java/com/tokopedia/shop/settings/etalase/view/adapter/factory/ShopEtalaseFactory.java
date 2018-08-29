@@ -23,18 +23,18 @@ public class ShopEtalaseFactory extends BaseShopEtalaseFactory {
     }
 
     public int type(ShopEtalaseViewModel model) {
-        return ShopEtalaseViewHolder.LAYOUT;
+        return ShopEtalaseViewHolder.Companion.getLAYOUT();
     }
 
     public int type(ShopEtalaseTitleViewModel model) {
-        return ShopEtalaseTitleViewHolder.LAYOUT;
+        return ShopEtalaseTitleViewHolder.Companion.getLAYOUT();
     }
 
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
-        if (type == ShopEtalaseViewHolder.LAYOUT) {
+        if (type == ShopEtalaseViewHolder.Companion.getLAYOUT()) {
             return new ShopEtalaseViewHolder(parent, onShopEtalaseViewHolderListener);
-        } else if (type == ShopEtalaseTitleViewHolder.LAYOUT) {
+        } else if (type == ShopEtalaseTitleViewHolder.Companion.getLAYOUT()) {
             return new ShopEtalaseTitleViewHolder(parent);
         } else {
             return super.createViewHolder(parent, type);

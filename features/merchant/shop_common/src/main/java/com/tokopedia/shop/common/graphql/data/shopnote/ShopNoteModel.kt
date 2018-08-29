@@ -21,7 +21,7 @@ data class ShopNoteModel(@SerializedName("id")
                          val content: String? = null,
                          @SerializedName("isTerms")
                          @Expose
-                         val terms: Boolean? = null,
+                         val terms: Boolean = false,
                          @SerializedName("updateTime")
                          @Expose
                          val updateTime: String? = null) {

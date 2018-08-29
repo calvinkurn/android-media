@@ -71,7 +71,7 @@ class RadioButtonLabelView : FrameLayout {
         titleTextView!!.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize)
         titleTextView!!.setTextColor(titleColorValue)
         radioButton = view.findViewById(R.id.radio_button)
-        radioButton!!.setOnCheckedChangeListener { buttonView, isChecked ->
+        radioButton!!.setOnCheckedChangeListener { _, isChecked ->
             if (onRadioButtonLabelViewListener != null) {
                 onRadioButtonLabelViewListener!!.onChecked(isChecked)
             }
