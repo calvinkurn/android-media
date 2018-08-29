@@ -32,6 +32,8 @@ public interface ContentExploreContract {
 
         void onCategoryClicked(int position, int categoryId, String categoryName);
 
+        void onCategoryReset();
+
         void showRefreshing();
 
         void showLoading();
@@ -43,6 +45,10 @@ public interface ContentExploreContract {
         void goToKolPostDetail(KolPostViewModel kolPostViewModel);
 
         void dropKeyboard();
+
+        void scrollToTop();
+
+        void resetDataParam();
     }
 
     interface Presenter extends CustomerPresenter<View> {

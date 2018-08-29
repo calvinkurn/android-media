@@ -52,6 +52,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     public static String PARAM_CATEGORY_ID = "category_id";
     public static String DEFAULT_CATEGORY = "0";
+    public static int CATEGORY_POSITION_NONE = -1;
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -294,6 +295,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onCategoryReset() {
+        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "");
+    }
+
+    @Override
     public void showRefreshing() {
         swipeToRefresh.setRefreshing(true);
     }
@@ -382,10 +388,18 @@ public class ContentExploreFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
+    @Override
     public void scrollToTop() {
         if (exploreImageRv != null) {
             exploreImageRv.scrollToPosition(0);
         }
+    }
+
+    @Override
+    public void resetDataParam() {
+        updateSearch("");
+        updateCursor("");
+        updateCategoryId(0);
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
@@ -404,12 +418,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void clearSearch() {
         searchInspiration.getSearchTextView().setText("");
         dropKeyboard();
-    }
-
-    private void resetDataParam() {
-        updateSearch("");
-        updateCursor("");
-        updateCategoryId(0);
     }
 
     private void setAllCategoriesInactive() {
