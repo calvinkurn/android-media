@@ -54,6 +54,7 @@
     <string name="train_search_fastest_label">Tercepat</string>
     <string name="train_search_seat_full_label">Penuh</string>
     <string name="train_search_remains_seat_label" formatted="false">Sisa %d kursi</string>
+    <string name="train_bottom_sheet_tag">Train Sort</string>
 
     <!-- filter -->
     <string name="train_filter_time_departure">Waktu Berangkat</string>
