@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
@@ -150,8 +151,7 @@ public class PriceSimulationView extends BaseView<ProductDetailData, ProductDeta
             rateEstimationLayout.setVisibility(GONE);
         } else {
             rateEstimationLayout.setVisibility(VISIBLE);
-            tvRateEstStartigPrice.setText(getContext().getString(R.string.rates_est_min,
-                    ratesModel.getTexts().getTextMinPrice()));
+            tvRateEstStartigPrice.setText(MethodChecker.fromHtml(ratesModel.getTexts().getTextMinPrice()));
             tvRateEstDestination.setText(context.getString(R.string.rate_est_dest_pdp_detail,
                     ratesModel.getTexts().getTextDestination()));
             rateEstimationLayout.setOnClickListener(view -> listener.moveToEstimationDetail());
