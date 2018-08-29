@@ -93,34 +93,34 @@ public class TravelPassengerBookingPresenter extends BaseDaggerPresenter<TravelP
         boolean allDataValid = true;
         if (TextUtils.isEmpty(getView().getSalutationTitle())) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_salutation);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_salutation);
         } else if (TextUtils.isEmpty(getView().getContactName())) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_contact_name);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_contact_name);
         } else if (getView().getContactName().length() > MAX_CONTACT_NAME) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_max);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_max);
         } else if (!getView().getContactName().matches(PASSENGER_NAME_REGEX)) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_name_containt_alphabet);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_name_containt_alphabet);
         } else if (TextUtils.isEmpty(getView().getPhoneNumber()) && getView().getPaxType() == TravelBookingPassenger.ADULT) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_phone_number);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_phone_number);
         } else if (TextUtils.isEmpty(getView().getIdentityNumber()) && getView().getPaxType() == TravelBookingPassenger.ADULT) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number);
         } else if (getView().getPhoneNumber().length() > MAX_PHONE_NUMBER) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_contact_phone_max_length_error);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_contact_phone_max_length_error);
         } else if (getView().getIdentityNumber().length() < MIN_IDENTITY_NUMBER && getView().getPaxType() == TravelBookingPassenger.ADULT) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number_min);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_min);
         } else if (getView().getIdentityNumber().length() > MAX_IDENTITY_NUMBER && getView().getPaxType() == TravelBookingPassenger.ADULT) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_number_max);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_number_max);
         } else if (!getView().getIdentityNumber().matches(PASSENGER_ID_NUMBER_REGEX) && getView().getPaxType() == TravelBookingPassenger.ADULT) {
             allDataValid = false;
-            getView().showMessageErrorInSnackBar(R.string.train_passenger_error_identity_alphanumeric);
+            getView().showMessageErrorInSnackBar(R.string.travel_passenger_error_identity_alphanumeric);
         }
 
         return allDataValid;

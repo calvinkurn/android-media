@@ -28,7 +28,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:layout_marginTop="@dimen/dp_5"
-                android:hint="@string/train_buyer_full_name"
+                android:hint="@string/travel_buyer_full_name"
                 android:padding="0dp">
 
                 <android.support.v7.widget.AppCompatEditText
@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/widget_card_with_action_separator"
-                    android:hint="@string/train_buyer_full_name_hint"
+                    android:hint="@string/travel_buyer_full_name_hint"
                     android:imeActionLabel="@string/label_next"
                     android:lines="1"
                     android:nextFocusForward="@+id/et_contact_email"
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_15"
-                app:spinner_hint="@string/train_passenger_choose_salutation"
+                app:spinner_hint="@string/travel_passenger_choose_salutation"
                 app:spinner_selection_index="1" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -59,14 +59,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_5"
-                android:hint="@string/train_buyer_phone_number">
+                android:hint="@string/travel_buyer_phone_number">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_phone_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/widget_card_with_action_separator"
-                    android:hint="@string/train_buyer_phone_number_hint"
+                    android:hint="@string/travel_buyer_phone_number_hint"
                     android:imeActionLabel="@string/label_next"
                     android:inputType="phone"
                     android:lines="1"
@@ -83,7 +83,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_15"
-                android:hint="@string/train_passenger_additional_info"
+                android:hint="@string/travel_passenger_additional_info"
                 android:paddingLeft="@dimen/dp_5" />
 
             <com.tokopedia.design.text.TkpdHintTextInputLayout
@@ -92,14 +92,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_5"
-                android:hint="@string/train_passenger_identity_number">
+                android:hint="@string/travel_passenger_identity_number">
 
                 <android.support.v7.widget.AppCompatEditText
                     android:id="@+id/et_identity_number"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/widget_card_with_action_separator"
-                    android:hint="@string/train_passenger_identity_number_hint"
+                    android:hint="@string/travel_passenger_identity_number_hint"
                     android:imeActionLabel="@string/label_next"
                     android:inputType="textEmailAddress"
                     android:lines="1"
@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_15"
-                android:hint="@string/train_passenger_additional_info"
+                android:hint="@string/travel_passenger_additional_info"
                 android:paddingLeft="@dimen/dp_5" />
 
         </LinearLayout>
@@ -125,7 +125,7 @@
             android:id="@+id/button_submit"
             style="@style/Button.Submit.Green"
             android:layout_marginTop="@dimen/dp_15"
-            android:text="@string/train_select_passenger_submit_button" />
+            android:text="@string/travel_select_passenger_submit_button" />
 
     </LinearLayout>
 
