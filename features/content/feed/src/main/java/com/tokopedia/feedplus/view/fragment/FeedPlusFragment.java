@@ -43,6 +43,8 @@ import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
@@ -655,10 +657,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 break;
             case OPEN_KOL_COMMENT:
                 if (resultCode == Activity.RESULT_OK) {
-                    onSuccessAddDeleteKolComment(
-                            data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
-                            data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
-                    );
+                    String serverErrorMsg =
+                            data.getStringExtra(KolCommentFragment.ARGS_SERVER_ERROR_MSG);
+                    if (!TextUtils.isEmpty(serverErrorMsg)) {
+                        ToasterError
+                                .make(getView(), serverErrorMsg,BaseToaster.LENGTH_LONG)
+                                .setAction(R.string.cta_refresh_feed, v -> onRefresh()).show();
+                    } else {
+                        onSuccessAddDeleteKolComment(
+                                data.getIntExtra(KolCommentActivity.ARGS_POSITION, DEFAULT_VALUE),
+                                data.getIntExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, 0)
+                        );
+                    }
                 }
                 break;
             case OPEN_KOL_PROFILE:
@@ -932,7 +942,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToKolComment(int rowNumber, int id) {
-        Intent intent = feedModuleRouter.getKolCommentActivity(getContext(), id, rowNumber);
+        Intent intent = KolCommentActivity.getCallingIntentFromFeed(getContext(), id, rowNumber);
         startActivityForResult(intent, OPEN_KOL_COMMENT);
     }
 
@@ -1021,7 +1031,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     private void onSuccessAddDeleteKolComment(int rowNumber, int totalNewComment) {
-        if (adapter.getlist().size() > rowNumber
+        if (rowNumber != DEFAULT_VALUE
+                && adapter.getlist().size() > rowNumber
                 && adapter.getlist().get(rowNumber) instanceof BaseKolViewModel) {
             BaseKolViewModel kolViewModel = (BaseKolViewModel) adapter.getlist().get(rowNumber);
             kolViewModel.setTotalComment((
