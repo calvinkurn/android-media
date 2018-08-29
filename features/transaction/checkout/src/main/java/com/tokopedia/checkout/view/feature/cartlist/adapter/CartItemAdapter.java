@@ -97,5 +97,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
+        void onWishlistCheckChanged(String productId, boolean isChecked);
+
     }
 }

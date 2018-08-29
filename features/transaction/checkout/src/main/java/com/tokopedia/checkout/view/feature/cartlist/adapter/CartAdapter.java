@@ -10,16 +10,16 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
-import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
-import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
+import com.tokopedia.checkout.view.common.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartShopViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.ArrayList;
@@ -385,6 +385,23 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         int index = cartDataList.indexOf(shipmentSellerCashbackModel);
         if (index != -1) {
             notifyItemChanged(index);
+        }
+    }
+
+    public void notifyByProductId(String productId, boolean isWishlisted) {
+        for (int i = 0; i < cartDataList.size(); i++) {
+            if (cartDataList.get(i) instanceof CartShopHolderData) {
+                CartShopHolderData cartShopHolderData = (CartShopHolderData) cartDataList.get(i);
+                if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        if (cartItemHolderData.getCartItemData().getOriginData().getProductId().equals(productId)) {
+                            cartItemHolderData.getCartItemData().getOriginData().setWishlisted(isWishlisted);
+                            notifyItemChanged(i);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 

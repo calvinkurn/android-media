@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -41,18 +40,18 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
+import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
-import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
-import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceActivity;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
@@ -83,6 +82,7 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,7 +99,7 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
 
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
-        RefreshHandler.OnRefreshHandlerListener {
+        RefreshHandler.OnRefreshHandlerListener, WishListActionListener {
 
     private static final int TOP_ADS_COUNT = 4;
 
@@ -582,6 +582,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onWishlistCheckChanged(String productId, boolean isChecked) {
+        if (getActivity() != null) {
+            if (isChecked) {
+                dPresenter.processAddToWishlist(productId, SessionHandler.getLoginID(getActivity()), this);
+            } else {
+                dPresenter.processRemoveFromWishlist(productId, SessionHandler.getLoginID(getActivity()), this);
+            }
+        }
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
@@ -1030,6 +1041,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void showToastMessageGreen(String message) {
+        View view = getView();
+        if (view != null) NetworkErrorHelper.showGreenCloseSnackbar(view, message);
+        else Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void renderLoadGetCartData() {
         mDataPasserListener.onContentAvailabilityChanged(false);
     }
@@ -1212,6 +1230,34 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 cartAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
             }
         }
+    }
+
+    @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        hideProgressLoading();
+        showToastMessageRed(errorMessage);
+        cartAdapter.notifyByProductId(productId, false);
+    }
+
+    @Override
+    public void onSuccessAddWishlist(String productId) {
+        hideProgressLoading();
+        showToastMessageGreen("Sukses menambah wishlist");
+        cartAdapter.notifyByProductId(productId, true);
+    }
+
+    @Override
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        hideProgressLoading();
+        showToastMessageRed(errorMessage);
+        cartAdapter.notifyByProductId(productId, true);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
+        hideProgressLoading();
+        showToastMessageGreen("Sukses menghapus wishlist");
+        cartAdapter.notifyByProductId(productId, false);
     }
 
     public interface ActionListener {

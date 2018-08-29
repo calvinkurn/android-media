@@ -2,8 +2,8 @@ package com.tokopedia.checkout.view.feature.cartlist;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
-import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
 import java.util.Map;
@@ -37,4 +37,8 @@ public interface ICartListPresenter {
     Map<String, Object> generateCartDataAnalytics(List<CartItemData> cartItemDataList, String enhancedECommerceAction);
 
     CartListData getCartListData();
+
+    void processAddToWishlist(String productId, String userId, WishListActionListener wishListActionListener);
+
+    void processRemoveFromWishlist(String productId, String userId, WishListActionListener wishListActionListener);
 }
