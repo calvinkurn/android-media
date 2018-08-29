@@ -1,4 +1,4 @@
-package com.tokopedia.talk.common
+package com.tokopedia.talk.common.applink
 
 import com.airbnb.deeplinkdispatch.DeepLinkModule
 

@@ -1,4 +1,4 @@
-package com.tokopedia.talk.common
+package com.tokopedia.talk.common.analytics
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker
 

@@ -4,7 +4,7 @@
 
     <application android:label="@string/app_name">
         <activity
-            android:name=".inboxtalk.InboxTalkActivity"
+            android:name=".inboxtalk.activity.InboxTalkActivity"
             android:label="@string/title_product_discussion"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"

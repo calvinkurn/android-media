@@ -1,7 +1,8 @@
 package com.tokopedia.talk.inboxtalk.di
 
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.fragment.InboxTalkFragment
 import dagger.Component
 
 /**
@@ -12,5 +13,8 @@ import dagger.Component
 interface InboxTalkComponent {
 
     fun inject(inboxTalkActivity: InboxTalkActivity)
+
+    fun inject(inboxTalkFragment: InboxTalkFragment)
+
 
 }

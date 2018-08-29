@@ -1,4 +1,4 @@
-package com.tokopedia.talk.inboxtalk
+package com.tokopedia.talk.inboxtalk.activity
 
 import android.content.Context
 import android.content.Intent
