@@ -34,7 +34,7 @@ import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEve
 import com.tokopedia.updateinactivephone.common.analytics.UpdateInactivePhoneEventTracking;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactivePhonePresenter;
 import com.tokopedia.updateinactivephone.view.ChangeInactivePhone;
-import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
+import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 

@@ -25,7 +25,7 @@ import com.tokopedia.updateinactivephone.fragment.SelectImageNewPhoneFragment;
 import com.tokopedia.updateinactivephone.fragment.UpdateNewPhoneEmailFragment;
 import com.tokopedia.updateinactivephone.presenter.ChangeInactiveFormRequestPresenter;
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest;
-import com.tokpedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
+import com.tokopedia.updateinactivephone.di.DaggerUpdateInactivePhoneComponent;
 
 import javax.inject.Inject;
 

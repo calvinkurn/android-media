@@ -2,7 +2,6 @@ package com.tokopedia.updateinactivephone.usecase;
 
 import android.content.Context;
 
-import com.tokoepdia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.graphql.data.ObservableFactory;
@@ -12,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.updateinactivephone.R;
+import com.tokopedia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
