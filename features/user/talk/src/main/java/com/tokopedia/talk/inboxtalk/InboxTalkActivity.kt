@@ -5,11 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.util.Log
 import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.di.DaggerTalkComponent
+import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.adapter.InboxTalkPagerAdapter
+import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_inbox_talk.*
 import javax.inject.Inject
@@ -18,7 +24,7 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkActivity : BaseSimpleActivity() {
+class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private lateinit var inboxTalkPagerAdapter: InboxTalkPagerAdapter
 
@@ -59,6 +65,28 @@ class InboxTalkActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
 
         initPagerAdapter()
+
+    }
+
+    override fun getComponent(): TalkComponent {
+        return DaggerTalkComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
+    }
+
+    private fun initInjector() {
+        val inboxTalkComponent = DaggerInboxTalkComponent.builder()
+                .talkComponent(component)
+                .build()
+        inboxTalkComponent.inject(this)
+    }
+
+    private fun initPagerAdapter() {
+        if (userSession.hasShop()) {
+            Log.d("NISNIS", "HAS SHOP")
+        }
+
+        inboxTalkPagerAdapter = InboxTalkPagerAdapter(supportFragmentManager, titles)
+
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = inboxTalkPagerAdapter
 
@@ -72,14 +100,5 @@ class InboxTalkActivity : BaseSimpleActivity() {
 
             }
         })
-
-    }
-
-    private fun initInjector() {
-
-    }
-
-    private fun initPagerAdapter() {
-        inboxTalkPagerAdapter = InboxTalkPagerAdapter(supportFragmentManager, titles)
     }
 }

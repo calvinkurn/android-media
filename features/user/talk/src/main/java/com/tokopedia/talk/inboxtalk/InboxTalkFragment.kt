@@ -18,6 +18,7 @@ class InboxTalkFragment : BaseDaggerFragment() {
         fun newInstance() = InboxTalkFragment()
     }
 
+
     override fun getScreenName(): String {
         return TalkAnalytics.SCREEN_NAME_INBOX_TALK
     }

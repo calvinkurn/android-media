@@ -1,0 +1,21 @@
+package com.tokopedia.talk.common.di
+
+import android.content.Context
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.user.session.UserSession
+import dagger.Component
+
+/**
+ * @author by nisie on 8/28/18.
+ */
+@TalkScope
+@Component(modules = arrayOf(TalkModule::class), dependencies = arrayOf(BaseAppComponent::class))
+interface TalkComponent {
+
+    @ApplicationContext
+    fun getContext(): Context
+
+    fun getUserSession(): UserSession
+
+}
