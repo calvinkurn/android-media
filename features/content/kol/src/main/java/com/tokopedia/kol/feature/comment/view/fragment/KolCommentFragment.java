@@ -190,10 +190,18 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetCommentsFirstTime(String errorMessage) {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                () -> presenter.getCommentFirstTime(
+                        getArguments().getInt(KolCommentActivity.ARGS_ID))
+        );
+    }
+
+    @Override
+    public void onServerErrorGetCommentsFirstTime(String errorMessage) {
         if (getActivity() != null
                 && getActivity().getIntent().getExtras() != null
                 && getActivity().getIntent().getExtras().getBoolean(
-                        KolCommentActivity.ARGS_FROM_FEED, false)) {
+                KolCommentActivity.ARGS_FROM_FEED, false)) {
             Intent intent = new Intent();
             intent.putExtra(ARGS_SERVER_ERROR_MSG, errorMessage);
             getActivity().setResult(Activity.RESULT_OK, intent);
