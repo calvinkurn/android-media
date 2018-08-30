@@ -9,10 +9,10 @@
         android:id="@+id/label_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="@drawable/selectable_background_tokopedia"
-        android:paddingBottom="@dimen/dp_22"
-        android:paddingTop="@dimen/dp_22" />
+        android:paddingBottom="@dimen/dp_22" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/tv_passenger_pax_type"

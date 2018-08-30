@@ -37,7 +37,6 @@ import com.tokopedia.train.passenger.domain.model.TrainSoftbook;
 import com.tokopedia.train.passenger.domain.requestmodel.TrainBuyerRequest;
 import com.tokopedia.train.passenger.domain.requestmodel.TrainPassengerRequest;
 import com.tokopedia.train.passenger.domain.requestmodel.TrainScheduleRequest;
-import com.tokopedia.train.passenger.presentation.activity.TrainBookingAddPassengerActivity;
 import com.tokopedia.train.passenger.presentation.activity.TrainBookingPassengerActivity;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapter;
 import com.tokopedia.train.passenger.presentation.adapter.TrainBookingPassengerAdapterListener;
@@ -141,7 +140,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         if (savedInstanceState == null) {
             trainParamPassenger = new TrainParamPassenger();
             initializedDataPassenger();
-            trainParamPassenger.setCheckedSameAsBuyer(true);
         } else {
             trainParamPassenger = savedInstanceState.getParcelable(TRAIN_PARAM_PASSENGER);
             renderPassengers(trainParamPassenger.getTrainPassengerViewModelList());
@@ -441,7 +439,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         switch (requestCode) {
             case ADD_PASSENGER_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK) {
-                    TravelPassenger travelPassenger = data.getParcelableExtra(TrainBookingAddPassengerActivity.PASSENGER_DATA);
+                    TravelPassenger travelPassenger = data.getParcelableExtra(TravelPassengerBookingActivity.PASSENGER_DATA);
                     //TODO clean this code
                     TrainPassengerViewModel trainPassengerViewModel = new TrainPassengerViewModel();
                     trainPassengerViewModel.setPhone(travelPassenger.getPhoneNumber());
@@ -453,8 +451,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainPassengerViewModel.setSalutationId(travelPassenger.getSalutationId());
                     trainPassengerViewModel.setSalutationTitle(travelPassenger.getSalutationTitle());
                     presenter.updateDataPassengers(trainPassengerViewModel);
-                } else if (resultCode == Activity.RESULT_CANCELED) {
-                    trainParamPassenger.setCheckedSameAsBuyer(true);
                 }
                 break;
             case NEXT_STEP_REQUEST_CODE:
