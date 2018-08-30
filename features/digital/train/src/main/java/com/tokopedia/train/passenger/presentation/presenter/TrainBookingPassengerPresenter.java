@@ -177,7 +177,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                             List<TrainError> errors = ((TrainNetworkException) e).getErrorList();
                             if (errors.contains(new TrainError(TrainNetworkErrorConstant.SOLD_OUT)) ||
                                     errors.contains(new TrainError(TrainNetworkErrorConstant.RUTE_NOT_FOUND)) ||
-                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURRS))) {
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.TOO_MANY_SOFTBOOK)) ||
+                                    errors.contains(new TrainError(TrainNetworkErrorConstant.LESS_THAN_3_HOURS))) {
                                 getView().showNavigateToSearchDialog(e.getMessage());
                                 return;
                             }

@@ -17,8 +17,9 @@ public interface WalletDataSource {
 
     Observable<TokoCashHistoryEntity> getTokoCashHistoryData(HashMap<String, String> mapParams);
 
+    @Deprecated
     Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData();
-
+    @Deprecated
     Observable<Boolean> submitHelpTokoCash(HashMap<String, String> mapParams);
 
     Observable<WithdrawSaldoEntity> withdrawTokoCashToSaldo(String url, HashMap<String, String> mapParams);

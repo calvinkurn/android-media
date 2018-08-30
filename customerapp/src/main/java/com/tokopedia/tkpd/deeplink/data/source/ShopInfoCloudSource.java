@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.deeplink.data.source;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.response.DataResponse;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 
 import javax.inject.Inject;
 

@@ -9,7 +9,7 @@ import rx.Observable;
 /**
  * Created by nabillasabbaha on 2/19/18.
  */
-
+@Deprecated
 public class PostHelpHistoryDetailUseCase extends UseCase<Boolean> {
 
     public static final String SUBJECT = "subject";
