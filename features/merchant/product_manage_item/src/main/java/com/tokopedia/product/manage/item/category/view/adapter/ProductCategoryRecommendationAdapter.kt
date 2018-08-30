@@ -56,7 +56,7 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
             if (!TextUtils.isEmpty(tempName)) {
                 tempName += " / "
             }
-            tempName += strings.get(i)
+            tempName += strings[i]
         }
         return tempName
     }
@@ -74,12 +74,16 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
         notifyDataSetChanged()
     }
 
-    fun getSelectedCategory(): ProductCategory {
+    private fun getSelectedCategory(): ProductCategory {
         return categoryRecommendationList[selectedPosition]
     }
 
+    private fun isWithinDataset(position: Int): Boolean {
+        return position >= 0 && position <= categoryRecommendationList.size - 1
+    }
+
     fun setSelectedCategory(productCategory: ProductCategory) {
-        var isMatchCategory = false;
+        var isMatchCategory = false
         for ((index, value) in categoryRecommendationList.withIndex()) {
             if (value.categoryId == productCategory.categoryId) {
                 selectedPosition = index
@@ -102,15 +106,17 @@ class ProductCategoryRecommendationAdapter(private val categoryRecommendationLis
             itemView.labelCategoryRecommendation.setOnClickListener {
                 onClickItemCategory()
             }
-            itemView.setOnClickListener({
+            itemView.setOnClickListener {
                 onClickItemCategory()
-            })
+            }
         }
 
-        fun onClickItemCategory() {
+        private fun onClickItemCategory() {
             selectedPosition = adapterPosition
             notifyDataSetChanged()
-            listener.onCategoryRecommendationChoosen(getSelectedCategory())
+            if(isWithinDataset(selectedPosition)){
+                listener.onCategoryRecommendationChoosen(getSelectedCategory())
+            }
         }
     }
 }

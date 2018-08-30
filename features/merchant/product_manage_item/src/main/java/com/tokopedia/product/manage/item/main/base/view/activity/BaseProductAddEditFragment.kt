@@ -176,8 +176,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startProductEtalaseActivity() {
         if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!),
-                    REQUEST_CODE_GET_ETALASE)
+            activity?.run {
+                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId?:-1),
+                        REQUEST_CODE_GET_ETALASE)
+            }
+
         }
     }
 
