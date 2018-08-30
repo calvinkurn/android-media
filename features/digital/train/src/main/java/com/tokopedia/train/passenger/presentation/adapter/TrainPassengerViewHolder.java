@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.tkpdtrain.R;
+import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.presentation.viewmodel.TrainPassengerViewModel;
 
 /**
@@ -22,7 +23,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
     private LabelView headerLabel;
     private LinearLayout passengerDetailLayout;
     private AppCompatTextView passengerNameTv;
-    private AppCompatTextView passengerIdentityNumberTv;
+    private AppCompatTextView passengerPaxTypeTv;
 
     public TrainPassengerViewHolder(View itemView, TrainBookingPassengerAdapterListener listener) {
         super(itemView);
@@ -34,7 +35,7 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
         headerLabel = itemView.findViewById(R.id.label_header);
         passengerDetailLayout = itemView.findViewById(R.id.passenger_detail_layout);
         passengerNameTv = itemView.findViewById(R.id.tv_passenger_name);
-        passengerIdentityNumberTv = itemView.findViewById(R.id.tv_passenger_identity_number);
+        passengerPaxTypeTv = itemView.findViewById(R.id.tv_passenger_pax_type);
     }
 
     @Override
@@ -43,19 +44,15 @@ public class TrainPassengerViewHolder extends AbstractViewHolder<TrainPassengerV
         headerLabel.setContentColorValue(itemView.getResources().getColor(R.color.green_400));
         if (trainPassengerViewModel.getName() != null) {
             passengerDetailLayout.setVisibility(View.VISIBLE);
+            passengerPaxTypeTv.setVisibility(View.VISIBLE);
             headerLabel.setContent(getString(R.string.train_btn_change_passenger_data));
             passengerNameTv.setText(trainPassengerViewModel.getSalutationTitle() + " " + trainPassengerViewModel.getName());
-
-            if (trainPassengerViewModel.getIdentityNumber() != null) {
-                passengerIdentityNumberTv.setVisibility(View.VISIBLE);
-                passengerIdentityNumberTv.setText(String.format(
-                        getString(R.string.train_passenger_label_identity_number), trainPassengerViewModel.getIdentityNumber()));
-            } else {
-                passengerIdentityNumberTv.setVisibility(View.GONE);
-            }
+            passengerPaxTypeTv.setText(trainPassengerViewModel.getPaxType() == TrainBookingPassenger.ADULT ?
+                    getString(R.string.kai_homepage_adult_passenger) : getString(R.string.kai_homepage_adult_infant));
 
         } else {
             passengerDetailLayout.setVisibility(View.GONE);
+            passengerPaxTypeTv.setVisibility(View.GONE);
             headerLabel.setContent(getString(R.string.train_btn_fill_passenger_data));
         }
 
