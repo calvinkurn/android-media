@@ -18,6 +18,7 @@
 
     <TextView style="@style/TextView.Small.BlackSecondary"
         android:id="@+id/content_text"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        android:textColorLink="@color/tkpd_main_green"/>
 
 </LinearLayout>

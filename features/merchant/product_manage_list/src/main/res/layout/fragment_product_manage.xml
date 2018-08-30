@@ -30,6 +30,10 @@
             android:id="@+id/search_input_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_6"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginRight="@dimen/dp_6"
+            android:layout_marginEnd="@dimen/dp_6"
             app:layout_scrollFlags="scroll|snap|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
