@@ -165,7 +165,7 @@
 
         <TextView
             android:id="@+id/text_voucher_amount"
-            style="@style/TextView.Small.Green.Bold"
+            style="@style/TextView.Small.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"

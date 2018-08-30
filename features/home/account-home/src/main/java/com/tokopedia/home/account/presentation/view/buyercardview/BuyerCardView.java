@@ -1,4 +1,4 @@
-package com.tokopedia.home.account.presentation.view;
+package com.tokopedia.home.account.presentation.view.buyercardview;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -21,16 +20,17 @@ import com.tokopedia.home.account.R;
 /**
  * @author okasurya on 7/17/18.
  */
-public class BuyerCardView extends BaseCustomView {
+public class BuyerCardView extends BaseCustomView implements BuyerCardContract.View {
 
     private ImageView imageProfileProgress;
     private ImageView imageProfileCompleted;
     private TextView textUsername;
     private TextView textProfileCompletion;
     private TextView textTokopointAmount;
-    private TextView textVoucherAmount;
+    private TextView textCouponAmount;
     private ProgressBar progressBar;
     private View nameHolder;
+    private BuyerCardPresenter buyerCardPresenter;
 
     public BuyerCardView(@NonNull Context context) {
         super(context);
@@ -54,45 +54,86 @@ public class BuyerCardView extends BaseCustomView {
         textUsername = view.findViewById(R.id.text_username);
         textProfileCompletion = view.findViewById(R.id.text_profile_completion);
         textTokopointAmount = view.findViewById(R.id.text_tokopoint_amount);
-        textVoucherAmount = view.findViewById(R.id.text_voucher_amount);
+        textCouponAmount = view.findViewById(R.id.text_voucher_amount);
         progressBar = view.findViewById(R.id.circular_progress_bar);
         nameHolder = view.findViewById(R.id.holder_title);
+        buyerCardPresenter = new BuyerCardPresenter();
+        buyerCardPresenter.attachView(this);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        buyerCardPresenter.detachView();
+    }
+
+    public void renderData(BuyerCard buyerCard) {
+        buyerCardPresenter.setData(buyerCard);
+    }
+
+    @Override
     public void setName(String name) {
         textUsername.setText(name);
     }
 
+    @Override
     public void setAvatarImageUrl(int progress, String imageUrl) {
-        if(progress > 0 && progress < 100) {
-            imageProfileProgress.setVisibility(VISIBLE);
-            progressBar.setVisibility(VISIBLE);
-            imageProfileCompleted.setVisibility(GONE);
 
-            ObjectAnimator animation = ObjectAnimator.ofInt(progressBar,
-                    "progress", 0, progress);
-            animation.setDuration(2000);
-            animation.setInterpolator(new DecelerateInterpolator());
-            animation.start();
-            textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
-            textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-            ImageHandler.loadImageCircle2(getContext(), imageProfileProgress, imageUrl, R.drawable.ic_big_notif_customerapp);
-        } else {
-            imageProfileCompleted.setVisibility(VISIBLE);
-            imageProfileProgress.setVisibility(GONE);
-            progressBar.setVisibility(GONE);
-            ImageHandler.loadImageCircle2(getContext(), imageProfileCompleted, imageUrl, R.drawable.ic_big_notif_customerapp);
-            textProfileCompletion.setText(R.string.verified_account);
-            textProfileCompletion.setTypeface(null, Typeface.ITALIC);
-        }
     }
 
+    @Override
+    public void showCompletedAvatar(String imageUrl) {
+        ImageHandler.loadImageCircle2(getContext(), imageProfileCompleted, imageUrl, R.drawable.ic_big_notif_customerapp);
+    }
+
+    @Override
+    public void showIncompleteAvatar(String imageUrl) {
+        ImageHandler.loadImageCircle2(getContext(), imageProfileProgress, imageUrl, R.drawable.ic_big_notif_customerapp);
+    }
+
+    @Override
     public void setTokopoint(String tokopoint) {
         textTokopointAmount.setText(tokopoint);
     }
 
-    public void setVoucher(String coupons) {
-        textVoucherAmount.setText(coupons);
+    @Override
+    public void setCoupon(int coupons) {
+        textCouponAmount.setText(String.format(getContext().getString(R.string.label_total_coupon), coupons));
+    }
+
+    @Override
+    public void showProfileProgress(int progress) {
+        imageProfileCompleted.setVisibility(GONE);
+        imageProfileProgress.setVisibility(VISIBLE);
+        progressBar.setVisibility(VISIBLE);
+        ObjectAnimator animation = ObjectAnimator.ofInt(progressBar, "progress", 0, progress);
+        animation.setDuration(2000);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.start();
+    }
+
+    @Override
+    public void hideProfileProgress() {
+        imageProfileCompleted.setVisibility(VISIBLE);
+        imageProfileProgress.setVisibility(GONE);
+        progressBar.setVisibility(GONE);
+    }
+
+    @Override
+    public void setProfileStatusCompleted() {
+        textProfileCompletion.setText(getContext().getString(R.string.verified_account));
+        textProfileCompletion.setTypeface(null, Typeface.ITALIC);
+    }
+
+    @Override
+    public void setProfileStatusIncomplete(int progress) {
+        textProfileCompletion.setText(String.format(getContext().getString(R.string.label_profile_completion), progress));
+        textProfileCompletion.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
     }
 
     public void setOnClickProfile(View.OnClickListener listener) {
@@ -108,6 +149,6 @@ public class BuyerCardView extends BaseCustomView {
     }
 
     public void setOnClickVoucher(View.OnClickListener listener) {
-        textVoucherAmount.setOnClickListener(listener);
+        textCouponAmount.setOnClickListener(listener);
     }
 }

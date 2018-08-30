@@ -53,7 +53,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setVoucher(context.getString(R.string.label_tokopoint_see_voucher));
+        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
