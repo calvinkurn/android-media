@@ -25,7 +25,7 @@ public interface CartAdapterActionListener {
 
     void onCartDataEnableToCheckout();
 
-    void onCartDataDisableToCheckout();
+    void onCartDataDisableToCheckout(String message);
 
     void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position);
 

@@ -238,6 +238,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         dialog.dismiss();
                     });
                     dialog.show();
+                } else {
+                    showToastMessageRed(getString(R.string.message_delete_empty_selection));
                 }
             });
         }
@@ -284,7 +286,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setViewListener() {
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
     }
@@ -301,8 +303,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @NonNull
-    private View.OnClickListener getOnClickButtonToShipmentListener() {
-        return view -> dPresenter.processToUpdateCartData();
+    private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
+        return view -> {
+            if (message == null) {
+                dPresenter.processToUpdateCartData();
+                sendAnalyticsOnButtonCheckoutClicked();
+            } else {
+                showToastMessageRed(message);
+            }
+        };
+    }
+
+    private void sendAnalyticsOnButtonCheckoutClicked() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourierOnCart();
     }
 
     @Override
@@ -368,19 +381,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView) {
         cartAdapter.resetQuantity(position, parentPosition);
         dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
-        // Todo : figure out the purpose of piece of code below :(
-//        if (needRefreshItemView) {
-//            cartAdapter.notifyItems(position);
-//        }
     }
 
     @Override
     public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
         dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
-        // Todo : figure out the purpose of piece of code below :(
-//        if (needRefreshItemView) {
-//            cartAdapter.notifyItems(position);
-//        }
     }
 
     @Override
@@ -399,6 +404,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 ));
             }
         }
+    }
+
+    @Override
+    public String getDefaultCartErrorMessage() {
+        return getString(R.string.cart_error_message_no_count);
     }
 
     @Override
@@ -529,18 +539,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded()) {
-            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-            btnToShipment.setTextColor(getResources().getColor(R.color.white));
-            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+//            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
+//            btnToShipment.setTextColor(getResources().getColor(R.color.white));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
 
     @Override
-    public void onCartDataDisableToCheckout() {
+    public void onCartDataDisableToCheckout(String message) {
         if (isAdded()) {
-            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
-            btnToShipment.setOnClickListener(null);
+//            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
+//            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
 

@@ -368,9 +368,7 @@ public class CartListPresenter implements ICartListPresenter {
 
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty),
                 CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false));
-        if (totalCashback > 0) {
-            view.updateCashback(totalCashback);
-        }
+        view.updateCashback(totalCashback);
 
     }
 
