@@ -106,7 +106,7 @@ public class PinEntryEditText extends AppCompatEditText {
         mSpace = multi * mSpace; //convert to pixels for our density
         mTextBottomPadding = multi * mTextBottomPadding; //convert to pixels for our density
 
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEntryEditText, 0, 0);
+        /*TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEntryEditText, 0, 0);
         try {
             TypedValue outValue = new TypedValue();
             ta.getValue(R.styleable.PinEntryEditText_pinAnimationType, outValue);
@@ -125,7 +125,7 @@ public class PinEntryEditText extends AppCompatEditText {
             }
         } finally {
             ta.recycle();
-        }
+        }*/
 
         mCharPaint = new Paint(getPaint());
         mLastCharPaint = new Paint(getPaint());
