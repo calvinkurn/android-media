@@ -717,10 +717,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             mIsMenuVisible = false;
             getActivity().invalidateOptionsMenu();
             refreshHandler.finishRefresh();
-            rlContent.setVisibility(View.GONE);
-            cardHeader.setVisibility(View.GONE);
-            cardFooter.setVisibility(View.GONE);
-            llNetworkErrorView.setVisibility(View.VISIBLE);
+            showErrorContainer();
             mDataPasserListener.onContentAvailabilityChanged(false);
             NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                     () -> {
@@ -738,28 +735,32 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        bottomLayout.setVisibility(View.GONE);
+        cardFooter.setVisibility(View.GONE);
+        cardHeader.setVisibility(View.GONE);
     }
 
     public void showMainContainer() {
         emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.GONE);
         rlContent.setVisibility(View.VISIBLE);
-        bottomLayout.setVisibility(View.VISIBLE);
+        cardFooter.setVisibility(View.VISIBLE);
+        cardHeader.setVisibility(View.VISIBLE);
     }
 
     public void showErrorContainer() {
         rlContent.setVisibility(View.GONE);
         emptyCartContainer.setVisibility(View.GONE);
         llNetworkErrorView.setVisibility(View.VISIBLE);
-        bottomLayout.setVisibility(View.GONE);
+        cardFooter.setVisibility(View.GONE);
+        cardHeader.setVisibility(View.GONE);
     }
 
     public void showEmptyCartContainer() {
         rlContent.setVisibility(View.GONE);
         emptyCartContainer.setVisibility(View.VISIBLE);
         llNetworkErrorView.setVisibility(View.GONE);
-        bottomLayout.setVisibility(View.GONE);
+        cardFooter.setVisibility(View.GONE);
+        cardHeader.setVisibility(View.GONE);
     }
 
 
