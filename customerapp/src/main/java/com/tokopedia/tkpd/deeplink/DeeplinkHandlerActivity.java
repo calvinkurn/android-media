@@ -176,7 +176,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
-            presenter.processUTM(applink);
+            presenter.processUTM(this, applink);
             Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());

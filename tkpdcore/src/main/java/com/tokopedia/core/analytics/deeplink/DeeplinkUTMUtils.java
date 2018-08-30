@@ -1,7 +1,12 @@
 package com.tokopedia.core.analytics.deeplink;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.net.ParseException;
 import android.net.Uri;
+import android.os.Build;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.google.firebase.appindexing.AndroidAppUri;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -18,6 +23,7 @@ import java.util.Map;
 
 public class DeeplinkUTMUtils {
 
+    private static final String REFERRER_NAME = "android.intent.extra.REFERRER_NAME";
     private DeeplinkUTMUtils() {
 
     }
@@ -84,12 +90,29 @@ public class DeeplinkUTMUtils {
     private static final String QUICK_SEARCH_BOX = "com.google.android.googlequicksearchbox";
     private static final String APP_CRAWLER = "com.google.appcrawler";
 
-    public static Campaign convertUrlCampaign(Uri uri) {
-        Map<String, String> maps = splitQuery(uri);
+    public static Campaign convertUrlCampaign(Activity activity, Uri uri1) {
+        Map<String, String> maps = splitQuery(uri1);
         Campaign campaign = new Campaign();
 
+        Uri uri = getReferrer(activity);
 
         if (uri == null) {
+
+            Toast.makeText(activity, "campaign uri null", Toast.LENGTH_LONG).show();
+
+            campaign.setUtmSource("direct");
+            campaign.setUtmMedium("none");
+            campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
+
+            campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+            campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+            campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
+                    maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+
+
             // App was opened directly by the user
         } else {
             // App was referred via a deep link
@@ -97,6 +120,8 @@ public class DeeplinkUTMUtils {
                 // App was opened from a browser
                 String host = uri.getHost();
                 if (host.equals("www.google.com")) {
+
+                    Toast.makeText(activity, "campaign event from google", Toast.LENGTH_LONG).show();
 
                     campaign.setUtmSource("google.com");
                     campaign.setUtmMedium("organic");
@@ -112,6 +137,7 @@ public class DeeplinkUTMUtils {
 
                 } else {
 
+                    Toast.makeText(activity, "campaign event not google", Toast.LENGTH_LONG).show();
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
                     campaign.setUtmMedium("referral");
@@ -129,10 +155,14 @@ public class DeeplinkUTMUtils {
 
             } else if (uri.getScheme().equals("android-app")) {
                 // App was opened from another app
+
                 AndroidAppUri appUri = AndroidAppUri.newAndroidAppUri(uri);
                 String referrerPackage = appUri.getPackageName();
                 if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
+
+                    Toast.makeText(activity, "campaign event google_app", Toast.LENGTH_LONG).show();
+
                     campaign.setUtmSource("google_app");
                     campaign.setUtmMedium("organic");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -148,6 +178,8 @@ public class DeeplinkUTMUtils {
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
 //
+                    Toast.makeText(activity, "campaign event not google_app", Toast.LENGTH_LONG).show();
+
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
                     campaign.setUtmMedium("referral");
@@ -165,6 +197,9 @@ public class DeeplinkUTMUtils {
                 }
 
             } else {
+
+                Toast.makeText(activity, "campaign event default", Toast.LENGTH_LONG).show();
+
                 campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                         maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
                 campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
@@ -185,4 +220,54 @@ public class DeeplinkUTMUtils {
         return campaign;
     }
 
+    public static Campaign convertUrlCampaign(Uri uri) {
+        Map<String, String> maps = splitQuery(uri);
+        Campaign campaign = new Campaign();
+
+        campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
+                maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+        campaign.setUtmMedium(maps.get(AppEventTracking.GTM.UTM_MEDIUM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_MEDIUM) : "");
+        campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "");
+        campaign.setUtmContent(maps.get(AppEventTracking.GTM.UTM_CONTENT) != null ?
+                maps.get(AppEventTracking.GTM.UTM_CONTENT) : "");
+        campaign.setUtmTerm(maps.get(AppEventTracking.GTM.UTM_TERM) != null ?
+                maps.get(AppEventTracking.GTM.UTM_TERM) : "");
+        campaign.setGclid(maps.get(AppEventTracking.GTM.UTM_GCLID) != null ?
+                maps.get(AppEventTracking.GTM.UTM_GCLID) : "");
+
+        return campaign;
+    }
+
+    /**
+     * Returns the referrer who started the Activity.
+     */
+    public static Uri getReferrer(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            return activity.getReferrer();
+        }
+        return getReferrerCompatible(activity);
+    }
+
+    /**
+     * Returns the referrer on devices running SDK versions lower than 22.
+     */
+    private static Uri getReferrerCompatible(Activity activity) {
+        Intent intent = activity.getIntent();
+        Uri referrerUri = intent.getParcelableExtra(Intent.EXTRA_REFERRER);
+        if (referrerUri != null) {
+            return referrerUri;
+        }
+        String referrer = intent.getStringExtra(REFERRER_NAME);
+        if (referrer != null) {
+            // Try parsing the referrer URL; if it's invalid, return null
+            try {
+                return Uri.parse(referrer);
+            } catch (ParseException e) {
+                return null;
+            }
+        }
+        return null;
+    }
 }
