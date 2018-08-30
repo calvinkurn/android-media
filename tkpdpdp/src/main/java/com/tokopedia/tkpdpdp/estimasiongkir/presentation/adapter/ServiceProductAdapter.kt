@@ -41,16 +41,22 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
 
                 itemView.label_view.title = title
             } else {
-                val title = itemView.context.getString(R.string.shipping_receiver_text,
-                        product.name, product.etd)
+                if(product.etd == itemView.context.getString(R.string.address_has_not_pin_point)){
+                    val title = itemView.context.getString(R.string.shipping_receiver_text_empty, product.name)
+                    itemView.label_view.title = title
+                    itemView.label_view.setSubTitle(product.etd)
+                } else{
+                    val title = itemView.context.getString(R.string.shipping_receiver_text,
+                            product.name, product.etd)
 
-                val spannableString = SpannableString(title)
+                    val spannableString = SpannableString(title)
 
-                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
-                        R.color.font_black_disabled_38)),
-                        product.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
+                            R.color.font_black_disabled_38)),
+                            product.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-                itemView.label_view.setTitle(spannableString)
+                    itemView.label_view.setTitle(spannableString)
+                }
             }
 
             itemView.label_view.setContent(product.fmtPrice)

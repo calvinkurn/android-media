@@ -856,7 +856,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             weight /= 1000;
         }
 
-        presenter.getCostEstimation(GraphqlHelper.loadRawString(getResources(), R.raw.gql_pdp_estimasi_ongkir),
+        presenter.getCostEstimation(getActivity(),
                 weight, successResult.getShopInfo().getShopDomain());
 
         this.productData = successResult;
