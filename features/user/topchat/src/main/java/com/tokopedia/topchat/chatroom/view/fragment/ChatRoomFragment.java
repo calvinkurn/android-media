@@ -922,7 +922,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
             case REQUEST_CODE_CHAT_IMAGE:
                 if (resultCode != Activity.RESULT_OK || data == null) {
                     return;

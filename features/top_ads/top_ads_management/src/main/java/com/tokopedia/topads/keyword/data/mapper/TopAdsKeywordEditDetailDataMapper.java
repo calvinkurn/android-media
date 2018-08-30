@@ -1,7 +1,6 @@
 package com.tokopedia.topads.keyword.data.mapper;
 
-import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 import com.tokopedia.topads.keyword.data.model.EditTopAdsKeywordDetailDataModel;
 import com.tokopedia.topads.keyword.data.model.TopAdsKeywordEditDetailInputDataModel;
 import com.tokopedia.topads.keyword.domain.model.EditTopAdsKeywordDetailDomainModel;
