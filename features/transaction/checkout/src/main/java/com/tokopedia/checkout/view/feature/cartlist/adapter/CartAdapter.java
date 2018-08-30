@@ -396,6 +396,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
             shipmentSellerCashbackModel.setVisible(true);
             shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, false));
+        } else {
+            if (shipmentSellerCashbackModel != null) {
+                cartDataList.remove(shipmentSellerCashbackModel);
+            }
         }
 
         int index = cartDataList.indexOf(shipmentSellerCashbackModel);
