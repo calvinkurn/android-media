@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:theme="@style/AppTheme.AppBarOverlayWhite">
-        
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:background="@color/white"
@@ -27,7 +27,8 @@
     <RelativeLayout
         android:id="@+id/rl_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <FrameLayout
             android:id="@+id/bottom_layout"
@@ -59,7 +60,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="4sp"
-                        tools:text="Harga Barang (3 Item)" />
+                        tools:text="Harga Barang (3 Item)"/>
 
                     <TextView
                         android:id="@+id/tv_total_prices"
@@ -69,7 +70,7 @@
                         android:gravity="end"
                         android:textColor="@color/orange_red"
                         android:textSize="16sp"
-                        tools:text="Rp600.000" />
+                        tools:text="Rp600.000"/>
 
                 </LinearLayout>
 
@@ -85,7 +86,7 @@
                     android:text="Checkout"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"/>
 
             </LinearLayout>
 
@@ -103,13 +104,10 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_cart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
+                android:layout_height="match_parent"/>
         </com.tokopedia.core.customwidget.SwipeToRefresh>
 
     </RelativeLayout>
-
-    <include layout="@layout/layout_empty_shopping_cart_new" />
 
     <LinearLayout
         android:id="@+id/ll_network_error_view"
@@ -117,6 +115,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="visible"/>
+
+    <LinearLayout
+        android:id="@+id/container_empty_cart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone"/>
 
 </LinearLayout>
