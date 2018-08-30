@@ -267,7 +267,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cardFooter = view.findViewById(R.id.card_footer);
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
-        ViewCompat.setTranslationZ(cardFooter, getResources().getDimension(R.dimen.dp_16));
 
         progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
