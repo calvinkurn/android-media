@@ -310,19 +310,23 @@ public class SolutionDetailFragment extends BaseDaggerFragment
 
     @Override
     public void initAmountToResult(ComplaintResult complaintResult) {
+        List<ComplaintResult> tempResult = new ArrayList<>();
         if (resultViewModel != null) {
             for (ComplaintResult result : resultViewModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
                     result.problem.amount = complaintResult.problem.amount;
                 }
+                tempResult.add(result);
             }
         } else {
             for (ComplaintResult result : editAppealSolutionModel.complaints) {
                 if (complaintResult.problem.id == result.problem.id) {
                     result.problem.amount = complaintResult.problem.amount;
                 }
+                tempResult.add(result);
             }
         }
+        resultViewModel.complaints = tempResult;
         calculateTotalRefund(new ComplaintResult());
         buttonSelected(btnContinue);
     }

@@ -16,6 +16,7 @@ public class ComplaintResult implements Parcelable{
 
     public ComplaintResult() {
         this.problem = new ProblemResult();
+        this.problem.id = -1;
         this.order = new ProblemOrderResult();
     }
 
