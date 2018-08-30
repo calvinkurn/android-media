@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
@@ -68,6 +69,7 @@ import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.applink.ApplinkDelegateImpl;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -132,10 +134,11 @@ import io.branch.referral.BranchError;
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
+    private static ApplinkDelegate applinkDelegate;
 
-
-    public static DeepLinkDelegate getDelegateInstance() {
-        return new DeepLinkDelegate(
+    public static ApplinkDelegate getApplinkDelegateInstance() {
+        if(applinkDelegate == null) {
+            applinkDelegate = new ApplinkDelegateImpl(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
@@ -170,14 +173,17 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader()
-        );
+            );
+        }
+
+        return applinkDelegate;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBranchSession();
-        DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
+        ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();

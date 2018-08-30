@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
@@ -283,7 +284,6 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
 import com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity;
 import com.tokopedia.tkpd.deeplink.data.repository.DeeplinkRepository;
@@ -700,10 +700,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(intent);
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
+     * @param appLinks
+     * @return
+     */
+    @Deprecated
     @Override
     public boolean isSupportedDelegateDeepLink(String appLinks) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLinks);
+        return isSupportApplink(appLinks);
     }
 
     @Override
@@ -711,13 +716,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return new Intent(this, DeeplinkHandlerActivity.class);
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
     @Override
     public void actionNavigateByApplinksUrl(Activity activity, String applinks, Bundle bundle) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.putExtras(bundle);
-        intent.setData(Uri.parse(applinks));
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        goToApplinkActivity(activity, applinks, bundle);
     }
 
     @Override
@@ -976,6 +981,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return TkpdReputationInternalRouter.getProductReviewIntent(context, productId, productName);
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
     @Override
     public void actionAppLink(Context context, String linkUrl) {
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
@@ -983,29 +992,33 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         context.startActivity(intent);
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
     @Override
     public void actionApplink(Activity activity, String linkUrl) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(linkUrl));
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        goToApplinkActivity(activity, linkUrl, new Bundle());
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
     @Override
     public void actionApplinkFromActivity(Activity activity, String linkUrl) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(linkUrl));
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        goToApplinkActivity(activity, linkUrl, new Bundle());
     }
 
+    /**
+     * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#goToApplinkActivity(Activity, String, Bundle)}
+     */
+    @Deprecated
     @Override
     public void actionApplink(Activity activity, String linkUrl, String extra) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.putExtra("extra", extra);
-        intent.setData(Uri.parse(linkUrl));
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        Bundle bundle = new Bundle();
+        bundle.putString("extra", extra);
+        goToApplinkActivity(activity, linkUrl, bundle);
     }
 
     @Override
@@ -1949,11 +1962,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void onDigitalItemClick(Activity activity, DigitalCategoryDetailPassData passData, String appLink) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(DigitalProductActivity.EXTRA_CATEGORY_PASS_DATA, passData);
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = activity.getIntent();
-        intent.setData(Uri.parse(appLink));
-        intent.putExtras(bundle);
-        deepLinkDelegate.dispatchFrom(activity, intent);
+        goToApplinkActivity(activity, appLink, bundle);
     }
 
     @Override
@@ -2262,8 +2271,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
+        return DeeplinkHandlerActivity.getApplinkDelegateInstance().supportsUri(appLink);
     }
 
     @Override
@@ -2272,9 +2280,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void dispatchFrom(Activity activity, Intent intent) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        deepLinkDelegate.dispatchFrom(activity, intent);
+    public ApplinkDelegate applinkDelegate() {
+        return DeeplinkHandlerActivity.getApplinkDelegateInstance();
     }
 
     @Override
@@ -2310,15 +2317,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToApplinkActivity(Context context, String applink) {
-        DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(applink));
-
         if (context instanceof Activity) {
-            deepLinkDelegate.dispatchFrom((Activity) context, intent);
+            goToApplinkActivity((Activity) context, applink, new Bundle());
         } else {
+            Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
+            intent.setData(Uri.parse(applink));
             context.startActivity(intent);
         }
+    }
+
+    @Override
+    public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+        ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
+        Intent intent = activity.getIntent();
+        intent.setData(Uri.parse(applink));
+        intent.putExtras(bundle);
+        deepLinkDelegate.dispatchFrom(activity, intent);
     }
 
     @Override
@@ -2326,7 +2340,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         intent.setData(Uri.parse(applink));
 
-        return intent;
+        if (context instanceof Activity) {
+            try {
+                return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return intent;
+            }
+        } else {
+            return intent;
+        }
     }
 
     @Override
