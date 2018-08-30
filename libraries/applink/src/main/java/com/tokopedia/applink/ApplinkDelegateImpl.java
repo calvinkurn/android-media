@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * @author okasurya on 8/30/18.
- * This code is based on airbnb DeeplinkDispatch's generated code (DeeplinkDelegate class)
+ * This code is based on airbnb.DeeplinkDispatch's generated code (DeeplinkDelegate class)
  */
 public class ApplinkDelegateImpl implements ApplinkDelegate {
     private static final String TAG = ApplinkDelegateImpl.class.getSimpleName();
@@ -166,6 +166,14 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
         }
     }
 
+    /**
+     * Search and return an Intent from applink url
+     * if url is not valid / intent is not found, then it will throw an exception
+     * @param activity
+     * @param applink
+     * @return
+     * @throws Exception
+     */
     @Override
     public Intent getIntent(Activity activity, String applink) throws Exception {
         if (activity == null) {
@@ -218,12 +226,10 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
                     }
                 }
             }
-//            if (newIntent.getAction() == null) {
-//                newIntent.setAction(sourceIntent.getAction());
-//            }
-//            if (newIntent.getData() == null) {
-//                newIntent.setData(sourceIntent.getData());
-//            }
+
+            if (newIntent.getData() == null) {
+                newIntent.setData(uri);
+            }
             newIntent.putExtras(parameters);
             newIntent.putExtra(DeepLink.IS_DEEP_LINK, true);
             newIntent.putExtra(DeepLink.REFERRER_URI, uri);
@@ -237,6 +243,14 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
         }
     }
 
+    /**
+     * Search and return an TaskStackBuilder based on applink url
+     * If url is not valid or TaskStackBuilder is not found, it will throw an exception
+     * @param activity
+     * @param applink
+     * @return
+     * @throws Exception
+     */
     @Override
     public TaskStackBuilder getTaskStackBuilder(Activity activity, String applink) throws Exception {
         if (activity == null) {

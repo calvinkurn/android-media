@@ -2345,11 +2345,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 return DeeplinkHandlerActivity.getApplinkDelegateInstance().getIntent((Activity) context, applink);
             } catch (Exception e) {
                 e.printStackTrace();
-                return intent;
             }
-        } else {
-            return intent;
         }
+
+        return intent;
     }
 
     @Override
