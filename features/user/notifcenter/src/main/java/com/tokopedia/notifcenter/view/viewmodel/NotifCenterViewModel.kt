@@ -5,6 +5,6 @@ package com.tokopedia.notifcenter.view.viewmodel
  */
 
 data class NotifCenterViewModel(
-        val list: ArrayList<NotifItem>
+        val list: ArrayList<NotifItemViewModel>
 )
 
