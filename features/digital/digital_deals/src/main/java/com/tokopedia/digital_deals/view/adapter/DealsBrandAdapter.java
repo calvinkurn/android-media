@@ -81,7 +81,7 @@ public class DealsBrandAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public void updateAdapter(List<Brand> brands, boolean fromSearchResult) {
-        this.brandItems = brands;
+        this.brandItems=new ArrayList<>(brands);
         this.fromSearchResult = fromSearchResult;
         notifyDataSetChanged();
     }
