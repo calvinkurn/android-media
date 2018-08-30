@@ -623,7 +623,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
-        sendAnalyticsOnEditPinPointErrorValidation(message);
+        sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
             LayoutInflater inflater = getLayoutInflater();
             View layout = inflater.inflate(R.layout.toast_rectangle, getView().findViewById(R.id.toast_layout));
@@ -644,7 +644,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private void sendAnalyticsOnEditPinPointErrorValidation(String message) {
+    public void sendAnalyticsOnClickEditPinPointErrorValidation(String message) {
         checkoutAnalyticsChangeAddress.eventViewShippingCartChangeAddressViewValidationErrorTandaiLokasi(message);
     }
 
@@ -671,6 +671,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void sendAnalyticsOnClickTopDonation() {
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickTopDonasi();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickChangeAddress() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickChooseCourierSelection() {
+        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
     }
 
     @Override
@@ -876,7 +886,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onChangeAddress() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGantiAlamatAtauKirimKeBeberapaAlamat();
+        sendAnalyticsOnClickChangeAddress();
         sendAnalyticsOnClickChooseOtherAddressShipment();
         Intent intent = CartAddressChoiceActivity.createInstance(getActivity(),
                 shipmentPresenter.getRecipientAddressModel(),
@@ -926,7 +936,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onChooseShipment(int position, ShipmentCartItemModel shipmentCartItemModel,
                                  RecipientAddressModel recipientAddressModel) {
-        checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourier();
+        sendAnalyticsOnClickChooseCourierSelection();
+
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
@@ -968,16 +979,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         courierBottomsheet.setListener(this);
         courierBottomsheet.setOnShowListener(dialogInterface -> {
             sendAnalyticsOnBottomShetCourierSelectionShow(shopShipmentList);
-            checkoutAnalyticsCourierSelection.sendScreenName(
-                    getActivity(), ConstantTransactionAnalytics.ScreenName.SELECT_COURIER
-            );
+            sendAnalyticsScreenName(ConstantTransactionAnalytics.ScreenName.SELECT_COURIER);
+            sendAnalyticsOnImpressionCourierSelectionShow();
             courierBottomsheet.updateHeight();
-            checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionCourierSelection();
+
         });
         courierBottomsheet.show();
     }
 
-    private void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList) {
+    public void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList) {
         for (ShopShipment shopShipment : shopShipmentList) {
             for (ShipProd shipProd : shopShipment.getShipProds()) {
                 checkoutAnalyticsCourierSelection.eventViewCourierSelectionImpressionCourierOption(
@@ -985,6 +995,47 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 );
             }
         }
+    }
+
+    @Override
+    public void sendAnalyticsOnImpressionCourierSelectionShow() {
+        checkoutAnalyticsCourierSelection.eventViewAtcCourierSelectionImpressionCourierSelection();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickUsePromoCodeAndCoupon() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXOnBannerPromoCodeCode();
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickShipmentCourierItem(String agent, String service) {
+        checkoutAnalyticsCourierSelection.eventViewCourierSelectionClickCourierOption(agent, service);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickSubtotal() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickSubtotal();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickCheckBoxDropShipperOption() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickCheckBoxInsuranceOption() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman();
+    }
+
+    @Override
+    public void sendAnalyticsScreenName(String screenName) {
+        checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), screenName);
     }
 
     @Override
@@ -1041,7 +1092,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo,
                                                   int position) {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickGunakanKodePromoAtauKupon();
+        sendAnalyticsOnClickUsePromoCodeAndCoupon();
         if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
             startActivityForResult(
                     ((ICheckoutModuleRouter) getActivity().getApplication())
@@ -1066,8 +1117,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onCartPromoTrackingCancelled(CartItemPromoHolderData cartPromo, int position) {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXOnBannerPromoCodeCode();
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickXFromGunakanKodePromoAtauKupon();
+        sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
+
     }
 
     @Override
@@ -1108,10 +1159,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onShipmentItemClick(CourierItemData courierItemData,
                                     RecipientAddressModel recipientAddressModel,
                                     int cartItemPosition) {
-        checkoutAnalyticsCourierSelection.eventViewCourierSelectionClickCourierOption(
-                courierItemData.getName(),
-                courierItemData.getShipmentItemDataType()
-        );
+        sendAnalyticsOnClickShipmentCourierItem(courierItemData.getName(),
+                courierItemData.getShipmentItemDataType());
         ShipmentSelectionStateData shipmentSelectionStateData = new ShipmentSelectionStateData();
         shipmentSelectionStateData.setPosition(cartItemPosition);
         shipmentSelectionStateData.setCourierItemData(courierItemData);
@@ -1175,7 +1224,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onSubTotalCartItemClicked(int position) {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickSubtotal();
+        sendAnalyticsOnClickSubtotal();
     }
 
     @Override
@@ -1190,12 +1239,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onDropshipCheckedForTrackingAnalytics() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickDropship();
+        sendAnalyticsOnClickCheckBoxDropShipperOption();
     }
 
     @Override
     public void onInsuranceCheckedForTrackingAnalytics() {
-        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickAsuransiPengiriman();
+        sendAnalyticsOnClickCheckBoxInsuranceOption();
+
     }
 
     @Override
@@ -1217,7 +1267,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onStart() {
         super.onStart();
-        checkoutAnalyticsCourierSelection.sendScreenName(getActivity(), getScreenName());
+        sendAnalyticsScreenName(getScreenName());
     }
 
     @Override
