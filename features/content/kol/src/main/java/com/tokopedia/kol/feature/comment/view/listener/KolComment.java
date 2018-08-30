@@ -23,6 +23,8 @@ public interface KolComment {
 
         void onErrorGetCommentsFirstTime(String errorMessage);
 
+        void onServerErrorGetCommentsFirstTime(String errorMessage);
+
         void onSuccessGetCommentsFirstTime(KolComments kolComments);
 
         void removeLoading();
