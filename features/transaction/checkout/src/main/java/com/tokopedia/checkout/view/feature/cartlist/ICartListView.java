@@ -86,6 +86,8 @@ public interface ICartListView extends IBaseView {
 
     void showToastMessageRed(String message);
 
+    void showToastMessageGreen(String message);
+
     void renderLoadGetCartData();
 
     void renderLoadGetCartDataFinish();

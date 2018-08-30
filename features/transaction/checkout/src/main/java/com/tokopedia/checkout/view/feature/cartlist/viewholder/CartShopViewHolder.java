@@ -19,6 +19,8 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
+import rx.subscriptions.CompositeSubscription;
+
 /**
  * Created by Irfan Khoirul on 21/08/18.
  */
@@ -45,12 +47,15 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CartAdapter.ActionListener cartAdapterListener;
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
+    private CompositeSubscription compositeSubscription;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
-                              CartItemAdapter.ActionListener cartItemAdapterListener) {
+                              CartItemAdapter.ActionListener cartItemAdapterListener,
+                              CompositeSubscription compositeSubscription) {
         super(itemView);
         this.cartAdapterListener = cartAdapterListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
+        this.compositeSubscription = compositeSubscription;
 
         llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
@@ -78,12 +83,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         renderWarningItemHeader(cartShopHolderData);
 
         tvShopName.setText(cartShopHolderData.getShopGroupData().getShopName());
-        tvShopName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cartAdapterListener.onCartShopNameClicked(cartShopHolderData);
-            }
-        });
+        tvShopName.setOnClickListener(v -> cartAdapterListener.onCartShopNameClicked(cartShopHolderData));
 
         if (cartShopHolderData.getShopGroupData().isOfficialStore()) {
             imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
@@ -95,7 +95,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             imgShopBadge.setVisibility(View.GONE);
         }
 
-        cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, getAdapterPosition());
+        cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, compositeSubscription, getAdapterPosition());
         cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
         rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
         rvCartItem.setAdapter(cartItemAdapter);

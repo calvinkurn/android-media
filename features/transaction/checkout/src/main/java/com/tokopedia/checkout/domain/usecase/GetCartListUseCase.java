@@ -36,7 +36,6 @@ public class GetCartListUseCase extends UseCase<CartListData> {
     public Observable<CartListData> createObservable(RequestParams requestParams) {
         TKPDMapParam<String, String> param = (TKPDMapParam<String, String>)
                 requestParams.getObject(PARAM_REQUEST_AUTH_MAP_STRING);
-//        return cartRepository.getCartList(param)
         return cartRepository.getShopGroupList(param)
                 .map(new Func1<CartDataListResponse, CartListData>() {
                     @Override

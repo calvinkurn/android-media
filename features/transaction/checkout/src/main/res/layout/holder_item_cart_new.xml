@@ -55,21 +55,6 @@
                     tools:ignore="ContentDescription"
                     tools:src="@drawable/empty_photo" />
 
-                <ImageView
-                    android:id="@+id/iv_image_wishlist"
-                    android:layout_width="@dimen/dp_25"
-                    android:layout_height="@dimen/dp_25"
-                    android:layout_alignEnd="@+id/iv_image_product"
-                    android:layout_alignRight="@+id/iv_image_product"
-                    android:layout_alignTop="@+id/iv_image_product"
-                    android:layout_marginEnd="-5dp"
-                    android:layout_marginRight="-5dp"
-                    android:layout_marginTop="-5dp"
-                    android:background="@drawable/bg_circle_white"
-                    android:padding="@dimen/dp_5"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_wishlist_unchecked" />
-
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -135,6 +120,7 @@
                             android:gravity="center_vertical">
 
                             <ImageButton
+                                android:id="@+id/img_wishlist"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="@dimen/dp_16"

@@ -280,4 +280,36 @@ public class Product {
     public FreeReturns getFreeReturns() {
         return freeReturns;
     }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public int getCampaignId() {
+        return campaignId;
+    }
+
+    public int getProductOriginalPrice() {
+        return productOriginalPrice;
+    }
+
+    public boolean isSlashPrice() {
+        return isSlashPrice;
+    }
+
+    public int getCurrencyRate() {
+        return currencyRate;
+    }
+
+    public int getProductFinsurance() {
+        return productFinsurance;
+    }
+
+    public int getProductShopId() {
+        return productShopId;
+    }
+
+    public boolean isWishlisted() {
+        return isWishlisted;
+    }
 }

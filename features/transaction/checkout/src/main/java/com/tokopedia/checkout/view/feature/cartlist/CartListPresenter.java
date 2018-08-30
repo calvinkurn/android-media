@@ -36,6 +36,9 @@ import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +78,8 @@ public class CartListPresenter implements ICartListPresenter {
     private final CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
+    private final AddWishListUseCase addWishListUseCase;
+    private final RemoveWishListUseCase removeWishListUseCase;
     private CartListData cartListData;
 
     @Inject
@@ -87,7 +92,9 @@ public class CartListPresenter implements ICartListPresenter {
                              CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                              CompositeSubscription compositeSubscription,
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                             CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                             AddWishListUseCase addWishListUseCase,
+                             RemoveWishListUseCase removeWishListUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -98,11 +105,19 @@ public class CartListPresenter implements ICartListPresenter {
         this.checkPromoCodeCartListUseCase = checkPromoCodeCartListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
+        this.addWishListUseCase = addWishListUseCase;
+        this.removeWishListUseCase = removeWishListUseCase;
     }
 
     @Override
     public void detachView() {
         compositeSubscription.unsubscribe();
+        if (addWishListUseCase != null) {
+            addWishListUseCase.unsubscribe();
+        }
+        if (removeWishListUseCase != null) {
+            removeWishListUseCase.unsubscribe();
+        }
     }
 
     @Override
@@ -726,6 +741,18 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void processAddToWishlist(String productId, String userId, WishListActionListener listener) {
+        view.showProgressLoading();
+        addWishListUseCase.createObservable(productId, userId, listener);
+    }
+
+    @Override
+    public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
+        view.showProgressLoading();
+        removeWishListUseCase.createObservable(productId, userId, listener);
+    }
+
+    @Override
     public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
         List<CartItemData> cartItemDataList = new ArrayList<>();
         return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);
@@ -761,9 +788,9 @@ public class CartListPresenter implements ICartListPresenter {
                 : cartItemData.getOriginData().getCategoryForAnalytics());
         enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
         enhancedECommerceProductCartMapData.setQty(String.valueOf(cartItemData.getUpdatedData().getQuantity()));
-//        enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
-//        enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
-//        enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
+        enhancedECommerceProductCartMapData.setShopId(cartItemData.getOriginData().getShopId());
+        enhancedECommerceProductCartMapData.setShopType(cartItemData.getOriginData().getShopType());
+        enhancedECommerceProductCartMapData.setShopName(cartItemData.getOriginData().getShopName());
         enhancedECommerceProductCartMapData.setCategoryId(cartItemData.getOriginData().getCategoryId());
         enhancedECommerceProductCartMapData.setAttribution(
                 TextUtils.isEmpty(cartItemData.getOriginData().getTrackerAttribution())

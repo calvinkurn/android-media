@@ -10,14 +10,16 @@ import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
 import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
 import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -48,6 +50,18 @@ public class CartListModule {
 
     @Provides
     @CartListScope
+    AddWishListUseCase providesTkpTkpdAddWishListUseCase() {
+        return new AddWishListUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase() {
+        return new RemoveWishListUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
     ICartListPresenter provideICartListPresenter(GetCartListUseCase getCartListUseCase,
                                                  DeleteCartUseCase deleteCartUseCase,
                                                  DeleteCartGetCartListUseCase deleteCartGetCartListUseCase,
@@ -56,11 +70,14 @@ public class CartListModule {
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                                                 AddWishListUseCase addWishListUseCase,
+                                                 RemoveWishListUseCase removeWishListUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
-                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
+                addWishListUseCase, removeWishListUseCase
         );
     }
 
