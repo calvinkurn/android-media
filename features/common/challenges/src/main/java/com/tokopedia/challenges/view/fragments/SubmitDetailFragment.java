@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -30,6 +31,7 @@ import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.adapter.TouchImageAdapter;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
@@ -39,6 +41,10 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 
 import javax.inject.Inject;
 
@@ -62,6 +68,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private boolean isPastChallenge;
     private TextView btnSubmit;
     private View llShare;
+
 
     @Inject
     SubmitDetailPresenter presenter;
@@ -196,7 +203,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String thumbnailUrl, String videoUrl) {
+        ArrayList<String> imageUrls = new ArrayList<>();
+        imageUrls.add(thumbnailUrl);
         challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this);
+        if (TextUtils.isEmpty(videoUrl)) {
+            challengeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.add(R.id.image_viewer, fragemnt);
+                    transaction.addToBackStack("ImageViewer");
+                    transaction.commit();
+                }
+            });
+        }
     }
 
     public void setLikesCountView(String likesCount) {
