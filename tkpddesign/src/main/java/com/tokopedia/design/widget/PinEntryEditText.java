@@ -106,27 +106,6 @@ public class PinEntryEditText extends AppCompatEditText {
         mSpace = multi * mSpace; //convert to pixels for our density
         mTextBottomPadding = multi * mTextBottomPadding; //convert to pixels for our density
 
-        /*TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.PinEntryEditText, 0, 0);
-        try {
-            TypedValue outValue = new TypedValue();
-            ta.getValue(R.styleable.PinEntryEditText_pinAnimationType, outValue);
-            mAnimatedType = outValue.data;
-            mMask = ta.getString(R.styleable.PinEntryEditText_pinCharacterMask);
-            mSingleCharHint = ta.getString(R.styleable.PinEntryEditText_pinRepeatedHint);
-            mLineStroke = ta.getDimension(R.styleable.PinEntryEditText_pinLineStroke, mLineStroke);
-            mLineStrokeSelected = ta.getDimension(R.styleable.PinEntryEditText_pinLineStrokeSelected, mLineStrokeSelected);
-            mSpace = ta.getDimension(R.styleable.PinEntryEditText_pinCharacterSpacing, mSpace);
-            mTextBottomPadding = ta.getDimension(R.styleable.PinEntryEditText_pinTextBottomPadding, mTextBottomPadding);
-            mIsDigitSquare = ta.getBoolean(R.styleable.PinEntryEditText_pinBackgroundIsSquare, mIsDigitSquare);
-            mPinBackground = ta.getDrawable(R.styleable.PinEntryEditText_pinBackgroundDrawable);
-            ColorStateList colors = ta.getColorStateList(R.styleable.PinEntryEditText_pinLineColors);
-            if (colors != null) {
-                mColorStates = colors;
-            }
-        } finally {
-            ta.recycle();
-        }*/
-
         mCharPaint = new Paint(getPaint());
         mLastCharPaint = new Paint(getPaint());
         mSingleCharPaint = new Paint(getPaint());
