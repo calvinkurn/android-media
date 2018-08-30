@@ -42,10 +42,12 @@ public class AccountConstants {
         }
 
         public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
+        public static final String REKSA_DANA_TX_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/mobile-dashboard/list";
 
         public static final String TOKOCARD_URL = TkpdBaseURL.WEB_DOMAIN + "tokocard/";
 
         public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
+        public static final String EMAS_TX_URL = TkpdBaseURL.WEB_DOMAIN + "emas/daftar-transaksi/";
 
     }
 
