@@ -8,8 +8,8 @@ import android.view.View;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.view.common.viewholder.CartPromoSuggestionViewHolder;
-import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.common.viewholder.CartVoucherPromoViewHolder;
+import com.tokopedia.checkout.view.feature.cartlist.viewholder.CartTickerErrorViewHolder;
 
 /**
  * @author anggaprasetiyo on 06/02/18.
@@ -34,9 +34,9 @@ public class CartItemDecoration extends RecyclerView.ItemDecoration {
             CartPromoSuggestion cartPromoSuggestion =
                     ((CartPromoSuggestionViewHolder) viewHolder).getCartPromoSuggestion();
             if (cartPromoSuggestion.isVisible()) {
-                outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_16);
-                outRect.left = (int) context.getResources().getDimension(R.dimen.dp_8);
-                outRect.right = (int) context.getResources().getDimension(R.dimen.dp_8);
+                outRect.bottom = (int) context.getResources().getDimension(R.dimen.dp_8);
+                outRect.left = (int) context.getResources().getDimension(R.dimen.dp_16);
+                outRect.right = (int) context.getResources().getDimension(R.dimen.dp_16);
             } else {
                 outRect.bottom = 0;
             }
