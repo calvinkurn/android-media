@@ -118,13 +118,10 @@ public class ProductProblemFragmentPresenter extends BaseDaggerPresenter<Product
     @Override
     public void processResultData(ComplaintResult complaintResult, int resultStepCode) {
         boolean isContain = false;
-        List<ComplaintResult> complaintResults = new ArrayList<>();
         for (ComplaintResult complaintObject : complaintResults) {
             if (complaintObject.problem.id == complaintResult.problem.id) {
                 isContain = true;
-                complaintResults.add(complaintResult);
-            } else {
-                complaintResults.add(complaintObject);
+                break;
             }
         }
         if (!isContain) {
