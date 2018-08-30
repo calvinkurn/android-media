@@ -394,7 +394,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (availableCheckout) {
             shipmentAdapterActionListener.onCartDataEnableToCheckout();
         } else {
-            shipmentAdapterActionListener.onCartDataDisableToCheckout();
+            shipmentAdapterActionListener.onCartDataDisableToCheckout(null);
         }
     }
 

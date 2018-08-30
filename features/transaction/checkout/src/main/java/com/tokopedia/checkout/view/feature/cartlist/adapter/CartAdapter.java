@@ -2,12 +2,14 @@ package com.tokopedia.checkout.view.feature.cartlist.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.view.common.adapter.CartAdapterActionListener;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
@@ -179,6 +181,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                             if (cartItemHolderData.getCartItemData().isError() && cartItemHolderData.getCartItemData().isSingleChild()) {
                                 setShopSelected(i, false);
+                            } else {
+                                setShopSelected(i, selected);
                             }
                         }
                     } else {
@@ -365,10 +369,22 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             }
         }
+
         if (canProcess && checkedCount > 0) {
             cartActionListener.onCartDataEnableToCheckout();
         } else {
-            cartActionListener.onCartDataDisableToCheckout();
+            String errorMessage = cartActionListener.getDefaultCartErrorMessage();
+            for (Object object : cartDataList) {
+                if (object instanceof CartItemTickerErrorHolderData) {
+                    CartTickerErrorData cartTickerErrorData = ((CartItemTickerErrorHolderData) object).getCartTickerErrorData();
+                    if (!TextUtils.isEmpty(cartTickerErrorData.getErrorInfo())) {
+                        errorMessage = cartTickerErrorData.getErrorInfo();
+                    }
+                    break;
+                }
+            }
+
+            cartActionListener.onCartDataDisableToCheckout(errorMessage);
         }
     }
 
@@ -406,6 +422,8 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public interface ActionListener extends CartAdapterActionListener {
+
+        String getDefaultCartErrorMessage();
 
         void onCartShopNameClicked(CartShopHolderData cartShopHolderData);
 

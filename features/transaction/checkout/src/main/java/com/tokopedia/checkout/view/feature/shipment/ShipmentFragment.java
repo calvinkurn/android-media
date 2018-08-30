@@ -678,7 +678,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.setRecipientAddressModel(selectedAddress);
         shipmentAdapter.updateSelectedAddress(selectedAddress);
         courierBottomsheet = null;
-        onCartDataDisableToCheckout();
+        onCartDataDisableToCheckout(null);
     }
 
     @Override
@@ -1076,7 +1076,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartDataDisableToCheckout() {
+    public void onCartDataDisableToCheckout(String message) {
         shipmentAdapter.updateCheckoutButtonData(null);
     }
 
@@ -1090,7 +1090,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
             showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
-            onCartDataDisableToCheckout();
+            onCartDataDisableToCheckout(null);
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {

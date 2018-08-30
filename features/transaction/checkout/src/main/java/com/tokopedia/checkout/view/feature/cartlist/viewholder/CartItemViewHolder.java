@@ -218,19 +218,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         renderWarningAndError(data);
         renderWishlist(data);
         renderSelection(data, parentPosition);
-
-        itemView.setOnClickListener(v -> {
-            if (!data.getCartItemData().isError()) {
-                cbSelectItem.setChecked(!data.isSelected());
-            }
-        });
-
-        btnDelete.setOnClickListener(view -> {
-            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition(), parentPosition);
-            }
-        });
-
     }
 
     private void renderSelection(CartItemHolderData data, int parentPosition) {
@@ -316,6 +303,18 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             productProperties.setVisibility(View.GONE);
         }
+
+        itemView.setOnClickListener(v -> {
+            if (!data.getCartItemData().isError()) {
+                cbSelectItem.setChecked(!data.isSelected());
+            }
+        });
+
+        btnDelete.setOnClickListener(view -> {
+            if (getAdapterPosition() != RecyclerView.NO_POSITION) {
+                actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition(), parentPosition);
+            }
+        });
     }
 
     private void renderRemark(CartItemHolderData data, int parentPosition, ViewHolderListener viewHolderListener) {
@@ -456,9 +455,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderWishlist(CartItemHolderData data) {
         if (data.getCartItemData().getOriginData().isWishlisted()) {
-            imgWishlist.setImageResource(R.drawable.ic_wishlist_checked);
+            imgWishlist.setImageResource(R.drawable.ic_wishlist_checkout_on);
         } else {
-            imgWishlist.setImageResource(R.drawable.ic_wishlist_plain);
+            imgWishlist.setImageResource(R.drawable.ic_wishlist_checkout_off);
         }
 
         imgWishlist.setOnClickListener(new View.OnClickListener() {

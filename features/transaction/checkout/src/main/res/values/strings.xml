@@ -162,6 +162,7 @@
     <string name="label_delete_cart_item">Hapus</string>
     <string name="label_hardcoded_courier_ticker">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
     <string name="cart_error_message" formatted="false">Terdapat %d Produk Bermasalah</string>
+    <string name="cart_error_message_no_count" formatted="false">Terdapat Produk Bermasalah</string>
     <string name="cart_error_action">Hapus Produk Bermasalah</string>
     <string name="checkout_module_title_error_empty_address">Terjadi Kesalahan</string>
     <string name="checkout_module_subtitle_error_empty_address">Tidak ada alamat</string>
@@ -192,5 +193,7 @@
     <string name="label_body_showcase_shipping_duration">Durasi dihitung sejak barang diserahkan ke kurir.</string>
     <string name="label_button_change_note">Ubah Catatan</string>
     <string name="label_select_all_product">Pilih semua produk</string>
+    <string name="message_checkout_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda checkout</string>
+    <string name="message_delete_empty_selection">Silahkan pilih terlebih dahulu produk yang ingin anda hapus</string>
 
 </resources>

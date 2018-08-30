@@ -213,28 +213,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     if (cartItemDataList.size() > 0) {
                         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(cartItemDataList.size());
                         dialog.setOnOkClickListener(v -> {
-                            if (cartItemDataList.size() > 0) {
-                                dPresenter.processDeleteAndRefreshCart(cartItemDataList, true);
-                                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(
-                                        dPresenter.generateCartDataAnalytics(
-                                                cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                                        )
-                                );
-                            }
+                            dPresenter.processDeleteAndRefreshCart(cartItemDataList, true);
+                            cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusDanTambahWishlistFromTrashBin(
+                                    dPresenter.generateCartDataAnalytics(
+                                            cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
+                                    )
+                            );
                             dialog.dismiss();
                         });
                         dialog.setOnCancelClickListener(v -> {
-                            if (cartItemDataList.size() > 0) {
-                                dPresenter.processDeleteAndRefreshCart(cartItemDataList, false);
-                                cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
-                                        dPresenter.generateCartDataAnalytics(
-                                                cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                                        )
-                                );
-                            }
+                            dPresenter.processDeleteAndRefreshCart(cartItemDataList, false);
+                            cartPageAnalytics.enhancedECommerceRemoveFromCartClickHapusFromTrashBin(
+                                    dPresenter.generateCartDataAnalytics(
+                                            cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
+                                    )
+                            );
                             dialog.dismiss();
                         });
                         dialog.show();
+                    } else {
+                        showToastMessageRed(getString(R.string.message_delete_empty_selection));
                     }
                 }
             });
@@ -281,7 +279,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setViewListener() {
-        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+        btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         llHeader.setOnClickListener(getOnClickCheckboxSelectAll());
         cbSelectAll.setOnClickListener(getOnClickCheckboxSelectAll());
     }
@@ -298,10 +296,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @NonNull
-    private View.OnClickListener getOnClickButtonToShipmentListener() {
+    private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
-            dPresenter.processToUpdateCartData();
-            sendAnalyticsOnButtonCheckoutClicked();
+            if (message == null) {
+                dPresenter.processToUpdateCartData();
+                sendAnalyticsOnButtonCheckoutClicked();
+            } else {
+                showToastMessageRed(message);
+            }
         };
     }
 
@@ -372,19 +374,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView) {
         cartAdapter.resetQuantity(position, parentPosition);
         dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
-        // Todo : figure out the purpose of piece of code below :(
-//        if (needRefreshItemView) {
-//            cartAdapter.notifyItems(position);
-//        }
     }
 
     @Override
     public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
         dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
-        // Todo : figure out the purpose of piece of code below :(
-//        if (needRefreshItemView) {
-//            cartAdapter.notifyItems(position);
-//        }
     }
 
     @Override
@@ -403,6 +397,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 ));
             }
         }
+    }
+
+    @Override
+    public String getDefaultCartErrorMessage() {
+        return getString(R.string.cart_error_message_no_count);
     }
 
     @Override
@@ -536,18 +535,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded()) {
-            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-            btnToShipment.setTextColor(getResources().getColor(R.color.white));
-            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener());
+//            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
+//            btnToShipment.setTextColor(getResources().getColor(R.color.white));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
 
     @Override
-    public void onCartDataDisableToCheckout() {
+    public void onCartDataDisableToCheckout(String message) {
         if (isAdded()) {
-            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
-            btnToShipment.setOnClickListener(null);
+//            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
+//            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
+            btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
 
