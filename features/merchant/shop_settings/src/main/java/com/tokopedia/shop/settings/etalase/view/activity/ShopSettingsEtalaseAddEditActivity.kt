@@ -27,20 +27,17 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
     companion object {
         private const val PARAM_IS_EDIT = "IS_EDIT"
         private const val PARAM_SHOP_ETALASE = "SHOP_ETALASE"
-        private const val PARAM_EXISTED_ETALASE = "EXISTED_ETALASE"
 
         @JvmStatic
-        fun createIntent(context: Context, isEdit: Boolean, existedEtalase: List<String> = listOf(), etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
+        fun createIntent(context: Context, isEdit: Boolean, etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()) =
                 Intent(context, ShopSettingsEtalaseAddEditActivity::class.java)
                         .putExtra(PARAM_SHOP_ETALASE, etalase)
-                        .putStringArrayListExtra(PARAM_EXISTED_ETALASE, ArrayList(existedEtalase))
                         .putExtra(PARAM_IS_EDIT, isEdit)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         etalase = intent.getParcelableExtra(PARAM_SHOP_ETALASE) ?: ShopEtalaseViewModel()
         isEdit = intent.getBooleanExtra(PARAM_IS_EDIT, false)
-        existedEtalase = intent.getStringArrayListExtra(PARAM_EXISTED_ETALASE)
 
         super.onCreate(savedInstanceState)
 
@@ -52,7 +49,7 @@ class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<Sho
         supportActionBar?.setTitle(if (!isEdit) R.string.shop_settings_add_etalase else R.string.shop_settings_edit_etalase)
     }
 
-    override fun getNewFragment() = ShopSettingsEtalaseAddEditFragment.createInstance(isEdit, existedEtalase, etalase)
+    override fun getNewFragment() = ShopSettingsEtalaseAddEditFragment.createInstance(isEdit, etalase)
 
     override fun getLayoutRes() = R.layout.activity_shop_setting_address_add_new
 

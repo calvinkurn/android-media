@@ -26,7 +26,7 @@ class ShopLocationViewHolder(val view: View, private val listener: OnIconMoreCli
             itemView.email.title = element.email
             itemView.email.visibility = View.VISIBLE
         }
-        if (TextUtils.isEmpty(element.email)) {
+        if (TextUtils.isEmpty(element.fax)) {
             itemView.fax.visibility = View.GONE
         } else {
             itemView.fax.title = element.fax

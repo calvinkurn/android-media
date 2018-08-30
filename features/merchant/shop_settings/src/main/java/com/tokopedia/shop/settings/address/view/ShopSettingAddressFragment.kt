@@ -10,21 +10,20 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.data.ShopLocationViewModel
-import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
 import com.tokopedia.shop.settings.address.presenter.ShopLocationPresenter
 import com.tokopedia.shop.settings.address.view.adapter.ShopLocationTypeFactory
 import com.tokopedia.shop.settings.address.view.listener.ShopLocationView
-import javax.inject.Inject
-import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.address.view.viewholder.ShopLocationViewHolder
+import com.tokopedia.shop.settings.common.di.ShopSettingsComponent
+import javax.inject.Inject
 
 class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopLocationTypeFactory>(),
         ShopLocationView, ShopLocationViewHolder.OnIconMoreClicked, BaseEmptyViewHolder.Callback {
@@ -147,7 +146,7 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
                 setItemMenuList(resources.getStringArray(R.array.shop_address_menu_more))
                 setActionText(getString(R.string.close))
                 setOnActionClickListener { dismiss() }
-                setOnItemMenuClickListener { itemMenus, pos ->
+                setOnItemMenuClickListener { _, pos ->
                     when (pos) {
                         0 -> {
                             editShopAddress(item)

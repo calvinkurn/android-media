@@ -97,7 +97,8 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
         shopLocationViewModel?.let {
             edit_text_name.setText(it.name)
             edit_text_address.setText(it.address)
-            edit_text_district.setText("${it.stateName}, ${it.cityName}, ${it.districtName}")
+            val district = "${it.stateName}, ${it.cityName}, ${it.districtName}"
+            edit_text_district.setText(district)
             postal_code.setText(it.postalCode.toString())
             if (!TextUtils.isEmpty(it.phone)){
                 edit_text_phone.setText(it.phone)

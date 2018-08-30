@@ -1,5 +1,6 @@
 package com.tokopedia.shop.settings.notes.view.presenter
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.AddShopNoteUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopnotes.UpdateShopNoteUseCase
@@ -21,8 +22,13 @@ class ShopSettingsNoteAddEditPresenter @Inject constructor(private val addShopNo
 
     fun saveNote(shopNoteModel: ShopNoteViewModel, isEdit: Boolean){
         val useCase: UseCase<String> = if (!isEdit) addShopNoteUseCase else editShopNoteUseCase
-        val requestParam = AddShopNoteUseCase.createRequestParams(shopNoteModel.title,
-                shopNoteModel.content, shopNoteModel.terms)
+        if (TextUtils.isEmpty(shopNoteModel.title)||
+                TextUtils.isEmpty(shopNoteModel.content)){
+            return;
+        }
+
+        val requestParam = AddShopNoteUseCase.createRequestParams(shopNoteModel.title!!,
+                shopNoteModel.content!!, shopNoteModel.terms)
 
         if (isEdit)
             requestParam.putString(ID, shopNoteModel.id)
