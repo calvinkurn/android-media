@@ -5,17 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -27,7 +23,6 @@ import com.tokopedia.common.travel.presentation.TravelPassengerBookingActivity;
 import com.tokopedia.common.travel.presentation.model.TravelPassenger;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.component.Dialog;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.TrainRouter;
 import com.tokopedia.train.common.di.utils.TrainComponentUtils;
@@ -85,15 +80,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private AppCompatEditText contactNameBuyer;
     private AppCompatEditText phoneNumberBuyer;
     private AppCompatEditText emailBuyer;
-    private TkpdHintTextInputLayout tilContactNameBuyer;
-    private TkpdHintTextInputLayout tilPhoneNumberBuyer;
-    private TkpdHintTextInputLayout tilEmailBuyer;
     private AppCompatButton submitButton, chooseSeatButton;
-    private AppCompatCheckBox sameAsBuyerCheckbox;
     private LinearLayout containerLayout;
     private RelativeLayout progressBar;
 
-    private TrainPassengerViewModel buyerViewModel;
     private List<TrainPassengerRequest> trainPassengerRequestList;
     private TrainBuyerRequest trainBuyerRequest;
     private TrainScheduleRequest departureTripRequest;
@@ -129,13 +119,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         recyclerViewPassenger.addItemDecoration(new TrainFullDividerItemDecoration(recyclerViewPassenger.getContext()));
         contactNameBuyer = view.findViewById(R.id.et_contact_name);
         phoneNumberBuyer = view.findViewById(R.id.et_phone_number);
-        tilEmailBuyer = view.findViewById(R.id.til_email);
-        tilContactNameBuyer = view.findViewById(R.id.til_contact_name);
-        tilPhoneNumberBuyer = view.findViewById(R.id.til_phone_number);
         emailBuyer = view.findViewById(R.id.et_email);
         submitButton = view.findViewById(R.id.button_submit);
         chooseSeatButton = view.findViewById(R.id.button_choose_seat);
-        sameAsBuyerCheckbox = view.findViewById(R.id.checkbox);
         containerLayout = view.findViewById(R.id.container);
         progressBar = view.findViewById(R.id.progress_bar);
         trainBuyerRequest = new TrainBuyerRequest();
@@ -149,7 +135,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
         initializeBuyerInfo();
         initializeTripInfo();
-        initializeCheckboxSameAsBuyer();
         initializePassengerLayout();
         initializeActionButton();
 
@@ -167,26 +152,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(TRAIN_PARAM_PASSENGER, trainParamPassenger);
-    }
-
-    private void initializeCheckboxSameAsBuyer() {
-        sameAsBuyerCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked) {
-                    if (trainParamPassenger.isCheckedSameAsBuyer()) {
-                        presenter.wrapPassengerSameAsBuyer();
-                    }
-                } else {
-                    if (!TextUtils.isEmpty(getCurrentPassengerList().get(0).getName())) {
-                        adapter.clearElement(buyerViewModel);
-                        presenter.removePassengerSameAsBuyer();
-                    }
-                    trainParamPassenger.setCheckedSameAsBuyer(true);
-                }
-                setEnableViewBuyerInfo();
-            }
-        });
     }
 
     private void initializeActionButton() {
@@ -291,9 +256,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
                 travelPassenger.setSalutationId(trainPassengerViewModel.getSalutationId());
                 travelPassenger.setSalutationTitle(trainPassengerViewModel.getSalutationTitle());
-                startActivityForResult(TravelPassengerBookingActivity.callingIntent(getActivity(), travelPassenger, false), ADD_PASSENGER_REQUEST_CODE);
-                boolean isCheckAsBuyer = sameAsBuyerCheckbox.isChecked() && trainPassengerViewModel.getPassengerId() == 1;
-                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, isCheckAsBuyer), ADD_PASSENGER_REQUEST_CODE);
+                startActivityForResult(TravelPassengerBookingActivity.callingIntent(getActivity(), travelPassenger), ADD_PASSENGER_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -437,42 +400,10 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         startActivityForResult(TrainReviewDetailActivity.createIntent(getActivity(), trainSoftbook, trainScheduleBookingPassData), NEXT_STEP_REQUEST_CODE);
     }
 
-    @Override
-    public void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel) {
-        buyerViewModel = trainPassengerViewModel;
-        trainParamPassenger.setCheckedSameAsBuyer(false);
-        sameAsBuyerCheckbox.setChecked(false);
-        //TODO clean this code
-        TravelPassenger travelPassenger = new TravelPassenger();
-        travelPassenger.setPhoneNumber(trainPassengerViewModel.getPhone());
-        travelPassenger.setName(trainPassengerViewModel.getName());
-        travelPassenger.setHeaderTitle(trainPassengerViewModel.getHeaderTitle());
-        travelPassenger.setIdentityNumber(trainPassengerViewModel.getIdentityNumber());
-        travelPassenger.setPassengerId(trainPassengerViewModel.getPassengerId());
-        travelPassenger.setPaxType(trainPassengerViewModel.getPaxType());
-        travelPassenger.setSalutationId(trainPassengerViewModel.getSalutationId());
-        travelPassenger.setSalutationTitle(trainPassengerViewModel.getSalutationTitle());
-        startActivityForResult(TravelPassengerBookingActivity.callingIntent(getActivity(), travelPassenger, true), ADD_PASSENGER_REQUEST_CODE);
-    }
-
     @SuppressWarnings("Range")
     @Override
     public void showMessageErrorInSnackBar(int resId) {
         NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
-    }
-
-    private void setEnableViewBuyerInfo() {
-        tilContactNameBuyer.setEnabled(!sameAsBuyerCheckbox.isChecked());
-        tilPhoneNumberBuyer.setEnabled(!sameAsBuyerCheckbox.isChecked());
-        tilEmailBuyer.setEnabled(!sameAsBuyerCheckbox.isChecked());
-
-        contactNameBuyer.setTextColor(ContextCompat.getColor(getActivity(), getColorEnableEditText()));
-        phoneNumberBuyer.setTextColor(ContextCompat.getColor(getActivity(), getColorEnableEditText()));
-        emailBuyer.setTextColor(ContextCompat.getColor(getActivity(), getColorEnableEditText()));
-    }
-
-    private int getColorEnableEditText() {
-        return sameAsBuyerCheckbox.isChecked() ? R.color.font_black_disabled_38 : R.color.font_black_secondary_54;
     }
 
     @Override
@@ -522,10 +453,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainPassengerViewModel.setSalutationId(travelPassenger.getSalutationId());
                     trainPassengerViewModel.setSalutationTitle(travelPassenger.getSalutationTitle());
                     presenter.updateDataPassengers(trainPassengerViewModel);
-
-                    if (!trainParamPassenger.isCheckedSameAsBuyer() && trainPassengerViewModel.getPassengerId() == 1) {
-                        sameAsBuyerCheckbox.setChecked(true);
-                    }
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     trainParamPassenger.setCheckedSameAsBuyer(true);
                 }
@@ -596,11 +523,6 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void hideLoading() {
         progressBar.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void unCheckSameAsBuyerCheckbox() {
-        sameAsBuyerCheckbox.setChecked(false);
     }
 
     @Override
