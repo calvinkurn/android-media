@@ -20,6 +20,8 @@ public interface ICartListAnalyticsListener {
     void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData);
     //=======================================================================
 
+    void sendAnalyticsOnButtonCheckoutClicked();
+
     void sendAnalyticsOnClickBackArrow();
 
     void sendAnalyticsOnClickRemoveButtonHeader();
