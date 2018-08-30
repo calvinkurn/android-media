@@ -26,6 +26,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -228,8 +229,7 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            //Open webview with lihat kupon
-            openWebView(CommonConstant.WebLink.SEE_COUPON);
+            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);

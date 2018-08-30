@@ -1,31 +1,25 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.graphics.Paint;
-import android.os.CountDownTimer;
-import android.os.Handler;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.ViewHolder> {
 
@@ -82,8 +76,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         holder.btnContinue.setEnabled(!item.isDisabledButton());
         holder.description.setText(item.getTitle());
         holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
-
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
         //setting points info if exist in response
         if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
             holder.pointValue.setVisibility(View.GONE);
@@ -167,7 +160,11 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             mPresenter.startValidateCoupon(item);
         });
 
-        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.COUPON_DETAIL + mItems.get(position).getSlug()));
+        holder.imgBanner.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+        });
     }
 
     @Override

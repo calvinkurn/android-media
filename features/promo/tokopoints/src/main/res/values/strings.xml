@@ -36,5 +36,9 @@
     <string name="tp_label_too_many_access">Failed to Redeem</string>
     <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
     <string name="tp_label_exchange_point">Tukar Points</string>
+    <string name="tp_label_how_to_use">Cara Pakai</string>
+    <string name="tp_label_tnc">Ketentuan</string>
+    <string name="tp_label_min_exchange">Minimal transaksi:</string>
+    <string name="tp_label_refresh_repeat">Refresh Ulang</string>
 
 </resources>

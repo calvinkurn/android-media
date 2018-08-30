@@ -358,15 +358,13 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            //Open webview with lihat kupon
-            openWebView(CommonConstant.WebLink.SEE_COUPON);
+            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
-
     }
 
     @Override

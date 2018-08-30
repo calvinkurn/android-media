@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.support.v4.content.ContextCompat;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
-import com.tokopedia.tokopoints.view.util.ImageUtil;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public void onBindViewHolder(CouponListAdapter.ViewHolder holder, int position) {
         final CouponValueEntity item = mItems.get(position);
         holder.description.setText(item.getTitle());
-        com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
 
         if (item.getUsage() != null) {
             holder.imgLabel.setImageResource(R.drawable.ic_tp_time);
@@ -79,7 +80,11 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         holder.imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
 
         holder.btnContinue.setOnClickListener(v -> mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle()));
-        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.SEE_COUPON + mItems.get(position).getCode()));
+        holder.imgBanner.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+        });
     }
 
     @Override
