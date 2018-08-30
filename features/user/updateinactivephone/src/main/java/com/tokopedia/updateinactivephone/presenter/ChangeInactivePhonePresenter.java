@@ -17,7 +17,7 @@ public class ChangeInactivePhonePresenter extends BaseDaggerPresenter<ChangeInac
         implements ChangeInactivePhone.Presenter {
 
     private final CheckPhoneNumberStatusUsecase checkPhoneNumberStatusUsecase;
-    public static final String PHONE_MATCHER = "^?+[0-9]*$";
+    public static final String PHONE_MATCHER = "^(\\+)?+[0-9]*$";
 
     @Inject
     public ChangeInactivePhonePresenter(CheckPhoneNumberStatusUsecase checkPhoneNumberStatusUsecase) {
