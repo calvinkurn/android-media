@@ -24,6 +24,7 @@ import java.util.List;
 
 public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapter.TickerTopadsViewHolder> {
 
+    public static final int MAX_SHOW_ITEM = 1;
     List<String> listMessageTicker;
 
     public TickerTopadsAdapter() {
@@ -50,6 +51,9 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
 
     @Override
     public int getItemCount() {
+        if(listMessageTicker.size() > 1){
+            return MAX_SHOW_ITEM;
+        }
         return listMessageTicker.size();
     }
 
