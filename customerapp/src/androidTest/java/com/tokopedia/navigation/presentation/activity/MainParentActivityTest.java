@@ -38,6 +38,7 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
@@ -216,7 +217,7 @@ public class MainParentActivityTest {
 
         accountHomeComponent.accountHomePresenter(); // call this to mock getAccountUseCase
 
-        GetAccountUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
+        GetUserAttributesUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
 
         doReturn(Observable.just(provideAccountViewModel(mIntentsRule.getActivity())))
                 .when(getAccountUseCase)
@@ -226,9 +227,10 @@ public class MainParentActivityTest {
         if (fragment != null && fragment.isVisible()) {
             fragment.reInitInjector(accountHomeComponent);
 
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.renderData(provideAccountViewModel(mIntentsRule.getActivity()));
-            });
+            // TODO render moved to somewhere else
+//            mIntentsRule.getActivity().runOnUiThread(() -> {
+//                fragment.renderData(provideAccountViewModel(mIntentsRule.getActivity()));
+//            });
         }
 
         Thread.sleep(2_000);
@@ -237,9 +239,10 @@ public class MainParentActivityTest {
                 .perform(withCustomConstraints(swipeLeft(), isDisplayingAtLeast(85)));
 
         if (fragment != null && fragment.isVisible()) {
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.renderData(provide_account_view_model_without_shop(mIntentsRule.getActivity()));
-            });
+            // TODO render moved to somewhere else`
+//            mIntentsRule.getActivity().runOnUiThread(() -> {
+//                fragment.renderData(provide_account_view_model_without_shop(mIntentsRule.getActivity()));
+//            });
         }
     }
 
@@ -472,6 +475,14 @@ public class MainParentActivityTest {
             // Scroll to end of page with position
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
+
+            // tap the bottom nav then check
+            onView(allOf(withText(Home_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+            // this must be set in order to work properly
+            Thread.sleep(1_000);
+
+            onView(withId(R.id.viewpager_banner_category)).check(matches(isDisplayed()));
         }
     }
 
