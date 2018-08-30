@@ -45,7 +45,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -524,7 +523,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     if (newIntent.getExtras() != null)
                         applinkIntent.putExtras(newIntent.getExtras());
                 }
-                ((ApplinkRouter) getApplicationContext()).dispatchFrom(this, applinkIntent);
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
             } catch (ActivityNotFoundException ex) {
                 ex.printStackTrace();
             }
