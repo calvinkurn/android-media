@@ -130,7 +130,7 @@ public interface ShipmentContract {
 
         void sendAnalyticsScreenName(String screenName);
 
-        void sendAnalyticsOnClickEditPinPointErrorValidation(String message)
+        void sendAnalyticsOnClickEditPinPointErrorValidation(String message);
 
     }
 
