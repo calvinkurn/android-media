@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.shop.settings.basicinfo.view.fragment
 
 import android.app.Activity
@@ -16,8 +18,6 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -38,31 +38,21 @@ import com.tokopedia.shop.settings.basicinfo.view.presenter.ShopSettingsInfoPres
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.FORMAT_DATE
 import com.tokopedia.shop.settings.common.util.toReadableString
+import kotlinx.android.synthetic.main.fragment_shop_settings_info.*
+import kotlinx.android.synthetic.main.partial_shop_settings_info_basic.*
+import kotlinx.android.synthetic.main.partial_shop_settings_info_membership.*
+import kotlinx.android.synthetic.main.partial_shop_settings_info_status.*
 import java.util.*
 import javax.inject.Inject
 
 class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter.View {
     @Inject
     lateinit var shopSettingsInfoPresenter: ShopSettingsInfoPresenter
-    private var loadingView: View? = null
-    private var scrollViewContent: View? = null
-    private var tvShopName: TextView? = null
-    private var tvShopDomain: TextView? = null
-    private var tvShopSlogan: TextView? = null
-    private var tvShopDescription: TextView? = null
-    private var ivShopMembership: ImageView? = null
-    private var tvMembershipName: TextView? = null
-    private var tvMembershipDescription: TextView? = null
-    private var tvShopStatus: TextView? = null
-    private var tvShopCloseSchedule: TextView? = null
 
     private var needReload: Boolean = false
-    private var vgShopInfoContainer: View? = null
     private var shopBasicDataModel: ShopBasicDataModel? = null
-    private var ivShopLogo: ImageView? = null
 
     private var progressDialog: ProgressDialog? = null
-    private var vgMembershipContainer: View? = null
 
     override fun getScreenName(): String? {
         return null
@@ -75,110 +65,101 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_shop_settings_info, container, false)
-        loadingView = view.findViewById(R.id.loadingView)
-        scrollViewContent = view.findViewById(R.id.scrollViewContent)
-        tvShopName = view.findViewById(R.id.tvShopName)
-        tvShopDomain = view.findViewById(R.id.tvShopDomain)
-        tvShopSlogan = view.findViewById(R.id.tvShopSlogan)
-        tvShopDescription = view.findViewById(R.id.tvShopDescription)
-        val vgShopStatusContainer = view.findViewById<View>(R.id.vgShopStatusContainer)
-        tvShopStatus = view.findViewById(R.id.tvShopStatus)
-        tvShopCloseSchedule = view.findViewById(R.id.tvShopCloseSchedule)
-        ivShopMembership = view.findViewById(R.id.ivShopMembership)
-        tvMembershipName = view.findViewById(R.id.tvMembershipName)
-        vgMembershipContainer = view.findViewById(R.id.vgMembershipContainer)
-        tvMembershipDescription = view.findViewById(R.id.tvMembershipDescription)
-        vgShopInfoContainer = view.findViewById(R.id.vgShopInfoContainer)
-        ivShopLogo = view.findViewById(R.id.ivShopLogo)
+        return view
+    }
 
-        vgShopInfoContainer!!.setOnClickListener {
+    private fun showShopStatusManageMenu() {
+        context?.let { ctx ->
+        shopBasicDataModel?.let {shopBasicDataModel ->
+            val menus = Menus(ctx)
+            menus.setTitle(getString(R.string.shop_settings_manage_status))
+
+            val itemMenusList = ArrayList<Menus.ItemMenus>()
+            if (shopBasicDataModel.isOpen == true) {
+                if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                    itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
+                } else {
+                    itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
+                    itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
+                }
+                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
+            } else {
+                itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
+                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
+            }
+            menus.itemMenuList = itemMenusList
+            menus.setOnItemMenuClickListener { itemMenus, _ ->
+                onItemMenuClicked(itemMenus.title)
+                menus.dismiss()
+            }
+            menus.show()
+        }}
+    }
+
+    fun onItemMenuClicked(itemMenuTitle:String){
+        when {
+            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
+                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                        getString(R.string.schedule_shop_close), false)
+                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+            }
+            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
+                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                        getString(R.string.label_close_shop_now), true)
+                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+            }
+            itemMenuTitle.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
+                val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
+                        getString(R.string.change_schedule), false)
+                startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
+            }
+            itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
+                val builder = AlertDialog.Builder(activity!!,
+                        R.style.AppCompatAlertDialogStyle)
+                builder.setTitle(R.string.remove_schedule)
+                builder.setMessage(R.string.remove_schedule_message)
+                builder.setCancelable(true)
+                builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
+                builder.setPositiveButton(R.string.label_remove) { _, _ ->
+                    //remove schedule
+                    showSubmitLoading(getString(R.string.title_loading))
+                    shopSettingsInfoPresenter.updateShopSchedule(
+                            if (shopBasicDataModel!!.isClosed)
+                                ShopScheduleActionDef.CLOSED
+                            else
+                                ShopScheduleActionDef.OPEN,
+                            false, "", "", "")
+                }
+                val alert = builder.create()
+                alert.show()
+            }
+            itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
+                // open now
+                showSubmitLoading(getString(R.string.title_loading))
+                shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
+                        "", "", "")
+            }
+        }
+    }
+
+    fun showLoading() {
+        scrollViewContent.visibility = View.GONE
+        loadingView.visibility = View.VISIBLE
+    }
+
+    fun hideLoading() {
+        scrollViewContent.visibility = View.VISIBLE
+        loadingView.visibility = View.GONE
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        vgShopInfoContainer.setOnClickListener {
             val intent = ShopEditBasicInfoActivity.createIntent(context!!, shopBasicDataModel)
             startActivityForResult(intent, REQUEST_EDIT_BASIC_INFO)
         }
 
         vgShopStatusContainer.setOnClickListener { showShopStatusManageMenu() }
-        return view
-    }
-
-    private fun showShopStatusManageMenu() {
-        val menus = Menus(context!!)
-        menus.setTitle(getString(R.string.shop_settings_manage_status))
-
-        val itemMenusList = ArrayList<Menus.ItemMenus>()
-        if (shopBasicDataModel!!.isOpen) {
-            if (StringUtils.isEmptyNumber(shopBasicDataModel!!.closeSchedule)) {
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
-            } else {
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
-            }
-            itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
-        } else {
-            itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-            itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
-        }
-        menus.itemMenuList = itemMenusList
-        menus.setOnItemMenuClickListener { itemMenus, _ ->
-            when {
-                itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                            getString(R.string.schedule_shop_close), false)
-                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                }
-                itemMenus.title.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
-                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                            getString(R.string.label_close_shop_now), true)
-                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                }
-                itemMenus.title.equals(getString(R.string.change_schedule), ignoreCase = true) -> {
-                    val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
-                            getString(R.string.change_schedule), false)
-                    startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
-                }
-                itemMenus.title.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
-                    val builder = AlertDialog.Builder(activity!!,
-                            R.style.AppCompatAlertDialogStyle)
-                    builder.setTitle(R.string.remove_schedule)
-                    builder.setMessage(R.string.remove_schedule_message)
-                    builder.setCancelable(true)
-                    builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
-                    builder.setPositiveButton(R.string.label_remove) { _, _ ->
-                        //remove schedule
-                        showSubmitLoading(getString(R.string.title_loading))
-                        shopSettingsInfoPresenter.updateShopSchedule(
-                                if (shopBasicDataModel!!.isClosed)
-                                    ShopScheduleActionDef.CLOSED
-                                else
-                                    ShopScheduleActionDef.OPEN,
-                                false, "", "", "")
-                    }
-                    val alert = builder.create()
-                    alert.show()
-                }
-                itemMenus.title.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
-                    // open now
-                    showSubmitLoading(getString(R.string.title_loading))
-                    shopSettingsInfoPresenter.updateShopSchedule(ShopScheduleActionDef.OPEN, false,
-                            "", "", "")
-                }
-            }
-            menus.dismiss()
-        }
-        menus.show()
-    }
-
-    fun showLoading() {
-        scrollViewContent!!.visibility = View.GONE
-        loadingView!!.visibility = View.VISIBLE
-    }
-
-    fun hideLoading() {
-        scrollViewContent!!.visibility = View.VISIBLE
-        loadingView!!.visibility = View.GONE
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         loadShopBasicData()
     }
 
@@ -215,27 +196,29 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel?) {
         this.shopBasicDataModel = shopBasicDataModel
         hideLoading()
-        setUIShopBasicData(shopBasicDataModel!!)
-        setUIStatus(shopBasicDataModel)
-        setUIMembership(shopBasicDataModel)
+        shopBasicDataModel?.let {
+            setUIShopBasicData(it)
+            setUIStatus(it)
+            setUIMembership(it)
+        }
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
-        tvShopName!!.text = MethodChecker.fromHtml(shopBasicDataModel.name)
-        tvShopDomain!!.text = shopBasicDataModel.domain
-        tvShopSlogan!!.text = shopBasicDataModel.tagline
-        tvShopDescription!!.text = shopBasicDataModel.description
+        tvShopName.text = MethodChecker.fromHtml(shopBasicDataModel.name)
+        tvShopDomain.text = shopBasicDataModel.domain
+        tvShopSlogan.text = shopBasicDataModel.tagline
+        tvShopDescription.text = shopBasicDataModel.description
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
-            ivShopLogo!!.setImageResource(R.drawable.ic_default_shop_ava)
+            ivShopLogo.setImageResource(R.drawable.ic_shop_default_empty)
         } else {
-            ImageHandler.LoadImage(ivShopLogo!!, logoUrl)
+            ImageHandler.LoadImage(ivShopLogo, logoUrl)
         }
     }
 
     private fun setUIStatus(shopBasicDataModel: ShopBasicDataModel) {
         if (shopBasicDataModel.isOpen) {
-            tvShopStatus!!.text = getString(R.string.label_open)
+            tvShopStatus.text = getString(R.string.label_open)
 
             val stringBuilder = StringBuilder()
             val closeScheduleUnixString = shopBasicDataModel.closeSchedule
@@ -252,13 +235,13 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
             val closeSchedulString = stringBuilder.toString()
             if (TextUtils.isEmpty(closeSchedulString)) {
-                tvShopCloseSchedule!!.visibility = View.GONE
+                tvShopCloseSchedule.visibility = View.GONE
             } else {
-                tvShopCloseSchedule!!.text = stringBuilder.toString()
-                tvShopCloseSchedule!!.visibility = View.VISIBLE
+                tvShopCloseSchedule.text = stringBuilder.toString()
+                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         } else {
-            tvShopStatus!!.text = getString(R.string.label_close)
+            tvShopStatus.text = getString(R.string.label_close)
 
             val openScheduleUnixString = shopBasicDataModel.openSchedule
             var openScheduleString: String? = null
@@ -268,19 +251,19 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             }
 
             if (TextUtils.isEmpty(openScheduleString)) {
-                tvShopCloseSchedule!!.visibility = View.GONE
+                tvShopCloseSchedule.visibility = View.GONE
             } else {
-                tvShopCloseSchedule!!.text = openScheduleString
-                tvShopCloseSchedule!!.visibility = View.VISIBLE
+                tvShopCloseSchedule.text = openScheduleString
+                tvShopCloseSchedule.visibility = View.VISIBLE
             }
         }
     }
 
     private fun setUIMembership(shopBasicDataModel: ShopBasicDataModel) {
         if (shopBasicDataModel.isRegular) {
-            ivShopMembership!!.setImageResource(R.drawable.ic_badge_shop_regular)
-            ivShopMembership!!.setPadding(0, 0, 0, 0)
-            tvMembershipName!!.text = getString(R.string.label_regular_merchant)
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_regular)
+            ivShopMembership.setPadding(0, 0, 0, 0)
+            tvMembershipName.text = getString(R.string.label_regular_merchant)
 
             val goldMerchantInviteString = getString(R.string.shop_settings_gold_merchant_invite)
             val goldMerchantString = getString(R.string.label_gold_merchant)
@@ -302,26 +285,26 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 }
             }
             spannable.setSpan(clickableSpan, indexStart, indexEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            tvMembershipDescription!!.movementMethod = LinkMovementMethod.getInstance()
-            tvMembershipDescription!!.text = spannable
+            tvMembershipDescription.movementMethod = LinkMovementMethod.getInstance()
+            tvMembershipDescription.text = spannable
 
-            vgMembershipContainer!!.setOnClickListener(null)
+            vgMembershipContainer.setOnClickListener(null)
         } else if (shopBasicDataModel.isOfficialStore) {
-            ivShopMembership!!.setImageResource(R.drawable.ic_badge_shop_official)
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_official)
             val padding = resources.getDimensionPixelOffset(R.dimen.dp_8)
-            ivShopMembership!!.setPadding(padding, padding, padding, padding)
-            tvMembershipName!!.text = getString(R.string.label_official_store)
-            tvMembershipDescription!!.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired!!))
-            vgMembershipContainer!!.setOnClickListener(null)
+            ivShopMembership.setPadding(padding, padding, padding, padding)
+            tvMembershipName.text = getString(R.string.label_official_store)
+            tvMembershipDescription.text = getString(R.string.valid_until_x,
+                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired?: ""))
+            vgMembershipContainer.setOnClickListener(null)
         } else if (shopBasicDataModel.isGold) {
-            ivShopMembership!!.setImageResource(R.drawable.ic_badge_shop_gm)
-            ivShopMembership!!.setPadding(0, 0, 0, 0)
-            tvMembershipName!!.text = getString(R.string.label_gold_merchant)
-            tvMembershipDescription!!.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired!!))
+            ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm)
+            ivShopMembership.setPadding(0, 0, 0, 0)
+            tvMembershipName.text = getString(R.string.label_gold_merchant)
+            tvMembershipDescription.text = getString(R.string.valid_until_x,
+                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired?: ""))
 
-            vgMembershipContainer!!.setOnClickListener { navigateToAboutGM() }
+            vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
         }
     }
 
@@ -337,7 +320,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
-        activity!!.setResult(Activity.RESULT_OK)
+        activity?.setResult(Activity.RESULT_OK)
         loadShopBasicData()
     }
 
@@ -352,14 +335,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     fun showSubmitLoading(message: String) {
-        if (progressDialog == null) {
-            progressDialog = ProgressDialog(context)
-        }
-        if (!progressDialog!!.isShowing) {
-            progressDialog!!.setMessage(message)
-            progressDialog!!.isIndeterminate = true
-            progressDialog!!.setCancelable(false)
-            progressDialog!!.show()
+        progressDialog = progressDialog?:ProgressDialog(context)
+        progressDialog!!.run {
+            if (isShowing) {
+                setMessage(message)
+                isIndeterminate = true
+                setCancelable(false)
+                show()
+            }
         }
     }
 
