@@ -117,7 +117,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textNoSuggestions|textMultiLine"
-                    android:maxLength="@integer/max_slogan_char" />
+                    android:maxLength="@integer/max_slogan_char"
+                    android:hint="@string/shop_slogan_hint"/>
 
             </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
@@ -134,9 +135,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textNoSuggestions|textMultiLine"
-                    android:maxLength="@integer/max_shop_desc_char" />
-                ​
-            </com.tokopedia.design.text.TkpdHintTextInputLayout>
+                    android:maxLength="@integer/max_shop_desc_char"
+                    android:hint="@string/shop_desc_hint"/>
+            ​</com.tokopedia.design.text.TkpdHintTextInputLayout>
         </LinearLayout>
     </ScrollView>
 
