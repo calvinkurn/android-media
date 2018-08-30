@@ -10,10 +10,16 @@ data class NotifItemViewModel(
         val timeSummary: String = "",
         val section: String = "",
         val redirectLink: String = "",
-        val status: Int = 0,
+        val readStatus: Int = 0,
         val userId: Int = 0,
         val shopId: Int = 0)
     : Visitable<NotifCenterPojo> {
+
+    companion object {
+        val READ_STATUS_FALSE = 1
+        val READ_STATUS_TRUE = 2
+    }
+
     override fun type(typeFactory: NotifCenterPojo?): Int {
         return 0
     }
