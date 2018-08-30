@@ -18,6 +18,7 @@ import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
+import com.tokopedia.contactus.inboxticket2.domain.CreatedBy;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
@@ -50,10 +51,15 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -88,6 +94,7 @@ public class InboxDetailPresenterImpl
     private String rateCommentID;
     private int next;
     private Utils utils;
+    private CreatedBy userData;
 
     public InboxDetailPresenterImpl(GetTicketDetailUseCase useCase,
                                     PostMessageUseCase messageUseCase,
@@ -234,6 +241,11 @@ public class InboxDetailPresenterImpl
                         commentsItems.add(0, topItem);
                     }
                     for (CommentsItem item : commentsItems) {
+                        if (userData == null) {
+                            if (item.getCreatedBy().getRole().equals("customer")) {
+                                userData = item.getCreatedBy();
+                            }
+                        }
                         String createTime = item.getCreateTime();
                         createTime = createTime.substring(0, createTime.lastIndexOf("+"));
                         createTime = getUtils().getDateTime(createTime);
@@ -401,7 +413,7 @@ public class InboxDetailPresenterImpl
                                 DataResponse responseStep2 = res1.getData();
                                 StepTwoResponse stepTwoResponse = (StepTwoResponse) responseStep2.getData();
                                 if (stepTwoResponse != null && stepTwoResponse.getIsSuccess() > 0) {
-                                    getTicketDelayed(mTicketDetail.getId());
+                                    addNewLocalComment();
                                 } else {
                                     mView.setSnackBarErrorMessage("Maaf terjadi kesalahan teknis, silakan dicoba lagi.");
                                 }
@@ -432,14 +444,8 @@ public class InboxDetailPresenterImpl
                     DataResponse ticketListResponse = res1.getData();
                     CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
                     if (createTicket != null && createTicket.getIsSuccess() > 0) {
-                        if (createTicket.getPostKey() != null && createTicket.getPostKey().length() > 0) {
-                            postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
-                        } else {
-                            mView.hideSendProgress();
-                            getTicketDelayed(mTicketDetail.getId());
-                        }
+                        addNewLocalComment();
                     } else {
-                        mView.hideSendProgress();
                         mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.");
                     }
                 }
@@ -774,5 +780,14 @@ public class InboxDetailPresenterImpl
                         getTicketDetails(id);
                     }
                 });
+    }
+
+    private void addNewLocalComment() {
+        CommentsItem newItem = new CommentsItem();
+        newItem.setCreatedBy(userData);
+        newItem.setMessagePlaintext(mView.getUserMessage());
+        newItem.setCreateTime(getUtils().getDateTimeCurrent());
+        mTicketDetail.getComments().add(newItem);
+        mView.updateAddComment();
     }
 }

@@ -53,7 +53,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         imageHandler = new ImageHandler(mContext);
         collapsed = true;
         utils = new Utils(mContext);
-        indexExpanded = commentList.size() - 1;
+        indexExpanded = -1;
         this.needAttachment = needAttachment;
         String src = mContext.getString(R.string.hint_attachment);
         hintAttachmentString = new SpannableString(src);

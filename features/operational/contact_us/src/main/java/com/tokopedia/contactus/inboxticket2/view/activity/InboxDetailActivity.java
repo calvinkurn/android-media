@@ -198,6 +198,12 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
+    public void updateAddComment() {
+        edMessage.getText().clear();
+        detailAdapter.notifyItemRangeChanged(detailAdapter.getItemCount() - 2, 2);
+    }
+
+    @Override
     public void toggleSearch(int visibility) {
         searchView.setVisibility(visibility);
         if (visibility == View.VISIBLE) {

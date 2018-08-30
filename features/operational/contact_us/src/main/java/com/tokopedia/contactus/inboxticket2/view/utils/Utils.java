@@ -98,6 +98,12 @@ public class Utils {
 
     }
 
+    public String getDateTimeCurrent() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM 'pukul' HH:mm", getLocale());
+        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        return dateFormat.format(new Date(System.currentTimeMillis()));
+    }
+
     public String getDateTimeYear(String isoTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", getLocale());

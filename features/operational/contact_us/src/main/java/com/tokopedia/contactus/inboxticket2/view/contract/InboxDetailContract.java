@@ -23,6 +23,8 @@ public interface InboxDetailContract {
 
         void renderMessageList(Tickets ticketDetail);
 
+        void updateAddComment();
+
         void addimage(ImageUpload image);
 
         void setSubmitButtonEnabled(boolean enabled);
