@@ -35,6 +35,10 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     companion object {
 
+        val INBOX_ALL = "inbox-talk"
+        val MY_PRODUCT = "inbox-talk-my-product"
+        val FOLLOWING = "inbox-talk-following"
+
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, InboxTalkActivity::class.java)
 

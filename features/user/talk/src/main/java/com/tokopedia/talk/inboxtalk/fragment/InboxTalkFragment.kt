@@ -1,26 +1,41 @@
 package com.tokopedia.talk.inboxtalk.fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.inboxtalk.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.adapter.InboxTalkAdapter
+import com.tokopedia.talk.inboxtalk.adapter.InboxTalkTypeFactoryImpl
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
+import com.tokopedia.talk.inboxtalk.listener.InboxTalkContract
+import com.tokopedia.talk.inboxtalk.presenter.InboxTalkPresenter
+import com.tokopedia.talk.inboxtalk.viewmodel.InboxTalkViewModel
 import kotlinx.android.synthetic.main.fragment_inbox_talk.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkFragment : BaseDaggerFragment() {
+class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
 
-    lateinit var alertDialog: Dialog
+    private lateinit var alertDialog: Dialog
+    private lateinit var adapter: InboxTalkAdapter
+    private lateinit var linearLayoutManager: LinearLayoutManager
+    private lateinit var viewModel: InboxTalkViewModel
+
+    @Inject
+    lateinit var presenter: InboxTalkPresenter
+
 
     companion object {
         fun newInstance() = InboxTalkFragment()
@@ -35,6 +50,7 @@ class InboxTalkFragment : BaseDaggerFragment() {
                 .talkComponent(getComponent(TalkComponent::class.java))
                 .build()
         inboxTalkComponent.inject(this)
+        presenter.attachView(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -45,7 +61,35 @@ class InboxTalkFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupView()
+        initData()
+
+    }
+
+
+    private fun setupView() {
+        val adapterTypeFactory = InboxTalkTypeFactoryImpl()
+        val listTalk = ArrayList<Visitable<*>>()
+        adapter = InboxTalkAdapter(adapterTypeFactory, listTalk)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        talk_rv.layoutManager = linearLayoutManager
+        talk_rv.adapter = adapter
+        swipeToRefresh.setOnRefreshListener { onRefreshData() }
         icon_filter.setButton1OnClickListener(showFilterDialog())
+    }
+
+    private fun initData() {
+        activity?.intent?.extras?.run {
+            viewModel = InboxTalkViewModel(InboxTalkActivity.Companion.INBOX_ALL)
+        }
+
+        presenter.getInboxTalk()
+    }
+
+    private fun onRefreshData() {
+        presenter.refreshTalk()
+        swipeToRefresh.isRefreshing = true
+
     }
 
     private fun showFilterDialog(): View.OnClickListener {
@@ -69,7 +113,6 @@ class InboxTalkFragment : BaseDaggerFragment() {
             pos == 1 -> showDeleteTalkDialog()
             pos == 2 -> showDeleteCommentTalkDialog()
             pos == 2 -> showUnfollowTalkDialog()
-
 
 
         }
@@ -155,5 +198,19 @@ class InboxTalkFragment : BaseDaggerFragment() {
         })
 
         alertDialog.show()
+    }
+
+    override fun showLoadingFull() {
+        progressBar.visibility = View.VISIBLE
+    }
+
+    override fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>) {
+        adapter.addList(list)
+        progressBar.visibility = View.GONE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 }
