@@ -1,11 +1,7 @@
 package com.tokopedia.travelcalendar.data;
 
-import android.content.Context;
-
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.travelcalendar.domain.HolidayMapper;
 import com.tokopedia.travelcalendar.domain.ITravelCalendarRepository;
-import com.tokopedia.travelcalendar.network.TravelCalendarApi;
 import com.tokopedia.travelcalendar.view.model.HolidayResult;
 
 import java.util.List;

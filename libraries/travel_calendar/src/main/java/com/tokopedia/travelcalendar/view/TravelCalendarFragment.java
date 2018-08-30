@@ -32,7 +32,6 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
     private RecyclerView recyclerViewHoliday;
     private HolidayAdapter holidayAdapter;
     private Calendar currentCalendar = Calendar.getInstance();
-    private Calendar maxDateCalendar;
     private int month;
 
     public static Fragment newInstance(Date selectedDate, int month, int year, Calendar maxDate,
@@ -62,7 +61,7 @@ public class TravelCalendarFragment extends BaseDaggerFragment {
         super.onViewCreated(view, savedInstanceState);
 
         //get current month
-        month =  getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH);
+        month = getArguments().getInt(TravelCalendarActivity.EXTRA_MONTH);
 
         List<HolidayResult> holidayResultList = getArguments().getParcelableArrayList(TravelCalendarActivity.EXTRA_LIST_HOLIDAY);
         List<HolidayResult> currentHolidayList = new ArrayList<>();

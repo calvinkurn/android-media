@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -188,11 +187,11 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         String errorMessage = ErrorHandler.getErrorMessage(this, throwable);
         NetworkErrorHelper.createSnackbarWithAction(this, errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getHolidayEvents();
-            }
-        }).showRetrySnackbar();
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getHolidayEvents();
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override

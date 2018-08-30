@@ -67,8 +67,6 @@ public interface TrainBookingPassengerContract {
 
         void navigateToReview(TrainSoftbook trainSoftbook);
 
-        void loadPassengerSameAsBuyer(TrainPassengerViewModel trainPassengerViewModel);
-
         void showMessageErrorInSnackBar(int resId);
 
         RequestParams getTrainSoftBookingRequestParam();
@@ -87,8 +85,6 @@ public interface TrainBookingPassengerContract {
 
         void hideLoading();
 
-        void unCheckSameAsBuyerCheckbox();
-
         void showNavigateToSearchDialog(String message);
     }
 
@@ -105,9 +101,5 @@ public interface TrainBookingPassengerContract {
         void onSubmitButtonClicked();
 
         void onChooseSeatButtonClicked();
-
-        void wrapPassengerSameAsBuyer();
-
-        void removePassengerSameAsBuyer();
     }
 }
