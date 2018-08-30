@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.presentation.activity; 
+package com.tokopedia.navigation.presentation.activity;
 
 import android.app.Activity;
 import android.app.Instrumentation;
@@ -38,6 +38,7 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
 import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
+import com.tokopedia.home.account.analytics.domain.GetUserAttributesUseCase;
 import com.tokopedia.home.account.data.mapper.AccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.di.component.DaggerTestAccountHomeComponent;
@@ -216,7 +217,7 @@ public class MainParentActivityTest {
 
         accountHomeComponent.accountHomePresenter(); // call this to mock getAccountUseCase
 
-        GetAccountUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
+        GetUserAttributesUseCase getAccountUseCase = testAccountHomeModule.getGetAccountUseCase();
 
         doReturn(Observable.just(provideAccountViewModel(mIntentsRule.getActivity())))
                 .when(getAccountUseCase)
@@ -226,9 +227,10 @@ public class MainParentActivityTest {
         if (fragment != null && fragment.isVisible()) {
             fragment.reInitInjector(accountHomeComponent);
 
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.renderData(provideAccountViewModel(mIntentsRule.getActivity()));
-            });
+            // TODO render moved to somewhere else
+//            mIntentsRule.getActivity().runOnUiThread(() -> {
+//                fragment.renderData(provideAccountViewModel(mIntentsRule.getActivity()));
+//            });
         }
 
         Thread.sleep(2_000);
@@ -237,9 +239,10 @@ public class MainParentActivityTest {
                 .perform(withCustomConstraints(swipeLeft(), isDisplayingAtLeast(85)));
 
         if (fragment != null && fragment.isVisible()) {
-            mIntentsRule.getActivity().runOnUiThread(() -> {
-                fragment.renderData(provide_account_view_model_without_shop(mIntentsRule.getActivity()));
-            });
+            // TODO render moved to somewhere else`
+//            mIntentsRule.getActivity().runOnUiThread(() -> {
+//                fragment.renderData(provide_account_view_model_without_shop(mIntentsRule.getActivity()));
+//            });
         }
     }
 
