@@ -13,23 +13,25 @@ public class BuyerCardPresenter implements BuyerCardContract.Presenter {
 
     @Override
     public void detachView() {
-
+        this.view = null;
     }
 
     @Override
     public void setData(BuyerCard buyerCard) {
-        if(buyerCard.getProgress() < 100) {
-            view.showProfileProgress(buyerCard.getProgress());
-            view.showIncompleteAvatar(buyerCard.getAvatar());
-            view.setProfileStatusIncomplete(buyerCard.getProgress());
-        } else {
-            view.hideProfileProgress();
-            view.showCompletedAvatar(buyerCard.getAvatar());
-            view.setProfileStatusCompleted();
+        if(view != null) {
+            if (buyerCard.getProgress() < 100) {
+                view.showProfileProgress(buyerCard.getProgress());
+                view.showIncompleteAvatar(buyerCard.getAvatar());
+                view.setProfileStatusIncomplete(buyerCard.getProgress());
+            } else {
+                view.hideProfileProgress();
+                view.showCompletedAvatar(buyerCard.getAvatar());
+                view.setProfileStatusCompleted();
+            }
+            view.setAvatarImageUrl(buyerCard.getProgress(), buyerCard.getAvatar());
+            view.setName(buyerCard.getUsername());
+            view.setTokopoint(buyerCard.getTokopointAmount());
+            view.setCoupon(buyerCard.getCouponAmount());
         }
-        view.setAvatarImageUrl(buyerCard.getProgress(), buyerCard.getAvatar());
-        view.setName(buyerCard.getUsername());
-        view.setTokopoint(buyerCard.getTokopointAmount());
-        view.setCoupon(buyerCard.getCouponAmount());
     }
 }

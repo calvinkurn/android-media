@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.presentation.view.buyercardview;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -67,5 +68,10 @@ public class BuyerCardPresenterTest {
         // then
         Mockito.verify(view).setProfileStatusCompleted();
         Mockito.verify(view).hideProfileProgress();
+    }
+
+    @After
+    public void tearDown() {
+        buyerCardPresenter.detachView();
     }
 }
