@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
@@ -45,7 +46,6 @@ import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IUssdProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.UssdProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name=".cart.activity.CartDigitalActivity"
+            android:name=".cart.presentation.activity.CartDigitalActivity"
             android:label="@string/title_activity_cart_digital_module"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
@@ -18,11 +18,11 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".cart.activity.OtpVerificationActivity"
+            android:name=".cart.presentation.activity.OtpVerificationActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".cart.activity.InstantCheckoutActivity"
+            android:name=".cart.presentation.activity.InstantCheckoutActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
         <activity

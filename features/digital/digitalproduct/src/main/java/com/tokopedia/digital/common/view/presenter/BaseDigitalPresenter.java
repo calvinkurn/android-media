@@ -9,11 +9,11 @@ import android.support.annotation.NonNull;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.product.presentation.model.ContactData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.model.ContactData;
 
 /**
  * Created by nabillasabbaha on 8/8/17.

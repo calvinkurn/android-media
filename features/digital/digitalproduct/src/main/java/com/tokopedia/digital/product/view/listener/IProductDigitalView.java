@@ -2,13 +2,13 @@ package com.tokopedia.digital.product.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.common_digital.product.presentation.model.BannerData;
-import com.tokopedia.common_digital.product.presentation.model.CategoryData;
-import com.tokopedia.common_digital.product.presentation.model.GuideData;
-import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.cart.listener.IBaseView;
+import com.tokopedia.digital.cart.presentation.listener.IBaseView;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.model.BannerData;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
+import com.tokopedia.digital.product.view.model.HistoryClientNumber;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 
 import java.util.List;
@@ -65,7 +65,7 @@ public interface IProductDigitalView extends IBaseView {
     void renderPulsaBalance(PulsaBalance pulsaBalance, int selectedSim);
 
     void showPulsaBalanceError(String message);
-    
+
     void showMessageAlert(String message,String title);
 
     void renderCategory(BaseDigitalProductView digitalProductView, CategoryData categoryData, HistoryClientNumber historyClientNumber);

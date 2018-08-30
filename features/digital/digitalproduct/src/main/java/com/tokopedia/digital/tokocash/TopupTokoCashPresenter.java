@@ -1,12 +1,12 @@
 package com.tokopedia.digital.tokocash;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;

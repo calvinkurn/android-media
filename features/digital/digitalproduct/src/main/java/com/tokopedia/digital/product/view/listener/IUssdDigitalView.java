@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
-import com.tokopedia.digital.cart.listener.IBaseView;
+import com.tokopedia.digital.cart.presentation.listener.IBaseView;
 
 /**
  * Created by ashwanityagi on 20/07/17.

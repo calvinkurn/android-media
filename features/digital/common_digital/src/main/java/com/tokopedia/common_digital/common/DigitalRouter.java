@@ -1,5 +1,9 @@
 package com.tokopedia.common_digital.common;
 
+import android.content.Intent;
+
+import java.util.Map;
+
 import okhttp3.Interceptor;
 
 /**
@@ -8,5 +12,13 @@ import okhttp3.Interceptor;
 public interface DigitalRouter {
 
     Interceptor getChuckInterceptor();
+
+    boolean isSupportedDelegateDeepLink(String url);
+
+    Intent getIntentDeepLinkHandlerActivity();
+
+    String getGeneratedOverrideRedirectUrlPayment(String url);
+
+    Map<String,String> getGeneratedOverrideRedirectHeaderUrlPayment(String urlFinal);
 
 }

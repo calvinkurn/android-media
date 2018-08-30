@@ -1,0 +1,96 @@
+package com.tokopedia.digital.cart.data.repository;
+
+import android.support.annotation.NonNull;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
+import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.digital.cart.data.entity.requestbody.otpcart.RequestBodyOtpSuccess;
+import com.tokopedia.digital.cart.data.entity.requestbody.voucher.RequestBodyCancelVoucher;
+import com.tokopedia.digital.cart.data.entity.response.ResponsePatchOtpSuccess;
+import com.tokopedia.digital.cart.domain.ICartDigitalRepository;
+import com.tokopedia.digital.common.data.apiservice.DigitalRestApi;
+
+import retrofit2.Response;
+import rx.Observable;
+import rx.functions.Func1;
+
+/**
+ * @author anggaprasetiyo on 3/2/17.
+ */
+
+public class CartDigitalRepository implements ICartDigitalRepository {
+
+    private final DigitalRestApi digitalRestApi;
+    private final ICartMapperData cartMapperData;
+
+    public CartDigitalRepository(DigitalRestApi digitalRestApi,
+                                 ICartMapperData iCartMapperData) {
+        this.cartMapperData = iCartMapperData;
+        this.digitalRestApi = digitalRestApi;
+    }
+
+    @Override
+    public Observable<CartDigitalInfoData> getCartInfoData(TKPDMapParam<String, String> param) {
+        return digitalRestApi.getCart(param)
+                .map(getFuncResponseToCartDigitalInfoData());
+    }
+
+    @Override
+    public Observable<CartDigitalInfoData> patchOtpCart(
+            RequestBodyOtpSuccess requestBodyOtpSuccess,
+            final TKPDMapParam<String, String> paramGetCart
+    ) {
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyOtpSuccess));
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("data", jsonElement);
+        return digitalRestApi.patchOtpCart(requestBody)
+                .flatMap(getFuncResponsePatchToGetCartInfo(paramGetCart));
+    }
+
+    @Override
+    public Observable<String> cancelVoucher(RequestBodyCancelVoucher requestBodyCancelVoucher) {
+        JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyCancelVoucher));
+        JsonObject requestBody = new JsonObject();
+        requestBody.add("data", jsonElement);
+
+        return digitalRestApi
+                .cancelVoucher(requestBody)
+                .map(tkpdDigitalResponseResponse -> tkpdDigitalResponseResponse.body().getMessage());
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, CartDigitalInfoData>
+    getFuncResponseToCartDigitalInfoData() {
+        return tkpdDigitalResponseResponse -> cartMapperData.transformCartInfoData(
+                tkpdDigitalResponseResponse.body().convertDataObj(
+                        ResponseCartData.class
+                )
+        );
+    }
+
+    @NonNull
+    private Func1<Response<TkpdDigitalResponse>, Observable<CartDigitalInfoData>>
+    getFuncResponsePatchToGetCartInfo(final TKPDMapParam<String, String> paramGetCart) {
+        return tkpdDigitalResponseResponse -> {
+            if (tkpdDigitalResponseResponse.code() == 200) {
+                ResponsePatchOtpSuccess responsePatchOtpSuccess =
+                        tkpdDigitalResponseResponse.body().convertDataObj(
+                                ResponsePatchOtpSuccess.class
+                        );
+                if (responsePatchOtpSuccess.isSuccess()) {
+                    return digitalRestApi.getCart(paramGetCart)
+                            .map(getFuncResponseToCartDigitalInfoData());
+                }
+            }
+            throw new RuntimeException("Gagal COY!!!!!!");
+        };
+    }
+
+}

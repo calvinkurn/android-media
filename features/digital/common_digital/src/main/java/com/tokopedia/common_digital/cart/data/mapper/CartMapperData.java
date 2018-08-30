@@ -7,16 +7,16 @@ import com.tokopedia.common_digital.cart.data.entity.response.MainInfo;
 import com.tokopedia.common_digital.cart.data.entity.response.RelationshipsCart;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
-import com.tokopedia.common_digital.cart.view.model.AttributesDigital;
-import com.tokopedia.common_digital.cart.view.model.CartAdditionalInfo;
-import com.tokopedia.common_digital.cart.view.model.CartAutoApplyVoucher;
-import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.CartItemDigital;
-import com.tokopedia.common_digital.cart.view.model.CheckoutDigitalData;
-import com.tokopedia.common_digital.cart.view.model.Relation;
-import com.tokopedia.common_digital.cart.view.model.RelationData;
-import com.tokopedia.common_digital.cart.view.model.Relationships;
-import com.tokopedia.common_digital.cart.view.model.UserInputPriceDigital;
+import com.tokopedia.common_digital.cart.view.model.cart.AttributesDigital;
+import com.tokopedia.common_digital.cart.view.model.cart.CartAdditionalInfo;
+import com.tokopedia.common_digital.cart.view.model.cart.CartAutoApplyVoucher;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartItemDigital;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
+import com.tokopedia.common_digital.cart.view.model.cart.Relation;
+import com.tokopedia.common_digital.cart.view.model.cart.RelationData;
+import com.tokopedia.common_digital.cart.view.model.cart.Relationships;
+import com.tokopedia.common_digital.cart.view.model.cart.UserInputPriceDigital;
 import com.tokopedia.common_digital.common.MapperDataException;
 
 import java.util.ArrayList;
@@ -134,11 +134,11 @@ public class CartMapperData implements ICartMapperData {
     }
 
     @Override
-    public CheckoutDigitalData transformCheckoutData(
+    public InstantCheckoutData transformInstantCheckoutData(
             ResponseCheckoutData responseCheckoutData
     ) throws MapperDataException {
         try {
-            CheckoutDigitalData checkoutDigitalData = new CheckoutDigitalData();
+            InstantCheckoutData checkoutDigitalData = new InstantCheckoutData();
             checkoutDigitalData.setFailedCallbackUrl(
                     responseCheckoutData.getAttributes().getCallbackUrlFailed()
             );

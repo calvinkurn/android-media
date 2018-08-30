@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.cart.data.entity.requestbody.atc;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
 
 import java.util.ArrayList;
 import java.util.List;

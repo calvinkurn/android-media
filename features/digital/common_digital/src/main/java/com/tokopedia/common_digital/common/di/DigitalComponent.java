@@ -2,13 +2,17 @@ package com.tokopedia.common_digital.common.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
+import com.tokopedia.common_digital.cart.view.activity.InstantCheckoutActivity;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
-import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 
 import dagger.Component;
+import retrofit2.Retrofit;
 
 /**
  * Created by Rizky on 13/08/18.
@@ -20,13 +24,20 @@ public interface DigitalComponent {
     @ApplicationContext
     Context context();
 
+    @DigitalRestApiRetrofit
+    Retrofit digitalRestApiRetrofit();
+
     DigitalRestApi digitalApi();
 
-    GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase();
+    DigitalAddToCartUseCase digitalAddToCartUseCase();
 
-    DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase();
+    DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase();
 
-//    void inject(DigitalProductBaseDaggerActivity digitalProductBaseDaggerActivity);
+    DigitalRouter digitalRouter();
+
+    CacheManager globalCacheManager();
+
+    void inject(InstantCheckoutActivity instantCheckoutActivity);
 
 }
 

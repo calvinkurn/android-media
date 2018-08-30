@@ -2,7 +2,7 @@ package com.tokopedia.common_digital.cart.domain.usecase;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository;
-import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

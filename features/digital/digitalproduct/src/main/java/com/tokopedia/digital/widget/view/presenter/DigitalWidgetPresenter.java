@@ -4,15 +4,15 @@ import android.text.TextUtils;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.common_digital.product.presentation.model.CategoryData;
-import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
-import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
-import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.HistoryClientNumber;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class DigitalWidgetPresenter extends BaseDigitalPresenter implements IDig
 
     @Inject
     public DigitalWidgetPresenter(LocalCacheHandler localCacheHandler,
-            GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
+                                  GetDigitalCategoryByIdUseCase getDigitalCategoryByIdUseCase) {
         super(localCacheHandler);
         this.getDigitalCategoryByIdUseCase = getDigitalCategoryByIdUseCase;
     }

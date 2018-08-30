@@ -1,13 +1,12 @@
 package com.tokopedia.common_digital.cart.data.repository;
 
 import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource;
-import com.tokopedia.common_digital.cart.data.datasource.DigitalCheckoutDataSource;
-import com.tokopedia.common_digital.cart.data.datasource.DigitalGetCartDataSource;
+import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository;
-import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.CheckoutDigitalData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 
 import rx.Observable;
 
@@ -17,15 +16,12 @@ import rx.Observable;
 public class DigitalCartRepository implements IDigitalCartRepository {
 
     private DigitalAddToCartDataSource digitalAddToCartDataSource;
-    private DigitalGetCartDataSource digitalGetCartUseCase;
-    private DigitalCheckoutDataSource digitalCheckoutDataSource;
+    private DigitalInstantCheckoutDataSource digitalInstantCheckoutDataSource;
 
     public DigitalCartRepository(DigitalAddToCartDataSource digitalAddToCartDataSource,
-                                 DigitalGetCartDataSource digitalGetCartDataSource,
-                                 DigitalCheckoutDataSource digitalCheckoutDataSource) {
+                                 DigitalInstantCheckoutDataSource digitalInstantCheckoutDataSource) {
         this.digitalAddToCartDataSource = digitalAddToCartDataSource;
-        this.digitalGetCartUseCase = digitalGetCartDataSource;
-        this.digitalCheckoutDataSource = digitalCheckoutDataSource;
+        this.digitalInstantCheckoutDataSource = digitalInstantCheckoutDataSource;
     }
 
     @Override
@@ -34,13 +30,8 @@ public class DigitalCartRepository implements IDigitalCartRepository {
     }
 
     @Override
-    public Observable<CartDigitalInfoData> getCart(String categoryId) {
-        return digitalGetCartUseCase.getCart(categoryId);
-    }
-
-    @Override
-    public Observable<CheckoutDigitalData> checkoutCart(RequestBodyCheckout requestBodyCheckout) {
-        return digitalCheckoutDataSource.checkout(requestBodyCheckout);
+    public Observable<InstantCheckoutData> instantCheckout(RequestBodyCheckout requestBodyCheckout) {
+        return digitalInstantCheckoutDataSource.instantCheckout(requestBodyCheckout);
     }
 
 }

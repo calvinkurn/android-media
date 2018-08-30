@@ -22,10 +22,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
-import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 import com.tokopedia.digital.widget.view.adapter.AutoCompleteTVAdapter;
 
 import java.util.List;

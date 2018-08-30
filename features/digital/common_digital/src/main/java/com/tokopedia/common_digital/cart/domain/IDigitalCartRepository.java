@@ -2,8 +2,8 @@ package com.tokopedia.common_digital.cart.domain;
 
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
-import com.tokopedia.common_digital.cart.view.model.CheckoutDigitalData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
+import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData;
 
 import rx.Observable;
 
@@ -16,8 +16,6 @@ public interface IDigitalCartRepository {
             RequestBodyAtcDigital requestBodyAtcDigital, String idemPotencyKeyHeader
     );
 
-    Observable<CartDigitalInfoData> getCart(String categoryId);
-
-    Observable<CheckoutDigitalData> checkoutCart(RequestBodyCheckout requestBodyCheckout);
+    Observable<InstantCheckoutData> instantCheckout(RequestBodyCheckout requestBodyCheckout);
 
 }

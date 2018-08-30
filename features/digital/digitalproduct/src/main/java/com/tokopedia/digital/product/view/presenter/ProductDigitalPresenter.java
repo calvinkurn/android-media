@@ -13,15 +13,7 @@ import android.util.Log;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
-import com.tokopedia.common_digital.product.presentation.model.BannerData;
-import com.tokopedia.common_digital.product.presentation.model.CategoryData;
-import com.tokopedia.common_digital.product.presentation.model.GuideData;
-import com.tokopedia.common_digital.product.presentation.model.HistoryClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
-import com.tokopedia.common_digital.product.presentation.model.ProductDigitalData;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -34,14 +26,22 @@ import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.common.domain.interactor.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.ViewFactory;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.presenter.BaseDigitalPresenter;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.Attributes;
 import com.tokopedia.digital.product.data.entity.requestbody.pulsabalance.RequestBodyPulsaBalance;
+import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
 import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.listener.IProductDigitalView;
+import com.tokopedia.digital.product.view.model.BannerData;
+import com.tokopedia.digital.product.view.model.CategoryData;
+import com.tokopedia.digital.product.view.model.GuideData;
+import com.tokopedia.digital.product.view.model.HistoryClientNumber;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
+import com.tokopedia.digital.product.view.model.ProductDigitalData;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.ServerErrorHandlerUtil;
@@ -471,9 +471,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
 
     @Override
     public String getDeviceMobileNumber(int selectedSim) {
-        String currentMobileNumber = null;
-        currentMobileNumber = DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
-        return currentMobileNumber;
+        return DeviceUtil.getMobileNumber(view.getActivity(), selectedSim);
     }
 
     private int parseStringToInt(String source) {

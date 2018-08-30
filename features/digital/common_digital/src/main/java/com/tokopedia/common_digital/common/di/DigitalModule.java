@@ -2,30 +2,26 @@ package com.tokopedia.common_digital.common.di;
 
 import android.content.Context;
 
-import com.google.gson.Gson;
-import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.common_digital.cart.data.datasource.DigitalAddToCartDataSource;
+import com.tokopedia.common_digital.cart.data.datasource.DigitalInstantCheckoutDataSource;
+import com.tokopedia.common_digital.cart.data.mapper.CartMapperData;
+import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
+import com.tokopedia.common_digital.cart.data.repository.DigitalCartRepository;
+import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalAddToCartUseCase;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalInstantCheckoutUseCase;
 import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.common_digital.common.constant.DigitalUrl;
-import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
-import com.tokopedia.common_digital.common.data.api.DigitalGqlApi;
 import com.tokopedia.common_digital.common.data.api.DigitalInterceptor;
-import com.tokopedia.common_digital.product.data.datasource.CategoryDetailDataSource;
-import com.tokopedia.common_digital.product.data.mapper.ProductDigitalMapper;
-import com.tokopedia.common_digital.product.data.repository.DigitalCategoryRepository;
+import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
-import com.tokopedia.common_digital.product.domain.IDigitalCategoryRepository;
-import com.tokopedia.common_digital.product.domain.usecase.DigitalGetHelpUrlUseCase;
-import com.tokopedia.common_digital.product.domain.usecase.GetDigitalCategoryByIdUseCase;
 import com.tokopedia.network.NetworkRouter;
-import com.tokopedia.network.constant.TkpdBaseURL;
-import com.tokopedia.network.converter.StringResponseConverter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -35,8 +31,6 @@ import dagger.Provides;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by Rizky on 13/08/18.
@@ -100,40 +94,40 @@ public class DigitalModule {
         return builder.build();
     }
 
-    @Provides
-    @DigitalScope
-    @DigitalGqlApiClient
-    public OkHttpClient provideDigitalGqlApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
-                                                         @ApplicationContext Context context,
-                                                         DigitalRouter digitalRouter,
-                                                         NetworkRouter networkRouter,
-                                                         UserSession userSession) {
-        OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
-        OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
+//    @Provides
+//    @DigitalScope
+//    @DigitalGqlApiClient
+//    public OkHttpClient provideDigitalGqlApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+//                                                         @ApplicationContext Context context,
+//                                                         DigitalRouter digitalRouter,
+//                                                         NetworkRouter networkRouter,
+//                                                         UserSession userSession) {
+//        OkHttpRetryPolicy retryPolicy = OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy();
+//        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+//                .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
+//                .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
+//                .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS);
+//
+//        builder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
+//        builder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
+//        builder.addInterceptor(new ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse.class));
+//        if (GlobalConfig.isAllowDebuggingTools()) {
+//            builder.addInterceptor(httpLoggingInterceptor)
+//                    .addInterceptor(digitalRouter.getChuckInterceptor());
+//        }
+//
+//        return builder.build();
+//    }
 
-        builder.addInterceptor(new FingerprintInterceptor(networkRouter, userSession));
-        builder.addInterceptor(new TkpdAuthInterceptor(context, networkRouter, userSession));
-        builder.addInterceptor(new ErrorResponseInterceptor(TkpdDigitalResponse.DigitalErrorResponse.class));
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(httpLoggingInterceptor)
-                    .addInterceptor(digitalRouter.getChuckInterceptor());
-        }
-
-        return builder.build();
-    }
-
-    @DigitalScope
-    @DigitalGqlApiRetrofit
-    @Provides
-    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
-        return new Retrofit.Builder()
-                .addConverterFactory(new StringResponseConverter())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
-    }
+//    @DigitalScope
+//    @DigitalGqlApiRetrofit
+//    @Provides
+//    public Retrofit.Builder provideRetrofitBuilder(Gson gson) {
+//        return new Retrofit.Builder()
+//                .addConverterFactory(new StringResponseConverter())
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .addCallAdapterFactory(RxJavaCallAdapterFactory.create());
+//    }
 
     @Provides
     @DigitalScope
@@ -143,13 +137,13 @@ public class DigitalModule {
         return retrofitBuilder.baseUrl(DigitalUrl.BASE_URL).client(okHttpClient).build();
     }
 
-    @Provides
-    @DigitalScope
-    @DigitalGqlApiRetrofit
-    public Retrofit provideDigitalGqlApiRetrofit(@DigitalGqlApiClient OkHttpClient okHttpClient,
-                                                 @DigitalGqlApiRetrofit Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL).client(okHttpClient).build();
-    }
+//    @Provides
+//    @DigitalScope
+//    @DigitalGqlApiRetrofit
+//    public Retrofit provideDigitalGqlApiRetrofit(@DigitalGqlApiClient OkHttpClient okHttpClient,
+//                                                 @DigitalGqlApiRetrofit Retrofit.Builder retrofitBuilder) {
+//        return retrofitBuilder.baseUrl(TkpdBaseURL.HOME_DATA_BASE_URL).client(okHttpClient).build();
+//    }
 
     @Provides
     @DigitalScope
@@ -157,44 +151,76 @@ public class DigitalModule {
         return retrofit.create(DigitalRestApi.class);
     }
 
+//    @Provides
+//    @DigitalScope
+//    public DigitalGqlApi provideDigitalGqlApi(@DigitalGqlApiRetrofit Retrofit retrofit) {
+//        return retrofit.create(DigitalGqlApi.class);
+//    }
+
+//    @Provides
+//    @DigitalScope
+//    ProductDigitalMapper provideProductDigitalMapper() {
+//        return new ProductDigitalMapper();
+//    }
+
+//    @Provides
+//    @DigitalScope
+//    AgentDigitalCategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
+//                                                                         CacheManager cacheManager,
+//                                                                         ProductDigitalMapper productDigitalMapper,
+//                                                                         @ApplicationContext Context context) {
+//        return new AgentDigitalCategoryDetailDataSource(digitalGqlApi, cacheManager, productDigitalMapper, context);
+//    }
+
+//    @Provides
+//    @DigitalScope
+//    IAgentDigitalCategoryRepository provideDigitalCategoryRepository(AgentDigitalCategoryDetailDataSource agentDigitalCategoryDetailDataSource) {
+//        return new AgentDigitalCategoryRepository(agentDigitalCategoryDetailDataSource);
+//    }
+
+//    @Provides
+//    @DigitalScope
+//    public GetAgentDigitalCategoryByIdUseCase provideGetAgentDigitalCategoryByIdUseCase(IAgentDigitalCategoryRepository digitalCategoryRepository,
+//                                                                                        UserSession userSession) {
+//        return new GetAgentDigitalCategoryByIdUseCase(digitalCategoryRepository, userSession);
+//    }
+
     @Provides
     @DigitalScope
-    public DigitalGqlApi provideDigitalGqlApi(@DigitalGqlApiRetrofit Retrofit retrofit) {
-        return retrofit.create(DigitalGqlApi.class);
+    ICartMapperData provideCartMapperData() {
+        return new CartMapperData();
     }
 
     @Provides
     @DigitalScope
-    ProductDigitalMapper provideProductDigitalMapper() {
-        return new ProductDigitalMapper();
+    public DigitalAddToCartDataSource provideDigitalAddToCartDataSource(DigitalRestApi digitalRestApi,
+                                                                        ICartMapperData cartMapperData) {
+        return new DigitalAddToCartDataSource(digitalRestApi, cartMapperData);
+    }
+
+    @Provides
+    @DigitalScope DigitalInstantCheckoutDataSource provideDigitalInstantCheckoutDataSource(DigitalRestApi digitalRestApi,
+                                                                                           ICartMapperData cartMapperData) {
+        return new DigitalInstantCheckoutDataSource(digitalRestApi, cartMapperData);
     }
 
     @Provides
     @DigitalScope
-    CategoryDetailDataSource provideCategoryDetailDataSource(DigitalGqlApi digitalGqlApi,
-                                                             CacheManager cacheManager,
-                                                             ProductDigitalMapper productDigitalMapper,
-                                                             @ApplicationContext Context context) {
-        return new CategoryDetailDataSource(digitalGqlApi, cacheManager, productDigitalMapper, context);
+    public IDigitalCartRepository provideDigitalCartRepository(DigitalAddToCartDataSource digitalAddToCartDataSource,
+                                                               DigitalInstantCheckoutDataSource digitalInstantCheckoutDataSource) {
+        return new DigitalCartRepository(digitalAddToCartDataSource, digitalInstantCheckoutDataSource);
     }
 
     @Provides
     @DigitalScope
-    IDigitalCategoryRepository provideDigitalCategoryRepository(CategoryDetailDataSource categoryDetailDataSource) {
-        return new DigitalCategoryRepository(categoryDetailDataSource);
+    public DigitalAddToCartUseCase provideDigitalAddToCartUseCase(IDigitalCartRepository digitalCartRepository) {
+        return new DigitalAddToCartUseCase(digitalCartRepository);
     }
 
     @Provides
     @DigitalScope
-    public GetDigitalCategoryByIdUseCase provideGetDigitalCategoryByIdUseCase(IDigitalCategoryRepository digitalCategoryRepository,
-                                                                              UserSession userSession) {
-        return new GetDigitalCategoryByIdUseCase(digitalCategoryRepository, userSession);
-    }
-
-    @Provides
-    @DigitalScope
-    public DigitalGetHelpUrlUseCase provideDigitalGetHelpUrlUseCase(IDigitalCategoryRepository digitalCategoryRepository) {
-        return new DigitalGetHelpUrlUseCase(digitalCategoryRepository);
+    public DigitalInstantCheckoutUseCase provideDigitalInstantCheckoutUseCase(IDigitalCartRepository digitalCartRepository) {
+        return new DigitalInstantCheckoutUseCase(digitalCartRepository);
     }
 
 }

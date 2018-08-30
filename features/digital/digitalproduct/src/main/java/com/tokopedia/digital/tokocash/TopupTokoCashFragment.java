@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.common_digital.product.presentation.model.CategoryData;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -21,8 +20,9 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
-import com.tokopedia.digital.product.DigitalProductComponentInstance;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
+import com.tokopedia.digital.product.view.model.CategoryData;
 
 import java.util.List;
 
@@ -65,19 +65,6 @@ public class TopupTokoCashFragment extends BaseDaggerFragment implements TopupTo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-//        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
-//        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-//                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
-//        );
-//        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(
-//                categoryDetailDataSource);
-//
-//        GetDigitalCategoryByIdUseCase getCategoryByIdUseCase = new GetDigitalCategoryByIdUseCase(
-//                getActivity(), digitalCategoryRepository
-//        );
-//
-//        presenter = new TopupTokoCashPresenter(getCategoryByIdUseCase, this);
 
         presenter.attachView(this);
 

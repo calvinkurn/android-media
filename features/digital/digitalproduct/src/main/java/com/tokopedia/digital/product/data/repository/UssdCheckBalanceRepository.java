@@ -18,12 +18,13 @@ import rx.Observable;
  */
 
 public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
-    private final DigitalRestApi digitalApi;
+
+    private final DigitalRestApi digitalRestApi;
     private final USSDMapper ussdMapper;
 
-    public UssdCheckBalanceRepository(DigitalRestApi digitalApi,
+    public UssdCheckBalanceRepository(DigitalRestApi digitalRestApi,
                                       USSDMapper ussdMapper) {
-        this.digitalApi = digitalApi;
+        this.digitalRestApi = digitalRestApi;
         this.ussdMapper = ussdMapper;
     }
 
@@ -32,11 +33,12 @@ public class UssdCheckBalanceRepository implements IUssdCheckBalanceRepository {
         JsonElement jsonElement = new JsonParser().parse(new Gson().toJson(requestBodyPulsaBalance));
         JsonObject requestBody = new JsonObject();
         requestBody.add("data", jsonElement);
-        return digitalApi.parsePulsaMessage(requestBody)
+        return digitalRestApi.parsePulsaMessage(requestBody)
                 .map(tkpdDigitalResponseResponse -> {
                     ResponsePulsaBalance responsePulsaBalance =
                             tkpdDigitalResponseResponse.body().convertDataObj(ResponsePulsaBalance.class);
                     return ussdMapper.transformPulsaBalance(responsePulsaBalance);
                 });
     }
+
 }

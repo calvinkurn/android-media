@@ -9,7 +9,7 @@ import com.google.gson.JsonParser;
 import com.tokopedia.common_digital.cart.data.entity.requestbody.atc.RequestBodyAtcDigital;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.mapper.ICartMapperData;
-import com.tokopedia.common_digital.cart.view.model.CartDigitalInfoData;
+import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData;
 import com.tokopedia.common_digital.common.data.api.DigitalRestApi;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 

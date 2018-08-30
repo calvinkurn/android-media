@@ -12,8 +12,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
 
-import com.tokopedia.common_digital.product.presentation.model.OrderClientNumber;
 import com.tokopedia.digital.R;
+import com.tokopedia.digital.product.view.model.OrderClientNumber;
 
 import java.util.ArrayList;
 import java.util.List;

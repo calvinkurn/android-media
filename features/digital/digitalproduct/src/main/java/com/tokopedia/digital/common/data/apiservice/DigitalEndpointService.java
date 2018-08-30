@@ -12,7 +12,7 @@ import retrofit2.Retrofit;
  * @author anggaprasetiyo on 2/23/17.
  */
 
-public class DigitalEndpointService extends BaseService<DigitalApi> {
+public class DigitalEndpointService extends BaseService<DigitalRestApi> {
 
     public DigitalEndpointService() {
         super();
@@ -20,7 +20,7 @@ public class DigitalEndpointService extends BaseService<DigitalApi> {
 
     @Override
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(DigitalApi.class);
+        api = retrofit.create(DigitalRestApi.class);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class DigitalEndpointService extends BaseService<DigitalApi> {
     }
 
     @Override
-    public DigitalApi getApi() {
+    public DigitalRestApi getApi() {
         return api;
     }
 
