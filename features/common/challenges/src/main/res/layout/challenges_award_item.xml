@@ -17,17 +17,16 @@
         app:cardElevation="@dimen/dp_0">
 
         <LinearLayout
+            android:id="@+id/ll_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/background_award_item"
+            android:background="@drawable/bg_green_gradient"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-
                 android:orientation="horizontal">
-
 
                 <ImageView
                     android:id="@+id/award_image"
@@ -38,7 +37,6 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
                     android:src="@drawable/award_circular" />
-
 
                 <LinearLayout
                     android:layout_width="wrap_content"

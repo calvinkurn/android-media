@@ -199,7 +199,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/about"
+                        android:text="@string/image_description"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -496,7 +496,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_horizontal"
-                    android:paddingBottom="@dimen/dp_40"
+                    android:paddingBottom="@dimen/dp_30"
                     android:paddingTop="@dimen/dp_16"
                     android:text="@string/terms_conditions"
                     android:textColor="@color/tkpd_main_green"

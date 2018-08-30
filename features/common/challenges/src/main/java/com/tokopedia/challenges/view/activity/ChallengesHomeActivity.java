@@ -24,7 +24,7 @@ import com.tokopedia.design.utils.TabUtil;
 public class ChallengesHomeActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    ChallengesAnalytics analytics;
+    private ChallengesAnalytics analytics;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {

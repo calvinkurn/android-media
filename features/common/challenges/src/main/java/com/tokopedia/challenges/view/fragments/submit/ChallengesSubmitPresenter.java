@@ -220,11 +220,13 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         ChallengeSettings settings = getView().getChallengeSettings();
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo_video));
+            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title));
         } else if (settings.isAllowPhotos()) {
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo));
+            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title_photo));
         } else if (settings.isAllowVideos()) {
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_video));
-
+            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title_video));
         }
     }
 }

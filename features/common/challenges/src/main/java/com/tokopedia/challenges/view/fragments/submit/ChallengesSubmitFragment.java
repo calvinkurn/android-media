@@ -71,6 +71,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private  ProgressDialog progress;
     private View parent;
     private ScrollView scrollView;
+    private TextView txtChooseImageTitle;
 
     @Inject
     ChallengesSubmitPresenter presenter;
@@ -285,6 +286,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mShowMore = view.findViewById(R.id.show_more);
         longDescription = view.findViewById(R.id.markdownView);
         scrollView = view.findViewById(R.id.scroll_view);
+        txtChooseImageTitle = view.findViewById(R.id.txt_choose_image_title);
     }
 
     private void showImagePickerDialog() {
@@ -382,5 +384,11 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void setSubmitButtonText(String text) {
         mBtnSubmit.setText(text);
+        txtChooseImageTitle.setText(text);
+    }
+
+    @Override
+    public void setChooseImageText(String text) {
+        txtChooseImageTitle.setText(text);
     }
 }

@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
@@ -201,7 +202,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 getView().hidProgressBar();
-                Toast.makeText(getView().getActivity(), "Post has been deleted", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
                 getView().getActivity().finish();
                 Utils.FROMNOCACHE = true;
             }

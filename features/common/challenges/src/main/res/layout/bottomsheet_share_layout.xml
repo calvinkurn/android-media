@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:text="Close"
+        android:text="tutup"
         android:padding="@dimen/dp_25"
         android:textColor="@color/tkpd_main_green" />
 

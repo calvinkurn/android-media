@@ -6,31 +6,9 @@
     android:orientation="vertical"
     tools:context=".view.fragments.MySubmissionsFragment">
 
-    <LinearLayout
-        android:id="@+id/empty_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="@dimen/dp_30"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Oops!"
-            android:textSize="@dimen/dp_24" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="There are no challenges available.
-Please check again later."
-            android:textSize="@dimen/sp_14" />
-    </LinearLayout>
-
+    <include
+        layout="@layout/empty_view"
+        android:visibility="gone"></include>
 
     <LinearLayout
         android:id="@+id/progress_bar_layout"

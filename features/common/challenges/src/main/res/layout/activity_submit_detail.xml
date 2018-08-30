@@ -209,7 +209,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/about"
+                android:text="@string/description"
                 android:textColor="#000000"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintTop_toBottomOf="@+id/conditional_status" />

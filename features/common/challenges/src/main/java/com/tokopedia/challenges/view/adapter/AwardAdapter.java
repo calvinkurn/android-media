@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -20,8 +21,8 @@ import java.util.List;
 
 public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    List<Prize> awardsList;
-    Context context;
+   private List<Prize> awardsList;
+   private Context context;
 
     public AwardAdapter(List<Prize> awardsList) {
         this.awardsList = awardsList;
@@ -42,7 +43,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         ((AwardAdapter.AwardViewHolder) holder).setIndex(position);
-        ((AwardAdapter.AwardViewHolder) holder).bindData(awardsList.get(position));
+        ((AwardAdapter.AwardViewHolder) holder).bindData(awardsList.get(position), position);
     }
 
     @Override
@@ -60,6 +61,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView awardDescription;
         private ImageView awardImage;
         private int index;
+        private LinearLayout layout;
 
         public AwardViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +69,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             awardTitle = itemView.findViewById(R.id.tv_award_title);
             awardDescription = itemView.findViewById(R.id.tv_award_price);
             awardImage = itemView.findViewById(R.id.award_image);
+            layout = itemView.findViewById(R.id.ll_main);
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int devicewidth = (int) (displaymetrics.widthPixels / 1.6);
@@ -81,7 +84,24 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             return this.index;
         }
 
-        public void bindData(final Prize prize) {
+        public void bindData(final Prize prize, int position) {
+            switch (position) {
+                case 0:
+                    layout.setBackgroundResource(R.drawable.bg_green_gradient);
+                    break;
+                case 1:
+                    layout.setBackgroundResource(R.drawable.bg_light_green_gradient);
+
+                    break;
+                case 2:
+                    layout.setBackgroundResource(R.drawable.bg_green_yellow_gradient);
+
+                    break;
+                default:
+                    layout.setBackgroundResource(R.drawable.bg_green_gradient);
+
+                    break;
+            }
             awardTitle.setText(prize.getTitle());
             awardDescription.setText(prize.getDescription().trim());
             ImageHandler.loadImageCircle2(context, awardImage, "");

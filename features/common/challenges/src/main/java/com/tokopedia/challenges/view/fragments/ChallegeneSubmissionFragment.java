@@ -493,7 +493,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
         }
-
     }
 
     @Override

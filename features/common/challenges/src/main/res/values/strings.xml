@@ -1,11 +1,11 @@
 <resources>
-    <string name="img_description">deskripsi</string>
-    <string name="description">deskripsi post</string>
-    <string name="image_title">judul</string>
-    <string name="title">Judul</string>
+    <string name="description">Deskripsi</string>
+    <string name="image_title">Judul</string>
     <string name="submit">Daftarkan</string>
     <string name="cancel">Batal</string>
-    <string name="choose_an_image_title">Pilih konten (foto atau video)</string>
+    <string name="choose_image_title">Pilih konten (foto atau video)</string>
+    <string name="choose_image_title_photo">Pilih konten foto</string>
+    <string name="choose_image_title_video">Pilih konten video</string>
 
     <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
@@ -15,7 +15,7 @@
     <string name="error_msg_wrong_descirption_size">Deskripsi harus berkisar 1 sampai 300 karakter</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="see_less">Lihat sedikit</string>
+    <string name="see_less">sembunyikan</string>
     <string name="see_more">Lihat lebih</string>
     <string name="append_0">0%d</string>
     <string name="title_activity_main">MainActivity</string>
@@ -24,14 +24,14 @@
     <string name="submissions">Submissions</string>
     <string name="title_activity_login">Masuk</string>
     <string name="text_due_date">Berakhir pada %s</string>
-    <string name="text_ended_date">Berakhir pada %s</string>
+    <string name="text_ended_date">berakhir dalam %s</string>
     <string name="most_recent">Terbaru</string>
     <string name="buzz_points">Buzz Point Terbanyak</string>
     <string name="see_all">Lihat Semua</string>
     <string name="submit_photo">Daftarkan Foto</string>
     <string name="participate_in">Berpartisipasi dalam Challenge:</string>
     <string name="challenge_title">Challenge Title</string>
-    <string name="approval_wait">Waiting For Approval</string>
+    <string name="approval_wait">menunggu persetujuan</string>
     <string name="buzz_point_request">Bagikan dan bantu konten ini mendapatkan Buzz Point!</string>
     <string name="show_more">Show More</string>
 
@@ -40,7 +40,6 @@
     <string name="detail_title_text">Description</string>
     <string name="detail_content_text">Its\' time to GO SNAP! We are looking for some beautiful snapshot from our Orange County community in this month.</string>
 
-    <string name="about">Deskripsi</string>
     <string name="video">Video</string>
     <string name="awards">Hadiah</string>
     <string name="recent_submissions">Peserta Tantangan</string>
@@ -67,5 +66,8 @@
     <string name="submit_video_photo_text">Daftarkan Foto atau Video</string>
     <string name="submit_video">Daftarkan Video</string>
     <string name="submit_photo_video">Daftarkan Foto atau Video</string>
+    <string name="copy_to_clipboard_bhahasa">link telah disalin</string>
+    <string name="post_deleted_msg">unggahan telah dihapus</string>
+
 
 </resources>

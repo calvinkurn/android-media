@@ -105,7 +105,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
     private void copyToClipboard(String contents) {
         ClipboardHandler.CopyToClipboard(getView().getActivity(), contents);
-        Toast.makeText(getView().getActivity(), getView().getActivity().getResources().getString(R.string.copied_to_clipboard), Toast.LENGTH_LONG).show();
+        Toast.makeText(getView().getActivity(), R.string.copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
     }
 
     private void shareLink(boolean isChallenge, String branchUrl, String title, String packageName) {

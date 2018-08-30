@@ -58,7 +58,6 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
             public void onNext(Map<Type, RestResponse> restResponse) {
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
-                int responseCodeOfResponse1 = res1.getCode();
                 SubmissionResponse mainDataObject = res1.getData();
                 isLoading = false;
                 getView().removeFooter();

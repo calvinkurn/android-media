@@ -122,9 +122,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void showErrorNetwork(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
-                "",
-                "Network problem",
-                "choba lagi", 0,
+                "Oops!",
+                "There are no challenges available.\n" +
+                        "Please check again later.",
+                "Coba lagi", R.drawable.ic_offline2,
                 getChallengesRetryListener()
         );
     }
@@ -133,6 +134,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void renderEmptyList() {
         recyclerView.setVisibility(View.GONE);
         emptyLayout.setVisibility(View.VISIBLE);
+
     }
 
     @Override

@@ -94,12 +94,24 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public void showErrorNetwork(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
-                "title",
-                "message",
-                "choba lagi", 0,
-                getMySubmissionsRetryListener()
+                "Oops!",
+                "You have not participate in any challenges.\n" +
+                        "Click this button to see active challenges.",
+                "Show Challenges", R.drawable.ic_offline2,
+                getChallengesRetryListener()
         );
     }
+
+
+    private NetworkErrorHelper.RetryClickedListener getChallengesRetryListener() {
+        return new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+
+            }
+        };
+    }
+
 
     @Override
     public void renderEmptyList() {

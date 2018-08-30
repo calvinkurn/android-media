@@ -119,7 +119,7 @@ public class CountDownView extends FrameLayout {
         long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds)* 60);
         long second = TimeUnit.SECONDS.toSeconds(seconds) - (TimeUnit.SECONDS.toMinutes(seconds) *60);
 
-        tvDays.setText(String.valueOf(day));
+        tvDays.setText(String.valueOf(day) + " hari");
         if(hours<10)
             tvHours.setText(String.format(getResources().getString(R.string.append_0), hours));
         else

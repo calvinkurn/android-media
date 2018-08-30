@@ -47,6 +47,7 @@ public interface IChallengesSubmitContract {
 
         void setSubmitButtonText(String text);
 
+        void setChooseImageText(String text);
     }
 
     interface Presenter extends CustomerPresenter<View> {
