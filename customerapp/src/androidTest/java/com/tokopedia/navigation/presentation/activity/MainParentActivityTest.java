@@ -475,6 +475,14 @@ public class MainParentActivityTest {
             // Scroll to end of page with position
             onView(allOf(withId(R.id.list), withTagValue(is("home_list")), isCompletelyDisplayed()))
                     .perform(RecyclerViewActions.scrollToPosition(itemCount - 1));
+
+            // tap the bottom nav then check
+            onView(allOf(withText(Home_TAG), isDescendantOfA(withId(R.id.bottomnav)), isDisplayed())).perform(click());
+
+            // this must be set in order to work properly
+            Thread.sleep(1_000);
+
+            onView(withId(R.id.viewpager_banner_category)).check(matches(isDisplayed()));
         }
     }
 
