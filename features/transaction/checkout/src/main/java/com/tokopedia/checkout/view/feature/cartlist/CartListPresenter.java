@@ -612,9 +612,8 @@ public class CartListPresenter implements ICartListPresenter {
                 if (!data.isSuccess()) {
                     view.renderErrorToShipmentForm(data.getMessage());
                 } else {
-                    view.renderToShipmentFormSuccess();
+                    view.renderToShipmentFormSuccess(generateCheckoutDataAnalytics(cartItemDataList), "may Somethings condition");
                 }
-                view.sendAnalyticsOnSuccessToShipment(generateCheckoutDataAnalytics(cartItemDataList));
             }
         };
     }

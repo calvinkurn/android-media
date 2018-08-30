@@ -187,6 +187,8 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -211,7 +213,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1463,6 +1465,15 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getProfileSettingIntent(Context context) {
         return ManagePeopleProfileActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_withdraw", true))
+            return WithdrawActivity.getCallingIntent(context);
+        else {
+            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
+        }
     }
 
     @Override

@@ -67,9 +67,8 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
         if (currentFragment instanceof RemoveCartItemFragment) {
             ((RemoveCartItemFragment) currentFragment)
                     .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
-        } else if (currentFragment instanceof CartFragment) {
-            ((CartFragment) currentFragment)
-                    .getCartPageAnalytics().eventClickAtcCartClickArrowBack();
+        } else if (currentFragment instanceof ICartListAnalyticsListener) {
+            ((ICartListAnalyticsListener) currentFragment).sendAnalyticsOnClickBackArrow();
         }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();

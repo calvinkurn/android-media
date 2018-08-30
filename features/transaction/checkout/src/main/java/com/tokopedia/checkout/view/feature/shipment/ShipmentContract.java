@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartcheckout.CheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -106,6 +107,30 @@ public interface ShipmentContract {
         void sendAnalyticsOnClickChooseToMultipleAddressShipment();
 
         void sendAnalyticsOnClickTopDonation();
+
+        void sendAnalyticsOnClickChangeAddress();
+
+        void sendAnalyticsOnClickChooseCourierSelection();
+
+        void sendAnalyticsOnBottomShetCourierSelectionShow(List<ShopShipment> shopShipmentList);
+
+        void sendAnalyticsOnImpressionCourierSelectionShow();
+
+        void sendAnalyticsOnClickUsePromoCodeAndCoupon();
+
+        void sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
+
+        void sendAnalyticsOnClickShipmentCourierItem(String agent, String service);
+
+        void sendAnalyticsOnClickSubtotal();
+
+        void sendAnalyticsOnClickCheckBoxDropShipperOption();
+
+        void sendAnalyticsOnClickCheckBoxInsuranceOption();
+
+        void sendAnalyticsScreenName(String screenName);
+
+        void sendAnalyticsOnClickEditPinPointErrorValidation(String message)
 
     }
 

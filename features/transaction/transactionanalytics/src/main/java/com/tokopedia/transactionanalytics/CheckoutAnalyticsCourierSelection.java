@@ -183,6 +183,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickAtcCourierSelectionClickXFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -191,6 +192,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -217,6 +219,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickAtcCourierSelectionClickPilihMetodePembayaranCourierNotComplete() {
         sendEventCategoryActionLabel(
                 EventName.CLICK_ATC,
@@ -235,6 +238,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickAtcCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -338,4 +342,71 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_TOP_DONASI
         );
     }
+
+    //PHASE 2
+
+    public void eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_PILIH_METODE_PEMBAYARAN,
+                EventLabel.COURIER_NOT_COMPLETE
+        );
+    }
+
+    public void eventClickBuyCourierSelectionClickBayarFailedDropshipper() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_BUY,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BAYAR,
+                EventLabel.FAILED_DROPSHIPPER
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickUbahKurirAgentService(String agent, String service) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_KURIR,
+                agent + " - " + service
+        );
+    }
+
+
 }

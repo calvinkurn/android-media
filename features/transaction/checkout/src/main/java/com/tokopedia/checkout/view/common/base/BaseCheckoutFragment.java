@@ -97,7 +97,7 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     private boolean restoreStateFromArguments() {
         Bundle b = getArguments();
         if (b == null) b = new Bundle();
-        savedState = b.getBundle("internalSavedViewState8954201239547");
+        savedState = b.getBundle("internalSavedViewState8954201239547" + getClass().getSimpleName());
         if (savedState != null) {
             restoreState();
             return true;
