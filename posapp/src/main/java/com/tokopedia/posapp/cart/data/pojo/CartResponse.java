@@ -15,11 +15,20 @@ public class CartResponse {
     @SerializedName("product_id")
     private long productId;
 
-    @SerializedName("product")
-    private ProductDetail product;
+    @SerializedName("product_name")
+    private String productName;
+
+    @SerializedName("unit_price")
+    private double unitPrice;
 
     @SerializedName("quantity")
     private int quantity;
+
+    @SerializedName("total_price")
+    private double totalPrice;
+
+    @SerializedName("product")
+    private ProductDetail product;
 
     public long getId() {
         return id;
@@ -51,5 +60,29 @@ public class CartResponse {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(double unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
     }
 }

@@ -147,6 +147,7 @@ public class ProductDetailFragment extends BaseDaggerFragment
         info.setProductName(productDetail.getProductName());
         info.setProductPrice(productDetail.getProductPrice());
         info.setProductPriceUnformatted((int)productDetail.getProductPriceUnformatted());
+        info.setProductOriginalPrice((int)productDetail.getProductPriceOriginal());
         info.setProductDescription(productDetail.getProductDescription());
 
         List<ProductImage> productImages = new ArrayList<>();

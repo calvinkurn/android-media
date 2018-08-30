@@ -6,7 +6,6 @@ import android.support.annotation.NonNull;
 import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,9 +28,6 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
     private LinearLayout container;
 
     String description = "";
-
-    public static final int MAX_CHAR = 300;
-    private static final String MORE_DESCRIPTION = "<font color='#42b549'>Selengkapnya</font>";
 
     public DescriptionView(Context context) {
         super(context);
@@ -81,7 +77,7 @@ public class DescriptionView extends BaseView<ProductDetailData, ProductDetailVi
         tvDesc.setText(description == null
                 || description.equals("")
                 || description.equals("0")
-                ? getResources().getString(com.tokopedia.tkpdpdp.R.string.no_description_pdp) : description);
+                ? getResources().getString(com.tokopedia.tkpdpdp.R.string.no_description_pdp) : MethodChecker.fromHtml(description));
         tvDesc.setAutoLinkMask(0);
         Linkify.addLinks(tvDesc, Linkify.WEB_URLS);
         descriptionContainer.setVisibility(VISIBLE);

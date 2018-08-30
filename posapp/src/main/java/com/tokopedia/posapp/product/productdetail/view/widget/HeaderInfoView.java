@@ -5,6 +5,7 @@ import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
@@ -89,7 +91,16 @@ public class HeaderInfoView extends BaseView<ProductDetailData, ProductDetailVie
     @Override
     public void renderData(@NonNull ProductDetailData data) {
         tvName.setText(MethodChecker.fromHtml(data.getInfo().getProductName()));
-        tvPrice.setText(data.getInfo().getProductPrice());
+        if(data.getInfo().getProductPriceUnformatted() < data.getInfo().getProductOriginalPrice()){
+            tvPrice.setText(data.getInfo().getProductPrice());
+            textOriginalPrice.setVisibility(View.VISIBLE);
+            textOriginalPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(data.getInfo().getProductOriginalPrice(), true));
+            textOriginalPrice.setPaintFlags(
+                    textOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG
+            );
+        } else {
+            tvPrice.setText(data.getInfo().getProductPrice());
+        }
         setVisibility(VISIBLE);
 
         if (data.getCashBack() != null && !data.getCashBack().getProductCashbackValue().isEmpty()) {

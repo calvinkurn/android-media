@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.posapp.PosSessionHandler;
 import com.tokopedia.posapp.base.data.pojo.Paging;
 import com.tokopedia.posapp.product.common.ProductConstant;
@@ -133,6 +134,8 @@ public class ReactProductCloudSource extends ReactDataSource {
         item.setProductImageFull(productDomain.getImageFull());
         item.setPictures(productDomain.getPictures());
         item.setProductPriceUnformatted(productDomain.getPriceUnformatted());
+        item.setProductPriceOriginal(productDomain.getOriginalPriceUnformatted());
+        item.setProductPriceOriginalFormat(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDomain.getOriginalPriceUnformatted(), true));
         return item;
     }
 }
