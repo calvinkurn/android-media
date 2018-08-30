@@ -18,6 +18,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -70,33 +71,34 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun showShopStatusManageMenu() {
         context?.let { ctx ->
-        shopBasicDataModel?.let {shopBasicDataModel ->
-            val menus = Menus(ctx)
-            menus.setTitle(getString(R.string.shop_settings_manage_status))
+            shopBasicDataModel?.let { shopBasicDataModel ->
+                val menus = Menus(ctx)
+                menus.setTitle(getString(R.string.shop_settings_manage_status))
 
-            val itemMenusList = ArrayList<Menus.ItemMenus>()
-            if (shopBasicDataModel.isOpen == true) {
-                if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
+                val itemMenusList = ArrayList<Menus.ItemMenus>()
+                if (shopBasicDataModel.isOpen == true) {
+                    if (StringUtils.isEmptyNumber(shopBasicDataModel.closeSchedule)) {
+                        itemMenusList.add(Menus.ItemMenus(getString(R.string.schedule_your_shop_close)))
+                    } else {
+                        itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
+                        itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
+                    }
+                    itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
                 } else {
                     itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                    itemMenusList.add(Menus.ItemMenus(getString(R.string.remove_schedule)))
+                    itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
                 }
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_close_shop_now)))
-            } else {
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.change_schedule)))
-                itemMenusList.add(Menus.ItemMenus(getString(R.string.label_open_shop_now)))
+                menus.itemMenuList = itemMenusList
+                menus.setOnItemMenuClickListener { itemMenus, _ ->
+                    onItemMenuClicked(itemMenus.title)
+                    menus.dismiss()
+                }
+                menus.show()
             }
-            menus.itemMenuList = itemMenusList
-            menus.setOnItemMenuClickListener { itemMenus, _ ->
-                onItemMenuClicked(itemMenus.title)
-                menus.dismiss()
-            }
-            menus.show()
-        }}
+        }
     }
 
-    fun onItemMenuClicked(itemMenuTitle:String){
+    fun onItemMenuClicked(itemMenuTitle: String) {
         when {
             itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
@@ -205,9 +207,31 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         tvShopName.text = MethodChecker.fromHtml(shopBasicDataModel.name)
-        tvShopDomain.text = shopBasicDataModel.domain
-        tvShopSlogan.text = shopBasicDataModel.tagline
-        tvShopDescription.text = shopBasicDataModel.description
+        tvShopDomain.text = shopBasicDataModel.domain?.let {
+            if (URLUtil.isNetworkUrl(it)) {
+                it
+            } else {
+                getString(R.string.tokopedia_domain) +"/$it"
+            }
+        }
+        if (shopBasicDataModel.tagline.isNullOrBlank()){
+            tvShopSloganTitle.visibility = View.GONE
+            tvShopSlogan.visibility = View.GONE
+        } else {
+            tvShopSlogan.text = shopBasicDataModel.tagline
+            tvShopSloganTitle.visibility = View.VISIBLE
+            tvShopSlogan.visibility = View.VISIBLE
+        }
+
+        if (shopBasicDataModel.description.isNullOrBlank()){
+            tvShopDescriptionTitle.visibility = View.GONE
+            tvShopDescription.visibility = View.GONE
+        } else {
+            tvShopDescription.text = shopBasicDataModel.description
+            tvShopDescriptionTitle.visibility = View.VISIBLE
+            tvShopDescription.visibility = View.VISIBLE
+        }
+
         val logoUrl = shopBasicDataModel.logo
         if (TextUtils.isEmpty(logoUrl)) {
             ivShopLogo.setImageResource(R.drawable.ic_shop_default_empty)
@@ -295,14 +319,14 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             ivShopMembership.setPadding(padding, padding, padding, padding)
             tvMembershipName.text = getString(R.string.label_official_store)
             tvMembershipDescription.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired?: ""))
+                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
             vgMembershipContainer.setOnClickListener(null)
         } else if (shopBasicDataModel.isGold) {
             ivShopMembership.setImageResource(R.drawable.ic_badge_shop_gm)
             ivShopMembership.setPadding(0, 0, 0, 0)
             tvMembershipName.text = getString(R.string.label_gold_merchant)
             tvMembershipDescription.text = getString(R.string.valid_until_x,
-                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired?: ""))
+                    toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
 
             vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
         }
@@ -335,7 +359,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     fun showSubmitLoading(message: String) {
-        progressDialog = progressDialog?:ProgressDialog(context)
+        progressDialog = progressDialog ?: ProgressDialog(context)
         progressDialog!!.run {
             if (isShowing) {
                 setMessage(message)

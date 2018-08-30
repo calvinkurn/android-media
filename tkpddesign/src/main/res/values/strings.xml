@@ -55,4 +55,6 @@
     <string name="label_regular_merchant">Regular Merchant</string>
     <string name="title_delete">Hapus</string>
 
+    <string name="tokopedia_domain" translatable="false">www.tokopedia.com</string>
+
 </resources>

@@ -4,7 +4,8 @@
     <string name="shop_settings_manage_etalase">Etalase</string>
     <string name="shop_settings_manage_notes">Catatan</string>
     <string name="shop_settings_basic_info">Informasi Dasar</string>
-    <string name="shop_slogan_hint">Masukkan slogan toko</string>
+    <string name="shop_slogan_hint">Tulis Slogan Toko</string>
+    <string name="shop_desc_hint">Tulis Desckripsi Toko</string>
     <string name="shop_slogan_label">Slogan Toko</string>
     <string name="shop_description_label">Deskripsi Toko</string>
     <string name="shop_status_label">Status Toko</string>
