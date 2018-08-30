@@ -54,6 +54,8 @@
         android:id="@+id/new_phone_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="-3.5dp"
+        android:layout_marginStart="-3.5dp"
         android:imeOptions="actionNext"
         android:inputType="phone" />
 
@@ -94,6 +96,8 @@
         android:id="@+id/new_email_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="-3.5dp"
+        android:layout_marginStart="-3.5dp"
         android:imeOptions="actionNext"
         android:inputType="textEmailAddress" />
 

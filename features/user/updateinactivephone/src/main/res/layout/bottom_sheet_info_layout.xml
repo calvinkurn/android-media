@@ -11,12 +11,12 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_12"
         android:paddingEnd="@dimen/dp_16"
         android:paddingLeft="@dimen/dp_16"
         android:paddingRight="@dimen/dp_16"
         android:paddingStart="@dimen/dp_16"
-        android:paddingTop="@dimen/dp_8">
+        android:paddingTop="@dimen/dp_12">
 
 
         <ImageView
@@ -29,8 +29,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_30"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_24"
+            android:layout_marginStart="@dimen/dp_24"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="@dimen/sp_15"
             android:text="@string/info_title"
@@ -43,7 +43,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
-        android:layout_marginTop="@dimen/dp_8"
         android:background="@color/grey_hint" />
 
     <TextView
@@ -84,8 +83,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_30"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="@dimen/dp_6"
             android:text="@string/info_desc_1"
@@ -99,9 +98,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_2"
         android:layout_marginEnd="@dimen/dp_11"
-        android:layout_marginLeft="@dimen/dp_18"
+        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_11"
-        android:layout_marginStart="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_8"
         android:background="@color/grey_hint" />
 
@@ -128,8 +127,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_30"
-            android:layout_marginStart="@dimen/dp_30"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="@dimen/dp_6"
             android:paddingBottom="@dimen/dp_20"

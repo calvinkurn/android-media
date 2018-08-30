@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
@@ -50,7 +51,7 @@ public class SelectImageNewPhoneFragment extends TkpdBaseV4Fragment {
 
     private ImageView uploadIdPhoto;
     private ImageView uploadPaymentPhoto;
-    private Button continueButton;
+    private TextView continueButton;
     private SelectImageInterface selectImageInterface;
 
     private String photoIdPath;
