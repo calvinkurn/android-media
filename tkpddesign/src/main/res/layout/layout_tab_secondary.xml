@@ -26,7 +26,7 @@
             app:tabMode="scrollable"
             app:tabGravity="fill"
             android:background="@color/white"
-            app:tabIndicatorHeight="@dimen/dp_1"
+            app:tabIndicatorHeight="@dimen/dp_2"
             app:tabSelectedTextColor="@color/tkpd_main_green"
             app:tabTextColor="@color/font_black_disabled_38"
             app:tabTextAppearance="@style/Tabs.Secondary"
