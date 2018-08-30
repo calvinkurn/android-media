@@ -639,12 +639,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     ) {
         return originParams == null
                 ? AuthUtil.generateParamsNetwork(
-                getActivity(), SessionHandler.getLoginID(getActivity()),
+                getActivity(), SessionHandler.getLoginID(context),
                 GCMHandler.getRegistrationId(getActivity())
         )
                 : AuthUtil.generateParamsNetwork(
                 getActivity(), originParams,
-                SessionHandler.getLoginID(getActivity()),
+                SessionHandler.getLoginID(context),
                 GCMHandler.getRegistrationId(getActivity())
         );
     }
@@ -997,7 +997,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(getActivity()))
+                .setUserId(SessionHandler.getLoginID(context))
                 .withPreferedCategory()
                 .setEndpoint(Endpoint.PRODUCT)
                 .displayMode(DisplayMode.FEED)
@@ -1033,8 +1033,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvTotalPrice.setText(subtotalPrice);
-        tvItemCount.setText(String.format(getActivity().getString(R.string.cart_item_count_format), qty));
-        btnToShipment.setText(String.format(getActivity().getString(R.string.cart_item_button_checkout_count_format), qty));
+        tvItemCount.setText(String.format(getString(R.string.cart_item_count_format), qty));
+        btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }
 
     @Override
@@ -1179,10 +1179,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         refreshHandler.startRefresh();
     }
 
-    public CheckoutAnalyticsCart getCartPageAnalytics() {
-        return cartPageAnalytics;
-    }
-
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
         if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
                 resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
@@ -1196,7 +1192,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
             showToastMessage(getString(R.string.message_payment_success));
             startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
-            CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+            CartBadgeNotificationReceiver.resetBadgeCart(context);
             getActivity().finish();
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));
