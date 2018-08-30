@@ -20,19 +20,22 @@ public class CategoryDigitalListDataMapper implements ICategoryDigitalListDataMa
             throws MapperDataException {
         List<DigitalCategoryItemData> digitalCategoryItemDataList = new ArrayList<>();
         for (LayoutSection layoutSection : homeCategoryMenuItem.getData().getLayoutSections()) {
-            if (layoutSection.getId() == 4)
+            if (layoutSection.getId() == 57 || layoutSection.getId() == 58)
                 for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
                     if (layoutRow.getType().equalsIgnoreCase(
                             DigitalCategoryItemData.DEFAULT_TYPE_DIGITAL
                     )) {
                         DigitalCategoryItemData data = new DigitalCategoryItemData();
+                        data.setId(String.valueOf(layoutRow.getId()));
                         data.setName(layoutRow.getName());
                         data.setImageUrl(layoutRow.getImageUrl());
                         data.setCategoryId(String.valueOf(layoutRow.getCategoryId()));
                         data.setRedirectValue(layoutRow.getUrl());
                         data.setAppLinks(layoutRow.getAppLinks());
                         data.setDescription("");
-                        digitalCategoryItemDataList.add(data);
+                        if (!digitalCategoryItemDataList.contains(data)) {
+                            digitalCategoryItemDataList.add(data);
+                        }
                     }
                 }
         }

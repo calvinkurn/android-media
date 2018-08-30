@@ -30,8 +30,8 @@ public class DigitalCategoryListInteractor implements IDigitalCategoryListIntera
     }
 
     @Override
-    public void getDigitalCategoryItemDataList(Subscriber<List<DigitalCategoryItemData>> subscriber) {
-        compositeSubscription.add(digitalCategoryListRepository.getDigitalCategoryItemDataList()
+    public void getDigitalCategoryItemDataList(String deviceVersion, Subscriber<List<DigitalCategoryItemData>> subscriber) {
+        compositeSubscription.add(digitalCategoryListRepository.getDigitalCategoryItemDataList(deviceVersion)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.newThread())
