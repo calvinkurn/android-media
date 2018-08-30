@@ -26,13 +26,14 @@ import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
+import com.tokopedia.core.home.GeneralWebView;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.TkpdWebView;
 import static android.app.Activity.RESULT_OK;
 
-public class SimpleWebViewWithFilePickerFragment extends Fragment {
+public class SimpleWebViewWithFilePickerFragment extends Fragment implements GeneralWebView {
     private static final String SEAMLESS = "seamless";
     public static final int PROGRESS_COMPLETED = 100;
     private ProgressBar progressBar;
@@ -149,12 +150,17 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
 
 
         protected boolean onOverrideUrl(Uri url) {
+            String urlString = url.toString();
             try {
                 if (getActivity().getApplicationContext() instanceof TkpdInboxRouter
                         && ((TkpdInboxRouter) getActivity().getApplicationContext()).isSupportedDelegateDeepLink(url.toString())) {
                     ((TkpdInboxRouter) getActivity().getApplicationContext())
                             .actionNavigateByApplinksUrl(getActivity(), url.toString(), new
                                     Bundle());
+                    return true;
+                } else if (urlString.startsWith("tel:")) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL, url);
+                    startActivity(intent);
                     return true;
                 } else {
                     return false;
@@ -201,7 +207,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
                     }
                 }
             }
-            callbackAfterL.onReceiveValue(results);
+            if(callbackAfterL != null) callbackAfterL.onReceiveValue(results);
             callbackAfterL = null;
         } else {
             if (requestCode == ATTACH_FILE_REQUEST) {
@@ -251,6 +257,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment {
         }
     }
 
+    @Override
     public WebView getWebview() {
         return webview;
     }
