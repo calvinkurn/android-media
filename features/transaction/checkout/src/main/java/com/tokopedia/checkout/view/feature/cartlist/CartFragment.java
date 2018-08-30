@@ -141,7 +141,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -276,7 +275,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cardFooter = view.findViewById(R.id.card_footer);
         llHeader = view.findViewById(R.id.ll_header);
         cbSelectAll = view.findViewById(R.id.cb_select_all);
-        ViewCompat.setTranslationZ(cardFooter, getResources().getDimension(R.dimen.dp_16));
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
 
         progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
@@ -776,7 +774,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cardFooter.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
     }
-
 
     private void showSnackbarRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, ()

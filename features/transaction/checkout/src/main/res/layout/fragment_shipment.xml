@@ -23,57 +23,68 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:visibility="gone"
-            android:translationZ="@dimen/dp_16"
-            app:cardElevation="@dimen/dp_16"
+            app:cardElevation="@dimen/dp_8"
             app:cardUseCompatPadding="false"
             tools:visibility="visible">
 
             <LinearLayout
-                android:id="@+id/ll_checkout_button_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                tools:visibility="visible">
+                android:orientation="vertical">
+
+                <View
+                    android:background="@color/grey_300"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
+                    android:id="@+id/ll_checkout_button_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dp_8"
+                        android:layout_marginLeft="@dimen/dp_16"
+                        android:layout_marginRight="@dimen/dp_16"
+                        android:layout_marginTop="@dimen/dp_8"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <TextView
+                            style="@style/TextSmallNormalBlack54"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_payment_total" />
+
+                        <TextView
+                            android:id="@+id/tv_total_payment"
+                            style="@style/TextMidMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:text="-"
+                            android:textColor="@color/orange_red"
+                            android:textSize="@dimen/sp_16" />
+
+                    </LinearLayout>
 
                     <TextView
-                        style="@style/TextSmallNormalBlack54"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_payment_total" />
-
-                    <TextView
-                        android:id="@+id/tv_total_payment"
-                        style="@style/TextMidMedium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="end"
-                        android:text="-"
-                        android:textColor="@color/orange_red"
-                        android:textSize="@dimen/sp_16" />
+                        android:id="@+id/tv_select_payment_method"
+                        android:layout_width="@dimen/dp_150"
+                        android:layout_height="@dimen/dp_40"
+                        android:layout_margin="@dimen/margin_small"
+                        android:background="@drawable/orange_button_rounded"
+                        android:gravity="center"
+                        android:text="@string/label_pay"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
-
-                <TextView
-                    android:id="@+id/tv_select_payment_method"
-                    android:layout_width="@dimen/dp_150"
-                    android:layout_height="@dimen/dp_40"
-                    android:layout_margin="@dimen/margin_small"
-                    android:background="@drawable/orange_button_rounded"
-                    android:gravity="center"
-                    android:text="@string/label_pay"
-                    android:textAllCaps="false"
-                    android:textColor="@color/white" />
 
             </LinearLayout>
 
