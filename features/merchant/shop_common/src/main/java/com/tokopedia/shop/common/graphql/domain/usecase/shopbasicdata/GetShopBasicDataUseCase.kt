@@ -31,11 +31,6 @@ constructor(@ApplicationContext context: Context) : UseCase<ShopBasicDataModel>(
     override fun createObservable(requestParams: RequestParams): Observable<ShopBasicDataModel> {
         return graphQLUseCase.createObservable(requestParams)
                 .flatMap(GraphQLResultMapper())
-                .onErrorResumeNext {
-                    val jsonString = "{\"shopBasicData\":{\"result\":{\"domain\":\"tokoku\",\"name\":\"Toko Ku\",\"status\":1,\"closeSchedule\":\"1530403200\",\"closeUntil\":\"1530403250\",\"closeNote\":\"Udah Kaya\",\"openSchedule\":\"1530403300\",\"tagline\":\"awesome\",\"description\":\"Toko Awesome\",\"logo\":\"https://cdn-tokopedia.com/logo.png\",\"level\":2,\"expired\":\"1530403200\"},\"error\":{\"message\":\"\"}}}"
-                    val response = Gson().fromJson(jsonString, ShopBasicDataQuery::class.java)
-                    Observable.just(response).flatMap (GraphQLResultMapper())
-                }
 
     }
 

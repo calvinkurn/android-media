@@ -52,22 +52,6 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
 
     private var onShopSettingsEtalaseFragmentListener: OnShopSettingsEtalaseFragmentListener? = null
 
-    private val etalaseIdList: ArrayList<String>
-        get() {
-            val etalaseIdList = ArrayList<String>()
-            val data = shopEtalaseAdapter!!.data
-
-            if (data != null) {
-                for (shopEtalaseViewModel in data) {
-                    val id = shopEtalaseViewModel.id
-                    if (!TextUtils.isEmpty(id)) {
-                        etalaseIdList.add(id)
-                    }
-                }
-            }
-            return etalaseIdList
-        }
-
     override val keyword: String
         get() = searchInputView.searchText
 
@@ -221,14 +205,13 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     }
 
     private fun goToEditEtalase(shopEtalaseViewModel: ShopEtalaseViewModel) {
-        val intent = ShopSettingsEtalaseAddEditActivity.createIntent(context!!, true,
-                etalaseIdList, shopEtalaseViewModel)
+        val intent = ShopSettingsEtalaseAddEditActivity.createIntent(context!!, true, shopEtalaseViewModel)
         startActivityForResult(intent, REQUEST_CODE_EDIT_ETALASE)
     }
 
     private fun goToAddEtalase() {
         val intent = ShopSettingsEtalaseAddEditActivity.createIntent(context!!,
-                false, etalaseIdList, ShopEtalaseViewModel())
+                false, ShopEtalaseViewModel())
         startActivityForResult(intent, REQUEST_CODE_ADD_ETALASE)
     }
 
