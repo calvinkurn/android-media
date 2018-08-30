@@ -34,10 +34,38 @@ public class BuyerCardPresenterTest {
         BuyerCard buyerCard  = new BuyerCard.Builder().progress(20).build();
 
         // when
-        buyerCardPresenter.setData(buyerCard);
         mockView();
+        buyerCardPresenter.setData(buyerCard);
 
         // then
+        Mockito.verify(view).setProfileStatusIncomplete(20);
         Mockito.verify(view).showProfileProgress(20);
+    }
+
+    @Test
+    public void renderData_incompleteProfile_showIncompleteAvatar() {
+        // given
+        BuyerCard buyerCard  = new BuyerCard.Builder().progress(20).avatar("http://avatar").build();
+
+        // when
+        mockView();
+        buyerCardPresenter.setData(buyerCard);
+
+        // then
+        Mockito.verify(view).showIncompleteAvatar("http://avatar");
+    }
+
+    @Test
+    public void renderData_completeProfile_hideProgress() {
+        // given
+        BuyerCard buyerCard  = new BuyerCard.Builder().progress(100).build();
+
+        // when
+        mockView();
+        buyerCardPresenter.setData(buyerCard);
+
+        // then
+        Mockito.verify(view).setProfileStatusCompleted();
+        Mockito.verify(view).hideProfileProgress();
     }
 }
