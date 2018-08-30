@@ -574,7 +574,7 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     public void onBannerAdsClicked(String appLink) {
         if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+            ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), appLink);
         }
     }
 

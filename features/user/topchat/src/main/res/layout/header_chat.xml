@@ -26,13 +26,25 @@
         app:srcCompat="@drawable/status_indicator_offline"
         tools:visibility="visible"/>
 
+    <ImageButton
+        android:id="@+id/header_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginRight="@dimen/dp_2"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
+        />
+
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/user_avatar"
         android:layout_toRightOf="@id/user_avatar"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:gravity="center_vertical">
 
@@ -89,5 +101,4 @@
             app:layout_constraintStart_toStartOf="@id/title"
             tools:text="Terakhir online 3 menit yang lalu"/>
     </android.support.constraint.ConstraintLayout>
-
 </RelativeLayout>

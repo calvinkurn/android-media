@@ -44,7 +44,7 @@ public class WithdrawActivity extends BasePresenterActivity<WithdrawPresenter> {
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_withdraw;
+        return R.layout.activity_simple_fragment;
     }
 
     @Override

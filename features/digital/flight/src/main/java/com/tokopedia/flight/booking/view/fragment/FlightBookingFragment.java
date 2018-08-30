@@ -30,6 +30,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.widget.CountdownTimeView;
 import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.flight.FlightModuleRouter;
@@ -52,7 +53,6 @@ import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPassengerViewMod
 import com.tokopedia.flight.booking.view.viewmodel.FlightBookingPhoneCodeViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.FlightInsuranceViewModel;
 import com.tokopedia.flight.booking.view.viewmodel.SimpleViewModel;
-import com.tokopedia.flight.booking.widget.CountdownTimeView;
 import com.tokopedia.flight.booking.widget.FlightInsuranceView;
 import com.tokopedia.flight.common.constant.FlightFlowConstant;
 import com.tokopedia.flight.common.constant.FlightFlowExtraConstant;
@@ -322,7 +322,7 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
 
                 break;
             case REQUEST_CODE_REVIEW:
-                boolean isCountdownRestarted = false;
+                countdownFinishTransactionView.start();
                 if (data != null) {
                     if (data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, -1) != -1) {
                         FlightFlowUtil.actionSetResultAndClose(getActivity(),
@@ -330,19 +330,12 @@ public class FlightBookingFragment extends BaseDaggerFragment implements FlightB
                                 data.getIntExtra(FlightFlowExtraConstant.EXTRA_FLOW_DATA, 0)
                         );
                     } else {
-                        if (data.getBooleanExtra(FlightBookingReviewFragment.EXTRA_NEED_TO_REFRESH, false)) {
-                            isCountdownRestarted = true;
-                            presenter.onUpdateCart();
-                        }
-
                         if (data.getParcelableExtra(FlightBookingReviewFragment.EXTRA_COUPON_CHANGED) != null) {
                             flightBookingCartData.setVoucherViewModel(data.getParcelableExtra(
                                     FlightBookingReviewFragment.EXTRA_COUPON_CHANGED));
                         }
                     }
-
                 }
-                if (!isCountdownRestarted) countdownFinishTransactionView.start();
                 break;
             case REQUEST_CODE_OTP:
                 if (resultCode == Activity.RESULT_OK) {

@@ -167,6 +167,10 @@ public class DrawerBuyerHelper extends DrawerHelper
                 R.drawable.icon_wishlist,
                 TkpdState.DrawerPosition.WISHLIST,
                 true));
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_mybills),
+                R.drawable.icon_mybills_drawer,
+                TkpdState.DrawerPosition.MYBILLS,
+                true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
 
@@ -516,6 +520,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     context.startActivity(wishList);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(wishList.getComponent().getClassName(),AppEventTracking.EventLabel.WISHLIST);
+                    break;
+                case TkpdState.DrawerPosition.MYBILLS:
+                    intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            + TkpdBaseURL.DigitalWebsite.PATH_MY_BILLS);
+
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_MY_BILLS);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_MY_BILLS);
                     break;
                 case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
                     intent = TransactionPurchaseRouter.createIntentConfirmPayment(context);

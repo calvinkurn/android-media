@@ -70,7 +70,6 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class WishListImpl implements WishList {
     private static final String TAG = WishListImpl.class.getSimpleName();
-    public static final String PARAM_USER_ID = "user_id";
     public static final String PAGE_NO = "page";
     public static final String ITEM_COUNT = "count";
     WishListView wishListView;
@@ -245,7 +244,6 @@ public class WishListImpl implements WishList {
 
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_USER_ID, Integer.parseInt(SessionHandler.getLoginID(context)));
         variables.put(PAGE_NO, mPaging.getPage());
         variables.put(ITEM_COUNT, 10);
 

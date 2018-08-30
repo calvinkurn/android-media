@@ -8,26 +8,23 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.common.travel.constant.TravelSortOption;
+import com.tokopedia.common.travel.presentation.dialog.TravelSearchSortBottomSheet;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
@@ -38,7 +35,6 @@ import com.tokopedia.flight.common.view.HorizontalProgressBar;
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel;
 import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
-import com.tokopedia.flight.search.constant.FlightSortOption;
 import com.tokopedia.flight.search.data.db.model.FlightMetaDataDB;
 import com.tokopedia.flight.search.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.search.di.FlightSearchComponent;
@@ -118,7 +114,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
         if (savedInstanceState == null) {
             flightFilterModel = new FlightFilterModel();
-            selectedSortOption = FlightSortOption.CHEAPEST;
+            selectedSortOption = TravelSortOption.CHEAPEST;
             setUpCombinationAirport();
             progress = 0;
         } else {
@@ -404,31 +400,17 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
         filterAndSortBottomAction.setButton2OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                BottomSheetBuilder bottomSheetBuilder = new CheckedBottomSheetBuilder(getActivity())
-                        .setMode(BottomSheetBuilder.MODE_LIST)
-                        .addTitleItem(getString(R.string.flight_search_sort_title));
-
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.CHEAPEST, getString(R.string.flight_search_sort_item_cheapest_price), null, selectedSortOption == FlightSortOption.CHEAPEST);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.MOST_EXPENSIVE, getString(R.string.flight_search_sort_item_most_expensive_price), null, selectedSortOption == FlightSortOption.MOST_EXPENSIVE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_DEPARTURE, getString(R.string.flight_search_sort_item_earliest_departure), null, selectedSortOption == FlightSortOption.EARLIEST_DEPARTURE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_DEPARTURE, getString(R.string.flight_search_sort_item_latest_departure), null, selectedSortOption == FlightSortOption.LATEST_DEPARTURE);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.SHORTEST_DURATION, getString(R.string.flight_search_sort_item_shortest_duration), null, selectedSortOption == FlightSortOption.SHORTEST_DURATION);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LONGEST_DURATION, getString(R.string.flight_search_sort_item_longest_duration), null, selectedSortOption == FlightSortOption.LONGEST_DURATION);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.EARLIEST_ARRIVAL, getString(R.string.flight_search_sort_item_earliest_arrival), null, selectedSortOption == FlightSortOption.EARLIEST_ARRIVAL);
-                ((CheckedBottomSheetBuilder) bottomSheetBuilder).addItem(FlightSortOption.LATEST_ARRIVAL, getString(R.string.flight_search_sort_item_latest_arrival), null, selectedSortOption == FlightSortOption.LATEST_ARRIVAL);
-
-                BottomSheetDialog bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-                        .setItemClickListener(new BottomSheetItemClickListener() {
-                            @SuppressWarnings("WrongConstant")
-                            @Override
-                            public void onBottomSheetItemClick(MenuItem item) {
-                                if (getAdapter().getData() != null) {
-                                    flightSearchPresenter.sortFlight(getAdapter().getData(), item.getItemId());
-                                }
-                            }
-                        })
-                        .createDialog();
-                bottomSheetDialog.show();
+                TravelSearchSortBottomSheet bottomSheet = new TravelSearchSortBottomSheet();
+                bottomSheet.setIdSortSelected(selectedSortOption);
+                bottomSheet.setListener(new TravelSearchSortBottomSheet.ActionListener() {
+                    @Override
+                    public void onClickSortLabel(int idSort) {
+                        if (getAdapter().getData() != null) {
+                            flightSearchPresenter.sortFlight(getAdapter().getData(), idSort);
+                        }
+                    }
+                });
+                bottomSheet.show(getChildFragmentManager(), getString(R.string.flight_bottom_sheet_tag));
             }
         });
 
@@ -461,7 +443,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
     }
 
     private void setUIMarkSort() {
-        if (selectedSortOption == FlightSortOption.NO_PREFERENCE) {
+        if (selectedSortOption == TravelSortOption.NO_PREFERENCE) {
             filterAndSortBottomAction.setMarkRight(false);
         } else {
             filterAndSortBottomAction.setMarkRight(true);
@@ -523,7 +505,7 @@ public class FlightSearchFragment extends BaseListFragment<FlightSearchViewModel
 
     @Override
     public void clearAdapterData() {
-        getAdapter().clearAllElements();
+        getAdapter().setElements(new ArrayList<>());
     }
 
     @Override

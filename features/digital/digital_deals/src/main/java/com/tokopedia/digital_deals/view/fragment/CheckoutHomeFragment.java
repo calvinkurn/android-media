@@ -161,7 +161,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
                 Utils.convertEpochToString(dealDetails.getSaleEndDate())));
 
 
-        if (dealDetails.getMrp() != 0) {
+        if (dealDetails.getMrp() != 0 && dealDetails.getMrp() != dealDetails.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
