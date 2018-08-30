@@ -41,11 +41,13 @@ public interface InboxDetailContract {
 
         void showIssueClosed();
 
-        void enterSearchMode(String search);
+        void enterSearchMode(String search,int total);
 
         void exitSearchMode();
 
         void showImagePreview(int position, ArrayList<String> imagesURL);
+
+        void setCurrentRes(int currentRes);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {

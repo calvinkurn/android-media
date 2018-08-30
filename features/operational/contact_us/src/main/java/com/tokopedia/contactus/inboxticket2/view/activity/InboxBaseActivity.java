@@ -170,8 +170,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        mPresenter.onOptionsItemSelected(item);
-        return super.onOptionsItemSelected(item);
+        return mPresenter.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
 
     @Override

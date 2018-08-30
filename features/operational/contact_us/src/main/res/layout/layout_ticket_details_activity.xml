@@ -46,20 +46,31 @@
                 android:textColorHint="@color/black_38"
                 android:textSize="@dimen/sp_16"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/close_search"
+                app:layout_constraintEnd_toStartOf="@+id/tv_count_current"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/close_search"
+            <TextView
+                android:id="@+id/tv_count_current"
                 android:layout_width="16dp"
                 android:layout_height="16dp"
-                android:layout_marginEnd="@dimen/dp_24"
-                android:layout_marginRight="@dimen/dp_24"
+                android:gravity="end"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/tv_count_total"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="1" />
+
+            <TextView
+                android:id="@+id/tv_count_total"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:gravity="center"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/iv_previous_up"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_close_default" />
+                tools:text="/4" />
 
             <ImageView
                 android:id="@+id/iv_previous_up"

@@ -133,7 +133,7 @@ public class InboxDetailPresenterImpl
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
         BottomSheetFragment bottomFragment = new BottomSheetFragment();
-        bottomFragment.setAdapter(getBadRatingAdapter(),R.string.select_bad_reason);
+        bottomFragment.setAdapter(getBadRatingAdapter(), R.string.select_bad_reason);
         return bottomFragment;
     }
 
@@ -142,8 +142,24 @@ public class InboxDetailPresenterImpl
         if (item.getItemId() == R.id.action_search) {
             mView.toggleSearch(View.VISIBLE);
             return true;
+        } else {
+            if (mView.isSearchMode()) {
+                mView.toggleSearch(View.GONE);
+                if (mTicketDetail.isShowRating()) {
+                    mView.toggleTextToolbar(View.GONE);
+                } else if (mTicketDetail.getStatus().equalsIgnoreCase("closed")
+                        && !mTicketDetail.isShowRating()) {
+                    mView.showIssueClosed();
+                } else {
+                    mView.toggleTextToolbar(View.VISIBLE);
+                }
+                mView.clearSearch();
+                mView.exitSearchMode();
+                return true;
+            } else {
+                return false;
+            }
         }
-        return false;
     }
 
     @Override
@@ -153,19 +169,7 @@ public class InboxDetailPresenterImpl
 
     @Override
     public void clickCloseSearch() {
-        if (mView.isSearchEmpty()) {
-            mView.toggleSearch(View.GONE);
-            if (mTicketDetail.isShowRating()) {
-                mView.toggleTextToolbar(View.GONE);
-            } else if (mTicketDetail.getStatus().equalsIgnoreCase("closed")
-                    && !mTicketDetail.isShowRating()) {
-                mView.showIssueClosed();
-            } else {
-                mView.toggleTextToolbar(View.VISIBLE);
-            }
-        } else {
-            mView.clearSearch();
-        }
+
     }
 
     @Override
@@ -174,8 +178,9 @@ public class InboxDetailPresenterImpl
         if (text.length() > 0) {
             search(text);
         } else {
-            mView.enterSearchMode("");
-            searchIndices.clear();
+            mView.enterSearchMode("", -1);
+            if (searchIndices != null)
+                searchIndices.clear();
         }
     }
 
@@ -185,8 +190,9 @@ public class InboxDetailPresenterImpl
         if (text.length() > 0) {
             search(text);
         } else {
-            mView.enterSearchMode("");
-            searchIndices.clear();
+            mView.enterSearchMode("", -1);
+            if (searchIndices != null)
+                searchIndices.clear();
         }
     }
 
@@ -499,13 +505,14 @@ public class InboxDetailPresenterImpl
     public int getNextResult() {
         if (searchIndices != null && searchIndices.size() > 0) {
             if (next >= -1 && next < searchIndices.size() - 1) {
-                return searchIndices.get(++next);
+                mView.setCurrentRes(++next + 1);
+                return searchIndices.get(next);
             } else {
                 mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
                 return -1;
             }
         } else {
-            mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+            mView.showMessage(mView.getActivity().getResources().getString(R.string.no_search_result));
             return -1;
         }
     }
@@ -514,13 +521,14 @@ public class InboxDetailPresenterImpl
     public int getPreviousResult() {
         if (searchIndices != null && searchIndices.size() > 0) {
             if (next > -1 && next < searchIndices.size()) {
+                mView.setCurrentRes(next + 1);
                 return searchIndices.get(next--);
             } else {
                 mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
                 return -1;
             }
         } else {
-            mView.showMessage(mView.getActivity().getResources().getString(R.string.cu_no_more_results));
+            mView.showMessage(mView.getActivity().getResources().getString(R.string.no_search_result));
             return -1;
         }
     }
@@ -695,13 +703,14 @@ public class InboxDetailPresenterImpl
                     public void onCompleted() {
                         next = 0;
                         mView.hideProgressBar();
-                        mView.enterSearchMode(searchText);
+                        mView.enterSearchMode(searchText, searchIndices.size());
                         if (searchIndices.size() > 0) {
                             ContactUsTracking.sendGTMInboxTicket("",
                                     InboxTicketTracking.Category.EventInboxTicket,
                                     InboxTicketTracking.Action.EventClickSearchDetails,
                                     InboxTicketTracking.Label.GetResult);
                         } else {
+                            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.no_search_result));
                             ContactUsTracking.sendGTMInboxTicket("",
                                     InboxTicketTracking.Category.EventInboxTicket,
                                     InboxTicketTracking.Action.EventClickSearchDetails,

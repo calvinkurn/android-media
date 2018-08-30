@@ -244,7 +244,7 @@ public class InboxListPresenterImpl
 
     @Override
     public void clickCloseSearch() {
-        if (mView.isSearchEmpty()) {
+        if (mView.isSearchMode()) {
             mView.toggleSearch(View.GONE);
         } else {
             mView.clearSearch();

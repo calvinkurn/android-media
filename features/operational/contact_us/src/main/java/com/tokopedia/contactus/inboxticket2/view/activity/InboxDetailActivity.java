@@ -12,6 +12,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +40,8 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,18 +95,21 @@ public class InboxDetailActivity extends InboxBaseActivity
     View viewLinkBottom;
     @BindView(R2.id.custom_search)
     CustomEditText editText;
-    @BindView(R2.id.close_search)
-    View clearSearch;
     @BindView(R2.id.inbox_search_view)
     View searchView;
     @BindView(R2.id.iv_previous_up)
     View ivPrevious;
     @BindView(R2.id.iv_next_down)
     View ivNext;
+    @BindView(R2.id.tv_count_total)
+    TextView totalRes;
+    @BindView(R2.id.tv_count_current)
+    TextView currentRes;
 
     private ImageUploadHandler imageUploadHandler;
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
+    private LinearLayoutManager layoutManager;
 
     private String rateCommentID;
 
@@ -181,7 +187,7 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvIdNum.setVisibility(View.GONE);
 
         if (ticketDetail.getComments() != null && ticketDetail.getComments().size() > 0) {
-            detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(),
+            detailAdapter = new InboxDetailAdapter(this, ticketDetail.getComments(), ticketDetail.isNeedAttachment(),
                     (InboxDetailContract.InboxDetailPresenter) mPresenter);
             rvMessageList.setAdapter(detailAdapter);
             rvMessageList.setVisibility(View.VISIBLE);
@@ -223,7 +229,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     void initView() {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         rvMessageList.setLayoutManager(layoutManager);
         editText.setListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).getSearchListener());
     }
@@ -385,7 +391,6 @@ public class InboxDetailActivity extends InboxBaseActivity
     @OnClick({R2.id.btn_no,
             R2.id.btn_yes,
             R2.id.txt_hyper,
-            R2.id.close_search,
             R2.id.tv_view_transaction})
     void onClickListener(View v) {
         int id = v.getId();
@@ -400,8 +405,6 @@ public class InboxDetailActivity extends InboxBaseActivity
                     InboxTicketTracking.Action.EventClickHubungi,
                     InboxTicketTracking.Label.TicketClosed);
             finish();
-        } else if (id == R.id.close_search) {
-            mPresenter.clickCloseSearch();
         } else if (id == R.id.tv_view_transaction) {
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
@@ -425,7 +428,7 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     private void scrollToResult(int index) {
         if (index != -1) {
-            rvMessageList.smoothScrollToPosition(index);
+            layoutManager.scrollToPositionWithOffset(index, 0);
         }
 
     }
@@ -489,11 +492,27 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
-    public void enterSearchMode(String search) {
+    public void enterSearchMode(String search, int total) {
         textToolbar.setVisibility(View.GONE);
         viewHelpRate.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.GONE);
         detailAdapter.enterSearchMode(search);
+        if (total <= 0) {
+            if (total == 0) {
+                currentRes.setText("0");
+                totalRes.setText("/0");
+            } else {
+                currentRes.setText("");
+                totalRes.setText("");
+            }
+            ivPrevious.setClickable(false);
+            ivNext.setClickable(false);
+        } else {
+            totalRes.setText("/" + String.valueOf(total));
+            ivPrevious.setClickable(true);
+            ivNext.setClickable(true);
+            onClickNextPrev(ivPrevious);
+        }
         rvMessageList.setPadding(0, 0, 0, 0);
     }
 
@@ -517,8 +536,13 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
-    public boolean isSearchEmpty() {
-        return editText.getText().length() <= 0;
+    public void setCurrentRes(int current) {
+        currentRes.setText(String.valueOf(current));
+    }
+
+    @Override
+    public boolean isSearchMode() {
+        return searchView.getVisibility() == View.VISIBLE;
     }
 
     @Override
@@ -570,7 +594,7 @@ public class InboxDetailActivity extends InboxBaseActivity
                     @Override
                     public void onNext(Long aLong) {
                         if (((LinearLayoutManager) rvMessageList.getLayoutManager()).findFirstCompletelyVisibleItemPosition() != position)
-                            rvMessageList.smoothScrollToPosition(position);
+                            scrollToResult(position);
                     }
                 });
 

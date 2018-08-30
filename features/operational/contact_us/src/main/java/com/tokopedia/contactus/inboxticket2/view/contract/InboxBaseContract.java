@@ -50,7 +50,7 @@ public interface InboxBaseContract {
 
         void clearSearch();
 
-        boolean isSearchEmpty();
+        boolean isSearchMode();
 
         void toggleSearch(int visibility);
     }

@@ -180,7 +180,7 @@ public class InboxListActivity extends InboxBaseActivity
     }
 
     @Override
-    public boolean isSearchEmpty() {
+    public boolean isSearchMode() {
         return editText.getText().length() <= 0;
     }
 
