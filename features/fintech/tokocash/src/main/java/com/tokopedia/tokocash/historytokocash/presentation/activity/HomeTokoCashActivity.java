@@ -65,7 +65,7 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
             Application application = this.getApplication();
             if (application != null && application instanceof TokoCashRouter) {
                 Intent intent = ((TokoCashRouter) application).getWebviewActivityWithIntent(this,
-                WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER, getString(R.string.title_help_history));
+                        WalletUrl.BaseUrl.WEB_DOMAIN + WalletUrl.Wallet.WEBVIEW_HELP_CENTER, getString(R.string.title_help_history));
                 startActivity(intent);
             }
             return true;

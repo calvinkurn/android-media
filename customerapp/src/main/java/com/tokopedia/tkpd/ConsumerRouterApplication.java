@@ -109,7 +109,6 @@ import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
@@ -145,7 +144,6 @@ import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
@@ -264,6 +262,7 @@ import com.tokopedia.tkpd.flight.presentation.FlightPhoneVerificationActivity;
 import com.tokopedia.tkpd.goldmerchant.GoldMerchantRedirectActivity;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tkpd.home.ReactNativeOfficialStoreActivity;
+import com.tokopedia.tkpd.home.SimpleHomeActivity;
 import com.tokopedia.tkpd.react.DaggerReactNativeComponent;
 import com.tokopedia.tkpd.react.ReactNativeComponent;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
@@ -312,6 +311,8 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
 import com.tokopedia.usecase.UseCase;
+import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -386,7 +387,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         BankRouter,
         ChangePasswordRouter,
-        TrainRouter {
+        TrainRouter,
+        WithdrawRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1776,6 +1778,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent checkoutModuleRouterGetWhislistIntent() {
+        return SimpleHomeActivity.newWishlistInstance(this);
+    }
+
+    @Override
     public Intent checkoutModuleRouterGetInsuranceTncActivityIntent() {
         return new Intent(this, InsuranceTnCActivity.class);
     }
@@ -1955,6 +1962,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getGroupChatIntent(Context context, String channelUrl) {
         return GroupChatActivity.getCallingIntent(context, channelUrl);
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_withdraw", true))
+            return WithdrawActivity.getCallingIntent(context);
+        else {
+            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
+        }
     }
 
     @Override

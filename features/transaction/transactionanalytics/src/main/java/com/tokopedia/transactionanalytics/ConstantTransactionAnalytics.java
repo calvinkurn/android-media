@@ -166,6 +166,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click - from ubah from kirim ke beberapa alamat";
         String CLICK_TOP_DONASI = "click top donasi";
 
+        String CLICK_ADD_FROM_WISHLIST_ON_EMPTY_CART = "click add from wishlist on empty cart";
+
         String CLICK_CHECKOUT = "click checkout";
         String CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk";
         String CLICK_BAYAR = "click bayar";
