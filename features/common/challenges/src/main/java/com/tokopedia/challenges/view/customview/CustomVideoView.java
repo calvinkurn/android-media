@@ -40,9 +40,7 @@ public class CustomVideoView extends VideoView {
             } else {
 
             }
-
         }
-
         setMeasuredDimension(videoWidth, videoHeight);
     }
 }

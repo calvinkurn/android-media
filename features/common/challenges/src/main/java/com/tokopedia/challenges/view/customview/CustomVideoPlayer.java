@@ -5,8 +5,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -19,6 +21,8 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.FullScreenVideoActivity;
 
+import java.util.HashMap;
+
 public class CustomVideoPlayer extends RelativeLayout implements CustomMediaController.ICurrentPos {
 
     private CustomVideoView videoView;
@@ -26,6 +30,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     private ImageView playIcon;
     private CustomMediaController mediaController;
     private CustomVideoPlayerListener customVideoPlayerListener;
+    private int videoWidth, videoHeight;
 
     private String videoUrl;
     private boolean isFullScreen;
@@ -61,7 +66,10 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         if (TextUtils.isEmpty(videoUrl)) {
             playIcon.setVisibility(GONE);
         }
-        videoView.setVideoDimensions(videoView.getWidth(), videoView.getHeight());
+        if (!TextUtils.isEmpty(videoUrl)) {
+            getVideoAspectRatio();
+            videoView.setVideoDimensions(videoWidth, videoHeight);
+        }
         startPlay(0);
     }
 
@@ -149,5 +157,19 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
 
     public interface CustomVideoPlayerListener {
         void OnVideoStart();
+    }
+
+
+    private void getVideoAspectRatio() {
+        MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
+        if (Build.VERSION.SDK_INT >= 14) {
+            mediaMetadataRetriever.setDataSource(videoUrl, new HashMap<String, String>());
+        } else {
+            mediaMetadataRetriever.setDataSource(videoUrl);
+        }
+        String height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
+        String width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+        videoWidth = Integer.parseInt(width);
+        videoHeight = Integer.parseInt(height);
     }
 }
