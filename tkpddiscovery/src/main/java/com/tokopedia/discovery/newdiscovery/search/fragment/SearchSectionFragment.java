@@ -208,6 +208,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                         switchLayoutType();
                     }
                 }, isSortEnabled());
+        refreshMenuItemGridIcon();
     }
 
     protected GridLayoutManager getGridLayoutManager() {

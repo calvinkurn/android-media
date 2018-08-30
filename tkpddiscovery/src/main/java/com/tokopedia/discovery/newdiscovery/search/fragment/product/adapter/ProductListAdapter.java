@@ -9,6 +9,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
@@ -193,6 +194,20 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
             ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setGuidedSearch(guidedSearch);
             notifyItemChanged(ADAPTER_POSITION_HEADER);
+        }
+    }
+
+    @Override
+    public int getIconTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case TkpdState.RecyclerView.VIEW_PRODUCT:
+                return R.drawable.ic_list_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
+                return R.drawable.ic_grid_default_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return R.drawable.ic_grid_box_green;
+            default:
+                return R.drawable.ic_grid_default_green;
         }
     }
 }
