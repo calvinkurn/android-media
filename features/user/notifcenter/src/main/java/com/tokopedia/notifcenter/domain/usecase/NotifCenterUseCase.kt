@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
 import rx.Subscriber
 
 /**
@@ -16,7 +17,7 @@ class NotifCenterUseCase(val context: Context, val graphqlUseCase: GraphqlUseCas
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
-        val graphqlRequest = GraphqlRequest(query, null, variables)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
