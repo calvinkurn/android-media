@@ -12,6 +12,7 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.os.Build;
@@ -229,6 +230,18 @@ public class ImageHandler {
                 .into(imageview);
     }
 
+    public static void loadImage(Context context, ImageView imageview, String url, ColorDrawable colorDrawable) {
+        Glide.with(context)
+                .load(url)
+                .dontAnimate()
+                .placeholder(colorDrawable)
+                .error(colorDrawable)
+                .crossFade()
+                .skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(imageview);
+    }
+
     public static void loadImage(Context context, ImageView imageview, String url, int placeholder, int error_image) {
         Glide.with(context)
                 .load(url)
@@ -432,6 +445,16 @@ public class ImageHandler {
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url) {
         loadImageRounded2(context, imageview, url, 5.0f);
+    }
+
+    public static void loadImageRounded2(Context context, final ImageView imageview, final int resourceDrawable, float radius) {
+        Glide.with(context)
+                .load(resourceDrawable)
+                .asBitmap()
+                .dontAnimate()
+                .placeholder(R.drawable.loading_page)
+                .error(R.drawable.error_drawable)
+                .into(getRoundedImageViewTarget(imageview, radius));
     }
 
     public static void loadImageRounded2(Context context, final ImageView imageview, final String url, float radius) {

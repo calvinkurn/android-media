@@ -8,7 +8,5 @@ public interface IReferralFriendsWelcomePresenter {
 
     void initialize();
 
-    void copyVoucherCode(String voucherCode);
-
-    String getReferralWelcomeMsg();
+    String getSubHeaderFromFirebase();
 }

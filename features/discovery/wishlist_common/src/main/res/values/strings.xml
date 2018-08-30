@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Wishlist Common</string>
+
+    <string name="msg_error_add_wishlist">Gagal menambahkan wishlist</string>
 </resources>

@@ -66,9 +66,24 @@ public class ImageProductListAdapter extends SearchSectionGeneralAdapter {
         this.list.clear();
     }
 
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlisted(isWishlisted);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
+        }
+    }
+
     public void updateWishlistStatus(int adapterPosition, boolean isWishlisted) {
         if (list.get(adapterPosition) instanceof ProductItem) {
             ((ProductItem) list.get(adapterPosition)).setWishlisted(isWishlisted);
+            notifyItemChanged(adapterPosition);
         }
     }
 
@@ -125,9 +140,16 @@ public class ImageProductListAdapter extends SearchSectionGeneralAdapter {
         this.startFrom = start;
     }
 
-    public void setWishlistButtonEnabled(int adapterPosition, boolean isEnabled) {
-        if (list.get(adapterPosition) instanceof ProductItem) {
-            ((ProductItem) list.get(adapterPosition)).setWishlistButtonEnabled(isEnabled);
+    public void setWishlistButtonEnabled(String productId, boolean isEnabled) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) instanceof ProductItem) {
+                ProductItem model = ((ProductItem) list.get(i));
+                if (productId.equals(model.getProductID())) {
+                    model.setWishlistButtonEnabled(isEnabled);
+                    notifyItemChanged(i);
+                    break;
+                }
+            }
         }
     }
 

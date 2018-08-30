@@ -81,14 +81,19 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mLlOptionalNoteToSellerLayout.setVisibility(isEmptyNotes ? View.GONE : View.VISIBLE);
         mTvOptionalNoteToSeller.setText(cartItem.getNoteToSeller());
 
-        mllProductPoliciesLayout.setVisibility(View.GONE);
         mIvFreeReturnIcon.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
-        mTvFreeReturnLabel.setVisibility(cartItem.isFreeReturn() ? View.VISIBLE : View.GONE);
+        mTvFreeReturnLabel.setVisibility(View.GONE);
         mTvPreOrder.setVisibility(cartItem.isPreOrder() ? View.VISIBLE : View.GONE);
         mTvCashback.setVisibility(cartItem.isCashback() ? View.VISIBLE : View.GONE);
-        String cashback = mTvCashback.getContext().getString(R.string.label_cashback) + " " + cartItem.getCashback();
+        String cashback = "    " + mTvCashback.getContext().getString(R.string.label_cashback) +
+                " " + cartItem.getCashback() + "    ";
         mTvCashback.setText(cashback);
         mTvNoteToSellerLabel.setVisibility(View.GONE);
+        if (cartItem.isFreeReturn() || cartItem.isPreOrder() || cartItem.isCashback()) {
+            mllProductPoliciesLayout.setVisibility(View.VISIBLE);
+        } else {
+            mllProductPoliciesLayout.setVisibility(View.GONE);
+        }
     }
 
     private void showShipmentWarning(String message) {
@@ -114,16 +119,20 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvPreOrder.setTextColor(colorGreyNonActiveText);
         mTvNoteToSellerLabel.setTextColor(colorGreyNonActiveText);
         mTvOptionalNoteToSeller.setTextColor(colorGreyNonActiveText);
-        mTvCashback.setBackgroundColor(colorGreyNonActiveText);
+        mTvProductCountAndWeight.setTextColor(colorGreyNonActiveText);
+        mTvCashback.setTextColor(colorGreyNonActiveText);
+        mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), R.drawable.bg_cashback_disabled));
         setImageFilterGrayScale();
     }
 
     private void setImageFilterGrayScale() {
         ColorMatrix matrix = new ColorMatrix();
         matrix.setSaturation(0);
-        ColorMatrixColorFilter cf = new ColorMatrixColorFilter(matrix);
-        mIvProductImage.setColorFilter(cf);
+        ColorMatrixColorFilter disabledColorFilter = new ColorMatrixColorFilter(matrix);
+        mIvProductImage.setColorFilter(disabledColorFilter);
         mIvProductImage.setImageAlpha(IMAGE_ALPHA_DISABLED);
+        mIvFreeReturnIcon.setColorFilter(disabledColorFilter);
+        mIvFreeReturnIcon.setImageAlpha(IMAGE_ALPHA_DISABLED);
     }
 
     private void enableItemView() {
@@ -132,7 +141,9 @@ public class CartItemViewHolder extends ShipmentItemViewHolder {
         mTvFreeReturnLabel.setTextColor(ContextCompat.getColor(mTvFreeReturnLabel.getContext(), R.color.font_black_secondary_54));
         mTvPreOrder.setTextColor(ContextCompat.getColor(mTvPreOrder.getContext(), R.color.font_black_secondary_54));
         mTvNoteToSellerLabel.setTextColor(ContextCompat.getColor(mTvNoteToSellerLabel.getContext(), R.color.black_38));
+        mTvProductCountAndWeight.setTextColor(ContextCompat.getColor(mTvProductCountAndWeight.getContext(), R.color.black_38));
         mTvOptionalNoteToSeller.setTextColor(ContextCompat.getColor(mTvOptionalNoteToSeller.getContext(), R.color.black_38));
+        mTvCashback.setTextColor(ContextCompat.getColor(mTvCashback.getContext(), R.color.cashback_text_color));
         mTvCashback.setBackground(ContextCompat.getDrawable(mTvCashback.getContext(), R.drawable.bg_cashback));
         setImageFilterNormal();
     }

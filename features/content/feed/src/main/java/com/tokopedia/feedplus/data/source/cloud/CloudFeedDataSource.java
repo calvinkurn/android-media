@@ -64,7 +64,6 @@ public class CloudFeedDataSource {
                 .map(feedListMapper);
     }
 
-
     private GraphqlRequest getRequestPayload(RequestParams requestParams, int rawResourceId) {
         int userId = requestParams.getInt(GetFeedsUseCase.PARAM_USER_ID, 0);
         String cursor = requestParams.getString(GetFeedsUseCase.PARAM_CURSOR, "");

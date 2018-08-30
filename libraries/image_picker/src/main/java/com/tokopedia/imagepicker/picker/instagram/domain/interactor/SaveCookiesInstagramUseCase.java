@@ -1,7 +1,7 @@
 package com.tokopedia.imagepicker.picker.instagram.domain.interactor;
 
-import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

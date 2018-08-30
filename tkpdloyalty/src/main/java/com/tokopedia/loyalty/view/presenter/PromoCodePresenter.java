@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.exception.ResponseErrorException;
+import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
@@ -24,6 +25,8 @@ import com.tokopedia.loyalty.view.view.IPromoCodeView;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * @author anggaprasetiyo on 27/11/17.
@@ -181,6 +184,62 @@ public class PromoCodePresenter implements IPromoCodePresenter {
                 flightCheckVoucherUseCase.createVoucherRequest(cartId, voucherCode),
                 checkFlightVoucherSubscriber()
         );
+    }
+
+    @Override
+    public void processCheckDealPromoCode(String voucherId, JsonObject requestBody, boolean flag) {
+
+        view.showProgressLoading();
+        requestBody.addProperty("promocode", voucherId);
+        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
+        requestParams.putObject("checkoutdata", requestBody);
+        requestParams.putBoolean("ispromocodecase", flag);
+        ((LoyaltyModuleRouter) view.getContext().getApplicationContext()).verifyDealPromo(requestParams)
+                .subscribe(new Subscriber<com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        view.hideProgressLoading();
+                        if (e instanceof TokoPointResponseErrorException || e instanceof ResponseErrorException || e instanceof com.tokopedia.abstraction.common.network.exception.ResponseErrorException) {
+                            view.onPromoCodeError(e.getMessage());
+                        } else view.onGetGeneralError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    }
+
+                    @Override
+                    public void onNext(com.tokopedia.abstraction.common.utils.TKPDMapParam<String, Object> resultMap) {
+                        view.hideProgressLoading();
+                        String promocode = (String) resultMap.get("promocode");
+                        int discount = (int) resultMap.get("promocode_discount");
+                        int cashback = (int) resultMap.get("promocode_cashback");
+                        String failmsg = (String) resultMap.get("promocode_failure_message");
+                        String successMsg = (String) resultMap.get("promocode_success_message");
+                        String status = (String) resultMap.get("promocode_status");
+
+                        VoucherViewModel couponViewModel = new VoucherViewModel();
+                        couponViewModel.setCode(promocode);
+                        if ((failmsg != null && failmsg.length() > 0) || status.length() == 0) {
+                            couponViewModel.setSuccess(false);
+                            couponViewModel.setMessage(failmsg);
+                            couponViewModel.setAmount("");
+                            couponViewModel.setRawCashback(0);
+                            couponViewModel.setRawDiscount(0);
+                            view.onPromoCodeError(failmsg);
+                            UnifyTracking.eventDigitalEventTracking("voucher failed - " + promocode, failmsg);
+                        } else {
+                            couponViewModel.setMessage(successMsg);
+                            couponViewModel.setSuccess(true);
+                            couponViewModel.setAmount("");
+                            couponViewModel.setRawCashback(cashback);
+                            couponViewModel.setRawDiscount(discount);
+                            UnifyTracking.eventDigitalEventTracking("voucher success - " + promocode, successMsg);
+                            view.checkDigitalVoucherSucessful(couponViewModel);
+                        }
+                    }
+                });
     }
 
     @NonNull

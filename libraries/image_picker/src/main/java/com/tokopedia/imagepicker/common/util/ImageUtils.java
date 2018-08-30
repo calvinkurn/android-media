@@ -24,7 +24,6 @@ import android.support.media.ExifInterface;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

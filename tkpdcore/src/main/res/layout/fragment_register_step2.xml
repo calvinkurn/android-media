@@ -94,7 +94,7 @@
                         android:text="@string/create_tokopedia_account"
                         android:textSize="@dimen/fontvs"
                         android:textStyle="bold"
-                        android:id="@+id/textView4" />
+                        android:id="@+id/tv_brand_name" />
 
                     <TextView
                         android:layout_width="135dp"

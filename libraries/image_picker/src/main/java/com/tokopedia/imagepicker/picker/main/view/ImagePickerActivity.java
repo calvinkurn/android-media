@@ -28,11 +28,11 @@ import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
-import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
+import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
@@ -57,8 +57,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public static final String SAVED_SELECTED_IMAGES = "saved_sel_img";
     public static final String SAVED_IMAGE_DESCRIPTION = "saved_img_desc";
 
-    private static final int REQUEST_CAMERA_PERMISSIONS = 932;
-    private static final int REQUEST_CODE_EDITOR = 933;
+    protected static final int REQUEST_CAMERA_PERMISSIONS = 932;
+    protected static final int REQUEST_CODE_EDITOR = 933;
 
     private TabLayout tabLayout;
     protected ImagePickerBuilder imagePickerBuilder;
@@ -74,7 +74,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     private ImagePickerPresenter imagePickerPresenter;
 
     private ArrayList<String> selectedImagePaths;
-    private ArrayList<String> imageDescriptionList;
+    protected ArrayList<String> imageDescriptionList;
     private TextView tvDone;
     private boolean isPermissionGotDenied;
     private ImagePickerPreviewWidget imagePickerPreviewWidget;

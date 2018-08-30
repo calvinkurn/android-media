@@ -1,0 +1,10 @@
+mutation RegisterUser($userDetails: RegisterUserInput!) {
+  mf_register_user(UserDetails: $userDetails) {
+    result {
+      code
+      message
+      success
+    }
+    message
+  }
+}

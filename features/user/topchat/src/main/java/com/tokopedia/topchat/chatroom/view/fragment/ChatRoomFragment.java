@@ -51,9 +51,11 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.topchat.R;
@@ -113,7 +115,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import permissions.dispatcher.NeedsPermission;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -127,7 +128,8 @@ import static com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity.PARA
 public class ChatRoomFragment extends BaseDaggerFragment
         implements ChatRoomContract.View, InboxMessageConstant, InboxChatConstant, WebSocketInterface {
 
-    private static final int REQUEST_CODE_IMAGE = 1001;
+    private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
+    private static final int MAX_SIZE_IMAGE_PICKER = 5;
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
     private static final String APPLINK_SCHEME = "tokopedia";
@@ -361,8 +363,8 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                         ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,
                         null, null);
-                Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
-                startActivityForResult(intent, REQUEST_CODE_IMAGE);
+                Intent intent = ImagePickerActivity.getIntent(getContext(), builder);
+                startActivityForResult(intent, REQUEST_CODE_CHAT_IMAGE);
             }
         });
 
@@ -874,8 +876,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         switch (requestCode) {
             case 100:
                 if (resultCode == Activity.RESULT_OK) {
-                    ArrayList<String> strings = data.getStringArrayListExtra("string");
-                    templateAdapter.update(strings);
+                    if(!isChatBot) presenter.getTemplate();
                     break;
                 }
                 break;
@@ -887,28 +888,27 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
-            case REQUEST_CODE_IMAGE:
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
-                    if (imagePathList == null || imagePathList.size() <= 0) {
-                        return;
-                    }
-                    String imagePath = imagePathList.get(0);
-                    List<ImageUploadViewModel> list = new ArrayList<>();
-
-                    if (!TextUtils.isEmpty(imagePath)) {
-                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
-                        list.add(temp);
-                    } else {
-                        for (int i = 0; i < imagePathList.size(); i++) {
-                            ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
-                            list.add(temp);
-                        }
-                    }
-                    adapter.addReply(list);
-                    presenter.startUpload(list, networkType);
+            case REQUEST_CODE_CHAT_IMAGE:
+                if (resultCode != Activity.RESULT_OK || data == null) {
+                    return;
                 }
+                ArrayList<String> imagePathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS);
+                if (imagePathList == null || imagePathList.size() <= 0) {
+                    return;
+                }
+                List<ImageUploadViewModel> list = new ArrayList<>();
+                String imagePath = imagePathList.get(0);
+                if (!TextUtils.isEmpty(imagePath)) {
+                    ImageUploadViewModel temp = generateChatViewModelWithImage(imagePath);
+                    list.add(temp);
+                } else {
+                    for (int i = 0; i < imagePathList.size(); i++) {
+                        ImageUploadViewModel temp = generateChatViewModelWithImage(imagePathList.get(i));
+                        list.add(temp);
+                    }
+                }
+                adapter.addReply(list);
+                presenter.startUpload(list, networkType);
                 break;
             case AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_REQ_CODE:
                 if (data == null)
@@ -963,12 +963,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
         Dialog dialog = myAlertDialog.create();
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.openCamera();
     }
 
     @Override
