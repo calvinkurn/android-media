@@ -8,7 +8,17 @@ import java.util.Map;
 public interface ICartListAnalyticsListener {
 
     //5 condition EE Checkout Step 1 as eventLabel
-    void sendAnalyticsOnSuccessToCheckout(Map<String, Object> eeData, String eventLabel);
+    //======================================================================
+    void sendAnalyticsOnSuccessToCheckoutDefault(Map<String, Object> eeData);
+
+    void sendAnalyticsOnSuccessToCheckoutCheckAll(Map<String, Object> eeData);
+
+    void sendAnalyticsOnSuccessToCheckoutPartialShop(Map<String, Object> eeData);
+
+    void sendAnalyticsOnSuccessToCheckoutPartialProduct(Map<String, Object> eeData);
+
+    void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData);
+    //=======================================================================
 
     void sendAnalyticsOnClickBackArrow();
 

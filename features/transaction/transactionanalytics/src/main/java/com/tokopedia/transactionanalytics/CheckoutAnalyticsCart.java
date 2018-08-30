@@ -302,7 +302,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
-    public void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap, String eventLabel) {
+
+    private void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap, String eventLabel) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
@@ -311,6 +312,26 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
     }
 
     //PHASE 2

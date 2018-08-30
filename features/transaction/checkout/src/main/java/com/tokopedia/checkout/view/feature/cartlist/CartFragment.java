@@ -817,7 +817,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess() {
+    public void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, String maySomethingCondition) {
+        //TODO
+//        sendAnalyticsOnSuccessToCheckoutCheckAll(stringObjectMap);
+//        sendAnalyticsOnSuccessToCheckoutDefault(stringObjectMap);
+//        sendAnalyticsOnSuccessToCheckoutPartialProduct(stringObjectMap);
+//        sendAnalyticsOnSuccessToCheckoutPartialShop(stringObjectMap);
+//        sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(stringObjectMap);
         Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
@@ -1236,8 +1242,28 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void sendAnalyticsOnSuccessToCheckout(Map<String, Object> eeData, String eventLabel) {
+    public void sendAnalyticsOnSuccessToCheckoutDefault(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessDefault(eeData);
+    }
 
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutCheckAll(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessCheckAll(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShop(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShop(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialProduct(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(eeData);
+    }
+
+    @Override
+    public void sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(Map<String, Object> eeData) {
+        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(eeData);
     }
 
     @Override
@@ -1337,7 +1363,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void sendAnalyticsScreenName(String screenName) {
-
+        cartPageAnalytics.sendScreenName(getActivity(), screenName);
     }
 
     public interface ActionListener {
@@ -1356,17 +1382,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onStart() {
         super.onStart();
-        cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
+        sendAnalyticsScreenName(getScreenName());
     }
 
     public void onNeedUpdateViewItem(final int position) {
         if (cartRecyclerView.isComputingLayout()) {
-            cartRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    cartAdapter.notifyItemChanged(position);
-                }
-            });
+            cartRecyclerView.post(() -> cartAdapter.notifyItemChanged(position));
         } else {
             cartAdapter.notifyItemChanged(position);
         }

@@ -40,7 +40,7 @@ public interface ICartListView extends IBaseView {
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess();
+    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, String maySomethingCondition);
 
     void renderToAddressChoice();
 
@@ -100,5 +100,6 @@ public interface ICartListView extends IBaseView {
 
     Activity getActivity();
 
+    @Deprecated
     void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap, String eventLabel);
 }
