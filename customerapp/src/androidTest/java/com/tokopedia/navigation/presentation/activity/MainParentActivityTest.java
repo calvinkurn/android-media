@@ -1,4 +1,4 @@
-package com.tokopedia.navigation.presentation.activity;
+package com.tokopedia.navigation.presentation.activity; 
 
 import android.app.Activity;
 import android.app.Instrumentation;
