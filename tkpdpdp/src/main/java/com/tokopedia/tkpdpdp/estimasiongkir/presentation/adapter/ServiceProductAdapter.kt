@@ -35,16 +35,23 @@ class ServiceProductAdapter : RecyclerView.Adapter<ServiceProductAdapter.Service
     inner class ServiceProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         fun bind(product: ShippingServiceModel.Product) {
-            val title = itemView.context.getString(R.string.shipping_receiver_text,
-                    product.name, product.etd)
+            if(product.etd.isEmpty()){
+                val title = itemView.context.getString(R.string.shipping_receiver_text_empty,
+                        product.name)
 
-            val spannableString = SpannableString(title)
+                itemView.label_view.title = title
+            } else {
+                val title = itemView.context.getString(R.string.shipping_receiver_text,
+                        product.name, product.etd)
 
-            spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
-                    R.color.font_black_disabled_38)),
-                    product.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val spannableString = SpannableString(title)
 
-            itemView.label_view.setTitle(spannableString)
+                spannableString.setSpan(ForegroundColorSpan(ContextCompat.getColor(itemView.context,
+                        R.color.font_black_disabled_38)),
+                        product.name.length + 1, title.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                itemView.label_view.setTitle(spannableString)
+            }
 
             itemView.label_view.setContent(product.fmtPrice)
         }
