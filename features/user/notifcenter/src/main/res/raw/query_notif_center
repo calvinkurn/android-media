@@ -1,5 +1,5 @@
 query ($Page: Int, $FilterId: Int, $NotifLang: String) {
-  notifcenter_list(page: $Page, filter_id: $FilterId, notif_center_lang: $NotifLang) {
+  notifcenter_list(page: 1, filter_id: 0, notif_center_lang: "") {
     paging {
       has_next
       has_prev
@@ -25,6 +25,14 @@ query ($Page: Int, $FilterId: Int, $NotifLang: String) {
         desktop_link
         info_thumbnail_url
         mobile_link
+      }
+    }
+    section_list {
+      id
+      key
+      subsection_list {
+        key
+        text
       }
     }
   }

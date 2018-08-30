@@ -8,6 +8,3 @@ data class NotifCenterViewModel(
         val list: ArrayList<NotifItem>
 )
 
-data class NotifItem(
-        val title: String
-)
