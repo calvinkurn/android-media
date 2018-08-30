@@ -11,6 +11,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -27,6 +29,7 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
 import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
+import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModule;
 import com.tokopedia.discovery.applink.DiscoveryApplinkModuleLoader;
 import com.tokopedia.events.deeplink.EventsDeepLinkModule;
@@ -79,12 +82,6 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModule;
-import com.tokopedia.digital_deals.deeplinkmodule.DealsDeepLinkModuleLoader;
-import com.tokopedia.shop.applink.ShopAppLinkModule;
-import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.gamification.applink.GamificationApplinkModule;
-import com.tokopedia.gamification.applink.GamificationApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -106,6 +103,7 @@ import io.branch.referral.BranchError;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
@@ -145,6 +143,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
                 new TrainApplinkModuleLoader(),
+                new DigitalBrowseApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),

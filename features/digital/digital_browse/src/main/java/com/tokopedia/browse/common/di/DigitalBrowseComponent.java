@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.browse.common.domain.DigitalBrowseRepository;
+import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity;
 
 import dagger.Component;
 
@@ -26,4 +27,6 @@ public interface DigitalBrowseComponent {
     DigitalBrowseRouter digitalBrowseRouter();
 
     DigitalBrowseRepository digitalBrowseRepository();
+
+    void inject(DigitalBrowseBaseActivity digitalBrowseBaseActivity);
 }

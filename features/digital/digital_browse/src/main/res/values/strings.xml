@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Browse</string>
     <string name="title_activity_testing">TestingActivity</string>
+    <string name="digital_browse_home_title">Belanja di Tokopedia</string>
 </resources>
