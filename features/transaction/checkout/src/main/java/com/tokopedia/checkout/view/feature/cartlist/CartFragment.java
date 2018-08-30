@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -126,6 +127,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     CheckoutAnalyticsCart cartPageAnalytics;
     @Inject
     ICheckoutModuleRouter checkoutModuleRouter;
+    @Inject
+    Context context;
 
     private RefreshHandler refreshHandler;
 
@@ -271,7 +274,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         ViewCompat.setTranslationZ(cardFooter, getResources().getDimension(R.dimen.dp_16));
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
 
-        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartAdapter);
@@ -299,9 +302,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @NonNull
     private View.OnClickListener getOnClickButtonToShipmentListener() {
-        return view -> {
-            dPresenter.processToUpdateCartData();
-        };
+        return view -> dPresenter.processToUpdateCartData();
     }
 
     @Override
@@ -851,7 +852,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, String maySomethingCondition) {
+    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, String maySomethingCondition) {
         //TODO
 //        sendAnalyticsOnSuccessToCheckoutCheckAll(stringObjectMap);
 //        sendAnalyticsOnSuccessToCheckoutDefault(stringObjectMap);
@@ -978,14 +979,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             layoutUsedPromoEmptyCart.setVisibility(View.GONE);
         }
         btnContinueShoppingEmptyCart.setOnClickListener(view -> {
-            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            sendAnalyticsOnClickShoppingNowCartEmptyState();
             navigateToActivity(
                     checkoutModuleRouter.getHomeFeedIntent(getActivity())
             );
             getActivity().finish();
         });
         btnAddFromWishListEmptyCart.setOnClickListener(v -> {
-            cartPageAnalytics.eventClickAtcCartClickAddFromWishlistOnEmptyCart();
+            sendAnalyticsOnClickAddFromWishListCartEmptyState();
             navigateToActivityRequest(
                     checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
                     REQUEST_CODE_ROUTE_WISHLIST
@@ -1096,12 +1097,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderCancelAutoApplyCouponError() {
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
-    }
-
-    @Override
-    public void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap, String eventLabel) {
-        cartPageAnalytics.enhancedECommerceGoToCheckoutStep1(stringObjectMap);
-        //   cartPageAnalytics.enhancedECommerceGoToCheckoutStep1(stringObjectMap, eventLabel);
     }
 
     @NonNull
@@ -1397,12 +1392,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void sendAnalyticsOnClickShoppingNowCartEmptyState() {
-
+        cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
     }
 
     @Override
     public void sendAnalyticsOnClickAddFromWishListCartEmptyState() {
-
+        cartPageAnalytics.eventClickAtcCartClickAddFromWishlistOnEmptyCart();
     }
 
     @Override

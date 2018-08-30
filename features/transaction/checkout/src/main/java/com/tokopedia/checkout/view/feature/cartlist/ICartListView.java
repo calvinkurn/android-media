@@ -99,7 +99,4 @@ public interface ICartListView extends IBaseView {
     void renderCancelAutoApplyCouponError();
 
     Activity getActivity();
-
-    @Deprecated
-    void sendAnalyticsOnSuccessToShipment(Map<String, Object> stringObjectMap, String eventLabel);
 }
