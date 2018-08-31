@@ -362,7 +362,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
         navigateToActivity(
                 checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                        getActivity(), dPresenter.generateProductPassProductDetailPage(
+                        dPresenter.generateProductPassProductDetailPage(
                                 cartItemHolderData.getCartItemData().getOriginData()
                         )
                 ));
@@ -377,7 +377,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartShopNameClicked(CartShopHolderData cartShopHolderData) {
         sendAnalyticsOnClickShopNameCartItem(cartShopHolderData.getShopGroupData().getShopName());
         navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(
-                getActivity(), cartShopHolderData.getShopGroupData().getShopId()
+                cartShopHolderData.getShopGroupData().getShopId()
         ));
     }
 
@@ -428,7 +428,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         startActivityForResult(
                 checkoutModuleRouter
                         .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-                                getActivity(), cartListData.isPromoCouponActive(),
+                                cartListData.isPromoCouponActive(),
                                 new Gson().toJson(updateCartRequestList),
                                 cartItemPromoHolderData.getDefaultSelectedTabString()
                         ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
@@ -946,7 +946,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         btnContinueShoppingEmptyCart.setOnClickListener(view -> {
             sendAnalyticsOnClickShoppingNowCartEmptyState();
             navigateToActivity(
-                    checkoutModuleRouter.getHomeFeedIntent(getActivity())
+                    checkoutModuleRouter.checkoutModuleRouterGetHomeFeedIntent(getActivity())
             );
             getActivity().finish();
         });
@@ -1099,7 +1099,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemClicked(int position, Shop shop) {
-        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(getActivity(), shop.getId()));
+        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetShopInfoIntent(shop.getId()));
     }
 
     @Override

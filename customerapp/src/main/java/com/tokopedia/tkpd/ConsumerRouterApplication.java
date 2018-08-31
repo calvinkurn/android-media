@@ -305,7 +305,6 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
@@ -318,7 +317,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -873,7 +871,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getHomeFeedIntent(Context context) {
+    public Intent checkoutModuleRouterGetHomeFeedIntent(Context context) {
         return ParentIndexHome.getHomeFeedIntent(context);
     }
 
@@ -1005,12 +1003,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
-    }
-
-    @Override
-    public Intent getHomePageIntent(Context context) {
-        // Force navigation to home tab
-        return ParentIndexHome.getHomeIntent(context);
     }
 
     @Override
@@ -1738,18 +1730,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(context, additionalStringData, defaultSelectedTab)
-                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(context, additionalStringData);
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(
+                getAppContext(), additionalStringData, defaultSelectedTab
+        )
+                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(
+                getAppContext(), additionalStringData
+        );
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(context, additionalStringData, defaultSelectedTab)
-                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(context, additionalStringData);
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
+                getAppContext(), additionalStringData, defaultSelectedTab
+        )
+                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
+                getAppContext(), additionalStringData
+        );
     }
 
     @Override
@@ -1768,13 +1768,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetProductDetailIntent(Context context, ProductPass productPass) {
-        return ProductInfoActivity.createInstance(context, productPass);
+    public Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass) {
+        return ProductInfoActivity.createInstance(getAppContext(), productPass);
     }
 
     @Override
-    public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+    public Intent checkoutModuleRouterGetShopInfoIntent(String shopId) {
+        return ShopPageActivity.createIntent(getAppContext(), shopId);
     }
 
     @Override
@@ -1788,22 +1788,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
-                                                                                          int cartPosition,
-                                                                                          String districtName,
-                                                                                          HashMap<String, String> params) {
-        return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(Activity activity,
-                                                                                        String districtName,
-                                                                                        HashMap<String, String> params) {
-        return PickupPointActivity.createInstance(activity, districtName, params);
-    }
-
-    @Override
-    public ChuckInterceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
+    public Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
 

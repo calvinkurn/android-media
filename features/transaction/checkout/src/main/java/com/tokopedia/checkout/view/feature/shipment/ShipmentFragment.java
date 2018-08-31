@@ -124,6 +124,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
     @Inject
     CheckoutAnalyticsChangeAddress checkoutAnalyticsChangeAddress;
+    @Inject
+    ICheckoutModuleRouter checkoutModuleRouter;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
 
@@ -1089,15 +1091,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartPromo,
                                                   int position) {
         sendAnalyticsOnClickUsePromoCodeAndCoupon();
-        if (getActivity().getApplication() instanceof ICheckoutModuleRouter) {
-            startActivityForResult(
-                    ((ICheckoutModuleRouter) getActivity().getApplication())
-                            .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-                                    getActivity(), true, "",
-                                    cartPromo.getDefaultSelectedTabString()
-                            ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
-            );
-        }
+        startActivityForResult(
+                checkoutModuleRouter
+                        .checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
+                                true, "",
+                                cartPromo.getDefaultSelectedTabString()
+                        ), IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE
+        );
+
     }
 
     @Override
@@ -1225,7 +1226,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onInsuranceTncClicked() {
-        startActivity(((ICheckoutModuleRouter) getActivity().getApplication()).checkoutModuleRouterGetInsuranceTncActivityIntent());
+        startActivity(checkoutModuleRouter.checkoutModuleRouterGetInsuranceTncActivityIntent());
     }
 
     @Override
