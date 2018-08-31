@@ -11,8 +11,10 @@ import rx.Observable;
  */
 
 public class DigitalGetHelpUrlUseCase extends UseCase<String> {
+
     private static final String PARAM_CATEGORY_ID = "category_id";
     private static final String PARAM_DEFAULT_EMPTY = "";
+
     private IDigitalCategoryRepository digitalCategoryRepository;
 
     public DigitalGetHelpUrlUseCase(IDigitalCategoryRepository digitalCategoryRepository) {

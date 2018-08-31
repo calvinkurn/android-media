@@ -218,6 +218,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.features.session)
 
+    implementation project(rootProject.ext.features.commonDigital)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.design
@@ -230,5 +231,15 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    // this is for graphql usecase
+    implementation project(rootProject.ext.libraries.useCase)
+    implementation project(rootProject.ext.libraries.network)
+    annotationProcessor rootProject.ext.dbDependencies.dbFlowProcessor
+    implementation rootProject.ext.dbDependencies.dbFlowCore
+    implementation rootProject.ext.dbDependencies.dbFlow
+
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.location
 }
 

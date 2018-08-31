@@ -1,7 +1,7 @@
 package com.tokopedia.digital.cart.domain;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.digital.cart.model.VoucherDigital;
+import com.tokopedia.digital.cart.presentation.model.VoucherDigital;
 
 import rx.Observable;
 
@@ -12,4 +12,5 @@ import rx.Observable;
 public interface IVoucherDigitalRepository {
 
     Observable<VoucherDigital> checkVoucher(TKPDMapParam<String, String> param);
+
 }

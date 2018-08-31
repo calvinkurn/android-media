@@ -3,7 +3,7 @@ package com.tokopedia.digital.categorylist.view.listener;
 import android.content.Context;
 
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.digital.cart.listener.IBaseView;
+import com.tokopedia.digital.cart.presentation.listener.IBaseView;
 import com.tokopedia.digital.categorylist.view.model.DigitalCategoryItemData;
 
 import java.util.List;

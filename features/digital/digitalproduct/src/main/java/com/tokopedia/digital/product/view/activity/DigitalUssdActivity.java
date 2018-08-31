@@ -10,12 +10,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.product.view.fragment.DigitalUssdFragment;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
-import com.tokopedia.digital.product.view.model.Validation;
 
 import java.util.ArrayList;
 import java.util.List;

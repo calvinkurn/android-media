@@ -11,6 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
 import com.tokopedia.digital.product.view.compoundview.BaseDigitalChooserView;
@@ -18,12 +22,8 @@ import com.tokopedia.digital.product.view.compoundview.DigitalOperatorChooserVie
 import com.tokopedia.digital.product.view.compoundview.DigitalProductChooserView;
 import com.tokopedia.digital.product.view.compoundview.ProductAdditionalInfoView;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.product.view.model.Validation;
 
 import java.util.List;
 import java.util.regex.Pattern;

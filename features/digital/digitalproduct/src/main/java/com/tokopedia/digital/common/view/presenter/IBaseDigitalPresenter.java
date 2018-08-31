@@ -15,7 +15,7 @@ import com.tokopedia.digital.product.view.model.ContactData;
 public interface IBaseDigitalPresenter {
 
     void storeLastClientNumberTyped(String categoryId, String operatorId, String clientNumber,
-                                           String productId);
+                                    String productId);
 
     String getLastOperatorSelected(String categoryId);
 
