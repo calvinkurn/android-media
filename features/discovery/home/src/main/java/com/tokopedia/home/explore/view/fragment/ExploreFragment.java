@@ -231,10 +231,6 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void openWebViewGimicURL(String url, String label, String title) {
-        if(title.equalsIgnoreCase("Reksa Dana")){
-            startActivity(((TkpdCoreRouter) getActivity().getApplication()).getReksaDanaIntent(getActivity()));
-            return;
-        }
         if (!url.equals("")) {
             Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivity(), url);
             intent.putExtra(BannerWebView.EXTRA_TITLE, title);

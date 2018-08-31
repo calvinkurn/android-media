@@ -11,12 +11,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_20">
+        android:padding="@dimen/dp_16">
 
         <TextView
             android:id="@+id/text_message_ticker"
             android:textColorLink="@color/tkpd_main_green"
-            style="@style/TextView.Small"
+            style="@style/TextView.Small.BlackSecondary"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             tools:text="Type information with approx. 80 CHARACTER,  for more or another CTA Link" />

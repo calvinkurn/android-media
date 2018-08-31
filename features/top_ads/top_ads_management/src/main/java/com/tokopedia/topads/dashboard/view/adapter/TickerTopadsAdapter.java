@@ -2,7 +2,11 @@ package com.tokopedia.topads.dashboard.view.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
+import android.text.style.URLSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,7 @@ import java.util.List;
 
 public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapter.TickerTopadsViewHolder> {
 
+    public static final int MAX_SHOW_ITEM = 1;
     List<String> listMessageTicker;
 
     public TickerTopadsAdapter() {
@@ -46,6 +51,9 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
 
     @Override
     public int getItemCount() {
+        if(listMessageTicker.size() > 1){
+            return MAX_SHOW_ITEM;
+        }
         return listMessageTicker.size();
     }
 
@@ -63,7 +71,15 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
             try {
                 textViewMessage.setClickable(true);
                 textViewMessage.setMovementMethod (LinkMovementMethod.getInstance());
-                textViewMessage.setText(MethodChecker.fromHtml(URLDecoder.decode(message, "UTF-8")));
+                Spannable spannable = (Spannable) MethodChecker.fromHtml(URLDecoder.decode(message, "UTF-8"));
+                for (URLSpan u: spannable.getSpans(0, spannable.length(), URLSpan.class)) {
+                    spannable.setSpan(new UnderlineSpan() {
+                        public void updateDrawState(TextPaint tp) {
+                            tp.setUnderlineText(false);
+                        }
+                    }, spannable.getSpanStart(u), spannable.getSpanEnd(u), 0);
+                }
+                textViewMessage.setText(spannable);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }

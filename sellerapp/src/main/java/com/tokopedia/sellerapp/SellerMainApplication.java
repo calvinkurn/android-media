@@ -30,6 +30,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
@@ -205,6 +206,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
+        GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
 
     }
 

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
@@ -438,7 +439,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     private void loadData() {
         swipeToRefresh.setRefreshing(true);
-        topAdsDashboardPresenter.getPopulateDashboardData();
+        topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit));
         topAdsDashboardPresenter.getShopInfo();
         topAdsDashboardPresenter.getTickerTopAds(getResources());
     }
