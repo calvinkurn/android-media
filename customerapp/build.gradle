@@ -199,7 +199,7 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
