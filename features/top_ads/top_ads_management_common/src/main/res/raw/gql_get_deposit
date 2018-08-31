@@ -1,5 +1,5 @@
 query TopAdsDashboardDeposits($shop_id: Int!){
-    topadsDashboardDeposits(shop_id:$shop_id,shop_data:"1",credit_data:"claimed"){
+    topadsDashboardDeposits(shop_id:$shop_id,shop_data:"1"){
         data{
             ad_usage
             amount
