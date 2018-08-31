@@ -44,4 +44,8 @@ public class MainParentPresenter {
         this.getNotificationUseCase.unsubscribe();
         this.mainParentView = null;
     }
+
+    public boolean isFirstTimeUser() {
+        return mainParentView.isFirstTimeUser();
+    }
 }
