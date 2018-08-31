@@ -265,6 +265,7 @@ dependencies {
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.withdraw)
+    implementation project(rootProject.ext.features.paymentSetting)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

@@ -273,7 +273,8 @@ ext {
             vote                  : "com.tokopedia.user:user:${tkpdVoteVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -345,7 +346,8 @@ ext {
             digitalDeals          : ":features:digital:digital_deals",
             withdraw              : ":features:payment:withdraw",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            paymentSetting        : ":features:payment:payment_setting"
     ]
 
     libraries = [
