@@ -27,9 +27,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
@@ -55,16 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
-import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -130,6 +123,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     ICheckoutModuleRouter checkoutModuleRouter;
     @Inject
     Context context;
+    @Inject
+    UserSession userSession;
 
     private RefreshHandler refreshHandler;
 
@@ -544,9 +539,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onWishlistCheckChanged(String productId, boolean isChecked) {
         if (getActivity() != null) {
             if (isChecked) {
-                dPresenter.processAddToWishlist(productId, SessionHandler.getLoginID(getActivity()), this);
+                dPresenter.processAddToWishlist(productId, userSession.getUserId(), this);
             } else {
-                dPresenter.processRemoveFromWishlist(productId, SessionHandler.getLoginID(getActivity()), this);
+                dPresenter.processRemoveFromWishlist(productId, userSession.getUserId(), this);
             }
         }
     }
@@ -605,13 +600,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     ) {
         return originParams == null
                 ? AuthUtil.generateParamsNetwork(
-                getActivity(), SessionHandler.getLoginID(context),
-                GCMHandler.getRegistrationId(getActivity())
+                getActivity(), userSession.getUserId(),
+                userSession.getDeviceId()
         )
                 : AuthUtil.generateParamsNetwork(
                 getActivity(), originParams,
-                SessionHandler.getLoginID(context),
-                GCMHandler.getRegistrationId(getActivity())
+                userSession.getUserId(),
+                userSession.getDeviceId()
         );
     }
 
@@ -918,7 +913,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         refreshHandler.finishRefresh();
         mIsMenuVisible = false;
         getActivity().invalidateOptionsMenu();
-        CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+        checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
         showEmptyCartContainer();
         emptyCartContainer.removeAllViews();
 
@@ -961,8 +956,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
 
         Config config = new Config.Builder()
-                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
-                .setUserId(SessionHandler.getLoginID(context))
+                .setSessionId(userSession.getDeviceId())
+                .setUserId(userSession.getUserId())
                 .withPreferedCategory()
                 .setEndpoint(Endpoint.PRODUCT)
                 .displayMode(DisplayMode.FEED)
@@ -1085,16 +1080,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onProductItemClicked(int position, Product product) {
-        ProductItem data = new ProductItem();
-        data.setId(product.getId());
-        data.setName(product.getName());
-        data.setPrice(product.getPriceFormat());
-        data.setImgUri(product.getImage().getM_url());
-        Bundle bundle = new Bundle();
-        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getActivity());
-        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
-        intent.putExtras(bundle);
-        navigateToActivity(intent);
+        navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 
     @Override
@@ -1116,7 +1102,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.resetData();
         showMainContainer();
         dPresenter.processInitialGetCartData();
-        String promo = BranchSdkUtils.getAutoApplyCouponIfAvailable(getActivity());
+        String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
         if (!TextUtils.isEmpty(promo)) {
             dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
         }
@@ -1156,8 +1142,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             dPresenter.processResetAndRefreshCartData();
         } else if (resultCode == TopPayActivity.PAYMENT_SUCCESS) {
             showToastMessage(getString(R.string.message_payment_success));
-            startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
-            CartBadgeNotificationReceiver.resetBadgeCart(context);
+            navigateToActivity(checkoutModuleRouter.checkoutModuleRouterGetTransactionSummaryIntent());
+            checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             getActivity().finish();
         } else if (resultCode == TopPayActivity.PAYMENT_FAILED) {
             showToastMessage(getString(R.string.default_request_error_unknown));

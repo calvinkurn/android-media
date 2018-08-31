@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.topads.sdk.domain.model.Product;
 
 import java.security.PublicKey;
 
@@ -23,6 +24,14 @@ public interface ICheckoutModuleRouter {
             boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
     Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass);
+
+    Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
+
+    Intent checkoutModuleRouterGetTransactionSummaryIntent();
+
+    void checkoutModuleRouterResetBadgeCart();
+
+    String checkoutModuleRouterGetAutoApplyCouponBranchUtil();
 
     Intent checkoutModuleRouterGetShopInfoIntent(String shopId);
 

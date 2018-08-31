@@ -84,6 +84,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -96,6 +97,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
@@ -289,6 +291,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
@@ -1765,6 +1768,35 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Converter.Factory loyaltyModuleRouterGetStringResponseConverter() {
         return new StringResponseConverter();
+    }
+
+    @Override
+    public Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getAppContext());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    @Override
+    public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
+        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext()));
+    }
+
+    @Override
+    public void checkoutModuleRouterResetBadgeCart() {
+        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
+    }
+
+    @Override
+    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
+        return BranchSdkUtils.getAutoApplyCouponIfAvailable(getAppContext()));
     }
 
     @Override
