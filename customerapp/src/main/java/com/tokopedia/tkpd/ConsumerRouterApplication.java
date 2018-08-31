@@ -2485,6 +2485,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getSettingBankIntent(Context context) {
         //TODO milhamj
-        NotifCenterActivity.Companion.createIntent(context);
+        return NotifCenterActivity.Companion.createIntent(context);
     }
 }

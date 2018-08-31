@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.view.NotifCenterContract
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
 import kotlinx.android.synthetic.main.item_notif_center.view.*
 
@@ -13,7 +14,8 @@ import kotlinx.android.synthetic.main.item_notif_center.view.*
  * @author by milhamj on 30/08/18.
  */
 
-class NotifItemViewHolder(val v: View) : AbstractViewHolder<NotifItemViewModel>(v) {
+class NotifItemViewHolder(val v: View, val viewListener: NotifCenterContract.View)
+    : AbstractViewHolder<NotifItemViewModel>(v) {
 
     companion object {
         val LAYOUT = R.layout.item_notif_center

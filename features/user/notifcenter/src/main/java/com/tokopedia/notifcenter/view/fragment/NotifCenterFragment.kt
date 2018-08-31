@@ -4,12 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
 import com.tokopedia.notifcenter.view.NotifCenterContract
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
 import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
@@ -21,22 +25,25 @@ import javax.inject.Inject
 class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     @Inject
-    lateinit var adapter : NotifCenterAdapter
-    @Inject
     lateinit var presenter: NotifCenterPresenter
+    lateinit var adapter: NotifCenterAdapter
 
     companion object {
         fun createInstance() = NotifCenterFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater,
+                              container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_notif_center, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initVar()
         initView()
         presenter.attachView(this)
+        presenter.fetchData()
     }
 
     override fun onDestroy() {
@@ -44,20 +51,54 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         super.onDestroy()
     }
 
-    override fun getScreenName(): String? {
-        return null
-    }
+    override fun getScreenName() = null
 
     override fun initInjector() {
         activity?.let {
+            (it.applicationContext as BaseMainApplication).baseAppComponent
+        }.let {
             DaggerNotifCenterComponent.builder()
-                    .baseAppComponent(it.applicationContext as BaseAppComponent)
+                    .baseAppComponent(it)
                     .build()
                     .inject(this)
         }
     }
 
+    override fun onSuccessFetchData(visitables: List<Visitable<*>>) {
+        adapter.addElement(visitables)
+    }
+
+    override fun onErrorFetchData(message: String) {
+        if (adapter.itemCount == 0) {
+            adapter.showError(message, object: ErrorNetworkModel.OnRetryListener{
+                override fun onRetryClicked() {
+                    adapter.clearAllElements()
+                    presenter.fetchData()
+                }
+            })
+        } else {
+            NetworkErrorHelper.showRedSnackbar(view, message)
+        }
+    }
+
+    override fun showRefreshing() {
+        swipeToRefresh.isRefreshing = true
+    }
+
+    override fun showLoading() {
+        adapter.showLoading()
+    }
+
+    override fun hideLoading() {
+        if (adapter.isLoading()) adapter.showLoading()
+        if (swipeToRefresh.isRefreshing) swipeToRefresh.isRefreshing = false
+    }
+
+    private fun initVar() {
+        adapter = NotifCenterAdapter(NotifCenterTypeFactoryImpl(this))
+    }
+
     private fun initView() {
-        notifRv
+        notifRv.adapter = adapter
     }
 }

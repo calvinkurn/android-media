@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.view
 
+import android.content.Context
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
@@ -8,10 +10,22 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
  */
 interface NotifCenterContract {
     interface View : CustomerView {
+        fun getContext() : Context?
 
+        fun onSuccessFetchData(visitables: List<Visitable<*>>)
+
+        fun onErrorFetchData(message: String)
+
+        fun showRefreshing()
+
+        fun showLoading()
+
+        fun hideLoading()
     }
 
     interface Presenter : CustomerPresenter<View> {
+        fun fetchDataFirstTime()
+
         fun fetchData()
 
         fun updatePage(page: Int)

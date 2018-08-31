@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class NotifCenterList(
         @Expose
         @SerializedName("paging")
-        val paging: Paging? = Paging(),
+        val paging: Paging = Paging(),
         @Expose
         @SerializedName("list")
-        val list: List<UserNotification>? = ArrayList()
+        val list: List<UserNotification> = ArrayList()
 )

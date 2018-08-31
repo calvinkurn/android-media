@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName
 data class DataNotification(
         @SerializedName("app_link")
         @Expose
-        val appLink: String? = "",
+        val appLink: String = "",
         @SerializedName("desktop_link")
         @Expose
-        val desktopLink: String? = "",
+        val desktopLink: String = "",
         @SerializedName("info_thumbnail_url")
         @Expose
-        val infoThumbnailUrl: String? = "",
+        val infoThumbnailUrl: String = "",
         @SerializedName("mobile_link")
         @Expose
-        val mobileLink: String? = ""
+        val mobileLink: String = ""
 )

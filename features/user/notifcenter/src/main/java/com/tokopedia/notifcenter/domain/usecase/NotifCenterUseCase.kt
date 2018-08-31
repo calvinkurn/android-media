@@ -1,6 +1,7 @@
 package com.tokopedia.notifcenter.domain.usecase
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -14,7 +15,7 @@ import javax.inject.Inject
  * @author by alvinatin on 21/08/18.
  */
 
-class NotifCenterUseCase @Inject constructor(val context: Context,
+class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Context,
                                              val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {

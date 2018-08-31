@@ -10,6 +10,6 @@ import com.google.gson.annotations.SerializedName
 data class NotifCenterPojo(
         @Expose
         @SerializedName("notifcenter_list")
-        val notifCenterList: NotifCenterList? = NotifCenterList()
+        val notifCenterList: NotifCenterList = NotifCenterList()
 )
 

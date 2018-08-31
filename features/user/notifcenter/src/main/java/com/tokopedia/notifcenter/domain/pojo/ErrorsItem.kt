@@ -3,11 +3,11 @@ package com.tokopedia.notifcenter.domain.pojo
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class Paging(
-        @SerializedName("has_next")
+data class ErrorsItem(
+        @SerializedName("path")
         @Expose
-        val hasNext: Boolean = false,
-        @SerializedName("has_prev")
+        val path: List<String> = ArrayList(),
+        @SerializedName("message")
         @Expose
-        val hasPrev: Boolean = false
+        val message: String = ""
 )

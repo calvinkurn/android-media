@@ -6,50 +6,50 @@ import com.google.gson.annotations.SerializedName
 data class UserNotification(
         @SerializedName("notif_id")
         @Expose
-        val notifId: String? = "",
+        val notifId: String = "",
         @SerializedName("user_id")
         @Expose
-        val userId: Int? = 0,
+        val userId: Int = 0,
         @SerializedName("shop_id")
         @Expose
-        val shopId: Int? = 0,
+        val shopId: Int = 0,
         @SerializedName("section_key")
         @Expose
-        val sectionKey: String? = "",
+        val sectionKey: String = "",
         @SerializedName("subsection_key")
         @Expose
-        val subsectionKey: String? = "",
+        val subsectionKey: String = "",
         @SerializedName("title")
         @Expose
-        val title: String? = "",
+        val title: String = "",
         @SerializedName("short_description")
         @Expose
-        val shortDescription: String? = "",
+        val shortDescription: String = "",
         @SerializedName("content")
         @Expose
-        val content: String? = "",
+        val content: String = "",
         @SerializedName("type_of_user")
         @Expose
-        val typeOfUser: Int? = 0,
+        val typeOfUser: Int = 0,
         @SerializedName("create_time")
         @Expose
-        val createTime: String? = "",
+        val createTime: String = "",
         @SerializedName("create_time_unix")
         @Expose
-        val createTimeUnix: Int? = 0,
+        val createTimeUnix: Int = 0,
         @SerializedName("update_time")
         @Expose
-        val updateTime: String? = "",
+        val updateTime: String = "",
         @SerializedName("update_time_unix")
         @Expose
-        val updateTimeUnix: Int? = 0,
+        val updateTimeUnix: Int = 0,
         @SerializedName("status")
         @Expose
-        val status: Int? = 0,
+        val status: Int = 0,
         @SerializedName("read_status")
         @Expose
-        val readStatus: Int? = 0,
+        val readStatus: Int = 0,
         @SerializedName("data_notification")
         @Expose
-        val dataNotification: DataNotification? = DataNotification()
+        val dataNotification: DataNotification = DataNotification()
 )

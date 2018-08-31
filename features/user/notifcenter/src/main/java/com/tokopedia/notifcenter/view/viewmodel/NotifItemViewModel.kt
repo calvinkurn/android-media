@@ -1,7 +1,7 @@
 package com.tokopedia.notifcenter.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
+import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactory
 
 data class NotifItemViewModel(
         val title: String = "",
@@ -13,14 +13,14 @@ data class NotifItemViewModel(
         val readStatus: Int = 0,
         val userId: Int = 0,
         val shopId: Int = 0)
-    : Visitable<NotifCenterPojo> {
+    : Visitable<NotifCenterTypeFactory> {
 
     companion object {
         val READ_STATUS_FALSE = 1
         val READ_STATUS_TRUE = 2
     }
 
-    override fun type(typeFactory: NotifCenterPojo?): Int {
-        return 0
+    override fun type(typeFactory: NotifCenterTypeFactory?) : Int {
+        return typeFactory?.type(this) ?: 0
     }
 }

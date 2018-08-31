@@ -21,7 +21,16 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         notifCenterUseCase.unsubscribe()
     }
 
+    override fun fetchDataFirstTime() {
+        view.showRefreshing()
+        notifCenterUseCase.execute(
+                NotifCenterUseCase.getRequestParams(page, filterId),
+                NotifCenterSubscriber(view)
+        )
+    }
+
     override fun fetchData() {
+        view.showLoading()
         notifCenterUseCase.execute(
                 NotifCenterUseCase.getRequestParams(page, filterId),
                 NotifCenterSubscriber(view)
