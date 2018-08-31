@@ -64,13 +64,13 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 if (mainDataObject != null) {
                     totalItems = mainDataObject.getFound();
                 }
-                if (!(mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) ){
+                if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
                     //pageStart += mainDataObject.getSubmissionResults().size();
                     getView().setSubmissionsDataToUI(mainDataObject.getSubmissionResults());
                 } else {
                     isLastPage = true;
                     //if (pageStart == 0)
-                        getView().renderEmptyList();
+                    getView().renderEmptyList();
                 }
                 //checkIfToLoad(getView().getLayoutManager());
             }

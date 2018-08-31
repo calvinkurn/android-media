@@ -24,4 +24,9 @@ public class ChallengesSubmitActivity extends BaseActivity {
         updateTitle(getResources().getString(R.string.join_the_challenge));
         return ChallengesSubmitFragment.newInstance(getIntent().getExtras());
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

@@ -14,7 +14,7 @@ public interface SubmitDetailContract {
 
         void likeBtnClick(SubmissionResult result);
 
-        boolean isParticipated(SubmissionResult challengeResult);
+        boolean getParticipatedStatus(SubmissionResult challengeResult);
     }
 
     public interface View extends CustomerView {

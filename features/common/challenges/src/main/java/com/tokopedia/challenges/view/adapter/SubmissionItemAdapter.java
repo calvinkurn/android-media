@@ -208,7 +208,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bindData(final SubmissionResult productItem) {
             submissionTitle.setText(productItem.getTitle());
-            ImageHandler.loadImage(context, submissionImage, productItem.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
+            ImageHandler.loadImage(context, submissionImage, Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
 
             if (productItem.getMe() != null)
                 setLikes(productItem.getMe().isLiked());

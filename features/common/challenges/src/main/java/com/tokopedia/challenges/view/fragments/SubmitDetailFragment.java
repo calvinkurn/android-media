@@ -309,7 +309,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        presenter.sendBuzzPointEvent(submissionResult.getId());
+        if (!presenter.getParticipatedStatus(submissionResult)) {
+            presenter.sendBuzzPointEvent(submissionResult.getId());
+        }
     }
 
     @Override
