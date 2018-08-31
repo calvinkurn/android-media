@@ -68,25 +68,18 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     public void onItemClicked(int settingId) {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             AccountHomeRouter router = (AccountHomeRouter) getActivity().getApplication();
+            Intent intent;
             switch (settingId) {
                 case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
                     accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
-                    try {
-                        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
-                        startActivityForResult(intent, 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
+                    getActivity().startActivityForResult(intent, 0);
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
                     if (userSession.isHasPassword()) {
-                        try {
-                            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PASSWORD);
-                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PASSWORD);
+                        getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                     } else {
                         intentToAddPassword();
                     }
