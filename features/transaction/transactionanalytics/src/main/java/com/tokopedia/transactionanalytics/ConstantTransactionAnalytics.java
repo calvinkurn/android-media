@@ -173,6 +173,16 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BAYAR = "click bayar";
         String CLICK_UBAH_KURIR = "click ubah kurir";
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
+
+        //ROBINHOOD
+        String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
+        String CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman";
+        String CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN = "click checklist pilih durasi pengiriman";
+        String CLICK_CTA_BUTTON = "click cta button";
+        String VIEW_PRESELECTED_COURIER_OPTION = "view preselected courier option";
+        String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
+        String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
+        String CLICK_UBAH_DURASI = "click ubah durasi";
     }
 
     interface EventLabel {

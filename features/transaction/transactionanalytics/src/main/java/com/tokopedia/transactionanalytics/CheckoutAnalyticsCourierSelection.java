@@ -408,5 +408,87 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    //Robin Hood
+    public void eventClickCourierCourierSelectionClickButtonDurasiPengiriman() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_BUTTON_DURASI_PENGIRIMAN
+        );
+    }
 
+    public void eventClickCourierCourierSelectionClickXPadaDurasiPengiriman() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_PADA_DURASI_PENGIRIMAN
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickXPadaDurasiPengiriman(String eventLabelDuration) {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_PADA_DURASI_PENGIRIMAN
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickChecklistPilihDurasiPengiriman(String eventLabelDuration) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN,
+                eventLabelDuration
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickCtaButton() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CTA_BUTTON
+        );
+    }
+
+    public void eventClickCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PRESELECTED_COURIER_OPTION,
+                eventLabelPreselectedCourierPartner
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickUbahKurir() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_KURIR
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickChangeCourierOption(String eventLabelPreselectedCourierPartner) {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_CHANGE_COURIER_OPTION,
+                eventLabelPreselectedCourierPartner
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickXPadaKurirPengiriman() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_X_PADA_KURIR_PENGIRIMAN
+        );
+    }
+
+    public void eventClickCourierCourierSelectionClickUbahDurasi() {
+        sendEventCategoryAction(
+                EventName.CLICK_COURIER,
+                EventCategory.COURIER_SELECTION,
+                EventAction.CLICK_UBAH_DURASI
+        );
+    }
 }
