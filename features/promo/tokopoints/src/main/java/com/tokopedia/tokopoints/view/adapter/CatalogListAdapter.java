@@ -1,7 +1,9 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,14 +14,19 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.ViewHolder> {
 
@@ -32,6 +39,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
+        public boolean isVisited = false;
 
         public ViewHolder(View view) {
             super(view);
@@ -164,6 +172,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
             holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            sendClickEvent(holder.imgBanner.getContext(), item, position);
         });
     }
 
@@ -182,5 +191,67 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     public List<CatalogsValueEntity> getItems() {
         return this.mItems;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        CatalogsValueEntity data = mItems.get(holder.getAdapterPosition());
+        if (data == null) {
+            return;
+        }
+
+        if (!holder.isVisited) {
+            Map<String, String> item = new HashMap<>();
+            item.put("id", String.valueOf(data.getId()));
+            item.put("name", data.getTitle());
+            item.put("position", String.valueOf(holder.getAdapterPosition()));
+            item.put("creative", data.getTitle());
+            item.put("creative_url", data.getImageUrlMobile());
+            item.put("promo_code", data.getBaseCode());
+
+            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+            promotions.put("promotions", Arrays.asList(item));
+
+            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+            promoView.put("promoView", promotions);
+
+            Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
+            ecommerce.put("ecommerce", promoView);
+
+            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    data.getTitle(), ecommerce);
+
+            holder.isVisited = true;
+        }
+    }
+
+    private void sendClickEvent(Context context, CatalogsValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getBaseCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
+        ecommerce.put("ecommerce", promoClick);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), ecommerce);
     }
 }

@@ -16,6 +16,8 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.CouponCatalogFragment;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
+import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private TokoPointComponent tokoPointComponent;
@@ -58,5 +60,24 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
         tokoPointComponent = DaggerTokoPointComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (getIntent().getStringExtra(CommonConstant.EXTRA_CATALOG_CODE) == null) {
+            AnalyticsTrackerUtil.sendEvent(getApplicationContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
+                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+        } else {
+            AnalyticsTrackerUtil.sendEvent(getApplicationContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
+                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
+        }
     }
 }

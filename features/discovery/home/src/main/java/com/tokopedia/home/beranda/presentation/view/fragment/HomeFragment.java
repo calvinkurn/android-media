@@ -80,6 +80,7 @@ import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -493,6 +494,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             else
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
+                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
     }
 
     @Override

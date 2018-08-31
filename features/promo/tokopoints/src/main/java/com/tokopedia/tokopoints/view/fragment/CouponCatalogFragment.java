@@ -34,6 +34,7 @@ import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CouponCatalogPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.ImageUtil;
 import com.tokopedia.tokopoints.view.util.TabUtil;
@@ -57,6 +58,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private Subscription mSubscriptionCatalogTimer;
     private int mRefreshRepeatCount = 0;
     private String mCouponRealCode;
+    private String mCouponName;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -220,9 +222,19 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
             //Call api to validate the coupon
             mPresenter.redeemCoupon(code, cta);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
         });
         adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
-
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                    title);
         });
         AlertDialog dialog = adb.create();
         dialog.show();
@@ -232,12 +244,25 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     @Override
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) ->
-                showRedeemCouponDialog(cta, code, title)
-        );
+        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            showRedeemCouponDialog(cta, code, title);
 
-        adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) ->
-                startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()))
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
+        });
+
+        adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
+                    startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
+                            "");
+                }
         );
 
         adb.setTitle(R.string.tp_label_successful_exchange);
@@ -282,7 +307,30 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
-
+                switch (resCode) {
+                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.SUCCESS:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
+                                title);
+                        break;
+                    default:
+                }
             });
         }
 
@@ -291,15 +339,39 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
                     startActivity(HomeRouter.getHomeActivityInterfaceRouter(
                             getAppContext()));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
                     dialogInterface.cancel();
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                     startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.SUCCESS:
                     mPresenter.startSaveCoupon(item);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                            title);
                     break;
                 default:
                     dialogInterface.cancel();
@@ -437,6 +509,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
+        mCouponName = data.getTitle();
         TextView quota = getView().findViewById(R.id.text_quota_count);
         TextView description = getView().findViewById(R.id.text_description);
         TextView pointValue = getView().findViewById(R.id.text_point_value_coupon);
@@ -538,9 +611,15 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         btnAction1.setOnClickListener(v -> {
             //call validate api the show dialog
             mPresenter.startValidateCoupon(data);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                    mCouponName);
         });
 
-        setupInfoPager(data.getHowToUse(), data.getTnc());
+        setupInfoPager(data.getHowToUse(), data.getTnc(), true);
 
         //start catalog status timer
         mSubscriptionCatalogTimer = Observable.interval(CommonConstant.DEFAULT_AUTO_REFRESH_S, CommonConstant.DEFAULT_AUTO_REFRESH_S, TimeUnit.MILLISECONDS)
@@ -549,6 +628,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 .subscribe(aLong ->
                         mPresenter.fetchLatestStatus(Arrays.asList(data.getId()))
                 );
+
+        //Coupon impression ga
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_COUPON,
+                mCouponName);
     }
 
     private void setCouponToUi(CouponValueEntity data) {
@@ -556,6 +642,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
+        mCouponName = data.getTitle();
         TextView description = getView().findViewById(R.id.text_description);
         TextView label = getView().findViewById(R.id.text_time_label);
         TextView value = getView().findViewById(R.id.text_time_value);
@@ -595,6 +682,12 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         btnAction2.setOnClickListener(v -> {
             if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
                 mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
+
+                AnalyticsTrackerUtil.sendEvent(getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                        AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                        AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                        mCouponName);
             } else {
                 if (getArguments() != null && getArguments().getString(CommonConstant.EXTRA_COUPON_CODE) != null) {
                     btnAction2.setEnabled(false);
@@ -604,7 +697,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 }
             }
         });
-        setupInfoPager(data.getHowToUse(), data.getTnc());
+        setupInfoPager(data.getHowToUse(), data.getTnc(), false);
 
         if (data.getRealCode() != null && !data.getRealCode().isEmpty()) {
             mCouponRealCode = data.getRealCode();
@@ -626,15 +719,52 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                         }
                     });
         }
+
+        //Coupon impression ga
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_COUPON,
+                AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON_DETAIL,
+                mCouponName);
     }
 
-    private void setupInfoPager(String info, String tnc) {
+    private void setupInfoPager(String info, String tnc, boolean isCatalog) {
         if (getView() == null) {
             return;
         }
 
         CouponCatalogInfoPagerAdapter adapter = new CouponCatalogInfoPagerAdapter(getActivityContext(), info, tnc);
         ViewPager pager = getView().findViewById(R.id.view_pager_info);
+
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            isCatalog ? AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL : AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_KETENTUAN,
+                            mCouponName);
+                } else {
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            isCatalog ? AnalyticsTrackerUtil.CategoryKeys.PENUKARAN_POINT_DETAIL : AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA_DETAIL,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_CARA_PAKAI,
+                            mCouponName);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         TabLayout tabs = getView().findViewById(R.id.tab_layout_info);
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabs));

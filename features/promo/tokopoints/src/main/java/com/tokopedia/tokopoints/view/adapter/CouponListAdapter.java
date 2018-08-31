@@ -1,5 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -13,10 +15,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.ViewHolder> {
 
@@ -27,6 +34,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
     public class ViewHolder extends RecyclerView.ViewHolder {
         TextView description, label, value, btnContinue;
         ImageView imgBanner, imgLabel;
+        public boolean isVisited = false;
 
         public ViewHolder(View view) {
             super(view);
@@ -79,11 +87,26 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         holder.value.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.medium_green));
         holder.imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
 
-        holder.btnContinue.setOnClickListener(v -> mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle()));
+        holder.btnContinue.setOnClickListener(v -> {
+            mPresenter.showRedeemCouponDialog(item.getCta(), item.getCode(), item.getTitle());
+
+            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    item.getTitle());
+        });
         holder.imgBanner.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putString(CommonConstant.EXTRA_COUPON_CODE, mItems.get(position).getCode());
             holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCouponDetail(holder.imgBanner.getContext(), bundle), bundle);
+
+            //TODO need to add transectinal ga
+            AnalyticsTrackerUtil.sendEvent(holder.imgBanner.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
+                    AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
         });
     }
 
@@ -94,5 +117,67 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         } else {
             return mItems.size();
         }
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        CouponValueEntity data = mItems.get(holder.getAdapterPosition());
+        if (data == null) {
+            return;
+        }
+
+        if (!holder.isVisited) {
+            Map<String, String> item = new HashMap<>();
+            item.put("id", String.valueOf(data.getCatalogId()));
+            item.put("name", data.getTitle());
+            item.put("position", String.valueOf(holder.getAdapterPosition()));
+            item.put("creative", data.getTitle());
+            item.put("creative_url", data.getImageUrlMobile());
+            item.put("promo_code", data.getCode());
+
+            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+            promotions.put("promotions", Arrays.asList(item));
+
+            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+            promoView.put("promoView", promotions);
+
+            Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
+            ecommerce.put("ecommerce", promoView);
+
+            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    data.getTitle(), ecommerce);
+
+            holder.isVisited = true;
+        }
+    }
+
+    private void sendClickEvent(Context context, CouponValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getCatalogId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
+        ecommerce.put("ecommerce", promoClick);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_KUPON_SAYA,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), ecommerce);
     }
 }
