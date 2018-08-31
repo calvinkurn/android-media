@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,8 +11,12 @@
         android:background="@color/white">
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/notifRv"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
+            app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+            app:reverseLayout="false"
             tools:listitem="@layout/item_notif_center" />
     </android.support.constraint.ConstraintLayout>
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

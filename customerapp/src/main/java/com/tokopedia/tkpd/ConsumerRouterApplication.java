@@ -193,6 +193,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.notifcenter.view.activity.NotifCenterActivity;
 import com.tokopedia.oms.OmsModuleRouter;
 import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.OtpModuleRouter;
@@ -2483,10 +2484,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (remoteConfig.getBoolean("mainapp_is_enabled_new_setting_bank", true))
-            return SettingBankActivity.Companion.createIntent(context);
-        else {
-            return ManagePeopleBankActivity.createInstance(context);
-        }
+        //TODO milhamj
+        NotifCenterActivity.Companion.createIntent(context);
     }
 }

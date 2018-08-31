@@ -10,14 +10,12 @@ import com.tokopedia.notifcenter.view.fragment.NotifCenterFragment
  * @author by alvinatin on 21/08/18.
  */
 class NotifCenterActivity : BaseSimpleActivity() {
-    override fun getNewFragment(): Fragment {
-        return NotifCenterFragment()
-    }
 
     companion object {
-        fun createIntent(context: Context): Intent {
-            return Intent(context, NotifCenterActivity::class.java)
-        }
+        fun createIntent(context: Context) = Intent(context, NotifCenterActivity::class.java)
     }
 
+    override fun getNewFragment(): Fragment {
+        return NotifCenterFragment.createInstance()
+    }
 }

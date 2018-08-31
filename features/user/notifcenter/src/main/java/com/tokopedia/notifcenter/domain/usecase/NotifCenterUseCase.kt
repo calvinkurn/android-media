@@ -8,12 +8,14 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
 import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * @author by alvinatin on 21/08/18.
  */
 
-class NotifCenterUseCase(val context: Context, val graphqlUseCase: GraphqlUseCase) {
+class NotifCenterUseCase @Inject constructor(val context: Context,
+                                             val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)

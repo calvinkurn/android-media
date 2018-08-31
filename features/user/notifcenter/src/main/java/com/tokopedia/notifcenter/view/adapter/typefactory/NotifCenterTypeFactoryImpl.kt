@@ -17,9 +17,9 @@ class NotifCenterTypeFactoryImpl : BaseAdapterTypeFactory(), NotifCenterTypeFact
         return NotifItemViewHolder.LAYOUT
     }
 
-    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
+    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
-            NotifItemViewHolder.LAYOUT -> NotifItemViewHolder(parent)
+            NotifItemViewHolder.LAYOUT -> NotifItemViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }
