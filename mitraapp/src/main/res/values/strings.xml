@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">AgenMainApplication</string>
+    <string name="app_id">com.tokopedia.mitraapp</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
+    <string name="mitra_welcome_title">Jadi Agen Tokopedia dan Raih Untung Lebihnya</string>
+    <string name="mitra_welcome_subtitle">Anda bisa berjualan tanpa modal dengan menjadi Agen Tokopedia. Layani kebutuhan digital mulai dari pulsa, BPJS, hingga listrik, dan dapatkan komisi atau diskon langsung!</string>
+    <string name="mitra_welcome_button_text">Lanjut</string>
 </resources>

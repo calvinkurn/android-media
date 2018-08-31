@@ -68,6 +68,11 @@ buildscript {
 }
 
 android {
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
     project.ext {
         defaultVersionCode = 1000404;
         defaultVersionName = "1.0.4";
@@ -230,5 +235,12 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    //next iteration it would be defined in dependecies.gradle please FU Core Team
+    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation "org.robolectric:multidex:3.4.2"
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
 }
 
