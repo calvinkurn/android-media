@@ -672,7 +672,11 @@ public class InboxDetailPresenterImpl
                 DataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
-                    getTicketDetails(mTicketDetail.getId());
+                    if (mTicketDetail.getStatus().equals("open")) {
+                        mView.toggleTextToolbar(View.VISIBLE);
+                    } else {
+                        mView.showIssueClosed();
+                    }
                 } else {
                     mView.toggleTextToolbar(View.GONE);
                 }
