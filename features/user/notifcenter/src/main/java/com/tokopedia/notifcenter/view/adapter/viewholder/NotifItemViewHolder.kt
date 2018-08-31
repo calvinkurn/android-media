@@ -1,6 +1,5 @@
 package com.tokopedia.notifcenter.view.adapter.viewholder
 
-import android.util.Log
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -32,10 +31,10 @@ class NotifItemViewHolder(val v: View, val viewListener: NotifCenterContract.Vie
                     if (this.readStatus == NotifItemViewModel.READ_STATUS_TRUE)
                         MethodChecker.getColor(itemView.context, R.color.white)
                     else
-                        MethodChecker.getColor(itemView.context, R.color.green_50)
+                        MethodChecker.getColor(itemView.context, R.color.notif_unread_color)
             )
             itemView.mainLayout.setOnClickListener {
-                Log.d("milhamj", "clicked")
+                viewListener.openRedirectUrl(this.redirectLink)
             }
             itemView.timeSummary.visibility = if (this.showTimeSummary) View.VISIBLE else View.GONE
         }

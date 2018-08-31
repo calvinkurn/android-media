@@ -8,11 +8,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
-import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
+import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
 import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
@@ -26,6 +27,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     @Inject
     lateinit var presenter: NotifCenterPresenter
     lateinit var adapter: NotifCenterAdapter
+    lateinit var notifCenterRouter: NotifCenterRouter
 
     companion object {
         fun createInstance() = NotifCenterFragment()
@@ -70,13 +72,15 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     override fun onErrorFetchData(message: String) {
         if (adapter.itemCount == 0) {
             swipeToRefresh.isEnabled = false
-            NetworkErrorHelper.showEmptyState(context, view, message, {
+            NetworkErrorHelper.showEmptyState(context, container, message, {
                 swipeToRefresh.isEnabled = true
                 adapter.clearAllElements()
                 presenter.fetchData()
             })
         } else {
-            NetworkErrorHelper.showRedSnackbar(view, message)
+            NetworkErrorHelper.createSnackbarWithAction(activity, message, {
+                presenter.fetchData()
+            }).showRetrySnackbar()
         }
     }
 
@@ -93,7 +97,19 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         if (swipeToRefresh.isRefreshing) swipeToRefresh.isRefreshing = false
     }
 
+    override fun openRedirectUrl(url: String) {
+        activity?.let {
+            notifCenterRouter.openRedirectUrl(it, url)
+        }
+    }
+
     private fun initVar() {
+        if (activity?.application is NotifCenterRouter) {
+            notifCenterRouter = activity?.application as NotifCenterRouter
+        } else {
+            throw IllegalStateException("Application must be an instance of "
+                    .plus(NotifCenterRouter::class.java.simpleName))
+        }
         adapter = NotifCenterAdapter(NotifCenterTypeFactoryImpl(this))
     }
 

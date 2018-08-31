@@ -21,6 +21,8 @@ interface NotifCenterContract {
         fun showLoading()
 
         fun hideLoading()
+
+        fun openRedirectUrl(url: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
