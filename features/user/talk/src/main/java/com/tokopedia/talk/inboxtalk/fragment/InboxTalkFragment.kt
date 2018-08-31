@@ -107,21 +107,24 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
                 filterMenu.setItemMenuList(menuItem)
                 filterMenu.setActionText(getString(R.string.button_cancel))
                 filterMenu.setOnActionClickListener { filterMenu.dismiss() }
-                filterMenu.setOnItemMenuClickListener { itemMenus, pos -> onFilterClicked(pos) }
+                filterMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                    onFilterClicked(pos,
+                            filterMenu)
+                }
                 filterMenu.show()
             }
         }
     }
 
-    private fun onFilterClicked(pos: Int) {
+    private fun onFilterClicked(pos: Int, filterMenu: Menus) {
         when {
             pos == 0 -> goToReportTalk()
             pos == 1 -> showDeleteTalkDialog()
             pos == 2 -> showDeleteCommentTalkDialog()
             pos == 2 -> showUnfollowTalkDialog()
-
-
         }
+
+        filterMenu.dismiss()
     }
 
     private fun goToReportTalk() {
@@ -224,13 +227,13 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
             onSuccessReportTalk()
         }
     }
 
     private fun onSuccessReportTalk() {
-        activity?.run{
+        activity?.run {
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
     }
