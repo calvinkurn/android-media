@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -172,8 +173,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void getCostEstimation(String rawQuery, float productWeight, String shopDomain){
-        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(rawQuery, productWeight, shopDomain),
+    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain){
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_pdp_estimasi_ongkir), productWeight, shopDomain),
                 new Subscriber<RatesEstimationModel>() {
                     @Override
                     public void onCompleted() { }
