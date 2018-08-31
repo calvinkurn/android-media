@@ -34,7 +34,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     private static final String ORDER_CATEGORY = "orderCategory";
     //    private int drawerPosition;
     private String orderCategory = "ALL";
-    private Tabs tabLayout;
+    private TabLayout tabLayout;
     private ViewPager viewPager;
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
