@@ -1,7 +1,9 @@
 package com.tokopedia.notifcenter.view.subscriber
 
 import android.text.TextUtils
+import android.util.Log
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterError
@@ -17,20 +19,25 @@ import rx.Subscriber
 class NotifCenterSubscriber(val view: NotifCenterContract.View) : Subscriber<GraphqlResponse>() {
 
     override fun onError(e: Throwable?) {
+        Log.d("milhamj", "onError")
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            e?.printStackTrace()
+        }
         view.hideLoading()
         view.onErrorFetchData(ErrorHandler.getErrorMessage(view.getContext(), e))
     }
 
     override fun onCompleted() {
-
+        Log.d("milhamj", "onCompleted")
     }
 
     override fun onNext(graphqlResponse: GraphqlResponse?) {
+        Log.d("milhamj", "onNext")
         view.hideLoading()
         graphqlResponse?.let {
             val errors = it.getError(NotifCenterError::class.java)
 
-            if (!errors.isEmpty()) {
+            if (!(errors?.isEmpty() ?: true)) {
                 if (!TextUtils.isEmpty(errors[0].message)){
                     view.onErrorFetchData(errors[0].message)
                     return

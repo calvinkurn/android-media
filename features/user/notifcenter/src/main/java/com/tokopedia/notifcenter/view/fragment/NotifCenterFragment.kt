@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.notifcenter.R
@@ -70,11 +69,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     override fun onErrorFetchData(message: String) {
         if (adapter.itemCount == 0) {
-            adapter.showError(message, object: ErrorNetworkModel.OnRetryListener{
-                override fun onRetryClicked() {
-                    adapter.clearAllElements()
-                    presenter.fetchData()
-                }
+            swipeToRefresh.isEnabled = false
+            NetworkErrorHelper.showEmptyState(context, view, message, {
+                swipeToRefresh.isEnabled = true
+                adapter.clearAllElements()
+                presenter.fetchData()
             })
         } else {
             NetworkErrorHelper.showRedSnackbar(view, message)
@@ -90,7 +89,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     }
 
     override fun hideLoading() {
-        if (adapter.isLoading()) adapter.showLoading()
+        if (adapter.isLoading()) adapter.hideLoading()
         if (swipeToRefresh.isRefreshing) swipeToRefresh.isRefreshing = false
     }
 
@@ -100,5 +99,9 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     private fun initView() {
         notifRv.adapter = adapter
+        swipeToRefresh.setOnRefreshListener {
+            adapter.clearAllElements()
+            presenter.fetchData()
+        }
     }
 }

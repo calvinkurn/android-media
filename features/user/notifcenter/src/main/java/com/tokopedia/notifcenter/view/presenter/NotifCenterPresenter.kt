@@ -13,20 +13,12 @@ import javax.inject.Inject
 class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: NotifCenterUseCase)
     : BaseDaggerPresenter<NotifCenterContract.View>(), NotifCenterContract.Presenter {
 
-    private var filterId = ""
+    private var filterId = 0
     private var page = 0
 
     override fun detachView() {
         super.detachView()
         notifCenterUseCase.unsubscribe()
-    }
-
-    override fun fetchDataFirstTime() {
-        view.showRefreshing()
-        notifCenterUseCase.execute(
-                NotifCenterUseCase.getRequestParams(page, filterId),
-                NotifCenterSubscriber(view)
-        )
     }
 
     override fun fetchData() {
@@ -41,7 +33,7 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         this.page = page
     }
 
-    override fun updateFilterId(filterId: String) {
+    override fun updateFilterId(filterId: Int) {
         this.filterId = filterId
     }
 }

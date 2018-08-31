@@ -24,12 +24,10 @@ interface NotifCenterContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun fetchDataFirstTime()
-
         fun fetchData()
 
         fun updatePage(page: Int)
 
-        fun updateFilterId(filterId: String)
+        fun updateFilterId(filterId: Int)
     }
 }
