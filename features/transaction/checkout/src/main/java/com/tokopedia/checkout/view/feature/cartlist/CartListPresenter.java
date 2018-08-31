@@ -23,6 +23,7 @@ import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceActionField;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -747,6 +748,16 @@ public class CartListPresenter implements ICartListPresenter {
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
+    }
+
+    @Override
+    public ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData) {
+        return ProductPass.Builder.aProductPass()
+                .setProductId(originData.getProductId())
+                .setProductImage(originData.getProductImage())
+                .setProductName(originData.getProductName())
+                .setProductPrice(originData.getPriceFormatted())
+                .build();
     }
 
     @Override

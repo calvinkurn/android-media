@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.cartlist;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.List;
@@ -41,4 +42,6 @@ public interface ICartListPresenter {
     void processAddToWishlist(String productId, String userId, WishListActionListener wishListActionListener);
 
     void processRemoveFromWishlist(String productId, String userId, WishListActionListener wishListActionListener);
+
+    ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData);
 }
