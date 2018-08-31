@@ -39,6 +39,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
 
     public void execute(String query,
                         ShipmentDetailData shipmentDetailData,
+                        int selectedServiceId,
                         List<ShopShipment> shopShipments,
                         Subscriber<List<ShippingDurationViewModel>> subscriber) {
         clearRequest();
@@ -61,7 +62,7 @@ public class GetCourierRecommendationUseCase extends GraphqlUseCase {
                                 data.getRatesData().getRatesDetailData().getServices() != null) {
                             shippingDurationViewModels = shippingDurationConverter.convertToViewModel(
                                     data.getRatesData().getRatesDetailData().getServices(),
-                                    shopShipments, shipmentDetailData
+                                    shopShipments, shipmentDetailData, selectedServiceId
                             );
                         }
                         return shippingDurationViewModels;

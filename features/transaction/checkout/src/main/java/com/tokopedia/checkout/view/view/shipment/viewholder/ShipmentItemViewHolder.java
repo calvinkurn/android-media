@@ -297,12 +297,20 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                     recipientAddressModel, shipmentCartItemModel.getShopShipmentList());
             if (showCaseObjectList.size() == 1) {
-                setShowCase(llSelectShipmentRecommendation, showCaseObjectList);
+                showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
+                        llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment_courier_recommendation),
+                        llSelectShipmentRecommendation.getContext().getString(R.string.label_message_showcase_shipment_courier_recommendation),
+                        ShowCaseContentPosition.UNDEFINED)
+                );
             }
         } else {
             renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
             if (showCaseObjectList.size() == 1) {
-                setShowCase(llShipmentOptionViewLayout, showCaseObjectList);
+                showCaseObjectList.add(new ShowCaseObject(llShipmentOptionViewLayout,
+                        llShipmentOptionViewLayout.getContext().getString(R.string.label_title_showcase_shipment),
+                        llShipmentOptionViewLayout.getContext().getString(R.string.label_message_showcase_shipment),
+                        ShowCaseContentPosition.UNDEFINED)
+                );
             }
         }
         renderError(shipmentCartItemModel);
@@ -918,14 +926,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 mActionListener.onNeedUpdateViewItem(getAdapterPosition());
             }
         };
-    }
-
-    private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {
-        showCaseObjectList.add(new ShowCaseObject(viewGroup,
-                viewGroup.getContext().getString(R.string.label_title_showcase_shipment),
-                viewGroup.getContext().getString(R.string.label_message_showcase_shipment),
-                ShowCaseContentPosition.UNDEFINED)
-        );
     }
 
     private void showShipmentWarning(String message) {

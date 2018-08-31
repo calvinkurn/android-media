@@ -98,6 +98,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
+    private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -257,6 +258,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
             outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
             outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
+            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.getLastServiceId());
         }
     }
 
@@ -272,6 +274,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
                 shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
                 shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
+                shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
                 renderCheckoutPage(true);
             } else {
                 shipmentPresenter.processInitialLoadCheckoutPage(false);
@@ -754,6 +757,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
                         shipmentCartItemModel, locationPass);
             }
+        } else {
+            shipmentAdapter.setLastServiceId(0);
         }
     }
 
@@ -942,7 +947,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel);
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
+                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                    recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1207,9 +1213,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                           CourierItemData recommendedCourier,
                                           RecipientAddressModel recipientAddressModel,
                                           int cartItemPosition,
+                                          int selectedServiceId,
                                           boolean flagNeedToSetPinpoint) {
         if (flagNeedToSetPinpoint) {
             // If instant courier and has not set pinpoint
+            shipmentAdapter.setLastServiceId(selectedServiceId);
             setPinpoint(cartItemPosition);
         } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
@@ -1266,7 +1274,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel);
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
+                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                    recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {

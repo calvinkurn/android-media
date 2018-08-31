@@ -72,6 +72,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
+    private int lastServiceId;
 
     private RecyclerView.RecycledViewPool viewPool;
 
@@ -352,6 +353,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void resetCourier() {
+        setLastServiceId(0);
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
@@ -372,6 +374,24 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         updateInsuranceTncVisibility();
+    }
+
+    public void resetCourier(int cartPosition) {
+        if (shipmentDataList.get(cartPosition) instanceof ShipmentCartItemModel) {
+            ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(cartPosition);
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedShipment(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(false);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUsePartialOrder(false);
+                updateShipmentCostModel();
+                updateInsuranceTncVisibility();
+            }
+        }
+        notifyItemChanged(cartPosition);
     }
 
     public RecipientAddressModel getAddressShipmentData() {
@@ -672,6 +692,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setLastChooseCourierItemPosition(int lastChooseCourierItemPosition) {
         this.lastChooseCourierItemPosition = lastChooseCourierItemPosition;
+    }
+
+    public int getLastServiceId() {
+        return lastServiceId;
+    }
+
+    public void setLastServiceId(int lastServiceId) {
+        this.lastServiceId = lastServiceId;
     }
 
     public static class RequestData {

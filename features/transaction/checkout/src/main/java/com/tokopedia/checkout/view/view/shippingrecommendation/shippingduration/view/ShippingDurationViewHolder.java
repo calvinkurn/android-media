@@ -24,12 +24,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_DURATION = R.layout.item_duration;
 
-    private RelativeLayout rlItemDurationContainer;
     private TextView tvDuration;
     private TextView tvPrice;
     private ImageView imgCheck;
     private View vSeparator;
     private TextView tvDurationHeaderInfo;
+    private RelativeLayout rlContent;
 
     private int cartPosition;
     private ShippingDurationAdapter adapter;
@@ -39,12 +39,12 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         this.cartPosition = cartPosition;
         this.adapter = adapter;
 
-        rlItemDurationContainer = itemView.findViewById(R.id.rl_item_duration_container);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
         imgCheck = itemView.findViewById(R.id.img_check);
         vSeparator = itemView.findViewById(R.id.v_separator);
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
+        rlContent = itemView.findViewById(R.id.rl_content);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
@@ -79,7 +79,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                rlItemDurationContainer, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
+                rlContent, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
                 itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
                 ShowCaseContentPosition.UNDEFINED);
 

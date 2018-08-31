@@ -16,6 +16,7 @@ public interface ShippingDurationBottomsheetListener {
                                    CourierItemData courierItemData,
                                    RecipientAddressModel recipientAddressModel,
                                    int cartPosition,
+                                   int selectedServiceId,
                                    boolean flagNeedToSetPinpoint);
 
 }
