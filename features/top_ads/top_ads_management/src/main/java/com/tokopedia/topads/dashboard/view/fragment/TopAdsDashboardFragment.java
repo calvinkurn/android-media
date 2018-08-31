@@ -57,6 +57,7 @@ import com.tokopedia.topads.dashboard.view.activity.SellerCenterActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddCreditActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsAddingPromoOptionActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDetailShopActivity;
+import com.tokopedia.topads.dashboard.view.adapter.TickerTopadsAdapter;
 import com.tokopedia.topads.group.view.activity.TopAdsGroupAdListActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsGroupNewPromoActivity;
 import com.tokopedia.topads.keyword.view.activity.TopAdsKeywordNewChooseGroupActivity;
@@ -105,6 +106,8 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private View viewGroupPromo;
     private SwipeToRefresh swipeToRefresh;
     private SnackbarRetry snackbarRetry;
+    private RecyclerView recyclerTicker;
+    private TickerTopadsAdapter tickerTopadsAdapter;
 
     private LabelView dateLabelView;
     Date startDate, endDate;
@@ -164,6 +167,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
                 loadData();
             }
         });
+        initTicker(view);
         initShopInfoComponent(view);
         initSummaryComponent(view);
         initStatisticComponent(view);
@@ -183,6 +187,13 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         });
         snackbarRetry.setColorActionRetry(ContextCompat.getColor(getActivity(), R.color.green_400));
         setHasOptionsMenu(true);
+    }
+
+    private void initTicker(View view) {
+        recyclerTicker = view.findViewById(R.id.ticker_list);
+        recyclerTicker.setLayoutManager(new LinearLayoutManager(getContext()));
+        tickerTopadsAdapter = new TickerTopadsAdapter();
+        recyclerTicker.setAdapter(tickerTopadsAdapter);
     }
 
     private void initEmptyStateView(View view) {
@@ -430,6 +441,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         swipeToRefresh.setRefreshing(true);
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit));
         topAdsDashboardPresenter.getShopInfo();
+        topAdsDashboardPresenter.getTickerTopAds(getResources());
     }
 
     protected void loadStatisticsData(){
@@ -695,6 +707,16 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
             getView().findViewById(R.id.topads_dashboard_empty).setVisibility(View.VISIBLE);
             getView().findViewById(R.id.topads_dashboard_content).setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void onSuccessGetTicker(List<String> message) {
+        tickerTopadsAdapter.setListMessageTicker(message);
+    }
+
+    @Override
+    public void onErrorGetTicker(Throwable e) {
+        // do nothing
     }
 
     private int getTotalAd(TotalAd totalAd) {
