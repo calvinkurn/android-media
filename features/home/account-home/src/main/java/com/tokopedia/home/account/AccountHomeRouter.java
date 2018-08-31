@@ -54,6 +54,8 @@ public interface AccountHomeRouter {
 
     String getStringRemoteConfig(String key, String defaultValue);
 
+    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
+
     Intent getTrainOrderListIntent(Context context);
 
     void sendAnalyticsUserAttribute(UserAttributeData userAttributeData);

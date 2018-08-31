@@ -190,6 +190,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
+//        will be implemented on next sprint
 //        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
 //        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
 //        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
