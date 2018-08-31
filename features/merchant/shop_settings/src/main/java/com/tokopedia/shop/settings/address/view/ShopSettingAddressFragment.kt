@@ -193,8 +193,8 @@ class ShopSettingAddressFragment : BaseListFragment<ShopLocationViewModel, ShopL
             val isNew = data.getBooleanExtra(PARAM_EXTRA_IS_ADD_NEW, false)
             if (isSuccess) {
                 loadInitialData()
-                ToasterNormal.make(view, getString(if (isNew) R.string.success_add_address else R.string.success_edit_address),
-                        BaseToaster.LENGTH_SHORT).setAction(R.string.close) {}.show()
+                ToasterNormal.showClose(activity!!,
+                        getString(if (isNew) R.string.success_add_address else R.string.success_edit_address))
             }
         }
     }

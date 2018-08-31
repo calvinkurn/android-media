@@ -33,14 +33,8 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
             override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
                 val variables = HashMap<String, Any>()
                 variables[ID] = requestParams.getString(ID, "")
-                val title = requestParams.getString(TITLE, "")
-                if (!TextUtils.isEmpty(title)) {
-                    variables[TITLE] = title
-                }
-                val content = requestParams.getString(CONTENT, "")
-                if (!TextUtils.isEmpty(content)) {
-                    variables[CONTENT] = content
-                }
+                variables[TITLE] = requestParams.getString(TITLE, "")
+                variables[CONTENT] = requestParams.getString(CONTENT, "")
                 return variables
             }
         }

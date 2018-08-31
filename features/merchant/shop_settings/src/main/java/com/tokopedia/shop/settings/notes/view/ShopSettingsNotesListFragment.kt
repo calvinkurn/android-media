@@ -26,6 +26,7 @@ import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
@@ -276,6 +277,13 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
         when (requestCode) {
             REQUEST_CODE_EDIT_NOTE, REQUEST_CODE_ADD_NOTE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
+                if (requestCode == REQUEST_CODE_ADD_NOTE) {
+                    ToasterNormal.showClose(activity!!,
+                            getString( R.string.success_add_note ))
+                } else if (requestCode == REQUEST_CODE_EDIT_NOTE){
+                    ToasterNormal.showClose(activity!!,
+                            getString( R.string.success_edit_note ))
+                }
             }
         }
     }

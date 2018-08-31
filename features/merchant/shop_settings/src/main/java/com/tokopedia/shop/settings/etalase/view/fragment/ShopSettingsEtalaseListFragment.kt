@@ -277,8 +277,16 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_EDIT_ETALASE, REQUEST_CODE_ADD_ETALASE -> if (resultCode == Activity.RESULT_OK) {
+            REQUEST_CODE_EDIT_ETALASE,
+            REQUEST_CODE_ADD_ETALASE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
+                if (requestCode == REQUEST_CODE_ADD_ETALASE) {
+                    ToasterNormal.showClose(activity!!,
+                            getString( R.string.success_add_etalase ))
+                } else if (requestCode == REQUEST_CODE_EDIT_ETALASE){
+                    ToasterNormal.showClose(activity!!,
+                            getString( R.string.success_edit_etalase ))
+                }
             }
         }
     }
