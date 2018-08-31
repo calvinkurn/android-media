@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,7 +46,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -87,7 +87,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     private static final int EXIT_DELAY_MILLIS = 2000;
 
     @Inject
-    UserSession userSession;
+    com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
     @Inject
     MainParentPresenter presenter;
     @Inject
@@ -125,20 +125,27 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+        initInjector();
+        presenter.setView(this);
+        createView(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter.isFirstTimeUser()) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
-            this.finish();
-            return;
+            finish();
         }
+    }
 
-        createView(savedInstanceState);
+    public boolean isFirstTimeUser(){
+        return UserSession.isFirstTimeUser(MainParentActivity.this);
     }
 
     private void createView(Bundle savedInstanceState) {
         GraphqlClient.init(this);
-        this.initInjector();
-        presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
@@ -152,8 +159,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (isFirstTime()) {
             globalNavAnalytics.trackFirstTime(this);
         }
-
-//        cacheHandler = new AnalyticsCacheHandler();
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdate();
@@ -282,7 +287,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(UserSession userSession) {
+    public void setUserSession(com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
         this.userSession = userSession;
     }
 
@@ -524,7 +529,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     if (newIntent.getExtras() != null)
                         applinkIntent.putExtras(newIntent.getExtras());
                 }
-                ((ApplinkRouter) getApplicationContext()).dispatchFrom(this, applinkIntent);
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
             } catch (ActivityNotFoundException ex) {
                 ex.printStackTrace();
             }
@@ -557,5 +562,21 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
+    }
+
+    public static class UserSession{
+        public static boolean isFirstTimeUser(Context context) {
+            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public MainParentPresenter getPresenter() {
+        return presenter;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(MainParentPresenter presenter) {
+        this.presenter = presenter;
     }
 }

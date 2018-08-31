@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -22,6 +24,7 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
+@DeepLink(ApplinkConst.SETTING_PASSWORD)
 public class ManagePasswordActivity extends BasePresenterActivity<ManagePasswordActivityPresenter>
         implements ManagePasswordActivityView, ManagePasswordResultReceiver.Receiver {
 
