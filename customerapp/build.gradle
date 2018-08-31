@@ -236,10 +236,6 @@ android {
     flavorDimensions "tier"
 
     productFlavors {
-        staging {
-            dimension "tier"
-        }
-
         live {
             dimension "tier"
         }
