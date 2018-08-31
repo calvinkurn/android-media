@@ -12,28 +12,25 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment
+import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 
 import java.util.ArrayList
 
-class ShopSettingsEtalaseActivity : BaseSimpleActivity(), ShopSettingsEtalaseListFragment.OnShopSettingsEtalaseFragmentListener, ShopSettingsEtalaseReorderFragment.OnShopSettingsEtalaseReorderFragmentListener {
-
-    private var tvSave: TextView? = null
+class ShopSettingsEtalaseActivity : BaseSimpleActivity(),
+        ShopSettingsEtalaseListFragment.OnShopSettingsEtalaseFragmentListener,
+        ShopSettingsEtalaseReorderFragment.OnShopSettingsEtalaseReorderFragmentListener {
 
     private val reorderFragment: ShopSettingsEtalaseReorderFragment?
         get() = supportFragmentManager
                 .findFragmentByTag(ShopSettingsEtalaseReorderFragment.TAG) as ShopSettingsEtalaseReorderFragment
 
-    val saveButton: View?
-        get() = tvSave
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tvSave = findViewById(R.id.tvSave)
-        tvSave!!.setOnClickListener {
+        tvSave.setOnClickListener {
             val fragment = reorderFragment
             fragment?.saveReorder()
         }
-        tvSave!!.visibility = View.GONE
+        tvSave.visibility = View.GONE
     }
 
     override fun getNewFragment(): Fragment {
@@ -42,7 +39,7 @@ class ShopSettingsEtalaseActivity : BaseSimpleActivity(), ShopSettingsEtalaseLis
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount != 0) {
-            tvSave!!.visibility = View.GONE
+            tvSave.visibility = View.GONE
             supportFragmentManager.popBackStack()
         } else {
             super.onBackPressed()
@@ -58,7 +55,7 @@ class ShopSettingsEtalaseActivity : BaseSimpleActivity(), ShopSettingsEtalaseLis
         replaceAndHideOldFragment(fragment, true, ShopSettingsEtalaseReorderFragment.TAG)
         invalidateOptionsMenu()
         // handler is to prevent flicker when invalidating option menu
-        Handler().post { tvSave!!.visibility = View.VISIBLE }
+        Handler().post { tvSave.visibility = View.VISIBLE }
     }
 
     override fun onSuccessReorderEtalase() {

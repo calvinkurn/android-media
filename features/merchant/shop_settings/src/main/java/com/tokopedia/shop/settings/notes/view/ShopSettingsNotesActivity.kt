@@ -9,29 +9,24 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 
 class ShopSettingsNotesActivity : BaseSimpleActivity(),
         ShopSettingsNotesListFragment.OnShopSettingsNoteFragmentListener,
         ShopSettingsNotesReorderFragment.OnShopSettingsNotesReorderFragmentListener {
 
-    private var tvSave: TextView? = null
-
     private val reorderFragment: ShopSettingsNotesReorderFragment?
         get() = supportFragmentManager
                 .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG) as ShopSettingsNotesReorderFragment
 
-    val saveButton: View?
-        get() = tvSave
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        tvSave = findViewById(R.id.tvSave)
-        tvSave!!.setOnClickListener {
+        tvSave.setOnClickListener {
             val fragment = reorderFragment
             fragment?.saveReorder()
         }
-        tvSave!!.visibility = View.GONE
+        tvSave.visibility = View.GONE
     }
 
     override fun getNewFragment(): Fragment {
@@ -40,7 +35,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
 
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount != 0) {
-            tvSave!!.visibility = View.GONE
+            tvSave.visibility = View.GONE
             supportFragmentManager.popBackStack()
         } else {
             super.onBackPressed()
@@ -56,7 +51,7 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         replaceAndHideOldFragment(fragment, true, ShopSettingsNotesReorderFragment.TAG)
         invalidateOptionsMenu()
         // handler is to prevent flicker when invalidating option menu
-        Handler().post { tvSave!!.visibility = View.VISIBLE }
+        Handler().post { tvSave.visibility = View.VISIBLE }
     }
 
     override fun onSuccessReorderNotes() {

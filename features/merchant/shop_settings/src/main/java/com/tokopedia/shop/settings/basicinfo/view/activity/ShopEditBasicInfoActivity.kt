@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.tokopedia.shop.settings.basicinfo.view.activity
 
 import android.annotation.SuppressLint
@@ -10,16 +12,12 @@ import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextUtils
 import android.view.View
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.TextView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
@@ -36,6 +34,8 @@ import com.tokopedia.shop.common.graphql.data.shopbasicdata.ShopBasicDataModel
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopSettingsInfoPresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
+import kotlinx.android.synthetic.main.activity_shop_edit_basic_info.*
+import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import javax.inject.Inject
 
 class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPresenter.View {
@@ -43,31 +43,23 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     @Inject
     lateinit var updateShopSettingsInfoPresenter: UpdateShopSettingsInfoPresenter
 
-    private var tvSave: TextView? = null
-    private var ivLogo: ImageView? = null
-    private var tvBrowseFile: TextView? = null
-    private var tilShopSlogan: TkpdHintTextInputLayout? = null
-    private var etShopSlogan: EditText? = null
-    private var tilShopDesc: TkpdHintTextInputLayout? = null
-    private var etShopDesc: EditText? = null
-    private var shopBasicDataModel: ShopBasicDataModel? = null
+    lateinit var shopBasicDataModel: ShopBasicDataModel
     private var progressDialog: ProgressDialog? = null
 
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
-    private var vgRoot: View? = null
 
     private val isInputInvalid: Boolean
         get() {
             var hasError = false
-            val tagLine = etShopSlogan!!.text.toString()
+            val tagLine = etShopSlogan.text.toString()
             if (TextUtils.isEmpty(tagLine)) {
-                tilShopSlogan!!.error = getString(R.string.shop_slogan_must_be_filled)
+                tilShopSlogan.error = getString(R.string.shop_slogan_must_be_filled)
                 hasError = true
             }
-            val desc = etShopDesc!!.text.toString()
+            val desc = etShopDesc.text.toString()
             if (TextUtils.isEmpty(desc)) {
-                tilShopDesc!!.error = getString(R.string.shop_desc_must_be_filled)
+                tilShopDesc.error = getString(R.string.shop_desc_must_be_filled)
                 hasError = true
             }
             return hasError
@@ -78,9 +70,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         if (savedInstanceState != null) {
             savedLocalImageUrl = savedInstanceState.getString(SAVED_IMAGE_PATH)
         }
-        if (intent.hasExtra(EXTRA_SHOP_MODEL)) {
-            shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
-        }
+        shopBasicDataModel = intent.getParcelableExtra(EXTRA_SHOP_MODEL)
         super.onCreate(savedInstanceState)
 
         DaggerShopSettingsComponent.builder()
@@ -89,37 +79,26 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
                 .inject(this)
         updateShopSettingsInfoPresenter.attachView(this)
 
-        vgRoot = findViewById(R.id.vgRoot)
-        tvSave = findViewById(R.id.tvSave)
-        ivLogo = findViewById(R.id.ivLogo)
-        tvBrowseFile = findViewById(R.id.tvBrowseFile)
-        tilShopSlogan = findViewById(R.id.tilShopSlogan)
-        etShopSlogan = findViewById(R.id.etShopSlogan)
-        etShopSlogan!!.addTextChangedListener(object : AfterTextWatcher() {
+        etShopSlogan.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
-                tilShopSlogan!!.error = null
+                tilShopSlogan.error = null
             }
         })
-        tilShopDesc = findViewById(R.id.tilShopDesc)
-        etShopDesc = findViewById(R.id.etShopDesc)
-        etShopDesc!!.addTextChangedListener(object : AfterTextWatcher() {
+
+        etShopDesc.addTextChangedListener(object : AfterTextWatcher() {
 
             override fun afterTextChanged(s: Editable) {
-                tilShopDesc!!.error = null
+                tilShopDesc.error = null
             }
         })
         val OnBrowseClickListener = View.OnClickListener { openImagePicker() }
-        ivLogo!!.setOnClickListener(OnBrowseClickListener)
-        tvBrowseFile!!.setOnClickListener(OnBrowseClickListener)
+        ivLogo.setOnClickListener(OnBrowseClickListener)
+        tvBrowseFile.setOnClickListener(OnBrowseClickListener)
 
-        tvSave!!.setOnClickListener { onSaveButtonClicked() }
-        vgRoot!!.requestFocus()
+        tvSave.setOnClickListener { onSaveButtonClicked() }
+        vgRoot.requestFocus()
 
-        if (shopBasicDataModel == null) {
-            loadShopBasicData()
-        } else {
-            onSuccessGetShopBasicData(shopBasicDataModel!!)
-        }
+        onSuccessGetShopBasicData(shopBasicDataModel)
     }
 
     private fun onSaveButtonClicked() {
@@ -127,9 +106,9 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
             return
         }
         showSubmitLoading(getString(R.string.title_loading))
-        val tagLine = etShopSlogan!!.text.toString()
-        val desc = etShopDesc!!.text.toString()
-        if (!TextUtils.isEmpty(savedLocalImageUrl)) {
+        val tagLine = etShopSlogan.text.toString()
+        val desc = etShopDesc.text.toString()
+        if (savedLocalImageUrl.isNullOrEmpty()) {
             updateShopSettingsInfoPresenter.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
         } else {
             updateShopSettingsInfoPresenter.updateShopBasicData(tagLine, desc)
@@ -209,32 +188,32 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     override fun onSuccessGetShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         this.shopBasicDataModel = shopBasicDataModel
         setUIShopBasicData(shopBasicDataModel)
-        tvSave!!.visibility = View.VISIBLE
+        tvSave.visibility = View.VISIBLE
     }
 
     private fun setUIShopBasicData(shopBasicDataModel: ShopBasicDataModel) {
         updatePhotoUI(shopBasicDataModel)
         //to reserve saveInstanceState from edittext
-        if (TextUtils.isEmpty(etShopSlogan!!.text)) {
-            etShopSlogan!!.setText(shopBasicDataModel.tagline)
-            etShopSlogan!!.setSelection(etShopSlogan!!.text.length)
+        if (TextUtils.isEmpty(etShopSlogan.text)) {
+            etShopSlogan.setText(shopBasicDataModel.tagline)
+            etShopSlogan.setSelection(etShopSlogan.text.length)
         }
-        if (TextUtils.isEmpty(etShopDesc!!.text)) {
-            etShopDesc!!.setText(shopBasicDataModel.description)
-            etShopDesc!!.setSelection(etShopDesc!!.text.length)
+        if (TextUtils.isEmpty(etShopDesc.text)) {
+            etShopDesc.setText(shopBasicDataModel.description)
+            etShopDesc.setSelection(etShopDesc.text.length)
         }
     }
 
-    private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel?) {
+    private fun updatePhotoUI(shopBasicDataModel: ShopBasicDataModel) {
         if (TextUtils.isEmpty(savedLocalImageUrl)) {
-            val logoUrl = shopBasicDataModel!!.logo
+            val logoUrl = shopBasicDataModel.logo
             if (TextUtils.isEmpty(logoUrl)) {
-                ivLogo!!.setImageResource(R.drawable.ic_camera_add)
+                ivLogo.setImageResource(R.drawable.ic_camera_add)
             } else {
-                ImageHandler.LoadImage(ivLogo!!, logoUrl)
+                ImageHandler.LoadImage(ivLogo, logoUrl)
             }
         } else {
-            ImageHandler.LoadImage(ivLogo!!, savedLocalImageUrl)
+            ImageHandler.LoadImage(ivLogo, savedLocalImageUrl)
         }
     }
 
