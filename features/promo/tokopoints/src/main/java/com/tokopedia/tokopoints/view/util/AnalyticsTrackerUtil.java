@@ -98,7 +98,7 @@ public class AnalyticsTrackerUtil {
     }
 
     public static void sendECommerceEvent(Context context, String event, String category,
-                                          String action, String label, Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce) {
+                                          String action, String label, Map<String, Map<String, List<Map<String, String>>>> ecommerce) {
         AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
 
         if (tracker == null)
