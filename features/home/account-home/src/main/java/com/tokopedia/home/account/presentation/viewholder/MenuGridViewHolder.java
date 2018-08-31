@@ -38,7 +38,7 @@ public class MenuGridViewHolder extends AbstractViewHolder<MenuGridViewModel> {
         adapter = new MenuGridAdapter(listener);
         recyclerCategory.setAdapter(adapter);
         recyclerCategory.setLayoutManager(new GridLayoutManager(itemView.getContext(), 4, LinearLayoutManager.VERTICAL, false));
-        recyclerCategory.addItemDecoration(new MenuGridSpacingDecoration(4, 0, false));
+        recyclerCategory.addItemDecoration(new MenuGridSpacingDecoration(4, 0, 2, false));
     }
 
     @Override

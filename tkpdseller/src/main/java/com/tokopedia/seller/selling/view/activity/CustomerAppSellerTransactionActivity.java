@@ -12,13 +12,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,7 +40,6 @@ import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.design.component.Tabs;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.fragment.OpportunityListFragment;
 import com.tokopedia.seller.selling.SellingService;
@@ -79,7 +78,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     ViewPager mViewPager;
     DownloadResultReceiver mReceiver;
     FragmentManager fragmentManager;
-    private Tabs indicator;
+    private TabLayout indicator;
     private TextView sellerTickerView;
     private String[] CONTENT;
     private List<Fragment> fragmentList;
@@ -170,7 +169,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @Override
     protected int getLayoutRes() {
-        return R.layout.layout_customer_app_seller_tx;
+        return R.layout.layout_tab_secondary;
     }
 
     @Override
@@ -209,14 +208,11 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     }
 
     private void setupToolbar() {
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayShowCustomEnabled(true);
+
+        if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        }
     }
 
     private void initSellerTicker() {

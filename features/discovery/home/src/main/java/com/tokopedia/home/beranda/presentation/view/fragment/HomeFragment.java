@@ -1,10 +1,13 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.AppBarLayout;
@@ -74,7 +77,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
-import com.tokopedia.home.beranda.presentation.view.compoundview.HeaderHomeView;
+import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -86,6 +89,7 @@ import com.tokopedia.searchbar.MainToolbar;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.ApplinkConstant;
 
 import java.io.UnsupportedEncodingException;
@@ -127,7 +131,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
 
-    private HeaderHomeView headerHomeView;
     private MainToolbar mainToolbar;
 
     public static HomeFragment newInstance() {
@@ -197,7 +200,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainToolbar = view.findViewById(R.id.toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
@@ -207,7 +210,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        headerHomeView = view.findViewById(R.id.headerview);
 
         presenter.attachView(this);
         presenter.setFeedListener(this);
@@ -220,9 +222,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (trace != null)
             trace.stop();
 
-        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
-            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
-        }
     }
 
     @Override
@@ -234,6 +233,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         initEggTokenScrollListener();
+        registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -288,6 +288,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onResume() {
         super.onResume();
         onRefresh();
+
+        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+        }
+        presenter.onResume();
     }
 
     @Override
@@ -306,6 +311,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = null;
         feedLoadMoreTriggerListener = null;
         presenter = null;
+        unRegisterBroadcastReceiverTokoCash();
     }
 
     private void initRefreshLayout() {
@@ -613,9 +619,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void updateHeaderItem(HeaderViewModel headerViewModel) {
-        headerHomeView.setHeaderViewModel(headerViewModel);
-        headerHomeView.setListener(this);
-        headerHomeView.notifyHeader();
+        if (adapter.getItemCount() > 0 && adapter.getItem(0) instanceof HeaderViewModel) {
+            adapter.getItems().set(0, headerViewModel);
+            adapter.notifyItemChanged(0);
+        }
     }
 
     @Override
@@ -916,6 +923,35 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         return null;
     }
+
+    protected void registerBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().registerReceiver(
+                tokoCashBroadcaseReceiver,
+                new IntentFilter(TokocashPendingDataBroadcastReceiver.class.getSimpleName())
+        );
+    }
+
+    protected void unRegisterBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().unregisterReceiver(tokoCashBroadcaseReceiver);
+    }
+
+    private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String data = extras.getString(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+                if (data != null && !data.isEmpty())
+                    presenter.getHeaderData(false); // update header data
+            }
+        }
+    };
 
     @Override
     public void onNotifyBadgeNotification(int number) {

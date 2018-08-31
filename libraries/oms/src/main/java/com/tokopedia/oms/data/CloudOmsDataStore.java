@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import rx.Observable;
 
 
-
 public class CloudOmsDataStore implements OmsDataStore {
 
     private final OmsApi omsApi;
