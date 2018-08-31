@@ -2,7 +2,7 @@ package com.tokopedia.notifcenter.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.notifcenter.domain.usecase.NotifCenterUseCase
-import com.tokopedia.notifcenter.view.NotifCenterContract
+import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.subscriber.NotifCenterSubscriber
 import javax.inject.Inject
 

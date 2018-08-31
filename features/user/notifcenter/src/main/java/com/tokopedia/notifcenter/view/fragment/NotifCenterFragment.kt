@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
-import com.tokopedia.notifcenter.view.NotifCenterContract
+import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter

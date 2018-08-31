@@ -9,7 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterError
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
 import com.tokopedia.notifcenter.domain.pojo.UserNotification
-import com.tokopedia.notifcenter.view.NotifCenterContract
+import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
 import rx.Subscriber
 

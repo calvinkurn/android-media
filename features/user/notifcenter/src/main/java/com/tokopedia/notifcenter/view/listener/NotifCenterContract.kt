@@ -1,4 +1,4 @@
-package com.tokopedia.notifcenter.view
+package com.tokopedia.notifcenter.view.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
