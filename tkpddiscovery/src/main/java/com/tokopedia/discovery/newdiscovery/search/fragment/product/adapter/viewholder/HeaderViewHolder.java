@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -261,7 +262,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
         @Override
         public GuidedSearchViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.guided_search_item_with_background, parent, false);
             return new GuidedSearchViewHolder(view, itemClickListener);
         }
 
@@ -278,12 +279,22 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     private static class GuidedSearchViewHolder extends RecyclerView.ViewHolder {
 
+        private static final int[] BACKGROUND = {
+                R.drawable.guided_back_1,
+                R.drawable.guided_back_2,
+                R.drawable.guided_back_3,
+                R.drawable.guided_back_4,
+                R.drawable.guided_back_5,
+        };
+
         TextView textView;
+        ImageView imageView;
         ItemClickListener itemClickListener;
 
         public GuidedSearchViewHolder(View itemView, ItemClickListener itemClickListener) {
             super(itemView);
             textView = itemView.findViewById(R.id.guided_search_text);
+            imageView = itemView.findViewById(R.id.guided_search_background);
             this.itemClickListener = itemClickListener;
         }
 
@@ -298,6 +309,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     itemClickListener.onSearchGuideClicked(query);
                 }
             });
+            imageView.setImageResource(BACKGROUND[getAdapterPosition()]);
         }
     }
 }
