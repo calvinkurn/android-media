@@ -2,6 +2,7 @@ package com.tokopedia.notifcenter.view.util
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.notifcenter.R
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -10,7 +11,7 @@ import javax.inject.Inject
  * @author by milhamj on 31/08/18.
  */
 
-class NotifCenterDateUtil @Inject constructor(@ApplicationContext context: Context) {
+class NotifCenterDateUtil @Inject constructor(@ApplicationContext val context: Context) {
 
     companion object {
         private const val millisMultiplier = 1000L
@@ -25,9 +26,9 @@ class NotifCenterDateUtil @Inject constructor(@ApplicationContext context: Conte
         timeInCalendar.timeInMillis = timeInMillis
 
         if (isToday(timeInCalendar)) {
-            return "TODAY"
+            return context.getString(R.string.notif_today)
         } else if (isYesterday(timeInCalendar)) {
-            return "KEMARIN"
+            return context.getString(R.string.notif_yesterday)
         } else {
             val localeID = Locale(LANGUAGE_ID, COUNTRY_ID)
             val sdf = SimpleDateFormat(DATE_FORMAT, localeID)
