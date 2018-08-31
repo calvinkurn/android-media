@@ -313,7 +313,7 @@
 -keep class com.tokopedia.feedplus.data.pojo.** { *; }
 # -- End of Feeds --
 
-# Fingerprint
+# FingerPrint
 -keep class com.tokopedia.core.analytics.fingerprint.domain.model.** { *; }
 
 -dontwarn android.content.pm.PackageManager
