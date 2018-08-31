@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -231,6 +232,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
 
+//        will be implemented on next sprint
 //        menuList = new MenuListViewModel();
 //        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
 //        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
@@ -251,14 +253,16 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
 //        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
 //        items.add(menuList);
 
-        InfoCardViewModel infoCard = new InfoCardViewModel();
-        infoCard.setIconRes(R.drawable.ic_tokocash_big);
-        infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
-        infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
-        infoCard.setApplink(ApplinkConst.REFERRAL);
-        infoCard.setTitleTrack(PEMBELI);
-        infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
-        items.add(infoCard);
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
+            InfoCardViewModel infoCard = new InfoCardViewModel();
+            infoCard.setIconRes(R.drawable.ic_tokocash_big);
+            infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
+            infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
+            infoCard.setApplink(ApplinkConst.REFERRAL);
+            infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            items.add(infoCard);
+        }
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_help));
