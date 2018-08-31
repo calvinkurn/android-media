@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.core.gcm.GCMHandler;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.transactiondata.entity.request.UpdateCartRequest;
 import com.tokopedia.usecase.RequestParams;
 
@@ -30,10 +29,12 @@ public class UpdateCartIntentService extends IntentService {
     public static final String EXTRA_CART_ITEM_DATA_LIST = "EXTRA_CART_ITEM_DATA_LIST";
 
     private final UpdateCartUseCase updateCartUseCase;
+    private final UserSession userSession;
 
     public UpdateCartIntentService() {
         super(UpdateCartIntentService.class.getSimpleName());
         updateCartUseCase = CartComponentInjector.newInstance(getApplication()).getUpdateCartUseCase();
+        userSession = CartComponentInjector.newInstance(getApplication()).getUserSession();
     }
 
     @Override
@@ -78,12 +79,12 @@ public class UpdateCartIntentService extends IntentService {
             TKPDMapParam<String, String> originParams) {
         return originParams == null
                 ? AuthUtil.generateParamsNetwork(
-                getBaseContext(), SessionHandler.getLoginID(getBaseContext()),
-                GCMHandler.getRegistrationId(getBaseContext()))
+                getBaseContext(), userSession.getUserId(),
+                userSession.getDeviceId())
                 : AuthUtil.generateParamsNetwork(
                 getBaseContext(), originParams,
-                SessionHandler.getLoginID(getBaseContext()),
-                GCMHandler.getRegistrationId(getBaseContext())
+                userSession.getUserId(),
+                userSession.getDeviceId()
         );
     }
 
