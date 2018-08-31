@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/card_shadow_top_bottom"
+    android:orientation="vertical"
     >
 
-    <FrameLayout
-        android:id="@+id/container_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/card_shadow_top_bottom"
-        android:orientation="vertical">
+    <include
+        android:id="@+id/header"
+        layout="@layout/inbox_talk_item_product_header"
+        />
 
-        <include
-            android:id="@+id/header"
-            layout="@layout/inbox_talk_item_product_header"/>
+    <include
+        android:id="@+id/talkThread"
+        layout="@layout/talk_item"
+        />
 
-    </FrameLayout>
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
