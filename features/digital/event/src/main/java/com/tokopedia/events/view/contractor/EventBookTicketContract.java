@@ -64,7 +64,7 @@ public class EventBookTicketContract {
 
         void validateSelection();
 
-        void onActivityResult(int requestCode);
+        void onActivityResult(int requestCode,int resultCode);
 
         void payTicketsClick(String title);
 

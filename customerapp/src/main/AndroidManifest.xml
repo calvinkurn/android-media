@@ -327,7 +327,8 @@
             android:name=".home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
 
-        <receiver android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
+        <receiver
+            android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
             <intent-filter>
                 <action android:name="com.tokopedia.tkpd.utils.delete" />
             </intent-filter>
