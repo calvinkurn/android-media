@@ -15,6 +15,7 @@ public interface ShippingDurationBottomsheetListener {
     void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                    CourierItemData courierItemData,
                                    RecipientAddressModel recipientAddressModel,
-                                   int cartPosition);
+                                   int cartPosition,
+                                   boolean flagNeedToSetPinpoint);
 
 }

@@ -6,6 +6,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
@@ -36,6 +37,19 @@ public class ShippingDurationConverter {
             shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
+            }
+            if (serviceData.getProducts() != null && serviceData.getProducts() != null &&
+                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
+                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+                for (ProductData product : serviceData.getProducts()) {
+                    if (product.getError() != null &&
+                            product.getError().getErrorMessage() != null &&
+                            product.getError().getErrorId() != null &&
+                            product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                        serviceData.getTexts().setTextRangePrice(
+                                product.getError().getErrorMessage());
+                    }
+                }
             }
         }
 
