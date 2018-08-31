@@ -318,6 +318,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
+            if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&
+                    shipmentCartItemModelList.get(i).getCartItemModels().size() > 0) {
+                stringBuilder.append(shipmentCartItemModelList.get(i).getCartItemModels().get(0).getCartId());
+                if (i < shipmentCartItemModelList.size() - 1) {
+                    stringBuilder.append(",");
+                }
+            }
+        }
+        shipmentAdapter.setCartIds(stringBuilder.toString());
+
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
@@ -893,7 +905,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel) {
+    public void onSendToMultipleAddress(RecipientAddressModel recipientAddressModel, String cartIds) {
         sendAnalyticsOnClickChooseToMultipleAddressShipment();
         Intent intent = MultipleAddressFormActivity.createInstance(getActivity(),
                 shipmentPresenter.getCartItemPromoHolderData(),
@@ -901,7 +913,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentCostModel(),
-                shipmentPresenter.getShipmentDonationModel()
+                shipmentPresenter.getShipmentDonationModel(),
+                cartIds
         );
         startActivityForResult(intent, REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS);
     }

@@ -133,7 +133,7 @@ public class CartListPresenter implements ICartListPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
+                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
         );
         compositeSubscription.add(getCartListUseCase.createObservable(requestParams)
                 .subscribeOn(Schedulers.io())

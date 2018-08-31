@@ -75,6 +75,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
+    private String cartIds;
 
     private RecyclerView.RecycledViewPool viewPool;
 
@@ -86,6 +87,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
         viewPool = new RecyclerView.RecycledViewPool();
+    }
+
+    public void setCartIds(String cartIds) {
+        this.cartIds = cartIds;
     }
 
     @Override
@@ -148,7 +153,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((CartPromoSuggestionViewHolder) holder).bindData((CartPromoSuggestion) data, position);
         } else if (viewType == ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS) {
             ((ShipmentRecipientAddressViewHolder) holder).bindViewHolder((RecipientAddressModel) data,
-                    showCaseObjectList);
+                    showCaseObjectList, cartIds);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
                     (ShipmentCartItemModel) data, recipientAddressModel, showCaseObjectList);

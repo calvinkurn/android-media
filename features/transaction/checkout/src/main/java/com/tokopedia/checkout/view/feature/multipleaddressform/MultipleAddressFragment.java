@@ -64,6 +64,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
 
     public static final int EDIT_SHIPMENT_ADDRESS_REQUEST_CODE = 22;
     private static final String ADDRESS_EXTRA = "ADDRESS_EXTRA";
+    private static final String CART_IDS_EXTRA = "CART_IDS_EXTRA";
 
     private MultipleAddressAdapter multipleAddressAdapter;
     private RecyclerView rvOrderAddressList;
@@ -71,10 +72,11 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     private TkpdProgressDialog progressDialogNormal;
     private SwipeToRefresh swipeToRefresh;
 
-    public static MultipleAddressFragment newInstance(RecipientAddressModel recipientModel) {
+    public static MultipleAddressFragment newInstance(RecipientAddressModel recipientModel, String cartIds) {
         MultipleAddressFragment fragment = new MultipleAddressFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(ADDRESS_EXTRA, recipientModel);
+        bundle.putString(CART_IDS_EXTRA, cartIds);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -356,7 +358,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvOrderAddressList.setVisibility(View.VISIBLE);
                         swipeToRefresh.setEnabled(true);
-                        presenter.processGetCartList();
+                        presenter.processGetCartList(getArguments().getString(CART_IDS_EXTRA));
                     }
                 });
     }
@@ -393,7 +395,7 @@ public class MultipleAddressFragment extends BaseCheckoutFragment
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState == null) {
-            presenter.processGetCartList();
+            presenter.processGetCartList(getArguments().getString(CART_IDS_EXTRA));
         } else {
             swipeToRefresh.setEnabled(false);
         }

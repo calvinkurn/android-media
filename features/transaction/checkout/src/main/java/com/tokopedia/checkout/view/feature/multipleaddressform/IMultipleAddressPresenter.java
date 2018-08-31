@@ -15,7 +15,7 @@ import java.util.List;
 
 public interface IMultipleAddressPresenter {
 
-    void processGetCartList();
+    void processGetCartList(String cartIds);
 
     void sendData(Context context, List<MultipleAddressAdapterData> dataList);
 
