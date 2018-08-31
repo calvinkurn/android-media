@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -174,10 +175,16 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     }
 
     @Override
-    public void setSnackBarErrorMessage(String message) {
-        final Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
+    public void setSnackBarErrorMessage(String message,boolean clickable) {
+        Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
+        if(!clickable){
+            Button button = layout.findViewById(android.support.design.R.id.snackbar_action);
+            button.setClickable(false);
+            button.setVisibility(View.GONE);
+            snackbar.setDuration(Snackbar.LENGTH_SHORT);
+        }
         textView.setVisibility(View.INVISIBLE);
 
 // Inflate our custom view

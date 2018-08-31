@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
+import android.text.method.LinkMovementMethod;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,7 +104,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         @BindView(R2.id.tv_date_recent)
         TextView tvDateRecent;
         @BindView(R2.id.tv_comment)
-        TextView comment;
+        TextView tvComment;
         @BindView(R2.id.tv_collapsed_time)
         TextView tvCollapsedTime;
         @BindView(R2.id.layout_item_message)
@@ -143,11 +145,11 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                 tvDateRecent.setText(item.getCreateTime());
                 tvCollapsedTime.setText("");
                 if (searchMode) {
-                    comment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
+                    tvComment.setText(utils.getHighlightText(searchText, item.getMessagePlaintext()));
                 } else {
-                    comment.setText(item.getMessagePlaintext());
+                    tvComment.setText(item.getMessagePlaintext());
                 }
-                comment.setVisibility(View.VISIBLE);
+                tvComment.setVisibility(View.VISIBLE);
                 if (position == commentList.size() - 1 && needAttachment) {
                     tvAttachmentHint.setText(hintAttachmentString);
                     tvAttachmentHint.setVisibility(View.VISIBLE);
@@ -158,9 +160,9 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
                     rvAttachedImage.setVisibility(View.VISIBLE);
             } else {
                 tvDateRecent.setText(item.getMessagePlaintext());
-                comment.setText("");
+                tvComment.setText("");
                 tvCollapsedTime.setText(item.getShortTime());
-                comment.setVisibility(View.GONE);
+                tvComment.setVisibility(View.GONE);
                 rvAttachedImage.setVisibility(View.GONE);
             }
 

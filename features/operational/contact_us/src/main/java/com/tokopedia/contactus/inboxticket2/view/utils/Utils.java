@@ -85,7 +85,7 @@ public class Utils {
     }
 
     public String getDateTime(String isoTime) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", getLocale());
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM 'pukul' HH:mm", getLocale());
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         try {
@@ -105,7 +105,7 @@ public class Utils {
     }
 
     public String getDateTimeYear(String isoTime) {
-        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", getLocale());
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMMM yyyy", getLocale());
         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm 'WIB'", getLocale());
         dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));

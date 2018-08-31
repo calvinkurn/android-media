@@ -43,6 +43,7 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.inbox.rescenter.product.view.model.Attachment;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
@@ -246,9 +247,7 @@ public class InboxDetailPresenterImpl
                                 userData = item.getCreatedBy();
                             }
                         }
-                        String createTime = item.getCreateTime();
-                        createTime = createTime.substring(0, createTime.lastIndexOf("+"));
-                        createTime = getUtils().getDateTime(createTime);
+                        String createTime = getUtils().getDateTime(item.getCreateTime());
                         item.setCreateTime(createTime);
                         int i;
                         int count = 0;
@@ -320,9 +319,9 @@ public class InboxDetailPresenterImpl
 
     private void showErrorMessage(int messageWrongParam) {
         if (messageWrongParam == MESSAGE_WRONG_FILE_SIZE) {
-            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.error_msg_wrong_size));
+            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.error_msg_wrong_size), true);
         } else if (messageWrongParam == MESSAGE_WRONG_DIMENSION) {
-            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.error_msg_wrong_height_width));
+            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.error_msg_wrong_height_width), true);
         }
     }
 
@@ -354,7 +353,7 @@ public class InboxDetailPresenterImpl
     public void sendMessage() {
         mView.showSendProgress();
         int isValid = isUploadImageValid();
-        if (isValid == 1) {
+        if (isValid >= 1) {
             Observable<List<ImageUpload>> uploadedImage = uploadFile(mView.getActivity(), mView.getImageList());
             uploadedImage.flatMap(imageUploads -> {
                 StringBuilder attachmentString = new StringBuilder();
@@ -382,12 +381,11 @@ public class InboxDetailPresenterImpl
                         return postMessageUseCase2.createObservable(RequestParams.create());
                     } else {
                         mView.hideSendProgress();
-                        getTicketDelayed(mTicketDetail.getId());
                         return Observable.just(null);
                     }
                 } else {
                     mView.hideSendProgress();
-                    mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.");
+                    mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.", true);
                     return Observable.just(null);
                 }
             }).subscribeOn(Schedulers.io())
@@ -415,7 +413,7 @@ public class InboxDetailPresenterImpl
                                 if (stepTwoResponse != null && stepTwoResponse.getIsSuccess() > 0) {
                                     addNewLocalComment();
                                 } else {
-                                    mView.setSnackBarErrorMessage("Maaf terjadi kesalahan teknis, silakan dicoba lagi.");
+                                    mView.setSnackBarErrorMessage("Maaf terjadi kesalahan teknis, silakan dicoba lagi.", true);
                                 }
                             }
 
@@ -446,13 +444,13 @@ public class InboxDetailPresenterImpl
                     if (createTicket != null && createTicket.getIsSuccess() > 0) {
                         addNewLocalComment();
                     } else {
-                        mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.");
+                        mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.", true);
                     }
                 }
             });
         } else if (isValid == -1) {
             Log.d(TAG, "IMAGES NOT VALID");
-            mView.setSnackBarErrorMessage("Images Not Valid");
+            mView.setSnackBarErrorMessage("Images Not Valid", true);
         }
 
     }
@@ -625,7 +623,7 @@ public class InboxDetailPresenterImpl
     private int isUploadImageValid() {
         List<ImageUpload> uploadImageList = mView.getImageList();
         if (mTicketDetail.isNeedAttachment() && (uploadImageList == null || uploadImageList.isEmpty())) {
-            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.attachment_required));
+            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.attachment_required), true);
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventNotAttachImageRequired,
@@ -634,11 +632,17 @@ public class InboxDetailPresenterImpl
         }
         int numOfImages = uploadImageList.size();
         if (numOfImages > 0) {
+            int count = 0;
             for (int item = 0; item < numOfImages; item++) {
                 ImageUpload image = uploadImageList.get(item);
                 if (fileSizeValid(image.getFileLoc()) && getBitmapDimens(image.getFileLoc())) {
-                    return 1;
+                    count++;
                 }
+            }
+            if (numOfImages == count) {
+                return numOfImages;
+            } else {
+                return -1;
             }
         } else if (numOfImages == 0) {
             return 0;
@@ -716,7 +720,7 @@ public class InboxDetailPresenterImpl
                                     InboxTicketTracking.Action.EventClickSearchDetails,
                                     InboxTicketTracking.Label.GetResult);
                         } else {
-                            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.no_search_result));
+                            mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.no_search_result), false);
                             ContactUsTracking.sendGTMInboxTicket("",
                                     InboxTicketTracking.Category.EventInboxTicket,
                                     InboxTicketTracking.Action.EventClickSearchDetails,
@@ -787,6 +791,17 @@ public class InboxDetailPresenterImpl
         newItem.setCreatedBy(userData);
         newItem.setMessagePlaintext(mView.getUserMessage());
         newItem.setCreateTime(getUtils().getDateTimeCurrent());
+        List<ImageUpload> uploadImageList = mView.getImageList();
+        List<AttachmentItem> attachmentItems = new ArrayList<>();
+        if (uploadImageList != null && !uploadImageList.isEmpty()) {
+            for (ImageUpload upload : uploadImageList) {
+                AttachmentItem attachment = new AttachmentItem();
+                attachment.setThumbnail(upload.getFileLoc());
+                attachmentItems.add(attachment);
+            }
+            newItem.setAttachment(attachmentItems);
+        }
+
         mTicketDetail.getComments().add(newItem);
         mView.updateAddComment();
     }

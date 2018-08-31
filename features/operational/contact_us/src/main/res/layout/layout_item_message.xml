@@ -76,6 +76,8 @@
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="8sp"
         android:paddingRight="@dimen/dp_16"
+        android:linksClickable="true"
+        android:autoLink="all"
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_14"
         app:layout_constraintEnd_toEndOf="parent"
@@ -87,7 +89,7 @@
 Mohon maaf atas ketidaknyamanannya.
 
 Berdasarkan pengecekan pada sistem kami,  pesanan dengan nomor invoice INV/20160329/XVI/X/51234657, sedang menunggu proses verifikasi. Sebagai informasi proses verifikasi membutuhkan waktu maksimal 1x24 jam sesama bank dan maksimal 2x24 jam untuk pembayaran antar bank. Saat ini kami bantu laporkan kepada tim terkait untuk memverifikasi pembayaran Anda, mohon kesediaannya untuk menunggu dan lakukan pengecekan secara berkala pada Status Pemesanan Anda.
-
+www.google.com
 Kami harap pembayaran Anda segera diverifikasi agar pesanan dapat direspons penjual. Terima kasih.
 
 Salam,

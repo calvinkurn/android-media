@@ -46,7 +46,7 @@ public interface InboxBaseContract {
 
         void updateDataSet();
 
-        void setSnackBarErrorMessage(String message);
+        void setSnackBarErrorMessage(String message,boolean clickable);
 
         void clearSearch();
 

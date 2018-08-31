@@ -33,14 +33,6 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     private static final int VIEW_UPLOAD_BUTTON = 100;
     private int maxPicUpload = 5;
 
-    public ArrayList<ImageUpload> getImageUpload() {
-        ArrayList<ImageUpload> imageList = new ArrayList<>();
-        for (int i = 0; i < imageUpload.size() - 1; i++) {
-            imageList.add(imageUpload.get(i));
-        }
-        return imageList;
-    }
-
     private ArrayList<ImageUpload> imageUpload;
 
     private Context context;
@@ -80,6 +72,19 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
             notifyDataSetChanged();
             Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public ArrayList<ImageUpload> getImageUpload() {
+        ArrayList<ImageUpload> imageList = new ArrayList<>();
+        for (int i = 0; i < imageUpload.size() - 1; i++) {
+            imageList.add(imageUpload.get(i));
+        }
+        return imageList;
+    }
+
+    public void clearAll() {
+        imageUpload.clear();
+        imageUpload.add(new ImageUpload());
     }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {

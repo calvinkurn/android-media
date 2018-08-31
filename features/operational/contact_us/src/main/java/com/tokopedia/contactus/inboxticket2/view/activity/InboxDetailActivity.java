@@ -200,6 +200,9 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void updateAddComment() {
         edMessage.getText().clear();
+        imageUploadAdapter.clearAll();
+        imageUploadAdapter.notifyDataSetChanged();
+        rvSelectedImages.setVisibility(View.GONE);
         detailAdapter.notifyItemRangeChanged(detailAdapter.getItemCount() - 2, 2);
     }
 
@@ -608,7 +611,8 @@ public class InboxDetailActivity extends InboxBaseActivity
 
     @Override
     public void onBackPressed() {
-        if (imageUploadAdapter.getItemCount() > 1) {
+        if (imageUploadAdapter.getItemCount() > 1 || (textToolbar.getVisibility() == View.VISIBLE &&
+                edMessage.isFocused() && edMessage.getText().length() > 0)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
@@ -623,16 +627,11 @@ public class InboxDetailActivity extends InboxBaseActivity
                                 InboxTicketTracking.Category.EventInboxTicket,
                                 InboxTicketTracking.Action.EventAbandonReplySubmission,
                                 getString(R.string.batal));
-                        getActivity().finish();
+                        super.onBackPressed();
                     }).create().show();
         } else {
-            if (textToolbar.getVisibility() == View.VISIBLE && edMessage.isFocused()) {
-                ContactUsTracking.sendGTMInboxTicket("",
-                        InboxTicketTracking.Category.EventInboxTicket,
-                        InboxTicketTracking.Action.EventAbandonReplySubmission,
-                        getString(R.string.batal));
-            }
+            super.onBackPressed();
         }
-        super.onBackPressed();
+
     }
 }
