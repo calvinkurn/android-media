@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.di.module;
 
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.di.scope.MultipleAddressScope;
 import com.tokopedia.checkout.view.feature.multipleaddressform.IMultipleAddressPresenter;
 import com.tokopedia.checkout.view.feature.multipleaddressform.IMultipleAddressView;
@@ -41,8 +42,8 @@ public class MultipleAddressModule {
     @MultipleAddressScope
     @Provides
     IMultipleAddressPresenter providePresenter(ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                                               GetCartListUseCase getCartListUseCase,
+                                               GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                                CartApiRequestParamGenerator cartApiRequestParamGenerator) {
-        return new MultipleAddressPresenter(view, getCartListUseCase, changeShippingAddressUseCase, cartApiRequestParamGenerator);
+        return new MultipleAddressPresenter(view, getCartMultipleAddressListUseCase, changeShippingAddressUseCase, cartApiRequestParamGenerator);
     }
 }

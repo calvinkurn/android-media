@@ -17,6 +17,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
 import com.tokopedia.checkout.domain.datamodel.cartmultipleshipment.SetShippingAddressData;
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
@@ -44,7 +45,7 @@ import rx.Subscriber;
 public class MultipleAddressPresenter implements IMultipleAddressPresenter {
 
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
-    private final GetCartListUseCase getCartListUseCase;
+    private final GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
 
     private CartListData cartListData;
@@ -52,11 +53,11 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     private IMultipleAddressView view;
 
     public MultipleAddressPresenter(IMultipleAddressView view,
-                                    GetCartListUseCase getCartListUseCase,
+                                    GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase,
                                     ChangeShippingAddressUseCase changeShippingAddressUseCase,
                                     CartApiRequestParamGenerator cartApiRequestParamGenerator) {
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
-        this.getCartListUseCase = getCartListUseCase;
+        this.getCartMultipleAddressListUseCase = getCartMultipleAddressListUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.view = view;
     }
@@ -72,16 +73,16 @@ public class MultipleAddressPresenter implements IMultipleAddressPresenter {
     }
 
     @Override
-    public void processGetCartList() {
+    public void processGetCartList(String cartIds) {
         view.showInitialLoading();
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
                 GetCartListUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList())
+                getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(cartIds))
         );
 
-        getCartListUseCase.execute(requestParams, new Subscriber<CartListData>() {
+        getCartMultipleAddressListUseCase.execute(requestParams, new Subscriber<CartListData>() {
             @Override
             public void onCompleted() {
 

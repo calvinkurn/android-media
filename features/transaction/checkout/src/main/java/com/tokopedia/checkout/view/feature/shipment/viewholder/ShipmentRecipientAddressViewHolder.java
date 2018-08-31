@@ -66,7 +66,8 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     }
 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
-                               ArrayList<ShowCaseObject> showCaseObjectList) {
+                               ArrayList<ShowCaseObject> showCaseObjectList,
+                               String cartIds) {
 
         tvChangeAddress.setVisibility(View.GONE);
         tvAddressStatus.setVisibility(View.GONE);
@@ -85,7 +86,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
         tvSendToMultipleAddress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress);
+                shipmentAdapterActionListener.onSendToMultipleAddress(recipientAddress, cartIds);
             }
         });
 

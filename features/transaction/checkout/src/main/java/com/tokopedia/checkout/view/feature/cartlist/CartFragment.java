@@ -277,7 +277,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cbSelectAll = view.findViewById(R.id.cb_select_all);
         emptyCartContainer = view.findViewById(R.id.container_empty_cart);
 
-        progressDialogNormal = new TkpdProgressDialog(context, TkpdProgressDialog.NORMAL_PROGRESS);
+        progressDialogNormal = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         refreshHandler = new RefreshHandler(getActivity(), view, this);
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartAdapter);

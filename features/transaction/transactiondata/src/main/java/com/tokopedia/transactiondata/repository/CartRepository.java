@@ -4,6 +4,7 @@ import com.tokopedia.transactiondata.apiservice.CartApi;
 import com.tokopedia.transactiondata.apiservice.CartResponse;
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
@@ -36,17 +37,13 @@ public class CartRepository implements ICartRepository {
         this.cartApi = cartApi;
     }
 
-    /**
-     * Deprecated since version 2.29 (customerapp)
-     * */
-    @Deprecated
     @Override
-    public Observable<CartDataListResponse> getCartList(Map<String, String> param) {
+    public Observable<CartMultipleAddressDataListResponse> getCartList(Map<String, String> param) {
         return cartApi.getCartList(param).map(
-                new Func1<Response<CartResponse>, CartDataListResponse>() {
+                new Func1<Response<CartResponse>, CartMultipleAddressDataListResponse>() {
                     @Override
-                    public CartDataListResponse call(Response<CartResponse> cartResponseResponse) {
-                        return cartResponseResponse.body().convertDataObj(CartDataListResponse.class);
+                    public CartMultipleAddressDataListResponse call(Response<CartResponse> cartResponseResponse) {
+                        return cartResponseResponse.body().convertDataObj(CartMultipleAddressDataListResponse.class);
                     }
                 });
     }

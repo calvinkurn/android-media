@@ -33,12 +33,14 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     public static final String EXTRA_SHIPMENT_COST_SATA = "EXTRA_SHIPMENT_COST_SATA";
     public static final String EXTRA_SHIPMENT_DONATION_DATA = "EXTRA_SHIPMENT_DONATION_DATA";
     public static final String EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA = "EXTRA_SHIPMENT_CHECKOUT_BUTTON_DATA";
+    public static final String EXTRA_SHIPMENT_CART_IDS = "EXTRA_SHIPMENT_CART_IDS";
 
     public static final int RESULT_CODE_SUCCESS_SET_SHIPPING = 22;
     public static final int RESULT_CODE_FORCE_RESET_CART_ADDRESS_FORM = 23;
     public static final int RESULT_CODE_RELOAD_CART_PAGE = 24;
 
     private RecipientAddressModel addressData;
+    private String cartIds;
     private MultipleAddressFragment fragment;
 
     public static Intent createInstance(Context context,
@@ -47,7 +49,8 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
                                         RecipientAddressModel recipientAddressData,
                                         List<ShipmentCartItemModel> shipmentCartItemModels,
                                         ShipmentCostModel shipmentCostModel,
-                                        ShipmentDonationModel shipmentDonationModel
+                                        ShipmentDonationModel shipmentDonationModel,
+                                        String cartIds
     ) {
         Intent intent = new Intent(context, MultipleAddressFormActivity.class);
         intent.putExtra(EXTRA_PROMO_DATA, cartItemPromoHolderData);
@@ -56,6 +59,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
         intent.putExtra(EXTRA_SHIPMENT_CART_TEM_LIST_DATA, new ArrayList<>(shipmentCartItemModels));
         intent.putExtra(EXTRA_SHIPMENT_COST_SATA, shipmentCostModel);
         intent.putExtra(EXTRA_SHIPMENT_DONATION_DATA, shipmentDonationModel);
+        intent.putExtra(EXTRA_SHIPMENT_CART_IDS, cartIds);
         return intent;
     }
 
@@ -72,6 +76,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
     @Override
     protected void setupBundlePass(Bundle extras) {
         this.addressData = extras.getParcelable(EXTRA_RECIPIENT_ADDRESS_DATA);
+        this.cartIds = extras.getString(EXTRA_SHIPMENT_CART_IDS);
     }
 
     @Override
@@ -154,7 +159,7 @@ public class MultipleAddressFormActivity extends BaseCheckoutActivity {
 
     @Override
     protected android.support.v4.app.Fragment getNewFragment() {
-        fragment = MultipleAddressFragment.newInstance(addressData);
+        fragment = MultipleAddressFragment.newInstance(addressData, cartIds);
         return fragment;
     }
 }
