@@ -4,13 +4,15 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.notifcenter.domain.usecase.NotifCenterUseCase
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.subscriber.NotifCenterSubscriber
+import com.tokopedia.notifcenter.view.util.NotifCenterDateUtil
 import javax.inject.Inject
 
 /**
  * @author by milhamj on 30/08/18.
  */
 
-class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: NotifCenterUseCase)
+class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: NotifCenterUseCase,
+                                               private val dateUtil: NotifCenterDateUtil)
     : BaseDaggerPresenter<NotifCenterContract.View>(), NotifCenterContract.Presenter {
 
     private var filterId = 0
@@ -25,7 +27,7 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         view.showLoading()
         notifCenterUseCase.execute(
                 NotifCenterUseCase.getRequestParams(page, filterId),
-                NotifCenterSubscriber(view)
+                NotifCenterSubscriber(view, dateUtil)
         )
     }
 

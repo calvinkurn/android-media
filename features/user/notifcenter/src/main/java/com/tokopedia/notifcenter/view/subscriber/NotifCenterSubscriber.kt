@@ -10,13 +10,15 @@ import com.tokopedia.notifcenter.domain.pojo.NotifCenterError
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
 import com.tokopedia.notifcenter.domain.pojo.UserNotification
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
+import com.tokopedia.notifcenter.view.util.NotifCenterDateUtil
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
 import rx.Subscriber
 
 /**
  * @author by milhamj on 31/08/18.
  */
-class NotifCenterSubscriber(val view: NotifCenterContract.View) : Subscriber<GraphqlResponse>() {
+class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: NotifCenterDateUtil)
+    : Subscriber<GraphqlResponse>() {
 
     override fun onError(e: Throwable?) {
         Log.d("milhamj", "onError")
@@ -53,21 +55,24 @@ class NotifCenterSubscriber(val view: NotifCenterContract.View) : Subscriber<Gra
 
     private fun convertToViewModels(notificationList : List<UserNotification>): List<Visitable<*>> {
         val visitables : ArrayList<Visitable<*>> = ArrayList()
+        var lastPrettyDate = ""
         for (notification in notificationList) {
-            //TODO milhamj map prettify create time
+            val prettyDate = dateUtil.getPrettyDate(notification.createTimeUnix)
             visitables.add(
                     NotifItemViewModel(
                             notification.title,
                             notification.dataNotification.infoThumbnailUrl,
                             notification.createTime,
-                            notification.createTime,
+                            prettyDate,
                             notification.sectionKey,
                             notification.dataNotification.appLink,
                             notification.readStatus,
                             notification.userId,
-                            notification.shopId
+                            notification.shopId,
+                            (!TextUtils.equals(lastPrettyDate, prettyDate) || visitables.isEmpty())
                     )
             )
+            lastPrettyDate = prettyDate
         }
         return visitables
     }

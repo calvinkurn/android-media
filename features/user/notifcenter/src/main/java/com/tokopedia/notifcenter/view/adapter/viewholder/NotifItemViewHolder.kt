@@ -37,6 +37,7 @@ class NotifItemViewHolder(val v: View, val viewListener: NotifCenterContract.Vie
             itemView.mainLayout.setOnClickListener {
                 Log.d("milhamj", "clicked")
             }
+            itemView.timeSummary.visibility = if (this.showTimeSummary) View.VISIBLE else View.GONE
         }
 
     }
