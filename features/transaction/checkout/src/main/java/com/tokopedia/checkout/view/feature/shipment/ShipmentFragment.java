@@ -92,7 +92,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
-    public static final String ARG_EXTRA_SHIPMENT_FORM_DATA = "ARG_EXTRA_SHIPMENT_FORM_DATA";
     public static final String ARG_EXTRA_CART_PROMO_SUGGESTION = "ARG_EXTRA_CART_PROMO_SUGGESTION";
     public static final String ARG_EXTRA_PROMO_CODE_APPLIED_DATA = "ARG_EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO = "ARG_EXTRA_DEFAULT_SELECTED_TAB_PROMO";
@@ -382,11 +381,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void showToastNormal(String message) {
         if (getView() != null && getActivity() != null) {
             ToasterNormal.make(getView(), message, BaseToaster.LENGTH_SHORT)
-                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
+                    .setAction(getActivity().getString(R.string.label_action_snackbar_close), view -> {
 
-                        }
                     }).show();
         }
     }
