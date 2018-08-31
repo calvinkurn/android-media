@@ -10,7 +10,6 @@ import android.view.View;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
-import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.design.component.Dialog;
@@ -24,13 +23,9 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 public class ShipmentActivity extends BaseCheckoutActivity {
 
     public static final int REQUEST_CODE = 983;
-    public static final int RESULT_CODE_ACTION_TO_MULTIPLE_ADDRESS_FORM = 1;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT = 2;
     public static final int RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT = 3;
-    public static final int RESULT_CODE_CANCEL_SHIPMENT_PAYMENT = 4;
 
-    public static final String EXTRA_SELECTED_ADDRESS_RECIPIENT_DATA = "EXTRA_DEFAULT_ADDRESS_RECIPIENT_DATA";
-    public static final String EXTRA_DISTRICT_RECOMMENDATION_TOKEN = "EXTRA_DISTRICT_RECOMMENDATION_TOKEN";
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";

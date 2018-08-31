@@ -61,8 +61,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
-import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.payment.activity.TopPayActivity;
@@ -520,9 +518,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void renderThanksTopPaySuccess(String message) {
         showToastNormal(getString(R.string.message_payment_succeded_transaction_module));
-        startActivity(TransactionPurchaseRouter.createIntentTxSummary(getActivity()));
+        startActivity(checkoutModuleRouter.checkoutModuleRouterGetTransactionSummaryIntent());
         if (getActivity() != null) {
-            CartBadgeNotificationReceiver.resetBadgeCart(getActivity());
+            checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
             getActivity().finish();
         }
     }
