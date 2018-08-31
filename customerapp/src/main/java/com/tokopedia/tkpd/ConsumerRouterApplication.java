@@ -926,6 +926,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void setPromoPushPreference(Boolean newValue) {
+        TrackingUtils.setMoEngagePushPreference(newValue);
+    }
+
+    @Override
     public Intent getIntentOfLoyaltyActivityWithoutCoupon(Activity activity, String platform,
                                                           String reservationId, String reservationCode) {
         return LoyaltyActivity.newInstanceTrainCouponNotActive(activity, platform, "",
