@@ -59,4 +59,6 @@ public interface AccountHomeRouter {
     void sendAnalyticsUserAttribute(UserAttributeData userAttributeData);
 
     void goToCreateMerchantRedirect(Context context);
+
+    void setPromoPushPreference(Boolean newValue);
 }
