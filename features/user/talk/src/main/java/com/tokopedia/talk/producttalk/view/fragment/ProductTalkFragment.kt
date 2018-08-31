@@ -1,5 +1,6 @@
 package com.tokopedia.talk
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -10,10 +11,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import kotlinx.android.synthetic.main.product_talk.*
 
 /**
- * @author by nisie on 6/7/18.
+ * @author by Steven
  */
 
 class ProductTalkFragment : ProductTalkContract.View, BaseDaggerFragment() {
+
+    override fun getContext(): Context? {
+        return activity
+    }
 
     override fun getScreenName(): String {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
