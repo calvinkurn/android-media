@@ -210,17 +210,17 @@
                         android:text="@string/approval_wait" />
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/detail_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/about"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp_16"
-                    app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
+            <TextView
+                android:id="@+id/detail_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/description"
+                android:textColor="#000000"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
 
                 <TextView
                     android:id="@+id/detail_content"

@@ -31,8 +31,8 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
     public void getOpenChallenges() {
         if (getView().getOpenChallenges() != null) {
-            getView().setChallengeDataToUI(getView().getOpenChallenges(),false);
-        }else {
+            getView().setChallengeDataToUI(getView().getOpenChallenges(), false);
+        } else {
             getView().showProgressBarView();
         }
         getPastChallengesUseCase.unsubscribe();
@@ -54,7 +54,6 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
             public void onNext(Map<Type, RestResponse> restResponse) {
                 getView().removeProgressBarView();
                 RestResponse res1 = restResponse.get(Challenge.class);
-                int responseCodeOfResponse1 = res1.getCode();
                 Challenge mainDataObject = res1.getData();
                 if (mainDataObject != null && mainDataObject.getResults() != null && mainDataObject.getResults().size() > 0) {
                     getView().setChallengeDataToUI(mainDataObject.getResults(), false);
@@ -68,8 +67,8 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
 
     public void getPastChallenges() {
         if (getView().getPastChallenges() != null) {
-            getView().setChallengeDataToUI(getView().getPastChallenges(),true);
-        }else {
+            getView().setChallengeDataToUI(getView().getPastChallenges(), true);
+        } else {
             getView().showProgressBarView();
         }
         getActiveChallengesUseCase.unsubscribe();

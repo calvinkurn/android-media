@@ -13,11 +13,14 @@ import android.support.v4.app.NotificationCompat;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitPresenter;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.core.gcm.utils.NotificationChannelId;
 
 import javax.inject.Inject;
@@ -27,8 +30,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public static final String UPLOAD_FINGERPRINT_KEY = "UploadChallengeService";
     public static final String UPLOAD_CHALLENGE_ID = "UploadChallengeID";
     public static final String UPLOAD_FILE_PATH = "UploadFilePath";
-
-
+    public static final String UPLOAD_POST_ID = "Uploadpostid";
 
 
     @Inject
@@ -38,12 +40,14 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     String challengeID;
     String uploadFilePath;
     private NotificationManager notificationManager;
+    private String postId;
 
-    public static Intent getIntent(Context context, UploadFingerprints uploadFingerprints,String challengeId,String uploadFilePath) {
+    public static Intent getIntent(Context context, UploadFingerprints uploadFingerprints, String challengeId, String uploadFilePath, String postId) {
         Intent intent = new Intent(context, UploadChallengeService.class);
         intent.putExtra(UPLOAD_FINGERPRINT_KEY, uploadFingerprints);
         intent.putExtra(UPLOAD_CHALLENGE_ID, challengeId);
         intent.putExtra(UPLOAD_FILE_PATH, uploadFilePath);
+        intent.putExtra(UPLOAD_POST_ID, postId);
         return intent;
     }
 
@@ -52,7 +56,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         super.onCreate();
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         ChallengesComponent component = DaggerChallengesComponent.builder()
-                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         component.inject(this);
         presenter.attach(this);
@@ -63,6 +67,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         uploadFingerprints = (UploadFingerprints) intent.getSerializableExtra(UPLOAD_FINGERPRINT_KEY);
         challengeID = intent.getStringExtra(UPLOAD_CHALLENGE_ID);
         uploadFilePath = intent.getStringExtra(UPLOAD_FILE_PATH);
+        postId = intent.getStringExtra(UPLOAD_POST_ID);
         presenter.uploadChallange();
         createNotification();
         return START_REDELIVER_INTENT;
@@ -75,15 +80,14 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     }
 
 
-
-
     Integer notificationID = 100;
     NotificationCompat.Builder builder;
+
     public void createNotification() {
         builder = buildBaseNotification();
         Notification notification = builder
                 .setContentText("Upload In Progress")
-                .setProgress(uploadFingerprints.getTotalParts(),0,true)
+                .setProgress(uploadFingerprints.getTotalParts(), 0, true)
                 .build();
         notificationManager.notify(TAG, notificationID, notification);
     }
@@ -104,24 +108,26 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     }
 
 
-
     @Override
     public UploadFingerprints getUploadFingerprints() {
         return uploadFingerprints;
     }
 
     @Override
-    public void setProgress(int progress,int total) {
+    public void setProgress(int progress, int total) {
         builder.setProgress(total, progress, false);
         Notification notification = builder.build();
-        notificationManager.notify(TAG,notificationID, notification);
+        notificationManager.notify(TAG, notificationID, notification);
     }
 
     @Override
     public void onProgressComplete() {
-        notificationManager.cancel(TAG,notificationID);
+        notificationManager.cancel(TAG, notificationID);
         builder = buildBaseNotification();
-        Notification notification = builder.setContentText("Submitted Successfully").build();
+        Intent intent = RouteManager.getIntent(UploadChallengeService.this, Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.SUBMISSION_DETAILS, postId));
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        builder.setContentIntent(pendingIntent);
+        Notification notification = builder.setContentText(getString(R.string.submitted_success)).build();
         notificationManager.notify(TAG, notificationID, notification);
         sendBroadcast(new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE));
         stopSelf();
