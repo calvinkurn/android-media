@@ -491,10 +491,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
         });
 
         btnCreateComplain.setOnClickListener(view -> {
-            if (resultViewModel.isAttachmentRequired)
-                presenter.callCreateResolutionAPIWithAttachment();
-            else
-                presenter.callCreateResolutionAPI();
+            presenter.callCreateResolutionAPIWithAttachment();
             UnifyTracking.eventCreateResoConfirm();
             dialog.dismiss();
         });
