@@ -36,6 +36,8 @@ public interface ICheckoutModuleRouter {
             Context context, String shopId
     );
 
+    Intent checkoutModuleRouterGetWhislistIntent();
+
     Intent checkoutModuleRouterGetInsuranceTncActivityIntent();
 
     Intent checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(Activity activity,

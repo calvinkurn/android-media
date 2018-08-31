@@ -33,6 +33,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
+import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.core.util.SessionHandler;
@@ -463,10 +464,11 @@ public class HotlistFragment extends SearchSectionFragment
                 .setName(getString(R.string.message_share_catalog))
                 .setTextContent(getString(R.string.message_share_category))
                 .setUri(shareUrl)
+                .setId(aliasHotlist)
                 .build();
 
         shareData.setType(ShareData.HOTLIST_TYPE);
-        ShareBottomSheet.show(getChildFragmentManager(), shareData);
+        new DefaultShare(getActivity(), shareData).show();
     }
 
     @Override

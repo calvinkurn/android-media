@@ -98,7 +98,7 @@ public class UserSession {
     public String getName() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
-        return sharedPrefs.getString(FULL_NAME, null);
+        return sharedPrefs.getString(FULL_NAME, "");
     }
 
     public String getProfilePicture() {
@@ -135,13 +135,13 @@ public class UserSession {
     public String getPhoneNumber() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
-        return sharedPrefs.getString(PHONE_NUMBER, null);
+        return sharedPrefs.getString(PHONE_NUMBER, "");
     }
 
     public String getEmail() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
-        return sharedPrefs.getString(EMAIL, null);
+        return sharedPrefs.getString(EMAIL, "");
     }
 
     /**

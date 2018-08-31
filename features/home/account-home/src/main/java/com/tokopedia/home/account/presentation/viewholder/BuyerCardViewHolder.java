@@ -6,7 +6,8 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
-import com.tokopedia.home.account.presentation.view.BuyerCardView;
+import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCard;
+import com.tokopedia.home.account.presentation.view.buyercardview.BuyerCardView;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
 
 /**
@@ -28,10 +29,15 @@ public class BuyerCardViewHolder extends AbstractViewHolder<BuyerCardViewModel> 
 
     @Override
     public void bind(BuyerCardViewModel element) {
-        buyerCardView.setAvatarImageUrl(element.getProgress(), element.getImageUrl());
-        buyerCardView.setName(element.getName());
-        buyerCardView.setTokopoint(element.getTokopoint());
-        buyerCardView.setVoucher(element.getVoucher());
+        BuyerCard buyerCard = new BuyerCard.Builder()
+                .avatar(element.getImageUrl())
+                .username(element.getName())
+                .progress(element.getProgress())
+                .tokopoint(element.getTokopoint())
+                .coupons(element.getCoupons())
+                .build();
+
+        buyerCardView.renderData(buyerCard);
 
         buyerCardView.setOnClickProfile(v -> listener.onProfileClicked(element));
         buyerCardView.setOnClickProfileCompletion(v -> listener.onProfileCompletionClicked(element));

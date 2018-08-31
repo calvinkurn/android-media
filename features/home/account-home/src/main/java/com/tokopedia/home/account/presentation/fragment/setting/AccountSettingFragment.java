@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.fragment.setting;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,19 +13,22 @@ import android.view.ViewGroup;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
-import com.tokopedia.home.account.AccountHomeRouter;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.*;
+import static com.tokopedia.home.account.AccountConstants.Analytics.ADDRESS_LIST;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PASSWORD;
+import static com.tokopedia.home.account.AccountConstants.Analytics.PERSONAL_DATA;
 
 public class AccountSettingFragment extends TkpdBaseV4Fragment {
 
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
-    private static int REQUEST_ADD_PASSWORD = 1234;
     private static final int REQUEST_CHANGE_PASSWORD = 123;
-
+    private static int REQUEST_ADD_PASSWORD = 1234;
     private UserSession userSession;
     private AccountAnalytics accountAnalytics;
 
@@ -35,7 +39,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        userSession = ((AbstractionRouter)context.getApplicationContext()).getSession();
+        userSession = ((AbstractionRouter) context.getApplicationContext()).getSession();
         accountAnalytics = new AccountAnalytics(getActivity());
     }
 
@@ -67,13 +71,22 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
             switch (settingId) {
                 case SettingConstant.SETTING_ACCOUNT_PERSONAL_DATA_ID:
                     accountAnalytics.eventClickAccountSetting(PERSONAL_DATA);
-                    startActivityForResult(router.getManageProfileIntent(getActivity()), 0);
+                    try {
+                        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PROFILE);
+                        startActivityForResult(intent, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     break;
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
                     if (userSession.isHasPassword()) {
-                        startActivity(router.getManagePasswordIntent(getActivity()));
-                        startActivityForResult(router.getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                        try {
+                            Intent intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PASSWORD);
+                            startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     } else {
                         intentToAddPassword();
                     }
@@ -89,7 +102,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     }
 
     private void intentToAddPassword() {
-        if (getActivity().getApplication() instanceof AccountHomeRouter){
+        if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
                     .getManagePasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
         }

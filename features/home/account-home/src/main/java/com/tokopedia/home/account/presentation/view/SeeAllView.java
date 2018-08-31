@@ -53,7 +53,7 @@ public class SeeAllView extends BottomSheets {
                         LinearLayoutManager.VERTICAL,
                         false));
         holder.addItemDecoration(
-                new MenuGridSpacingDecoration(4,0,false));
+                new MenuGridSpacingDecoration(4,0, 16,true));
 
         adapter.setNewData(list);
     }
@@ -124,7 +124,7 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_reksadana),
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
-                        AccountConstants.Url.REKSA_DANA_URL),
+                        AccountConstants.Url.REKSA_DANA_TX_URL),
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)
@@ -136,7 +136,7 @@ public class SeeAllView extends BottomSheets {
                 getContext().getString(R.string.title_menu_gold),
                 String.format("%s?url=%s",
                         ApplinkConst.WEBVIEW,
-                        AccountConstants.Url.EMAS_URL),
+                        AccountConstants.Url.EMAS_TX_URL),
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)

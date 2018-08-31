@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/dp_8"
-    app:elevation="@dimen/dp_6">
+    app:cardCornerRadius="@dimen/dp_4"
+    app:elevation="@dimen/dp_16"
+    app:cardUseCompatPadding="true">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -165,7 +167,7 @@
 
         <TextView
             android:id="@+id/text_voucher_amount"
-            style="@style/TextView.Small.Green.Bold"
+            style="@style/TextView.Small.Bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"

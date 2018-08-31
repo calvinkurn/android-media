@@ -11,6 +11,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.View;
 
@@ -34,7 +35,6 @@ import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.design.component.Tabs;
 import com.tokopedia.inbox.inboxtalk.fragment.InboxTalkFragment;
 import com.tokopedia.inbox.inboxtalk.listener.InboxTalkActivityView;
 import com.tokopedia.inbox.inboxtalk.presenter.InboxTalkActivityPresenterImpl;
@@ -47,20 +47,20 @@ import butterknife.ButterKnife;
 
 public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         InboxTalkActivityView,
-        NotificationReceivedListener, InboxTalkResultReceiver.Receiver {
+        NotificationReceivedListener,
+        InboxTalkResultReceiver.Receiver {
 
     private static final String BUNDLE_POSITION = "INBOX_TALK_POSITION";
-
     private static final String MY_PRODUCT = "inbox-talk-my-product";
     private static final String INBOX_ALL = "inbox-talk";
     private static final String FOLLOWING = "inbox-talk-following";
     PagerAdapter adapter;
 
-    @BindView(R2.id.pager)
-    ViewPager mViewPager;
-    @BindView(R2.id.indicator)
-    Tabs indicator;
-    InboxTalkResultReceiver mReceiver;
+    @BindView(R2.id.pager) ViewPager mViewPager;
+    @BindView(R2.id.indicator) TabLayout indicator;
+
+    private InboxTalkResultReceiver mReceiver;
+
     private Boolean ContextualStats = false;
     private ActionMode mode;
     private Boolean isLogin;
@@ -204,7 +204,6 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
     @Override
     protected void initView() {
         super.initView();
-//        drawer.setDrawerPosition(TkpdState.DrawerPosition.INBOX_TALK);
         ButterKnife.bind(this);
         setContent();
         adapter = new PagerAdapter(getFragmentManager(), getFragmentList());
@@ -245,14 +244,10 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
     }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
-
-    }
+    protected void setActionVar() { }
 
     @Override
     public void onGetNotif() {
@@ -341,9 +336,9 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
 
-        private List<Fragment> fragmentList = new ArrayList<>();
+        private List<Fragment> fragmentList;
 
-        public PagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+        PagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
             super(fm);
             this.fragmentList = fragmentList;
         }
@@ -358,5 +353,4 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
             return fragmentList.size();
         }
     }
-
 }

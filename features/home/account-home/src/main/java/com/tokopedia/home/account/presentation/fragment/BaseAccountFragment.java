@@ -70,8 +70,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     (getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
-                    (getContext());
+            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
+                    (getContext()));
         } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
             && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             Intent launchIntent = getContext().getPackageManager()
