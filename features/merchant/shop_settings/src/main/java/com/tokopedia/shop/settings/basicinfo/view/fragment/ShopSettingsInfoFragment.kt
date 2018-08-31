@@ -105,7 +105,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                         getString(R.string.schedule_shop_close), false)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
-            itemMenuTitle.equals(getString(R.string.schedule_your_shop_close), ignoreCase = true) -> {
+            itemMenuTitle.equals(getString(R.string.label_close_shop_now), ignoreCase = true) -> {
                 val intent = ShopEditScheduleActivity.createIntent(context!!, shopBasicDataModel!!,
                         getString(R.string.label_close_shop_now), true)
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
