@@ -326,7 +326,11 @@ public class SolutionDetailFragment extends BaseDaggerFragment
                 tempResult.add(result);
             }
         }
-        resultViewModel.complaints = tempResult;
+        if (resultViewModel != null) {
+            resultViewModel.complaints = tempResult;
+        } else {
+            editAppealSolutionModel.complaints = tempResult;
+        }
         calculateTotalRefund(new ComplaintResult());
         buttonSelected(btnContinue);
     }
