@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AgenMainApplication</string>
+    <string name="app_name">Mitra Tokopedia</string>
     <string name="app_id">com.tokopedia.mitraapp</string>
     <string name="title_activity_welcome">WelcomeActivity</string>
     <string name="mitra_welcome_title">Jadi Agen Tokopedia dan Raih Untung Lebihnya</string>
