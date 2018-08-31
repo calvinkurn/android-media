@@ -113,7 +113,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         return bottomNavigation;
     }
 
-    private void onSearchingStart(String keyword) {
+    protected void onSearchingStart(String keyword) {
         searchView.closeSearch();
         showLoadingView(true);
         showContainer(false);

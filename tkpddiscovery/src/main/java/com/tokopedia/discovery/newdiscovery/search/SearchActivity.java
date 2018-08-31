@@ -678,4 +678,10 @@ public class SearchActivity extends DiscoveryActivity
     public void hideBottomNavigation() {
         searchNavContainer.setVisibility(View.GONE);
     }
+
+    @Override
+    protected void onSearchingStart(String keyword) {
+        super.onSearchingStart(keyword);
+        hideBottomNavigation();
+    }
 }
