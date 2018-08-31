@@ -169,6 +169,10 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
     /**
      * Search and return an Intent from applink url
      * if url is not valid / intent is not found, then it will throw an exception
+     *
+     * To make sure that the intent is available,
+     * please call {@link ApplinkDelegateImpl#supportsUri(String)} first
+     *
      * @param activity
      * @param applink
      * @return
@@ -233,9 +237,6 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
             newIntent.putExtras(parameters);
             newIntent.putExtra(DeepLink.IS_DEEP_LINK, true);
             newIntent.putExtra(DeepLink.REFERRER_URI, uri);
-            if (activity.getCallingActivity() != null) {
-                newIntent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
-            }
 
             return newIntent;
         } else {
@@ -246,6 +247,10 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
     /**
      * Search and return an TaskStackBuilder based on applink url
      * If url is not valid or TaskStackBuilder is not found, it will throw an exception
+     *
+     * To make sure that the TaskStackBuilder is available,
+     * please call {@link ApplinkDelegateImpl#supportsUri(String)} first
+     *
      * @param activity
      * @param applink
      * @return
