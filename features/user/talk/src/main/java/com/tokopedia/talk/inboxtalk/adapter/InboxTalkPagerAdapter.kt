@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
-import com.tokopedia.talk.inboxtalk.InboxTalkFragment
+import com.tokopedia.talk.inboxtalk.fragment.InboxTalkFragment
 
 /**
  * @author by nisie on 8/27/18.

@@ -8,6 +8,15 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 
 class TalkProductActivity : BaseSimpleActivity() {
 
+
+
+    companion object {
+
+        @JvmStatic
+        fun createIntent(context: Context) = Intent(context, TalkProductActivity::class.java)
+
+    }
+
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
@@ -16,9 +25,5 @@ class TalkProductActivity : BaseSimpleActivity() {
         return ProductTalkFragment()
     }
 
-    companion object {
-        open fun createIntent(context: Context): Intent {
-            return Intent(context, TalkProductActivity::class.java)
-        }
-    }
+
 }

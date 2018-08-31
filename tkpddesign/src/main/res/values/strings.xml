@@ -41,5 +41,10 @@
     <string name="empty_search_result_default">Pencarian tidak ditemukan</string>
 
     <string name="edit">Ubah</string>
+    <string name="label_filter">Filter</string>
+
+    <string name="button_cancel">Batal</string>
+    <string name="button_delete">Hapus</string>
+    <string name="button_send">Kirim</string>
 
 </resources>

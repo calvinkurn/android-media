@@ -1,11 +1,11 @@
-package com.tokopedia.talk.inboxtalk
+package com.tokopedia.talk.inboxtalk.activity
 
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.util.Log
+import android.view.View
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -31,13 +31,13 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     @Inject
     lateinit var userSession: UserSession
 
-    private val titles by lazy {
-        arrayOf(getString(R.string.title_tab_talk_all),
-                getString(R.string.title_tab_talk_my_product),
-                getString(R.string.title_tab_talk_follow))
-    }
+    lateinit var titles: Array<String>
 
     companion object {
+
+        val INBOX_ALL = "inbox-talk"
+        val MY_PRODUCT = "inbox-talk-my-product"
+        val FOLLOWING = "inbox-talk-following"
 
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, InboxTalkActivity::class.java)
@@ -82,7 +82,13 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     private fun initPagerAdapter() {
         if (userSession.hasShop()) {
-            Log.d("NISNIS", "HAS SHOP")
+            titles = arrayOf(getString(R.string.title_tab_talk_all),
+                    getString(R.string.title_tab_talk_my_product),
+                    getString(R.string.title_tab_talk_follow))
+            tabLayout.visibility = View.VISIBLE
+        } else {
+            titles = arrayOf(getString(R.string.title_tab_talk_all))
+            tabLayout.visibility = View.GONE
         }
 
         inboxTalkPagerAdapter = InboxTalkPagerAdapter(supportFragmentManager, titles)
@@ -100,5 +106,6 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
             }
         })
+
     }
 }

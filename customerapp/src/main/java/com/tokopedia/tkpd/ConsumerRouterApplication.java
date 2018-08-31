@@ -247,7 +247,6 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.talk.inboxtalk.InboxTalkActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -2494,6 +2493,16 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getTalkIntent(Context context) {
         if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true))
             return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
+        }
+    }
+
+
+    @Override
+    public Intent getProductTalk(Context context) {
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true))
+            return TalkProductActivity.Companion.createIntent(context);
         else {
             return InboxRouter.getInboxTalkActivityIntent(context);
         }
