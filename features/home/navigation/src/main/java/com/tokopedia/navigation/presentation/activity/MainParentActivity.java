@@ -137,7 +137,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (presenter.isFirstTimeUser()) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
-            this.finish();
+            finish();
         }
     }
 
