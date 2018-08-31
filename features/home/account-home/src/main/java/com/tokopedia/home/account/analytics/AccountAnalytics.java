@@ -129,4 +129,8 @@ public class AccountAnalytics {
     public void setUserAttributes(UserAttributeData data) {
         ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
     }
+
+    public void setPromoPushPreference(Boolean newValue) {
+        ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
+    }
 }
