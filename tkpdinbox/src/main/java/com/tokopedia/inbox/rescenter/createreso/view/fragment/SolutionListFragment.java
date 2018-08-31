@@ -172,6 +172,11 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     @Override
+    public boolean showCheckOnItem(int solutionId) {
+        return solutionId == (resultViewModel != null ? resultViewModel.solution : editAppealSolutionModel.solution);
+    }
+
+    @Override
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
         if (solutionResponseViewModel.getCurrentSolution() != null) {
