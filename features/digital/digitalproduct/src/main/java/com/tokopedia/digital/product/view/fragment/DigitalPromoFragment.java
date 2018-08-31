@@ -36,7 +36,6 @@ import java.util.List;
 
 public class DigitalPromoFragment extends Fragment implements BannerAdapter.ActionListener {
 
-
     private static final String CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL =
             "CLIP_DATA_LABEL_VOUCHER_CODE_DIGITAL";
     private static final String EXTRA_BANNER_TITLE = "EXTRA_BANNER_TITLE";

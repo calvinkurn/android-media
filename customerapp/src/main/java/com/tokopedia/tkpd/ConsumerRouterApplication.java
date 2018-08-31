@@ -41,6 +41,7 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.view.cartlist.CartActivity;
+import com.tokopedia.common_digital.common.DigitalRouter;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -402,7 +403,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrainRouter,
         WithdrawRouter,
         EventModuleRouter,
-        TravelCalendarRouter {
+        TravelCalendarRouter,
+        DigitalRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

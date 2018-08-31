@@ -36,11 +36,14 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -56,25 +59,13 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.router.DigitalModuleRouter;
 import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
 import com.tokopedia.digital.common.view.compoundview.ClientNumberInputView;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity;
 import com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview.CheckETollBalanceView;
-import com.tokopedia.digital.product.data.mapper.USSDMapper;
-import com.tokopedia.digital.product.data.repository.UssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.IUssdCheckBalanceRepository;
-import com.tokopedia.digital.product.domain.interactor.DigitalGetHelpUrlUseCase;
-import com.tokopedia.digital.product.domain.interactor.IProductDigitalInteractor;
-import com.tokopedia.digital.product.domain.interactor.ProductDigitalInteractor;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.receiver.USSDBroadcastReceiver;
 import com.tokopedia.digital.product.service.USSDAccessibilityService;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
@@ -88,18 +79,14 @@ import com.tokopedia.digital.product.view.listener.IProductDigitalView;
 import com.tokopedia.digital.product.view.listener.IUssdUpdateListener;
 import com.tokopedia.digital.product.view.model.BannerData;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.GuideData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
 import com.tokopedia.digital.product.view.model.PulsaBalance;
 import com.tokopedia.digital.product.view.presenter.IProductDigitalPresenter;
 import com.tokopedia.digital.product.view.presenter.ProductDigitalPresenter;
 import com.tokopedia.digital.utils.DeviceUtil;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -108,6 +95,8 @@ import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
@@ -180,8 +169,6 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     @BindView(R2.id.container_promo)
     LinearLayout containerPromo;
 
-    private ProductDigitalPresenter presenter;
-
     private Operator operatorSelectedState;
     private Product productSelectedState;
     private String clientNumberState;
@@ -222,6 +209,9 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     private PromoGuidePagerAdapter promoGuidePagerAdapter;
 
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
+
+    @Inject
+    ProductDigitalPresenter presenter;
 
     public static Fragment newInstance(
             String categoryId, String operatorId, String productId, String clientNumber,
@@ -335,33 +325,16 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
     }
 
     @Override
+    protected void initInjector() {
+        super.initInjector();
+
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+    @Override
     protected void initialPresenter() {
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        DigitalGqlApiService digitalGqlEndpointService = new DigitalGqlApiService();
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlEndpointService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-
-        IDigitalCategoryRepository digitalCategoryRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-
-        IUssdCheckBalanceRepository ussdCheckBalanceRepository = new UssdCheckBalanceRepository(
-                digitalEndpointService, new USSDMapper());
-
-        IProductDigitalInteractor productDigitalInteractor =
-                new ProductDigitalInteractor(ussdCheckBalanceRepository
-                );
-
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(
-                getActivity(), digitalCategoryRepository
-        );
-
-        DigitalGetHelpUrlUseCase digitalGetHelpUrlUseCase = new DigitalGetHelpUrlUseCase(
-                digitalCategoryRepository
-        );
-
-        presenter = new ProductDigitalPresenter(getActivity(),
-                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
-                this, productDigitalInteractor, getCategoryByIdUseCase, digitalGetHelpUrlUseCase);
+        presenter.attachView(this);
     }
 
     @Override
@@ -1202,12 +1175,7 @@ public class DigitalProductFragment extends BasePresenterFragment<IProductDigita
             return;
         }
         showCaseDialog = createShowCase();
-        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
-            @Override
-            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                return false;
-            }
-        });
+        showCaseDialog.setShowCaseStepListener((previousStep, nextStep, showCaseObject) -> false);
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
         showCaseObjectList.add(new ShowCaseObject(

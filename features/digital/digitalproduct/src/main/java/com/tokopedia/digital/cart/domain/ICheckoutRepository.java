@@ -1,8 +1,7 @@
 package com.tokopedia.digital.cart.domain;
 
-import com.tokopedia.digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
-import com.tokopedia.digital.cart.model.CheckoutDigitalData;
-import com.tokopedia.digital.cart.model.InstantCheckoutData;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.RequestBodyCheckout;
+import com.tokopedia.digital.cart.presentation.model.CheckoutDigitalData;
 
 import rx.Observable;
 
@@ -14,5 +13,4 @@ public interface ICheckoutRepository {
 
     Observable<CheckoutDigitalData> checkoutCart(RequestBodyCheckout requestBodyCheckout);
 
-    Observable<InstantCheckoutData> instantCheckoutCart(RequestBodyCheckout requestBodyCheckout);
 }

@@ -2,8 +2,6 @@ package com.tokopedia.digital.widget.view.fragment;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.IntentService;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -16,10 +14,13 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier;
+import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
+import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.digitalmodule.IDigitalModuleRouter;
@@ -29,29 +30,21 @@ import com.tokopedia.core.util.VersionInfo;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.digital.R;
 import com.tokopedia.digital.R2;
-import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
-import com.tokopedia.digital.common.data.apiservice.DigitalGqlApiService;
-import com.tokopedia.digital.common.data.mapper.ProductDigitalMapper;
-import com.tokopedia.digital.common.data.repository.DigitalCategoryRepository;
-import com.tokopedia.digital.common.data.source.CategoryDetailDataSource;
-import com.tokopedia.digital.common.domain.IDigitalCategoryRepository;
-import com.tokopedia.digital.common.domain.interactor.GetCategoryByIdUseCase;
 import com.tokopedia.digital.common.view.compoundview.BaseDigitalProductView;
+import com.tokopedia.digital.product.di.DigitalProductComponentInstance;
 import com.tokopedia.digital.product.view.activity.DigitalChooserActivity;
 import com.tokopedia.digital.product.view.model.CategoryData;
-import com.tokopedia.digital.product.view.model.ClientNumber;
 import com.tokopedia.digital.product.view.model.ContactData;
 import com.tokopedia.digital.product.view.model.HistoryClientNumber;
-import com.tokopedia.digital.product.view.model.Operator;
 import com.tokopedia.digital.product.view.model.OrderClientNumber;
-import com.tokopedia.digital.product.view.model.Product;
-import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.digital.widget.view.listener.IDigitalWidgetView;
 import com.tokopedia.digital.widget.view.model.category.Category;
 import com.tokopedia.digital.widget.view.presenter.DigitalWidgetPresenter;
 import com.tokopedia.digital.widget.view.presenter.IDigitalWidgetPresenter;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import permissions.dispatcher.NeedsPermission;
@@ -82,11 +75,12 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     private CategoryData categoryDataState;
     private DigitalCheckoutPassData digitalCheckoutPassDataState;
 
-    private DigitalWidgetPresenter presenter;
-
     private LocalCacheHandler cacheHandlerRecentInstantCheckoutUsed;
 
     private BaseDigitalProductView<CategoryData, Operator, Product, HistoryClientNumber> digitalProductView;
+
+    @Inject
+    DigitalWidgetPresenter presenter;
 
     public static WidgetAllStyleRechargeFragment newInstance(Category category, int position) {
         WidgetAllStyleRechargeFragment fragment = new WidgetAllStyleRechargeFragment();
@@ -123,20 +117,16 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        DigitalProductComponentInstance.getDigitalProductComponent(getActivity().getApplication())
+                .inject(this);
+    }
+
+    @Override
     protected void initialPresenter() {
-        DigitalEndpointService digitalEndpointService = new DigitalEndpointService();
-        DigitalGqlApiService digitalGqlApiService = new DigitalGqlApiService();
-        CategoryDetailDataSource categoryDetailDataSource = new CategoryDetailDataSource(
-                digitalGqlApiService, new GlobalCacheManager(), new ProductDigitalMapper()
-        );
-
-        IDigitalCategoryRepository digitalRepository = new DigitalCategoryRepository(categoryDetailDataSource);
-        GetCategoryByIdUseCase getCategoryByIdUseCase = new GetCategoryByIdUseCase(getContext(), digitalRepository);
-
-        presenter = new DigitalWidgetPresenter(getActivity(),
-                new LocalCacheHandler(getActivity(), TkpdCache.DIGITAL_LAST_INPUT_CLIENT_NUMBER),
-                this,
-                getCategoryByIdUseCase);
+        presenter.attachView(this);
     }
 
     @Override

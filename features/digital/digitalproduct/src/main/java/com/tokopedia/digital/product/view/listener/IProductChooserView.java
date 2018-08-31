@@ -1,6 +1,6 @@
 package com.tokopedia.digital.product.view.listener;
 
-import com.tokopedia.digital.product.view.model.Product;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 
 import java.util.List;
 
