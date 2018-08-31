@@ -221,7 +221,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         super.onViewCreated(view, savedInstanceState);
         if (trace != null)
             trace.stop();
-
     }
 
     @Override
@@ -287,8 +286,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
-        onRefresh();
-
         if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
             ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
         }
