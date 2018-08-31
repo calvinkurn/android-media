@@ -18,7 +18,6 @@ import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseAddE
 class ShopSettingsEtalaseAddEditActivity: BaseSimpleActivity(), HasComponent<ShopSettingsComponent> {
     private var isEdit: Boolean = false
     private var etalase: ShopEtalaseViewModel = ShopEtalaseViewModel()
-    private var existedEtalase: MutableList<String> = mutableListOf()
 
     private val saveTextView: TextView? by lazy {
         toolbar?.findViewById<TextView>(R.id.tvSave)

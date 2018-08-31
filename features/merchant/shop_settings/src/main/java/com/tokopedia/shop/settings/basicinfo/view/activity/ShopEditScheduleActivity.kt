@@ -10,18 +10,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.text.Editable
-import android.text.TextUtils
 import android.view.View
-import android.widget.DatePicker
-import android.widget.EditText
-import android.widget.TextView
-
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
-import com.tokopedia.design.text.TkpdHintTextInputLayout
 import com.tokopedia.design.text.watcher.AfterTextWatcher
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.graphql.data.GraphqlClient
@@ -31,11 +25,9 @@ import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.basicinfo.view.presenter.UpdateShopShedulePresenter
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
 import com.tokopedia.shop.settings.common.util.*
-import com.tokopedia.shop.settings.common.widget.ImageLabelView
-
-import java.util.Calendar
-import java.util.Date
-
+import kotlinx.android.synthetic.main.activity_shop_edit_schedule.*
+import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
+import java.util.*
 import javax.inject.Inject
 
 class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresenter.View {
@@ -45,16 +37,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     private var progressDialog: ProgressDialog? = null
 
-    private var tvSave: TextView? = null
-    private var tilShopCloseNote: TkpdHintTextInputLayout? = null
-    private var etShopCloseNote: EditText? = null
-    private var labelStartClose: ImageLabelView? = null
-    private var labelEndClose: ImageLabelView? = null
-
     private var selectedStartCloseUnixTimeMs: Long = 0
     private var selectedEndCloseUnixTimeMs: Long = 0
 
-    private var shopBasicDataModel: ShopBasicDataModel? = null
+    lateinit var shopBasicDataModel: ShopBasicDataModel
     private var isClosedNow: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,11 +55,11 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             selectedStartCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_START_DATE)
             selectedEndCloseUnixTimeMs = savedInstanceState.getLong(SAVED_SELECTED_END_DATE)
         } else {
-            val closeSchedule = shopBasicDataModel!!.closeSchedule
+            val closeSchedule = shopBasicDataModel.closeSchedule
             if (!StringUtils.isEmptyNumber(closeSchedule)) {
                 selectedStartCloseUnixTimeMs = java.lang.Long.parseLong(closeSchedule) * 1000L
             }
-            val closedUntil = shopBasicDataModel!!.closeUntil
+            val closedUntil = shopBasicDataModel.closeUntil
             if (!StringUtils.isEmptyNumber(closedUntil)) {
                 selectedEndCloseUnixTimeMs = java.lang.Long.parseLong(closedUntil) * 1000L
             }
@@ -87,18 +73,13 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
                 .inject(this)
         updateShopShedulePresenter.attachView(this)
 
-        tvSave = findViewById(R.id.tvSave)
-        labelStartClose = findViewById(R.id.labelStartClose)
-        labelEndClose = findViewById(R.id.labelEndClose)
-        tilShopCloseNote = findViewById(R.id.tilShopCloseNote)
-        etShopCloseNote = findViewById(R.id.etShopCloseNote)
         etShopCloseNote!!.addTextChangedListener(object : AfterTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 tilShopCloseNote!!.error = null
             }
         })
 
-        setUIShopSchedule(shopBasicDataModel!!)
+        setUIShopSchedule(shopBasicDataModel)
 
         labelStartClose!!.setOnClickListener {
             val minDate = tomorrowDate
@@ -128,8 +109,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
             }
             showEndDatePickerDialog(selectedDate, minDate)
         }
-        tvSave!!.visibility = View.VISIBLE
-        tvSave!!.setOnClickListener { onSaveButtonClicked() }
+        tvSave.visibility = View.VISIBLE
+        tvSave.setOnClickListener { onSaveButtonClicked() }
     }
 
     fun showStartDatePickerDialog(selectedDate: Date, minDate: Date) {
@@ -156,7 +137,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     private fun setStartCloseDate(date: Date) {
         selectedStartCloseUnixTimeMs = date.time
-        labelStartClose!!.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelStartClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
         // move end date to start date, if the end < start
         if (selectedEndCloseUnixTimeMs > 0 && selectedEndCloseUnixTimeMs < selectedStartCloseUnixTimeMs) {
             setEndCloseDate(Date(selectedStartCloseUnixTimeMs))
@@ -165,18 +146,18 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     private fun setEndCloseDate(date: Date) {
         selectedEndCloseUnixTimeMs = date.time
-        labelEndClose!!.setContent(toReadableString(FORMAT_DAY_DATE, date))
+        labelEndClose.setContent(toReadableString(FORMAT_DAY_DATE, date))
     }
 
     private fun onSaveButtonClicked() {
-        val closeNote = etShopCloseNote!!.text.toString()
-        if (TextUtils.isEmpty(closeNote)) {
-            tilShopCloseNote!!.error = getString(R.string.note_must_be_filled)
+        val closeNote = etShopCloseNote.text.toString()
+        if (closeNote.isEmpty()) {
+            tilShopCloseNote.error = getString(R.string.note_must_be_filled)
             return
         }
 
         showSubmitLoading(getString(R.string.title_loading))
-        @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel!!.isClosed)
+        @ShopScheduleActionDef val shopAction = if (isClosedNow || shopBasicDataModel.isClosed)
             ShopScheduleActionDef.CLOSED
         else
             ShopScheduleActionDef.OPEN
@@ -194,7 +175,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         if (progressDialog == null) {
             progressDialog = ProgressDialog(this)
         }
-        if (!progressDialog!!.isShowing) {
+        if (progressDialog?.isShowing == true) {
             progressDialog!!.setMessage(message)
             progressDialog!!.isIndeterminate = true
             progressDialog!!.setCancelable(false)
@@ -203,7 +184,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
     }
 
     fun hideSubmitLoading() {
-        if (progressDialog != null && progressDialog!!.isShowing) {
+        if (progressDialog?.isShowing == true) {
             progressDialog!!.dismiss()
             progressDialog = null
         }
@@ -236,10 +217,10 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         val hasCloseUntil = !StringUtils.isEmptyNumber(shopCloseUntil)
         //set close schedule
         if (isClosedNow || shopBasicDataModel.isClosed) {
-            labelStartClose!!.isEnabled = false
+            labelStartClose.isEnabled = false
             setStartCloseDate(currentDate)
         } else {
-            labelStartClose!!.isEnabled = true
+            labelStartClose.isEnabled = true
             val hasCloseSchedule = !StringUtils.isEmptyNumber(shopCloseSchedule)
             if (hasCloseSchedule) {
                 val shopCloseScheduleUnixMs = java.lang.Long.parseLong(shopCloseSchedule) * 1000L
