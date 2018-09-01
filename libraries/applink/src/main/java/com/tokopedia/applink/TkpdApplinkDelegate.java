@@ -26,12 +26,12 @@ import java.util.Map;
  * @author okasurya on 8/30/18.
  * This code is based on airbnb.DeeplinkDispatch's generated code (DeeplinkDelegate class)
  */
-public class ApplinkDelegateImpl implements ApplinkDelegate {
-    private static final String TAG = ApplinkDelegateImpl.class.getSimpleName();
+public class TkpdApplinkDelegate implements ApplinkDelegate {
+    private static final String TAG = TkpdApplinkDelegate.class.getSimpleName();
 
     private final List<? extends Parser> loaders;
 
-    public ApplinkDelegateImpl(Parser... parsers) {
+    public TkpdApplinkDelegate(Parser... parsers) {
         this.loaders = Arrays.asList(parsers);
     }
 
@@ -171,7 +171,7 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
      * if url is not valid / intent is not found, then it will throw an exception
      *
      * To make sure that the intent is available,
-     * please call {@link ApplinkDelegateImpl#supportsUri(String)} first
+     * please call {@link TkpdApplinkDelegate#supportsUri(String)} first
      *
      * @param activity
      * @param applink
@@ -249,7 +249,7 @@ public class ApplinkDelegateImpl implements ApplinkDelegate {
      * If url is not valid or TaskStackBuilder is not found, it will throw an exception
      *
      * To make sure that the TaskStackBuilder is available,
-     * please call {@link ApplinkDelegateImpl#supportsUri(String)} first
+     * please call {@link TkpdApplinkDelegate#supportsUri(String)} first
      *
      * @param activity
      * @param applink
