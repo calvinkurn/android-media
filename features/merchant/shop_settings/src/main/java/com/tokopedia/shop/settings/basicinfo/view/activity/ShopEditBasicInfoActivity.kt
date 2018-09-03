@@ -49,22 +49,6 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     private var savedLocalImageUrl: String? = null
     private var needUpdatePhotoUI: Boolean = false
 
-    private val isInputInvalid: Boolean
-        get() {
-            var hasError = false
-            val tagLine = etShopSlogan.text.toString()
-            if (TextUtils.isEmpty(tagLine)) {
-                tilShopSlogan.error = getString(R.string.shop_slogan_must_be_filled)
-                hasError = true
-            }
-            val desc = etShopDesc.text.toString()
-            if (TextUtils.isEmpty(desc)) {
-                tilShopDesc.error = getString(R.string.shop_desc_must_be_filled)
-                hasError = true
-            }
-            return hasError
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         GraphqlClient.init(this)
         if (savedInstanceState != null) {
@@ -102,13 +86,10 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
     }
 
     private fun onSaveButtonClicked() {
-        if (isInputInvalid) {
-            return
-        }
         showSubmitLoading(getString(R.string.title_loading))
         val tagLine = etShopSlogan.text.toString()
         val desc = etShopDesc.text.toString()
-        if (savedLocalImageUrl.isNullOrEmpty()) {
+        if (!savedLocalImageUrl.isNullOrEmpty()) {
             updateShopSettingsInfoPresenter.uploadShopImage(savedLocalImageUrl!!, tagLine, desc)
         } else {
             updateShopSettingsInfoPresenter.updateShopBasicData(tagLine, desc)
