@@ -95,7 +95,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onError(Throwable e) {
                 getView().hideProgress();
                 e.printStackTrace();
-                getView().showMessage("Image Upl oaded Failed");
+                getView().showMessage("Image Uploaded Failed");
             }
 
             @Override
@@ -107,6 +107,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     getView().showMessage("Upload Initiated Please Wait");
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
                     getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                    ChallengesCacheHandler.setCache();
                 }
 
             }
@@ -123,9 +124,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                 getView().showMessage("Konten Anda diterima!");
                 getView().hideProgress();
-                Utils.FROMNOCACHE = true;
-                ChallengesCacheHandler.setCache();
-
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }

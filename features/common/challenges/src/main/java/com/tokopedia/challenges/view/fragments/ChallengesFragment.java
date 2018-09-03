@@ -45,6 +45,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     ChallengesAnalytics analytics;
     private boolean pastChallenge;
     private boolean isFirst = true;
+    private boolean isFirstPastChallengeItem;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -114,7 +116,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         } else {
             openChallenges = resultList;
         }
-        if (listAdpater != null ) {
+        if (listAdpater != null && isFirstPastChallengeItem) {
             listAdpater.setData(resultList, isPastChallenge);
             listAdpater.notifyDataSetChanged();
 
@@ -125,6 +127,9 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             recyclerView.setAdapter(listAdpater);
         }
         EmptyStateViewHelper.hideEmptyState(getView());
+        if (isPastChallenge) {
+            isFirstPastChallengeItem = true;
+        }
     }
 
     @Override
