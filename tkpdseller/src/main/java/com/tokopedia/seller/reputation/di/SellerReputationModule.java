@@ -10,8 +10,8 @@ import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDa
 import com.tokopedia.seller.reputation.data.source.cloud.apiservice.api.SellerReputationApi;
 import com.tokopedia.seller.reputation.domain.ReputationRepository;
 import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 
 import dagger.Module;
 import dagger.Provides;

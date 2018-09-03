@@ -49,7 +49,8 @@ public class KolGetCommentMapper
                 postKol.getDescription() == null ? "" : postKol.getDescription(),
                 postKol.getCreateTime() == null ? "" :
                         TimeConverter.generateTime(context, postKol.getCreateTime()),
-                String.valueOf(postKol.getUserId())
+                String.valueOf(postKol.getUserId()),
+                getTagsLink(postKol)
         );
 
         return new KolComments(
@@ -101,5 +102,13 @@ public class KolGetCommentMapper
         }
 
         return viewModelList;
+    }
+
+    private String getTagsLink(PostKol postKol) {
+        try {
+            return postKol.getContent().get(0).getTags().get(0).getLink();
+        } catch (NullPointerException|IndexOutOfBoundsException e) {
+            return "";
+        }
     }
 }

@@ -1,9 +1,9 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
 
 import rx.Subscriber;
 
