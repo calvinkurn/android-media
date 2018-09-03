@@ -1020,9 +1020,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Deprecated
     @Override
     public void actionAppLink(Context context, String linkUrl) {
-        Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
-        intent.setData(Uri.parse(linkUrl));
-        context.startActivity(intent);
+        goToApplinkActivity(context, linkUrl);
     }
 
     /**
@@ -1390,7 +1388,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return appLinkScheme == null || appLinkScheme.isEmpty() ?
                 DigitalWebActivity.newInstance(context, alternateRedirectUrl)
                 : isSupportedDelegateDeepLink(appLinkScheme)
-                ? new Intent(context, DeeplinkHandlerActivity.class).setData(Uri.parse(appLinkScheme))
+                ? getApplinkIntent(context, appLinkScheme).setData(Uri.parse(appLinkScheme))
                 : DigitalWebActivity.newInstance(context, appLinkScheme);
     }
 
