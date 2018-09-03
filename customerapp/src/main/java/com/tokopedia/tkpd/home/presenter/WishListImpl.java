@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
@@ -609,7 +610,8 @@ public class WishListImpl implements WishList {
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
-                if (mPaging.CheckNextPage()) {
+                if (mPaging.CheckNextPage() &&
+                        !TextUtils.isEmpty(gqlWishListDataResponse.getGqlWishList().getPagination().getNextUrl())) {
                     wishListView.displayLoadMore(true);
                 } else {
                     wishListView.displayLoadMore(false);
