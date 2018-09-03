@@ -130,14 +130,9 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             } else {
                 suggestionText.setVisibility(View.GONE);
             }
-            if (!TextUtils.isEmpty(element.getSuggestionModel().getFormattedResultCount())) {
-                resultCountText.setText(String.format(context.getString(R.string.result_count_template_text), element.getSuggestionModel().getFormattedResultCount()));
-                resultCountText.setVisibility(View.VISIBLE);
-            } else {
-                resultCountText.setVisibility(View.GONE);
-            }
             suggestionContainer.addView(suggestionView);
         }
+        quickFilterAdapter.setFormattedResultCount(element.getSuggestionModel().getFormattedResultCount());
         quickFilterAdapter.setOptionList(element.getQuickFilterList());
         if (element.getGuidedSearch() != null
                 && element.getGuidedSearch().getItemList() != null
@@ -188,10 +183,15 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         }
     }
 
-    private static class QuickFilterAdapter extends RecyclerView.Adapter<QuickFilterItemViewHolder> {
+    private static class QuickFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private static final int TYPE_HEADER_PRODUCT_COUNT = 0;
+        private static final int TYPE_ITEM_QUICK_FILTER = 1;
+        private static final int HEADER_COUNT = 1;
 
         private List<Option> optionList = new ArrayList<>();
         private ItemClickListener clickListener;
+        private String formattedResultCount;
 
         public QuickFilterAdapter(ItemClickListener clickListener) {
             this.clickListener = clickListener;
@@ -203,20 +203,48 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             notifyDataSetChanged();
         }
 
-        @Override
-        public QuickFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
-            return new QuickFilterItemViewHolder(view, clickListener);
+        public void setFormattedResultCount(String formattedResultCount) {
+            this.formattedResultCount = formattedResultCount;
+            notifyDataSetChanged();
         }
 
         @Override
-        public void onBindViewHolder(QuickFilterItemViewHolder holder, int position) {
-            holder.bind(optionList.get(position));
+        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            if (viewType == TYPE_ITEM_QUICK_FILTER) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
+                return new QuickFilterItemViewHolder(view, clickListener);
+            } else if (viewType == TYPE_HEADER_PRODUCT_COUNT) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_result_count_item, parent, false);
+                return new ProductCountViewHolder(view);
+            }
+            throw new RuntimeException("Unknown view type " + viewType);
+        }
+
+        @Override
+        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof ProductCountViewHolder) {
+                ((ProductCountViewHolder) holder).bind(formattedResultCount);
+            } else if (holder instanceof QuickFilterItemViewHolder) {
+                ((QuickFilterItemViewHolder) holder).bind(optionList.get(position - HEADER_COUNT));
+            }
         }
 
         @Override
         public int getItemCount() {
-            return optionList.size();
+            return optionList.size() + HEADER_COUNT;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            if (isHeaderPosition(position)) {
+                return TYPE_HEADER_PRODUCT_COUNT;
+            } else {
+                return TYPE_ITEM_QUICK_FILTER;
+            }
+        }
+
+        private boolean isHeaderPosition(int position) {
+            return position < HEADER_COUNT;
         }
     }
 
@@ -243,6 +271,24 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
                     clickListener.onQuickFilterSelected(option);
                 }
             });
+        }
+    }
+
+    private static class ProductCountViewHolder extends RecyclerView.ViewHolder {
+        private TextView resultCountText;
+
+        public ProductCountViewHolder(View itemView) {
+            super(itemView);
+            resultCountText = itemView.findViewById(R.id.result_count_text_view);
+        }
+
+        public void bind(String formattedResultCount) {
+            if (!TextUtils.isEmpty(formattedResultCount)) {
+                resultCountText.setText(formattedResultCount);
+                resultCountText.setVisibility(View.VISIBLE);
+            } else {
+                resultCountText.setVisibility(View.GONE);
+            }
         }
     }
 
