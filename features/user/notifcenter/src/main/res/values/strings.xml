@@ -3,4 +3,6 @@
     <string name="title_notif_center">Info Pembeli</string>
     <string name="notif_today">Hari Ini</string>
     <string name="notif_yesterday">Kemarin</string>
+    <string name="notif_filter">Filter</string>
+    <string name="notif_cancel">Batalkan</string>
 </resources>

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.component.Menus
 import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
@@ -18,6 +19,7 @@ import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
+import com.tokopedia.notifcenter.view.viewmodel.NotifFilterViewModel
 import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
 import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
@@ -147,6 +149,40 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             resetParam()
             adapter.clearAllElements()
             presenter.fetchData()
+        }
+        filterBtn.setButton1OnClickListener {
+            context?.let {
+                Menus(it)
+            }?.let { menus ->
+                val listItem = ArrayList<Menus.ItemMenus>()
+                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_ALL_TEXT))
+                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
+                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
+
+                menus.itemMenuList = listItem
+                menus.setActionText(getString(R.string.notif_cancel))
+                menus.setOnActionClickListener {
+                    menus.dismiss()
+                }
+                menus.setOnItemMenuClickListener { itemMenus, pos ->
+                    resetParam()
+                    adapter.clearAllElements()
+                    when (itemMenus.title) {
+                        NotifFilterViewModel.FILTER_BUYER_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_BUYER_ID)
+
+                        NotifFilterViewModel.FILTER_SELLER_TEXT -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_SELLER_ID)
+
+                        else -> presenter
+                                .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
+                    }
+                    presenter.fetchData()
+                    menus.dismiss()
+                }
+
+                menus.show()
+            }
         }
     }
 
