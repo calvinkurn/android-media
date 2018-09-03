@@ -56,6 +56,9 @@ public class Utils {
     private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
+    public static Locale locale = new Locale("in", "ID");
+    public static final String RUPIAH_FORMAT = "Rp %s";
+
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -193,15 +196,6 @@ public class Utils {
         return false;
     }
 
-    private static boolean isNullOrEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
-
-    public static boolean isNotNullOrEmpty(String string) {
-        return !isNullOrEmpty(string);
-    }
-
-
     public static String convertEpochToString(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
@@ -209,13 +203,6 @@ public class Utils {
         Date date = new Date(epochTime);
         String dateString = sdf.format(date);
         return dateString;
-    }
-
-    public static Locale locale = new Locale("in", "ID");
-    public static final String RUPIAH_FORMAT = "Rp %s";
-
-    public static String convertToCurrencyString(Integer value) {
-        return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
     }
 
     public static String convertToCurrencyString(long value) {

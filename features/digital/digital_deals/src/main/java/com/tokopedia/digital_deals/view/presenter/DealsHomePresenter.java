@@ -156,16 +156,8 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
             return;
 
         if (!productItem.isTrack()) {
-            HashMap<String, Object> bannerMap = new HashMap<>();
-            bannerMap.put("id", productItem.getId());
-            bannerMap.put("name", "/deals - top banner");
-            bannerMap.put("position", currentPage);
-            bannerMap.put("creative", productItem.getDisplayName());
-            HashMap<String, Object> ecommerce = new HashMap<>();
-            ecommerce.put(DealsAnalytics.EVENT_PROMO_VIEW, bannerMap);
-            sendEventEcommerce(DealsAnalytics.EVENT_PROMO_VIEW
-                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER,
-                    String.format("%s - %s", productItem.getDisplayName(), currentPage), ecommerce);
+            sendEventEcommerce(productItem.getId(), currentPage, productItem.getDisplayName(), DealsAnalytics.EVENT_PROMO_VIEW
+                    , DealsAnalytics.EVENT_IMPRESSION_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
             productItem.setTrack(true);
 
         }
@@ -437,9 +429,9 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-    public void sendEventEcommerce(String event, String action, String label,
-                       HashMap<String, Object> ecommerce){
-        dealsAnalytics.sendEventEcommerce(event, action, label, ecommerce);
+    public void sendEventEcommerce(int id, int position, String creative, String event, String action, String name){
+        dealsAnalytics.sendEcommerceBrand(id, position, creative, event
+                ,action, name);
     }
 
     public void sendEventView(String action, String label) {

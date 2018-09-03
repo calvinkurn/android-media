@@ -43,7 +43,6 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -264,57 +263,6 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         this.categoryName = categoryName;
     }
 
-    private void sendImpressionEvent(int position) {
-        String event = null, action = null, label = null;
-        ProductItem productItem = categoryItems.get(position);
-        HashMap<String, Object> productMap = new HashMap<>();
-        HashMap<String, Object> impressions = new HashMap<>();
-        HashMap<String, Object> ecommerce = new HashMap<>();
-        event = DealsAnalytics.EVENT_PRODUCT_VIEW;
-        if (isHeaderAdded || isBrandHeaderAdded)
-            position -= 1;
-        productMap.put("position", position);
-        productMap.put("id", productItem.getId());
-        productMap.put("name", productItem.getDisplayName());
-        productMap.put("price", productItem.getSalesPrice());
-        label = String.format("%s - %s - %s", productItem.getBrand().getTitle()
-                , productItem.getDisplayName()
-                , position);
-        if (pageType == DealsCategoryAdapter.HOME_PAGE) {
-            productMap.put("list", "/deals - trending");
-            action = DealsAnalytics.EVENT_IMPRESSION_TRENDING_DEALS;
-
-        } else if (pageType == DealsCategoryAdapter.SEARCH_PAGE) {
-
-            productMap.put("list", "/deals - search by location");
-            if (isHeaderAdded && topDealsLayout)
-                action = DealsAnalytics.EVENT_IMPRESSION_SEARCH_TRENDING;
-            else
-                action = DealsAnalytics.EVENT_IMPRESSION_SEARCH_RESULT;
-
-        } else if (pageType == DealsCategoryAdapter.CATEGORY_PAGE) {
-            productMap.put("list", "/deals - " + categoryName);
-            action = DealsAnalytics.EVENT_VIEW_PRODUCT_CATEGORY_DETAIL;
-            label = String.format("%s - %s - %s - %s", categoryName, productItem.getBrand().getTitle()
-                    , productItem.getDisplayName()
-                    , position);
-
-        } else if (pageType == DealsCategoryAdapter.BRAND_PAGE) {
-            productMap.put("list", "/deals - " + productItem.getBrand().getTitle());
-            action = DealsAnalytics.EVENT_VIEW_PRODUCT_BRAND_DETAIL;
-        } else if (pageType == DealsCategoryAdapter.DETAIL_PAGE) {
-            productMap.put("list", "/deals - recommendation pdp");
-            action = DealsAnalytics.EVENT_VIEW_RECOMMENDED_PDT_DETAIL;
-            event = DealsAnalytics.EVENT_VIEW_PRODUCT;
-        }
-        List<HashMap<String, Object>> productMaps = new ArrayList<>();
-        productMaps.add(productMap);
-        impressions.put("products", productMaps);
-        ecommerce.put("impressions", impressions);
-        dealsAnalytics.sendEventEcommerce(event
-                , action
-                , label, ecommerce);
-    }
 
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
@@ -323,23 +271,26 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             ItemViewHolder holder1 = ((ItemViewHolder) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-                sendImpressionEvent(holder1.getIndex());
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
             }
         } else if (holder instanceof ItemViewHolder2) {
             ItemViewHolder2 holder1 = ((ItemViewHolder2) holder);
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-                sendImpressionEvent(holder1.getIndex());
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
             }
         } else if (holder instanceof TopSuggestionHolder) {
 
             TopSuggestionHolder holder1 = ((TopSuggestionHolder) holder);
-            if(!isHeaderAdded){
+            if (!isHeaderAdded) {
                 holder1.setShown(false);
             }
             if (!holder1.isShown()) {
                 holder1.setShown(true);
-                sendImpressionEvent(holder1.getIndex());
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
             }
         }
     }
@@ -541,6 +492,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
 
         private String getShareLabel(int position) {
+            if(categoryItems.get(getIndex()).getBrand()==null)
+                return "";
             return String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
                     , categoryItems.get(getIndex()).getDisplayName(),
                     position);
@@ -550,6 +503,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             String str = LIKE;
             if (categoryItems.get(getIndex()).isLiked())
                 str = UNLIKE;
+            if(categoryItems.get(getIndex()).getBrand()==null)
+                return "";
             return String.format("%s - %s - %s - %s",
                     categoryItems.get(getIndex()).getBrand().getTitle()
                     , categoryItems.get(getIndex()).getDisplayName()
@@ -588,55 +543,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
+                dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), categoryName,
+                        pageType, position);
 
-
-                String action = null, label;
-                ProductItem productItem = categoryItems.get(getIndex());
-                HashMap<String, Object> productMap = new HashMap<>();
-                HashMap<String, Object> list = new HashMap<>();
-                HashMap<String, Object> click = new HashMap<>();
-                HashMap<String, Object> ecommerce = new HashMap<>();
-
-                productMap.put("id", productItem.getId());
-                productMap.put("name", productItem.getDisplayName());
-                productMap.put("price", productItem.getSalesPrice());
-                productMap.put("position", position);
-                label = String.format("%s - %s - %s", productItem.getBrand().getTitle()
-                        , productItem.getDisplayName()
-                        , position);
-                if (pageType == DealsCategoryAdapter.HOME_PAGE) {
-                    list.put("list", "/deals - trending");
-                    productMap.put("list", "/deals - trending");
-                    action = DealsAnalytics.EVENT_CLICK_TRENDING_DEALS;
-
-                } else if (pageType == DealsCategoryAdapter.SEARCH_PAGE) {
-                    list.put("list", "/deals - search by trending");
-                    productMap.put("list", "/deals - search by trending");
-                    action = DealsAnalytics.EVENT_CLICK_SEARCH_RESULT;
-
-                } else if (pageType == DealsCategoryAdapter.CATEGORY_PAGE) {
-
-                    label = String.format("%s - %s - %s - %s", categoryName, productItem.getBrand().getTitle()
-                            , productItem.getDisplayName()
-                            , position);
-                    list.put("list", "/deals - category");
-                    productMap.put("list", "/deals - " + categoryName);
-                    action = DealsAnalytics.EVENT_CLICK_PRODUCT_CATEGORY_DETAIL;
-
-                } else if (pageType == DealsCategoryAdapter.BRAND_PAGE) {
-                    list.put("list", "/deals - brand");
-                    productMap.put("list", "/deals - " + productItem.getBrand().getTitle());
-                    action = DealsAnalytics.EVENT_CLICK_PRODUCT_BRAND_DETAIL;
-
-                }
-                click.put("actionField", list);
-                List<HashMap<String, Object>> productMaps = new ArrayList<>();
-                productMaps.add(productMap);
-                click.put("products", productMaps);
-                ecommerce.put("click", click);
-                dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
-                        , action
-                        , label, ecommerce);
             }
 
 
@@ -746,33 +655,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 detailsIntent.putExtra(BrandDetailsPresenter.BRAND_DATA, categoryItems.get(getIndex()).getBrand());
                 context.startActivity(detailsIntent);
             } else {
-
-                ProductItem productItem = categoryItems.get(getIndex());
-                HashMap<String, Object> productMap = new HashMap<>();
-                productMap.put("id", productItem.getId());
-                productMap.put("name", productItem.getDisplayName());
-                productMap.put("price", productItem.getSalesPrice());
-                productMap.put("position", getIndex());
-                HashMap<String, Object> list = new HashMap<>();
-                HashMap<String, Object> click = new HashMap<>();
-                HashMap<String, Object> ecommerce = new HashMap<>();
-                list.put("list", "/deals - recommendation pdp");
-                productMap.put("list", "/deals - recommendation pdp");
-
-                click.put("actionField", list);
-                List<HashMap<String, Object>> productMaps = new ArrayList<>();
-                productMaps.add(productMap);
-                click.put("products", productMaps);
-                ecommerce.put("click", click);
-                dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
-                        , DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL
-                        , String.format("%s - %s - %s", productItem.getBrand().getTitle()
-                                , productItem.getDisplayName()
-                                , getIndex()), ecommerce);
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 context.startActivity(detailsIntent);
-
+                dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), getIndex(), DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL, DealsAnalytics.LIST_DEALS_RECOMMENDED_PDP);
             }
         }
     }
@@ -863,35 +749,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
             detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
             context.startActivity(detailsIntent);
-            int position=getIndex();
+            int position = getIndex();
             String action;
             if (isHeaderAdded) {
                 action = DealsAnalytics.EVENT_CLICK_SEARCH_TRENDING;
-                position-=1;
-            }
-            else
+                position -= 1;
+            } else
                 action = DealsAnalytics.EVENT_CLICK_SEARCH_RESULT;
             ProductItem productItem = categoryItems.get(getIndex());
-            HashMap<String, Object> productMap = new HashMap<>();
-            productMap.put("id", productItem.getId());
-            productMap.put("name", productItem.getDisplayName());
-            productMap.put("price", productItem.getSalesPrice());
-            productMap.put("position", position);
-            HashMap<String, Object> list = new HashMap<>();
-            HashMap<String, Object> click = new HashMap<>();
-            HashMap<String, Object> ecommerce = new HashMap<>();
-            list.put("list", "/deals - search by trending");
-            productMap.put("list", "/deals - search by trending");
-            click.put("actionField", list);
-            List<HashMap<String, Object>> productMaps = new ArrayList<>();
-            productMaps.add(productMap);
-            click.put("products", productMaps);
-            ecommerce.put("click", click);
-            dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_PRODUCT_CLICK
-                    , action
-                    , String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
-                            , categoryItems.get(getIndex()).getDisplayName()
-                            , position), ecommerce);
+            dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), position, action, DealsAnalytics.LIST_DEALS_SEARCH_TRENDING);
         }
     }
 

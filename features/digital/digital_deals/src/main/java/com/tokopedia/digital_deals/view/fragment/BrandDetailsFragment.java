@@ -72,7 +72,8 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
-    @Inject DealsAnalytics dealsAnalytics;
+    @Inject
+    DealsAnalytics dealsAnalytics;
     private DealsCategoryAdapter dealsAdapter;
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
@@ -140,7 +141,6 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     }
 
 
-
     @Override
     protected void initInjector() {
         getComponent(DealsComponent.class).inject(this);
@@ -193,7 +193,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
+                    try {
+                        imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
+                    } catch (Exception e) {
+
+                    }
                 } else {
                     imageView.setImageBitmap(resource);
                 }

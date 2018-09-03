@@ -322,27 +322,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         cardView.setVisibility(View.VISIBLE);
         baseMainContent.setVisibility(View.VISIBLE);
 
-
-        HashMap<String, Object> productMap = new HashMap<>();
-        productMap.put("id", detailsViewModel.getId());
-        productMap.put("name", detailsViewModel.getDisplayName());
-        productMap.put("price", detailsViewModel.getSalesPrice());
-        productMap.put("list", "");
-        HashMap<String, Object> list = new HashMap<>();
-        HashMap<String, Object> detail = new HashMap<>();
-        HashMap<String, Object> ecommerce = new HashMap<>();
-        list.put("list", "");
-        detail.put("actionField", list);
-        List<HashMap<String, Object>> productMaps = new ArrayList<>();
-        productMaps.add(productMap);
-        detail.put("products", productMaps);
-        ecommerce.put("currencyCode", "IDR");
-        ecommerce.put("detail", detail);
-        dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_VIEW_PRODUCT
-                , DealsAnalytics.EVENT_VIEW_PRODUCT_DETAILS
-                , String.format("%s - %s", detailsViewModel.getBrand().getTitle()
-                        , detailsViewModel.getDisplayName()), ecommerce);
-
+        if (detailsViewModel.getBrand() != null)
+            dealsAnalytics.sendEcommerceDealDetail(detailsViewModel.getId(), detailsViewModel.getSalesPrice(), detailsViewModel.getDisplayName(), detailsViewModel.getBrand().getTitle());
 
     }
 

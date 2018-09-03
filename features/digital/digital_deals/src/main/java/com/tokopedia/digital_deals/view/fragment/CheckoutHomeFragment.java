@@ -280,28 +280,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.ll_select_payment_method) {
-            HashMap<String, Object> productMap = new HashMap<>();
-            productMap.put("id", dealDetails.getId());
-            productMap.put("name", dealDetails.getDisplayName());
-            productMap.put("price", (quantity * dealDetails.getSalesPrice()));
-            productMap.put("category", "deals");
-            productMap.put("quantity", quantity);
-            List<HashMap<String, Object>> productMaps = new ArrayList<>();
-            productMaps.add(productMap);
-            HashMap<String, Object> checkout = new HashMap<>();
-            HashMap<String, Object> ecommerce = new HashMap<>();
-            checkout.put("products", productMaps);
-            ecommerce.put("checkout", checkout);
-            String promo;
-            if (promoApplied)
-                promo = "promo";
-            else
-                promo = "non promo";
-            dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_CHECKOUT
-                    , DealsAnalytics.EVENT_CLICK_PROCEED_TO_PAYMENT
-                    , String.format("%s - %s - %s", dealDetails.getBrand().getTitle()
-                            , dealDetails.getDisplayName(), promo), ecommerce);
             mPresenter.getPaymentLink();
+            if(dealDetails.getBrand()!=null){
+                dealsAnalytics.sendEcommercePayment(dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
+            }
         } else if (v.getId() == R.id.tv_promocode) {
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {

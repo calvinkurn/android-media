@@ -177,24 +177,6 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             setButtons();
 
         } else if (v.getId() == R.id.tv_continue) {
-            HashMap<String, Object> productMap = new HashMap<>();
-            productMap.put("id", dealDetails.getId());
-            productMap.put("name", dealDetails.getDisplayName());
-            productMap.put("price", (dealDetails.getSalesPrice()*CURRENT_QUANTITY));
-            productMap.put("category", "deals");
-            productMap.put("quantity", CURRENT_QUANTITY);
-            HashMap<String, Object> add = new HashMap<>();
-            HashMap<String, Object> ecommerce = new HashMap<>();
-            List<HashMap<String, Object>> productMaps = new ArrayList<>();
-            productMaps.add(productMap);
-            add.put("products", productMaps);
-            ecommerce.put("currencyCode", "IDR");
-            ecommerce.put("add", add);
-            dealsAnalytics.sendEventEcommerce(DealsAnalytics.EVENT_ADD_TO_CART
-                    , DealsAnalytics.EVENT_CHECKOUT
-                    , String.format("%s - %s - %s - %s", dealDetails.getBrand().getTitle()
-                            , dealDetails.getDisplayName(), CURRENT_QUANTITY, dealDetails.getSalesPrice()), ecommerce);
-
             packageViewModel = new PackageViewModel();
             packageViewModel.setCategoryId(dealDetails.getCategoryId());
             packageViewModel.setProductId(dealDetails.getId());
@@ -203,8 +185,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
-
             mPresenter.verifyCart(packageViewModel);
+            if(dealDetails.getBrand()!=null){
+                dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), CURRENT_QUANTITY, dealDetails.getSalesPrice(),
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle());
+            }
+
         }
     }
 

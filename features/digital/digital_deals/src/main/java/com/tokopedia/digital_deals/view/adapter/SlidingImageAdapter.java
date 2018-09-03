@@ -56,16 +56,8 @@ public class SlidingImageAdapter extends PagerAdapter {
         imageLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                HashMap<String, Object> bannerMap = new HashMap<>();
-                bannerMap.put("id", productItems.get(position).getId());
-                bannerMap.put("name", "/deals - top banner");
-                bannerMap.put("position", position);
-                bannerMap.put("creative", productItems.get(position).getDisplayName());
-                HashMap<String, Object> ecommerce = new HashMap<>();
-                ecommerce.put(DealsAnalytics.EVENT_PROMO_CLICK, bannerMap);
-                mPresenter.sendEventEcommerce(DealsAnalytics.EVENT_PROMO_CLICK
-                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER,
-                        String.format("%s - %s", productItems.get(position).getDisplayName(), position), ecommerce);
+                mPresenter.sendEventEcommerce(productItems.get(position).getId(), position, productItems.get(position).getDisplayName(), DealsAnalytics.EVENT_PROMO_CLICK
+                        , DealsAnalytics.EVENT_CLICK_PROMO_BANNER, DealsAnalytics.LIST_DEALS_TOP_BANNER);
                 mPresenter.onClickBanner();
             }
         });
