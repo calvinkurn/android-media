@@ -9,9 +9,9 @@
 
     <ImageView
         android:id="@+id/img_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_error_network" />
+        android:layout_width="@dimen/dp_180"
+        android:layout_height="@dimen/dp_180"
+        android:src="@drawable/empty_challenge_active" />
 
     <TextView
         android:id="@+id/tv_error_title"
@@ -46,7 +46,7 @@ Please check again later."
         android:paddingTop="@dimen/dp_8"
         android:text="ok"
         android:textColor="@color/white"
-        android:textSize="@dimen/dp_24" />
+        android:textSize="@dimen/dp_14" />
 
 </LinearLayout>
 

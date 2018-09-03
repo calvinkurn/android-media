@@ -42,12 +42,6 @@
             android:textColor="@color/black_56" />
     </LinearLayout>
 
-
-    <include
-        layout="@layout/empty_view"
-        android:visibility="gone" />
-
-
     <LinearLayout
         android:id="@+id/progress_bar_layout"
         android:layout_width="match_parent"

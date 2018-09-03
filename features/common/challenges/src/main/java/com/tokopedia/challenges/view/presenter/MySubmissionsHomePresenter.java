@@ -70,7 +70,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
                 } else {
                     isLastPage = true;
                     //if (pageStart == 0)
-                        getView().renderEmptyList();
+                    getView().renderEmptyList();
                 }
                 //checkIfToLoad(getView().getLayoutManager());
             }

@@ -25,10 +25,10 @@ public class CountDownView extends FrameLayout {
     private boolean timerRunning;
     @Nullable
     private CountDownListener listener;
-    TextView tvHours;
-    TextView tvMins;
-    TextView tvSecs;
-    TextView tvDays;
+    private TextView tvHours;
+    private TextView tvMins;
+    private TextView tvSecs;
+    private TextView tvDays;
     private ProgressBar progressBar;
 
     public CountDownView(Context context, @Nullable AttributeSet attrs) {
@@ -53,14 +53,14 @@ public class CountDownView extends FrameLayout {
         if (timerRunning) {
             return;
         }
-        if(System.currentTimeMillis()>duration)
+        if (System.currentTimeMillis() > duration)
             throw new MessageErrorException("Expiry time cannot be less than current time");
-        startDuration = currentDuration = (duration-System.currentTimeMillis());
+        startDuration = currentDuration = (duration - System.currentTimeMillis());
         updateText(startDuration);
     }
 
     public void start(final ProgressBar progressBar) {
-        this.progressBar=progressBar;
+        this.progressBar = progressBar;
         if (timerRunning) {
             return;
         }
@@ -70,7 +70,7 @@ public class CountDownView extends FrameLayout {
             @Override
             public void onTick(long millis) {
                 currentDuration = millis;
-                progressBar.setProgress(100-(int)((millis/(float)startDuration)*100.0f));
+                progressBar.setProgress(100 - (int) ((millis / (float) startDuration) * 100.0f));
                 updateText(millis);
             }
 
@@ -105,7 +105,6 @@ public class CountDownView extends FrameLayout {
     }
 
 
-
     void updateText(long duration) {
         generateCountdownText(duration);
     }
@@ -113,22 +112,24 @@ public class CountDownView extends FrameLayout {
 
     void generateCountdownText(long duration) {
 
-        long seconds=duration/1000;
+        long seconds = duration / 1000;
         int day = (int) TimeUnit.SECONDS.toDays(seconds);
-        long hours = TimeUnit.SECONDS.toHours(seconds) - (day *24);
-        long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds)* 60);
-        long second = TimeUnit.SECONDS.toSeconds(seconds) - (TimeUnit.SECONDS.toMinutes(seconds) *60);
+        long hours = TimeUnit.SECONDS.toHours(seconds) - (day * 24);
+        long minute = TimeUnit.SECONDS.toMinutes(seconds) - (TimeUnit.SECONDS.toHours(seconds) * 60);
+        long second = TimeUnit.SECONDS.toSeconds(seconds) - (TimeUnit.SECONDS.toMinutes(seconds) * 60);
 
-        tvDays.setText(String.valueOf(day) + " hari");
-        if(hours<10)
+        if (day > 0) {
+            tvDays.setText(String.valueOf(day) + " hari");
+        }
+        if (hours < 10)
             tvHours.setText(String.format(getResources().getString(R.string.append_0), hours));
         else
             tvHours.setText(String.valueOf(hours));
-        if(minute<10)
+        if (minute < 10)
             tvMins.setText(String.format(getResources().getString(R.string.append_0), minute));
         else
             tvMins.setText(String.valueOf(minute));
-        if(second<10)
+        if (second < 10)
             tvSecs.setText(String.format(getResources().getString(R.string.append_0), second));
         else
             tvSecs.setText(String.valueOf(second));

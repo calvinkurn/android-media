@@ -101,18 +101,16 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onNext(Map<Type, RestResponse> restResponse) {
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
+                postId = fingerprints.getNewPostId();
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
-                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath));
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath,postId));
                     getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
                 }
-                postId = fingerprints.getNewPostId();
+
             }
         });
-
-
     }
-
 
     public void deinit() {
         getView().getContext().unregisterReceiver(receiver);

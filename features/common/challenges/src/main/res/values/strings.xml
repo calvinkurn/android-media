@@ -51,6 +51,8 @@
     <string name="my_submissions">Saya Ikuti</string>
     <string name="active_challenges">Sedang Berlangsung</string>
     <string name="text_remaining_days">Berakhir %d hari lagi</string>
+    <string name="text_remaining_hours">Berakhir %d jam lagi</string>
+    <string name="text_remaining_minutes">Berakhir %d menit lagi</string>
 
     <string name="completed">Telah Berakhir</string>
     <string name="participated">Saya Ikuti</string>
@@ -68,6 +70,7 @@
     <string name="submit_photo_video">Daftarkan Foto atau Video</string>
     <string name="copy_to_clipboard_bhahasa">link telah disalin</string>
     <string name="post_deleted_msg">unggahan telah dihapus</string>
+    <string name="submitted_success">Konten Anda diterima!</string>
 
 
 </resources>

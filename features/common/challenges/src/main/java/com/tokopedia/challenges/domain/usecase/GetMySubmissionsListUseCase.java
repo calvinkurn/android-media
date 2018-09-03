@@ -12,6 +12,7 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,16 +36,19 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_NOCACHE + "&status=all&start=" + start + "&size=" + size;
+        HashMap headers=new HashMap();
+        String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start=" + start + "&size=" + size;
         if (Utils.FROMNOCACHE) {
-            url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS_NOCACHE + "&status=all&start=" + start + "&size=" + size;
+            headers.put("Cache-Control","max-age=0");
             Utils.FROMNOCACHE = false;
         }
-        RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class)
-                .build();
 
+        RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class).setHeaders(headers)
+                .build();
         tempRequest.add(restRequest1);
 
         return tempRequest;
     }
+
+
 }

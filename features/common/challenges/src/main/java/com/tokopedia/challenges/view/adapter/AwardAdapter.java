@@ -61,7 +61,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private TextView awardDescription;
         private ImageView awardImage;
         private int index;
-        private LinearLayout layout;
+        private View layout;
 
         public AwardViewHolder(View itemView) {
             super(itemView);
@@ -69,7 +69,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             awardTitle = itemView.findViewById(R.id.tv_award_title);
             awardDescription = itemView.findViewById(R.id.tv_award_price);
             awardImage = itemView.findViewById(R.id.award_image);
-            layout = itemView.findViewById(R.id.ll_main);
+            layout = itemView.findViewById(R.id.main_constrant);
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
             int devicewidth = (int) (displaymetrics.widthPixels / 1.6);

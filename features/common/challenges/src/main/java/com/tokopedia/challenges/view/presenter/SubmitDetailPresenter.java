@@ -1,13 +1,11 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
-import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
 import com.tokopedia.challenges.domain.usecase.PostDeleteSubmissionUseCase;
@@ -51,15 +49,15 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         getView().setProfileText(model.getUser().getTitle());
         if (model.getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
             getView().setChallengeImage(model.getMedia().get(0).getImageUrl(), "");
-            sendBuzzPointEvent(model.getId());
         } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
             getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
         }
-        if (isParticipated(model)) {
+        if (getParticipatedStatus(model)) {
             getView().isParticipated(true);
             getView().setLikesCountView(String.valueOf(model.getLikes()));
         } else {
             getView().isParticipated(false);
+            sendBuzzPointEvent(model.getId());
         }
         getView().setLikes(model.getMe().isLiked());
         getView().setApprovedView(model.getStatus());
@@ -210,7 +208,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     }
 
     @Override
-    public boolean isParticipated(SubmissionResult submissionResult) {
+    public boolean getParticipatedStatus(SubmissionResult submissionResult) {
         return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
 
     }

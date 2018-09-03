@@ -11,7 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
@@ -20,6 +19,7 @@ import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
+import com.tokopedia.challenges.view.utils.EmptyStateViewHelper;
 
 import java.util.List;
 
@@ -35,7 +35,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public MySubmissionsHomePresenter mySubmissionsHomePresenter;
     private MySubmissionsListAdapter listAdpater;
     private RecyclerView recyclerView;
-    private LinearLayout emptyLayout;
     private View progressBar;
     private Boolean isFirst = true;
     private LinearLayoutManager layoutManager;
@@ -60,7 +59,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_submissions, container, false);
         recyclerView = view.findViewById(R.id.rv_home_submissions);
-        emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
@@ -68,7 +66,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView.setAdapter(listAdpater);
         //recyclerView.addOnScrollListener(rvOnScrollListener);
         recyclerView.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
         //mySubmissionsHomePresenter.getMySubmissionsList();
         //isFirst = false;
         return view;
@@ -92,19 +89,19 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     public void showErrorNetwork(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(
-                getActivity(), getView(),
-                "Oops!",
-                "You have not participate in any challenges.\n" +
-                        "Click this button to see active challenges.",
-                "Show Challenges", R.drawable.ic_offline2,
-                getChallengesRetryListener()
-        );
+//        EmptyStateViewHelper.showEmptyState(
+//                getActivity(), getView(),
+//                "Oops!",
+//                "You have not participate in any challenges.\n" +
+//                        "Click this button to see active challenges.",
+//                "Show Challenges", R.drawable.ic_offline2,
+//                getChallengesRetryListener()
+//        );
     }
 
 
-    private NetworkErrorHelper.RetryClickedListener getChallengesRetryListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
+    private EmptyStateViewHelper.RetryClickedListener getChallengesRetryListener() {
+        return new EmptyStateViewHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
 
@@ -116,7 +113,15 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     @Override
     public void renderEmptyList() {
         recyclerView.setVisibility(View.GONE);
-        emptyLayout.setVisibility(View.VISIBLE);
+        //emptyLayout.setVisibility(View.VISIBLE);
+        EmptyStateViewHelper.showEmptyState(
+                getActivity(), getView(),
+                "Oops!",
+                "There are no challenges available.\n" +
+                        "Please check again later.",
+                "Show challenges", R.drawable.empty_mysubmission_active,
+                getMySubmissionsRetryListener()
+        );
     }
 
     @Override
@@ -127,7 +132,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     @Override
     public void showProgressBarView() {
         progressBar.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -177,11 +181,9 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         return null;
     }
 
-    private NetworkErrorHelper.RetryClickedListener getMySubmissionsRetryListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-            }
+    private EmptyStateViewHelper.RetryClickedListener getMySubmissionsRetryListener() {
+        return () -> {
+            getActivity().onBackPressed();
         };
     }
 

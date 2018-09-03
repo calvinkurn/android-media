@@ -18,6 +18,8 @@ import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
 import com.tokopedia.challenges.view.utils.Utils;
 
+import java.util.concurrent.TimeUnit;
+
 class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
     private final ChallengesAnalytics analytics;
@@ -42,24 +44,23 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         analytics = new ChallengesAnalytics(context);
     }
 
-    void bind(Result challengesResult,boolean isPastChallenge) {
+    void bind(Result challengesResult, boolean isPastChallenge) {
         tvTitle.setText(challengesResult.getTitle());
         tvHastags.setText(challengesResult.getHashTag());
         tvTimeRemaining.setVisibility(View.GONE);
         tvStatus.setVisibility(View.VISIBLE);
+        imgShare.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_COMPLETED);
             imgShare.setVisibility(View.GONE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_PARTICIPATED);
         } else {
-            RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(challengesResult.getEndDate()));
-            tvTimeRemaining.setText(String.format(context.getResources().getString(R.string.text_remaining_days), daysFormatter.getRemainingDays()));
+            tvTimeRemaining.setText(getEndDate(challengesResult.getEndDate()));
             tvTimeRemaining.setVisibility(View.VISIBLE);
             tvStatus.setVisibility(View.GONE);
         }
-        //loadImageWithIdWithoutPlaceholder
-        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100);
+        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrl(challengesResult.getThumbnailUrl()), R.color.grey_1100);
 
         itemView.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, ChallengeDetailActivity.class);
@@ -95,4 +96,19 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
+    private String getEndDate(String time) {
+        RemainingDaysFormatter daysFormatter = new RemainingDaysFormatter(System.currentTimeMillis(), Utils.convertUTCToMillis(time));
+
+        int day = (int) daysFormatter.getRemainingDays();
+        long hours = daysFormatter.getRemainingHours();
+        long minute = daysFormatter.getRemainingMinutes();
+
+        if (day > 0) {
+            return String.format(context.getResources().getString(R.string.text_remaining_days), day);
+        } else if (hours > 0) {
+            return String.format(context.getResources().getString(R.string.text_remaining_hours), hours);
+        } else if (minute < 0)
+            return String.format(context.getResources().getString(R.string.text_remaining_minutes), minute);
+        return String.format(context.getResources().getString(R.string.text_remaining_days), day);
+    }
 }

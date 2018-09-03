@@ -299,7 +299,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void renderChallengeDetail(Result challengeResult) {
-        ImageHandler.loadImage(getActivity(), challengeImage, challengeResult.getThumbnailUrl(), R.color.grey_1100, R.color.grey_1100);
+        ImageHandler.loadImage(getActivity(), challengeImage, Utils.getImageUrl(challengeResult.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
         if (!TextUtils.isEmpty(challengeResult.getTitle())) {
             challengeTitle.setText(challengeResult.getTitle());
         } else {

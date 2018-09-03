@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
@@ -31,8 +30,7 @@
                     style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="21" />
+                    android:gravity="center_vertical" />
             </LinearLayout>
 
             <TextView
@@ -54,8 +52,7 @@
                     style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    tools:text="22" />
+                    android:gravity="center_vertical" />
 
 
             </LinearLayout>
@@ -79,8 +76,7 @@
                     style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    tools:text="20" />
+                    android:gravity="center_vertical" />
 
             </LinearLayout>
 
@@ -103,8 +99,7 @@
                     style="@style/TextView.Micro.WhitePrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    tools:text="20" />
+                    android:gravity="center_vertical" />
 
             </LinearLayout>
         </LinearLayout>

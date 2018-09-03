@@ -20,6 +20,7 @@ import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
 import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
+import com.tokopedia.challenges.view.utils.EmptyStateViewHelper;
 
 import java.util.List;
 
@@ -36,7 +37,6 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private RecyclerView recyclerView;
     private TextView tvActiveChallenges;
     private TextView tvPastChallenges;
-    private LinearLayout emptyLayout;
     private View progressBar;
     private List<Result> openChallenges;
     private List<Result> pastChallenges;
@@ -61,7 +61,6 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         recyclerView = view.findViewById(R.id.rv_home_challenges);
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
-        emptyLayout = view.findViewById(R.id.empty_view);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
@@ -101,14 +100,13 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
         recyclerView.setVisibility(View.VISIBLE);
-        emptyLayout.setVisibility(View.GONE);
         if (isPastChallenge) {
             pastChallenges = resultList;
         } else {
             openChallenges = resultList;
         }
         if (listAdpater != null) {
-            listAdpater.setData(resultList,isPastChallenge);
+            listAdpater.setData(resultList, isPastChallenge);
             listAdpater.notifyDataSetChanged();
         } else {
             listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);
@@ -116,6 +114,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             recyclerView.setLayoutManager(mLayoutManager);
             recyclerView.setAdapter(listAdpater);
         }
+        EmptyStateViewHelper.hideEmptyState(getView());
     }
 
     @Override
@@ -133,7 +132,14 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public void renderEmptyList() {
         recyclerView.setVisibility(View.GONE);
-        emptyLayout.setVisibility(View.VISIBLE);
+        EmptyStateViewHelper.showEmptyState(
+                getActivity(), getView(),
+                "Oops!",
+                "There are no challenges available.\n" +
+                        "Please check again later.",
+                null, R.drawable.empty_challenge_active,
+                null
+        );
 
     }
 
@@ -146,7 +152,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void showProgressBarView() {
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
-        emptyLayout.setVisibility(View.GONE);
+        EmptyStateViewHelper.hideEmptyState(getView());
     }
 
     @Override

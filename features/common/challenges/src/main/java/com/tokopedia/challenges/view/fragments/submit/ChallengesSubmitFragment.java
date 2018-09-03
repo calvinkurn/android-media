@@ -3,6 +3,7 @@ package com.tokopedia.challenges.view.fragments.submit;
 import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -208,7 +209,15 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             progress.setMessage(message);
             progress.setIndeterminate(true);
             progress.setCanceledOnTouchOutside(false);
+            progress.setCancelable(true);
             progress.show();
+
+            progress.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialog) {
+                    getActivity().finish();
+                }
+            });
         }
     }
 

@@ -196,9 +196,9 @@ public class Utils {
     public static void setTextViewBackground(Context context, TextView tvStatus, String status) {
         tvStatus.setText(status);
         if (STATUS_APPROVED.equalsIgnoreCase(status) || STATUS_PARTICIPATED.equalsIgnoreCase(status)) {
-            if(STATUS_PARTICIPATED.equalsIgnoreCase(status)){
+            if (STATUS_PARTICIPATED.equalsIgnoreCase(status)) {
                 tvStatus.setText(context.getResources().getString(R.string.participated));
-            }else{
+            } else {
                 tvStatus.setText(context.getResources().getString(R.string.approved));
             }
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
@@ -217,5 +217,13 @@ public class Utils {
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
         }
+    }
+
+    public static String getImageUrl(String url) {
+        return url + "?height=200";
+    }
+
+    public static String getImageUrlForSubmission(String url) {
+        return url + "?height=200";
     }
 }

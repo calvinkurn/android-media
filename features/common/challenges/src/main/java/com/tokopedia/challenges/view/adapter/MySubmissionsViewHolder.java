@@ -50,9 +50,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
         tvPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
-        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, challengesResult.getThumbnailUrl(), R.color.grey_1100);
-        //ImageHandler.LoadImage(imgChallenge, challengesResult.getThumbnailUrl());
-
+        ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrlForSubmission(challengesResult.getThumbnailUrl()), R.color.grey_1100);
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
         imgLikes.setVisibility(View.GONE);
         imgShare.setVisibility(View.VISIBLE);
@@ -86,9 +84,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
                     challengesResult.getCollection().getTitle());
         });
         imgLikes.setOnClickListener(v -> {
-            String action=ChallengesAnalytics.EVENT_ACTION_LIKE;
-            if(submissionsResult.getMe().isLiked())
-                action=ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+            String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+            if (submissionsResult.getMe().isLiked())
+                action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
                     ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
                     action,
