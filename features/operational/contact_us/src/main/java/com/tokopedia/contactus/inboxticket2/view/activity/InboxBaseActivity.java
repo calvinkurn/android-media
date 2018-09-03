@@ -163,16 +163,21 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
         Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
-        if (!clickable) {
-            LayoutInflater inflater = LayoutInflater.from(this);
-            View snackView = inflater.inflate(R.layout.snackbar_error_layout, layout);
-            TextView tv = snackView.findViewById(R.id.tv_msg);
-            tv.setText(message);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
+        TextView tv = snackView.findViewById(R.id.tv_msg);
+        tv.setText(message);
+
+        if (clickable) {
             TextView okBtn = snackView.findViewById(R.id.snack_ok);
+            okBtn.setVisibility(View.VISIBLE);
             okBtn.setOnClickListener(view -> snackbar.dismiss());
-            layout.addView(snackView, 0);
-            layout.setPadding(0, 0, 0, 0);
+        } else {
+            snackbar.setDuration(Snackbar.LENGTH_SHORT);
         }
+
+        layout.addView(snackView, 0);
+        layout.setPadding(0, 0, 0, 0);
         textView.setVisibility(View.INVISIBLE);
         snackbar.show();
     }

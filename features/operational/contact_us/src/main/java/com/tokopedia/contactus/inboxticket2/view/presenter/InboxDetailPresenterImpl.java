@@ -607,6 +607,7 @@ public class InboxDetailPresenterImpl
         List<ImageUpload> uploadImageList = mView.getImageList();
         if (mTicketDetail.isNeedAttachment() && (uploadImageList == null || uploadImageList.isEmpty())) {
             mView.setSnackBarErrorMessage(mView.getActivity().getString(R.string.attachment_required), true);
+            mView.hideSendProgress();
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventNotAttachImageRequired,
@@ -768,6 +769,7 @@ public class InboxDetailPresenterImpl
         }
 
         mTicketDetail.getComments().add(newItem);
+        mTicketDetail.setNeedAttachment(false);
         mView.updateAddComment();
     }
 }

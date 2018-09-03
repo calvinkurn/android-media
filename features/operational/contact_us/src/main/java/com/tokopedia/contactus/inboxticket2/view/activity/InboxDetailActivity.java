@@ -177,6 +177,8 @@ public class InboxDetailActivity extends InboxBaseActivity
         imageUploadAdapter.clearAll();
         imageUploadAdapter.notifyDataSetChanged();
         rvSelectedImages.setVisibility(View.GONE);
+        rvMessageList.setPadding(0, 0, 0,
+                getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
         detailAdapter.notifyItemRangeChanged(detailAdapter.getItemCount() - 2, 2);
     }
 
