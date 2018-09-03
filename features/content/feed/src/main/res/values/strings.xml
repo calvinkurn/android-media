@@ -64,4 +64,6 @@
 
     <string name="cta_refresh_feed">Refresh</string>
     <string name="total_voter">%s telah memilih</string>
+
+    <string name="string_btn_whitelist">Buat Post</string>
 </resources>
