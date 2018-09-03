@@ -3,10 +3,11 @@
     package="com.tokopedia.challenges">
 
     <application>
-        <activity android:name=".view.activity.ChallengesSubmitActivity"
+        <activity
+            android:name=".view.activity.ChallengesSubmitActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@style/Theme.White.PopupTransparent"/>
+            android:theme="@style/Theme.White.PopupTransparent"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".view.activity.ChallengesHomeActivity"
             android:screenOrientation="portrait"
@@ -15,15 +16,20 @@
             android:name=".view.activity.ChallengeDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
-        <activity android:name=".view.activity.SubmitDetailActivity"
+        <activity
+            android:name=".view.activity.SubmitDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
-            android:name=".view.activity.FullScreenVideoActivity"
+            android:name=".view.activity.FullScreenPortraitVideoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".view.activity.FullScreenLandscapeActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <service android:name=".view.service.UploadChallengeService" />
 
-        <service android:name=".view.service.UploadChallengeService"/>
     </application>
 
 </manifest>

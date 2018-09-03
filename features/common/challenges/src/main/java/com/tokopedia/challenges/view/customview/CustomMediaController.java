@@ -3,7 +3,6 @@ package com.tokopedia.challenges.view.customview;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -11,7 +10,8 @@ import android.widget.ImageButton;
 import android.widget.MediaController;
 
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.activity.FullScreenVideoActivity;
+import com.tokopedia.challenges.view.activity.FullScreenLandscapeActivity;
+import com.tokopedia.challenges.view.activity.FullScreenPortraitVideoActivity;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
 public class CustomMediaController extends MediaController {
@@ -21,13 +21,15 @@ public class CustomMediaController extends MediaController {
     private int pos;
     String videoUrl;
     ICurrentPos iCurrentPos;
+    private String videoOrientation = "portrait";
 
-    public CustomMediaController(Context context, String url, int pos, boolean isFullScreen, ICurrentPos iCurrentPos) {
+    public CustomMediaController(Context context, String url, int pos, boolean isFullScreen, ICurrentPos iCurrentPos, String videoOrientation) {
         super(context);
         this.videoUrl = url;
         this.pos = pos;
         this.isFullScreen = isFullScreen;
         this.iCurrentPos = iCurrentPos;
+        this.videoOrientation = videoOrientation;
     }
 
     @Override
@@ -48,23 +50,43 @@ public class CustomMediaController extends MediaController {
             fullScreen.setImageResource(R.drawable.fullscreen_icon);
         }
         addView(fullScreen, params);
-        fullScreen.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isFullScreen) {
-                    ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
-                    ((Activity) getContext()).finish();
-                } else {
-                    Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
-                    intent.putExtra("fullScreenInd", "");
-                    intent.putExtra("seekPos", iCurrentPos.getPosition());
-                    intent.putExtra("videoUrl", videoUrl);
-                    ((Activity) getContext()).startActivityForResult(intent, 100);
-                }
+        if (videoOrientation.equalsIgnoreCase("portrait")) {
+            fullScreen.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isFullScreen) {
+                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ((Activity) getContext()).finish();
+                    } else {
+                        Intent intent = new Intent(getContext(), FullScreenPortraitVideoActivity.class);
+                        intent.putExtra("fullScreenInd", "");
+                        intent.putExtra("seekPos", iCurrentPos.getPosition());
+                        intent.putExtra("videoUrl", videoUrl);
+                        ((Activity) getContext()).startActivityForResult(intent, 100);
+                    }
 
-            }
-        });
+                }
+            });
+        } else {
+            fullScreen.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (isFullScreen) {
+                        ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ((Activity) getContext()).finish();
+                    } else {
+                        Intent intent = new Intent(getContext(), FullScreenLandscapeActivity.class);
+                        intent.putExtra("fullScreenInd", "");
+                        intent.putExtra("seekPos", iCurrentPos.getPosition());
+                        intent.putExtra("videoUrl", videoUrl);
+                        ((Activity) getContext()).startActivityForResult(intent, 100);
+                    }
+
+                }
+            });
+        }
     }
+
     public interface ICurrentPos {
         int getPosition();
     }

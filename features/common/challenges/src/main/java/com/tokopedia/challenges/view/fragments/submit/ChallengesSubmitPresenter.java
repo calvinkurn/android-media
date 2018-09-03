@@ -94,7 +94,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onError(Throwable e) {
                 getView().hideProgress();
                 e.printStackTrace();
-                getView().showMessage("Image Uploaded Failed");
+                getView().showMessage("Image Upl oaded Failed");
             }
 
             @Override

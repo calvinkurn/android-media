@@ -17,6 +17,7 @@
 
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/submit_detail_scrollview"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
@@ -78,7 +79,7 @@
                     <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                         android:id="@+id/img_challenge"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/dp_240"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_30" />
 
                     <TextView
@@ -217,7 +218,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/about"
+                    android:text="@string/description"
                     android:textColor="#000000"
                     android:textSize="@dimen/sp_16"
                     app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
