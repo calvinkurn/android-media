@@ -69,6 +69,13 @@ public class CartListPresenter implements ICartListPresenter {
     private static final String PARAM_PARAMS = "params";
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_STEP = "step";
+
+    public static final int ITEM_CHECKED_ALL_WITHOUT_CHANGES = 0;
+    public static final int ITEM_CHECKED_ALL_WITH_CHANGES = 1;
+    public static final int ITEM_CHECKED_PARTIAL_SHOP = 3;
+    public static final int ITEM_CHECKED_PARTIAL_ITEM = 4;
+    public static final int ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM = 5;
+
     private final ICartListView view;
     private final GetCartListUseCase getCartListUseCase;
     private final CompositeSubscription compositeSubscription;
@@ -82,6 +89,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private CartListData cartListData;
+    private boolean hasPerformChecklistChange;
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -184,7 +192,7 @@ public class CartListPresenter implements ICartListPresenter {
         TKPDMapParam<String, String> paramGetList = new TKPDMapParam<>();
         paramGetList.put(PARAM_LANG, "id");
 
-        List<CartItemData> cartItemDataList = view.getCartDataList();
+        List<CartItemData> cartItemDataList = view.getSelectedCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
@@ -217,7 +225,7 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void processToUpdateCartData() {
         view.showProgressLoading();
-        List<CartItemData> cartItemDataList = view.getCartDataList();
+        List<CartItemData> cartItemDataList = view.getSelectedCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
@@ -378,7 +386,7 @@ public class CartListPresenter implements ICartListPresenter {
         view.showProgressLoading();
 
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
-        for (CartItemData data : view.getCartDataList()) {
+        for (CartItemData data : view.getSelectedCartDataList()) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
                     .cartId(data.getOriginData().getCartId())
                     .notes(data.getUpdatedData().getRemark())
@@ -613,10 +621,40 @@ public class CartListPresenter implements ICartListPresenter {
                 if (!data.isSuccess()) {
                     view.renderErrorToShipmentForm(data.getMessage());
                 } else {
-                    view.renderToShipmentFormSuccess(generateCheckoutDataAnalytics(cartItemDataList), "may Somethings condition");
+                    int checklistCondition = getChecklistCondition();
+                    view.renderToShipmentFormSuccess(generateCheckoutDataAnalytics(cartItemDataList), checklistCondition);
                 }
             }
         };
+    }
+
+    private int getChecklistCondition() {
+        int checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES;
+        List<CartShopHolderData> cartShopHolderDataList = view.getAllCartDataList();
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            if (cartShopHolderData.isPartialSelected() || !cartShopHolderData.isAllSelected()) {
+                checklistCondition = ITEM_CHECKED_PARTIAL_SHOP;
+                break;
+            }
+        }
+
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                if (!cartItemHolderData.isSelected()) {
+                    if (checklistCondition == ITEM_CHECKED_PARTIAL_SHOP) {
+                        checklistCondition = ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM;
+                    } else {
+                        checklistCondition = ITEM_CHECKED_PARTIAL_ITEM;
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (checklistCondition == ITEM_CHECKED_ALL_WITHOUT_CHANGES && hasPerformChecklistChange) {
+            checklistCondition = ITEM_CHECKED_ALL_WITH_CHANGES;
+        }
+        return checklistCondition;
     }
 
     @NonNull
@@ -831,5 +869,15 @@ public class CartListPresenter implements ICartListPresenter {
         checkoutMapData.put(EnhancedECommerceCheckout.KEY_CHECKOUT, enhancedECommerceCheckout.getCheckoutMap());
 
         return checkoutMapData;
+    }
+
+    @Override
+    public void setHasPerformChecklistChange() {
+        hasPerformChecklistChange = true;
+    }
+
+    @Override
+    public boolean hasPerformChecklistChange() {
+        return hasPerformChecklistChange;
     }
 }

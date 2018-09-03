@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.view.common.base.IBaseView;
+import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,7 @@ public interface ICartListView extends IBaseView {
 
     void renderNoRecipientAddressShipmentForm(CartShipmentAddressFormData shipmentAddressFormData);
 
-    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, String maySomethingCondition);
+    void renderToShipmentFormSuccess(Map<String, Object> stringObjectMap, int condition);
 
     void renderToAddressChoice();
 
@@ -76,7 +77,9 @@ public interface ICartListView extends IBaseView {
 
     void enableSwipeRefresh();
 
-    List<CartItemData> getCartDataList();
+    List<CartShopHolderData> getAllCartDataList();
+
+    List<CartItemData> getSelectedCartDataList();
 
     void renderDetailInfoSubTotal(String qty, String subtotalPrice);
 

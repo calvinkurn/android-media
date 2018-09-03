@@ -139,7 +139,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public List<CartShopHolderData> getDataList() {
+    public List<CartShopHolderData> getAllShopGroupDataList() {
         List<CartShopHolderData> cartShopHolderDataFinalList = new ArrayList<>();
         for (int i = 0; i < cartDataList.size(); i++) {
             Object object = cartDataList.get(i);

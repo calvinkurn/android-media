@@ -33,9 +33,10 @@ import rx.Subscriber;
 public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
         implements CourierContract.Presenter {
 
+    private final GetRatesUseCase getRatesUseCase;
     private ShipmentDetailData shipmentDetailData;
     private List<ShipmentOptionData> shipmentDataList = new ArrayList<>();
-    private final GetRatesUseCase getRatesUseCase;
+    private boolean hasSelectedCourier;
 
     @Inject
     public CourierPresenter(GetRatesUseCase getRatesUseCase) {
@@ -146,6 +147,7 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
 
     @Override
     public void setSelectedCourier(CourierItemData selectedCourier) {
+        hasSelectedCourier = true;
         if (shipmentDetailData != null && shipmentDetailData.getShipmentItemData() != null) {
             for (ShipmentItemData shipmentItemData : shipmentDetailData.getShipmentItemData()) {
                 if (shipmentItemData.getCourierItemData() != null) {
@@ -160,5 +162,9 @@ public class CourierPresenter extends BaseDaggerPresenter<CourierContract.View>
                 }
             }
         }
+    }
+
+    public boolean isHasSelectedCourier() {
+        return hasSelectedCourier;
     }
 }

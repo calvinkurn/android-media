@@ -132,6 +132,12 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnClickEditPinPointErrorValidation(String message);
 
+        void sendAnalyticsCourierNotComplete();
+
+        void sendAnalyticsDropshipperNotComplete();
+
+        void sendAnalyticsOnCourierChanged(String agent, String service);
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
