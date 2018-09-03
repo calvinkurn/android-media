@@ -31,11 +31,16 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         )
     }
 
-    override fun updatePage(page: Int) {
-        this.page = page
+    override fun updatePage() {
+        this.page++
     }
 
     override fun updateFilterId(filterId: Int) {
         this.filterId = filterId
+    }
+
+    override fun resetParam() {
+        filterId = 0
+        page = 0
     }
 }

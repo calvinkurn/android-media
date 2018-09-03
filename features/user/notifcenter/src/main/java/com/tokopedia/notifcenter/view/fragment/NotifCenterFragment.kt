@@ -1,6 +1,8 @@
 package com.tokopedia.notifcenter.view.fragment
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,9 +30,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     lateinit var presenter: NotifCenterPresenter
     lateinit var adapter: NotifCenterAdapter
     lateinit var notifCenterRouter: NotifCenterRouter
+    var canLoadMore = false
 
     companion object {
         fun createInstance() = NotifCenterFragment()
+        const val LOAD_MORE_THRESHOLD = 2
     }
 
     override fun onCreateView(inflater: LayoutInflater,
@@ -65,7 +69,13 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         }
     }
 
-    override fun onSuccessFetchData(visitables: List<Visitable<*>>) {
+    override fun onSuccessFetchData(visitables: List<Visitable<*>>, canLoadMore: Boolean) {
+        this.canLoadMore = canLoadMore
+
+        if (canLoadMore) {
+            presenter.updatePage()
+        }
+
         adapter.addElement(visitables)
     }
 
@@ -115,9 +125,26 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     private fun initView() {
         notifRv.adapter = adapter
+        notifRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = notifRv.layoutManager as LinearLayoutManager
+                val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+                if (lastVisibleItemPosition + LOAD_MORE_THRESHOLD > adapter.itemCount
+                        && canLoadMore
+                        && !isLoading()) {
+                    presenter.fetchData()
+                }
+            }
+        })
         swipeToRefresh.setOnRefreshListener {
+            resetParam()
             adapter.clearAllElements()
             presenter.fetchData()
         }
     }
+
+    private fun isLoading() = adapter.isLoading
+
+    private fun resetParam() = presenter.resetParam()
 }

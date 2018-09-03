@@ -12,7 +12,7 @@ interface NotifCenterContract {
     interface View : CustomerView {
         fun getContext() : Context?
 
-        fun onSuccessFetchData(visitables: List<Visitable<*>>)
+        fun onSuccessFetchData(visitables: List<Visitable<*>>, canLoadMore: Boolean)
 
         fun onErrorFetchData(message: String)
 
@@ -28,8 +28,10 @@ interface NotifCenterContract {
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
-        fun updatePage(page: Int)
+        fun updatePage()
 
         fun updateFilterId(filterId: Int)
+
+        fun resetParam()
     }
 }
