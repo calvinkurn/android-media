@@ -33,14 +33,23 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
     fun setContent(spanned: Spanned){
         val spannable = spanned as Spannable
         spannable.getSpans(0, spannable.length, URLSpan::class.java).forEach {
-            spannable.setSpan(object : UnderlineSpan() {
-                override fun updateDrawState(ds: TextPaint?) {
-                    ds?.isUnderlineText = false
+            val start = spannable.getSpanStart(it)
+            val end = spannable.getSpanEnd(it)
+            spannable.removeSpan(it)
+            val urlSpan = object : URLSpan(APPLINK_WEBVIEW + it.url) {
+                override fun updateDrawState(ds: TextPaint) {
+                    super.updateDrawState(ds)
+                    ds.isUnderlineText = false
                 }
-            }, spannable.getSpanStart(it), spannable.getSpanEnd(it), 0)
+            }
+            spannable.setSpan(urlSpan, start, end, 0)
         }
         content_text.setText(spannable)
         invalidate()
         requestLayout()
+    }
+
+    companion object {
+        private const val APPLINK_WEBVIEW = "tokopedia://webview?url="
     }
 }
