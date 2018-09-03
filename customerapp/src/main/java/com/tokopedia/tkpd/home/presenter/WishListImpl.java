@@ -97,6 +97,7 @@ public class WishListImpl implements WishList {
     RemoveWishListUseCase removeWishListUseCase;
 
     Context context;
+
     public WishListImpl(Context context, WishListView wishListView,
                         SearchWishlistUsecase searchWishlistUsecase) {
         this.wishListView = wishListView;
@@ -190,7 +191,7 @@ public class WishListImpl implements WishList {
         mPaging.nextPage();
         params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
 
-        getSearchInWishlistData();
+        getWishListDataSearch(context, new SearchWishlistSubscriber());
 
 //        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
@@ -418,40 +419,9 @@ public class WishListImpl implements WishList {
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
 
-        getSearchInWishlistData();
-
-//        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
-    }
-
-    private void getSearchInWishlistData() {
-
-        Subscriber<GraphqlResponse> subscriber = new Subscriber<GraphqlResponse>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (mPaging.getPage() == 1 && wishListView.isPullToRefresh()) {
-                    wishListView.displayPull(false);
-                }
-                wishListView.displayErrorNetwork(false);
-            }
-
-            @Override
-            public void onNext(GraphqlResponse graphqlResponse) {
-                if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
-                    GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                    setData(gqlWishListDataResponse.getGqlWishList());
-                } else {
-                    setData();
-                }
-            }
-        };
-
         getWishListDataSearch(context, new SearchWishlistSubscriber());
 
+//        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
     @Override
@@ -626,7 +596,7 @@ public class WishListImpl implements WishList {
         public void onNext(GraphqlResponse graphqlResponse) {
             if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                 GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                setData(gqlWishListDataResponse.getGqlWishList());
+//                setData(gqlWishListDataResponse.getGqlWishList());
 
 //                WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
                 wishListView.displayPull(false);
