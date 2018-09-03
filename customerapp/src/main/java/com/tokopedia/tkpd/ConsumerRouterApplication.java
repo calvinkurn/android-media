@@ -1786,7 +1786,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
-        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext()));
+        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext());
     }
 
     @Override
@@ -1796,7 +1796,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
-        return BranchSdkUtils.getAutoApplyCouponIfAvailable(getAppContext()));
+        return BranchSdkUtils.getAutoApplyCouponIfAvailable(getAppContext());
     }
 
     @Override
