@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:background="@color/white"
+    android:fillViewport="true"
     android:layout_height="wrap_content">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -20,8 +20,7 @@
             android:layout_marginTop="-8dp"
             app:cardBackgroundColor="@color/white"
             app:cardElevation="@dimen/dp_6"
-            app:cardUseCompatPadding="true"
-            app:layout_scrollFlags="scroll">
+            app:cardUseCompatPadding="true">
 
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
@@ -291,56 +290,42 @@
         </android.support.v7.widget.CardView>
 
 
-        <com.tokopedia.design.component.Tabs
-            android:id="@+id/tab_layout_info"
-            android:layout_width="wrap_content"
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tabIndicatorColor="@color/tkpd_main_green"
-            app:tabMode="scrollable"
-            app:tabSelectedTextColor="@color/tkpd_main_green"
-            app:tabTextAppearance="@style/TokoPointsTabs"
-            app:tabTextColor="@color/black_38">
+            android:layout_marginTop="@dimen/dp_6"
+            android:background="@color/white">
 
-            <android.support.design.widget.TabItem
+            <com.tokopedia.design.component.Tabs
+                android:id="@+id/tab_layout_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tp_label_tnc" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tabIndicatorColor="@color/tkpd_main_green"
+                app:tabMode="scrollable"
+                app:tabSelectedTextColor="@color/tkpd_main_green"
+                app:tabTextAppearance="@style/TokoPointsTabs"
+                app:tabTextColor="@color/black_38">
 
-            <android.support.design.widget.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tp_label_how_to_use" />
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tp_label_tnc" />
 
-        </com.tokopedia.design.component.Tabs>
+                <android.support.design.widget.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tp_label_how_to_use" />
 
-    </android.support.design.widget.AppBarLayout>
+            </com.tokopedia.design.component.Tabs>
+        </android.support.design.widget.AppBarLayout>
 
-    <!--<android.support.v4.widget.NestedScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:layout_behavior="@string/appbar_scrolling_view_behavior">-->
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager_info"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:orientation="vertical">-->
-
-    <!--<android.support.design.widget.AppBarLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="@color/white">-->
-
-    <!---->
-    <!--</android.support.design.widget.AppBarLayout>-->
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/view_pager_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <!--</LinearLayout>-->
-    <!--</android.support.v4.widget.NestedScrollView>-->
-</android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
+</ScrollView>
