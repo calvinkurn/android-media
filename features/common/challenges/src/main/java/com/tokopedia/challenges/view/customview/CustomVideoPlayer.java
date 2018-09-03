@@ -1,10 +1,7 @@
 package com.tokopedia.challenges.view.customview;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -13,27 +10,31 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.VideoView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.activity.FullScreenVideoActivity;
 
 import java.util.HashMap;
 
 public class CustomVideoPlayer extends RelativeLayout implements CustomMediaController.ICurrentPos {
 
-    private CustomVideoView videoView;
+    private VideoView videoView;
     private ImageView thumbNail;
     private ImageView playIcon;
+    private RelativeLayout videoViewLayout;
     private CustomMediaController mediaController;
     private CustomVideoPlayerListener customVideoPlayerListener;
     private int videoWidth, videoHeight;
 
     private String videoUrl;
     private boolean isFullScreen;
+    private boolean videoRotation = false;
 
     public CustomVideoPlayer(@NonNull Context context) {
         super(context);
@@ -56,6 +57,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         videoView = view.findViewById(R.id.videoView);
         thumbNail = view.findViewById(R.id.video_thumbnail);
         playIcon = view.findViewById(R.id.play_icon);
+        videoViewLayout = view.findViewById(R.id.video_view_layout);
     }
 
     public void setVideoThumbNail(String thumbNailUrl, String videoUrl, boolean isFullScreen, CustomVideoPlayerListener customVideoPlayerListener) {
@@ -65,10 +67,6 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         this.customVideoPlayerListener = customVideoPlayerListener;
         if (TextUtils.isEmpty(videoUrl)) {
             playIcon.setVisibility(GONE);
-        }
-        if (!TextUtils.isEmpty(videoUrl)) {
-            getVideoAspectRatio();
-            videoView.setVideoDimensions(videoWidth, videoHeight);
         }
         startPlay(0);
     }
@@ -98,10 +96,12 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
                     public void onClick(View view) {
                         thumbNail.setVisibility(GONE);
                         playIcon.setVisibility(GONE);
+                        String videoOrientation = getVideoAspectRatio();
                         Uri video = Uri.parse(videoUrl);
                         if (mediaController == null) {
-                            mediaController = new CustomMediaController(getContext(), videoUrl, pos, isFullScreen, CustomVideoPlayer.this);
+                            mediaController = new CustomMediaController(getContext(), videoUrl, pos, isFullScreen, CustomVideoPlayer.this, videoOrientation);
                         }
+
                         videoView.setVideoURI(video);
                         videoView.requestFocus();
                         videoView.seekTo(pos);
@@ -109,6 +109,11 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
                         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                             @Override
                             public void onCompletion(MediaPlayer mediaPlayer) {
+                                RelativeLayout.LayoutParams params1= (RelativeLayout.LayoutParams) videoView.getLayoutParams();
+
+                                int heightinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
+
+                                params1.height = heightinDp;
                                 thumbNail.setVisibility(VISIBLE);
                                 playIcon.setVisibility(VISIBLE);
                                 videoView.seekTo(0);
@@ -118,13 +123,11 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
                         videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                             @Override
                             public void onPrepared(MediaPlayer mediaPlayer) {
-                                mediaPlayer.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
-                                    @Override
-                                    public void onVideoSizeChanged(MediaPlayer mediaPlayer, int i, int i1) {
-                                        mediaController.setAnchorView(videoView);
-                                        videoView.setMediaController(mediaController);
-                                    }
-                                });
+                                Log.d("Naveen", "on prepare has been called");
+                                //mediaPlayer.setVideoScalingMode(MediaPlayer.VIDEO_SCALING_MODE_SCALE_TO_FIT_WITH_CROPPING);
+                                mediaController.setAnchorView(videoView);
+                                videoView.setMediaController(mediaController);
+                                //mediaPlayer.start();
                             }
                         });
                         if (customVideoPlayerListener != null)
@@ -137,20 +140,8 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     }
 
 
-    @Override
-    protected void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            Intent intent = new Intent(getContext(), FullScreenVideoActivity.class);
-            intent.putExtra("fullScreenInd", "");
-            intent.putExtra("seekPos", getPosition());
-            intent.putExtra("videoUrl", videoUrl);
-            ((Activity) getContext()).startActivityForResult(intent, 100);
-        }
-    }
-
     public void hideMediaController() {
-        if(mediaController!=null && mediaController.isShowing()){
+        if (mediaController != null && mediaController.isShowing()) {
             mediaController.hide();
         }
     }
@@ -160,7 +151,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     }
 
 
-    private void getVideoAspectRatio() {
+    private String getVideoAspectRatio() {
         MediaMetadataRetriever mediaMetadataRetriever = new MediaMetadataRetriever();
         if (Build.VERSION.SDK_INT >= 14) {
             mediaMetadataRetriever.setDataSource(videoUrl, new HashMap<String, String>());
@@ -169,7 +160,22 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         }
         String height = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT);
         String width = mediaMetadataRetriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH);
+
         videoWidth = Integer.parseInt(width);
         videoHeight = Integer.parseInt(height);
+
+        RelativeLayout.LayoutParams params1= (RelativeLayout.LayoutParams) videoView.getLayoutParams();
+
+        int heightinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, videoHeight, getResources().getDisplayMetrics());
+        int widthinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, videoWidth, getResources().getDisplayMetrics());
+
+        params1.height = heightinDp;
+        params1.width = widthinDp;
+
+            if (widthinDp > heightinDp) {
+                return "landscape";
+            } else {
+                return "portrait";
+            }
     }
 }

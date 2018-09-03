@@ -1,10 +1,8 @@
 package com.tokopedia.challenges.view.activity;
 
-import android.content.Intent;
-import android.support.v4.app.Fragment;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -15,9 +13,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.CustomMediaController;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
-import javax.inject.Inject;
-
-public class FullScreenVideoActivity extends BaseActivity implements CustomMediaController.ICurrentPos {
+public class FullScreenPortraitVideoActivity extends BaseActivity implements CustomMediaController.ICurrentPos {
 
     private VideoView videoView;
     private MediaController mediaController;
@@ -51,7 +47,7 @@ public class FullScreenVideoActivity extends BaseActivity implements CustomMedia
         videoView.setVideoURI(Uri.parse(videoUrl));
         videoThumbnail.setVisibility(View.GONE);
         playIcon.setVisibility(View.GONE);
-        mediaController = new CustomMediaController(this, videoUrl, pos, true, this);
+        mediaController = new CustomMediaController(this, videoUrl, pos, true, this, "portrait");
         mediaController.setAnchorView(videoView);
 
         videoView.setMediaController(mediaController);
