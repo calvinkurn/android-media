@@ -52,6 +52,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
 
     public static String PARAM_CATEGORY_ID = "category_id";
     public static String DEFAULT_CATEGORY = "0";
+    public static int CATEGORY_POSITION_NONE = -1;
 
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
@@ -206,26 +207,35 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
-        loadImageData(exploreViewModel.getExploreImageViewModelList());
+    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData) {
+        if (!exploreViewModel.getExploreImageViewModelList().isEmpty()) {
+            loadImageData(exploreViewModel.getExploreImageViewModelList());
+        } else if (clearData) {
+            showEmpty();
+        }
 
         if (categoryAdapter.getList().isEmpty()) {
             loadTagData(exploreViewModel.getTagViewModelList());
         }
 
+        boolean isCategoryExist = false;
         for (int i = 0; i < categoryAdapter.getList().size(); i++) {
             ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
             if (categoryViewModel.getId() == categoryId) {
                 categoryViewModel.setActive(true);
                 categoryAdapter.notifyItemChanged(i);
                 exploreCategoryRv.scrollToPosition(i);
+                isCategoryExist = true;
                 break;
             }
+        }
+        if (!isCategoryExist && categoryId != Integer.valueOf(DEFAULT_CATEGORY)) {
+            onCategoryReset();
         }
     }
 
     @Override
-    public void onErrorGetExploreDataFirstPage() {
+    public void onErrorGetExploreDataFirstPage(String message) {
         NetworkErrorHelper.showEmptyState(getContext(), getView(), () -> {
             presenter.getExploreData(true);
         });
@@ -291,6 +301,11 @@ public class ContentExploreFragment extends BaseDaggerFragment
             }
         }
         presenter.getExploreData(true);
+    }
+
+    @Override
+    public void onCategoryReset() {
+        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "");
     }
 
     @Override
@@ -382,10 +397,18 @@ public class ContentExploreFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
+    @Override
     public void scrollToTop() {
         if (exploreImageRv != null) {
             exploreImageRv.scrollToPosition(0);
         }
+    }
+
+    @Override
+    public void resetDataParam() {
+        updateSearch("");
+        updateCursor("");
+        updateCategoryId(0);
     }
 
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
@@ -404,12 +427,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void clearSearch() {
         searchInspiration.getSearchTextView().setText("");
         dropKeyboard();
-    }
-
-    private void resetDataParam() {
-        updateSearch("");
-        updateCursor("");
-        updateCategoryId(0);
     }
 
     private void setAllCategoriesInactive() {

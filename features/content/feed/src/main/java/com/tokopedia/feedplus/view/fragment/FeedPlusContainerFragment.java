@@ -141,8 +141,16 @@ public class FeedPlusContainerFragment extends BaseDaggerFragment
     }
 
     public void goToExplore() {
+        goToExplore(false);
+    }
+
+    public void goToExplore(boolean shouldResetCategory) {
         if (shouldGoToExplore()) {
             viewPager.setCurrentItem(tabLayout.getTabCount() - 1);
+
+            if (shouldResetCategory && contentExploreFragment != null) {
+                contentExploreFragment.onCategoryReset();
+            }
         }
     }
 
