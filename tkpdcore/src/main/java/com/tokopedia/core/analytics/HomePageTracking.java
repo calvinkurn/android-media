@@ -134,6 +134,15 @@ public class HomePageTracking extends TrackingUtils {
         ).getEvent());
     }
 
+    public static void eventClickSeeAllLegoBannerChannel(String applink) {
+        sendGTMEvent(new EventTracking(
+                STATIC_VALUE_CLICK_HOMEPAGE,
+                STATIC_VALUE_HOMEPAGE,
+                "lego banner click view all",
+                applink
+        ).getEvent());
+    }
+
     public static void eventClickExplorerItem(String action, String label) {
         sendGTMEvent(new EventTracking(
                 STATIC_VALUE_CLICK_HOMEPAGE,

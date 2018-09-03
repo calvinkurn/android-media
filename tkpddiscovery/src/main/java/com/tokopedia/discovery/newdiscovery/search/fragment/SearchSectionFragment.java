@@ -15,6 +15,9 @@ import android.view.View;
 
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
+import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
@@ -278,7 +281,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }
-        ShareBottomSheet.show(getChildFragmentManager(), shareData);
+        new DefaultShare(getActivity(), shareData).show();
     }
 
     @Override

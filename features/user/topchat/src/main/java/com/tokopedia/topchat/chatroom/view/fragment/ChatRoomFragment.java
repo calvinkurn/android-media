@@ -131,6 +131,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
     private static final int REQUEST_CODE_CHAT_IMAGE = 2325;
     private static final int MAX_SIZE_IMAGE_PICKER = 5;
     public static final int CHAT_DELETED_RESULT_CODE = 101;
+    public static final int CHAT_GO_TO_SHOP_DETAILS_REQUEST = 202;
 
     private static final String CONTACT_US_PATH_SEGMENT = "toped-contact-us";
     private static final String BASE_DOMAIN_SHORTENED = "tkp.me";
@@ -686,7 +687,11 @@ public class ChatRoomFragment extends BaseDaggerFragment
             toolbar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
+                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+                    if(TextUtils.isEmpty(senderId)) {
+                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+                    }
+                    presenter.onGoToDetail(senderId,
                             getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
                             getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
                 }
@@ -923,7 +928,6 @@ public class ChatRoomFragment extends BaseDaggerFragment
                     adapter.addReply(temp);
                 }
                 break;
-
             case REQUEST_CODE_CHAT_IMAGE:
                 if (resultCode != Activity.RESULT_OK || data == null) {
                     return;
@@ -965,6 +969,9 @@ public class ChatRoomFragment extends BaseDaggerFragment
                         .TOKOPEDIA_ATTACH_INVOICE_SELECTED_INVOICE_KEY);
                 attachInvoiceRetrieved(AttachInvoiceMapper.convertInvoiceToDomainInvoiceModel(selectedInvoice));
                 break;
+            case ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST:
+                presenter.getFollowStatus(getArguments().getString(ChatRoomActivity
+                        .PARAM_SENDER_ID, ""));
             default:
                 break;
         }
@@ -1543,7 +1550,7 @@ public class ChatRoomFragment extends BaseDaggerFragment
         listMenu.add(new Menus.ItemMenus(getString(R.string.delete_conversation), R.drawable.ic_trash));
 
         headerMenu.setItemMenuList(listMenu);
-        headerMenu.setActionText(getString(R.string.cancel));
+        headerMenu.setActionText(getString(R.string.cancel_bottom_sheet));
         headerMenu.setOnActionClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1556,8 +1563,13 @@ public class ChatRoomFragment extends BaseDaggerFragment
                 if (itemMenus.title.equalsIgnoreCase(getString(R.string.delete_conversation))) {
                     showDeleteChatDialog();
                 } else if (pos == 0) {
-                    presenter.onGoToDetail(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID),
-                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE), getArguments().getString(ChatRoomActivity.PARAM_SOURCE));
+                    String senderId = getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID);
+                    if(TextUtils.isEmpty(senderId)) {
+                        senderId = getArguments().getString(ChatRoomActivity.PARAM_USER_ID);
+                    }
+                    presenter.onGoToDetail(senderId,
+                            getArguments().getString(ChatRoomActivity.PARAM_SENDER_ROLE),
+                            getArguments().getString(ChatRoomActivity.PARAM_SOURCE,""));
                 } else if (itemMenus.title.equalsIgnoreCase(getString(R.string.follow_store)) ||
                         itemMenus.title.equalsIgnoreCase(getString(R.string.already_follow_store))) {
                     presenter.doFollowUnfollowToggle(getArguments().getString(InboxMessageConstant.PARAM_SENDER_ID));

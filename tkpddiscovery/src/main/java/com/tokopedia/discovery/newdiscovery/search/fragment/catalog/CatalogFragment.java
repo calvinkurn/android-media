@@ -20,6 +20,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -241,8 +242,13 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 
