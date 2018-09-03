@@ -382,7 +382,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToProductDetail(int rowNumber, int page, String productId, String
             imageSourceSingle, String name, String price) {
         goToProductDetail(productId, imageSourceSingle, name, price);
-        UnifyTracking.eventFeedViewProduct(productId,
+        UnifyTracking.eventFeedViewProduct(
+                getScreenName(),
+                productId,
                 getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_PDP);
     }
 
@@ -415,7 +417,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToProductDetailFromRecentView(String productId, String imgUri,
                                                   String name, String price) {
         goToProductDetail(productId, imgUri, name, price);
-        UnifyTracking.eventFeedViewProduct(productId, FeedTrackingEventLabel.View.VIEW_RECENT,
+        UnifyTracking.eventFeedViewProduct(getScreenName(),
+                productId,
+                FeedTrackingEventLabel.View.VIEW_RECENT,
                 FeedTrackingEventLabel.View.FEED_PDP);
     }
 
@@ -466,7 +470,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onGoToShopDetail(int page, int rowNumber, Integer shopId, String url) {
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(shopId));
         startActivity(intent);
-        UnifyTracking.eventFeedViewShop(String.valueOf(shopId), getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
+        UnifyTracking.eventFeedViewShop(getScreenName(),
+                String.valueOf(shopId),
+                getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.View.FEED_SHOP);
     }
 
     @Override
@@ -627,6 +633,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onSeeAllRecentView() {
+        UnifyTracking.eventFeedViewAll();
         Intent intent = RecentViewActivity.getCallingIntent(getActivity());
         getActivity().startActivity(intent);
     }
@@ -699,7 +706,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 product.getPriceFormat()
         );
 
-        UnifyTracking.eventFeedClickProduct(product.getId(),
+        UnifyTracking.eventFeedClickProduct(getScreenName(),
+                product.getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_PRODUCT);
 
         List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
@@ -724,7 +732,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     public void onShopItemClicked(int position, Shop shop) {
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), shop.getId());
         startActivity(intent);
-        UnifyTracking.eventFeedClickShop(shop.getId(), FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
+        UnifyTracking.eventFeedClickShop(getScreenName(),
+                shop.getId(),
+                FeedTrackingEventLabel.Click.TOP_ADS_SHOP);
   
         List<FeedEnhancedTracking.Promotion> listTopAds = new ArrayList<>();
 
@@ -746,7 +756,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onAddFavorite(int position, Data dataShop) {
         presenter.favoriteShop(dataShop, position);
-        UnifyTracking.eventFeedClickShop(dataShop.getShop().getId(),
+        UnifyTracking.eventFeedClickShop(getScreenName(),
+                dataShop.getShop().getId(),
                 FeedTrackingEventLabel.Click.TOP_ADS_FAVORITE);
 
     }
@@ -806,7 +817,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void updateFavoriteFromEmpty(String shopId) {
         onRefresh();
-        UnifyTracking.eventFeedClickShop(shopId, FeedTrackingEventLabel.Click.
+        UnifyTracking.eventFeedClickShop(getScreenName(),
+                shopId, FeedTrackingEventLabel.Click.
                 TOP_ADS_FAVORITE);
 
     }
@@ -814,11 +826,12 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onBrandClicked(int page, int rowNumber, OfficialStoreViewModel officialStoreViewModel) {
         UnifyTracking.eventFeedClickShop(
+                getScreenName(),
                 String.valueOf(officialStoreViewModel.getShopId()),
-                getFeedAnalyticsHeader(page, rowNumber) +
-                        FeedTrackingEventLabel.Click
-                                .OFFICIAL_STORE_BRAND +
-                        officialStoreViewModel.getShopName());
+                getFeedAnalyticsHeader(page, rowNumber)
+                        + FeedTrackingEventLabel.Click.OFFICIAL_STORE_BRAND
+                        + officialStoreViewModel.getShopName()
+        );
 
         Intent intent = feedModuleRouter.getShopPageIntent(getActivity(), String.valueOf(officialStoreViewModel.getShopId()));
         startActivity(intent);
@@ -855,6 +868,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToProductDetailFromCampaign(int page, int rowNumber, String productId, String imageSourceSingle, String name, String price) {
         UnifyTracking.eventFeedClickProduct(
+                getScreenName(),
                 productId,
                 getFeedAnalyticsHeader(page, rowNumber) + FeedTrackingEventLabel.Click
                         .OFFICIAL_STORE_CAMPAIGN_PDP);
