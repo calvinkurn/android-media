@@ -58,6 +58,7 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
+import com.tokopedia.tkpd.ConsumerAppBaseUrl;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -166,6 +167,10 @@ public class DrawerBuyerHelper extends DrawerHelper
         data.add(new DrawerItem(context.getString(R.string.drawer_title_wishlist),
                 R.drawable.icon_wishlist,
                 TkpdState.DrawerPosition.WISHLIST,
+                true));
+        data.add(new DrawerItem(context.getString(R.string.drawer_title_mybills),
+                R.drawable.icon_mybills_drawer,
+                TkpdState.DrawerPosition.MYBILLS,
                 true));
         data.add(getInboxMenu());
         data.add(getBuyerMenu());
@@ -517,6 +522,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.WISHLIST);
                     AnalyticsEventTrackingHelper.hamburgerOptionClicked(wishList.getComponent().getClassName(),AppEventTracking.EventLabel.WISHLIST);
                     break;
+                case TkpdState.DrawerPosition.MYBILLS:
+                    intent = DigitalWebActivity.newInstance(context, TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
+                            + TkpdBaseURL.DigitalWebsite.PATH_MY_BILLS);
+
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.DIGITAL_MY_BILLS);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(),AppEventTracking.EventLabel.DIGITAL_MY_BILLS);
+                    break;
                 case TkpdState.DrawerPosition.PEOPLE_PAYMENT_STATUS:
                     intent = TransactionPurchaseRouter.createIntentConfirmPayment(context);
                     context.startActivity(intent);
@@ -794,8 +807,14 @@ public class DrawerBuyerHelper extends DrawerHelper
                 context.startActivity(TokoPointWebviewActivity.getIntentWithTitle(context, mainPageUrl, title));
         }
 
-
         AnalyticsEventTrackingHelper.hamburgerTokopointsClick(TokoPointWebviewActivity.class.getName());
+    }
+
+    @Override
+    public void onGotoTokoCard() {
+
+        ((TkpdCoreRouter) context.getApplication()).actionOpenGeneralWebView(context, ConsumerAppBaseUrl.TOKOCARD_BASE_DOMAIN);
+        AnalyticsEventTrackingHelper.hamburgerTokoCardClick(ConsumerAppBaseUrl.TOKOCARD_BASE_DOMAIN);
     }
 
     private void onGoToCreateShop() {

@@ -69,6 +69,18 @@ import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
+import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
+import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
+import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
+import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
+import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
+import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
@@ -89,7 +101,6 @@ import com.tokopedia.digital.product.view.activity.DigitalProductActivity;
 import com.tokopedia.digital.product.view.activity.DigitalWebActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
-import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.fingerprint.util.FingerprintConstant;
 import com.tokopedia.gm.GMModuleRouter;
 import com.tokopedia.gm.cashback.domain.GetCashbackUseCase;
@@ -126,19 +137,17 @@ import com.tokopedia.seller.common.cashback.DataCashbackModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.common.topads.deposit.data.model.DataDeposit;
-import com.tokopedia.seller.product.common.di.component.DaggerProductComponent;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.common.di.module.ProductModule;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
+//import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
+//import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
 import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
 import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
@@ -187,6 +196,8 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
+import com.tokopedia.withdraw.WithdrawRouter;
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -211,7 +222,7 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter, ProductEditModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -293,7 +304,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent goToEditProduct(Context context, boolean isEdit, String productId) {
-        return ProductEditActivity.createInstance(context, productId);
+        return ProductEditActivity.Companion.createInstance(context, productId);
     }
 
     @Override
@@ -870,7 +881,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     public void goToAddProduct(Activity activity) {
         if (activity != null) {
-            ProductAddActivity.start(activity);
+            activity.startActivity(new Intent(activity, ProductAddNameCategoryActivity.class));
         }
     }
 
@@ -1165,7 +1176,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToAddProduct(Context context) {
         if (context != null && context instanceof Activity) {
-            ProductAddActivity.start((Activity) context);
+            context.startActivity(new Intent(context, ProductAddNameCategoryActivity.class));
         }
     }
 
@@ -1461,8 +1472,27 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
+    }
+
+    @Override
     public Intent getProfileSettingIntent(Context context) {
         return ManagePeopleProfileActivity.createIntent(context);
+    }
+
+    @Override
+    public Intent getWithdrawIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_withdraw", true))
+            return WithdrawActivity.getCallingIntent(context);
+        else {
+            return com.tokopedia.core.deposit.activity.WithdrawActivity.createInstance(context);
+        }
     }
 
     @Override
@@ -1489,8 +1519,29 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void showForceLogoutTokenDialog(String response) {
-        ServerErrorHandler.showForceLogoutDialog();
-        ServerErrorHandler.sendForceLogoutTokenAnalytics(response);
+    public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
+                                             ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
+                                             int productStock, boolean officialStore, String productSku,
+                                             boolean needRetainImage, ProductPictureViewModel productSizeChart, boolean hasOriginalVariantLevel1,
+                                             boolean hasOriginalVariantLevel2, boolean hasWholesale) {
+        return ProductVariantDashboardActivity.getIntent(context, productVariantByCatModelList, productVariant,
+                productPriceCurrency, productPrice, productStock, officialStore, productSku, needRetainImage, productSizeChart,
+                hasOriginalVariantLevel1, hasOriginalVariantLevel2, hasWholesale);
     }
+
+    @Override
+    public Intent getManageProductIntent(Context context) {
+        return new Intent(context, ProductManageActivity.class);
+    }
+
+    @Override
+    public Intent createIntentProductEtalase(Context context,int etalaseId) {
+        return EtalasePickerActivity.createInstance(context, etalaseId);
+    }
+
+    @Override
+    public Intent getCategoryPickerIntent(Context context, int categoryId) {
+        return CategoryPickerActivity.createIntent(context, categoryId);
+    }
+
 }

@@ -13,11 +13,15 @@ import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.attachproduct.view.resultmodel.ResultProduct;
+import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.mapper.WebSocketMapper;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetExistingChatUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
@@ -32,7 +36,10 @@ import com.tokopedia.topchat.chatroom.domain.pojo.rating.SendReasonRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.rating.SetChatRatingPojo;
 import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.ReplyActionData;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
+import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomDeleteMessageSubsciber;
+import com.tokopedia.topchat.chatroom.view.subscriber.ChatRoomGetShopInfoSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetExistingChatSubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetReplySubscriber;
 import com.tokopedia.topchat.chatroom.view.subscriber.GetUserStatusSubscriber;
@@ -77,6 +84,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     private final SetChatRatingUseCase setChatRatingUseCase;
     private final SendReasonRatingUseCase sendReasonRatingUseCase;
     private final GetUserStatusUseCase getUserStatusUseCase;
+    private final DeleteMessageListUseCase deleteMessageListUseCase;
+    private final GetChatShopInfoUseCase getChatShopInfoUseCase;
+    private final ToggleFavouriteShopUseCase toggleFavouriteShopUseCase;
     private final UserSession userSession;
     private SessionHandler sessionHandler;
     public PagingHandler pagingHandler;
@@ -92,8 +102,8 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
     final static String USER_TAG = "Pengguna";
     final static String ADMIN_TAG = "Administrator";
     final static String OFFICIAL_TAG = "Official";
-    final static String SELLER = "shop";
-    final static String USER_ROLE = "user";
+    public final static String SELLER = "shop";
+    public final static String USER_ROLE = "user";
     private SendMessageUseCase sendMessageUseCase;
     private WebSocketUseCase webSocketUseCase;
     private WebSocketMapper webSocketMapper;
@@ -110,7 +120,10 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
                       WebSocketMapper webSocketMapper,
                       GetExistingChatUseCase getExistingChatUseCase,
                       UserSession userSession,
-                      GetUserStatusUseCase getUserStatusUseCase) {
+                      GetUserStatusUseCase getUserStatusUseCase,
+                      DeleteMessageListUseCase deleteMessageListUseCase,
+                      GetChatShopInfoUseCase getChatShopInfoUseCase,
+                      ToggleFavouriteShopUseCase toggleFavouriteShopUseCase) {
         this.getReplyListUseCase = getReplyListUseCase;
         this.replyMessageUseCase = replyMessageUseCase;
         this.getTemplateUseCase = getTemplateUseCase;
@@ -123,6 +136,9 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         this.webSocketMapper = webSocketMapper;
         this.getExistingChatUseCase = getExistingChatUseCase;
         this.getUserStatusUseCase = getUserStatusUseCase;
+        this.deleteMessageListUseCase = deleteMessageListUseCase;
+        this.getChatShopInfoUseCase = getChatShopInfoUseCase;
+        this.toggleFavouriteShopUseCase = toggleFavouriteShopUseCase;
     }
 
     @Override
@@ -170,17 +186,24 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
         getExistingChatUseCase.unsubscribe();
         sendReasonRatingUseCase.unsubscribe();
         getUserStatusUseCase.unsubscribe();
+        deleteMessageListUseCase.unsubscribe();
+        getChatShopInfoUseCase.unsubscribe();
+        toggleFavouriteShopUseCase.unsubscribe();
     }
 
     @Override
-    public void onGoToDetail(String id, String role) {
+    public void onGoToDetail(String id, String role, String source) {
         if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
                 (OFFICIAL_TAG.toLowerCase())) {
-            if (role.equals(SELLER.toLowerCase())) {
+            if (role.equals(SELLER.toLowerCase())
+                    && !TextUtils.isEmpty(source)
+                    && source.equals(TkpdInboxRouter.SHOP)) {
+                getView().finishActivity();
+            } else if (role.equals(SELLER.toLowerCase())) {
                 Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
                         ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                getView().startActivity(intent);
+                getView().startActivityForResult(intent, ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST);
             } else {
                 if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
                     getView().startActivity(
@@ -621,16 +644,53 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void getUserStatus(String userId, String role) {
-        if(role != null){
-            if(role.equalsIgnoreCase(SELLER)) {
+        if (role != null) {
+            if (role.equalsIgnoreCase(SELLER)) {
                 getUserStatusUseCase.setUser(false);
                 getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
-                        new GetUserStatusSubscriber(this,getView()));
-            } else if(role.equalsIgnoreCase(USER_ROLE)) {
+                        new GetUserStatusSubscriber(this, getView()));
+            } else if (role.equalsIgnoreCase(USER_ROLE)) {
                 getUserStatusUseCase.setUser(true);
                 getUserStatusUseCase.execute(GetUserStatusUseCase.getRequestParam(userId),
-                        new GetUserStatusSubscriber(this,getView()));
+                        new GetUserStatusSubscriber(this, getView()));
             }
         }
+    }
+
+    @Override
+    public void deleteChat(String messageId) {
+        if (!TextUtils.isEmpty(messageId) && TextUtils.isDigitsOnly(messageId)) {
+            deleteMessageListUseCase.execute(DeleteMessageListUseCase.generateParam(messageId), new
+                    ChatRoomDeleteMessageSubsciber(getView()));
+        }
+    }
+
+    @Override
+    public void getFollowStatus(String shopId) {
+        if (getChatShopInfoUseCase != null && !TextUtils.isEmpty(shopId)) {
+            getChatShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId),
+                    new ChatRoomGetShopInfoSubscriber(this, getView()));
+        }
+    }
+
+    @Override
+    public void doFollowUnfollowToggle(String shopId) {
+        getView().hideMainLoading();
+        toggleFavouriteShopUseCase.execute(ToggleFavouriteShopUseCase.createRequestParam(shopId),
+                new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        if (aBoolean) getView().toggleFollowSuccess();
+                    }
+                });
     }
 }

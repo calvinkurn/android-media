@@ -382,6 +382,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".share.ShareBroadcastReceiver"/>
+
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->
         <!-- ======================================================= -->

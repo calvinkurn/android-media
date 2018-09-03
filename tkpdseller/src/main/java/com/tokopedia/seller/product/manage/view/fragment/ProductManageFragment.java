@@ -47,6 +47,9 @@ import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.button.BottomActionView;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity;
+import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.adapter.BaseEmptyDataBinder;
@@ -56,14 +59,12 @@ import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 import com.tokopedia.seller.base.view.fragment.BaseSearchListFragment;
 import com.tokopedia.seller.common.utils.KMNumbers;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.utils.ViewUtils;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDuplicateActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductEditActivity;
-import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
+import com.tokopedia.product.manage.item.common.util.ViewUtils;
+//import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddActivity;
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 import com.tokopedia.seller.product.manage.constant.CashbackOption;
 import com.tokopedia.seller.product.manage.constant.CatalogProductOption;
 import com.tokopedia.seller.product.manage.constant.ConditionProductOption;
@@ -206,7 +207,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
             @Override
             public void onEmptyButtonClicked() {
-                startActivity(ProductAddActivity.getCallingIntent(getActivity()));
+                startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
             }
         });
         return emptyDataBinder;
@@ -247,7 +248,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    openImagePickerToAddProduct();
+                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
                     UnifyTracking.eventProductManageTopNav(item.getTitle().toString());
                     return true;
                 }
@@ -266,11 +267,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
             getActivity().startActionMode(getCallbackActionMode());
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void openImagePickerToAddProduct(){
-        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
-        startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
     }
 
     @NonNull
@@ -322,15 +318,6 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         switch (requestCode) {
-            case REQUEST_CODE_ADD_IMAGE:
-                if (resultCode == Activity.RESULT_OK &&
-                        intent != null) {
-                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        ProductAddActivity.start(getActivity(), imageUrlOrPathList);
-                    }
-                }
-                break;
             case INSTAGRAM_SELECT_REQUEST_CODE:
                 if (resultCode == Activity.RESULT_OK &&
                         intent != null) {
@@ -840,12 +827,12 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     }
 
     private void goToDuplicateProduct(String productId) {
-        Intent intent = ProductDuplicateActivity.createInstance(getActivity(), productId);
+        Intent intent = ProductDuplicateActivity.Companion.createInstance(getActivity(), productId);
         startActivity(intent);
     }
 
     private void goToEditProduct(String productId) {
-        Intent intent = ProductEditActivity.createInstance(getActivity(), productId);
+        Intent intent = ProductEditActivity.Companion.createInstance(getActivity(), productId);
         startActivity(intent);
     }
 }

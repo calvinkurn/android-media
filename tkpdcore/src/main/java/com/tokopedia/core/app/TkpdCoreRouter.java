@@ -188,6 +188,8 @@ public interface TkpdCoreRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
 
+    Intent getWithdrawIntent(Context context);
+
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
