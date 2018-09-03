@@ -13,8 +13,8 @@ import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils;
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity;
 import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
-import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseBelanjaFragment;
-import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseLayananFragment;
+import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment;
+import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment;
 
 public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity implements HasComponent<DigitalBrowseHomeComponent> {
 
@@ -58,13 +58,13 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
         Fragment fragment = null;
 
         if (Integer.parseInt(getIntent().getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
-            fragment = DigitalBrowseBelanjaFragment.getFragmentInstance();
+            fragment = DigitalBrowseMarketplaceFragment.getFragmentInstance();
         } else if (Integer.parseInt(getIntent().getStringExtra(EXTRA_TYPE)) == TYPE_LAYANAN) {
             if (getIntent().hasExtra(EXTRA_TAB)) {
-                fragment = DigitalBrowseLayananFragment.getFragmentInstance(
+                fragment = DigitalBrowseServiceFragment.getFragmentInstance(
                         Integer.parseInt(getIntent().getStringExtra(EXTRA_TAB)));
             } else {
-                fragment = DigitalBrowseLayananFragment.getFragmentInstance();
+                fragment = DigitalBrowseServiceFragment.getFragmentInstance();
             }
         }
 
