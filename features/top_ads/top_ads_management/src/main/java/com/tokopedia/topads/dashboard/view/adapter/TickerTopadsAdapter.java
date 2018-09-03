@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.topads.R;
 
@@ -59,6 +60,7 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
 
     class TickerTopadsViewHolder extends RecyclerView.ViewHolder {
 
+        public static final String PARAM_URL = "?url=";
         private TextView textViewMessage;
 
         public TickerTopadsViewHolder(View itemView) {
@@ -73,11 +75,17 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
                 textViewMessage.setMovementMethod (LinkMovementMethod.getInstance());
                 Spannable spannable = (Spannable) MethodChecker.fromHtml(URLDecoder.decode(message, "UTF-8"));
                 for (URLSpan u: spannable.getSpans(0, spannable.length(), URLSpan.class)) {
-                    spannable.setSpan(new UnderlineSpan() {
-                        public void updateDrawState(TextPaint tp) {
-                            tp.setUnderlineText(false);
+                    int start = spannable.getSpanStart(u);
+                    int end = spannable.getSpanEnd(u);
+                    spannable.removeSpan(u);
+                    u = new URLSpan(ApplinkConst.WEBVIEW+ PARAM_URL +u.getURL()){
+                        @Override
+                        public void updateDrawState(TextPaint ds) {
+                            super.updateDrawState(ds);
+                            ds.setUnderlineText(false);
                         }
-                    }, spannable.getSpanStart(u), spannable.getSpanEnd(u), 0);
+                    };
+                    spannable.setSpan(u, start, end, 0);
                 }
                 textViewMessage.setText(spannable);
             } catch (UnsupportedEncodingException e) {
