@@ -17,16 +17,16 @@ import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseLayananC
  * @author by furqan on 30/08/18.
  */
 
-public class DigitalBrowseLayananFragment extends BaseDaggerFragment implements DigitalBrowseLayananContract.View {
+public class DigitalBrowseServiceFragment extends BaseDaggerFragment implements DigitalBrowseLayananContract.View {
 
     private static final String EXTRA_CATEGORY_ID = "CATEGORY_ID";
 
     public static Fragment getFragmentInstance() {
-        return new DigitalBrowseLayananFragment();
+        return new DigitalBrowseServiceFragment();
     }
 
     public static Fragment getFragmentInstance(int categoryId) {
-        DigitalBrowseLayananFragment fragment = new DigitalBrowseLayananFragment();
+        DigitalBrowseServiceFragment fragment = new DigitalBrowseServiceFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(EXTRA_CATEGORY_ID, categoryId);
         fragment.setArguments(bundle);
@@ -34,13 +34,13 @@ public class DigitalBrowseLayananFragment extends BaseDaggerFragment implements 
         return fragment;
     }
 
-    public DigitalBrowseLayananFragment() {
+    public DigitalBrowseServiceFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_digital_browse_layanan, container, false);
+        return inflater.inflate(R.layout.item_digital_browser_service_shimmering_loading, container, false);
     }
 
     @Override
