@@ -6,20 +6,17 @@ import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.util.WebviewURLSpan;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,8 +56,6 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
     }
 
     class TickerTopadsViewHolder extends RecyclerView.ViewHolder {
-
-        public static final String PARAM_URL = "?url=";
         private TextView textViewMessage;
 
         public TickerTopadsViewHolder(View itemView) {
@@ -78,7 +73,7 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
                     int start = spannable.getSpanStart(u);
                     int end = spannable.getSpanEnd(u);
                     spannable.removeSpan(u);
-                    u = new URLSpan(ApplinkConst.WEBVIEW+ PARAM_URL +u.getURL()){
+                    u = new WebviewURLSpan(u.getURL()){
                         @Override
                         public void updateDrawState(TextPaint ds) {
                             super.updateDrawState(ds);

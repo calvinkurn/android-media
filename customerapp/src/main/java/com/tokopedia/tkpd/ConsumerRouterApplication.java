@@ -288,6 +288,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
@@ -376,7 +377,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         UnifiedOrderRouter,
         DealsModuleRouter,
         OmsModuleRouter,
-        ProductEditModuleRouter {
+        ProductEditModuleRouter,
+        TopAdsWebViewRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;

@@ -6,9 +6,9 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
-import android.text.style.UnderlineSpan
 import android.util.AttributeSet
 import android.widget.FrameLayout
+import com.tokopedia.topads.common.util.WebviewURLSpan
 import com.tokopedia.topads.freeclaim.R
 import kotlinx.android.synthetic.main.widget_ticker_free_claim.view.*
 
@@ -36,7 +36,7 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
             val start = spannable.getSpanStart(it)
             val end = spannable.getSpanEnd(it)
             spannable.removeSpan(it)
-            val urlSpan = object : URLSpan(APPLINK_WEBVIEW + it.url) {
+            val urlSpan = object : WebviewURLSpan( it.url) {
                 override fun updateDrawState(ds: TextPaint) {
                     super.updateDrawState(ds)
                     ds.isUnderlineText = false
@@ -47,9 +47,5 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
         content_text.setText(spannable)
         invalidate()
         requestLayout()
-    }
-
-    companion object {
-        private const val APPLINK_WEBVIEW = "tokopedia://webview?url="
     }
 }
