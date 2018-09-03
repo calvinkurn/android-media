@@ -56,7 +56,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     public static final String ETALASE_NAME = "etalase_name";
     private ItemClickListener clickListener;
     private QuickFilterAdapter quickFilterAdapter;
-    private TextView resultCountText;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
 
@@ -67,7 +66,6 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
         adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
         quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
-        resultCountText = (TextView) itemView.findViewById(R.id.result_count_text_view);
         guidedSearchRecyclerView = itemView.findViewById(R.id.guidedSearchRecyclerView);
         guidedSearchAdapter = new GuidedSearchAdapter(clickListener);
         guidedSearchRecyclerView.setLayoutManager(new LinearLayoutManager(itemView.getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -132,7 +130,11 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
             suggestionContainer.addView(suggestionView);
         }
-        quickFilterAdapter.setFormattedResultCount(element.getSuggestionModel().getFormattedResultCount());
+        if (!TextUtils.isEmpty(element.getSuggestionModel().getFormattedResultCount())) {
+            quickFilterAdapter.setFormattedResultCount(String.format(context.getString(R.string.result_count_template_text), element.getSuggestionModel().getFormattedResultCount()));
+        } else {
+            quickFilterAdapter.setFormattedResultCount("");
+        }
         quickFilterAdapter.setOptionList(element.getQuickFilterList());
         if (element.getGuidedSearch() != null
                 && element.getGuidedSearch().getItemList() != null
