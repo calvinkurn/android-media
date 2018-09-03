@@ -567,6 +567,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else if (itemAdapter instanceof CartItemPromoHolderData) {
                     ((CartItemPromoHolderData) itemAdapter).setVisible(false);
                     notifyItemChanged(i);
+                } else if (itemAdapter instanceof RecipientAddressModel) {
+                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(true);
+                    notifyItemChanged(i);
                 }
             }
         } else {
@@ -579,6 +582,9 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     notifyItemChanged(i);
                 } else if (itemAdapter instanceof CartPromoSuggestion) {
                     ((CartPromoSuggestion) itemAdapter).setVisible(true);
+                    notifyItemChanged(i);
+                } else if (itemAdapter instanceof RecipientAddressModel) {
+                    ((RecipientAddressModel) itemAdapter).setStateExtraPaddingTop(false);
                     notifyItemChanged(i);
                 }
             }
