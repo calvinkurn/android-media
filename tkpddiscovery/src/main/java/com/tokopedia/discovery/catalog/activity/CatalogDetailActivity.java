@@ -17,6 +17,7 @@ import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.router.SellerAppRouter;
+import com.tokopedia.core.router.discovery.DetailProductRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.util.GlobalConfig;
@@ -133,6 +134,14 @@ public class CatalogDetailActivity extends BasePresenterActivity implements ICat
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         shareData = savedInstanceState.getParcelable(STATE_CATALOG_SHARE_DATA);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(DetailProductRouter.EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
     }
 
     @Override

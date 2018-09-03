@@ -24,6 +24,7 @@ import com.tokopedia.core.network.entity.variant.Option;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
 import com.tokopedia.core.network.entity.variant.Variant;
 import com.tokopedia.core.product.model.productdetail.ProductDetailData;
+import com.tokopedia.core.product.model.productdetail.ProductWholesalePrice;
 import com.tokopedia.design.component.EditTextCompat;
 import com.tokopedia.design.component.NumberPickerWithCounterView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -215,11 +216,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         etNotesSeller.setText(selectedRemarkNotes);
         widgetQty.setOnPickerActionListener(num -> {
             selectedQuantity = num;
-            if (isCampaign()) {
-                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * num, true));
-            } else {
-                textCartPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * num, true));
-            }
+            textCartPrice.setText(generateTextCartPrice());
         });
         try {
             widgetQty.setMinValue(Integer.parseInt(productDetailData.getInfo().getProductMinOrder()));
@@ -246,6 +243,19 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             textOriginalPrice.setVisibility(View.GONE);
         }
 
+    }
+
+    private String generateTextCartPrice() {
+        if (isCampaign()) {
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * selectedQuantity, true);
+        } else {
+            for (ProductWholesalePrice item : productDetailData.getWholesalePrice()) {
+                if (selectedQuantity >= item.getWholesaleMinRaw() && selectedQuantity <= item.getWholesaleMaxRaw()) {
+                    return CurrencyFormatUtil.convertPriceValueToIdrFormat(item.getWholesalePriceRaw() * selectedQuantity, true);
+                }
+            }
+            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * selectedQuantity, true);
+        }
     }
 
     private boolean isCampaign() {
@@ -324,15 +334,6 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
         }
     }
 
-    private String generateTextPriceCart() {
-        if(productDetailData.getCampaign() != null
-                && productDetailData.getCampaign().getActive()) {
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getCampaign().getDiscountedPrice() * widgetQty.getValue(), true);
-        } else {
-            return CurrencyFormatUtil.convertPriceValueToIdrFormat(productDetailData.getInfo().getProductPriceUnformatted() * widgetQty.getValue(), true);
-        }
-    }
-
     private View.OnClickListener onButtonCartClick() {
         return view -> {
             Intent intent = generateExtraSelectedIntent();
@@ -360,7 +361,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             buttonBuy.setBackground(ContextCompat.getDrawable(VariantActivity.this, R.drawable.orange_button_rounded));
 
             textButtonBuy.setText(generateTextButtonBuy());
-            textCartPrice.setText(generateTextPriceCart());
+            textCartPrice.setText(generateTextCartPrice());
 
             buttonCart.setVisibility(stateFormVariantPage == STATE_VARIANT_DEFAULT ? VISIBLE : View.GONE);
 
@@ -586,7 +587,7 @@ public class VariantActivity extends TActivity  implements VariantOptionAdapter.
             productDetailData.getInfo().setProductPriceUnformatted(child.getPrice());
             productDetailData.getInfo().setProductUrl(child.getUrl());
             productDetailData.getInfo().setProductAlreadyWishlist(child.isWishlist()?1:0);
-            productDetailData.getInfo().setProductStockWording(child.getStockWording());
+            productDetailData.getInfo().setProductStockWording(child.getStockWordingHtml());
             productDetailData.getInfo().setLimitedStock(child.isLimitedStock());
             productDetailData.setCampaign(child.getCampaign());
             if (!TextUtils.isEmpty(child.getPicture().getThumbnail()))  {

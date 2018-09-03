@@ -3,8 +3,10 @@ package com.tokopedia.digital.product.additionalfeature.etoll.view.compoundview;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +21,8 @@ public class TapETollCardView extends RelativeLayout {
     private TextView textTitle;
     private TextView textLabel;
     private LottieAnimationView lottieAnimationView;
+    private AppCompatButton buttonTryAgain;
+    private ImageView imageviewError;
 
     public TapETollCardView(Context context) {
         super(context);
@@ -47,24 +51,36 @@ public class TapETollCardView extends RelativeLayout {
         textTitle = view.findViewById(R.id.text_title);
         textLabel = view.findViewById(R.id.text_label);
         lottieAnimationView = view.findViewById(R.id.lottie_animation_view);
+        buttonTryAgain = view.findViewById(R.id.button_try_again);
+        imageviewError = view.findViewById(R.id.imageview_error);
+
+        buttonTryAgain.setOnClickListener(v -> {
+            showInitialState();
+        });
     }
 
     public void showLoading() {
         textTitle.setText(getResources().getString(R.string.reading_card_label_title));
+        textTitle.setTextColor(getResources().getColor(R.color.black));
         textLabel.setText(getResources().getString(R.string.reading_card_label_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_loading.json");
         lottieAnimationView.playAnimation();
+        imageviewError.setVisibility(GONE);
+        buttonTryAgain.setVisibility(GONE);
     }
 
     public void showInitialState() {
         textTitle.setText(getResources().getString(R.string.emoney_tap_card_instruction_title));
+        textTitle.setTextColor(getResources().getColor(R.color.black));
         textLabel.setText(getResources().getString(R.string.emoney_tap_card_instruction_message));
         lottieAnimationView.setVisibility(VISIBLE);
         lottieAnimationView.clearAnimation();
         lottieAnimationView.setAnimation("emoney_animation.json");
         lottieAnimationView.playAnimation();
+        imageviewError.setVisibility(GONE);
+        buttonTryAgain.setVisibility(GONE);
     }
 
     @Override
@@ -75,4 +91,14 @@ public class TapETollCardView extends RelativeLayout {
             showInitialState();
         }
     }
+
+    public void showErrorState(String errorMessage) {
+        textTitle.setText(getResources().getString(R.string.emoney_tap_card_instruction_title));
+        textTitle.setTextColor(getResources().getColor(R.color.red_600));
+        textLabel.setText(errorMessage);
+        lottieAnimationView.setVisibility(GONE);
+        imageviewError.setVisibility(VISIBLE);
+        buttonTryAgain.setVisibility(VISIBLE);
+    }
+
 }

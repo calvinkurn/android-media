@@ -65,7 +65,7 @@ public class ReviewProductListMapper {
         for(Review review : dataResponseReviewHelpful.getList()){
             ReviewProductModelContent productReviewModelContent = new ReviewProductModelContent();
             productReviewModelContent.setResponseCreateTime(review.getReviewResponse().getResponseTime().getDateTimeFmt1());
-            productReviewModelContent.setResponseMessage(review.getReviewMessage());
+            productReviewModelContent.setResponseMessage(review.getReviewResponse().getResponseMessage());
             productReviewModelContent.setReviewCanReported(isReviewCanReported(userId, review));
             productReviewModelContent.setReputationId(String.valueOf(review.getReputationId()));
             productReviewModelContent.setReviewerId(String.valueOf(review.getUser().getUserId()));

@@ -38,6 +38,7 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     MenuItem searchItem;
     public static final String CATEGORY_DEFAULT_TITLE = "";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "tracker_attribution";
+    private static final String EXTRA_ACTIVITY_PAUSED = "EXTRA_ACTIVITY_PAUSED";
 
     private String departmentId = "";
     private String trackerAttribution = "";
@@ -71,6 +72,9 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getIntent().getBooleanExtra(EXTRA_ACTIVITY_PAUSED, false)) {
+            moveTaskToBack(true);
+        }
     }
 
     @Override
@@ -98,13 +102,14 @@ public class IntermediaryActivity extends BasePresenterActivity implements MenuI
         context.startActivity(intent);
     }
 
-    public static void moveTo(Context context, String depId) {
+    public static void moveTo(Context context, String depId, boolean isActivityPaused) {
         if (context == null)
             return;
 
         Intent intent = new Intent(context, IntermediaryActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(BrowseProductRouter.DEPARTMENT_ID, depId);
+        bundle.putBoolean(EXTRA_ACTIVITY_PAUSED, isActivityPaused);
         intent.putExtras(bundle);
         context.startActivity(intent);
     }

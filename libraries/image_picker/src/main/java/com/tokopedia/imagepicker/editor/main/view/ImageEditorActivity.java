@@ -26,16 +26,16 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
-import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
-import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
+import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditThumbnailListWidget;
 import com.tokopedia.imagepicker.editor.widget.TwoLineSeekBar;
 import com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerPresenter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     public static final int MAX_HISTORY_PER_IMAGE = 5;
     private static final int REQUEST_STORAGE_PERMISSIONS = 5109;
 
-    private ArrayList<String> extraImageUrls;
+    protected ArrayList<String> extraImageUrls;
     private int minResolution;
     private @ImageEditActionTypeDef
     int[] imageEditActionType;
@@ -115,7 +115,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private View layoutContrast;
     private View layoutCrop;
     private View layoutRotate;
-    private ProgressDialog progressDialog;
+    protected ProgressDialog progressDialog;
     private TwoLineSeekBar brightnessSeekbar;
     private TwoLineSeekBar contrastSeekbar;
     private TwoLineSeekBar rotateSeekbar;
@@ -125,12 +125,12 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private long maxFileSize;
 
     //to give flag if the image is editted or not, in case the caller need it.
-    private ArrayList<Boolean> isEdittedList;
+    protected ArrayList<Boolean> isEdittedList;
     private boolean isPermissionGotDenied;
     private ImageRatioTypeDef defaultRatio;
     private ArrayList<ImageRatioTypeDef> imageRatioOptionList;
     private ImageEditCropListWidget imageEditCropListWidget;
-    private ArrayList<String> imageDescriptionList;
+    protected ArrayList<String> imageDescriptionList;
 
     public static Intent getIntent(Context context, ArrayList<String> imageUrls,
                                    ArrayList<String> imageDescription,
@@ -831,10 +831,10 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     @Override
     public void onSuccessResizeImage(ArrayList<String> resultPaths) {
         hideDoneLoading();
-        onFinishWithMultipleFinalImage(resultPaths);
+        onFinishEditingImage(resultPaths);
     }
 
-    protected void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList) {
+    protected void onFinishEditingImage(ArrayList<String> imageUrlOrPathList) {
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE);
         ImageUtils.deleteCacheFolder(ImageUtils.DirectoryDef.DIRECTORY_TOKOPEDIA_CACHE_CAMERA);
         Intent intent = getFinishIntent(imageUrlOrPathList);
@@ -927,12 +927,16 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         if (imagePickerPresenter == null) {
             imagePickerPresenter = new ImagePickerPresenter();
             imagePickerPresenter.attachView(this);
+        } else if (!imagePickerPresenter.isViewAttached()) {
+            imagePickerPresenter.attachView(this);
         }
     }
 
     private void initImageCropPresenter() {
         if (imageRatioCropPresenter == null) {
             imageRatioCropPresenter = new ImageRatioCropPresenter();
+            imageRatioCropPresenter.attachView(this);
+        } else if(!imageRatioCropPresenter.isViewAttached()) {
             imageRatioCropPresenter.attachView(this);
         }
     }

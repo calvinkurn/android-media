@@ -26,6 +26,13 @@
     <string name="title_following_kol">Following</string>
     <string name="string_follow_empty">Kamu belum \nmengikuti influencer</string>
     <string name="string_follow_empty_button">Explore Influencer</string>
+    <string name="title_image_picker">Image Picker</string>
+    <string name="title_image_editor">Image Editor</string>
+    <string name="title_create_post">Create Post</string>
 
     <string name="explore_more_button">Explore More</string>
+
+
+    <!--Kol Post-->
+    <string name="title_post">Pilih gambar</string>
 </resources>

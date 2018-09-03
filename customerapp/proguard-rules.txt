@@ -310,6 +310,7 @@
 
 # -- Feeds --
 -keep class com.tkpdfeed.feeds.** { *; }
+-keep class com.tokopedia.feedplus.data.pojo.** { *; }
 # -- End of Feeds --
 
 # Fingerprint

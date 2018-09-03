@@ -43,6 +43,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getHomePageData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
@@ -54,9 +58,11 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 variablesBanner);
         mGetHomePageData.addRequest(graphqlRequestBanners);
 
+        Map<String, Object> variableFilter = new HashMap<>();
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
-                variablesBanner);
+                variableFilter);
         mGetHomePageData.addRequest(graphqlRequestFilter);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
@@ -92,6 +98,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getPointData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetPointData.clearRequest();
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),

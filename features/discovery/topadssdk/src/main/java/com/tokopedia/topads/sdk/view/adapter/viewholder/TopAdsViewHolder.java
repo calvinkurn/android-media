@@ -31,7 +31,7 @@ import java.util.List;
 public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implements DisplayChangeListener {
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.layout_ads;
+    public static final int LAYOUT = R.layout.layout_ads_no_padding;
     private LinearLayout container;
     private static final String TAG = TopAdsViewHolder.class.getSimpleName();
     private RecyclerView recyclerView;

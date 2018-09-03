@@ -2,7 +2,6 @@ package com.tokopedia.imagepicker.picker.gallery.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

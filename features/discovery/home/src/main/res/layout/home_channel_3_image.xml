@@ -20,7 +20,7 @@
             android:maxEms="12"
             tools:text="Sprint Sale"/>
 
-        <com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView
+        <com.tokopedia.design.countdown.CountDownView
             android:id="@+id/count_down"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

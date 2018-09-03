@@ -15,6 +15,8 @@ import java.util.List;
 
 public interface IMultipleAddressPresenter {
 
+    void processGetCartList();
+
     void sendData(Context context, List<MultipleAddressAdapterData> dataList);
 
     List<MultipleAddressAdapterData> initiateMultipleAddressAdapterData(
@@ -22,5 +24,9 @@ public interface IMultipleAddressPresenter {
             RecipientAddressModel recipientAddressModel);
 
     void onUnsubscribe();
+
+    CartListData getCartListData();
+
+    void setCartListData(CartListData cartListData);
 
 }
