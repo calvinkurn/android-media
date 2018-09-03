@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.shop.settings.address.view.ShopSettingsAddressActivity;
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopEditBasicInfoActivity;
 import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity;
 import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseActivity;
 import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesActivity;
