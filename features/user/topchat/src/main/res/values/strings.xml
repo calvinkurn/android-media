@@ -28,6 +28,7 @@ yang ditemukan</string>
     <string name="resend">"Kirim Ulang"</string>
     <string name="delete">"Hapus"</string>
     <string name="cancel">"Batal"</string>
+    <string name="cancel_bottom_sheet">Batal</string>
     <string name="time_machine">Untuk melihat percakapan sebelumnya,\nkunjungi Riwayat
         Pesan</string>
     <string name="string_general_error">Terjadi kesalahan, mohon coba kembali.</string>

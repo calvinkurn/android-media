@@ -2,6 +2,8 @@ package com.tokopedia.events.data;
 
 import com.tokopedia.events.data.source.EventsApi;
 
+import javax.inject.Inject;
+
 /**
  * Created by ashwanityagi on 06/11/17.
  */
@@ -9,6 +11,7 @@ import com.tokopedia.events.data.source.EventsApi;
 public class EventsDataStoreFactory {
     private final EventsApi eventsApi;
 
+    @Inject
     public EventsDataStoreFactory(EventsApi eventsApi) {
         this.eventsApi = eventsApi;
     }

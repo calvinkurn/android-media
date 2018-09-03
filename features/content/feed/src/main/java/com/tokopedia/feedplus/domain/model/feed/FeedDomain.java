@@ -18,6 +18,9 @@ public class FeedDomain {
     private final boolean hasNext;
 
     @Nullable
+    private String title;
+
+    @Nullable
     private List<RecentViewProductDomain> recentProduct;
 
     @Nullable
@@ -30,6 +33,15 @@ public class FeedDomain {
     }
 
     @Nullable
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@Nullable String title) {
+        this.title = title;
+    }
+
+    @Nullable
     public List<DataFeedDomain> getListFeed() {
         return listFeed;
     }
@@ -37,11 +49,6 @@ public class FeedDomain {
     public boolean isHasNext() {
         return hasNext;
     }
-
-//    @Nullable
-//    public List<DataInspirationDomain> getListInspiration() {
-//        return listInspiration;
-//    }
 
     public void setRecentProduct(@Nullable List<RecentViewProductDomain> recentProduct) {
         this.recentProduct = recentProduct;
