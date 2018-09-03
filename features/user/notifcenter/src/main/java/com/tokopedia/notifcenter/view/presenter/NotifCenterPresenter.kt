@@ -31,6 +31,14 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         )
     }
 
+    override fun fetchDataWithoutCache() {
+        view.showLoading()
+        notifCenterUseCase.executeNoCache(
+                NotifCenterUseCase.getRequestParams(page, filterId),
+                NotifCenterSubscriber(view, dateUtil)
+        )
+    }
+
     override fun updatePage() {
         this.page++
     }

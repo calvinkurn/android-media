@@ -28,6 +28,8 @@ interface NotifCenterContract {
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
+        fun fetchDataWithoutCache()
+
         fun updatePage()
 
         fun updateFilterId(filterId: Int)

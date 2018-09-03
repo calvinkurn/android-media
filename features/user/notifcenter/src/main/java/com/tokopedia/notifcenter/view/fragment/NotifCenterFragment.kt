@@ -113,6 +113,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     override fun hideLoading() {
         if (adapter.isLoading()) adapter.hideLoading()
         if (swipeToRefresh.isRefreshing) swipeToRefresh.isRefreshing = false
+        filterBtn.show()
     }
 
     override fun openRedirectUrl(url: String) {
@@ -146,10 +147,12 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             }
         })
         swipeToRefresh.setOnRefreshListener {
+            filterBtn.hide(false)
             resetParam()
             adapter.clearAllElements()
-            presenter.fetchData()
+            presenter.fetchDataWithoutCache()
         }
+        filterBtn.hide(false)
         filterBtn.setButton1OnClickListener {
             context?.let {
                 Menus(it)

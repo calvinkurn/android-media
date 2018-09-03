@@ -3,6 +3,9 @@ package com.tokopedia.notifcenter.domain.usecase
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.graphql.GraphqlConstant
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -10,6 +13,8 @@ import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.domain.pojo.NotifCenterPojo
 import rx.Subscriber
 import javax.inject.Inject
+
+
 
 /**
  * @author by alvinatin on 21/08/18.
@@ -19,9 +24,28 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
                                              val graphqlUseCase: GraphqlUseCase) {
 
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+                .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
         val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
 
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
+        graphqlUseCase.clearRequest()
+        graphqlUseCase.addRequest(graphqlRequest)
+        graphqlUseCase.execute(subscriber)
+    }
+
+    fun executeNoCache(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
+        val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setSessionIncluded(true)
+                .build()
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
+        val graphqlRequest = GraphqlRequest(query, NotifCenterPojo::class.java, variables)
+
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
         graphqlUseCase.execute(subscriber)
