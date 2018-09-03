@@ -17,7 +17,7 @@ public interface KolComment {
 
         Context getContext();
 
-        void onGoToProfile(String url);
+        void openRedirectUrl(String url);
 
         void showLoading();
 

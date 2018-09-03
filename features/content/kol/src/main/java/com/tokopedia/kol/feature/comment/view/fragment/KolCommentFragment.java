@@ -179,8 +179,13 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProfile(String url) {
+    public void openRedirectUrl(String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public void onGoToProfile(String url) {
+        openRedirectUrl(url);
     }
 
     @Override
