@@ -59,6 +59,8 @@ import com.tokopedia.navigation.applink.HomeNavigationApplinkModule;
 import com.tokopedia.navigation.applink.HomeNavigationApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -69,7 +71,7 @@ import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.applink.ApplinkDelegateImpl;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -129,7 +131,8 @@ import io.branch.referral.BranchError;
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         InstantLoanAppLinkModule.class,
-        RecentViewApplinkModule.class
+        RecentViewApplinkModule.class,
+        ProductAddDeeplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -138,7 +141,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if(applinkDelegate == null) {
-            applinkDelegate = new ApplinkDelegateImpl(
+            applinkDelegate = new TkpdApplinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
@@ -172,7 +175,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new HomeNavigationApplinkModuleLoader(),
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
-                new RecentViewApplinkModuleLoader()
+                new RecentViewApplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader()
             );
         }
 
