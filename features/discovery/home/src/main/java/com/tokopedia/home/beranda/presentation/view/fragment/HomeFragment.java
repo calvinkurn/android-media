@@ -504,6 +504,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
+        presenter.onBannerClicked(slidesModel);
     }
 
     @Override
@@ -790,6 +791,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onSixGridItemClicked(String actionLink, String trackingAttribution) {
         onActionLinkClicked(actionLink, trackingAttribution);
+    }
+
+    @Override
+    public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
+        presenter.hitBannerImpression(bannerSlidesModel);
     }
 
     @Override

@@ -23,12 +23,15 @@ import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.subscriber.GetHomeFeedsSubscriber;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
@@ -491,5 +494,27 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    @Override
+    public void hitBannerImpression(BannerSlidesModel slidesModel) {
+        if (!slidesModel.isImpressed()) {
+            new ImpresionTask(new ImpressionListener() {
+                @Override
+                public void onSuccess() {
+                    slidesModel.setImpressed(true);
+                }
+
+                @Override
+                public void onFailed() {
+                    slidesModel.setImpressed(false);
+                }
+            }).execute(slidesModel.getTopadsViewUrl());
+        }
+    }
+
+    @Override
+    public void onBannerClicked(BannerSlidesModel slidesModel) {
+        new ImpresionTask().execute(slidesModel.getRedirectUrl());
     }
 }

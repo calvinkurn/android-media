@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
+import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 
@@ -79,5 +80,9 @@ public interface HomeContract {
         void onFirstLaunch();
 
         void onDestroy();
+
+        void hitBannerImpression(BannerSlidesModel slidesModel);
+
+        void onBannerClicked(BannerSlidesModel slidesModel);
     }
 }
