@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
@@ -108,7 +109,7 @@ public class ProductListFragment extends SearchSectionFragment
     private boolean forceSearch;
 
     private ArrayList<Option> quickFilterOptions;
-    private SimilarSearchManager similarSearchManager ;
+    private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
 
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
@@ -543,7 +544,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onLongClick(ProductItem item, int adapterPosition) {
-        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(),item);
+        similarSearchManager.startSimilarSearchIfEnable(getSearchParameter().getQueryKey(), item);
 
     }
 
@@ -573,8 +574,13 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplinkFromActivity(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 
@@ -768,7 +774,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     @Override
     public void onTopAdsLoaded() {
-            startShowCase();
+        startShowCase();
     }
 
     @Override
@@ -925,9 +931,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
 
-
     private boolean isShowCaseAllowed(String tag) {
-        if(getActivity() == null) {
+        if (getActivity() == null) {
             return false;
         }
         return similarSearchManager.isSimilarSearchEnable() && !ShowCasePreference.hasShown(getActivity(), tag);
@@ -936,7 +941,7 @@ public class ProductListFragment extends SearchSectionFragment
 
     public void startShowCase() {
         final String showCaseTag = ProductListFragment.class.getName();
-        if (!isShowCaseAllowed(showCaseTag)){
+        if (!isShowCaseAllowed(showCaseTag)) {
             return;
         }
         if (showCaseDialog != null) {
@@ -973,8 +978,9 @@ public class ProductListFragment extends SearchSectionFragment
             }
         }, 300);
     }
+
     private ShowCaseDialog createShowCaseDialog() {
-        return  new ShowCaseBuilder()
+        return new ShowCaseBuilder()
                 .customView(R.layout.item_top_ads_show_case)
                 .titleTextColorRes(R.color.white)
                 .spacingRes(R.dimen.spacing_show_case)
@@ -993,10 +999,10 @@ public class ProductListFragment extends SearchSectionFragment
 
 
     public View scrollToShowCaseItem() {
-        if(recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
+        if (recyclerView.getAdapter().getItemCount() >= PRODUCT_POSITION) {
             recyclerView.stopScroll();
             recyclerView.getLayoutManager().scrollToPosition(PRODUCT_POSITION + PRODUCT_POSITION);
-            return ((GridLayoutManager)recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
+            return ((GridLayoutManager) recyclerView.getLayoutManager()).findViewByPosition(PRODUCT_POSITION);
         }
         return null;
     }

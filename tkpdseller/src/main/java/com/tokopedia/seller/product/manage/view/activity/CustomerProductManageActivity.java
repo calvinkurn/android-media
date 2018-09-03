@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 /**
