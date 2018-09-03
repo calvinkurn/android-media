@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Interest Pick</string>
+    <string name="interest_what_do_you_like">Kamu Suka Apa?</string>
+    <string name="interest_save">Simpan</string>
+</resources>

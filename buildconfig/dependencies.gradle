@@ -294,6 +294,7 @@ ext {
             feed                  : ":features:content:feed",
             kol                   : ":features:content:kol",
             explore               : ":features:content:explore",
+            interestPick          : ":features:content:interest_pick",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
             inbox                 : ":tkpdinbox",
