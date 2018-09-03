@@ -69,7 +69,9 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
         RequestParams params = RequestParams.create();
         params.putString(ORDER_ID, createResoRequestDomain.getOrderId());
         params.putObject(PARAM_JSON, submitObject);
-        params.putString(RESOLUTION_ID, createResoRequestDomain.getResolutionId());
+        if (!TextUtils.isEmpty(createResoRequestDomain.getResolutionId())) {
+            params.putString(RESOLUTION_ID, createResoRequestDomain.getResolutionId());
+        }
         return params;
     }
 }
