@@ -7,6 +7,7 @@ import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestSupportInterceptorUseCase;
@@ -28,22 +29,26 @@ public class GetSubmissionChallengesUseCase extends RestRequestSupportIntercepto
         super(interceptor, context);
     }
 
-    public void setRequestParams(RequestParams requestParams){
-        this.requestParams=requestParams;
+    public void setRequestParams(RequestParams requestParams) {
+        this.requestParams = requestParams;
     }
 
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-
+        HashMap headers = new HashMap();
+        if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE) {
+            headers.put("Cache-Control", "max-age=0");
+            ChallengesCacheHandler.resetChallengeSubmissionssListCache();
+        }
         //Request 1
 
-        HashMap<String, Object> parameters=requestParams.getParameters();
+        HashMap<String, Object> parameters = requestParams.getParameters();
         String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);
         parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.CHALLENGES_SUBMISSIONS, challengeID), SubmissionResponse.class)
                 .setQueryParams(parameters)
-                .build();
+                .setHeaders(headers).build();
         tempRequest.add(restRequest1);
 
         return tempRequest;

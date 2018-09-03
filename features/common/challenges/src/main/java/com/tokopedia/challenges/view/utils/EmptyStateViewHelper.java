@@ -66,8 +66,10 @@ public class EmptyStateViewHelper {
 
     public static void hideEmptyState(final View rootview) {
         try {
+            if(rootview.findViewById(R.id.empty_view)!=null){
+                rootview.findViewById(R.id.empty_view).setVisibility(View.GONE);
+            }
 
-            rootview.findViewById(R.id.empty_view).setVisibility(View.GONE);
         } catch (NullPointerException e) {
             e.printStackTrace();
         }

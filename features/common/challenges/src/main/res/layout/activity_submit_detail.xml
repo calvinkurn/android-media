@@ -173,7 +173,7 @@
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_10"
                     android:paddingTop="@dimen/dp_4"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/challenge_title" />
 
@@ -191,7 +191,7 @@
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_16"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:layout_constraintTop_toBottomOf="@+id/points_img">
 
                     <ImageView

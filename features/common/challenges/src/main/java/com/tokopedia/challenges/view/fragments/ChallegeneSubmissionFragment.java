@@ -53,6 +53,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionRespons
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -147,6 +148,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         if (VIDEO_POS != -1) {
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS);
+        }
+
+        if(ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE){
+            mPresenter.loadSubmissions();
         }
     }
 
@@ -338,9 +343,16 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
-        if (!isPastChallenge) {
-            submitButton.setVisibility(View.VISIBLE);
 
+        if (isPastChallenge) {
+            btnShare.setVisibility(View.GONE);
+            submitButton.setVisibility(View.GONE);
+            bottomMarginView.setVisibility(View.GONE);
+        } else {
+            btnShare.setOnClickListener(this);
+            submitButton.setOnClickListener(this);
+            btnShare.setVisibility(View.VISIBLE);
+            submitButton.setVisibility(View.VISIBLE);
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
@@ -377,7 +389,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             clWinners.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
-            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
+            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isPastChallenge);
             winnerItemAdapter.isWinnerLayout(true);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }

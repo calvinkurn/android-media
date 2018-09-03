@@ -189,8 +189,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
     }
 
-    public void showStatusInfo() {
+    public void showStatusInfo(String statusMessage) {
         statusView.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(statusMessage))
+            statusText.setText(statusMessage);
     }
 
     @Override
@@ -229,7 +231,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
 
-    public void setApprovedView(String approveText) {
+    public void setApprovedView(String approveText, String statusMessage) {
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
@@ -238,7 +240,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if (Utils.STATUS_WAITING.equalsIgnoreCase(approveText)) {
-            showStatusInfo();
+            showStatusInfo(statusMessage);
+        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
+            showStatusInfo(statusMessage);
         }
     }
 
@@ -261,11 +265,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         if (isPastChallenge) {
             this.participateTitle.setVisibility(View.GONE);
             this.participateTextView.setVisibility(View.GONE);
+            hideShareAndLikeButtons();
         } else {
             this.participateTitle.setText(participateTitle);
             String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
             this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
-
+            showShareAndLikeButtons();
         }
     }
 
@@ -403,8 +408,18 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete && submissionResult != null) {
-            presenter.deleteSubmittedPost(submissionResult.getId());
+            presenter.deleteSubmittedPost(submissionResult.getId(), submissionResult.getCollection().getId());
         }
         return true;
+    }
+
+    private void hideShareAndLikeButtons(){
+        btnShare.setVisibility(View.GONE);
+        likeBtn.setVisibility(View.GONE);
+    }
+
+    private void showShareAndLikeButtons(){
+        btnShare.setVisibility(View.VISIBLE);
+        likeBtn.setVisibility(View.VISIBLE);
     }
 }

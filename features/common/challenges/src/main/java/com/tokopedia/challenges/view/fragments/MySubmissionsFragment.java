@@ -19,6 +19,7 @@ import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.EmptyStateViewHelper;
 
 import java.util.List;
@@ -66,18 +67,20 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView.setAdapter(listAdpater);
         //recyclerView.addOnScrollListener(rvOnScrollListener);
         recyclerView.setVisibility(View.VISIBLE);
-        //mySubmissionsHomePresenter.getMySubmissionsList();
-        //isFirst = false;
+        mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
+        if (isFirst) {
+            isFirst = false;
+        }
         return view;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
-        if (isFirst) {
-            isFirst = false;
+        if (ChallengesCacheHandler.MY_SUBMISSTIONS_LIST_CACHE) {
+            mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
         }
+
     }
 
     @Override

@@ -4,7 +4,9 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
@@ -14,6 +16,7 @@ import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.usecase.RequestParams;
@@ -60,7 +63,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             sendBuzzPointEvent(model.getId());
         }
         getView().setLikes(model.getMe().isLiked());
-        getView().setApprovedView(model.getStatus());
+        getView().setApprovedView(model.getStatus(),model.getStatusMessage());
         getView().setPointsView(String.valueOf(model.getPoints()));
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
@@ -183,7 +186,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         });
     }
 
-    public void deleteSubmittedPost(String submissionId) {
+    public void deleteSubmittedPost(String submissionId, String challengeId) {
         getView().showProgressBar();
         postDeleteSubmissionUseCase.setRequestParams(submissionId);
         postDeleteSubmissionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -201,8 +204,12 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
-                getView().getActivity().finish();
                 Utils.FROMNOCACHE = true;
+                ChallengesCacheHandler.setCache();
+                String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
+                RouteManager.route(getView().getActivity(), applink);
+                getView().getActivity().finish();
+
             }
         });
     }

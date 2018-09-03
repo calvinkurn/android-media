@@ -10,23 +10,15 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.BaseActivity;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetContract;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetPresenter;
-import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.BottomSheets;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;

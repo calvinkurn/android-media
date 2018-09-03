@@ -52,7 +52,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         imgShare.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_COMPLETED);
-            imgShare.setVisibility(View.GONE);
+            imgShare.setVisibility(View.INVISIBLE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_PARTICIPATED);
         } else {

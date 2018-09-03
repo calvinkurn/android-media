@@ -66,6 +66,11 @@ public class SubmissionResult implements Parcelable
     @Expose
     private List<Awards> awards;
 
+    @SerializedName("StatusMessage")
+    @Expose
+    private String statusMessage;
+
+
     public SubmissionResult() {
     }
 
@@ -87,6 +92,8 @@ public class SubmissionResult implements Parcelable
         me = in.readParcelable(Me.class.getClassLoader());
         sharing = in.readParcelable(Sharing.class.getClassLoader());
         awards = in.createTypedArrayList(Awards.CREATOR);
+        statusMessage = in.readString();
+
     }
 
     @Override
@@ -108,6 +115,8 @@ public class SubmissionResult implements Parcelable
         dest.writeParcelable(me, flags);
         dest.writeParcelable(sharing, flags);
         dest.writeTypedList(awards);
+        dest.writeString(statusMessage);
+
     }
 
     @Override
@@ -261,5 +270,13 @@ public class SubmissionResult implements Parcelable
 
     public void setAwards(List<Awards> awards) {
         this.awards = awards;
+    }
+
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
     }
 }

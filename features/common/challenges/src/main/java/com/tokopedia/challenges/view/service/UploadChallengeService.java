@@ -21,7 +21,6 @@ import com.tokopedia.challenges.di.DaggerChallengesComponent;
 import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitPresenter;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.utils.Utils;
-import com.tokopedia.core.gcm.utils.NotificationChannelId;
 
 import javax.inject.Inject;
 
@@ -31,6 +30,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public static final String UPLOAD_CHALLENGE_ID = "UploadChallengeID";
     public static final String UPLOAD_FILE_PATH = "UploadFilePath";
     public static final String UPLOAD_POST_ID = "Uploadpostid";
+    String GENERAL = "ANDROID_GENERAL_CHANNEL";
 
 
     @Inject
@@ -98,10 +98,10 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
 
     private NotificationCompat.Builder buildBaseNotification() {
 
-        int largeIconRes = R.drawable.ic_stat_notify2;
-        return new NotificationCompat.Builder(this, NotificationChannelId.GENERAL)
+        int largeIconRes = R.drawable.ic_big_notif_customerapp;
+        return new NotificationCompat.Builder(this, GENERAL)
                 .setContentTitle("Tokopedia Challenges")
-                .setSmallIcon(R.drawable.ic_stat_notify_white)
+                .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setOnlyAlertOnce(true);

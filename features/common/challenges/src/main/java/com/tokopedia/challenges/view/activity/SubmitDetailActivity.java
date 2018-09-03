@@ -36,6 +36,7 @@ public class SubmitDetailActivity extends BaseActivity {
         Uri.Builder uri = Uri.parse(deepLink).buildUpon();
 
         extras.putString(Utils.QUERY_PARAM_SUBMISSION_ID, extras.getString(Utils.QUERY_PARAM_SUBMISSION_ID));
+        extras.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, extras.getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE));
         destination = new Intent(context, SubmitDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
@@ -48,12 +49,14 @@ public class SubmitDetailActivity extends BaseActivity {
     protected Fragment getNewFragment() {
         SubmissionResult model = getIntent().getParcelableExtra("submissionsResult");
         String submissionId = getIntent().getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID);
+        boolean isPastChallenge = getIntent().getBooleanExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,false);
         boolean fromSubmission = getIntent().getBooleanExtra("fromSubmission",false);
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
         arg.putParcelable("submissionsResult", model);
         arg.putBoolean("fromSubmission",fromSubmission);
         arg.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
+        arg.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
         fragment.setArguments(arg);
         return fragment;
     }
