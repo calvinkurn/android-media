@@ -6,5 +6,7 @@
     style="@style/TextView.Small.BlackSecondary"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="@dimen/dp_5"
+    android:paddingTop="@dimen/quick_filter_padding_vertical"
+    android:paddingBottom="@dimen/quick_filter_padding_vertical"
+    android:paddingRight="@dimen/dp_5"
     tools:text="7.828.192 Produk"/>
