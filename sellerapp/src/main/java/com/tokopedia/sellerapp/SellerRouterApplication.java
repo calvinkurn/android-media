@@ -129,9 +129,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
@@ -154,10 +151,7 @@ import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.settings.address.view.ShopSettingsAddressActivity;
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity;
-import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseActivity;
-import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesActivity;
+import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -269,6 +263,12 @@ public abstract class SellerRouterApplication extends MainApplication
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToEtalaseList(Context context) {
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
         context.startActivity(intent);
     }
 
@@ -770,7 +770,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        Intent intent = ShopOpenRouter.getIntentCreateEditShop(context, true, true);
+        Intent intent = ShopOpenRouter.getIntentCreateEditShop(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         return intent;
     }
@@ -787,11 +787,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getIntentManageShop(Context context) {
-        Intent intent = new Intent(context, ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
-        UnifyTracking.eventManageShopInfo();
-
-        return intent;
+        return TkpdSeller.getIntentManageShop(context);
     }
 
     @Override
@@ -1155,7 +1151,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToEditShopNote(Context context) {
-        Intent intent = new Intent(context, ManageShopNotesActivity.class);
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
         context.startActivity(intent);
     }
 
@@ -1371,7 +1367,8 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToEditShop(Context context) {
-        context.startActivity(getIntentManageShop(context));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
@@ -1421,23 +1418,22 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsEtalaseActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
     public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsNotesActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
     public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsInfoActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
-    @NonNull
     @Override
-    public Intent getManageShopLocationIntent(@NonNull Context context) {
-        return ShopSettingsAddressActivity.createIntent(context);
+    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+        return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
     @NonNull

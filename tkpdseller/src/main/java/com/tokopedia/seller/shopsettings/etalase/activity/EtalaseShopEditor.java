@@ -385,7 +385,7 @@ public class EtalaseShopEditor extends TActivity {
                                                 processSuccessAddEtalase(data, eName);
                                             }
                                         } catch (JSONException je) {
-                                            Log.e(STUART, EtalaseShopEditor.class.getSimpleName() + je.getLocalizedMessage());
+
                                         }
                                     }
                                 } else {

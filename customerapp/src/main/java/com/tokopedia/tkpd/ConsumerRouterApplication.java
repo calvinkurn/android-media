@@ -212,9 +212,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -229,10 +226,7 @@ import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.settings.address.view.ShopSettingsAddressActivity;
-import com.tokopedia.shop.settings.basicinfo.view.activity.ShopSettingsInfoActivity;
-import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseActivity;
-import com.tokopedia.shop.settings.notes.view.ShopSettingsNotesActivity;
+import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -314,8 +308,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -484,7 +477,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        return ShopOpenRouter.getIntentCreateEditShop(context, true, false);
+        return ShopOpenRouter.getIntentCreateEditShop(context);
     }
 
     @Override
@@ -714,6 +707,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToEtalaseList(Context context) {
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
         context.startActivity(intent);
     }
 
@@ -1842,7 +1841,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToEditShopNote(Context context) {
-        Intent intent = new Intent(context, ManageShopNotesActivity.class);
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
         context.startActivity(intent);
     }
 
@@ -2274,8 +2273,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToEditShop(Context context) {
-        Intent intent = new Intent(context, ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         UnifyTracking.eventManageShopInfo();
 
         context.startActivity(intent);
@@ -2303,22 +2301,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsEtalaseActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
     }
 
     @Override
     public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsNotesActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
     }
 
     @Override
     public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
-        return new Intent(context, ShopSettingsInfoActivity.class);
+        return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
     }
 
     @Override
     public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
-        return ShopSettingsAddressActivity.createIntent(context);
+        return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
     }
 
     @Override

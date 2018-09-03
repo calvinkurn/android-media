@@ -1,5 +1,7 @@
 package com.tokopedia.shop.settings.notes.view
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -8,6 +10,7 @@ import android.view.View
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
+import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseActivity
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
@@ -19,6 +22,11 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
     private val reorderFragment: ShopSettingsNotesReorderFragment?
         get() = supportFragmentManager
                 .findFragmentByTag(ShopSettingsNotesReorderFragment.TAG) as ShopSettingsNotesReorderFragment
+
+    companion object {
+        @JvmStatic
+        fun createIntent(context: Context) = Intent(context, ShopSettingsNotesActivity::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

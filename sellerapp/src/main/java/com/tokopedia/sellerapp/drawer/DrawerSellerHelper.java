@@ -46,7 +46,6 @@ import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.seller.shop.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
@@ -465,7 +464,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     context.startActivity(new Intent(context, ProductDraftListActivity.class));
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                    startIntent(context, EtalaseShopEditor.class);
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToEtalaseList(context);
+                    }
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.SELLER_GM_STAT:

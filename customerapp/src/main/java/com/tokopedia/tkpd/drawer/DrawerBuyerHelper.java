@@ -55,7 +55,6 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.ParentIndexHome;
 import com.tokopedia.tokopoints.ApplinkConstant;
@@ -602,7 +601,9 @@ public class DrawerBuyerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_ETALASE:
-                    startIntent(context, EtalaseShopEditor.class);
+                    if (context.getApplication() instanceof TkpdCoreRouter) {
+                        ((TkpdCoreRouter) context.getApplication()).goToEtalaseList(context);
+                    }
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISPLAY);
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:

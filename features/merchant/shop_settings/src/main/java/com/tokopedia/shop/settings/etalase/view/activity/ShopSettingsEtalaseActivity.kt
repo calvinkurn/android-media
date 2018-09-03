@@ -1,24 +1,28 @@
 package com.tokopedia.shop.settings.etalase.view.activity
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.View
-import android.widget.TextView
-
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.etalase.data.ShopEtalaseViewModel
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseReorderFragment
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
-
-import java.util.ArrayList
+import java.util.*
 
 class ShopSettingsEtalaseActivity : BaseSimpleActivity(),
         ShopSettingsEtalaseListFragment.OnShopSettingsEtalaseFragmentListener,
         ShopSettingsEtalaseReorderFragment.OnShopSettingsEtalaseReorderFragmentListener {
+
+    companion object {
+        @JvmStatic
+        fun createIntent(context: Context) = Intent(context, ShopSettingsEtalaseActivity::class.java)
+    }
 
     private val reorderFragment: ShopSettingsEtalaseReorderFragment?
         get() = supportFragmentManager
