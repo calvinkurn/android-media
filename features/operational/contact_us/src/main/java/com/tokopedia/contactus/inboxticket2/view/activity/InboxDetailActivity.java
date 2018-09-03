@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,13 +45,11 @@ import java.util.concurrent.TimeUnit;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-@RuntimePermissions
 public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
     @BindView(R2.id.tv_ticket_title)
@@ -271,12 +268,6 @@ public class InboxDetailActivity extends InboxBaseActivity
             }
         }
 
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        InboxDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @OnClick(R2.id.iv_upload_img)
