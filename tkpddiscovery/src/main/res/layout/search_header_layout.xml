@@ -21,7 +21,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/guidedSearchRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"/>
 
     <HorizontalScrollView
         android:layout_width="match_parent"
@@ -32,6 +33,8 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
