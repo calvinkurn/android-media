@@ -14,10 +14,13 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
+import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.reporttalk.view.ReportTalkPresenter
 import com.tokopedia.talk.reporttalk.view.adapter.ReportTalkAdapter
 import com.tokopedia.talk.reporttalk.view.listener.ReportTalkContract
 import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
 import kotlinx.android.synthetic.main.fragment_report_talk.*
+import javax.inject.Inject
 
 /**
  * @author by nisie on 8/30/18.
@@ -28,8 +31,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         fun newInstance() = ReportTalkFragment()
     }
 
-    //    @Inject
-//    lateinit var presenter : ReportTalkPresenter
+//    @Inject
+//    lateinit var presenter: ReportTalkPresenter
 
     lateinit var reportTalkAdapter: ReportTalkAdapter
 
@@ -39,11 +42,12 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     }
 
     override fun initInjector() {
-//        val inboxTalkComponent = DaggerInboxTalkComponent.builder()
+//        val reportTalkComponent = DaggerReportTalkComponent.builder()
 //                .talkComponent(getComponent(TalkComponent::class.java))
 //                .build()
-//        inboxTalkComponent.inject(this)
+//        reportTalkComponent.inject(this)
 //        presenter.attachView(this)
+
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

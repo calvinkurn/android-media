@@ -1,7 +1,7 @@
-package com.tokopedia.talk.inboxtalk.viewmodel
+package com.tokopedia.talk.inboxtalk.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.talk.inboxtalk.adapter.InboxTalkTypeFactory
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactory
 
 /**
  * @author by nisie on 8/29/18.

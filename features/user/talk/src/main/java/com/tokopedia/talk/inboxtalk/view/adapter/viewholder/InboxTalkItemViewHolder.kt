@@ -1,4 +1,4 @@
-package com.tokopedia.talk.inboxtalk.adapter.viewholder
+package com.tokopedia.talk.inboxtalk.view.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
-import com.tokopedia.talk.inboxtalk.viewmodel.InboxTalkItemViewModel
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import kotlinx.android.synthetic.main.inbox_talk_item_product_header.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 
@@ -36,7 +36,8 @@ class InboxTalkItemViewHolder(val v: View) :
             productName.text = MethodChecker.fromHtml(element.productHeader.productName)
             ImageHandler.LoadImage(productAvatar, element.productHeader.productAvatar)
 
-            ImageHandler.LoadImage(profileAvatar, element.talkThread.headThread.avatar)
+            ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.talkThread
+                    .headThread.avatar)
             profileName.text = element.talkThread.headThread.name
             talkContent.text = element.talkThread.headThread.comment
             timestamp.text = element.talkThread.headThread.timestamp

@@ -7,7 +7,7 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 
 class ProductTalkThreadViewHolder(val v: View) :
-        AbstractViewHolder<ProductTalkThreadViewModel>(v) {
+        AbstractViewHolder<TalkThreadViewModel>(v) {
 
     companion object {
         val LAYOUT = R.layout.thread_talk
@@ -21,7 +21,7 @@ class ProductTalkThreadViewHolder(val v: View) :
     val content : TextView = thread.findViewById(R.id.talk_content)
     val listChild: RecyclerView = itemView.findViewById(R.id.list_child)
 
-    override fun bind(element: ProductTalkThreadViewModel?) {
+    override fun bind(element: TalkThreadViewModel?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
