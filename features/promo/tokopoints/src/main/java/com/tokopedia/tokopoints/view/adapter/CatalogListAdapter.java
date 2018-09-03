@@ -217,14 +217,11 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
             promoView.put("promoView", promotions);
 
-            Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
-            ecommerce.put("ecommerce", promoView);
-
             AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                     AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
-                    data.getTitle(), ecommerce);
+                    data.getTitle(), promoView);
 
             holder.isVisited = true;
         }
@@ -245,13 +242,10 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
         promoClick.put("promoClick", promotions);
 
-        Map<String, Map<String, Map<String, List<Map<String, String>>>>> ecommerce = new HashMap<>();
-        ecommerce.put("ecommerce", promoClick);
-
         AnalyticsTrackerUtil.sendECommerceEvent(context,
                 AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
                 AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
                 AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
-                data.getTitle(), ecommerce);
+                data.getTitle(), promoClick);
     }
 }
