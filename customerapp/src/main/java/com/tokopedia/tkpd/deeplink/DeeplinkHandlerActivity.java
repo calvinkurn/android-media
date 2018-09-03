@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
@@ -174,6 +175,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBranchSession();
+
+        if (GlobalConfig.isCustomerApp()) {
+            AppsFlyerLib.getInstance().sendDeepLinkData(this);
+        }
+
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
@@ -184,6 +190,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
+                homeIntent.putExtra("af_dp" , applink.toString());
             } else {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
             }

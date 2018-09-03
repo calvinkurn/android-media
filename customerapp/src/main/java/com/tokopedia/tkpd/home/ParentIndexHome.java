@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.appsflyer.AppsFlyerLib;
 import com.google.gson.GsonBuilder;
 import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
@@ -242,6 +243,9 @@ public class ParentIndexHome extends TkpdActivity implements NotificationReceive
         if (isFirstTime()) {
             trackFirstTime();
         }
+
+        //send deeplink data tracking to appsflyer
+        AppsFlyerLib.getInstance().sendDeepLinkData(this);
 
         initCreate();
 
