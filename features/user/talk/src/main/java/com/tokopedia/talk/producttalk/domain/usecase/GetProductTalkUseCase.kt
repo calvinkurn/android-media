@@ -1,5 +1,8 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.domain.usecase
 
+import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkListViewModel
+import com.tokopedia.talk.producttalk.view.data.ProductTalkApi
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable

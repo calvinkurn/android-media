@@ -1,4 +1,4 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.viewmodel
 
 
 /**

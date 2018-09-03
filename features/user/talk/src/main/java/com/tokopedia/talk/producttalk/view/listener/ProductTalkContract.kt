@@ -1,4 +1,4 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.listener
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView

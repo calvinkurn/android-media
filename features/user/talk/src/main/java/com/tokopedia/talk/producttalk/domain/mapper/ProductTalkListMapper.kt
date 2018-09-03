@@ -1,7 +1,8 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.domain.mapper
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkListViewModel
 import retrofit2.Response
 import rx.functions.Func1
 

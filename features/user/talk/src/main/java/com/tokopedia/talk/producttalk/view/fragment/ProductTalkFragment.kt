@@ -1,4 +1,4 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -8,6 +8,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.talk.ProductTalkTypeFactoryImpl
+import com.tokopedia.talk.R
+import com.tokopedia.talk.producttalk.di.ProductTalkDependencyInjector
+import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
+import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import kotlinx.android.synthetic.main.product_talk.*
 
 /**
@@ -46,8 +52,8 @@ class ProductTalkFragment : ProductTalkContract.View, BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setUpView()
-        getProductTalk()
+//        setUpView()
+//        getProductTalk()
     }
 
     private fun getProductTalk() {

@@ -1,4 +1,4 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.di
 
 import android.content.Context
 import com.google.gson.Gson
@@ -9,6 +9,10 @@ import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
+import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
+import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
+import com.tokopedia.talk.producttalk.view.data.ProductTalkApi
 import com.tokopedia.user.session.UserSession
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -73,7 +77,7 @@ class ProductTalkDependencyInjector {
 
             val okHttpClient: OkHttpClient = builder.build()
 
-            val retrofit: Retrofit = retrofitBuilder.baseUrl("")
+            val retrofit: Retrofit = retrofitBuilder.baseUrl("https://ws.tokopedia.com/")
                     .client(okHttpClient)
                     .build()
 

@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
-
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.readystatesoftware.chuck.ChuckInterceptor;
@@ -107,13 +106,7 @@ import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
-import com.tokopedia.core.util.AccessTokenRefresh;
-import com.tokopedia.core.util.AppWidgetUtil;
-import com.tokopedia.core.util.BranchSdkUtils;
-import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.util.SessionRefresh;
+import com.tokopedia.core.util.*;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.utils.DateLabelUtils;
@@ -247,6 +240,8 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
+import com.tokopedia.talk.inboxtalk.activity.InboxTalkActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -316,7 +311,13 @@ import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResp
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.view.activity.WithdrawActivity;
+import okhttp3.Interceptor;
+import okhttp3.Response;
+import retrofit2.Converter;
+import rx.Observable;
+import rx.functions.Func1;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
@@ -325,18 +326,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
-
-import okhttp3.Interceptor;
-import okhttp3.Response;
-import retrofit2.Converter;
-import rx.Observable;
-import rx.functions.Func1;
-
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.*;
 
 /**
  * @author normansyahputa on 12/15/16.

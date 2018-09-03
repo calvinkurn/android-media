@@ -1,10 +1,12 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkThreadViewModel
+import com.tokopedia.talk.R
 
 class ProductTalkThreadViewHolder(val v: View) :
         AbstractViewHolder<ProductTalkThreadViewModel>(v) {

@@ -1,6 +1,7 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkChildThreadTypeFactory
 
 class LoadProductTalkViewModel(
         var counter: Int,

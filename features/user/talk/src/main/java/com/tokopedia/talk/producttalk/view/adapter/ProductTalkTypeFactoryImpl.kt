@@ -3,6 +3,10 @@ package com.tokopedia.talk
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadTypeFactory
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkThreadViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 
 /**
  * @author by nisie on 6/12/18.

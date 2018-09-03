@@ -1,6 +1,9 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
+import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkListViewModel
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
 

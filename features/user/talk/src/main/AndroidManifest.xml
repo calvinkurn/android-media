@@ -12,6 +12,14 @@
             />
 
         <activity
+            android:name=".producttalk.view.activity.TalkProductActivity"
+            android:label="@string/title_product_discussion"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:theme="@style/Theme.White"
+            />
+
+        <activity
             android:name=".reporttalk.view.activity.ReportTalkActivity"
             android:label="@string/title_report_talk"
             android:screenOrientation="portrait"
