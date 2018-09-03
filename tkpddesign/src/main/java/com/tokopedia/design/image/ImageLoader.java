@@ -3,6 +3,7 @@ package com.tokopedia.design.image;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.design.R;
 
 /**
  * Created by pranaymohapatra on 03/09/18.
@@ -15,7 +16,7 @@ public class ImageLoader {
                     .load(url)
                     .fitCenter()
                     .dontAnimate()
-                    .placeholder(R.drawable.loading_page)
+                    .placeholder(R.drawable.ic_loading_image)
                     .error(R.drawable.error_drawable)
                     .into(imageview);
         }

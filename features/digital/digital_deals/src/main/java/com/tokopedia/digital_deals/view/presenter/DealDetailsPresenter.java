@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
@@ -102,7 +103,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
                 dealsDetailsResponse = (DealsDetailsResponse) data.getData();
-                if (dealsDetailsResponse != null )
+                if (dealsDetailsResponse != null)
                     Utils.getSingletonInstance().sortOutletsWithLocation(dealsDetailsResponse.getOutlets(), Utils.getSingletonInstance().getLocation(getView().getActivity()));
                 getView().hideProgressBar();
                 getView().showShareButton();
