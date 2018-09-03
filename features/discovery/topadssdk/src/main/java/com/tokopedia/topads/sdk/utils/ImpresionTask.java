@@ -40,10 +40,12 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String s) {
         super.onPostExecute(s);
-        if (impressionListener != null && s != null) {
-            impressionListener.onSuccess();
-        } else {
-            impressionListener.onFailed();
+        if (impressionListener != null) {
+            if (s != null) {
+                impressionListener.onSuccess();
+            } else {
+                impressionListener.onFailed();
+            }
         }
     }
 }
