@@ -7,5 +7,9 @@ import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactory
  * @author by milhamj on 30/08/18.
  */
 
-class NotifCenterAdapter (typeFactory: NotifCenterTypeFactoryImpl)
-    : BaseAdapter<NotifCenterTypeFactoryImpl>(typeFactory)
+class NotifCenterAdapter(typeFactory: NotifCenterTypeFactoryImpl)
+    : BaseAdapter<NotifCenterTypeFactoryImpl>(typeFactory) {
+
+    fun getList() = visitables
+
+}

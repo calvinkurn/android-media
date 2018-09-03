@@ -3,6 +3,7 @@ package com.tokopedia.notifcenter.view.fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
 import com.tokopedia.notifcenter.view.listener.NotifCenterContract
 import com.tokopedia.notifcenter.view.presenter.NotifCenterPresenter
+import com.tokopedia.notifcenter.view.viewmodel.NotifItemViewModel
 import kotlinx.android.synthetic.main.fragment_notif_center.*
 import javax.inject.Inject
 
@@ -76,6 +78,10 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             presenter.updatePage()
         }
 
+        if (!visitables.isEmpty() && visitables.first() is NotifItemViewModel
+                && isTimeSummarySame(visitables.first() as NotifItemViewModel)) {
+            (visitables.first() as NotifItemViewModel).showTimeSummary = false
+        }
         adapter.addElement(visitables)
     }
 
@@ -147,4 +153,11 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     private fun isLoading() = adapter.isLoading
 
     private fun resetParam() = presenter.resetParam()
+
+    private fun isTimeSummarySame(item: NotifItemViewModel): Boolean {
+        return !adapter.getList().isEmpty()
+                && adapter.getList().last() is NotifItemViewModel
+                && TextUtils.equals((adapter.getList().last() as NotifItemViewModel).timeSummary,
+                item.timeSummary)
+    }
 }

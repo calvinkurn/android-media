@@ -13,7 +13,7 @@ data class NotifItemViewModel(
         val readStatus: Int = 0,
         val userId: Int = 0,
         val shopId: Int = 0,
-        val showTimeSummary: Boolean = true)
+        var showTimeSummary: Boolean = true)
     : Visitable<NotifCenterTypeFactory> {
 
     companion object {
