@@ -178,8 +178,13 @@ public class KolCommentFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onGoToProfile(String url) {
+    public void openRedirectUrl(String url) {
         kolRouter.openRedirectUrl(getActivity(), url);
+    }
+
+    @Override
+    public void onGoToProfile(String url) {
+        openRedirectUrl(url);
     }
 
     @Override
@@ -189,13 +194,9 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetCommentsFirstTime(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
-            }
-        });
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, () ->
+                presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID))
+        );
     }
 
     @Override
