@@ -113,7 +113,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:lineSpacingExtra="4sp"
-                            tools:text="Harga Barang (3 Item)"/>
+                            android:text="@string/label_price_total" />
 
                         <TextView
                             android:id="@+id/tv_total_prices"

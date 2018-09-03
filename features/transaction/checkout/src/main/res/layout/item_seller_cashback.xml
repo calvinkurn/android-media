@@ -1,37 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rl_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_2">
+    android:background="@drawable/bg_outline_item_grey"
+    android:padding="@dimen/dp_16">
 
-    <RelativeLayout
-        android:id="@+id/rl_container"
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_16">
+        android:text="@string/label_selller_cashback" />
 
-        <TextView
-            style="@style/TextSmallMediumBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_selller_cashback" />
+    <TextView
+        android:id="@+id/tv_seller_cashback_price"
+        style="@style/TextSmallMediumBlack70"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:gravity="end"
+        tools:ignore="RelativeOverlap"
+        tools:text="Rp1.400.000" />
 
-        <TextView
-            android:id="@+id/tv_seller_cashback_price"
-            style="@style/TextSmallMediumBlack70"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:gravity="end"
-            tools:ignore="RelativeOverlap"
-            tools:text="Rp1.400.000" />
-
-    </RelativeLayout>
-
-</android.support.v7.widget.CardView>
+</RelativeLayout>
