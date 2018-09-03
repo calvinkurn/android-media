@@ -13,16 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.HotlistPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.discovery.model.Option;
-import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.discovery.model.Filter;
-import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.discovery.model.Sort;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -32,12 +32,11 @@ import com.tokopedia.core.share.ShareBottomSheet;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.activity.SortProductActivity;
-import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
+import com.tokopedia.discovery.newdiscovery.base.BottomNavigationListener;
 import com.tokopedia.discovery.newdiscovery.base.BottomSheetListener;
 import com.tokopedia.discovery.newdiscovery.base.RedirectionListener;
-import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.ProductListFragment;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.activity.HotlistActivity;
 import com.tokopedia.discovery.newdynamicfilter.RevampedDynamicFilterActivity;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.newdynamicfilter.helper.OptionHelper;
@@ -54,7 +53,7 @@ import static com.tokopedia.core.home.helper.ProductFeedHelper.PORTRAIT_COLUMN_M
  * Created by henrypriyono on 10/16/17.
  */
 
-public abstract class SearchSectionFragment extends BaseDaggerFragment
+public abstract class BrowseSectionFragment extends BaseDaggerFragment
         implements SearchSectionFragmentView {
 
     public static final int REQUEST_CODE_GOTO_PRODUCT_DETAIL = 4;
@@ -73,7 +72,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private static final String INSTAGRAM_GRID = "instagram grid";
     private static final String LIST_GRID = "list";
 
-    private SearchNavigationListener searchNavigationListener;
+    private BottomNavigationListener bottomNavigationListener;
     private BottomSheetListener bottomSheetListener;
     private RedirectionListener redirectionListener;
     private GridLayoutManager gridLayoutManager;
@@ -88,13 +87,12 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     private HashMap<String, String> selectedFilter;
     private FilterFlagSelectedModel flagFilterHelper;
     private boolean isGettingDynamicFilter;
-    private boolean isUsingBottomSheetFilter;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (getUserVisibleHint()) {
-            setupSearchNavigation();
+            setupBottomNavigation();
         }
 
         if (savedInstanceState == null) {
@@ -163,8 +161,8 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof SearchNavigationListener) {
-            this.searchNavigationListener = (SearchNavigationListener) context;
+        if (context instanceof BottomNavigationListener) {
+            this.bottomNavigationListener = (BottomNavigationListener) context;
         }
         if (context instanceof BottomSheetListener) {
             this.bottomSheetListener = (BottomSheetListener) context;
@@ -172,17 +170,14 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         if (context instanceof RedirectionListener) {
             this.redirectionListener = (RedirectionListener) context;
         }
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
-        isUsingBottomSheetFilter = remoteConfig.getBoolean(
-                TkpdCache.RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER,
-                true) && (this instanceof ProductListFragment);
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && getView() != null) {
-            setupSearchNavigation();
+            setupBottomNavigation();
+            showBottomBarNavigation(showBottomBar);
             screenTrack();
         }
     }
@@ -193,25 +188,34 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
     }
 
-    private void setupSearchNavigation() {
-        searchNavigationListener
-                .setupSearchNavigation(new SearchNavigationListener.ClickListener() {
-                    @Override
-                    public void onFilterClick() {
-                        openFilterActivity();
-                    }
+    private void setupBottomNavigation() {
+        bottomNavigationListener
+                .setupBottomNavigation(getBottomNavigationItems(), getBottomNavClickListener());
+    }
 
-                    @Override
-                    public void onSortClick() {
-                        openSortActivity();
-                    }
+    public void showBottomBarNavigation(boolean show) {
+        if (bottomNavigationListener == null) {
+            return;
+        }
 
-                    @Override
-                    public void onChangeGridClick() {
-                        switchLayoutType();
-                    }
-                }, isSortEnabled());
-        refreshMenuItemGridIcon();
+        boolean isBottomSheetShown = bottomSheetListener != null
+                && bottomSheetListener.isBottomSheetShown();
+
+        if (show && isBottomSheetShown) {
+            return;
+        }
+
+        this.showBottomBar = show;
+
+        if (!getUserVisibleHint()) {
+            return;
+        }
+
+        if (this.showBottomBar) {
+            bottomNavigationListener.showBottomNavigation();
+        } else {
+            bottomNavigationListener.hideBottomNavigation();
+        }
     }
 
     protected GridLayoutManager getGridLayoutManager() {
@@ -246,11 +250,11 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 SearchTracking.eventSearchResultChangeGrid(getActivity(),"list", getScreenName());
                 break;
         }
-        refreshMenuItemGridIcon();
+        refreshBottomBarGridIcon();
     }
 
-    public void refreshMenuItemGridIcon() {
-        searchNavigationListener.refreshMenuItemGridIcon(getAdapter().getTitleTypeRecyclerView(), getAdapter().getIconTypeRecyclerView());
+    public void refreshBottomBarGridIcon() {
+        bottomNavigationListener.refreshBottomNavigationIcon(getBottomNavigationItems());
     }
 
     public void setSpanCount(int spanCount) {
@@ -281,7 +285,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         } else {
             SearchTracking.eventSearchResultShare(getActivity(), getScreenName());
         }
-        new DefaultShare(getActivity(), shareData).show();
+        ShareBottomSheet.show(getChildFragmentManager(), shareData);
     }
 
     @Override
@@ -293,6 +297,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                 String selectedSortName = data.getStringExtra(SortProductActivity.EXTRA_SELECTED_NAME);
                 UnifyTracking.eventSearchResultSort(getScreenName(), selectedSortName);
                 clearDataFilterSort();
+                showBottomBarNavigation(false);
                 reloadData();
             } else if (requestCode == getFilterRequestCode()) {
                 setFlagFilterHelper((FilterFlagSelectedModel) data.getParcelableExtra(RevampedDynamicFilterActivity.EXTRA_SELECTED_FLAG_FILTER));
@@ -303,6 +308,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
                     SearchTracking.eventSearchResultFilter(getActivity(), getScreenName(), getSelectedFilter());
                 }
                 clearDataFilterSort();
+                showBottomBarNavigation(false);
                 updateDepartmentId(getFlagFilterHelper().getCategoryId());
                 reloadData();
             }
@@ -388,12 +394,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
             NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.error_filter_data_not_ready));
             return;
         }
-
-        if (bottomSheetListener != null && isUsingBottomSheetFilter) {
-            openBottomSheetFilter();
-        } else {
-            openFilterPage();
-        }
+        openFilterPage();
     }
 
     protected void openBottomSheetFilter() {
@@ -446,6 +447,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         isGettingDynamicFilter = false;
         setFilterData(pojo.getData().getFilter());
         setSortData(pojo.getData().getSort());
+        showBottomBarNavigation(true);
     }
 
     @Override
@@ -498,13 +500,15 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
 
     protected abstract int getSortRequestCode();
 
+    protected abstract List<AHBottomNavigationItem> getBottomNavigationItems();
+
+    protected abstract AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener();
+
     protected abstract SearchSectionGeneralAdapter getAdapter();
 
     protected abstract SearchSectionFragmentPresenter getPresenter();
 
     protected abstract GridLayoutManager.SpanSizeLookup onSpanSizeLookup();
-
-    protected abstract boolean isSortEnabled();
 
     protected void onFirstTimeLaunch() {
 
@@ -556,10 +560,6 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         SearchTracking.eventSearchResultCloseBottomSheetFilter(getActivity(), getScreenName(), getSelectedFilter());
     }
 
-    protected boolean isUsingBottomSheetFilter() {
-        return isUsingBottomSheetFilter;
-    }
-
     protected void removeSelectedFilter(String uniqueId) {
 
         String optionKey = OptionHelper.parseKeyFromUniqueId(uniqueId);
@@ -590,6 +590,7 @@ public abstract class SearchSectionFragment extends BaseDaggerFragment
         }
 
         clearDataFilterSort();
+        showBottomBarNavigation(false);
         reloadData();
     }
 
