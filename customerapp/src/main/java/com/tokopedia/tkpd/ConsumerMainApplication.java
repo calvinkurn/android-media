@@ -251,7 +251,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
-        InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.INSTANT_LOAN_BASE_URL;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
