@@ -62,5 +62,8 @@
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
     <string name="no_search_result">Tidak ditemukan hasil untuk pencarian Anda</string>
+    <string name="max_reply_wait">Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.</string>
+    <string name="invalid_images">Gambar Tidak Valid</string>
+    <string name="network_error">Maaf terjadi kesalahan teknis, silakan dicoba lagi.</string>
 
 </resources>

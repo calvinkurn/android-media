@@ -19,13 +19,13 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by pranaymohapatra on 08/08/18.
- */
 
 public class Utils {
     private Context mContext;
     private Locale mLocale;
+
+    public String UPLOAD_URL = "http://u12.tokopedia.net";
+    public String CLOSED = "closed";
 
     public Utils(Context context) {
         mContext = context;

@@ -7,10 +7,6 @@ import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
 
 import java.util.List;
 
-/**
- * Created by pranaymohapatra on 18/06/18.
- */
-
 public interface InboxListContract {
 
     interface InboxListView extends InboxBaseContract.InboxBaseView {
@@ -37,8 +33,6 @@ public interface InboxListContract {
         void setFilter(int position);
 
         void onClickTicket(int index);
-
-        void deleteTicket();
 
         void scrollList();
 

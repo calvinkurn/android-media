@@ -18,16 +18,13 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-/**
- * Created by pranaymohapatra on 06/07/18.
- */
 
 public class PostRatingUseCase extends RestRequestUseCase {
 
     private Map<String, Object> queryMap;
 
     @Inject
-    public PostRatingUseCase() {
+    PostRatingUseCase() {
         queryMap = new HashMap<>();
     }
 

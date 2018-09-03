@@ -3,6 +3,7 @@ package com.tokopedia.contactus.inboxticket2.view.utils;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
 import android.text.style.ReplacementSpan;
 
 public class RoundedBackgroundSpan extends ReplacementSpan {
@@ -23,7 +24,7 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
      * @param backgroundColor color value, not res id
      * @param textSize        in pixels
      */
-    public RoundedBackgroundSpan(int backgroundColor, int textColor, float textSize, float paddingx, float paddingy, float magicnumer,float textheightwrap) {
+    RoundedBackgroundSpan(int backgroundColor, int textColor, float textSize, float paddingx, float paddingy, float magicnumer, float textheightwrap) {
         mBackgroundColor = backgroundColor;
         mTextColor = textColor;
         mTextSize = textSize;
@@ -34,7 +35,7 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
     }
 
     @Override
-    public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+    public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, @NonNull Paint paint) {
         paint = new Paint(paint); // make a copy for not editing the referenced paint
 
         paint.setTextSize(mTextSize);
@@ -56,7 +57,7 @@ public class RoundedBackgroundSpan extends ReplacementSpan {
     }
 
     @Override
-    public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+    public int getSize(@NonNull Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
         paint = new Paint(paint); // make a copy for not editing the referenced paint
         paint.setTextSize(mTextSize);
         return getTagWidth(text, start, end, paint);

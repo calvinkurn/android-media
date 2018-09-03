@@ -3,7 +3,6 @@ package com.tokopedia.contactus.inboxticket2.view.presenter;
 import android.content.Intent;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -31,10 +30,6 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-/**
- * Created by pranaymohapatra on 19/06/18.
- */
-
 public class InboxListPresenterImpl
         implements InboxListContract.InboxListPresenter, CustomEditText.Listener {
 
@@ -44,7 +39,6 @@ public class InboxListPresenterImpl
     private List<TicketsItem> originalList;
     private boolean isLoading;
     private boolean isLastPage;
-    private final int PAGE_SIZE = 10;
     private InboxFilterAdapter filterAdapter;
     private boolean fromFilter;
     private String nextUrl;
@@ -72,7 +66,6 @@ public class InboxListPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                Log.d("ONERROR", e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -129,32 +122,32 @@ public class InboxListPresenterImpl
             case ALL:
                 mUseCase.setQueryMap(0, 0, 0);
                 getTicketList();
-                selectedFilter = "Semua";
+                selectedFilter = filterList.get(ALL);
                 filterAdapter.setSelected(ALL);
                 break;
             case UNREAD:
                 mUseCase.setQueryMap(0, 1, 0);
-                selectedFilter = "Belum dibaca";
+                selectedFilter = filterList.get(UNREAD);
                 getTicketList();
                 break;
             case NEEDRATING:
                 mUseCase.setQueryMap(2, 0, 1);
-                selectedFilter = "Belum dinilai";
+                selectedFilter = filterList.get(NEEDRATING);
                 getTicketList();
                 break;
             case INPROGRESS:
                 mUseCase.setQueryMap(1, 0, 0);
-                selectedFilter = "Dalam proses";
+                selectedFilter = filterList.get(INPROGRESS);
                 getTicketList();
                 break;
             case READ:
                 mUseCase.setQueryMap(0, 2, 0);
-                selectedFilter = "Sudah dibaca";
+                selectedFilter = filterList.get(READ);
                 getTicketList();
                 break;
             case CLOSED:
                 mUseCase.setQueryMap(2, 0, 2);
-                selectedFilter = "Ditutup";
+                selectedFilter = filterList.get(CLOSED);
                 getTicketList();
                 break;
         }
@@ -174,11 +167,6 @@ public class InboxListPresenterImpl
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventTicketClick,
                 originalList.get(index).getStatus());
-    }
-
-    @Override
-    public void deleteTicket() {
-
     }
 
     @Override
@@ -208,11 +196,6 @@ public class InboxListPresenterImpl
     @Override
     public void onDestroy() {
         mUseCase.unsubscribe();
-    }
-
-    @Override
-    public String getSCREEN_NAME() {
-        return mView.getActivity().getLocalClassName();
     }
 
     private InboxFilterAdapter getFilterAdapter() {
@@ -257,6 +240,7 @@ public class InboxListPresenterImpl
         int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
         if (!isLoading && !isLastPage) {
+            int PAGE_SIZE = 10;
             if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                     && firstVisibleItemPosition >= 0
                     && totalItemCount >= PAGE_SIZE) {

@@ -30,10 +30,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 18/06/18.
- */
-
 public class InboxListActivity extends InboxBaseActivity
         implements InboxListContract.InboxListView {
     @BindView(R2.id.iv_no_ticket)

@@ -2,7 +2,9 @@ package com.tokopedia.contactus.inboxticket2.view.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,8 +31,6 @@ public class ImageViewerFragment extends Fragment {
     public static final String TAG = "ImageViewerFragment";
     @BindView(R2.id.vp_image_viewer)
     TouchViewPager vpImageViewer;
-
-    private TouchImageAdapter imageAdapter;
 
     private ArrayList<String> IMAGES_LOC;
     private int SCROLL_POS;
@@ -67,11 +67,11 @@ public class ImageViewerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.layout_fragment_image_viewer, container, false);
         ButterKnife.bind(this, contentView);
-        imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC, 100);
+        TouchImageAdapter imageAdapter = new TouchImageAdapter(getContext(), IMAGES_LOC, 100);
         vpImageViewer.setAdapter(imageAdapter);
         imageAdapter.SetonImageStateChangeListener(new TouchImageAdapter.OnImageStateChange() {
 
@@ -85,53 +85,52 @@ public class ImageViewerFragment extends Fragment {
                 vpImageViewer.SetAllowPageSwitching(true);
             }
         });
-        Log.d(TAG, "onCreateView");
         return contentView;
     }
 
     @OnClick(R2.id.close_button)
     void closeFragment() {
-        getActivity().onBackPressed();
+        if (getActivity() != null)
+            getActivity().onBackPressed();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null)
+                actionBar.hide();
         }
         vpImageViewer.setCurrentItem(SCROLL_POS);
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
                 InboxTicketTracking.Action.EventClickOpenImage,
                 "");
-        Log.d(TAG, "onResume");
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (getActivity() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            if (actionBar != null)
+                actionBar.show();
         }
-        Log.d(TAG, "onStop");
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
     }
 }

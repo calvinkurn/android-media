@@ -6,12 +6,10 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,9 +25,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by pranaymohapatra on 18/06/18.
- */
 
 public abstract class InboxBaseActivity extends BaseSimpleActivity implements InboxBaseContract.InboxBaseView {
 
@@ -41,8 +36,6 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     abstract int getMenuRes();
 
     abstract boolean doNeedReattach();
-
-    private String BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment";
 
     @Inject
     InboxBaseContract.InboxBasePresenter mPresenter;
@@ -94,16 +87,6 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     }
 
     @Override
-    public Fragment getFragment() {
-        return null;
-    }
-
-    @Override
-    public FragmentManager getFragmentManagerInstance() {
-        return getSupportFragmentManager();
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
@@ -142,6 +125,7 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public void showBottomFragment() {
+        String BOTTOM_FRAGMENT = "Bottom_Sheet_Fragment";
         bottomFragment = (BottomSheetDialogFragment) getSupportFragmentManager().findFragmentByTag(BOTTOM_FRAGMENT);
         if (bottomFragment == null)
             bottomFragment = mPresenter.getBottomFragment();
@@ -175,27 +159,21 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
     }
 
     @Override
-    public void setSnackBarErrorMessage(String message,boolean clickable) {
+    public void setSnackBarErrorMessage(String message, boolean clickable) {
         Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
-        if(!clickable){
-            Button button = layout.findViewById(android.support.design.R.id.snackbar_action);
-            button.setClickable(false);
-            button.setVisibility(View.GONE);
-            snackbar.setDuration(Snackbar.LENGTH_SHORT);
+        if (!clickable) {
+            LayoutInflater inflater = LayoutInflater.from(this);
+            View snackView = inflater.inflate(R.layout.snackbar_error_layout, layout);
+            TextView tv = snackView.findViewById(R.id.tv_msg);
+            tv.setText(message);
+            TextView okBtn = snackView.findViewById(R.id.snack_ok);
+            okBtn.setOnClickListener(view -> snackbar.dismiss());
+            layout.addView(snackView, 0);
+            layout.setPadding(0, 0, 0, 0);
         }
         textView.setVisibility(View.INVISIBLE);
-
-// Inflate our custom view
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
-        TextView tv = snackView.findViewById(R.id.tv_msg);
-        tv.setText(message);
-        TextView okbtn = snackView.findViewById(R.id.snack_ok);
-        okbtn.setOnClickListener(view -> snackbar.dismiss());
-        layout.addView(snackView, 0);
-        layout.setPadding(0, 0, 0, 0);
         snackbar.show();
     }
 }

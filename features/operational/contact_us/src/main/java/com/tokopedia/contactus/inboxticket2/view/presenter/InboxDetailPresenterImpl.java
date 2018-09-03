@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -43,7 +42,6 @@ import com.tokopedia.core.network.retrofit.utils.RetrofitUtils;
 import com.tokopedia.core.network.v4.NetworkConfig;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.inbox.rescenter.product.view.model.Attachment;
 import com.tokopedia.usecase.RequestParams;
 
 import org.json.JSONException;
@@ -52,16 +50,10 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -71,9 +63,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by pranaymohapatra on 02/07/18.
- */
 
 public class InboxDetailPresenterImpl
         implements InboxDetailContract.InboxDetailPresenter, CustomEditText.Listener {
@@ -87,9 +76,9 @@ public class InboxDetailPresenterImpl
     private PostMessageUseCase2 postMessageUseCase2;
     private PostRatingUseCase postRatingUseCase;
     private BadReasonAdapter badReasonAdapter;
+    private String NO = "NO";
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
-    private static final String TAG = InboxDetailContract.InboxDetailPresenter.class.getSimpleName();
     private static final String PARAM_IMAGE_ID = "id";
     private static final String PARAM_WEB_SERVICE = "web_service";
     private String rateCommentID;
@@ -134,11 +123,6 @@ public class InboxDetailPresenterImpl
     }
 
     @Override
-    public String getSCREEN_NAME() {
-        return null;
-    }
-
-    @Override
     public BottomSheetDialogFragment getBottomFragment() {
         BottomSheetFragment bottomFragment = new BottomSheetFragment();
         bottomFragment.setAdapter(getBadRatingAdapter(), R.string.select_bad_reason);
@@ -155,7 +139,7 @@ public class InboxDetailPresenterImpl
                 mView.toggleSearch(View.GONE);
                 if (mTicketDetail.isShowRating()) {
                     mView.toggleTextToolbar(View.GONE);
-                } else if (mTicketDetail.getStatus().equalsIgnoreCase("closed")
+                } else if (mTicketDetail.getStatus().equalsIgnoreCase(getUtils().CLOSED)
                         && !mTicketDetail.isShowRating()) {
                     mView.showIssueClosed();
                 } else {
@@ -215,7 +199,6 @@ public class InboxDetailPresenterImpl
 
             @Override
             public void onError(Throwable e) {
-                Log.d("ONERROR", e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
@@ -313,7 +296,7 @@ public class InboxDetailPresenterImpl
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError2);
         } else {
-            mView.addimage(image);
+            mView.addImage(image);
         }
     }
 
@@ -385,7 +368,7 @@ public class InboxDetailPresenterImpl
                     }
                 } else {
                     mView.hideSendProgress();
-                    mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.", true);
+                    mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.max_reply_wait), true);
                     return Observable.just(null);
                 }
             }).subscribeOn(Schedulers.io())
@@ -413,7 +396,7 @@ public class InboxDetailPresenterImpl
                                 if (stepTwoResponse != null && stepTwoResponse.getIsSuccess() > 0) {
                                     addNewLocalComment();
                                 } else {
-                                    mView.setSnackBarErrorMessage("Maaf terjadi kesalahan teknis, silakan dicoba lagi.", true);
+                                    mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.network_error), true);
                                 }
                             }
 
@@ -444,13 +427,12 @@ public class InboxDetailPresenterImpl
                     if (createTicket != null && createTicket.getIsSuccess() > 0) {
                         addNewLocalComment();
                     } else {
-                        mView.setSnackBarErrorMessage("Anda baru saja membalas tiket. Silakan coba beberapa saat lagi.", true);
+                        mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.max_reply_wait), true);
                     }
                 }
             });
         } else if (isValid == -1) {
-            Log.d(TAG, "IMAGES NOT VALID");
-            mView.setSnackBarErrorMessage("Images Not Valid", true);
+            mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.invalid_images), true);
         }
 
     }
@@ -459,14 +441,15 @@ public class InboxDetailPresenterImpl
     public void clickRate(int id, String commentID) {
         rateCommentID = commentID;
         if (id == R.id.btn_yes) {
-            postRatingUseCase.setQueryMap(rateCommentID, "YES", 0, 0, "");
+            String YES = "YES";
+            postRatingUseCase.setQueryMap(rateCommentID, YES, 0, 0, "");
             mView.showProgressBar();
             sendRating();
         } else {
             if (mTicketDetail.isShowBadCSATReason()) {
                 mView.showBottomFragment();
             } else {
-                postRatingUseCase.setQueryMap(rateCommentID, "NO", 0, 0, "");
+                postRatingUseCase.setQueryMap(rateCommentID, NO, 0, 0, "");
                 mView.showProgressBar();
                 mView.toggleTextToolbar(View.VISIBLE);
                 sendRating();
@@ -479,7 +462,7 @@ public class InboxDetailPresenterImpl
     public void setBadRating(int position) {
         mView.hideBottomFragment();
         if (position + 1 > 0 && position + 1 < 7) {
-            postRatingUseCase.setQueryMap(rateCommentID, "NO", 1, position + 1, "");
+            postRatingUseCase.setQueryMap(rateCommentID, NO, 1, position + 1, "");
             mView.showProgressBar();
             mView.toggleTextToolbar(View.VISIBLE);
             sendRating();
@@ -497,7 +480,7 @@ public class InboxDetailPresenterImpl
     @Override
     public void sendCustomReason(String customReason) {
         mView.showSendProgress();
-        postRatingUseCase.setQueryMap(rateCommentID, "NO", 1, 7, customReason);
+        postRatingUseCase.setQueryMap(rateCommentID, NO, 1, 7, customReason);
         sendRating();
         ContactUsTracking.sendGTMInboxTicket("",
                 InboxTicketTracking.Category.EventInboxTicket,
@@ -541,7 +524,7 @@ public class InboxDetailPresenterImpl
         return Observable
                 .from(imageUploads)
                 .flatMap(imageUpload -> {
-                    String uploadUrl = "http://u12.tokopedia.net";
+                    String uploadUrl = getUtils().UPLOAD_URL;
                     NetworkCalculator networkCalculator = new NetworkCalculator(
                             NetworkConfig.POST, context,
                             uploadUrl)
@@ -687,7 +670,7 @@ public class InboxDetailPresenterImpl
     private BadReasonAdapter getBadRatingAdapter() {
         if (badReasonAdapter == null) {
             List<String> badReasons = new ArrayList<>(Arrays.asList(mView.getActivity().getResources().getStringArray(R.array.bad_reason_array)));
-            badReasonAdapter = new BadReasonAdapter(badReasons, mView.getActivity(), this);
+            badReasonAdapter = new BadReasonAdapter(badReasons, this);
         }
         return badReasonAdapter;
     }
@@ -766,28 +749,6 @@ public class InboxDetailPresenterImpl
             imagesURL.add(item.getUrl());
         }
         mView.showImagePreview(position, imagesURL);
-    }
-
-    private void getTicketDelayed(String id) {
-        Observable.timer(300, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Long>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Long aLong) {
-                        getTicketDetails(id);
-                    }
-                });
     }
 
     private void addNewLocalComment() {

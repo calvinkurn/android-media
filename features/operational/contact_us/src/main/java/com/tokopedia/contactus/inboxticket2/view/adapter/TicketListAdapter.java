@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,22 +16,15 @@ import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
-/**
- * Created by pranaymohapatra on 18/06/18.
- */
-
 public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TicketsItem> itemList;
-    private List<TicketsItem> selectedItems;
     private TicketsItem footerItem = new TicketsItem();
     private Context mContext;
     private InboxListContract.InboxListPresenter mPresenter;
@@ -43,12 +37,12 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mContext = context;
         itemList = data;
         mPresenter = presenter;
-        selectedItems = new ArrayList<>(itemList.size());
         utils = new Utils(context);
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
@@ -71,7 +65,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case ITEM:
                 ((TicketItemHolder) holder).bindViewHolder(itemList.get(position));
@@ -214,15 +208,6 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         boolean onLongClick() {
             return true;
         }
-
-        @OnCheckedChanged(R2.id.checkbox_delete)
-        void setCheckboxDelete(boolean checked) {
-            if (checked) {
-                selectedItems.add(getAdapterPosition(), itemList.get(getAdapterPosition()));
-            } else {
-                selectedItems.remove(getAdapterPosition());
-            }
-        }
     }
 
     private class FooterViewHolder extends RecyclerView.ViewHolder {
@@ -231,14 +216,5 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-    }
-
-    private void setSelectable() {
-        for (int i = 0; i < itemList.size(); i++) {
-            TicketsItem item = itemList.get(i);
-            item.setSelectableMode(true);
-        }
-        notifyDataSetChanged();
-        mPresenter.scrollList();
     }
 }

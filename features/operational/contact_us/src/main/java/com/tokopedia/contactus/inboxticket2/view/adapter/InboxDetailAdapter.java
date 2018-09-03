@@ -2,11 +2,10 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.text.SpannableString;
-import android.text.method.LinkMovementMethod;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,9 +27,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 02/07/18.
- */
 
 public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.DetailViewHolder> {
 
@@ -62,8 +58,9 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         hintAttachmentString.setSpan(new StyleSpan(Typeface.BOLD), 0, 8, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE);
     }
 
+    @NonNull
     @Override
-    public DetailViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public DetailViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         View v = inflater.inflate(R.layout.layout_item_message, parent, false);
@@ -71,7 +68,7 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
     }
 
     @Override
-    public void onBindViewHolder(DetailViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull DetailViewHolder holder, int position) {
         holder.bindViewHolder(position);
     }
 

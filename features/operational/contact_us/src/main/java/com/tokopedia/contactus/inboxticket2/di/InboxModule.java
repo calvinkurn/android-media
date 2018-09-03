@@ -19,9 +19,6 @@ import javax.inject.Named;
 import dagger.Module;
 import dagger.Provides;
 
-/**
- * Created by pranaymohapatra on 19/06/18.
- */
 @Module
 public class InboxModule {
 
@@ -33,13 +30,13 @@ public class InboxModule {
 
     @InboxScope
     @Provides
-    public Context provideContext() {
+    Context provideContext() {
         return context.getApplicationContext();
     }
 
     @InboxScope
     @Provides
-    public SharedPreferences provideSharedPreference(Context context) {
+    SharedPreferences provideSharedPreference(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 

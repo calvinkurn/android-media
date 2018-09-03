@@ -1,7 +1,7 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -22,9 +22,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 23/02/18.
- */
 public class BottomSheetFragment extends BottomSheetDialogFragment {
     @BindView(R2.id.rv_filter)
     VerticalRecyclerView rvBottomSheet;
@@ -50,7 +47,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.layout_bottom_sheet_fragment, container, false);
         ButterKnife.bind(this, contentView);

@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxticket2.view.activity;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,7 +11,6 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -34,14 +32,11 @@ import com.tokopedia.contactus.inboxticket2.view.fragment.ImageViewerFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,20 +45,13 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
+
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by pranaymohapatra on 02/07/18.
- */
 @RuntimePermissions
 public class InboxDetailActivity extends InboxBaseActivity
         implements InboxDetailContract.InboxDetailView, ImageUploadAdapter.OnSelectImageClick {
@@ -106,7 +94,6 @@ public class InboxDetailActivity extends InboxBaseActivity
     @BindView(R2.id.tv_count_current)
     TextView currentRes;
 
-    private ImageUploadHandler imageUploadHandler;
     private ImageUploadAdapter imageUploadAdapter;
     private InboxDetailAdapter detailAdapter;
     private LinearLayoutManager layoutManager;
@@ -133,17 +120,6 @@ public class InboxDetailActivity extends InboxBaseActivity
         return intent;
     }
 
-
-    @Override
-    public void showCollapsedMessages() {
-
-    }
-
-    @Override
-    public void hideMessages() {
-
-    }
-
     @Override
     public void renderMessageList(Tickets ticketDetail) {
         List<CommentsItem> commentsItems = ticketDetail.getComments();
@@ -154,11 +130,12 @@ public class InboxDetailActivity extends InboxBaseActivity
         viewHelpRate.setVisibility(View.GONE);
         textToolbar.setVisibility(View.VISIBLE);
 
+        int textSizeLabel = 11;
         if (ticketDetail.getStatus().equalsIgnoreCase("solved")
                 || ticketDetail.getStatus().equalsIgnoreCase("open")) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
                     getResources().getColor(R.color.yellow_110),
-                    getResources().getColor(R.color.black_38), 11));
+                    getResources().getColor(R.color.black_38), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
 
@@ -166,13 +143,13 @@ public class InboxDetailActivity extends InboxBaseActivity
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
                     getResources().getColor(R.color.grey_200),
-                    getResources().getColor(R.color.black_38), 11));
+                    getResources().getColor(R.color.black_38), textSizeLabel));
             showIssueClosed();
 
         } else if (ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
                     getResources().getColor(R.color.red_30),
-                    getResources().getColor(R.color.red_150), 11));
+                    getResources().getColor(R.color.red_150), textSizeLabel));
             viewHelpRate.setVisibility(View.VISIBLE);
             textToolbar.setVisibility(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
@@ -256,77 +233,12 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        imageUploadHandler = ImageUploadHandler.createInstance(this);
         imageUploadAdapter = new ImageUploadAdapter(this, this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
         edMessage.addTextChangedListener(((InboxDetailContract.InboxDetailPresenter) mPresenter).watcher());
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        imageUploadHandler.actionCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        //imageUploadHandler.actionImagePicker();
-    }
 
     private void showImagePickerDialog() {
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
@@ -443,7 +355,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
-    public void addimage(ImageUpload image) {
+    public void addImage(ImageUpload image) {
         if (rvSelectedImages.getVisibility() != View.VISIBLE) {
             rvSelectedImages.setVisibility(View.VISIBLE);
             rvMessageList.setPadding(0, 0, 0,
@@ -506,6 +418,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         viewHelpRate.setVisibility(View.GONE);
         viewLinkBottom.setVisibility(View.GONE);
         detailAdapter.enterSearchMode(search);
+        String placeHolder = "/%s";
         if (total <= 0) {
             if (total == 0) {
                 currentRes.setText("0");
@@ -517,7 +430,7 @@ public class InboxDetailActivity extends InboxBaseActivity
             ivPrevious.setClickable(false);
             ivNext.setClickable(false);
         } else {
-            totalRes.setText("/" + String.valueOf(total));
+            totalRes.setText(String.format(placeHolder, String.valueOf(total)));
             ivPrevious.setClickable(true);
             ivNext.setClickable(true);
             onClickNextPrev(ivPrevious);

@@ -9,7 +9,6 @@ import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
-import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.util.ArrayList;
@@ -17,15 +16,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/**
- * Created by pranaymohapatra on 28/06/18.
- */
-
 public class GetTicketDetailUseCase extends RestRequestUseCase {
     private String ticketId;
 
     @Inject
-    public GetTicketDetailUseCase() {
+    GetTicketDetailUseCase() {
 
     }
 

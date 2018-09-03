@@ -2,6 +2,7 @@ package com.tokopedia.contactus.inboxticket2.view.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +23,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 05/07/18.
- */
-
 public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.AttachmentViewHolder> {
 
     private List<AttachmentItem> attachmentList;
@@ -41,14 +38,15 @@ public class AttachmentAdapter extends RecyclerView.Adapter<AttachmentAdapter.At
         mPresenter = presenter;
     }
 
+    @NonNull
     @Override
-    public AttachmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public AttachmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(mContext).inflate(R.layout.layout_attachment_item, parent, false);
         return new AttachmentViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(AttachmentViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull AttachmentViewHolder holder, int position) {
         holder.bindView(position);
     }
 

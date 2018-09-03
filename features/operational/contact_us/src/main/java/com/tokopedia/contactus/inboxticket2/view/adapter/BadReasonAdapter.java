@@ -1,6 +1,5 @@
 package com.tokopedia.contactus.inboxticket2.view.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,19 +17,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 16/01/18.
- */
-
 public class BadReasonAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<String> dataSet;
-    private Context mContext;
     private InboxDetailContract.InboxDetailPresenter mPresenter;
 
-    public BadReasonAdapter(List<String> data, Context context, InboxDetailContract.InboxDetailPresenter presenter) {
+    public BadReasonAdapter(List<String> data, InboxDetailContract.InboxDetailPresenter presenter) {
         dataSet = data;
-        this.mContext = context;
         this.mPresenter = presenter;
     }
 

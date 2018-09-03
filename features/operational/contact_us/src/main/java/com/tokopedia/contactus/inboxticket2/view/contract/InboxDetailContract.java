@@ -11,21 +11,13 @@ import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by pranaymohapatra on 22/06/18.
- */
-
 public interface InboxDetailContract {
     interface InboxDetailView extends InboxBaseContract.InboxBaseView {
-        void showCollapsedMessages();
-
-        void hideMessages();
-
         void renderMessageList(Tickets ticketDetail);
 
         void updateAddComment();
 
-        void addimage(ImageUpload image);
+        void addImage(ImageUpload image);
 
         void setSubmitButtonEnabled(boolean enabled);
 
@@ -43,7 +35,7 @@ public interface InboxDetailContract {
 
         void showIssueClosed();
 
-        void enterSearchMode(String search,int total);
+        void enterSearchMode(String search, int total);
 
         void exitSearchMode();
 

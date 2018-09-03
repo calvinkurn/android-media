@@ -19,10 +19,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by pranaymohapatra on 16/01/18.
- */
-
 public class InboxFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<String> dataSet;
