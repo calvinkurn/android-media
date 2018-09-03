@@ -184,7 +184,9 @@ public class DigitalProductActivity extends BasePresenterActivity
 
     @Override
     protected int getContentId() {
-        if (GlobalConfig.isSellerApp()) return super.getContentId();
-        return R.layout.base_light_activity;
+        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
+            return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
+        }
+        return super.getContentId();
     }
 }
