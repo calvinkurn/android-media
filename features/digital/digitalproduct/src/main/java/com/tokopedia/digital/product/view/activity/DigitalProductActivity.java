@@ -181,4 +181,10 @@ public class DigitalProductActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp()) return super.getContentId();
+        return R.layout.base_light_activity;
+    }
 }
