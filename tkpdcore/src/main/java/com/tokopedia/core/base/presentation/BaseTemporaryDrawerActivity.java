@@ -29,7 +29,7 @@ public class BaseTemporaryDrawerActivity<T> extends DrawerPresenterActivity<T> {
     protected int getContentId() {
         if (GlobalConfig.isSellerApp())
             return super.getContentId();
-        return R.layout.temporary_activity;
+        return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
     }
 
     @Override
