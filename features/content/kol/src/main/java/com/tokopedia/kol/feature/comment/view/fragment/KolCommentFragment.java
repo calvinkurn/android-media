@@ -51,6 +51,7 @@ public class KolCommentFragment extends BaseDaggerFragment
         implements KolComment.View, KolComment.View.ViewHolder {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
+    public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
 
     private RecyclerView listComment;
     private EditText kolComment;
@@ -194,9 +195,28 @@ public class KolCommentFragment extends BaseDaggerFragment
 
     @Override
     public void onErrorGetCommentsFirstTime(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, () ->
-                presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID))
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                () -> presenter.getCommentFirstTime(
+                        getArguments().getInt(KolCommentActivity.ARGS_ID))
         );
+    }
+
+    @Override
+    public void onServerErrorGetCommentsFirstTime(String errorMessage) {
+        if (getActivity() != null
+                && getActivity().getIntent().getExtras() != null
+                && getActivity().getIntent().getExtras().getBoolean(
+                KolCommentActivity.ARGS_FROM_FEED, false)) {
+            Intent intent = new Intent();
+            intent.putExtra(ARGS_SERVER_ERROR_MSG, errorMessage);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                    () -> presenter.getCommentFirstTime(
+                            getArguments().getInt(KolCommentActivity.ARGS_ID))
+            );
+        }
     }
 
     @Override
