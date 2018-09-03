@@ -375,8 +375,11 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
 
-        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty),
-                CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false));
+        String totalPriceString = "-";
+        if (totalPrice > 0) {
+            totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
+        }
+        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString);
         view.updateCashback(totalCashback);
 
     }
