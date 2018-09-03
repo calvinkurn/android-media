@@ -1,12 +1,12 @@
-package com.tokopedia.abstraction.common.utils.image;
+package com.tokopedia.design.list.adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.common.utils.view.TouchImageView;
+import com.tokopedia.design.image.ImageLoader;
+import com.tokopedia.design.image.TouchImageView;
 
 import java.util.ArrayList;
 
@@ -44,18 +44,13 @@ public class TouchImageAdapter extends PagerAdapter {
 
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
-        TouchImageView imageView = new TouchImageView(context, new TouchImageView.OnStateChange() {
-
-            @Override
-            public void OnStateChanged(float StateSize) {
-                // TODO Auto-generated method stub
-                if (StateSize <= 1)
-                    ImageStateChangeListener.OnStateDefault();
-                else
-                    ImageStateChangeListener.OnStateZoom();
-            }
+        TouchImageView imageView = new TouchImageView(context, StateSize -> {
+            if (StateSize <= 1)
+                ImageStateChangeListener.OnStateDefault();
+            else
+                ImageStateChangeListener.OnStateZoom();
         });
-        ImageHandler.LoadImage(imageView, FileLoc.get(position));
+        ImageLoader.LoadImage(imageView, FileLoc.get(position));
         container.addView(imageView, 0);
         return imageView;
     }

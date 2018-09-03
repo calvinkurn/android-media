@@ -87,12 +87,7 @@ public class CustomEditText extends AppCompatEditText {
                     return;
                 }
                 Handler mainHandler = new Handler(getContext().getMainLooper());
-                Runnable myRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        listener.onSearchTextChanged(text);
-                    }
-                };
+                Runnable myRunnable = () -> listener.onSearchTextChanged(text);
                 mainHandler.post(myRunnable);
             }
         });

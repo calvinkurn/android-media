@@ -8,7 +8,7 @@
  * Extends Android ImageView to include pinch zooming, panning, fling and double tap zoom.
  */
 
-package com.tokopedia.abstraction.common.utils.view;
+package com.tokopedia.design.image;
 
 import android.annotation.TargetApi;
 import android.content.Context;

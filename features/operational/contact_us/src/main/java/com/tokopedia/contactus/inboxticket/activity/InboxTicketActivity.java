@@ -24,18 +24,6 @@ import com.tokopedia.core.var.TkpdState;
  */
 public class InboxTicketActivity extends DrawerPresenterActivity<InboxTicketPresenter> {
 
-//    @DeepLink(ApplinkConst.INBOX_TICKET)
-//    public static TaskStackBuilder getCallingTaskStackList(Context context, Bundle extras) {
-//        Intent homeIntent = ((ContactUsModuleRouter) context.getApplicationContext()).getHomeIntent
-//                (context);
-//        Intent parentIntent = InboxTicketActivity.getCallingIntent(context);
-//
-//        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-//        taskStackBuilder.addNextIntent(homeIntent);
-//        taskStackBuilder.addNextIntent(parentIntent);
-//        return taskStackBuilder;
-//    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

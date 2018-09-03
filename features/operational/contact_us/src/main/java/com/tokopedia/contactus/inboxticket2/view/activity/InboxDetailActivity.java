@@ -519,11 +519,10 @@ public class InboxDetailActivity extends InboxBaseActivity
                 edMessage.isFocused() && edMessage.getText().length() > 0)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
-            builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
+            builder.setMessage(R.string.abandon_message_warning);
             builder.setNegativeButton(getString(R.string.batal),
                     (dialog, i) -> {
                         dialog.dismiss();
-                        //presenter.onRetryClick();
                     });
             builder.setPositiveButton(getString(R.string.keular),
                     (dialogInterface, i) -> {

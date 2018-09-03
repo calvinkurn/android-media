@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.annotation.Generated;
 
-@Generated("com.robohorse.robopojogenerator")
 public class CommentsItem {
 
     @SerializedName("note")

@@ -159,8 +159,6 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         TextView tvTicketDesc;
         @BindView(R2.id.tv_ticket_date)
         TextView tvTicketDate;
-        @BindView(R2.id.layout_item_ticket)
-        View itemView;
 
         TicketItemHolder(View itemView) {
             super(itemView);
@@ -206,7 +204,7 @@ public class TicketListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         @OnLongClick(R2.id.layout_item_ticket)
         boolean onLongClick() {
-            return true;
+            return false;
         }
     }
 
