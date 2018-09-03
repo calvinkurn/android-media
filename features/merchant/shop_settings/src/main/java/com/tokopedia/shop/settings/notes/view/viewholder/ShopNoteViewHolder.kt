@@ -39,7 +39,7 @@ class ShopNoteViewHolder(itemView: View,
             keyword = onOnShopNoteViewHolderListener.keyword
         }
         tvNoteName.text = getSpandableColorText(shopNoteViewModel.title!!, keyword, boldColor)
-        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTime!!)
+        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTimeUTC)
         ivMenuMore.setOnClickListener {
             onOnShopNoteViewHolderListener?.onIconMoreClicked(shopNoteViewModel)
         }

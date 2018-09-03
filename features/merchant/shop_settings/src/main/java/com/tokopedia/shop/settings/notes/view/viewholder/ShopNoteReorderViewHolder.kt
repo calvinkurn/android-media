@@ -29,7 +29,7 @@ class ShopNoteReorderViewHolder(itemView: View,
 
     override fun bind(shopNoteViewModel: ShopNoteViewModel) {
         tvNoteName.text = shopNoteViewModel.title
-        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTime!!)
+        tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTimeUTC)
 
         if (shopNoteViewModel.terms) {
             handler.visibility = View.GONE

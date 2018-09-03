@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
@@ -73,7 +74,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
 
         if (isEdit){
             edit_text_title.setText(shopNote.title)
-            edit_text_desc.setText(shopNote.content)
+            edit_text_desc.setText(MethodChecker.fromHtmlPreserveLineBreak(shopNote.content))
             edit_text_title.setSelection(edit_text_title.text.length)
             edit_text_desc.setSelection(edit_text_desc.text.length)
         }
@@ -87,7 +88,7 @@ class ShopSettingsNotesAddEditFragment: BaseDaggerFragment(), ShopSettingsNotesA
     fun saveAddEditNote() {
         if (isDataValidToSave()){
             shopNote.title = edit_text_title.text.toString().trim()
-            shopNote.content = edit_text_desc.text.toString().trim()
+            shopNote.content = edit_text_desc.text.toString().trim().replace("\n", "<br />");
             shopNote.terms = isReturnablePolicy
             presenter.saveNote(shopNote, isEdit)
         }

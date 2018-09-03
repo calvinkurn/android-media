@@ -2,7 +2,6 @@
 
 package com.tokopedia.shop.settings.common.util
 
-import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,32 +31,26 @@ fun getCurrentDateWithOffset(dayOffset: Int): Date {
     return cal.time
 }
 
-fun stringToDate(format: String, input: String): Date {
+// default is to locale timeZone
+fun toReadableString(format: String, dateUTC: Date): String {
     val fromFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
     try {
-        return fromFormat.parse(input)
-    } catch (e: ParseException) {
-        e.printStackTrace()
-        throw RuntimeException("Date doesnt valid ($input)")
+        return fromFormat.format(dateUTC)
+    } catch (e: Exception) {
+        return dateUTC.toString()
     }
 
 }
 
-fun toReadableString(format: String, date: Date): String {
-    val fromFormat = SimpleDateFormat(format, DEFAULT_LOCALE)
-    try {
-        return fromFormat.format(date)
-    } catch (e: Exception) {
-        return date.toString()
-    }
-
+fun toReadableString(format: String, unixTimeSecondsUTC: String): String {
+    return toReadableString(format, unixTimeSecondsUTC.toLong())
 }
 
-fun toReadableString(format: String, unixTimeSeconds: String): String {
+fun toReadableString(format: String, unixTimeSecondsUTC: Long): String {
     try {
-        return toReadableString(format, Date(java.lang.Long.parseLong(unixTimeSeconds) * 1000L))
+        return toReadableString(format, Date(unixTimeSecondsUTC * 1000L))
     } catch (e: Exception) {
-        return unixTimeSeconds
+        return unixTimeSecondsUTC.toString()
     }
 }
 
