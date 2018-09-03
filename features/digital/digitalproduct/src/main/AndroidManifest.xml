@@ -16,7 +16,8 @@
         <activity
             android:name=".product.view.activity.DigitalProductActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/Theme.White"/>
         <activity
             android:name=".cart.activity.OtpVerificationActivity"
             android:label="@string/app_name"
