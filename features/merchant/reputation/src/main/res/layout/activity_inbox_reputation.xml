@@ -19,7 +19,8 @@
         app:tabIndicatorHeight="@dimen/dp_3"
         app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
+        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
+        app:tabPadding="0dp"/>
 
     <View
         android:layout_width="match_parent"

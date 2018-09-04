@@ -25,30 +25,30 @@
             android:layout_height="@dimen/dp_half"
             android:background="@color/grey_300"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/add_review_layout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/footer_height"
-            android:layout_gravity="center_vertical"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            tools:visibility="visible">
-
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <TextView
                 android:id="@+id/action"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/footer_height"
+                android:layout_gravity="center_vertical"
+                android:gravity="end|center_vertical"
+                android:paddingRight="@dimen/dp_10"
+                android:paddingLeft="@dimen/dp_10"
+                android:text="@string/give_review"
+                style="@style/TextView.Small.Green"
+                tools:text="Beri Penilaian dan Balas Ulasan"/>
+
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/dp_15"
-                android:gravity="center_vertical"
-                android:text="@string/give_review"
-                style="@style/TextView.Small.Green"/>
-
-        </RelativeLayout>
+                android:layout_marginRight="@dimen/dp_16"
+                android:src="@drawable/ic_chevron_right_green"/>
+        </LinearLayout>
 
         <include
             android:id="@+id/review_layout"

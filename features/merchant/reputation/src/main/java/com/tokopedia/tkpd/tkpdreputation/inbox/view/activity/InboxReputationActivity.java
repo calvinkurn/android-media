@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -45,8 +46,8 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
 
-    private static final int MARGIN_TAB = 10;
-    private static final int MARGIN_START_END_TAB = 50;
+    private static final int MARGIN_TAB = 30;
+    private static final int MARGIN_START_END_TAB = 60;
 
     Fragment sellerReputationFragment;
 
@@ -132,17 +133,42 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             }
         }
 
-        for(int i = 0; i < indicator.getTabCount(); i++) {
-            View tab = ((ViewGroup) indicator.getChildAt(0)).getChildAt(i);
-            ViewGroup.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) tab.getLayoutParams();
-            if(i == 0){
-                p.setMargins(MARGIN_START_END_TAB, 0, 0, 0);
-            } else if(i == indicator.getTabCount() - 1){
-                p.setMargins(0, 0, MARGIN_START_END_TAB, 0);
-            } else {
-                p.setMargins(MARGIN_TAB, 0, MARGIN_TAB, 0);
+        wrapTabIndicatorToTitle(indicator, MARGIN_START_END_TAB, MARGIN_TAB);
+    }
+
+    public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
+        View tabStrip = tabLayout.getChildAt(0);
+        if (tabStrip instanceof ViewGroup) {
+            ViewGroup tabStripGroup = (ViewGroup) tabStrip;
+            int childCount = ((ViewGroup) tabStrip).getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View tabView = tabStripGroup.getChildAt(i);
+                tabView.setMinimumWidth(0);
+                tabView.setPadding(0, tabView.getPaddingTop(), 0, tabView.getPaddingBottom());
+                if (tabView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) tabView.getLayoutParams();
+                    if (i == 0) {
+                        settingMargin(layoutParams, externalMargin, internalMargin);
+                    } else if (i == childCount - 1) {
+                        settingMargin(layoutParams, internalMargin, externalMargin);
+                    } else {
+                        settingMargin(layoutParams, internalMargin, internalMargin);
+                    }
+                }
             }
-            tab.requestLayout();
+            tabLayout.requestLayout();
+        }
+    }
+
+    private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            layoutParams.setMarginStart(start);
+            layoutParams.setMarginEnd(end);
+            layoutParams.leftMargin = start;
+            layoutParams.rightMargin = end;
+        } else {
+            layoutParams.leftMargin = start;
+            layoutParams.rightMargin = end;
         }
     }
 

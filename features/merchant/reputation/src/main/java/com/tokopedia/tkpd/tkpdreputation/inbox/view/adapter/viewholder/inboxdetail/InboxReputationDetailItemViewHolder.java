@@ -191,7 +191,7 @@ public class InboxReputationDetailItemViewHolder extends
                 }
             });
 
-            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, element.getProductAvatar());
+            ImageHandler.loadImageRounded2(productAvatar.getContext(), productAvatar, element.getProductAvatar(), 15.0f);
             productAvatar.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

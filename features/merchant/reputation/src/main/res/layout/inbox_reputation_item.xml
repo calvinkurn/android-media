@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                style="@style/TextView.Micro.BlackSecondary"
+                style="@style/TextView.Micro"
                 android:lineSpacingExtra="7sp"
                 tools:text="INV/20170116/XVII/65862137"
                 />
@@ -99,7 +99,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_15"
             android:layout_marginRight="@dimen/dp_15"
-            android:layout_marginTop="@dimen/dp_16">
+            android:layout_marginTop="@dimen/dp_8">
 
             <com.tokopedia.core.customView.RoundedCornerImageView
                 android:id="@+id/avatar"
@@ -139,7 +139,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_half"
-            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_16"
             android:background="@color/grey_300"/>
 
         <LinearLayout

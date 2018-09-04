@@ -23,8 +23,7 @@
             android:textSize="@dimen/text_size_small"
             android:layout_marginRight="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            android:layout_marginTop="@dimen/dp_6"
-            app:layout_scrollFlags="scroll|snap|enterAlways" />
+            android:layout_marginTop="@dimen/dp_6" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -50,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/dp_20"
+        android:paddingBottom="@dimen/dp_6"
         app:layout_anchor="@id/review_list"
         app:layout_anchorGravity="bottom|center_horizontal"
         app:layout_behavior="com.tokopedia.design.behavior.QuickReturnFooterBehavior">
@@ -61,7 +60,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_30"
+            android:layout_marginBottom="@dimen/dp_16"
             android:layout_centerHorizontal="true"/>
 
     </LinearLayout>
