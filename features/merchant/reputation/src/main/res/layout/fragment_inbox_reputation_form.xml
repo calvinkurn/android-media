@@ -14,7 +14,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
             android:orientation="horizontal"
             android:padding="@dimen/padding_activity">
@@ -103,7 +102,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
-            <TextView style="@style/TextView.Micro"
+            <TextView style="@style/TextView.Small"
                 android:layout_width="0dp"
                 android:fontFamily="sans-serif-medium"
                 android:lineSpacingExtra="7sp"

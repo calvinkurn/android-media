@@ -47,7 +47,7 @@
     <string name="upload_product_image">Upload Gambar Produk</string>
     <string name="upload_product_info">Anda dapat mengupload 5 gambar dengan format .JPG, .JPEG, .PNG. Maksimal ukuran gambar 10 MB</string>
     <string name="review">Ulasan</string>
-    <string name="rating_title_0">Belum ada nilai</string>
+    <string name="rating_title_0">Beri Peringkat</string>
     <string name="rating_title_1">Sangat Buruk</string>
     <string name="rating_title_2">Buruk</string>
     <string name="rating_title_3">Cukup</string>

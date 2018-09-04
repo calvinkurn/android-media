@@ -38,9 +38,9 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -385,13 +385,14 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
             productName.setText(MethodChecker.fromHtml(getArguments().getString
                     (InboxReputationFormActivity.ARGS_PRODUCT_NAME)));
 
-            ImageHandler.LoadImage(productImage, getArguments().getString
-                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR));
+            ImageHandler.loadImageRounded2(productImage.getContext(), productImage, getArguments().getString
+                    (InboxReputationFormActivity.ARGS_PRODUCT_AVATAR), 15.0f);
         }
         String anonymouseInfoText = getString(R.string.hint_anonym) + " " + getAnonymousName();
         anonymousInfo.setText(anonymouseInfoText);
 
         checkButtonShouldEnabled();
+        setTips();
     }
 
     private void checkButtonShouldEnabled() {
