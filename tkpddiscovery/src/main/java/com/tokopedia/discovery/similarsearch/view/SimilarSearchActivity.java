@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -86,7 +87,6 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
                     @Override
                     public void onAnimationRepeat(Animation animation) {
 
-
                     }
                 });
                 view.startAnimation(animation);
@@ -103,7 +103,17 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
     @Override
     public void finish() {
         super.finish();
+        View view = getFragment().getView();
+        if(view != null) {
+            view.clearAnimation();
+            if (canCancelAnimation()) {
+                view.animate().cancel();
+            }
+        }
         overridePendingTransition(0,0);
+    }
+    public static boolean canCancelAnimation() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
     @Override
