@@ -31,6 +31,7 @@ import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
 import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.instagram.view.fragment.ImagePickerInstagramFragment;
 import com.tokopedia.imagepicker.picker.main.adapter.ImagePickerViewPagerAdapter;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
@@ -389,6 +390,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
+    public long getMaxFileSize() {
+        return imagePickerBuilder.getMaxFileSizeInKB();
+    }
+
+    @Override
     public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
         onImageSelected(item.getRealPath(), isChecked, null);
     }
@@ -514,7 +520,11 @@ public class ImagePickerActivity extends BaseSimpleActivity
         long maxFileSizeInKB = imagePickerBuilder.getMaxFileSizeInKB();
         showFinishProgressDialog();
         initImagePickerPresenter();
-        imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
+        if (imagePickerBuilder.getGalleryType() == GalleryType.IMAGE_ONLY) {
+            imagePickerPresenter.resizeImage(imagePathList, maxFileSizeInKB);
+        } else {
+            onSuccessResizeImage(imagePathList);
+        }
     }
 
     private void onFinishWithMultipleFinalImage(ArrayList<String> imageUrlOrPathList,

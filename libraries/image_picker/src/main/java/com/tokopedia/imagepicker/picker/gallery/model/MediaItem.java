@@ -2,15 +2,12 @@ package com.tokopedia.imagepicker.picker.gallery.model;
 
 import android.content.ContentUris;
 import android.database.Cursor;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
 
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-
-import java.io.File;
 
 /**
  * Created by hangnadi on 5/29/17.
@@ -45,7 +42,7 @@ public class MediaItem implements Parcelable {
         this.size = size;
         this.duration = duration;
         this.realPath = realPath;
-        this.videoResolution = videoResolution;
+        this.videoResolution = videoResolution == null? "" : videoResolution;
     }
 
     public long getWidth() {
