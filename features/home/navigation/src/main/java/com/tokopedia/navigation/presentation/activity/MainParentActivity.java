@@ -117,6 +117,12 @@ public class MainParentActivity extends AppCompatActivity implements
         return intent;
     }
 
+    public static Intent getApplinkFeedIntent(Context context) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        return intent;
+    }
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

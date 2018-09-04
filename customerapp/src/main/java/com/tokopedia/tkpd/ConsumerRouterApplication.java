@@ -979,13 +979,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getHomeFeedIntent(Context context) {
-        return MainParentActivity.start(context);
-    }
-
-    @Override
     public Intent checkoutModuleRouterGetHomeFeedIntent(Context context) {
-        return MainParentActivity.getHomeFeedIntent(context);
+        return MainParentActivity.getApplinkFeedIntent(context);
     }
 
     @Override
