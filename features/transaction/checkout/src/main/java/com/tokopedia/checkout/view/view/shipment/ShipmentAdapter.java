@@ -29,6 +29,7 @@ import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentCartItemModel
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentInsuranceTncModel;
 import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
@@ -71,6 +72,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
+    private int lastServiceId;
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
@@ -348,6 +350,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     private void resetCourier() {
+        setLastServiceId(0);
         for (ShipmentData item : shipmentDataList) {
             if (item instanceof ShipmentCartItemModel) {
                 if (((ShipmentCartItemModel) item).getSelectedShipmentDetailData() != null) {
@@ -368,6 +371,24 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
         updateInsuranceTncVisibility();
+    }
+
+    public void resetCourier(int cartPosition) {
+        if (shipmentDataList.get(cartPosition) instanceof ShipmentCartItemModel) {
+            ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(cartPosition);
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedShipment(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(false);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUsePartialOrder(false);
+                updateShipmentCostModel();
+                updateInsuranceTncVisibility();
+            }
+        }
+        notifyItemChanged(cartPosition);
     }
 
     public RecipientAddressModel getAddressShipmentData() {
@@ -444,6 +465,18 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier();
+    }
+
+    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                             int position) {
+        ShipmentData currentShipmentData = shipmentDataList.get(position);
+        if (currentShipmentData instanceof ShipmentCartItemModel) {
+            ShipmentCartItemModel cartItemModel = (ShipmentCartItemModel) currentShipmentData;
+            if (cartItemModel.getSelectedShipmentDetailData() != null &&
+                    cartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                cartItemModel.getSelectedShipmentDetailData().setShippingCourierViewModels(shippingCourierViewModels);
+            }
+        }
     }
 
     public boolean checkHasSelectAllCourier() {
@@ -656,6 +689,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public void setLastChooseCourierItemPosition(int lastChooseCourierItemPosition) {
         this.lastChooseCourierItemPosition = lastChooseCourierItemPosition;
+    }
+
+    public int getLastServiceId() {
+        return lastServiceId;
+    }
+
+    public void setLastServiceId(int lastServiceId) {
+        this.lastServiceId = lastServiceId;
     }
 
     public static class RequestData {
