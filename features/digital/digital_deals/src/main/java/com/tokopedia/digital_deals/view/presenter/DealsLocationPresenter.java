@@ -43,7 +43,7 @@ public class DealsLocationPresenter extends BaseDaggerPresenter<DealsLocationCon
                 if (location.getName().trim().toLowerCase().contains(searchText.trim().toLowerCase()))
                     locationList.add(location);
         }
-        getView().renderFromSearchResults(locationList, !isTopLocations);
+        getView().renderFromSearchResults(locationList, !isTopLocations, searchText);
     }
 
     public void getLocations() {
