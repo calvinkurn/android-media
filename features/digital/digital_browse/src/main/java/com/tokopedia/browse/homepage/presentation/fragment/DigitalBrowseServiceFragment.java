@@ -8,16 +8,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.browse.R;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
+import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAdapterTypeFactory;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseLayananContract;
+import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 
 /**
  * @author by furqan on 30/08/18.
  */
 
-public class DigitalBrowseServiceFragment extends BaseDaggerFragment implements DigitalBrowseLayananContract.View {
+public class DigitalBrowseServiceFragment extends BaseListFragment<DigitalBrowseServiceViewModel, DigitalBrowseServiceAdapterTypeFactory> implements DigitalBrowseLayananContract.View {
 
     private static final String EXTRA_CATEGORY_ID = "CATEGORY_ID";
 
@@ -40,7 +42,17 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment implements 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.item_digital_browser_service_shimmering_loading, container, false);
+        return inflater.inflate(R.layout.fragment_digital_browse_service, container, false);
+    }
+
+    @Override
+    public void loadData(int page) {
+
+    }
+
+    @Override
+    protected DigitalBrowseServiceAdapterTypeFactory getAdapterTypeFactory() {
+        return new DigitalBrowseServiceAdapterTypeFactory();
     }
 
     @Override
@@ -51,5 +63,10 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment implements 
     @Override
     protected void initInjector() {
         getComponent(DigitalBrowseHomeComponent.class).inject(this);
+    }
+
+    @Override
+    public void onItemClicked(DigitalBrowseServiceViewModel viewModel) {
+
     }
 }
