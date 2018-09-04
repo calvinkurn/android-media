@@ -1127,10 +1127,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MainParentActivity.start(context);
     }
 
-    public Intent getHomePageIntent(Context context) {
-        return MainParentActivity.start(context);
-    }
-
     @Override
     public BaseDaggerFragment getKolPostFragment(String userId,
                                                  int postId,
