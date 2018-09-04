@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             app:bav_1_display="true"
             app:bav_label_1="@string/notif_filter"
-            app:bav_icon_1="@drawable/ic_badge_shop_official"
+            app:bav_icon_1="@drawable/ic_filter_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
