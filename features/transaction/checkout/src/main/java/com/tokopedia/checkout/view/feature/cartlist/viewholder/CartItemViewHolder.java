@@ -240,7 +240,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (!data.getCartItemData().isSingleChild()) {
             renderErrorItemHeader(data);
             renderWarningItemHeader(data);
-            if (data.getCartItemData().isError() || data.getCartItemData().isWarning()) {
+            if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
+                    !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
+                    (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
                 llWarningAndError.setVisibility(View.VISIBLE);
             } else {
                 llWarningAndError.setVisibility(View.GONE);
