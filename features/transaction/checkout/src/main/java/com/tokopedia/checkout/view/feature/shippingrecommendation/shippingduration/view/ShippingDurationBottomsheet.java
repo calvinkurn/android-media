@@ -20,6 +20,9 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     public static final String ARGUMENT_SHOP_SHIPMENT_LIST = "ARGUMENT_SHOP_SHIPMENT_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
+    public static final String ARGUMENT_SELECTED_SERVICE_ID = "ARGUMENT_SELECTED_SERVICE_ID";
 
     private ProgressBar pbLoading;
     private LinearLayout llNetworkErrorView;
@@ -52,6 +56,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     ShippingDurationAdapter shippingDurationAdapter;
 
     public static ShippingDurationBottomsheet newInstance(ShipmentDetailData shipmentDetailData,
+                                                          int selectedServiceId,
                                                           List<ShopShipment> shopShipmentList,
                                                           RecipientAddressModel recipientAddressModel,
                                                           int cartPosition) {
@@ -62,6 +67,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         bundle.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, new ArrayList<>(shopShipmentList));
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
+        bundle.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId);
         shippingDurationBottomsheet.setArguments(bundle);
 
         return shippingDurationBottomsheet;
@@ -103,11 +109,12 @@ public class ShippingDurationBottomsheet extends BottomSheets
             RecipientAddressModel recipientAddressModel = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             presenter.setRecipientAddressModel(recipientAddressModel);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
+            int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
             setupRecyclerView(cartPosition);
             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
             if (shipmentDetailData != null) {
-                presenter.loadCourierRecommendation(shipmentDetailData, shopShipments);
+                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments);
             }
         }
     }
@@ -158,8 +165,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
                         if (getArguments() != null) {
                             ShipmentDetailData shipmentDetailData = getArguments().getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA);
                             List<ShopShipment> shopShipments = getArguments().getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST);
+                            int selectedServiceId = getArguments().getInt(ARGUMENT_SELECTED_SERVICE_ID);
                             if (shipmentDetailData != null) {
-                                presenter.loadCourierRecommendation(shipmentDetailData, shopShipments);
+                                presenter.loadCourierRecommendation(shipmentDetailData, selectedServiceId, shopShipments);
                             }
                         }
                     }
@@ -176,12 +184,26 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
                                           int cartPosition) {
+        boolean flagNeedToSetPinpoint = false;
+        int selectedServiceId = 0;
         for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
             shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
+            if (shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
+                    shippingCourierViewModel.getServiceData().getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+                if (shippingCourierViewModel.getProductData().getError() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
+                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                    flagNeedToSetPinpoint = true;
+                    selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
+                    shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
+                            shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                }
+            }
         }
         shippingDurationBottomsheetListener.onShippingDurationChoosen(
                 shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                presenter.getRecipientAddressModel(), cartPosition);
+                presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, flagNeedToSetPinpoint);
         dismiss();
     }
 

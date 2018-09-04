@@ -1,7 +1,9 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
 import android.app.Activity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,12 +26,14 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     public static final int ITEM_VIEW_SHIPMENT_DURATION = R.layout.item_duration;
 
-    private RelativeLayout rlItemDurationContainer;
+    private TextView tvError;
     private TextView tvDuration;
     private TextView tvPrice;
     private ImageView imgCheck;
-    private View vSeparator;
+    private View vSeparatorPrice;
+    private View vSeparatorError;
     private TextView tvDurationHeaderInfo;
+    private RelativeLayout rlContent;
 
     private int cartPosition;
     private ShippingDurationAdapter adapter;
@@ -39,26 +43,45 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         this.cartPosition = cartPosition;
         this.adapter = adapter;
 
-        rlItemDurationContainer = itemView.findViewById(R.id.rl_item_duration_container);
+        tvError = itemView.findViewById(R.id.tv_error);
         tvDuration = itemView.findViewById(R.id.tv_duration);
         tvPrice = itemView.findViewById(R.id.tv_price);
         imgCheck = itemView.findViewById(R.id.img_check);
-        vSeparator = itemView.findViewById(R.id.v_separator);
+        vSeparatorPrice = itemView.findViewById(R.id.v_separator_price);
+        vSeparatorError = itemView.findViewById(R.id.v_separator_error);
         tvDurationHeaderInfo = itemView.findViewById(R.id.tv_duration_header_info);
+        rlContent = itemView.findViewById(R.id.rl_content);
     }
 
     public void bindData(ShippingDurationViewModel shippingDurationViewModel,
                          ShippingDurationAdapterListener shippingDurationAdapterListener) {
 
+        if (!TextUtils.isEmpty(shippingDurationViewModel.getErrorMessage())) {
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.font_disabled));
+            tvPrice.setVisibility(View.GONE);
+            tvError.setText(shippingDurationViewModel.getErrorMessage());
+            tvError.setVisibility(View.VISIBLE);
+            vSeparatorPrice.setVisibility(View.GONE);
+            vSeparatorError.setVisibility(View.VISIBLE);
+        } else {
+            tvDuration.setTextColor(ContextCompat.getColor(tvDuration.getContext(), R.color.black_70));
+            tvError.setVisibility(View.GONE);
+            tvPrice.setText(shippingDurationViewModel.getServiceData().getTexts().getTextRangePrice());
+            tvPrice.setVisibility(View.VISIBLE);
+            vSeparatorError.setVisibility(View.GONE);
+            vSeparatorPrice.setVisibility(View.VISIBLE);
+        }
+
         tvDuration.setText(shippingDurationViewModel.getServiceData().getServiceName());
-        tvPrice.setText(shippingDurationViewModel.getServiceData().getTexts().getTextRangePrice());
         imgCheck.setVisibility(shippingDurationViewModel.isSelected() ? View.VISIBLE : View.GONE);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
-                shippingDurationAdapterListener.onShippingDurationChoosen(
-                        shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition);
+                if (TextUtils.isEmpty(shippingDurationViewModel.getErrorMessage())) {
+                    shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
+                    shippingDurationAdapterListener.onShippingDurationChoosen(
+                            shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition);
+                }
             }
         });
 
@@ -79,7 +102,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     private void setShowCase() {
         ShowCaseObject showCase = new ShowCaseObject(
-                rlItemDurationContainer, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
+                rlContent, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
                 itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
                 ShowCaseContentPosition.UNDEFINED);
 

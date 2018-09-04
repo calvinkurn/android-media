@@ -1,10 +1,10 @@
 package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view;
 
-import android.text.TextUtils;
-
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
+import com.tokopedia.checkout.view.view.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
@@ -21,7 +21,8 @@ public class ShippingDurationConverter {
 
     public List<ShippingDurationViewModel> convertToViewModel(List<ServiceData> serviceDataList,
                                                               List<ShopShipment> shopShipmentList,
-                                                              ShipmentDetailData shipmentDetailData) {
+                                                              ShipmentDetailData shipmentDetailData,
+                                                              int selectedServiceId) {
         int selectedSpId = 0;
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             selectedSpId = shipmentDetailData.getSelectedCourier().getShipperProductId();
@@ -32,10 +33,25 @@ public class ShippingDurationConverter {
             shippingDurationViewModel.setServiceData(serviceData);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     convertToShippingCourierViewModel(shippingDurationViewModel, serviceData.getProducts(),
-                            shopShipmentList, selectedSpId);
+                            shopShipmentList, selectedSpId, selectedServiceId);
             shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
+            }
+            if (serviceData.getProducts() != null && serviceData.getProducts() != null &&
+                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
+                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+                for (ProductData product : serviceData.getProducts()) {
+                    if (product.getError() != null &&
+                            product.getError().getErrorMessage() != null &&
+                            product.getError().getErrorId() != null) {
+                        if (product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                            serviceData.getTexts().setTextRangePrice(product.getError().getErrorMessage());
+                        } else {
+                            shippingDurationViewModel.setErrorMessage(product.getError().getErrorMessage());
+                        }
+                    }
+                }
             }
         }
 
@@ -45,20 +61,11 @@ public class ShippingDurationConverter {
     private List<ShippingCourierViewModel> convertToShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
                                                                              List<ProductData> productDataList,
                                                                              List<ShopShipment> shopShipmentList,
-                                                                             int selectedSpId) {
+                                                                             int selectedSpId, int selectedServiceId) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
-            if (productData.getError() != null) {
-                if (!TextUtils.isEmpty(productData.getError().getErrorId())) {
-                    if (productData.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                        addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId, shippingCourierViewModels, productData);
-                    }
-                } else {
-                    addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId, shippingCourierViewModels, productData);
-                }
-            } else {
-                addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId, shippingCourierViewModels, productData);
-            }
+            addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
+                    selectedServiceId, shippingCourierViewModels, productData);
         }
 
         return shippingCourierViewModels;
@@ -66,7 +73,7 @@ public class ShippingDurationConverter {
 
     private void addShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
                                              List<ShopShipment> shopShipmentList,
-                                             int selectedSpId,
+                                             int selectedSpId, int selectedServiceId,
                                              List<ShippingCourierViewModel> shippingCourierViewModels,
                                              ProductData productData) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
@@ -75,6 +82,10 @@ public class ShippingDurationConverter {
         if (selectedSpId != 0) {
             if (selectedSpId == productData.getShipperProductId()) {
                 shippingCourierViewModel.setSelected(true);
+                shippingDurationViewModel.setSelected(true);
+            }
+        } else if (selectedServiceId != 0) {
+            if (selectedServiceId == shippingDurationViewModel.getServiceData().getServiceId()) {
                 shippingDurationViewModel.setSelected(true);
             }
         } else {

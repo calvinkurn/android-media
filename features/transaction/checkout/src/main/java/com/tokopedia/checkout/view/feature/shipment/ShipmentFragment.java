@@ -96,6 +96,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final String NO_PINPOINT_ETD = "Belum Pinpoint";
     private static final String EXTRA_STATE_SHIPMENT_SELECTION = "EXTRA_STATE_SHIPMENT_SELECTION";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
+    private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -257,6 +258,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             outState.putParcelable(ShipmentDonationModel.class.getSimpleName(), shipmentPresenter.getShipmentDonationModel());
             outState.putParcelable(ShipmentCostModel.class.getSimpleName(), shipmentPresenter.getShipmentCostModel());
             outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
+            outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.getLastServiceId());
         }
     }
 
@@ -272,6 +274,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.setShipmentDonationModel(savedInstanceState.getParcelable(ShipmentDonationModel.class.getSimpleName()));
                 shipmentPresenter.setShipmentCostModel(savedInstanceState.getParcelable(ShipmentCostModel.class.getSimpleName()));
                 shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
+                shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
                 renderCheckoutPage(true);
             } else {
                 shipmentPresenter.processInitialLoadCheckoutPage(false);
@@ -424,6 +427,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
+                        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(false);
                     }
                 });
@@ -774,6 +778,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.editAddressPinpoint(locationPass.getLatitude(), locationPass.getLongitude(),
                         shipmentCartItemModel, locationPass);
             }
+        } else {
+            shipmentAdapter.setLastServiceId(0);
         }
     }
 
@@ -964,7 +970,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel);
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
+                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                    recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {
@@ -1201,23 +1208,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
                 recipientAddressModel.getLongitude() == 0)) {
-            shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-            LocationPass locationPass = new LocationPass();
-            if (shipmentAdapter.getAddressShipmentData() != null) {
-                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
-                locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
-            } else {
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-                if (shipmentCartItemModel != null) {
-                    RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                    if (updatedRecipientAddressModel != null) {
-                        locationPass.setCityName(updatedRecipientAddressModel.getCityName());
-                        locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
-                    }
-                }
-            }
-            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
-            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            setPinpoint(cartItemPosition);
         } else {
             shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
         }
@@ -1305,35 +1296,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          CourierItemData courierItemData,
+                                          CourierItemData recommendedCourier,
                                           RecipientAddressModel recipientAddressModel,
-                                          int cartItemPosition) {
-        if (courierItemData == null) {
+                                          int cartItemPosition,
+                                          int selectedServiceId,
+                                          boolean flagNeedToSetPinpoint) {
+        if (flagNeedToSetPinpoint) {
+            // If instant courier and has not set pinpoint
+            shipmentAdapter.setLastServiceId(selectedServiceId);
+            setPinpoint(cartItemPosition);
+        } else if (recommendedCourier == null) {
             // If there's no recommendation, user choose courier manually
             onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, cartItemPosition);
         } else {
-            if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
+            if (recommendedCourier.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                     recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
                     recipientAddressModel.getLongitude() == 0)) {
-                shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-                LocationPass locationPass = new LocationPass();
-                if (shipmentAdapter.getAddressShipmentData() != null) {
-                    locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
-                    locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
-                } else {
-                    ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-                    if (shipmentCartItemModel != null) {
-                        RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                        if (updatedRecipientAddressModel != null) {
-                            locationPass.setCityName(updatedRecipientAddressModel.getCityName());
-                            locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
-                        }
-                    }
-                }
-                Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+                setPinpoint(cartItemPosition);
             } else {
-                shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
+                shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                 shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, cartItemPosition);
             }
         }
@@ -1344,26 +1325,30 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
                 recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
                 recipientAddressModel.getLongitude() == 0)) {
-            shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
-            LocationPass locationPass = new LocationPass();
-            if (shipmentAdapter.getAddressShipmentData() != null) {
-                locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
-                locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
-            } else {
-                ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
-                if (shipmentCartItemModel != null) {
-                    RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
-                    if (updatedRecipientAddressModel != null) {
-                        locationPass.setCityName(updatedRecipientAddressModel.getCityName());
-                        locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
-                    }
-                }
-            }
-            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
-            startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+            setPinpoint(cartItemPosition);
         } else {
             shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
         }
+    }
+
+    private void setPinpoint(int cartItemPosition) {
+        shipmentAdapter.setLastChooseCourierItemPosition(cartItemPosition);
+        LocationPass locationPass = new LocationPass();
+        if (shipmentAdapter.getAddressShipmentData() != null) {
+            locationPass.setCityName(shipmentAdapter.getAddressShipmentData().getCityName());
+            locationPass.setDistrictName(shipmentAdapter.getAddressShipmentData().getDestinationDistrictName());
+        } else {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
+            if (shipmentCartItemModel != null) {
+                RecipientAddressModel updatedRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                if (updatedRecipientAddressModel != null) {
+                    locationPass.setCityName(updatedRecipientAddressModel.getCityName());
+                    locationPass.setDistrictName(updatedRecipientAddressModel.getDestinationDistrictName());
+                }
+            }
+        }
+        Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationPass);
+        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
 
     @Override
@@ -1375,7 +1360,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel);
         if (shipmentDetailData != null) {
             shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shopShipmentList, recipientAddressModel, cartPosition);
+                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
+                    recipientAddressModel, cartPosition);
             shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
 
             if (getActivity() != null) {

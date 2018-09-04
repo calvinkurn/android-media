@@ -3,6 +3,7 @@
     <color name="bg_cart_item_error">#fce3e4</color>
     <color name="bg_cart_item_warning">#fffcd3</color>
     <color name="text_cart_item_error_red">#d30b16</color>
+    <color name="text_courier_error_red">#d50000</color>
     <color name="yellow_ticker">#ecdb77</color>
     <color name="background_no_pinpoint">#ccfffffe</color>
     <color name="grey_nonactive_text">#42000000</color>
@@ -17,6 +18,7 @@
     <color name="warning_yellow_background">#fffcf5</color>
     <color name="warning_yellow_outline">#ffe38f</color>
     <color name="disabled_washout_foreground">#88FFFFFF</color>
+    <color name="font_disabled">#33000000</color>
 
     <color name="checkout_shadow_color_1">#00AAAAAA</color>
     <color name="checkout_shadow_color_2">#10AAAAAA</color>

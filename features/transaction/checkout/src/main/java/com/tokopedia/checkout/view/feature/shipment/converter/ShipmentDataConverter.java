@@ -84,6 +84,7 @@ public class ShipmentDataConverter {
                 UserAddress userAddress = groupAddress.getUserAddress();
                 for (GroupShop groupShop : groupAddress.getGroupShop()) {
                     shipmentCartItemModel = new ShipmentCartItemModel();
+                    shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                     getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                             String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), true);
                     setCartItemModelError(shipmentCartItemModel);
@@ -94,6 +95,7 @@ public class ShipmentDataConverter {
             UserAddress userAddress = cartShipmentAddressFormData.getGroupAddress().get(0).getUserAddress();
             for (GroupShop groupShop : cartShipmentAddressFormData.getGroupAddress().get(0).getGroupShop()) {
                 shipmentCartItemModel = new ShipmentCartItemModel();
+                shipmentCartItemModel.setUseCourierRecommendation(cartShipmentAddressFormData.isUseCourierRecommendation());
                 getShipmentItem(shipmentCartItemModel, userAddress, groupShop, cartShipmentAddressFormData.getKeroToken(),
                         String.valueOf(cartShipmentAddressFormData.getKeroUnixTime()), false);
                 setCartItemModelError(shipmentCartItemModel);
@@ -101,9 +103,6 @@ public class ShipmentDataConverter {
             }
         }
 
-        if (shipmentCartItemModel != null) {
-            shipmentCartItemModel.setUseCourierRecommendation(false); // Temporary flag courier recommendation
-        }
         return shipmentCartItemModels;
     }
 

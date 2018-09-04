@@ -4,10 +4,7 @@
     android:id="@+id/rl_item_duration_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:foreground="?selectableItemBackground"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16">
+    android:foreground="?selectableItemBackground">
 
     <TextView
         android:id="@+id/tv_duration_header_info"
@@ -15,44 +12,74 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:fontFamily="sans-serif-medium"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         android:text="@string/label_hardcoded_shipping_duration_info"
         android:textColor="@color/shipping_duration_info_black"
         android:textSize="@dimen/sp_11" />
 
-    <TextView
-        android:id="@+id/tv_duration"
-        style="@style/TextMidMediumBlack70"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/rl_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_duration_header_info"
-        android:layout_marginTop="@dimen/dp_16"
-        android:lineSpacingExtra="4sp"
-        tools:text="4 Jam" />
+        android:background="@color/white"
+        android:paddingLeft="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16">
 
-    <TextView
-        android:id="@+id/tv_price"
-        style="@style/TextSmallNormalBlack54"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_duration"
-        android:layout_marginTop="4dp"
-        tools:text="Mulai dari Rp10.000" />
+        <TextView
+            android:id="@+id/tv_duration"
+            style="@style/TextMidMediumBlack70"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_16"
+            android:lineSpacingExtra="4sp"
+            tools:text="4 Jam" />
 
-    <ImageView
-        android:id="@+id/img_check"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/tv_duration"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_check" />
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/TextSmallNormalBlack54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_duration"
+            android:layout_marginTop="4dp"
+            tools:text="Mulai dari Rp10.000" />
 
-    <View
-        android:id="@+id/v_separator"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_below="@+id/tv_price"
-        android:layout_marginTop="@dimen/dp_16"
-        android:background="@color/separator_color" />
+        <TextView
+            android:id="@+id/tv_error"
+            style="@style/TextSmallNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_duration"
+            android:layout_marginTop="4dp"
+            android:textColor="@color/text_courier_error_red"
+            tools:text="Jarak melebihi batas maksimum kurir" />
+
+        <ImageView
+            android:id="@+id/img_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/tv_duration"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_check" />
+
+        <View
+            android:id="@+id/v_separator_price"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/tv_price"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/separator_color" />
+
+        <View
+            android:id="@+id/v_separator_error"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_below="@+id/tv_error"
+            android:layout_marginTop="@dimen/dp_16"
+            android:background="@color/separator_color" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
