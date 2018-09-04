@@ -140,8 +140,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         try {
             mDataPasserListener = (ActionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(getActivity().toString() +
-                    " must implement OnPassingCartDataListener");
+            mDataPasserListener = new ActionListener() {
+                @Override
+                public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
+
+                }
+
+                @Override
+                public void onContentAvailabilityChanged(boolean available) {
+
+                }
+            };
         }
     }
 
