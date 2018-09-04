@@ -46,6 +46,7 @@ import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
 import com.tokopedia.checkout.view.di.component.CartComponent;
+import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
 import com.tokopedia.checkout.view.di.component.DaggerCartListComponent;
 import com.tokopedia.checkout.view.di.module.CartListModule;
@@ -176,7 +177,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     protected void initInjector() {
         CartListComponent cartListComponent = DaggerCartListComponent.builder()
-                .cartComponent(getComponent(CartComponent.class))
+                .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
                 .cartListModule(new CartListModule(this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
