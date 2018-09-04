@@ -44,9 +44,6 @@ public class CartDataListResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
-//    @SerializedName("cart_list")
-//    @Expose
-//    private List<CartList> cartList = new ArrayList<>();
 
     public int getIsCouponActive() {
         return isCouponActive;
@@ -71,10 +68,6 @@ public class CartDataListResponse {
     public PromoSuggestion getPromoSuggestion() {
         return promoSuggestion;
     }
-
-//    public List<CartList> getCartList() {
-//        return cartList;
-//    }
 
     public String getDefaultPromoDialogTab() {
         return defaultPromoDialogTab;

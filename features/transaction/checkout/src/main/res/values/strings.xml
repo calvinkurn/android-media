@@ -202,5 +202,8 @@
     <string name="label_shop_summary">Ringkasan Belanja</string>
     <string name="toast_message_add_wishlist_success">Sukses menambah wishlist</string>
     <string name="toast_message_remove_wishlist_success">Sukses menghapus wishlist</string>
+    <string name="action_label_done">Selesai</string>
+    <string name="label_change_courier">Ubah Kurir</string>
+    <string name="label_shipping_duration">Durasi Pengiriman</string>
 
 </resources>

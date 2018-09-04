@@ -233,7 +233,7 @@
                     android:layout_marginLeft="-4dp"
                     android:layout_marginRight="-4dp"
                     android:fontFamily="sans-serif"
-                    android:imeActionLabel="Selesai"
+                    android:imeActionLabel="@string/action_label_done"
                     android:imeOptions="actionDone"
                     android:maxLines="3"
                     android:overScrollMode="always"
