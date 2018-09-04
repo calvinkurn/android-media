@@ -57,11 +57,7 @@ public class MitraDigitalCategoryPresenter extends BaseDaggerPresenter<AgentDigi
                 ResponseAgentDigitalCategory responseAgentDigitalCategory = graphqlResponse.getData(ResponseAgentDigitalCategory.class);
                 DigitalCategoryModel digitalCategoryModel = rechargeCategoryDetailMapper.map(responseAgentDigitalCategory);
 
-                List<InputFieldModel> operatorInputFieldModels = digitalCategoryModel.getRenderOperatorModel().getInputFieldModels();
-
-                getView().renderOperator(operatorInputFieldModels,
-                        digitalCategoryModel.getRenderOperatorModel().getRenderProductModels(),
-                        digitalCategoryModel.getDefaultOperatorId());
+                getView().renderWidgetView(digitalCategoryModel.getRenderOperatorModel());
             }
         });
     }

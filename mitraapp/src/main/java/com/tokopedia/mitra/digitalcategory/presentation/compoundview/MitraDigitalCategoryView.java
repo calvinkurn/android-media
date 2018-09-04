@@ -9,19 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
-import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.RenderOperatorModel;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.mitra.R;
-
-import java.util.List;
 
 /**
  * Created by Rizky on 31/08/18.
  */
 public class MitraDigitalCategoryView extends LinearLayout {
 
-    private DigitalOperatorChooserView digitalOperatorChooserView;
+    private LinearLayout containerDigitalWidgetView;
 
     public MitraDigitalCategoryView(Context context) {
         super(context);
@@ -47,12 +44,17 @@ public class MitraDigitalCategoryView extends LinearLayout {
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_agent_digital_category,
                 this, true);
-        digitalOperatorChooserView = view.findViewById(R.id.view_digital_operator_chooser);
+        containerDigitalWidgetView = view.findViewById(R.id.container_digital_widget_view);
     }
 
-    public void renderOperator(List<InputFieldModel> inputFieldModels, List<RenderProductModel> renderProductModels,
-                               String defaultOperatorId) {
-        digitalOperatorChooserView.showOperatorChooser(inputFieldModels, renderProductModels, defaultOperatorId);
+    public void renderWidgetViews(RenderOperatorModel renderOperatorModel) {
+        DigitalWidgetView digitalWidgetView = new DigitalWidgetView(getContext());
+        digitalWidgetView.renderWidget(renderOperatorModel.getInputFieldModels().get(0));
+        containerDigitalWidgetView.addView(digitalWidgetView);
+
+        for (RenderProductModel renderProductModel : renderOperatorModel.getRenderProductModels()) {
+            renderProductModel.ge
+        }
     }
 
 }

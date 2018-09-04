@@ -11,16 +11,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
-import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
-import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
+import com.tokopedia.common_digital.product.presentation.model.RenderOperatorModel;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalCategoryView;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.AgentDigitalCategoryContract;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalCategoryPresenter;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -71,9 +68,8 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void renderOperator(List<InputFieldModel> operatorInputFieldModels,
-                               List<RenderProductModel> renderProductModels, String defaultOperatorId) {
-        mitraDigitalCategoryView.renderOperator(operatorInputFieldModels, renderProductModels, defaultOperatorId);
+    public void renderWidgetView(RenderOperatorModel renderOperatorModel) {
+        mitraDigitalCategoryView.renderWidgetViews(renderOperatorModel);
     }
 
 }

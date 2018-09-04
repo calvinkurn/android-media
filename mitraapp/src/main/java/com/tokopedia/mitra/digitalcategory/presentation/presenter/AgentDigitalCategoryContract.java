@@ -5,6 +5,7 @@ import android.content.res.Resources;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
+import com.tokopedia.common_digital.product.presentation.model.RenderOperatorModel;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class AgentDigitalCategoryContract {
 
         Resources getResources();
 
-        void renderOperator(List<InputFieldModel> operatorInputFieldModels, List<RenderProductModel> renderProductModels, String defaultOperatorId);
+        void renderWidgetView(RenderOperatorModel renderOperatorModel);
 
     }
 

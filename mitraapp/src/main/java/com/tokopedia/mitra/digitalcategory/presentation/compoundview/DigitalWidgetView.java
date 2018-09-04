@@ -22,29 +22,29 @@ import java.util.List;
 /**
  * Created by Rizky on 31/08/18.
  */
-public class DigitalOperatorChooserView extends FrameLayout {
+public class DigitalWidgetView extends FrameLayout {
 
     private ClientNumberInputView clientNumberInputView;
     private DigitalOperatorDropdownInputView operatorDropdownInputView;
     private DigitalOperatorRadioInputView operatorRadioInputView;
 
-    public DigitalOperatorChooserView(@NonNull Context context) {
+    public DigitalWidgetView(@NonNull Context context) {
         super(context);
         init(context);
     }
 
-    public DigitalOperatorChooserView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public DigitalWidgetView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public DigitalOperatorChooserView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public DigitalWidgetView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public DigitalOperatorChooserView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public DigitalWidgetView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
     }
@@ -74,11 +74,18 @@ public class DigitalOperatorChooserView extends FrameLayout {
     }
 
     private void showDropdown(List<RenderProductModel> renderProductModels, String defaultOperatorId) {
-        operatorDropdownInputView.renderOperatorList(renderProductModels, defaultOperatorId);
         operatorDropdownInputView.setVisibility(VISIBLE);
+        operatorDropdownInputView.renderOperatorList(renderProductModels, defaultOperatorId);
+        operatorDropdownInputView.setActionListener(new DigitalOperatorDropdownInputView.ActionListener() {
+            @Override
+            public void onClickOperatorDropdown() {
+
+            }
+        });
     }
 
     private void showClientNumber(ClientNumber clientNumber) {
+        clientNumberInputView.setVisibility(VISIBLE);
         clientNumberInputView.renderData(clientNumber);
         clientNumberInputView.setActionListener(new ClientNumberInputView.ActionListener() {
             @Override
@@ -106,12 +113,21 @@ public class DigitalOperatorChooserView extends FrameLayout {
 
             }
         });
-        clientNumberInputView.setVisibility(VISIBLE);
     }
 
     private ClientNumber transformInputFieldToClientNumber(InputFieldModel inputFieldModel) {
         return new ClientNumber(inputFieldModel.getName(), inputFieldModel.getType(), inputFieldModel.getText(),
                 inputFieldModel.getPlaceholder(), inputFieldModel.getDefault(), inputFieldModel.getValidation());
+    }
+
+    public void renderWidget(InputFieldModel inputFieldModel) {
+        if (inputFieldModel.getType().equals("tel")) {
+            showClientNumber(transformInputFieldToClientNumber(inputFieldModel));
+        } else if (inputFieldModel.getType().equals("select")) {
+            showDropdown(renderProductModels, defaultOperatorId);
+        } else if (inputFieldModel.getType().equals("radio")) {
+            showRadio(renderProductModels, defaultOperatorId);
+        }
     }
 
 }
