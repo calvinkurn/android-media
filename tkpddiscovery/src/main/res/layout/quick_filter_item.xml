@@ -12,9 +12,6 @@
         android:paddingBottom="@dimen/quick_filter_padding_vertical"
         android:paddingLeft="@dimen/quick_filter_padding_horizontal"
         android:paddingRight="@dimen/quick_filter_padding_horizontal"
-        android:layout_marginLeft="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
-        android:layout_marginBottom="@dimen/margin_sm"
         android:background="@drawable/quick_filter_item_background_neutral"
         tools:text="superstar"/>
 

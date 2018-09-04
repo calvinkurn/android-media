@@ -1,8 +1,9 @@
 package com.tokopedia.events.di;
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.events.di.scope.EventScope;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.activity.EventBookTicketActivity;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
@@ -12,6 +13,9 @@ import com.tokopedia.events.view.activity.EventsHomeActivity;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.activity.SeatSelectionActivity;
 import com.tokopedia.events.view.fragment.FragmentAddTickets;
+import com.tokopedia.events.view.utils.VerifyCartWrapper;
+import com.tokopedia.oms.di.OmsModule;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
 
 import dagger.Component;
 
@@ -20,8 +24,12 @@ import dagger.Component;
  */
 
 @EventScope
-@Component(modules = EventModule.class, dependencies = AppComponent.class)
+@Component(modules = {EventModule.class, OmsModule.class}, dependencies = BaseAppComponent.class)
 public interface EventComponent {
+
+    VerifyCartUseCase getVerifyCartUseCase();
+
+    VerifyCartWrapper getVerifyCartWrapper();
 
     PostVerifyCartUseCase getPostVerifyCartUseCase();
 
