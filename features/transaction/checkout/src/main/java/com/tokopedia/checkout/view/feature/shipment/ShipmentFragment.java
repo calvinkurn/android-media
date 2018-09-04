@@ -1048,6 +1048,21 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void sendAnalyticsCourierNotComplete() {
+        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickPilihMetodePembayaranCourierNotComplete();
+    }
+
+    @Override
+    public void sendAnalyticsDropshipperNotComplete() {
+        checkoutAnalyticsCourierSelection.eventClickBuyCourierSelectionClickBayarFailedDropshipper();
+    }
+
+    @Override
+    public void sendAnalyticsOnCourierChanged(String agent, String service) {
+        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionClickUbahKurirAgentService(agent, service);
+    }
+
+    @Override
     public void onChoosePickupPoint(RecipientAddressModel addressAdapterData) {
 
     }
@@ -1145,6 +1160,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (shipmentData == null && result) {
             shipmentPresenter.processCheckShipmentPrepareCheckout();
         } else if (shipmentData != null && !result) {
+            sendAnalyticsDropshipperNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
                 rvShipment.smoothScrollToPosition(errorPosition);
             }
@@ -1153,6 +1169,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ((ShipmentCartItemModel) shipmentData).setStateDropshipperHasError(true);
             shipmentAdapter.notifyItemChanged(errorPosition);
         } else if (shipmentData == null) {
+            sendAnalyticsCourierNotComplete();
+            if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
+                rvShipment.smoothScrollToPosition(errorPosition);
+            }
             showToastError(getActivity().getString(R.string.message_error_courier_not_selected_or_dropshipper_empty));
         }
     }
@@ -1166,9 +1186,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onShipmentItemClick(CourierItemData courierItemData,
                                     RecipientAddressModel recipientAddressModel,
-                                    int cartItemPosition) {
-        sendAnalyticsOnClickShipmentCourierItem(courierItemData.getName(),
-                courierItemData.getShipmentItemDataType());
+                                    int cartItemPosition, boolean isChangeCourier) {
+        if (isChangeCourier) {
+            sendAnalyticsOnCourierChanged(courierItemData.getName(),
+                    courierItemData.getShipmentItemDataType());
+        } else {
+            sendAnalyticsOnClickShipmentCourierItem(courierItemData.getName(),
+                    courierItemData.getShipmentItemDataType());
+        }
         ShipmentSelectionStateData shipmentSelectionStateData = new ShipmentSelectionStateData();
         shipmentSelectionStateData.setPosition(cartItemPosition);
         shipmentSelectionStateData.setCourierItemData(courierItemData);

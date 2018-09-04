@@ -240,7 +240,9 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (!data.getCartItemData().isSingleChild()) {
             renderErrorItemHeader(data);
             renderWarningItemHeader(data);
-            if (data.getCartItemData().isError() || data.getCartItemData().isWarning()) {
+            if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
+                    !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
+                    (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
                 llWarningAndError.setVisibility(View.VISIBLE);
             } else {
                 llWarningAndError.setVisibility(View.GONE);
@@ -248,8 +250,10 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         } else {
             if (data.getCartItemData().isError()) {
                 flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
+                btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
             } else {
                 flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
+                btnDelete.setImageResource(R.drawable.ic_delete_cart);
             }
             llWarningAndError.setVisibility(View.GONE);
         }
@@ -521,6 +525,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private void renderErrorItemHeader(CartItemHolderData data) {
         if (data.getCartItemData().isError()) {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
             tvErrorTitle.setText(data.getCartItemData().getErrorMessageTitle());
             String errorDescription = data.getCartItemData().getErrorMessageDescription();
             if (!TextUtils.isEmpty(errorDescription)) {
@@ -532,6 +537,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             layoutError.setVisibility(View.VISIBLE);
         } else {
             flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart);
             layoutError.setVisibility(View.GONE);
         }
     }

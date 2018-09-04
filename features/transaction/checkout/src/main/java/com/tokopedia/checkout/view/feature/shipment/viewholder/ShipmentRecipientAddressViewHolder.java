@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.view.feature.shipment.viewholder;
 
 import android.graphics.Typeface;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
@@ -34,6 +35,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
     private static final int PRIME_ADDRESS = 2;
 
+    private CardView cardAddress;
     private RelativeLayout rlRecipientAddressLayout;
     private TextView tvAddressStatus;
     private TextView tvAddressName;
@@ -53,6 +55,7 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
 
+        cardAddress = itemView.findViewById(R.id.card_address);
         rlRecipientAddressLayout = itemView.findViewById(R.id.rl_shipment_recipient_address_layout);
         tvAddressStatus = itemView.findViewById(R.id.tv_address_status);
         tvAddressName = itemView.findViewById(R.id.tv_address_name);
@@ -68,7 +71,11 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
     public void bindViewHolder(RecipientAddressModel recipientAddress,
                                ArrayList<ShowCaseObject> showCaseObjectList,
                                String cartIds) {
-
+        if (recipientAddress.isStateExtraPaddingTop()) {
+            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16));
+        } else {
+            setMargin((int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_0));
+        }
         tvChangeAddress.setVisibility(View.GONE);
         tvAddressStatus.setVisibility(View.GONE);
         tvAddressName.setVisibility(View.GONE);
@@ -92,6 +99,14 @@ public class ShipmentRecipientAddressViewHolder extends RecyclerView.ViewHolder 
 
         renderPickupPoint(pickupPointLayout, recipientAddress);
         setShowCase(rlRecipientAddressLayout, showCaseObjectList);
+    }
+
+    private void setMargin(int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) cardAddress.getLayoutParams();
+        int sideMargin = (int) cardAddress.getContext().getResources().getDimension(R.dimen.dp_16);
+        layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
+        cardAddress.requestLayout();
     }
 
     private void setShowCase(ViewGroup viewGroup, ArrayList<ShowCaseObject> showCaseObjectList) {

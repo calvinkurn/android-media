@@ -37,6 +37,8 @@ public interface CourierContract {
         List<ShipmentOptionData> getShipmentDataList();
 
         void setSelectedCourier(CourierItemData selectedCourier);
+
+        boolean isHasSelectedCourier();
     }
 
 }

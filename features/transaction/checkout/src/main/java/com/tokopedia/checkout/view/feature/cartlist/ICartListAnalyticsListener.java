@@ -62,4 +62,10 @@ public interface ICartListAnalyticsListener {
 
     void sendAnalyticsScreenName(String screenName);
 
+    void sendAnalyticsOnButtonCheckoutClickedFailed();
+
+    void sendAnalyticsOnButtonSelectAllChecked();
+
+    void sendAnalyticsOnButtonSelectAllUnchecked();
+
 }

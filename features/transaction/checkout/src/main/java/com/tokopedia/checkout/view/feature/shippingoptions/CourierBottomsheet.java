@@ -248,7 +248,8 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
         } else {
             dismiss();
         }
-        actionListener.onShipmentItemClick(courierItemData, recipientAddressModel, cartItemPosition);
+        actionListener.onShipmentItemClick(courierItemData, recipientAddressModel,
+                cartItemPosition, presenter.isHasSelectedCourier());
     }
 
     @Override
@@ -262,7 +263,10 @@ public class CourierBottomsheet extends BottomSheetDialog implements CourierCont
     }
 
     public interface ActionListener {
-        void onShipmentItemClick(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition);
+        void onShipmentItemClick(CourierItemData courierItemData,
+                                 RecipientAddressModel recipientAddressModel,
+                                 int cartItemPosition,
+                                 boolean isChangeCourier);
     }
 
 

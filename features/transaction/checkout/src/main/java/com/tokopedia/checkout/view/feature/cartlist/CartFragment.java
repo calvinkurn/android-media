@@ -147,10 +147,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onDetach() {
-        if (getActivity() != null && getCartDataList() != null && getCartDataList().size() > 0) {
+        if (getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
             Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
             service.putParcelableArrayListExtra(
-                    UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getCartDataList())
+                    UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
             );
             getActivity().startService(service);
         }
@@ -258,11 +258,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private View.OnClickListener getOnClickCheckboxSelectAll() {
         return v -> {
             boolean checked = !dPresenter.getCartListData().isAllSelected();
+            if (checked) {
+                sendAnalyticsOnButtonSelectAllChecked();
+            } else {
+                sendAnalyticsOnButtonSelectAllUnchecked();
+            }
             dPresenter.getCartListData().setAllSelected(checked);
             cbSelectAll.setChecked(checked);
             cartAdapter.setAllShopSelected(checked);
             cartAdapter.notifyDataSetChanged();
-            dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+            dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         };
     }
 
@@ -274,10 +279,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 sendAnalyticsOnButtonCheckoutClicked();
             } else {
                 showToastMessageRed(message);
+                sendAnalyticsOnButtonCheckoutClickedFailed();
             }
         };
     }
 
+    @Override
     public void sendAnalyticsOnButtonCheckoutClicked() {
         checkoutAnalyticsCourierSelection.eventClickCourierSelectionClickSelectCourierOnCart();
     }
@@ -331,25 +338,25 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickButtonPlusCartItem();
         cartAdapter.increaseQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickButtonMinusCartItem();
         cartAdapter.decreaseQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
     public void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView) {
         cartAdapter.resetQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
     public void onCartItemQuantityFormEdited(int position, int parentPosition, boolean needRefreshItemView) {
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
@@ -378,9 +385,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
+        dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         onNeedUpdateViewItem(itemPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
     }
 
@@ -411,7 +419,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartPromoUseVoucherPromoClicked(CartItemPromoHolderData cartItemPromoHolderData, int position) {
         sendAnalyticsOnClickUsePromoCodeAndCoupon();
-        List<CartItemData> cartItemDataList = getCartDataList();
+        List<CartItemData> cartItemDataList = getSelectedCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
@@ -447,15 +455,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
-                getCartDataList(), EnhancedECommerceCartMapData.REMOVE_ACTION
-        ));
+        List<CartShopHolderData> cartShopHolderDataList = getAllCartDataList();
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
-        for (CartItemData cartItemData : getCartDataList()) {
-            if (cartItemData.isError()) {
-                toBeDeletedCartItem.add(cartItemData);
+
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            if (cartShopHolderData.getShopGroupData().isError()) {
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                }
+            } else {
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (cartItemHolderData.getCartItemData().isError()) {
+                        toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                    }
+                }
             }
         }
+
+        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
+                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+        ));
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
@@ -490,8 +509,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded()) {
-//            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-//            btnToShipment.setTextColor(getResources().getColor(R.color.white));
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
@@ -499,8 +516,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataDisableToCheckout(String message) {
         if (isAdded()) {
-//            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-//            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
@@ -527,11 +542,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
+        dPresenter.setHasPerformChecklistChange();
         boolean needToUpdateParent = cartAdapter.setItemSelected(position, parentPosition, checked);
         if (needToUpdateParent) {
             onNeedUpdateViewItem(parentPosition);
         }
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
     }
 
@@ -664,7 +680,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
 
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
-        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
 
         if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
@@ -768,8 +784,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
-//        cartAdapter.deleteItem(cartItemData);
-//        dPresenter.reCalculateSubTotal(cartAdapter.getDataList());
+
     }
 
     @Override
@@ -812,13 +827,24 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, String maySomethingCondition) {
-        //TODO
-//        sendAnalyticsOnSuccessToCheckoutCheckAll(stringObjectMap);
-//        sendAnalyticsOnSuccessToCheckoutDefault(stringObjectMap);
-//        sendAnalyticsOnSuccessToCheckoutPartialProduct(stringObjectMap);
-//        sendAnalyticsOnSuccessToCheckoutPartialShop(stringObjectMap);
-//        sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(stringObjectMap);
+    public void renderToShipmentFormSuccess(Map<String, Object> eeCheckoutData, int checklistCondition) {
+        switch (checklistCondition) {
+            case CartListPresenter.ITEM_CHECKED_ALL_WITHOUT_CHANGES:
+                sendAnalyticsOnSuccessToCheckoutDefault(eeCheckoutData);
+                break;
+            case CartListPresenter.ITEM_CHECKED_ALL_WITH_CHANGES:
+                sendAnalyticsOnSuccessToCheckoutCheckAll(eeCheckoutData);
+                break;
+            case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP:
+                sendAnalyticsOnSuccessToCheckoutPartialShop(eeCheckoutData);
+                break;
+            case CartListPresenter.ITEM_CHECKED_PARTIAL_ITEM:
+                sendAnalyticsOnSuccessToCheckoutPartialProduct(eeCheckoutData);
+                break;
+            case CartListPresenter.ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM:
+                sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
+                break;
+        }
         Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
                 cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
         );
@@ -835,6 +861,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderErrorToShipmentForm(String message) {
+        sendAnalyticsOnButtonCheckoutClickedFailed();
         showToastMessageRed(message);
     }
 
@@ -986,14 +1013,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public List<CartItemData> getCartDataList() {
+    public List<CartItemData> getSelectedCartDataList() {
         return cartAdapter.getSelectedCartItemData();
+    }
+
+    @Override
+    public List<CartShopHolderData> getAllCartDataList() {
+        return cartAdapter.getAllShopGroupDataList();
     }
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
         tvTotalPrice.setText(subtotalPrice);
-        tvItemCount.setText(String.format(getString(R.string.cart_item_count_format), qty));
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }
 
@@ -1413,5 +1444,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             cartAdapter.notifyItemChanged(position);
         }
+    }
+
+    @Override
+    public void sendAnalyticsOnButtonCheckoutClickedFailed() {
+        cartPageAnalytics.eventClickCheckoutCartClickCheckoutFailed();
+    }
+
+    @Override
+    public void sendAnalyticsOnButtonSelectAllChecked() {
+        cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukChecklist();
+    }
+
+    @Override
+    public void sendAnalyticsOnButtonSelectAllUnchecked() {
+        cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukUnChecklist();
     }
 }

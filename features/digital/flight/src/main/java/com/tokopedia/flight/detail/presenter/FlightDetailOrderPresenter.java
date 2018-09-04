@@ -8,7 +8,6 @@ import android.text.style.RelativeSizeSpan;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
-import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.booking.constant.FlightBookingPassenger;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
@@ -247,8 +246,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             } else {
                 getView().setPaymentLabel(R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
-                if (flightOrder.getPayment().getTotalAmount() > 0) {
-                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getTotalAmount()));
+                if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
+                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getNeedToPayAmount()));
                 } else {
                     getView().hideTotalTransfer();
                 }

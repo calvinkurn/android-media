@@ -54,11 +54,13 @@ public class CartMapper implements ICartMapper {
         for (ShopGroup shopGroup : cartDataListResponse.getShopGroups()) {
             if (shopGroup.getErrors() != null && shopGroup.getErrors().size() > 0) {
                 hasError = true;
+                if (shopGroup.getCartDetails() != null) {
+                    errorItemCount += shopGroup.getCartDetails().size();
+                }
                 if (TextUtils.isEmpty(errorMessage)) {
                     errorMessage = mapperUtil.convertToString(shopGroup.getErrors());
                 }
-            }
-            if (shopGroup.getCartDetails().size() > 0) {
+            } else if (shopGroup.getCartDetails().size() > 0) {
                 for (CartDetail cartDetail : shopGroup.getCartDetails()) {
                     if (cartDetail.getErrors() != null && cartDetail.getErrors().size() > 0) {
                         hasError = true;
