@@ -25,6 +25,7 @@ ext {
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
+    powerMockVersion = '1.6.2'
 
     tkpdUseCaseVersion = '2.23'
     tkpdAbstractionVersion = '2.22'
@@ -223,7 +224,13 @@ ext {
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito    : 'com.google.dexmaker:dexmaker-mockito:1.2',
-            assertJ            : "org.assertj:assertj-core:1.7.1"
+            assertJ            : "org.assertj:assertj-core:1.7.1",
+            assertJCore        : 'org.assertj:assertj-core:3.8.0',
+            powerMock          : "org.powermock:powermock:$powerMockVersion",
+            powerMockJUnit     : "org.powermock:powermock-module-junit4:$powerMockVersion",
+            powerMockJUnitRule : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
+            powerMockito       : "org.powermock:powermock-api-mockito:$powerMockVersion",
+            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion"
     ]
 
     debugToolsDependencies = [
