@@ -135,7 +135,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         labelViewAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String albumItemId = selectedAlbumItem== null? AlbumItem.ALBUM_ID_ALL :selectedAlbumItem.getmId();
+                String albumItemId = selectedAlbumItem == null ? AlbumItem.ALBUM_ID_ALL : selectedAlbumItem.getmId();
                 Intent intent = AlbumPickerActivity.getIntent(getActivity(), albumItemId, galleryType);
                 startActivityForResult(intent, ALBUM_REQUEST_CODE);
             }
@@ -221,7 +221,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    if(isAdded()){
+                    if (isAdded()) {
                         if (cursor.isClosed()) {
                             return;
                         }
@@ -269,7 +269,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public boolean canAddMoreImage() {
+    public boolean canAddMoreMedia() {
         //check the image number allowed.
         if (onImagePickerGalleryFragmentListener.isMaxImageReached()) {
             return false;
@@ -278,16 +278,26 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public boolean isImageValid(MediaItem item) {
+    public boolean isMediaValid(MediaItem item) {
         // check if file exists
         if (!new File(item.getRealPath()).exists()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_not_found));
+            NetworkErrorHelper.showRedCloseSnackbar(getView(),
+                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+                            getString(R.string.image_not_found));
             return false;
         }
         //check image resolution
-        if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
-            return false;
+        if (item.getDuration() > 0) { // it is video
+            int minVideoResolution = item.getMinimumVideoResolution();
+            if (minVideoResolution < minImageResolution) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.video_under_resolution, item.getVideoResolution()));
+                return false;
+            }
+        } else {
+            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+                return false;
+            }
         }
         return true;
     }

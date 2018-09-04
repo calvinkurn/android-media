@@ -21,12 +21,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity;
 import com.tokopedia.imagepicker.picker.camera.ImagePickerCameraFragment;
 import com.tokopedia.imagepicker.picker.gallery.ImagePickerGalleryFragment;
@@ -64,7 +64,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     protected ImagePickerBuilder imagePickerBuilder;
 
     private int selectedTab = 0;
-    private NonSwipeableViewPager viewPager;
+    private TouchViewPager viewPager;
 
     private ImagePickerViewPagerAdapter imagePickerViewPagerAdapter;
     private List<String> permissionsToRequest;
@@ -362,7 +362,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onPreviewCameraViewVisible() {
-        viewPager.setCanSwipe(false);
+        viewPager.SetAllowPageSwitching(false);
         tabLayout.setVisibility(View.GONE);
         imagePickerPreviewWidget.setVisibility(View.GONE);
         disableDoneView();
@@ -370,7 +370,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onCameraViewVisible() {
-        viewPager.setCanSwipe(true);
+        viewPager.SetAllowPageSwitching(true);
         if (tabLayout.getTabCount() > 1) {
             tabLayout.setVisibility(View.VISIBLE);
         }
