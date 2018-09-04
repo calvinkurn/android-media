@@ -4,6 +4,7 @@ import com.tokopedia.travelcalendar.view.model.HolidayResult;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -27,6 +28,11 @@ public class GetHolidayUseCase extends UseCase<List<HolidayResult>> {
                     @Override
                     public Observable<List<HolidayResult>> call(Throwable throwable) {
                         return repository.getHolidayResults();
+                    }
+                }).onErrorReturn(new Func1<Throwable, List<HolidayResult>>() {
+                    @Override
+                    public List<HolidayResult> call(Throwable throwable) {
+                        return new ArrayList<>();
                     }
                 });
     }

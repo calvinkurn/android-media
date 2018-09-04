@@ -15,6 +15,7 @@
 
     <string name="dashboard_label_regular_merchant">Regular Merchant</string>
     <string name="dashboard_label_gold_merchant">Gold Merchant</string>
+    <string name="dashboard_label_official_store">Official Store</string>
 
     <string name="dashboard_shop_success_rate">%1s%%</string>
     <string name="open_shop">Buka Toko</string>

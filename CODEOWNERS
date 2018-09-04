@@ -25,6 +25,7 @@
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
+/libraries/product_draft_database/                      @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
@@ -46,6 +47,7 @@
 /features/user/otp/                     @tokopedia/minion-kevin
 /features/user/settingbank/             @tokopedia/minion-kevin
 /features/user/changepassword/          @tokopedia/minion-kevin
+/features/user/bankdb/                  @tokopedia/minion-kevin
 /features/user/talk/                    @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin

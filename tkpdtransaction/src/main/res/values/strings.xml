@@ -78,6 +78,7 @@
     <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
     <string name="label_transaction_bank_account_source">Rekening Anda</string>
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
+    <string name="label_event_date">Tanggal Event</string>
     <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
     <string name="label_seller_shop">Penjual: </string>
@@ -274,8 +275,8 @@
     <string name="help_text">disini</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
     <string name="contact_us_applink">https://www.tokopedia.com/bantuan/</string>
-    <string name="type_of_ticket_events">Jenis Ticket Events</string>
+    <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
-    <string name="category_ticket">Kategori Ticket</string>
-    <string name="number_of_bookings">Jumlah Booking</string>
+    <string name="category_ticket">Kategori Tiket</string>
+    <string name="number_of_bookings">Jumlah Tiket</string>
 </resources>
