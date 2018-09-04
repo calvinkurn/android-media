@@ -1,12 +1,12 @@
-package com.tokopedia.product.manage.item.common.domain.interactor;
+package com.tokopedia.datepicker.range.domain.interactor;
 
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.product.manage.item.common.domain.DatePickerRepository;
-import com.tokopedia.product.manage.item.common.domain.model.DatePickerDomainModel;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.domain.DatePickerRepository;
+import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 import javax.inject.Inject;
 

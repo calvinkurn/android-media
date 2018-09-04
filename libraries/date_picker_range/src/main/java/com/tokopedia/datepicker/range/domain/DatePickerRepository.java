@@ -1,6 +1,6 @@
-package com.tokopedia.product.manage.item.common.domain;
+package com.tokopedia.datepicker.range.domain;
 
-import com.tokopedia.product.manage.item.common.domain.model.DatePickerDomainModel;
+import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
 
 import rx.Observable;
 

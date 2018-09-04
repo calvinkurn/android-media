@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.item.common.domain.model;
+package com.tokopedia.datepicker.range.domain.model;
 
 /**
  * @author sebastianuskh on 4/10/17.

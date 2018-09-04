@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.common.view.presenter;
+package com.tokopedia.datepicker.range.view.presenter;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 /**
  * @author sebastianuskh on 4/13/17.

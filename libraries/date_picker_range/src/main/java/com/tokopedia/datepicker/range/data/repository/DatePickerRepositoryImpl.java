@@ -1,9 +1,9 @@
-package com.tokopedia.product.manage.item.common.data.repository;
+package com.tokopedia.datepicker.range.data.repository;
 
-import com.tokopedia.product.manage.item.common.data.source.DatePickerDataSource;
-import com.tokopedia.product.manage.item.common.domain.DatePickerRepository;
-import com.tokopedia.product.manage.item.common.domain.model.DatePickerDomainModel;
-import com.tokopedia.product.manage.item.common.domain.DatePickerRepository;
+import com.tokopedia.datepicker.range.data.source.DatePickerDataSource;
+import com.tokopedia.datepicker.range.domain.DatePickerRepository;
+import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
+import com.tokopedia.datepicker.range.domain.DatePickerRepository;
 
 import rx.Observable;
 

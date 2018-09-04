@@ -1,8 +1,8 @@
-package com.tokopedia.product.manage.item.common.model;
+package com.tokopedia.datepicker.range.model;
 
 import android.support.annotation.Nullable;
 
-import com.tokopedia.product.manage.item.common.domain.model.DatePickerDomainModel;
+import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
 
 /**
  * Created by nathan on 7/13/17.

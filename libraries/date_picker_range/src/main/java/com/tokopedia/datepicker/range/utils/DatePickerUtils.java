@@ -5,7 +5,7 @@ import android.content.Intent;
 
 import com.tokopedia.seller.R;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 import java.text.DateFormat;
 import java.text.Format;
