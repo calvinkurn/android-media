@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.pojo.solution;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,6 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public class SolutionMessageResponse {
 
     @SerializedName("confirm")
+    @Expose
     private String confirm;
 
     public String getConfirm() {

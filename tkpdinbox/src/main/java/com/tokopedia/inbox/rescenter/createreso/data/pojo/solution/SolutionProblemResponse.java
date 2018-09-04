@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.pojo.solution;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,18 +9,25 @@ import com.google.gson.annotations.SerializedName;
 public class SolutionProblemResponse {
 
     @SerializedName("type")
+    @Expose
     private int type;
     @SerializedName("name")
+    @Expose
     private String name;
     @SerializedName("trouble")
+    @Expose
     private int trouble;
     @SerializedName("amount")
+    @Expose
     private SolutionProblemAmountResponse amount;
     @SerializedName("maxAmount")
+    @Expose
     private SolutionProblemAmountResponse maxAmount;
     @SerializedName("qty")
+    @Expose
     private int qty;
     @SerializedName("remark")
+    @Expose
     private String remark;
 
     public int getType() {

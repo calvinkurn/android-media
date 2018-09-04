@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.pojo.solution;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -8,8 +9,10 @@ import com.google.gson.annotations.SerializedName;
 public class SolutionProductImageResponse {
 
     @SerializedName("full")
+    @Expose
     private String full;
     @SerializedName("thumb")
+    @Expose
     private String thumb;
 
     public String getFull() {

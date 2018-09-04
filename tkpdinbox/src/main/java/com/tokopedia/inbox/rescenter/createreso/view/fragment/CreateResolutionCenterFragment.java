@@ -407,7 +407,7 @@ public class CreateResolutionCenterFragment extends BaseDaggerFragment implement
     @Override
     public void errorLoadProductProblemData(String error) {
         dismissProgressBar();
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), () -> {
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> {
             if (resolutionId != null) {
                 presenter.loadProductProblem(orderId, resolutionId);
             } else {

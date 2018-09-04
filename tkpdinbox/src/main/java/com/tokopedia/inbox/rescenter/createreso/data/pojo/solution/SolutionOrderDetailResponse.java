@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.rescenter.createreso.data.pojo.solution;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -7,8 +8,10 @@ import com.google.gson.annotations.SerializedName;
  */
 public class SolutionOrderDetailResponse {
     @SerializedName("id")
+    @Expose
     private int id;
     @SerializedName("freeReturn")
+    @Expose
     private boolean freeReturn;
 
     public int getId() {
