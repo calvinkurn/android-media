@@ -13,7 +13,7 @@ interface ProductTalkThreadTypeFactory{
 
     fun type(viewModel: ProductTalkViewModel): Int
 
-    fun type(viewModel: ProductTalkThreadViewModel):Int
+    fun type(viewModel: TalkThreadViewModel):Int
 
     fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*>
 

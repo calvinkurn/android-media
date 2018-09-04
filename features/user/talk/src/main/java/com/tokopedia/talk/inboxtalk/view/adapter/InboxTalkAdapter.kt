@@ -1,8 +1,8 @@
-package com.tokopedia.talk.inboxtalk.adapter
+package com.tokopedia.talk.inboxtalk.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
-import com.tokopedia.talk.inboxtalk.viewmodel.EmptyInboxTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 
 /**
  * @author by nisie on 8/29/18.

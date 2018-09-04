@@ -1,6 +1,5 @@
 package com.tokopedia.talk.reporttalk.di
 
-import com.tokopedia.talk.inboxtalk.di.InboxTalkScope
 import dagger.Module
 
 /**

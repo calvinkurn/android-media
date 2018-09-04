@@ -18,7 +18,7 @@ class ProductTalkTypeFactoryImpl() :
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun type(viewModel: ProductTalkThreadViewModel): Int {
+    override fun type(viewModel: TalkThreadViewModel): Int {
         return ProductTalkThreadViewHolder.LAYOUT
     }
 

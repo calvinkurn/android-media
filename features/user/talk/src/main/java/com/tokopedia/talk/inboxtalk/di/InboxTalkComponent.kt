@@ -1,8 +1,8 @@
 package com.tokopedia.talk.inboxtalk.di
 
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.activity.InboxTalkActivity
-import com.tokopedia.talk.inboxtalk.fragment.InboxTalkFragment
+import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.view.fragment.InboxTalkFragment
 import dagger.Component
 
 /**

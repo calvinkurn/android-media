@@ -9,7 +9,7 @@ import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadTypeFactory
  * @author by Steven.
  */
 
-data class ProductTalkThreadViewModel(
+data class TalkThreadViewModel(
         var headThread: ProductTalkItemViewModel,
         var listChild: List<Visitable<ProductTalkChildThreadTypeFactory>>
 ) : ProductTalkListViewModel(){

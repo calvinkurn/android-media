@@ -1,34 +1,69 @@
 package com.tokopedia.talk.reporttalk.view.adapter
 
 import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioButton
+import android.widget.TextView
+import com.tokopedia.talk.R
 import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
 
 
 /**
  * @author by nisie on 8/30/18.
  */
-class ReportTalkAdapter : RecyclerView.Adapter<ReportTalkAdapter.ViewHolder>() {
-    val listOption: ArrayList<TalkReportOptionViewModel> = ArrayList()
+class ReportTalkAdapter(private val optionClickListener: OnOptionClickListener,
+                        var listOption: ArrayList<TalkReportOptionViewModel>) : RecyclerView
+.Adapter<ReportTalkAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
+        val radioButton: RadioButton = itemView.findViewById(R.id.radioButton)
+        val title: TextView = itemView.findViewById(R.id.title)
     }
 
-//    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(parent.inflate(R.layout.view_item))
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    interface OnOptionClickListener {
+        fun onClickOption(talkReportOptionViewModel: TalkReportOptionViewModel)
     }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(parent.inflate(R.layout.report_talk_item))
 
     override fun getItemCount(): Int {
-        return 0
+        return listOption.size
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.radioButton.isChecked = listOption[position].isChecked
+        holder.title.text = listOption[position].reportTitle
 
+        holder.itemView.setOnClickListener {
+            optionClickListener.onClickOption(listOption[position])
+        }
+
+        holder.radioButton.setOnClickListener {
+            optionClickListener.onClickOption(listOption[position])
+        }
     }
 
+    fun setChecked(talkReportOptionViewModel: TalkReportOptionViewModel) {
+        if (!listOption[talkReportOptionViewModel.position].isChecked) {
+            for (talkReportModel in listOption) setUncheck(talkReportModel)
+            listOption[talkReportOptionViewModel.position].isChecked = true
+            notifyDataSetChanged()
+        }
+    }
 
+    private fun setUncheck(talkReportModel: TalkReportOptionViewModel) {
+        talkReportModel.isChecked = false
+    }
+
+    fun getItem(position: Int): TalkReportOptionViewModel {
+        return listOption[position]
+    }
+
+}
+
+private fun ViewGroup.inflate(layoutRes: Int): View {
+    return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }

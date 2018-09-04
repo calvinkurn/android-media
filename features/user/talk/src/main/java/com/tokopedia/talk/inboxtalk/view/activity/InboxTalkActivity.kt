@@ -1,4 +1,4 @@
-package com.tokopedia.talk.inboxtalk.activity
+package com.tokopedia.talk.inboxtalk.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -14,7 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.adapter.InboxTalkPagerAdapter
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_inbox_talk.*

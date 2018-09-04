@@ -1,12 +1,12 @@
-package com.tokopedia.talk.inboxtalk.adapter
+package com.tokopedia.talk.inboxtalk.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.inboxtalk.adapter.viewholder.EmptyInboxTalkViewHolder
-import com.tokopedia.talk.inboxtalk.adapter.viewholder.InboxTalkItemViewHolder
-import com.tokopedia.talk.inboxtalk.viewmodel.EmptyInboxTalkViewModel
-import com.tokopedia.talk.inboxtalk.viewmodel.InboxTalkItemViewModel
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.EmptyInboxTalkViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
+import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 
 /**
  * @author by nisie on 8/29/18.

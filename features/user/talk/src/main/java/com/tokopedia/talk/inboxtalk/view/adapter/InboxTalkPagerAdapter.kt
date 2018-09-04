@@ -1,25 +1,27 @@
-package com.tokopedia.talk.inboxtalk.adapter
+package com.tokopedia.talk.inboxtalk.view.adapter
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.util.SparseArrayCompat
 import android.view.ViewGroup
-import com.tokopedia.talk.inboxtalk.fragment.InboxTalkFragment
+import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.view.fragment.InboxTalkFragment
 
 /**
  * @author by nisie on 8/27/18.
  */
 
 class InboxTalkPagerAdapter(val fragmentManager: FragmentManager,
-                               val titles: Array<String>) : FragmentStatePagerAdapter(fragmentManager) {
+                            val titles: Array<String>) : FragmentStatePagerAdapter(fragmentManager) {
 
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> InboxTalkFragment.newInstance()
-            1 -> InboxTalkFragment.newInstance()
+            0 -> InboxTalkFragment.newInstance(InboxTalkActivity.INBOX_ALL)
+            1 -> InboxTalkFragment.newInstance(InboxTalkActivity.MY_PRODUCT)
+            2 -> InboxTalkFragment.newInstance(InboxTalkActivity.FOLLOWING)
             else -> Fragment()
         }
     }

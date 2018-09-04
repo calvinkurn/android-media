@@ -1,4 +1,4 @@
-package com.tokopedia.talk.inboxtalk.fragment
+package com.tokopedia.talk.inboxtalk.view.fragment
 
 import android.app.Activity
 import android.content.Intent
@@ -15,13 +15,13 @@ import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.activity.InboxTalkActivity
-import com.tokopedia.talk.inboxtalk.adapter.InboxTalkAdapter
-import com.tokopedia.talk.inboxtalk.adapter.InboxTalkTypeFactoryImpl
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
-import com.tokopedia.talk.inboxtalk.listener.InboxTalkContract
-import com.tokopedia.talk.inboxtalk.presenter.InboxTalkPresenter
-import com.tokopedia.talk.inboxtalk.viewmodel.InboxTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
+import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
+import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import kotlinx.android.synthetic.main.fragment_inbox_talk.*
 import javax.inject.Inject
@@ -30,7 +30,9 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
+class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
+        InboxTalkContract
+        .View {
 
     val REQUEST_REPORT_TALK: Int = 101
 
@@ -44,7 +46,7 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
 
 
     companion object {
-        fun newInstance() = InboxTalkFragment()
+        fun newInstance(nav: String) = InboxTalkFragment(nav)
     }
 
     override fun getScreenName(): String {
@@ -86,10 +88,10 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
 
     private fun initData() {
         activity?.intent?.extras?.run {
-            viewModel = InboxTalkViewModel(InboxTalkActivity.Companion.INBOX_ALL)
+            viewModel = InboxTalkViewModel(nav)
         }
 
-        presenter.getInboxTalk()
+        presenter.getInboxTalk("all", nav)
     }
 
     private fun onRefreshData() {
@@ -107,21 +109,24 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
                 filterMenu.setItemMenuList(menuItem)
                 filterMenu.setActionText(getString(R.string.button_cancel))
                 filterMenu.setOnActionClickListener { filterMenu.dismiss() }
-                filterMenu.setOnItemMenuClickListener { itemMenus, pos -> onFilterClicked(pos) }
+                filterMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                    onFilterClicked(pos,
+                            filterMenu)
+                }
                 filterMenu.show()
             }
         }
     }
 
-    private fun onFilterClicked(pos: Int) {
+    private fun onFilterClicked(pos: Int, filterMenu: Menus) {
         when {
             pos == 0 -> goToReportTalk()
             pos == 1 -> showDeleteTalkDialog()
             pos == 2 -> showDeleteCommentTalkDialog()
             pos == 2 -> showUnfollowTalkDialog()
-
-
         }
+
+        filterMenu.dismiss()
     }
 
     private fun goToReportTalk() {
@@ -217,20 +222,33 @@ class InboxTalkFragment : BaseDaggerFragment(), InboxTalkContract.View {
         progressBar.visibility = View.VISIBLE
     }
 
+    override fun hideLoadingFull() {
+        progressBar.visibility = View.GONE
+    }
+
     override fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>) {
         adapter.addList(list)
-        progressBar.visibility = View.GONE
+    }
+
+    override fun onErrorGetInboxTalk(errorMessage: String) {
+        NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
+            presenter.getInboxTalk("", "")
+        }
+    }
+
+    override fun onEmptyTalk() {
+        adapter.showEmpty()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if(requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK){
+        if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
             onSuccessReportTalk()
         }
     }
 
     private fun onSuccessReportTalk() {
-        activity?.run{
+        activity?.run {
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
     }
