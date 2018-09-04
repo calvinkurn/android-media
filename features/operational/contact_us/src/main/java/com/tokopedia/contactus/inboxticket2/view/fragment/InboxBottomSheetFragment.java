@@ -22,7 +22,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BottomSheetFragment extends BottomSheetDialogFragment {
+public class InboxBottomSheetFragment extends BottomSheetDialogFragment {
     @BindView(R2.id.rv_filter)
     VerticalRecyclerView rvBottomSheet;
     @BindView(R2.id.tv_bottom_sheet_title)
@@ -33,7 +33,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     RecyclerView.Adapter mAdapter;
 
 
-    public BottomSheetFragment() {
+    public InboxBottomSheetFragment() {
     }
 
     public void setAdapter(RecyclerView.Adapter adapter, int titleid) {

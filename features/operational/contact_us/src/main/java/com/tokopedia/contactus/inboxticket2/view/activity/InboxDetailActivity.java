@@ -523,14 +523,14 @@ public class InboxDetailActivity extends InboxBaseActivity
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage(R.string.abandon_message_warning);
-            builder.setNegativeButton(getString(R.string.batal),
+            builder.setNegativeButton(getString(R.string.inbox_cancel),
                     (dialog, i) -> dialog.dismiss());
-            builder.setPositiveButton(getString(R.string.keular),
+            builder.setPositiveButton(getString(R.string.inbox_exit),
                     (dialogInterface, i) -> {
                         ContactUsTracking.sendGTMInboxTicket("",
                                 InboxTicketTracking.Category.EventInboxTicket,
                                 InboxTicketTracking.Action.EventAbandonReplySubmission,
-                                getString(R.string.batal));
+                                getString(R.string.inbox_cancel));
                         super.onBackPressed();
                     }).create().show();
         } else {

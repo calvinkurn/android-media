@@ -31,7 +31,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.BadReasonAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxDetailContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
-import com.tokopedia.contactus.inboxticket2.view.fragment.BottomSheetFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment;
 import com.tokopedia.contactus.inboxticket2.view.utils.Utils;
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
@@ -124,7 +124,7 @@ public class InboxDetailPresenterImpl
 
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
-        BottomSheetFragment bottomFragment = new BottomSheetFragment();
+        InboxBottomSheetFragment bottomFragment = new InboxBottomSheetFragment();
         bottomFragment.setAdapter(getBadRatingAdapter(), R.string.select_bad_reason);
         return bottomFragment;
     }
@@ -272,7 +272,7 @@ public class InboxDetailPresenterImpl
 
     }
 
-    private boolean getBitmapDimens(String fileLoc) {
+    private boolean isBitmapDimenValid(String fileLoc) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(new File(fileLoc).getAbsolutePath(), options);
@@ -289,7 +289,7 @@ public class InboxDetailPresenterImpl
                     InboxTicketTracking.Category.EventInboxTicket,
                     InboxTicketTracking.Action.EventClickAttachImage,
                     InboxTicketTracking.Label.ImageError1);
-        } else if (!getBitmapDimens(image.getFileLoc())) {
+        } else if (!isBitmapDimenValid(image.getFileLoc())) {
             showErrorMessage(MESSAGE_WRONG_DIMENSION);
             ContactUsTracking.sendGTMInboxTicket("",
                     InboxTicketTracking.Category.EventInboxTicket,
@@ -619,7 +619,7 @@ public class InboxDetailPresenterImpl
             int count = 0;
             for (int item = 0; item < numOfImages; item++) {
                 ImageUpload image = uploadImageList.get(item);
-                if (fileSizeValid(image.getFileLoc()) && getBitmapDimens(image.getFileLoc())) {
+                if (fileSizeValid(image.getFileLoc()) && isBitmapDimenValid(image.getFileLoc())) {
                     count++;
                 }
             }

@@ -332,12 +332,12 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
-            builder.setNegativeButton(getString(R.string.batal),
+            builder.setNegativeButton(getString(R.string.inbox_cancel),
                     (dialog, i) -> {
                         dialog.dismiss();
                         //presenter.onRetryClick();
                     });
-            builder.setPositiveButton(getString(R.string.keular),
+            builder.setPositiveButton(getString(R.string.inbox_exit),
                     (dialogInterface, i) -> getActivity().finish()).create().show();
             return true;
         } else {

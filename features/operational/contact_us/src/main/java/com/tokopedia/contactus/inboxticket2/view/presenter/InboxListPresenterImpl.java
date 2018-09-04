@@ -20,7 +20,7 @@ import com.tokopedia.contactus.inboxticket2.view.adapter.InboxFilterAdapter;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxListContract;
 import com.tokopedia.contactus.inboxticket2.view.customview.CustomEditText;
-import com.tokopedia.contactus.inboxticket2.view.fragment.BottomSheetFragment;
+import com.tokopedia.contactus.inboxticket2.view.fragment.InboxBottomSheetFragment;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -206,7 +206,7 @@ public class InboxListPresenterImpl
 
     @Override
     public BottomSheetDialogFragment getBottomFragment() {
-        BottomSheetFragment bottomFragment = new BottomSheetFragment();
+        InboxBottomSheetFragment bottomFragment = new InboxBottomSheetFragment();
         bottomFragment.setAdapter(getFilterAdapter(), R.string.filter);
         return bottomFragment;
     }

@@ -89,7 +89,7 @@ public class Utils {
     public String getDateTime(String isoTime) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", getLocale());
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM 'pukul' HH:mm", getLocale());
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        dateFormat.setTimeZone(TimeZone.getDefault());
         try {
             Date date = inputFormat.parse(isoTime);
             return dateFormat.format(date);
@@ -102,7 +102,7 @@ public class Utils {
 
     public String getDateTimeCurrent() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("d MMM 'pukul' HH:mm", getLocale());
-        dateFormat.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        dateFormat.setTimeZone(TimeZone.getDefault());
         return dateFormat.format(new Date(System.currentTimeMillis()));
     }
 
