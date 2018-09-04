@@ -21,7 +21,7 @@ import org.robolectric.annotation.Config;
 @Config(constants = BuildConfig.class, sdk = 27)
 public class MitraWelcomeActivityTest extends TestCase {
     private ActivityController<MitraWelcomeActivity> activityController;
-    MitraWelcomeActivity activity;
+    private MitraWelcomeActivity activity;
 
     @Override
     @Before

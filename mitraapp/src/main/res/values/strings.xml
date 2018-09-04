@@ -5,4 +5,13 @@
     <string name="mitra_welcome_title">Jadi Agen Tokopedia dan Raih Untung Lebihnya</string>
     <string name="mitra_welcome_subtitle">Anda bisa berjualan tanpa modal dengan menjadi Agen Tokopedia. Layani kebutuhan digital mulai dari pulsa, BPJS, hingga listrik, dan dapatkan komisi atau diskon langsung!</string>
     <string name="mitra_welcome_button_text">Lanjut</string>
+    <string name="mitra_home_menu_label">Home</string>
+    <string name="mitra_help_menu_label">Bantuan</string>
+    <string name="mitra_account_menu_label">Akun Saya</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="mitra_homepage_login_label">Silakan masuk/login untuk memulai transaksi.</string>
+    <string name="mitra_homepage_login_button_label">Masuk</string>
+    <string name="mitra_homepage_login_failed_error_message">Login tidak berhasil.</string>
 </resources>
