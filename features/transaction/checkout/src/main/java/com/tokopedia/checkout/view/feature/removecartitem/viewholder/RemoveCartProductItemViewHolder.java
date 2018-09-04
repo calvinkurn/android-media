@@ -66,16 +66,6 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderItemView(CartProductItemViewModel cartProductItemViewModel) {
-//        if (cartProductItemViewModel.getCartItemData().getOriginData().isOfficialStore()) {
-//            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_badge_official));
-//            imgShopBadge.setVisibility(View.VISIBLE);
-//        } else if (cartProductItemViewModel.getCartItemData().getOriginData().isGoldMerchant()) {
-//            imgShopBadge.setImageDrawable(ContextCompat.getDrawable(imgShopBadge.getContext(), R.drawable.ic_shop_gold));
-//            imgShopBadge.setVisibility(View.VISIBLE);
-//        } else {
-//            imgShopBadge.setVisibility(View.GONE);
-//        }
-
         if (removeCartItemAdapter.getCheckedCartIds().contains(String.valueOf(
                 cartProductItemViewModel.getCartItemData().getOriginData().getCartId()))) {
             cbRemoveProduct.setChecked(true);
@@ -83,7 +73,6 @@ public class RemoveCartProductItemViewHolder extends RecyclerView.ViewHolder {
             cbRemoveProduct.setChecked(false);
         }
         cbRemoveProduct.setClickable(false);
-//        tvSenderName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getShopName());
         tvProductName.setText(cartProductItemViewModel.getCartItemData().getOriginData().getProductName());
         tvProductPrice.setText(cartProductItemViewModel.getCartItemData().getOriginData().getPriceFormatted());
         tvTotalProductItem.setText(String.valueOf(cartProductItemViewModel.getCartItemData().getUpdatedData().getQuantity()));

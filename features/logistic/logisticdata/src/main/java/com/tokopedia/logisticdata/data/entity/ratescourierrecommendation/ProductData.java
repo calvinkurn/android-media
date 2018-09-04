@@ -44,13 +44,13 @@ public class ProductData implements Parcelable {
     private String checkSum;
     @SerializedName("ut")
     @Expose
-    private String ut;
+    private String unixTime;
     @SerializedName("price")
     @Expose
     private PriceData price;
     @SerializedName("etd")
     @Expose
-    private EtdData etd;
+    private EstimatedTimeDeliveryData etd;
     @SerializedName("insurance")
     @Expose
     private InsuranceData insurance;
@@ -75,9 +75,9 @@ public class ProductData implements Parcelable {
         status = in.readInt();
         recommend = in.readByte() != 0;
         checkSum = in.readString();
-        ut = in.readString();
+        unixTime = in.readString();
         price = in.readParcelable(PriceData.class.getClassLoader());
-        etd = in.readParcelable(EtdData.class.getClassLoader());
+        etd = in.readParcelable(EstimatedTimeDeliveryData.class.getClassLoader());
         insurance = in.readParcelable(InsuranceData.class.getClassLoader());
         texts = in.readParcelable(ProductTextData.class.getClassLoader());
         error = in.readParcelable(ErrorData.class.getClassLoader());
@@ -95,7 +95,7 @@ public class ProductData implements Parcelable {
         dest.writeInt(status);
         dest.writeByte((byte) (recommend ? 1 : 0));
         dest.writeString(checkSum);
-        dest.writeString(ut);
+        dest.writeString(unixTime);
         dest.writeParcelable(price, flags);
         dest.writeParcelable(etd, flags);
         dest.writeParcelable(insurance, flags);
@@ -200,12 +200,12 @@ public class ProductData implements Parcelable {
         this.checkSum = checkSum;
     }
 
-    public String getUt() {
-        return ut;
+    public String getUnixTime() {
+        return unixTime;
     }
 
-    public void setUt(String ut) {
-        this.ut = ut;
+    public void setUnixTime(String unixTime) {
+        this.unixTime = unixTime;
     }
 
     public PriceData getPrice() {
@@ -216,11 +216,11 @@ public class ProductData implements Parcelable {
         this.price = price;
     }
 
-    public EtdData getEtd() {
+    public EstimatedTimeDeliveryData getEtd() {
         return etd;
     }
 
-    public void setEtd(EtdData etd) {
+    public void setEtd(EstimatedTimeDeliveryData etd) {
         this.etd = etd;
     }
 

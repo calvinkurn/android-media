@@ -10,7 +10,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by Irfan Khoirul on 02/08/18.
  */
 
-public class EtdData implements Parcelable {
+public class EstimatedTimeDeliveryData implements Parcelable {
 
     @SerializedName("min_etd")
     @Expose
@@ -19,10 +19,10 @@ public class EtdData implements Parcelable {
     @Expose
     private int maxEtd;
 
-    public EtdData() {
+    public EstimatedTimeDeliveryData() {
     }
 
-    protected EtdData(Parcel in) {
+    protected EstimatedTimeDeliveryData(Parcel in) {
         minEtd = in.readInt();
         maxEtd = in.readInt();
     }
@@ -38,15 +38,15 @@ public class EtdData implements Parcelable {
         return 0;
     }
 
-    public static final Creator<EtdData> CREATOR = new Creator<EtdData>() {
+    public static final Creator<EstimatedTimeDeliveryData> CREATOR = new Creator<EstimatedTimeDeliveryData>() {
         @Override
-        public EtdData createFromParcel(Parcel in) {
-            return new EtdData(in);
+        public EstimatedTimeDeliveryData createFromParcel(Parcel in) {
+            return new EstimatedTimeDeliveryData(in);
         }
 
         @Override
-        public EtdData[] newArray(int size) {
-            return new EtdData[size];
+        public EstimatedTimeDeliveryData[] newArray(int size) {
+            return new EstimatedTimeDeliveryData[size];
         }
     };
 

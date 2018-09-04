@@ -177,27 +177,23 @@ public class CartMapper implements ICartMapper {
 
                 cartItemData.setSingleChild(shopGroup.getCartDetails().size() == 1);
 
-                if (data.getErrors() != null) {
-                    if (data.getErrors().size() > 0) {
-                        cartItemData.setError(true);
-                        cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+                if (data.getErrors() != null && data.getErrors().size() > 0) {
+                    cartItemData.setError(true);
+                    cartItemData.setErrorMessageTitle(data.getErrors().get(0));
 
-                        if (data.getErrors().size() > 1) {
-                            cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
-                                    data.getErrors().subList(1, data.getErrors().size() - 1)));
-                        }
+                    if (data.getErrors().size() > 1) {
+                        cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
+                                data.getErrors().subList(1, data.getErrors().size() - 1)));
                     }
                 }
 
-                if (data.getMessages() != null) {
-                    if (data.getMessages().size() > 0) {
-                        cartItemData.setWarning(true);
-                        cartItemData.setWarningMessageTitle(data.getMessages().get(0));
+                if (data.getMessages() != null && data.getMessages().size() > 0) {
+                    cartItemData.setWarning(true);
+                    cartItemData.setWarningMessageTitle(data.getMessages().get(0));
 
-                        if (data.getMessages().size() > 1) {
-                            cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
-                                    data.getMessages().subList(1, data.getMessages().size() - 1)));
-                        }
+                    if (data.getMessages().size() > 1) {
+                        cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
+                                data.getMessages().subList(1, data.getMessages().size() - 1)));
                     }
                 }
 
@@ -348,27 +344,23 @@ public class CartMapper implements ICartMapper {
             cartItemData.setUpdatedData(cartItemDataUpdated);
             cartItemData.setErrorData(cartItemMessageErrorData);
 
-            if (data.getErrors() != null) {
-                if (data.getErrors().size() > 0) {
-                    cartItemData.setError(true);
-                    cartItemData.setErrorMessageTitle(data.getErrors().get(0));
+            if (data.getErrors() != null && data.getErrors().size() > 0) {
+                cartItemData.setError(true);
+                cartItemData.setErrorMessageTitle(data.getErrors().get(0));
 
-                    if (data.getErrors().size() > 1) {
-                        cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
-                                data.getErrors().subList(1, data.getErrors().size() - 1)));
-                    }
+                if (data.getErrors().size() > 1) {
+                    cartItemData.setErrorMessageDescription(mapperUtil.convertToString(
+                            data.getErrors().subList(1, data.getErrors().size() - 1)));
                 }
             }
 
-            if (data.getMessages() != null) {
-                if (data.getMessages().size() > 0) {
-                    cartItemData.setWarning(true);
-                    cartItemData.setWarningMessageTitle(data.getMessages().get(0));
+            if (data.getMessages() != null && data.getMessages().size() > 0) {
+                cartItemData.setWarning(true);
+                cartItemData.setWarningMessageTitle(data.getMessages().get(0));
 
-                    if (data.getMessages().size() > 1) {
-                        cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
-                                data.getMessages().subList(1, data.getMessages().size() - 1)));
-                    }
+                if (data.getMessages().size() > 1) {
+                    cartItemData.setWarningMessageDescription(mapperUtil.convertToString(
+                            data.getMessages().subList(1, data.getMessages().size() - 1)));
                 }
             }
 

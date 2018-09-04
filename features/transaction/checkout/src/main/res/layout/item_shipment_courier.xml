@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:foreground="?selectableItemBackgroundBorderless"
                 android:padding="@dimen/dp_16"
-                android:text="Ubah Kurir"
+                android:text="@string/label_change_courier"
                 android:textColor="@color/medium_green" />
 
         </LinearLayout>
