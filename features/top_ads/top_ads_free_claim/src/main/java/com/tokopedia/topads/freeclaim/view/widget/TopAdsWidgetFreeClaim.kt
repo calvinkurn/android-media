@@ -3,12 +3,12 @@ package com.tokopedia.topads.freeclaim.view.widget
 import android.content.Context
 import android.text.Spannable
 import android.text.Spanned
-import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.URLSpan
 import android.util.AttributeSet
 import android.widget.FrameLayout
-import com.tokopedia.topads.common.util.WebviewURLSpan
+import com.tokopedia.design.text.style.WebViewURLSpan
+import com.tokopedia.topads.common.TopAdsWebViewActivity
 import com.tokopedia.topads.freeclaim.R
 import kotlinx.android.synthetic.main.widget_ticker_free_claim.view.*
 
@@ -36,10 +36,14 @@ class TopAdsWidgetFreeClaim @JvmOverloads constructor(
             val start = spannable.getSpanStart(it)
             val end = spannable.getSpanEnd(it)
             spannable.removeSpan(it)
-            val urlSpan = object : WebviewURLSpan( it.url) {
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
+            val urlSpan = WebViewURLSpan( it.url).apply {
+                listener = object : WebViewURLSpan.OnClickListener {
+                    override fun onClick(url: String) {
+                        context.startActivity(TopAdsWebViewActivity.createIntent(context, url))
+                    }
+
+                    override fun showUnderline() = false
+
                 }
             }
             spannable.setSpan(urlSpan, start, end, 0)
