@@ -65,7 +65,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 style="@style/TextView.Micro"
-                android:lineSpacingExtra="7sp"
                 tools:text="INV/20170116/XVII/65862137"
                 />
 
@@ -89,6 +88,8 @@
                 android:textColor="@color/white"
                 android:padding="@dimen/dp_3"
                 android:visibility="visible"
+                android:ellipsize="end"
+                android:maxLines="1"
                 tools:text="3 hari lagi"/>
 
         </RelativeLayout>

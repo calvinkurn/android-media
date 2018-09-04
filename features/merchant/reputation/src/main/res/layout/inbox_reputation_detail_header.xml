@@ -14,7 +14,7 @@
         android:paddingBottom="@dimen/dp_16"
         android:paddingLeft="@dimen/padding_activity"
         android:paddingRight="@dimen/padding_activity"
-        android:paddingTop="@dimen/dp_16">
+        android:paddingTop="@dimen/dp_8">
 
         <com.tokopedia.core.customView.RoundedCornerImageView
             android:id="@+id/user_avatar"
@@ -64,7 +64,7 @@
         <LinearLayout
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_40"
             android:layout_gravity="center_vertical"
             android:background="@drawable/green_button_rounded"
             android:gravity="center_vertical"

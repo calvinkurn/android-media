@@ -39,9 +39,8 @@
                 android:gravity="end|center_vertical"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingLeft="@dimen/dp_10"
-                android:text="@string/give_review"
-                style="@style/TextView.Small.Green"
-                tools:text="Beri Penilaian dan Balas Ulasan"/>
+                android:text="@string/review_product"
+                style="@style/TextView.Small.Green" />
 
             <ImageView
                 android:layout_width="wrap_content"
