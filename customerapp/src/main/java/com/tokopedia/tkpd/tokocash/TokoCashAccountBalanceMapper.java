@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tokocash;
 
+import com.tokopedia.navigation_common.model.WalletAction;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.tokocash.balance.view.BalanceTokoCash;
 
@@ -15,6 +16,12 @@ class TokoCashAccountBalanceMapper implements Func1<BalanceTokoCash, WalletModel
         walletModel.setApplink(balanceTokoCash.getApplinks());
         walletModel.setText(balanceTokoCash.getTitleText());
         walletModel.setBalance(balanceTokoCash.getBalance());
+
+        WalletAction walletAction = new WalletAction();
+        walletAction.setApplink(balanceTokoCash.getActionBalance().getApplinks());
+        walletAction.setText(balanceTokoCash.getActionBalance().getLabelAction());
+        walletAction.setRedirectUrl(balanceTokoCash.getActionBalance().getRedirectUrl());
+        walletModel.setAction(walletAction);
         return walletModel;
     }
 }
