@@ -130,7 +130,7 @@ import io.branch.referral.BranchError;
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
         InstantLoanAppLinkModule.class,
-        ProductAddDeeplinkModule.class
+        ProductAddDeeplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         SettingBankApplinkModule.class
 })
@@ -172,7 +172,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new TopChatAppLinkModuleLoader(),
                 new TokopointApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader()
+                new ProductAddDeeplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader()
         );
