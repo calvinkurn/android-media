@@ -74,8 +74,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private int lastChooseCourierItemPosition;
     private int lastServiceId;
 
-    private RecyclerView.RecycledViewPool viewPool;
-
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
                            ShipmentDataRequestConverter shipmentDataRequestConverter) {
@@ -83,7 +81,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
-        viewPool = new RecyclerView.RecycledViewPool();
     }
 
     @Override
