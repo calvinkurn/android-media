@@ -20,7 +20,6 @@ import com.tokopedia.core.network.apiservices.mojito.MojitoService;
 import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Pagination;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
-import com.tokopedia.core.network.entity.wishlist.WishlistData;
 import com.tokopedia.core.network.entity.wishlist.WishlistPaging;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
@@ -40,9 +39,6 @@ import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractor;
 import com.tokopedia.tkpd.home.interactor.CacheHomeInteractorImpl;
 import com.tokopedia.tkpd.home.service.FavoritePart1Service;
-import com.tokopedia.tkpd.home.wishlist.WishlistViewModelMapper;
-import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
-import com.tokopedia.tkpd.home.wishlist.domain.model.DataWishlist;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -90,8 +86,6 @@ public class WishListImpl implements WishList {
 
     MojitoAuthService mojitoAuthService;
 
-    SearchWishlistUsecase searchWishlistUsecase;
-
     List<Wishlist> dataWishlist = new ArrayList<>();
     RequestParams params = RequestParams.create();
 
@@ -99,10 +93,8 @@ public class WishListImpl implements WishList {
 
     Context context;
 
-    public WishListImpl(Context context, WishListView wishListView,
-                        SearchWishlistUsecase searchWishlistUsecase) {
+    public WishListImpl(Context context, WishListView wishListView) {
         this.wishListView = wishListView;
-        this.searchWishlistUsecase = searchWishlistUsecase;
         mPaging = new WishlistPaging();
         wishlist = new FavoritePart1Service();
         cache = new CacheHomeInteractorImpl();
@@ -190,11 +182,10 @@ public class WishListImpl implements WishList {
     public void searchWishlistLoadMore() {
         wishListView.setPullEnabled(false);
         mPaging.nextPage();
-        params.putInt(SearchWishlistUsecase.KEY_PAGE, mPaging.getPage());
+        params.putInt(PAGE_NO, mPaging.getPage());
 
         getWishListDataSearch(context, new SearchWishlistSubscriber());
 
-//        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
     @Override
@@ -415,14 +406,11 @@ public class WishListImpl implements WishList {
     @Override
     public void searchWishlist(String query) {
         mPaging.resetPage();
-        String userId = wishListView.getUserId();
-//        params.putString(USER_ID, userId);
         params.putString(QUERY, query);
         params.putInt(PAGE_NO, mPaging.getPage());
 
         getWishListDataSearch(context, new SearchWishlistSubscriber());
 
-//        searchWishlistUsecase.execute(params, new SearchWishlistSubscriber());
     }
 
     @Override
@@ -585,7 +573,7 @@ public class WishListImpl implements WishList {
                 wishListView.dismissProgressDialog();
                 data.remove(position);
                 wishListView.onSuccessDeleteWishlist(
-                        params.getString(SearchWishlistUsecase.KEY_QUERY, ""), position);
+                        params.getString(QUERY, ""), position);
             }
         }, CacheDuration.onSecond(5));
     }
@@ -597,9 +585,6 @@ public class WishListImpl implements WishList {
         public void onNext(GraphqlResponse graphqlResponse) {
             if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                 GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-//                setData(gqlWishListDataResponse.getGqlWishList());
-
-//                WishlistData wishlistData = convertToDataWishlistViewModel(wishlist);
                 wishListView.displayPull(false);
                 if (mPaging.getPage() == 1 || gqlWishListDataResponse.getGqlWishList().getWishlistDataList().size() == 0) {
                     data.clear();
@@ -638,9 +623,6 @@ public class WishListImpl implements WishList {
             wishListView.displayErrorNetwork(false);
         }
 
-        private WishlistData convertToDataWishlistViewModel(DataWishlist dataWishlist) {
-            return new WishlistViewModelMapper(dataWishlist).getWishlistData();
-        }
     }
 
     private Subscriber<AddToCartResult> addToCartSubscriber(Wishlist dataDetail) {
