@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName;
  * @author okasurya on 7/21/18.
  */
 public class WalletModel {
+    @SerializedName("text")
+    @Expose
+    private String text;
     @SerializedName("linked")
     @Expose
     private boolean linked;
@@ -25,6 +28,14 @@ public class WalletModel {
     @SerializedName("action")
     @Expose
     private WalletAction action;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public boolean isLinked() {
         return linked;

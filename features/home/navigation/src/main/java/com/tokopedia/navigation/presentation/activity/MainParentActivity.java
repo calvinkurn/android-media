@@ -8,10 +8,10 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.NavigationView;
@@ -35,7 +35,6 @@ import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -85,6 +84,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     private static final int EXIT_DELAY_MILLIS = 2000;
+    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
 
     @Inject
     com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
@@ -127,6 +127,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
+        if(savedInstanceState != null) {
+            presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
+        }
         createView(savedInstanceState);
     }
 
@@ -138,6 +141,23 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     .getOnBoardingIntent(this));
             finish();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        saveInstanceState(outState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     public boolean isFirstTimeUser(){
@@ -412,6 +432,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             this.presenter.getNotificationData();
     }
 
+    private void saveInstanceState(Bundle outState) {
+        if(getIntent() != null) {
+            outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
+        }
+    }
+
     /**
      * Show Case on boarding
      */
@@ -502,7 +528,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-        if (!TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
+        if (!presenter.isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
 
             if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
@@ -533,6 +559,8 @@ public class MainParentActivity extends BaseAppCompatActivity implements
             } catch (ActivityNotFoundException ex) {
                 ex.printStackTrace();
             }
+
+            presenter.setIsRecurringApplink(true);
         }
     }
 
