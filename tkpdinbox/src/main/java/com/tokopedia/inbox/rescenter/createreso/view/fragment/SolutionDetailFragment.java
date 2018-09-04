@@ -336,6 +336,13 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void initCheckedItem() {
+        if (editAppealSolutionModel != null) {
+            editAppealSolutionModel.complaints.get(0).isChecked = true;
+        }
+    }
+
+    @Override
     public void addRemoveOngkirComplaint(SolutionComplaintModel model) {
         List<ComplaintResult> complaintResults = resultViewModel != null ?
                 resultViewModel.complaints :

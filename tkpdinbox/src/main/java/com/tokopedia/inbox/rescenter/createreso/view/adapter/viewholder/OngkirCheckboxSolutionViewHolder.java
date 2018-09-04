@@ -52,6 +52,7 @@ public class OngkirCheckboxSolutionViewHolder extends AbstractViewHolder<OngkirC
             solutionRefundView.setVisibility(View.VISIBLE);
             solutionRefundView.bind(model.getProblem(), mainView, complaintResult);
             checkBox.setChecked(true);
+            mainView.initCheckedItem();
         } else {
             solutionRefundView.setVisibility(View.GONE);
         }

@@ -45,6 +45,8 @@ public interface SolutionDetailFragmentListener {
 
         void initAmountToResult(ComplaintResult complaintResult);
 
+        void initCheckedItem();
+
         void addRemoveOngkirComplaint(SolutionComplaintModel model);
     }
 
