@@ -291,9 +291,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsBannerView.setConfig(configAdsBanner);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
-                if (!TextUtils.isEmpty(applink)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), applink);
+            public void onBannerAdsClicked(String appLink) {
+                TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+                if (router.isSupportedDelegateDeepLink(appLink)) {
+                    router.actionApplink(getActivity(), appLink);
+                } else if (appLink != "") {
+                    Intent intent = new Intent(getContext(), BannerWebView.class);
+                    intent.putExtra("url", appLink);
+                    startActivity(intent);
                 }
             }
         });

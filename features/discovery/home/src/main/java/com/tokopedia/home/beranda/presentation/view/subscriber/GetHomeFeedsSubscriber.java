@@ -4,6 +4,7 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationProductViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
@@ -59,8 +60,11 @@ public class GetHomeFeedsSubscriber extends Subscriber<FeedResult> {
     public void onNext(FeedResult feedResult) {
 
         clearCacheFeedAnalytic();
-
-        ArrayList<Visitable> list = convertToViewModel(feedResult.getFeedDomain());
+        ArrayList<Visitable> list = new ArrayList<>();
+        if (page == 1) {
+            list.add(new InspirationHeaderViewModel(feedResult.getFeedDomain().getTitle()));
+        }
+        list.addAll(convertToViewModel(feedResult.getFeedDomain()));
 
         if (feedResult.isHasNext()) {
             viewListener.updateCursor(getCurrentCursor(feedResult));
