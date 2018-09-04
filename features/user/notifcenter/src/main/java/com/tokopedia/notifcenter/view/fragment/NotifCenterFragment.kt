@@ -32,8 +32,9 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
 
     @Inject
     lateinit var presenter: NotifCenterPresenter
-    lateinit var adapter: NotifCenterAdapter
-    lateinit var notifCenterRouter: NotifCenterRouter
+    private lateinit var adapter: NotifCenterAdapter
+    private lateinit var notifCenterRouter: NotifCenterRouter
+    private lateinit var menuList: ArrayList<Menus.ItemMenus>
     var canLoadMore = false
 
     companion object {
@@ -157,12 +158,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             context?.let {
                 Menus(it)
             }?.let { menus ->
-                val listItem = ArrayList<Menus.ItemMenus>()
-                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_ALL_TEXT))
-                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
-                listItem.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
-
-                menus.itemMenuList = listItem
+                menus.itemMenuList = getMenuList()
                 menus.setActionText(getString(R.string.notif_cancel))
                 menus.setOnActionClickListener {
                     menus.dismiss()
@@ -180,7 +176,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                         else -> presenter
                                 .updateFilterId(NotifFilterViewModel.FILTER_ALL_ID)
                     }
-                    presenter.fetchData()
+                    setMenuSelected(itemMenus.title)
+                    presenter.fetchDataWithoutCache()
                     menus.dismiss()
                 }
 
@@ -198,5 +195,25 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 && adapter.getList().last() is NotifItemViewModel
                 && TextUtils.equals((adapter.getList().last() as NotifItemViewModel).timeSummary,
                 item.timeSummary)
+    }
+
+    private fun getMenuList() : ArrayList<Menus.ItemMenus> {
+        if (!::menuList.isInitialized) {
+            val filterAllMenu = Menus.ItemMenus(NotifFilterViewModel.FILTER_ALL_TEXT)
+            filterAllMenu.iconEnd = R.drawable.ic_check
+
+            menuList = ArrayList<Menus.ItemMenus>()
+            menuList.add(filterAllMenu)
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_BUYER_TEXT))
+            menuList.add(Menus.ItemMenus(NotifFilterViewModel.FILTER_SELLER_TEXT))
+
+        }
+        return menuList
+    }
+
+    private fun setMenuSelected(selectedText: String) {
+        for (item in menuList) {
+            item.iconEnd = if (item.title.equals(selectedText)) R.drawable.ic_check else 0
+        }
     }
 }

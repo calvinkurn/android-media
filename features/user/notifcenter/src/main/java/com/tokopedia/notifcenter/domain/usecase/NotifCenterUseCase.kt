@@ -39,7 +39,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
 
     fun executeNoCache(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD)
-                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.`val`())
+                .setExpiryTime(MINUTE_5)
                 .setSessionIncluded(true)
                 .build()
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_notif_center)
@@ -60,6 +60,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
         const val PARAM_FILTER_ID = "filterId"
         const val PARAM_NOTIF_LANG = "notifLang"
         const val NOTIF_LANG_DEFAULT = "id"
+        const val MINUTE_5 = 5 * GraphqlConstant.MINUTE_MS
 
         fun getRequestParams(page: Int, filterId: Int): HashMap<String, Any> {
             val variables: HashMap<String, Any> = HashMap()

@@ -2,6 +2,7 @@ package com.tokopedia.design.component;
 
 import android.content.Context;
 import android.support.annotation.ArrayRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -213,7 +214,7 @@ public class Menus extends BaseBottomSheetView {
 
         public String title;
         public int icon;
-        public int iconEnd;
+        public @DrawableRes  int iconEnd;
 
         public ItemMenus(String title) {
             this.title = title;
