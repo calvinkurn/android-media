@@ -1127,7 +1127,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         return MainParentActivity.start(context);
     }
 
-    @Override
     public Intent getHomePageIntent(Context context) {
         return MainParentActivity.start(context);
     }
