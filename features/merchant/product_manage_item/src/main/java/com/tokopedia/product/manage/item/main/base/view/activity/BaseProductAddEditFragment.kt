@@ -176,8 +176,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
 
     private fun startProductEtalaseActivity() {
         if (appRouter != null && appRouter is ProductEditModuleRouter) {
-            startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId!!),
-                    REQUEST_CODE_GET_ETALASE)
+            activity?.run {
+                this@BaseProductAddEditFragment.startActivityForResult((appRouter as ProductEditModuleRouter).createIntentProductEtalase(activity, currentProductAddViewModel?.etalaseId?:-1),
+                        REQUEST_CODE_GET_ETALASE)
+            }
+
         }
     }
 
@@ -438,7 +441,11 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onSuccessGetProductVariantCat(productVariantByCatModelList: MutableList<ProductVariantByCatModel>?) {
-        currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
+        if(productVariantByCatModelList != null){
+            currentProductAddViewModel?.productVariantByCatModelList = productVariantByCatModelList as ArrayList<ProductVariantByCatModel>
+        }else{
+            currentProductAddViewModel?.productVariantByCatModelList = ArrayList()
+        }
         populateView(currentProductAddViewModel)
     }
 

@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 
 /**
  * @author by milhamj on 20/02/18.
@@ -14,6 +15,8 @@ import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 public interface KolPostTypeFactory {
 
     int type(KolPostViewModel kolPostViewModel);
+
+    int type(KolPostYoutubeViewModel kolPostYoutubeViewModel);
 
     int type(EmptyKolPostViewModel emptyKolPostViewModel);
 

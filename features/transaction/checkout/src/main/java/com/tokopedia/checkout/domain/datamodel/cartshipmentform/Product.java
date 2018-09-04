@@ -45,6 +45,16 @@ public class Product implements Parcelable {
     private int productCatId;
     private int productCatalogId;
 
+    private AnalyticsProductCheckoutData analyticsProductCheckoutData;
+
+    public AnalyticsProductCheckoutData getAnalyticsProductCheckoutData() {
+        return analyticsProductCheckoutData;
+    }
+
+    public void setAnalyticsProductCheckoutData(AnalyticsProductCheckoutData analyticsProductCheckoutData) {
+        this.analyticsProductCheckoutData = analyticsProductCheckoutData;
+    }
+
     public void setError(boolean error) {
         isError = error;
     }

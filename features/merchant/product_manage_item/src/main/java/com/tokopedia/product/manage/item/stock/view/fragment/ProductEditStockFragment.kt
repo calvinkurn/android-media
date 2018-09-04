@@ -80,7 +80,7 @@ class ProductEditStockFragment : Fragment() {
 
     private fun String.removeCommaToInt() = toString().replace(",", "").toInt()
 
-    private fun getTotalStock() = decimalInputViewStock.text.toString().replace(",", "").toInt()
+    private fun getTotalStock() = decimalInputViewStock.doubleValue.toInt()
 
     private fun isTotalStockValid(): Boolean {
         if(labelRadioButtonStockLimited.isChecked) {

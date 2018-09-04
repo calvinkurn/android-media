@@ -37,21 +37,28 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/icon_sold" />
+                android:layout_marginBottom="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_icon_shipping_pdp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
-                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="#8a000000"
                 android:text="@string/title_sold" />
 
             <TextView
                 android:id="@+id/text_sold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/font_black_primary_70"
                 android:gravity="center"
                 android:text="10rb" />
         </LinearLayout>
@@ -66,21 +73,28 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/icon_view" />
+                android:layout_marginBottom="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_icon_view_pdp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
-                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="#8a000000"
                 android:text="@string/title_seen" />
 
             <TextView
                 android:id="@+id/text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/font_black_primary_70"
                 android:gravity="center"
                 android:text="10rb" />
         </LinearLayout>
@@ -95,14 +109,18 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/icon_insurance" />
+                android:layout_marginBottom="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_icon_insurance_pdp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
-                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="#8a000000"
                 android:text="@string/title_insurance" />
 
             <TextView
@@ -110,7 +128,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/font_black_primary_70"
                 android:text="Optional" />
 
         </LinearLayout>
@@ -125,14 +146,18 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/icon_weight" />
+                android:layout_marginBottom="@dimen/dp_4"
+                app:srcCompat="@drawable/ic_icon_weight_pdp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/dp_2"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
-                android:textColor="@color/black_38"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="#8a000000"
                 android:text="@string/title_weight" />
 
             <TextView
@@ -140,7 +165,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="@dimen/fontvs"
+                android:textSize="@dimen/sp_12"
+                android:fontFamily="sans-serif"
+                android:textStyle="normal"
+                android:textColor="@color/font_black_primary_70"
                 android:text="10kg" />
         </LinearLayout>
 

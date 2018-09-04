@@ -132,7 +132,7 @@ fun ProductViewModel.convertToProductAddViewModel(isEditStatus : Boolean): Produ
     productAddViewModel.productCatalog = ProductCatalog(this.productCatalog?.catalogId?.toInt()
             ?: -1, this.productCatalog?.catalogName ?: "", this.productCatalog?.catalogUrl ?: "")
     productAddViewModel.productDescription = ProductDescription(this.productDescription
-            ?: "", "", TextApiUtils.isValueTrue(this.productCondition.toString()))
+            ?: "", "", TextApiUtils.isValueTrue(this.productCondition.toString()), ArrayList(this.productVideo.map { it.url }))
     productAddViewModel.productStock = ProductStock(this.isProductStatusActive, this.productStock.toInt(), this.productSku
             ?: "")
     productAddViewModel.productLogistic = ProductLogistic(this.productWeight.toInt(), this.productWeightUnit.toInt(),

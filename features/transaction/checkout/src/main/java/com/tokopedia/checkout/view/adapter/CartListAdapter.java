@@ -1,19 +1,24 @@
 package com.tokopedia.checkout.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
+import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.view.holderitemdata.CartItemHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.view.shipment.viewholder.ShipmentSellerCashbackViewHolder;
+import com.tokopedia.checkout.view.view.shipment.viewmodel.ShipmentSellerCashbackModel;
 import com.tokopedia.checkout.view.viewholder.CartListItemViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartPromoSuggestionViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartTickerErrorViewHolder;
 import com.tokopedia.checkout.view.viewholder.CartVoucherPromoViewHolder;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +35,30 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private final ActionListener actionListener;
     private List<Object> cartItemHolderDataList;
     private CompositeSubscription compositeSubscription;
+    private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
 
     @Inject
     public CartListAdapter(ActionListener actionListener) {
         this.cartItemHolderDataList = new ArrayList<>();
         this.actionListener = actionListener;
         this.compositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (cartItemHolderDataList.get(position) instanceof CartItemHolderData) {
+            return CartListItemViewHolder.TYPE_VIEW_ITEM_CART;
+        } else if (cartItemHolderDataList.get(position) instanceof CartPromoSuggestion) {
+            return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
+        } else if (cartItemHolderDataList.get(position) instanceof CartItemPromoHolderData) {
+            return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
+        } else if (cartItemHolderDataList.get(position) instanceof CartItemTickerErrorHolderData) {
+            return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
+        } else if (cartItemHolderDataList.get(position) instanceof ShipmentSellerCashbackModel) {
+            return ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK;
+        } else {
+            return super.getItemViewType(position);
+        }
     }
 
     @Override
@@ -56,6 +79,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR, parent, false);
             return new CartTickerErrorViewHolder(view, actionListener);
+        } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK, parent, false);
+            return new ShipmentSellerCashbackViewHolder(view);
         }
         return null;
     }
@@ -78,17 +105,16 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             final CartTickerErrorViewHolder holderView = (CartTickerErrorViewHolder) holder;
             final CartItemTickerErrorHolderData data = (CartItemTickerErrorHolderData) cartItemHolderDataList.get(position);
             holderView.bindData(data, position);
+        } else if (getItemViewType(position) == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
+            final ShipmentSellerCashbackViewHolder holderView = (ShipmentSellerCashbackViewHolder) holder;
+            final ShipmentSellerCashbackModel data = (ShipmentSellerCashbackModel) cartItemHolderDataList.get(position);
+            holderView.bindViewHolder(data);
         }
     }
-
 
     @Override
     public int getItemCount() {
         return cartItemHolderDataList.size();
-    }
-
-    public CompositeSubscription getCompositeSubscription() {
-        return compositeSubscription;
     }
 
     public void unsubscribeSubscription() {
@@ -168,21 +194,6 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     notifyItemChanged(cartItemHolderDataList.indexOf(object));
                 }
             }
-        }
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (cartItemHolderDataList.get(position) instanceof CartItemHolderData) {
-            return CartListItemViewHolder.TYPE_VIEW_ITEM_CART;
-        } else if (cartItemHolderDataList.get(position) instanceof CartPromoSuggestion) {
-            return CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION;
-        } else if (cartItemHolderDataList.get(position) instanceof CartItemPromoHolderData) {
-            return CartVoucherPromoViewHolder.TYPE_VIEW_PROMO;
-        } else if (cartItemHolderDataList.get(position) instanceof CartItemTickerErrorHolderData) {
-            return CartTickerErrorViewHolder.TYPE_VIEW_TICKER_CART_ERROR;
-        } else {
-            return super.getItemViewType(position);
         }
     }
 
@@ -277,6 +288,22 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             actionListener.onCartDataEnableToCheckout();
         } else {
             actionListener.onCartDataDisableToCheckout();
+        }
+    }
+
+    public void updateShipmentSellerCashback(double cashback) {
+        if (cashback > 0) {
+            if (shipmentSellerCashbackModel == null || cartItemHolderDataList.indexOf(shipmentSellerCashbackModel) == -1) {
+                shipmentSellerCashbackModel = new ShipmentSellerCashbackModel();
+                cartItemHolderDataList.add(shipmentSellerCashbackModel);
+            }
+            shipmentSellerCashbackModel.setVisible(true);
+            shipmentSellerCashbackModel.setSellerCashback(CurrencyFormatUtil.convertPriceValueToIdrFormat((long) cashback, true));
+        }
+
+        int index = cartItemHolderDataList.indexOf(shipmentSellerCashbackModel);
+        if (index != -1) {
+            notifyItemChanged(index);
         }
     }
 

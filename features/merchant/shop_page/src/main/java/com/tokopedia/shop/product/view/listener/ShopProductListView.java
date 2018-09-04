@@ -12,13 +12,7 @@ import java.util.List;
 
 public interface ShopProductListView extends BaseListViewListener<BaseShopProductViewModel> {
 
-    void onErrorRemoveFromWishList(Throwable e);
-
-    void onSuccessRemoveFromWishList(String productId, Boolean value);
-
     void onErrorAddToWishList(Throwable e);
-
-    void onSuccessAddToWishList(String productId, Boolean value);
 
     void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel);
 

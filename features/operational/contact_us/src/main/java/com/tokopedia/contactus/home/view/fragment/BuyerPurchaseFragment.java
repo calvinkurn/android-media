@@ -46,16 +46,18 @@ public class BuyerPurchaseFragment extends BaseDaggerFragment implements Purchas
 
 
     public static BuyerPurchaseFragment newInstance() {
-        BuyerPurchaseFragment fragment = new BuyerPurchaseFragment();
-
-        return fragment;
+        return new BuyerPurchaseFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        adapter = new PurchaseListAdpater(getContext());
+        adapter = new PurchaseListAdpater(getContext(), getType());
         initInjector();
+    }
+
+    protected String getType() {
+        return getString(R.string.pembelian);
     }
 
     @Override

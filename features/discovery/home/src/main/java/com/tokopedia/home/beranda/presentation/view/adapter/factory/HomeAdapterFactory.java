@@ -6,6 +6,7 @@ import android.view.View;
 import com.tokopedia.core.base.adapter.BaseAdapterTypeFactory;
 import com.tokopedia.core.base.adapter.model.RetryModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.design.countdown.CountDownView;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
@@ -31,7 +32,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
-import com.tokopedia.home.beranda.presentation.view.compoundview.CountDownView;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 
 /**

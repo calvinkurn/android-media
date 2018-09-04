@@ -11,4 +11,6 @@ public interface LoyaltyModuleRouter {
     Observable<VoucherViewModel> checkFlightVoucher(String voucherCode, String cartId, String isCoupon);
 
     Observable<TKPDMapParam<String, Object>> verifyEventPromo(RequestParams requestParams);
+
+    Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams);
 }

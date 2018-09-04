@@ -222,7 +222,8 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
                 return new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        openImagePicker();
+                        showImagePickerDialog();
+
                     }
                 };
             }
@@ -241,7 +242,7 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
 
     }
 
-    private void openImagePicker() {
+    private void showImagePickerDialog() {
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.contactus.R.string.choose_image),
                 new int[]{ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA}, GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true,

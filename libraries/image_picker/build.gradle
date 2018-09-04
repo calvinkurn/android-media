@@ -8,8 +8,7 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
-    compile project(rootProject.ext.libraries.cacheApi)
-
+    implementation project(rootProject.ext.libraries.cacheApi)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.cameraView)
 
@@ -18,7 +17,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     implementation rootProject.ext.networkDependencies.glide
-    
+
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }

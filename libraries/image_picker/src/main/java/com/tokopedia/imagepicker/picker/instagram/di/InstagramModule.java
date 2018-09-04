@@ -5,15 +5,14 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
-import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.data.InstagramRepositoryImpl;
 import com.tokopedia.imagepicker.picker.instagram.data.source.InstagramDataSourceFactory;
 import com.tokopedia.imagepicker.picker.instagram.data.source.cloud.InstagramApi;
 import com.tokopedia.imagepicker.picker.instagram.domain.InstagramRepository;
+import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
-import com.tokopedia.imagepicker.picker.instagram.view.fragment.InstagramLoginFragment;
+import com.tokopedia.imagepicker.picker.instagram.util.InstagramConstant;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.ImagePickerInstagramPresenter;
 import com.tokopedia.imagepicker.picker.instagram.view.presenter.InstagramLoginPresenter;
 

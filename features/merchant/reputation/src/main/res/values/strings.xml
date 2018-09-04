@@ -126,4 +126,5 @@
     <string name="review_shop_empty_list_content">Belum ada ulasan yang diberikan untuk toko ini</string>
     <string name="hint_review_edittext">Tulis ulasan produk</string>
     <string name="review_min_character">Minimal 30 karakter</string>
+    <string name="review_label_all">Semua</string>
 </resources>

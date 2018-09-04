@@ -18,8 +18,8 @@ import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
-import com.tokopedia.checkout.domain.usecase.ResetCartGetShipmentFormUseCase;
-import com.tokopedia.checkout.domain.usecase.UpdateCartGetShipmentAddressFormUseCase;
+import com.tokopedia.checkout.domain.usecase.ResetCartUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 
 import dagger.Module;
@@ -80,10 +80,10 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    UpdateCartGetShipmentAddressFormUseCase updateCartGetShipmentAddressFormUseCase(
-            ICartRepository cartRepository, ICartMapper cartMapper, IShipmentMapper shipmentMapper
+    UpdateCartUseCase updateCartGetShipmentAddressFormUseCase(
+            ICartRepository cartRepository, ICartMapper cartMapper
     ) {
-        return new UpdateCartGetShipmentAddressFormUseCase(cartRepository, cartMapper, shipmentMapper);
+        return new UpdateCartUseCase(cartRepository, cartMapper);
     }
 
     @Provides
@@ -101,10 +101,10 @@ public class CartUseCaseModule {
     }
 
     @Provides
-    ResetCartGetShipmentFormUseCase resetCartGetShipmentFormUseCase(
-            ICartRepository cartRepository, ICartMapper cartMapper, IShipmentMapper shipmentMapper
+    ResetCartUseCase resetCartGetShipmentFormUseCase(
+            ICartRepository cartRepository, ICartMapper cartMapper
     ) {
-        return new ResetCartGetShipmentFormUseCase(cartRepository, cartMapper, shipmentMapper);
+        return new ResetCartUseCase(cartRepository, cartMapper);
     }
 
     @Provides

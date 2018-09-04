@@ -14,6 +14,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.kol.ContentProductViewHold
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.KolRecommendationViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.PollViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.kol.ProductCommunicationViewHolder;
+import com.tokopedia.feedplus.view.adapter.viewholder.kol.WhitelistViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreBrandsViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.officialstore.OfficialStoreCampaignViewHolder;
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.ActivityCardViewHolder;
@@ -35,6 +36,7 @@ import com.tokopedia.feedplus.view.viewmodel.kol.ContentProductViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.KolRecommendationViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.PollViewModel;
 import com.tokopedia.feedplus.view.viewmodel.kol.ProductCommunicationViewModel;
+import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreBrandsViewModel;
 import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreCampaignViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
@@ -47,10 +49,12 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.EmptyKolPostViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.ExploreViewHolder;
 import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostViewHolder;
+import com.tokopedia.kol.feature.post.view.adapter.viewholder.KolPostYoutubeViewHolder;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.EmptyKolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.ExploreViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
+import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.topads.sdk.listener.TopAdsInfoClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 
@@ -137,6 +141,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     }
 
     @Override
+    public int type(KolPostYoutubeViewModel kolPostYoutubeViewModel) {
+        return KolPostYoutubeViewHolder.LAYOUT;
+    }
+
+    @Override
     public int type(EmptyKolPostViewModel emptyKolPostViewModel) {
         return EmptyKolPostViewHolder.LAYOUT;
     }
@@ -174,6 +183,11 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
     @Override
     public int type(PollViewModel pollViewModel) {
         return PollViewHolder.LAYOUT;
+    }
+
+    @Override
+    public int type(WhitelistViewModel whitelistViewModel) {
+        return WhitelistViewHolder.LAYOUT;
     }
 
     @Override
@@ -233,10 +247,14 @@ public class FeedPlusTypeFactoryImpl extends BaseAdapterTypeFactory
             viewHolder = new EmptyFeedBeforeLoginViewHolder(view, viewListener);
         else if (type == KolPostViewHolder.LAYOUT)
             viewHolder = new KolPostViewHolder(view, kolPostListener, KolPostViewHolder.Type.FEED);
+        else if (type == KolPostYoutubeViewHolder.LAYOUT)
+            viewHolder = new KolPostYoutubeViewHolder(view, kolPostListener, KolPostYoutubeViewHolder.Type.FEED);
         else if (type == EmptyKolPostViewHolder.LAYOUT)
             viewHolder = new EmptyKolPostViewHolder(view);
         else if (type == ExploreViewHolder.LAYOUT)
             viewHolder = new ExploreViewHolder(view, kolPostListener);
+        else if (type == WhitelistViewHolder.LAYOUT)
+            viewHolder = new WhitelistViewHolder(view, viewListener);
         else
             viewHolder = super.createViewHolder(view, type);
         return viewHolder;

@@ -64,6 +64,9 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.digital_deals.DealsModuleRouter;
+import com.tokopedia.digital_deals.di.DaggerDealsComponent;
+import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -88,6 +91,7 @@ import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
+import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
@@ -178,6 +182,8 @@ import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.otp.OtpModuleRouter;
+import com.tokopedia.oms.OmsModuleRouter;
+import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActivationActivity;
 import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationProfileActivity;
 import com.tokopedia.otp.phoneverification.view.activity.ReferralPhoneNumberVerificationActivity;
@@ -194,6 +200,7 @@ import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActi
 import com.tokopedia.product.manage.item.utils.ProductEditModuleRouter;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
+import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profile.view.subscriber.FollowKolSubscriber;
@@ -213,7 +220,6 @@ import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivit
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
 import com.tokopedia.seller.product.etalase.utils.EtalaseUtils;
 import com.tokopedia.seller.product.etalase.view.activity.EtalasePickerActivity;
-import com.tokopedia.seller.product.manage.view.activity.ProductManageActivity;
 import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboardActivity;
 import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
@@ -317,8 +323,7 @@ import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter
-        .ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -368,6 +373,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TopChatRouter,
         TokopointRouter,
         OtpModuleRouter,
+        UnifiedOrderRouter,
+        DealsModuleRouter,
+        OmsModuleRouter,
         ProductEditModuleRouter {
 
     @Inject
@@ -380,6 +388,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private DaggerFlightConsumerComponent.Builder daggerFlightBuilder;
     private DaggerContentConsumerComponent.Builder daggerContentBuilder;
     private EventComponent eventComponent;
+    private DealsComponent dealsComponent;
     private FlightConsumerComponent flightConsumerComponent;
     private ContentConsumerComponent contentConsumerComponent;
     private ProductComponent productComponent;
@@ -449,6 +458,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         eventComponent = DaggerEventComponent.builder()
                 .appComponent(getApplicationComponent())
                 .eventModule(new EventModule(this))
+                .build();
+        dealsComponent = DaggerDealsComponent.builder()
+                .baseAppComponent((this).getBaseAppComponent())
                 .build();
     }
 
@@ -1582,14 +1594,14 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void navigateToEditAddressActivityRequest(final Fragment fragment, final int requestCode, Token token) {
-        fragment.startActivityForResult(DistrictRecommendationActivity.createInstance(fragment.getActivity(),
+        fragment.startActivityForResult(DistrictRecommendationActivity.createInstanceIntent(fragment.getActivity(),
                 token),
                 requestCode);
     }
 
     @Override
     public void navigateToGeoLocationActivityRequest(final Fragment fragment, final int requestCode, final String generatedAddress, LocationPass locationPass) {
-        Intent intent = GeolocationActivity.createInstance(fragment.getActivity(), locationPass);
+        Intent intent = GeolocationActivity.createInstanceIntent(fragment.getActivity(), locationPass);
         fragment.startActivityForResult(intent, requestCode);
     }
 
@@ -1887,8 +1899,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void registerShake(String screenName,Activity activity) {
-        ShakeDetectManager.getShakeDetectManager().registerShake(screenName,activity);
+    public void registerShake(String screenName, Activity activity) {
+        ShakeDetectManager.getShakeDetectManager().registerShake(screenName, activity);
     }
 
     @Override
@@ -2119,6 +2131,37 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<TKPDMapParam<String, Object>> verifyDealPromo(com.tokopedia.usecase.RequestParams requestParams) {
+        return new PostVerifyCartWrapper(this, dealsComponent.getPostVerifyCartUseCase())
+                .verifyPromo(requestParams);
+    }
+
+    @Override
+    public void shareDeal(Context context, String uri, String name, String imageUrl) {
+        ShareData shareData = ShareData.Builder.aShareData()
+                .setType("")
+                .setName(name)
+                .setUri(uri)
+                .setImgUri(imageUrl)
+                .build();
+        BranchSdkUtils.generateBranchLink(shareData, (Activity) context, new BranchSdkUtils.GenerateShareContents() {
+            @Override
+            public void onCreateShareContents(String shareContents, String shareUri, String branchUrl) {
+                Intent share = new Intent(android.content.Intent.ACTION_SEND);
+                share.setType("text/plain");
+                share.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                share.putExtra(Intent.EXTRA_TEXT, branchUrl);
+                context.startActivity(Intent.createChooser(share, "Share link!"));
+            }
+        });
+    }
+
+    @Override
+    public String getUserPhoneNumber(){
+        return SessionHandler.getPhoneNumber();
+    }
+
+    @Override
     public boolean isSupportApplink(String appLink) {
         DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
         return deepLinkDelegate.supportsUri(appLink);
@@ -2256,8 +2299,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token) {
-        return DistrictRecommendationActivity.createInstance(activity, new TokenMapper().convertTokenModel(token));
+    public Intent getDistrictRecommendationIntent(Activity activity, com.tokopedia.core.manage.people.address.model.Token token, boolean isFromMarketplaceCart) {
+        if (isFromMarketplaceCart)
+            return DistrictRecommendationActivity.createInstanceFromMarketplaceCart(activity, new TokenMapper().convertTokenModel(token));
+        else
+            return DistrictRecommendationActivity.createInstanceIntent(activity, new TokenMapper().convertTokenModel(token));
     }
 
     @Override
@@ -2302,8 +2348,25 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isLoginInactivePhoneLinkEnabled() {
+        return remoteConfig.getBoolean(SessionRouter.ENABLE_LOGIN_INACTIVE_PHONE_LINK)
+                && android.os.Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP;
+    }
+
+    @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    }
+
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
     }
 
     @Override
