@@ -1,4 +1,3 @@
-include ':settingbank'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {

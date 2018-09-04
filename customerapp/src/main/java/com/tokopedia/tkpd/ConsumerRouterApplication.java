@@ -2445,15 +2445,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getChangePasswordIntent(Context context) {
-        if (remoteConfig.getBoolean("mainapp_new_change_password_enabled", true)) {
-            return ChangePasswordActivity.Companion.createIntent(context);
-        } else {
-            return new Intent(context, ManagePasswordActivity.class);
-        }
-    }
-
-    @Override
     public String getStringRemoteConfig(String key) {
         return remoteConfig.getString(key, "");
     }
@@ -2544,10 +2535,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (remoteConfig.getBoolean("mainapp_is_enabled_new_setting_bank", true))
             return SettingBankActivity.Companion.createIntent(context);
-        else {
-            return ManagePeopleBankActivity.createInstance(context);
-        }
+    }
+
+    @Override
+    public Intent getChangePasswordIntent(Context context) {
+        return ChangePasswordActivity.Companion.createIntent(context);
     }
 }
