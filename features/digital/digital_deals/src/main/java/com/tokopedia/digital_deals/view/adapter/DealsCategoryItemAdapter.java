@@ -14,14 +14,19 @@ import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
+import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategoryItemAdapter.ViewHolder> {
 
     private List<CategoryItem> categoryItems;
     private Context context;
+    DealsAnalytics dealsAnalytics;
 
     public DealsCategoryItemAdapter(List<CategoryItem> categoryItems) {
         this.categoryItems = new ArrayList<>();
@@ -59,12 +64,15 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
 
         @Override
         public void onClick(View v) {
-            CategoriesModel categoriesModel=new CategoriesModel();
+            dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_SELECT_VOUCHER_CATEGORY,
+                    categoryItems.get(getIndex()).getTitle());
+
+            CategoriesModel categoriesModel = new CategoriesModel();
             categoriesModel.setName(categoryItems.get(getIndex()).getName());
             categoriesModel.setTitle(categoryItems.get(getIndex()).getTitle());
             categoriesModel.setUrl(categoryItems.get(getIndex()).getUrl());
             categoriesModel.setCategoryId(categoryItems.get(getIndex()).getCategoryId());
-            categoriesModel.setPosition(getIndex()+1);
+            categoriesModel.setPosition(getIndex() + 1);
             Intent detailsIntent = new Intent(context, CategoryDetailActivity.class);
             detailsIntent.putExtra(CategoryDetailActivity.CATEGORIES_DATA, categoriesModel);
             detailsIntent.putExtra(CategoryDetailActivity.CATEGORY_NAME, categoriesModel.getTitle());
@@ -80,6 +88,7 @@ public class DealsCategoryItemAdapter extends RecyclerView.Adapter<DealsCategory
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
+        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.category_item, parent, false);
 

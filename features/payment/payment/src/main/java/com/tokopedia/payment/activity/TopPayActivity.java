@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -31,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
+import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.payment.BuildConfig;
@@ -58,7 +59,7 @@ import javax.inject.Inject;
  * Created by kris on 3/9/17. Tokopedia
  */
 
-public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister {
+public class TopPayActivity extends AppCompatActivity implements TopPayContract.View, FingerPrintDialogPayment.ListenerPayment, FingerprintDialogRegister.ListenerRegister, FilePickerInterface {
     private static final String TAG = TopPayActivity.class.getSimpleName();
 
     public static final String EXTRA_PARAMETER_TOP_PAY_DATA = "EXTRA_PARAMETER_TOP_PAY_DATA";
@@ -91,6 +92,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     private FingerPrintDialogPayment fingerPrintDialogPayment;
     private FingerprintDialogRegister fingerPrintDialogRegister;
     private boolean isInterceptOtp = true;
+    private CommonWebViewClient webChromeWebviewClient;
 
     public static Intent createInstance(Context context, PaymentPassData paymentPassData) {
         Intent intent = new Intent(context, TopPayActivity.class);
@@ -170,7 +172,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         webSettings.setDisplayZoomControls(true);
         webSettings.setAppCacheEnabled(true);
         scroogeWebView.setWebViewClient(new TopPayWebViewClient());
-        scroogeWebView.setWebChromeClient(new TopPayWebViewChromeClient());
+        scroogeWebView.setWebChromeClient(webChromeWebviewClient);
         scroogeWebView.setOnKeyListener(getWebViewOnKeyListener());
         btnBack.setVisibility(View.VISIBLE);
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +190,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
     }
 
     private void initVar() {
-
+        webChromeWebviewClient = new CommonWebViewClient(this, progressBar);
     }
 
     private void initView() {
@@ -276,7 +278,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 && scroogeWebView.getUrl() != null
                 && scroogeWebView.getUrl().contains(paymentModuleRouter.getBaseUrlDomainPayment())) {
             scroogeWebView.loadUrl("javascript:handlePopAndroid();");
-        }else if (isEndThanksPage()) {
+        } else if (isEndThanksPage()) {
             callbackPaymentSucceed();
         } else {
             callbackPaymentCanceled();
@@ -378,13 +380,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 );
                 return true;
             } else {
-                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
-                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
-                    paymentModuleRouter.actionAppLinkPaymentModule(
-                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
-                    );
-                    return true;
-                }
+//                if (!url.isEmpty() && (url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_LIVE) ||
+//                        url.contains(Constant.TempRedirectPayment.TOP_PAY_DOMAIN_URL_STAGING))) {
+//                    paymentModuleRouter.actionAppLinkPaymentModule(
+//                            TopPayActivity.this, Constant.TempRedirectPayment.APP_LINK_SCHEME_HOME
+//                    );
+//                    return true;
+//                }
             }
 
             if (!TextUtils.isEmpty(paymentPassData.getCallbackSuccessUrl()) &&
@@ -641,5 +643,13 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
         fingerPrintDialogPayment.stopListening();
         fingerPrintDialogPayment.dismiss();
         scroogeWebView.loadUrl(String.format("%1$s?%2$s", url, paramEncode));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if (requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null) {
+            webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }
