@@ -9,6 +9,7 @@ import java.util.List;
  * Created by Irfan Khoirul on 22/02/18.
  */
 
+@Deprecated
 public class CartShopShipment implements Parcelable {
     private int shipmentId;
     private boolean dropshipEnable;

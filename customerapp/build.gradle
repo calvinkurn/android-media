@@ -303,6 +303,8 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.updateinactivephone)
+
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
