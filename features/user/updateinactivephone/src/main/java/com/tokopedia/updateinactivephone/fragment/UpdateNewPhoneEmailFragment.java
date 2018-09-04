@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -145,7 +146,7 @@ public class UpdateNewPhoneEmailFragment extends TkpdBaseV4Fragment {
                 !TextUtils.isEmpty(newPhoneEditText.getText().toString())) {
             submissionButton.setEnabled(true);
             submissionButton.setClickable(true);
-            submissionButton.setTextColor(getResources().getColor(R.color.white));
+            submissionButton.setTextColor(Color.WHITE);
         } else {
             submissionButton.setEnabled(false);
             submissionButton.setClickable(false);

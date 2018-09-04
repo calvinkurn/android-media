@@ -130,14 +130,11 @@ public class ChangeInactivePhoneFragment extends BaseDaggerFragment implements C
             }
         });
 
-        buttonContinue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setErrorText("");
-                presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
-                hideKeyboard(v);
-                UpdateInactivePhoneEventTracking.eventInactivePhoneClick();
-            }
+        buttonContinue.setOnClickListener(v -> {
+            setErrorText("");
+            presenter.checkPhoneNumberStatus(inputMobileNumber.getText().toString());
+            hideKeyboard(v);
+            UpdateInactivePhoneEventTracking.eventInactivePhoneClick();
         });
     }
 

@@ -240,6 +240,7 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         bundle.putBoolean(IS_DUPLICATE_REQUEST, true);
         Intent intent = ChangeInactivePhoneRequestSubmittedActivity.createNewIntent(this, bundle);
         startActivity(intent);
+        finish();
     }
 
     @Override
@@ -326,6 +327,7 @@ public class ChangeInactiveFormRequestActivity extends BaseSimpleActivity implem
         bundle.putString(USER_PHONE, newPhoneNumber);
         Intent intent = ChangeInactivePhoneRequestSubmittedActivity.createNewIntent(this, bundle);
         startActivity(intent);
+        finish();
     }
 
     @Override
