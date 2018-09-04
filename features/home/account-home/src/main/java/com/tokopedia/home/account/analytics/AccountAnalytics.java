@@ -46,7 +46,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", USER, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -58,7 +58,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -70,7 +70,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -82,7 +82,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -94,7 +94,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", NOTIFICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -107,7 +107,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", APPLICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -119,7 +119,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                CLICK_NAVIGATION_MENU,
                 String.format("%s %s", EMAIL, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
