@@ -26,6 +26,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.AllBrandsPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -47,6 +48,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     @Inject
     AllBrandsPresenter mPresenter;
     private CategoriesModel categoriesModel;
+    private String searchText;
 
 
     public static Fragment newInstance(CategoriesModel categoriesModel) {
@@ -104,12 +106,15 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void onSearchSubmitted(String text) {
+        searchText = text;
+        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        searchText = text;
+        mPresenter.sendEventClick(DealsAnalytics.EVENT_CLICK_SEARCH_BRAND, text);
         mPresenter.searchTextChanged(text);
     }
 
@@ -141,10 +146,16 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
     }
 
     @Override
-    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted) {
+    public void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted, Boolean... fromSearchResult) {
 
+        boolean fromSearch = false;
+        if (fromSearchResult.length > 0) {
+            if (fromSearchResult[0] != null) {
+                fromSearch = fromSearchResult[0];
+            }
+        }
         if (brandList != null && brandList.size() > 0) {
-            ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList);
+            ((DealsBrandAdapter) recyclerview.getAdapter()).updateAdapter(brandList, fromSearch);
             recyclerview.setVisibility(View.VISIBLE);
             recyclerview.addOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.GONE);
@@ -152,6 +163,8 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
                 KeyboardHandler.DropKeyboard(getContext(), searchInputView);
             }
         } else {
+            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_BRAND_FOUND,
+                    searchText);
             recyclerview.setVisibility(View.GONE);
             recyclerview.removeOnScrollListener(rvOnScrollListener);
             noContent.setVisibility(View.VISIBLE);
@@ -207,7 +220,7 @@ public class AllBrandsFragment extends BaseDaggerFragment implements AllBrandsCo
 
     @Override
     public void addBrandsToCards(List<Brand> brandList) {
-        if(brandList!=null) {
+        if (brandList != null) {
             ((DealsBrandAdapter) recyclerview.getAdapter()).addAll(brandList);
         }
 
