@@ -15,5 +15,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity android:name="com.tokopedia.DeepLinkActivity"/>
     </application>
 </manifest>
