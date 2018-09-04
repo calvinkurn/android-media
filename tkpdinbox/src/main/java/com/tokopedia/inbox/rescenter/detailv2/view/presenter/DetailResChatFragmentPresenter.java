@@ -121,6 +121,11 @@ public class DetailResChatFragmentPresenter
         loadConversation(resolutionId);
     }
 
+    @Override
+    public void initContext(Context context) {
+        this.context = context;
+    }
+
     public void loadConversation(String resolutionId) {
         mainView.showProgressBar();
         getResChatUseCase.execute(

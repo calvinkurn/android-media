@@ -37,7 +37,6 @@ import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.DateFormatUtils;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
@@ -130,7 +129,6 @@ public class DetailResChatFragment
     private EditText etChat;
     private ImageView ivSend, ivAttachment;
     private View actionButtonLayout;
-    private ImageUploadHandler uploadImageDialog;
     private FloatingActionButton fabChat;
     private ImageView ivNextStepStatic;
     private GlowingView glowingView;
@@ -221,7 +219,6 @@ public class DetailResChatFragment
 
     @Override
     protected void initView(View view) {
-        uploadImageDialog = ImageUploadHandler.createInstance(this);
         tvNextStep = view.findViewById(R.id.tv_next_step);
         rvChat = view.findViewById(R.id.rv_chat);
         rvAttachment = view.findViewById(R.id.rv_attachment);
@@ -236,6 +233,8 @@ public class DetailResChatFragment
         ffChat = view.findViewById(R.id.ff_chat);
         ivNextStepStatic = view.findViewById(R.id.iv_next_step_static);
         glowingView = view.findViewById(R.id.view_glowing);
+
+        presenter.initContext(getActivity());
 
         fabChat.hide();
         linearLayoutManager = new LinearLayoutManager(getActivity());
