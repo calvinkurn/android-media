@@ -12,6 +12,10 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.mitra.R;
 
 public class MitraWelcomeActivity extends BaseSimpleActivity {
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_mitra_welcome;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

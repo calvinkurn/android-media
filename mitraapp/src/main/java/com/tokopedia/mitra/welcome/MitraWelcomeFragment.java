@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.homepage.activity.MitraHomepageActivity;
+import com.tokopedia.mitra.homepage.activity.MitraParentHomepageActivity;
 
 public class MitraWelcomeFragment extends BaseDaggerFragment {
 
@@ -50,7 +49,7 @@ public class MitraWelcomeFragment extends BaseDaggerFragment {
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), MitraHomepageActivity.class);
+                Intent intent = new Intent(getActivity(), MitraParentHomepageActivity.class);
                 getActivity().startActivity(intent);
             }
         });
