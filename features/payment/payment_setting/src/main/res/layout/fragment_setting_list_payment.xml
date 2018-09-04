@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
 
+    <TextView
+        android:id="@+id/counterCreditCard"
+        android:padding="@dimen/dp_16"
+        tools:text="@string/payment_label_saved_card"
+        style="@style/TextView.Small"/>
+
+    <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+        android:padding="@dimen/dp_16"
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey_250"/>
+
+    <com.tokopedia.design.label.LabelView
+        android:id="@+id/authenticateCreditCard"
+        android:padding="@dimen/dp_16"
+        app:lv_title="@string/payment_label_auth_credit_card"
+        app:lv_image="@drawable/ic_chevron_right_grey"
+        style="@style/LabelLayout"/>
 </LinearLayout>

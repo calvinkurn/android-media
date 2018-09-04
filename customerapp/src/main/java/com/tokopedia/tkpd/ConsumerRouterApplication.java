@@ -203,6 +203,8 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.payment.setting.list.SettingListPaymentActivity;
+import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.profile.ProfileModuleRouter;
 import com.tokopedia.profile.view.activity.TopProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
@@ -392,7 +394,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         BankRouter,
         ChangePasswordRouter,
         TrainRouter,
-        WithdrawRouter {
+        WithdrawRouter,
+        PaymentSettingRouter{
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1126,7 +1129,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        Intent intent = new Intent(activity, SettingListPaymentActivity.class);
         activity.startActivity(intent);
     }
 
@@ -2488,5 +2491,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         else {
             return ManagePeopleBankActivity.createInstance(context);
         }
+    }
+
+    @Override
+    public String getResourceUrlAssetPayment() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+                TkpdBaseURL.Payment.DEFAULT_HOST);
+
+        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
+        return resourceUrl;
     }
 }

@@ -1,0 +1,10 @@
+creditCard {
+      error
+      cards {
+        token_id
+        masked_number
+        expiry_month
+        expiry_year
+        card_type
+      }
+}

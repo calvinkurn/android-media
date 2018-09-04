@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">payment_setting</string>
+    <string name="payment_label_auth_credit_card">Autentikasi Pembayaran Kartu Kredit</string>
+    <string name="payment_label_saved_card">Kartu Kredit / Debit Online Tersimpan (%1$d/4)</string>
+    <string name="payment_label_button_add_card">Tambah Kartu</string>
+    <string name="payment_label_add_card_list">+ Tambah Kartu</string>
+    <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
 </resources>
