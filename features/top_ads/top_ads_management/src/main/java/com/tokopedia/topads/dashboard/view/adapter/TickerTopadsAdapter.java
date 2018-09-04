@@ -6,19 +6,20 @@ import android.text.Spannable;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.URLSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.design.utils.StringUtils;
+import com.tokopedia.design.text.style.WebViewURLSpan;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.TopAdsWebViewActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,6 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
     }
 
     class TickerTopadsViewHolder extends RecyclerView.ViewHolder {
-
         private TextView textViewMessage;
 
         public TickerTopadsViewHolder(View itemView) {
@@ -73,11 +73,23 @@ public class TickerTopadsAdapter extends RecyclerView.Adapter<TickerTopadsAdapte
                 textViewMessage.setMovementMethod (LinkMovementMethod.getInstance());
                 Spannable spannable = (Spannable) MethodChecker.fromHtml(URLDecoder.decode(message, "UTF-8"));
                 for (URLSpan u: spannable.getSpans(0, spannable.length(), URLSpan.class)) {
-                    spannable.setSpan(new UnderlineSpan() {
-                        public void updateDrawState(TextPaint tp) {
-                            tp.setUnderlineText(false);
+                    int start = spannable.getSpanStart(u);
+                    int end = spannable.getSpanEnd(u);
+                    spannable.removeSpan(u);
+                    WebViewURLSpan webViewSpan = new WebViewURLSpan(u.getURL());
+                    webViewSpan.setListener(new WebViewURLSpan.OnClickListener() {
+                        @Override
+                        public void onClick(@NotNull String url) {
+                            itemView.getContext().startActivity(TopAdsWebViewActivity.createIntent(itemView.getContext(), url));
                         }
-                    }, spannable.getSpanStart(u), spannable.getSpanEnd(u), 0);
+
+                        @Override
+                        public boolean showUnderline() {
+                            return false;
+                        }
+                    });
+
+                    spannable.setSpan(webViewSpan, start, end, 0);
                 }
                 textViewMessage.setText(spannable);
             } catch (UnsupportedEncodingException e) {
