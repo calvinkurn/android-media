@@ -330,7 +330,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public boolean onBackPressed() {
         if (imageUploadAdapter.getItemCount() > 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+            builder.setTitle(getString(R.string.inbox_title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
             builder.setNegativeButton(getString(R.string.inbox_cancel),
                     (dialog, i) -> {

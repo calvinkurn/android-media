@@ -88,6 +88,10 @@ public class InboxDetailAdapter extends RecyclerView.Adapter<InboxDetailAdapter.
         notifyDataSetChanged();
     }
 
+    public void setNeedAttachment(boolean val) {
+        needAttachment = val;
+    }
+
     @Override
     public int getItemCount() {
         return commentList.size();

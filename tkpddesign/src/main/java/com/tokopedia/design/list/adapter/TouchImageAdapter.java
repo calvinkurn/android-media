@@ -1,6 +1,7 @@
 package com.tokopedia.design.list.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.view.ViewGroup;
 import com.tokopedia.design.image.ImageLoader;
 import com.tokopedia.design.image.TouchImageView;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class TouchImageAdapter extends PagerAdapter {
@@ -42,6 +44,10 @@ public class TouchImageAdapter extends PagerAdapter {
         return view == object;
     }
 
+    private boolean isUrl(String src) {
+        return src.substring(0, 4).equals("http");
+    }
+
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         TouchImageView imageView = new TouchImageView(context, StateSize -> {
@@ -50,7 +56,13 @@ public class TouchImageAdapter extends PagerAdapter {
             else
                 ImageStateChangeListener.OnStateZoom();
         });
-        ImageLoader.LoadImage(imageView, FileLoc.get(position));
+        String thumbnail = FileLoc.get(position);
+        if (isUrl(thumbnail)) {
+            ImageLoader.LoadImage(imageView, thumbnail);
+        } else {
+            imageView.setImageURI(Uri.fromFile(new File(thumbnail)));
+        }
+
         container.addView(imageView, 0);
         return imageView;
     }

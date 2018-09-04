@@ -76,7 +76,10 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     public ArrayList<ImageUpload> getImageUpload() {
         ArrayList<ImageUpload> imageList = new ArrayList<>();
-        imageList.addAll(imageUpload);
+        for (ImageUpload image : imageUpload) {
+            if (image.getImgSrc() == -1)
+                imageList.add(image);
+        }
         return imageList;
     }
 

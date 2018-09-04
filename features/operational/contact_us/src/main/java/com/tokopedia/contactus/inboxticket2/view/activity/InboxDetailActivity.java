@@ -180,6 +180,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         rvSelectedImages.setVisibility(View.GONE);
         rvMessageList.setPadding(0, 0, 0,
                 getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
+        detailAdapter.setNeedAttachment(false);
         detailAdapter.notifyItemRangeChanged(detailAdapter.getItemCount() - 2, 2);
     }
 
@@ -457,6 +458,15 @@ public class InboxDetailActivity extends InboxBaseActivity
     }
 
     @Override
+    public void updateClosedStatus(String subject) {
+        int textSizeLabel = 11;
+        Utils utils = ((InboxDetailContract.InboxDetailPresenter) mPresenter).getUtils();
+        tvTicketTitle.setText(utils.getStatusTitle(subject + ".   " + getString(R.string.closed),
+                getResources().getColor(R.color.grey_200),
+                getResources().getColor(R.color.black_38), textSizeLabel));
+    }
+
+    @Override
     public boolean isSearchMode() {
         return searchView.getVisibility() == View.VISIBLE;
     }
@@ -521,7 +531,7 @@ public class InboxDetailActivity extends InboxBaseActivity
         if (imageUploadAdapter.getItemCount() > 1 || (textToolbar.getVisibility() == View.VISIBLE &&
                 edMessage.isFocused() && edMessage.getText().length() > 0)) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+            builder.setTitle(getString(R.string.inbox_title_dialog_wrong_scan));
             builder.setMessage(R.string.abandon_message_warning);
             builder.setNegativeButton(getString(R.string.inbox_cancel),
                     (dialog, i) -> dialog.dismiss());

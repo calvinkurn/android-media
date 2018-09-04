@@ -8,7 +8,7 @@
     <string name="invoice_list_title">Riwayat Transaksi</string>
     <string name="order_query_ticket_title">Kendala</string>
     <string name="submit_ticket_title">Form Bantuan</string>
-    <string name="title_dialog_wrong_scan">Tunggu...</string>
+    <string name="inbox_title_dialog_wrong_scan">Tunggu…</string>
     <string name="inbox_cancel">Batal</string>
     <string name="inbox_exit">Keluar</string>
     <string name="pembelian">Pembelian</string>

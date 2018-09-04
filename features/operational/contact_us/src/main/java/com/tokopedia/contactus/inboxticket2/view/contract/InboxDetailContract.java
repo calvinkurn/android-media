@@ -42,6 +42,8 @@ public interface InboxDetailContract {
         void showImagePreview(int position, ArrayList<String> imagesURL);
 
         void setCurrentRes(int currentRes);
+
+        void updateClosedStatus(String subject);
     }
 
     interface InboxDetailPresenter extends InboxBaseContract.InboxBasePresenter {

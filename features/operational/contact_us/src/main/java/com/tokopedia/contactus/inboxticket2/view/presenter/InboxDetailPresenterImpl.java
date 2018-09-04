@@ -660,6 +660,7 @@ public class InboxDetailPresenterImpl
                         mView.toggleTextToolbar(View.VISIBLE);
                     } else {
                         mView.showIssueClosed();
+                        mView.updateClosedStatus(mTicketDetail.getSubject());
                     }
                 } else {
                     mView.toggleTextToolbar(View.GONE);
@@ -747,7 +748,10 @@ public class InboxDetailPresenterImpl
                 InboxTicketTracking.Label.ImageAttached);
         ArrayList<String> imagesURL = new ArrayList<>();
         for (AttachmentItem item : imagesLoc) {
-            imagesURL.add(item.getUrl());
+            if (item.getUrl() != null && !item.getUrl().isEmpty())
+                imagesURL.add(item.getUrl());
+            else
+                imagesURL.add(item.getThumbnail());
         }
         mView.showImagePreview(position, imagesURL);
     }
