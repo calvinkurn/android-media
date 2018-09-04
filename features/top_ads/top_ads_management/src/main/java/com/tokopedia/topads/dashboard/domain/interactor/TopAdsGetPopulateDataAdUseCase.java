@@ -34,8 +34,8 @@ public class TopAdsGetPopulateDataAdUseCase extends UseCase<DashboardPopulateRes
     @Override
     public Observable<DashboardPopulateResponse> createObservable(RequestParams requestParams) {
         Observable<DataDeposit> depositObservable = topAdsGetShopDepositUseCase.createObservable(requestParams);
-        requestParams.clearValue(PARAM_QUERY);
-        Observable<TotalAd> totalAdObservable = topAdsPopulateTotalAdsUseCase.createObservable(requestParams);
+        RequestParams totalAdsRequestParams = createTotalAdsRequestParams(requestParams.getInt(TopAdsCommonConstant.PARAM_SHOP_ID, 0));
+        Observable<TotalAd> totalAdObservable = topAdsPopulateTotalAdsUseCase.createObservable(totalAdsRequestParams);
 
         return Observable.zip(totalAdObservable, depositObservable, new Func2<TotalAd, DataDeposit, DashboardPopulateResponse>() {
             @Override
@@ -49,6 +49,12 @@ public class TopAdsGetPopulateDataAdUseCase extends UseCase<DashboardPopulateRes
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_QUERY, queryDeposit);
         requestParams.putInt(TopAdsCommonConstant.PARAM_SHOP_ID, shopId);
+        return requestParams;
+    }
+
+    private RequestParams createTotalAdsRequestParams(int shopId){
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(TopAdsCommonConstant.PARAM_SHOP_ID, String.valueOf(shopId));
         return requestParams;
     }
 }
