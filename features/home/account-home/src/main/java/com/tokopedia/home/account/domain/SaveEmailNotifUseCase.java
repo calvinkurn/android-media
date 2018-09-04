@@ -24,7 +24,7 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 
 public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
-    private HashMap<String, String> bodyParams = new HashMap<>();
+    private HashMap<String, Integer> bodyParams = new HashMap<>();
     private UserSession userSession;
 
     @Inject public SaveEmailNotifUseCase(UserSession userSession, List<Interceptor> interceptors,
@@ -33,7 +33,7 @@ public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
         this.userSession = userSession;
     }
 
-    public void setBodyParams(HashMap<String, String> bodyParams) {
+    public void setBodyParams(HashMap<String, Integer> bodyParams) {
         this.bodyParams = bodyParams;
     }
 
@@ -54,7 +54,7 @@ public class SaveEmailNotifUseCase extends RestRequestSupportInterceptorUseCase{
     private Map<String,String> getBodyParams(){
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
         for (String key: bodyParams.keySet()){
-            param.put(key, bodyParams.get(key));
+            param.put(key, String.valueOf(bodyParams.get(key)));
         }
 
         return AuthUtil.generateParamsNetwork(userSession.getUserId(),

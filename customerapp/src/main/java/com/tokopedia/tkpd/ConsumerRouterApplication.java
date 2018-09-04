@@ -43,6 +43,7 @@ import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
+import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -452,6 +453,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductEditModuleRouter,
         EventModuleRouter,
         TravelCalendarRouter {
+
+    private  static final String EXTRA = "extra";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -1048,7 +1051,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void actionApplink(Activity activity, String linkUrl, String extra) {
         Bundle bundle = new Bundle();
-        bundle.putString("extra", extra);
+        bundle.putString(EXTRA, extra);
         goToApplinkActivity(activity, linkUrl, bundle);
     }
 
@@ -2594,7 +2597,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent gotoQrScannerPage(Context context) {
+    public Intent gotoQrScannerPage() {
         return QrScannerActivity.newInstance(this);
     }
 
@@ -2611,7 +2614,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getCartFragment() {
-        return CartFragment.newInstance(CartFragment.class.getSimpleName());
+        return CartFragment.newInstance();
     }
 
     @Override
