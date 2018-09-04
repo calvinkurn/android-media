@@ -407,6 +407,8 @@ public class SolutionDetailFragment extends BaseDaggerFragment
             editAppealSolutionModel.refundAmount = totalValue;
         }
         tvRefundTotal.setText(CurrencyFormatter.formatDotRupiah(String.valueOf(totalValue)));
+        if (totalValue == 0) buttonDisabled(btnContinue);
+        else buttonSelected(btnContinue);
     }
 
     @Override

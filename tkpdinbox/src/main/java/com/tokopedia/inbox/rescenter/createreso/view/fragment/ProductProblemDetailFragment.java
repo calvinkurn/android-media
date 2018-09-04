@@ -356,6 +356,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
     @Override
     public void saveData(ComplaintResult complaintResult, int resultStepCode) {
         Intent output = new Intent();
+        complaintResult.problem.amount = 0;
         output.putExtra(RESULT_DATA, complaintResult);
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
         getActivity().setResult(Activity.RESULT_OK, output);

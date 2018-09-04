@@ -83,12 +83,12 @@ public interface ResolutionApi {
 
     @POST(ResolutionUrl.POST_RESOLUTION_RECOMPLAINT_STEP_2_3)
     Observable<Response<ResolutionResponse<SolutionResponseResponse>>>
-    getSolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+    getSolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
                 @Body Object object);
 
     @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
     Observable<Response<ResolutionResponse<CreateResoWithoutAttachmentResponse>>>
-    postCreateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+    postCreateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
                          @Body Object object);
 
     @GET(ResolutionUrl.GET_RESOLUTION_EDIT)
@@ -123,12 +123,12 @@ public interface ResolutionApi {
 
     @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
     Observable<Response<ResolutionResponse<CreateValidateResponse>>>
-    postCreateValidateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+    postCreateValidateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
                                  @Body Object object);
 
     @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
     Observable<Response<ResolutionResponse<CreateSubmitResponse>>>
-    postCreateSubmitResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String orderId,
+    postCreateSubmitResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
                                @Body Object object);
 
     //END of create section

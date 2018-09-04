@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,7 +174,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
     @Override
     public boolean showCheckOnItem(int solutionId) {
-        return solutionId == (resultViewModel != null ? resultViewModel.solution : editAppealSolutionModel.solution);
+        return solutionId == (resultViewModel != null ? resultViewModel.solution : solutionResponseViewModel.getCurrentSolution().getId());
     }
 
     @Override
@@ -329,15 +330,18 @@ public class SolutionListFragment extends BaseDaggerFragment
         dialog.setContentView(R.layout.layout_edit_solution);
         TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
         TextView tvMessage = (TextView) dialog.findViewById(R.id.tv_message);
+        TextView tvMessage2 = (TextView) dialog.findViewById(R.id.tv_message_2);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
         if (solutionResponseViewModel.getMessage() != null) {
-            updateSolutionString(solutionViewModel, tvMessage);
+            tvMessage2.setVisibility(View.VISIBLE);
             tvSolution.setVisibility(View.GONE);
+            tvMessage.setVisibility(View.GONE);
+            tvMessage2.setText(updateSolutionString(solutionViewModel));
         } else {
-            updateSolutionString(solutionViewModel, tvSolution);
+            tvSolution.setText(updateSolutionString(solutionViewModel));
         }
         if (editAppealSolutionModel.isEdit) {
             tvTitle.setText(getActivity().getString(R.string.string_edit_title));
@@ -359,23 +363,24 @@ public class SolutionListFragment extends BaseDaggerFragment
         dialog.show();
     }
 
-    public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
+    public Spanned updateSolutionString(SolutionViewModel solutionViewModel) {
+        Spanned text;
         if (solutionResponseViewModel.getMessage() == null) {
-            textView.setText(MethodChecker.fromHtml(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+            text = MethodChecker.fromHtml(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                     solutionViewModel.getSolutionName().replace(
                             getActivity().getResources().getString(R.string.string_return_value),
                             CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
-                    solutionViewModel.getName()));
+                    solutionViewModel.getName());
         } else {
-            textView.setText(MethodChecker.fromHtml(solutionResponseViewModel.getMessage().getMessage().replace(
+            text = MethodChecker.fromHtml(solutionResponseViewModel.getMessage().getMessage().replace(
                     getActivity().getResources().getString(R.string.string_solution_message),
                     solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
                             solutionViewModel.getSolutionName().replace(
                                     getActivity().getResources().getString(R.string.string_return_value),
                                     CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
-                            solutionViewModel.getName()))
-            );
+                            solutionViewModel.getName()));
         }
+        return text;
     }
 
     @Override
