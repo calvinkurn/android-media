@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 /**
- * Created by Rizky on 31/08/18.
+ * Created by Rizky on 04/09/18.
  */
-public class ResponseProductInputField {
+public class ResponseInputField {
 
     @SerializedName("name")
     @Expose
@@ -21,10 +21,6 @@ public class ResponseProductInputField {
     @SerializedName("text")
     @Expose
     private String text;
-
-    @SerializedName("help")
-    @Expose
-    private String help;
 
     @SerializedName("placeholder")
     @Expose
@@ -50,19 +46,16 @@ public class ResponseProductInputField {
         return text;
     }
 
-    public String getHelp() {
-        return help;
-    }
-
     public String getPlaceholder() {
         return placeholder;
+    }
+
+    public List<ResponseValidation> getValidation() {
+        return validation;
     }
 
     public String getDefault() {
         return _default;
     }
 
-    public List<ResponseValidation> getValidation() {
-        return validation;
-    }
 }

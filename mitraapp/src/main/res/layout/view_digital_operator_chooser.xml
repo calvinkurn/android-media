@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tokopedia.common_digital.product.presentation.compoundview.ClientNumberInputView
+        android:id="@+id/operator_client_number_input_view"
+        android:visibility="gone"
+        tools:visibility="visible"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.mitra.digitalcategory.presentation.compoundview.DigitalOperatorDropdownInputView
+        android:id="@+id/operator_dropdown_input_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.mitra.digitalcategory.presentation.compoundview.DigitalOperatorRadioInputView
+        android:id="@+id/operator_radio_input_view"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</merge>

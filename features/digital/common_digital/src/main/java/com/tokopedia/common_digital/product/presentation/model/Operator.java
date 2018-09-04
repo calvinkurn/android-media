@@ -20,12 +20,24 @@ public class Operator implements Parcelable {
     private String lastorderUrl;
     private int defaultProductId;
     private Rule rule;
-    private List<String> prefixList = new ArrayList<>();
-    private List<ClientNumber> clientNumberList = new ArrayList<>();
-    private List<Product> productList = new ArrayList<>();
+    private List<String> prefixList;
+    private List<ClientNumber> clientNumberList;
+    private List<Product> productList;
     private String ussdCode;
 
-    public void setUssdCode(String ussdCode) {
+    public Operator(String operatorId, String operatorType, String name, String image, String lastorderUrl,
+                    int defaultProductId, Rule rule, List<String> prefixList, List<ClientNumber> clientNumberList,
+                    List<Product> productList, String ussdCode) {
+        this.operatorId = operatorId;
+        this.operatorType = operatorType;
+        this.name = name;
+        this.image = image;
+        this.lastorderUrl = lastorderUrl;
+        this.defaultProductId = defaultProductId;
+        this.rule = rule;
+        this.prefixList = prefixList;
+        this.clientNumberList = clientNumberList;
+        this.productList = productList;
         this.ussdCode = ussdCode;
     }
 
@@ -35,80 +47,40 @@ public class Operator implements Parcelable {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getImage() {
         return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public String getLastorderUrl() {
         return lastorderUrl;
     }
 
-    public void setLastorderUrl(String lastorderUrl) {
-        this.lastorderUrl = lastorderUrl;
-    }
-
     public int getDefaultProductId() {
         return defaultProductId;
-    }
-
-    public void setDefaultProductId(int defaultProductId) {
-        this.defaultProductId = defaultProductId;
     }
 
     public List<String> getPrefixList() {
         return prefixList;
     }
 
-    public void setPrefixList(List<String> prefixList) {
-        this.prefixList = prefixList;
-    }
-
     public List<ClientNumber> getClientNumberList() {
         return clientNumberList;
-    }
-
-    public void setClientNumberList(List<ClientNumber> clientNumberList) {
-        this.clientNumberList = clientNumberList;
     }
 
     public List<Product> getProductList() {
         return productList;
     }
 
-    public void setProductList(List<Product> productList) {
-        this.productList = productList;
-    }
-
     public String getOperatorId() {
         return operatorId;
-    }
-
-    public void setOperatorId(String operatorId) {
-        this.operatorId = operatorId;
     }
 
     public String getOperatorType() {
         return operatorType;
     }
 
-    public void setOperatorType(String operatorType) {
-        this.operatorType = operatorType;
-    }
-
     public Rule getRule() {
         return rule;
-    }
-
-    public void setRule(Rule rule) {
-        this.rule = rule;
     }
 
     @Override
@@ -129,9 +101,6 @@ public class Operator implements Parcelable {
         dest.writeList(this.clientNumberList);
         dest.writeList(this.productList);
         dest.writeString(this.ussdCode);
-    }
-
-    public Operator() {
     }
 
     protected Operator(Parcel in) {
@@ -166,4 +135,5 @@ public class Operator implements Parcelable {
     public String toString() {
         return name;
     }
+
 }

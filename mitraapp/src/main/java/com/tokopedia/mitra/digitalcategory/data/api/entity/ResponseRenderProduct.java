@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseRenderProduct {
+public class ResponseRenderProduct {
 
     @SerializedName("operator")
     @Expose
@@ -16,13 +16,13 @@ class ResponseRenderProduct {
 
     @SerializedName("input_fields")
     @Expose
-    private List<ResponseProductInputField> inputFields;
+    private List<ResponseInputField> inputFields;
 
     public ResponseOperator getOperator() {
         return operator;
     }
 
-    public List<ResponseProductInputField> getInputFields() {
+    public List<ResponseInputField> getInputFields() {
         return inputFields;
     }
 

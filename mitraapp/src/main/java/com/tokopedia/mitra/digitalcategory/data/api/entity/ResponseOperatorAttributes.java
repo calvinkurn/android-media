@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseOperatorAttributes {
+public class ResponseOperatorAttributes {
 
     @SerializedName("default_product_id")
     @Expose

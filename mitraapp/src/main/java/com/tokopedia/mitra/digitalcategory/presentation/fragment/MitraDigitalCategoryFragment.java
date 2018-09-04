@@ -11,26 +11,35 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
+import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalCategoryView;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.AgentDigitalCategoryContract;
-import com.tokopedia.mitra.digitalcategory.presentation.presenter.AgentDigitalCategoryPresenter;
+import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalCategoryPresenter;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 /**
  * Created by Rizky on 30/08/18.
  */
-public class AgentDigitalCategoryFragment extends BaseDaggerFragment implements AgentDigitalCategoryContract.View {
+public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements AgentDigitalCategoryContract.View {
+
+    private MitraDigitalCategoryView mitraDigitalCategoryView;
 
     @Inject
-    AgentDigitalCategoryPresenter presenter;
+    MitraDigitalCategoryPresenter presenter;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootview = inflater.inflate(R.layout.fragment_agent_digital_category, container, false);
+
+        mitraDigitalCategoryView = rootview.findViewById(R.id.view_category);
 
         return rootview;
     }
@@ -38,6 +47,8 @@ public class AgentDigitalCategoryFragment extends BaseDaggerFragment implements 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        presenter.attachView(this);
 
         presenter.getCategory(1);
     }
@@ -57,6 +68,12 @@ public class AgentDigitalCategoryFragment extends BaseDaggerFragment implements 
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void renderOperator(List<InputFieldModel> operatorInputFieldModels,
+                               List<RenderProductModel> renderProductModels, String defaultOperatorId) {
+        mitraDigitalCategoryView.renderOperator(operatorInputFieldModels, renderProductModels, defaultOperatorId);
     }
 
 }

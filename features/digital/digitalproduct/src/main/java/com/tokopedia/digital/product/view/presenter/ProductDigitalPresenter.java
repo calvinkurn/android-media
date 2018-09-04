@@ -14,6 +14,7 @@ import android.util.Log;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.exception.HttpErrorException;
@@ -465,7 +466,7 @@ public class ProductDigitalPresenter extends BaseDigitalPresenter
         if (selectedOperatorList.size() > 0)
             return selectedOperatorList.get(0);
         else
-            return new Operator();
+            return new OperatorBuilder().createOperator();
     }
 
 

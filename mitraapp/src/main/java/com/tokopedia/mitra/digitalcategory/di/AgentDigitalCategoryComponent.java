@@ -1,7 +1,7 @@
 package com.tokopedia.mitra.digitalcategory.di;
 
 import com.tokopedia.common_digital.common.di.DigitalComponent;
-import com.tokopedia.mitra.digitalcategory.presentation.fragment.AgentDigitalCategoryFragment;
+import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalCategoryFragment;
 
 import dagger.Component;
 
@@ -12,6 +12,6 @@ import dagger.Component;
 @Component(dependencies = DigitalComponent.class, modules = AgentDigitalCategoryModule.class)
 public interface AgentDigitalCategoryComponent {
 
-    void inject(AgentDigitalCategoryFragment agentDigitalCategoryFragment);
+    void inject(MitraDigitalCategoryFragment mitraDigitalCategoryFragment);
 
 }

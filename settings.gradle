@@ -21,7 +21,7 @@ apply from: "libraries/settings-libraries.gradle"
 
 include 'mitraapp'
 //include 'customerapp'
-//include 'tkpdloyalty'
+include 'tkpdloyalty'
 //include 'tkpdride'
 //include 'tkpdfeed'
 include 'tkpdcore'

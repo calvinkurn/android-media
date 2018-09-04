@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseProduct {
+public class ResponseProduct {
 
     @SerializedName("id")
     @Expose

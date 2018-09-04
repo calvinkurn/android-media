@@ -5,6 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.mitra.digitalcategory.domain.usecase.AgentDigitalCategoryUseCase;
+import com.tokopedia.mitra.digitalcategory.presentation.mapper.RechargeCategoryDetailMapper;
 
 import dagger.Module;
 import dagger.Provides;
@@ -14,6 +15,12 @@ import dagger.Provides;
  */
 @Module
 public class AgentDigitalCategoryModule {
+
+    @Provides
+    @AgentDigitalCategoryScope
+    RechargeCategoryDetailMapper provideRechargeCategoryDetailMapper() {
+        return new RechargeCategoryDetailMapper();
+    }
 
     @Provides
     @AgentDigitalCategoryScope

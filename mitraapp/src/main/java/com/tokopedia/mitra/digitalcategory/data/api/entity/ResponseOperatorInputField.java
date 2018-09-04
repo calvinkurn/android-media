@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by Rizky on 31/08/18.
  */
-class ResponseOperatorInputField {
+public class ResponseOperatorInputField {
 
     @SerializedName("name")
     @Expose
@@ -26,7 +26,9 @@ class ResponseOperatorInputField {
     @Expose
     private String placeholder;
 
-//    private String default;
+    @SerializedName("default")
+    @Expose
+    private String _default;
 
     @SerializedName("validation")
     @Expose
@@ -51,4 +53,9 @@ class ResponseOperatorInputField {
     public List<ResponseValidation> getValidation() {
         return validation;
     }
+
+    public String getDefault() {
+        return _default;
+    }
+
 }

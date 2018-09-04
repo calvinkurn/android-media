@@ -23,6 +23,16 @@ public class ClientNumber implements Parcelable {
     private String _default;
     private List<Validation> validation = new ArrayList<>();
 
+    public ClientNumber(String name, String type, String text, String placeholder, String _default,
+                        List<Validation> validation) {
+        this.name = name;
+        this.type = type;
+        this.text = text;
+        this.placeholder = placeholder;
+        this._default = _default;
+        this.validation = validation;
+    }
+
     public String getName() {
         return name;
     }
