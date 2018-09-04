@@ -14,7 +14,7 @@ import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
-package com.tokopedia.navigation.presentation.activity.MainParentActivity;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class CustomPushListener extends PushMessageListener {
 
