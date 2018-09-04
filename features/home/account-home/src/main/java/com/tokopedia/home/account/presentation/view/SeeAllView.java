@@ -26,6 +26,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
 public class SeeAllView extends BottomSheets {
 
     private AccountItemListener listener;
+    private static final int COLUMN_COUNT = 4;
 
     @Override
     public int getLayoutResourceId() {
@@ -47,7 +48,7 @@ public class SeeAllView extends BottomSheets {
         holder.setAdapter(adapter);
         holder.setLayoutManager(
                 new GridLayoutManager(view.getContext(),
-                        4,
+                        COLUMN_COUNT,
                         LinearLayoutManager.VERTICAL,
                         false));
         holder.addItemDecoration(
