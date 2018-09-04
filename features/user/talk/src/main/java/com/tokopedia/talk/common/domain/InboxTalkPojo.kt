@@ -108,15 +108,6 @@ data class TalkCommentItem(
         @SerializedName("comment_id")
         val comment_products: String = "",
         @Expose
-        @SerializedName("comment_is_moderator")
-        val comment_is_moderator: Int = 0,
-        @Expose
-        @SerializedName("comment_is_owner")
-        val comment_is_owner: Int = 0,
-        @Expose
-        @SerializedName("comment_is_seller")
-        val comment_is_seller: Int = 0,
-        @Expose
         @SerializedName("comment_message")
         val comment_message: String = "",
         @Expose
