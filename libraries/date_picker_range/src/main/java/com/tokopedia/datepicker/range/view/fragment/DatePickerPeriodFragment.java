@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.datepicker.view.fragment;
+package com.tokopedia.datepicker.range.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,9 +12,9 @@ import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.adapter.DatePickerPeriodAdapter;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.adapter.DatePickerPeriodAdapter;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 
 import java.util.ArrayList;
 

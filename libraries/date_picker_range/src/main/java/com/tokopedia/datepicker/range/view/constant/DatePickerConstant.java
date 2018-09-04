@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.datepicker.view.constant;
+package com.tokopedia.datepicker.range.view.constant;
 
 import java.util.Locale;
 

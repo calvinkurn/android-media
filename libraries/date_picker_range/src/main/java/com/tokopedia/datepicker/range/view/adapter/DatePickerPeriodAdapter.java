@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.datepicker.view.adapter;
+package com.tokopedia.datepicker.range.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.widget.DatePeriodView;
 
 import java.util.ArrayList;
 import java.util.Date;

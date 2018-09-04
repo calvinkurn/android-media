@@ -1,10 +1,10 @@
-package com.tokopedia.seller.common.datepicker.utils;
+package com.tokopedia.datepicker.range.utils;
 
 import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
 
 import java.text.DateFormat;

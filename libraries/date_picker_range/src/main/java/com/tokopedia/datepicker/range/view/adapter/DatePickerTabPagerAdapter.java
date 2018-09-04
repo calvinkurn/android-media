@@ -1,4 +1,4 @@
-package com.tokopedia.seller.common.datepicker.view.adapter;
+package com.tokopedia.datepicker.range.view.adapter;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
