@@ -149,6 +149,7 @@ android {
             ext.enableHansel=false
         }
         release {
+            signingConfig signingConfigs.debug
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -235,6 +236,10 @@ android {
     flavorDimensions "tier"
 
     productFlavors {
+        staging {
+            dimension "tier"
+        }
+
         live {
             dimension "tier"
         }
