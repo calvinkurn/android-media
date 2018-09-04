@@ -106,7 +106,6 @@ import io.branch.referral.BranchError;
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
-        ProductAddDeeplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
