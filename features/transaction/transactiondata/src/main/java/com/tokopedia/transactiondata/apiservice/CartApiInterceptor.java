@@ -24,6 +24,8 @@ import okhttp3.Response;
  */
 public class CartApiInterceptor extends TkpdAuthInterceptor {
 
+    private static final String RESPONSE_STATUS_REQUEST_DENIED = "REQUEST_DENIED";
+
     @Inject
     public CartApiInterceptor(Context context, AbstractionRouter abstractionRouter,
                               UserSession userSession, String authKey) {
@@ -32,37 +34,38 @@ public class CartApiInterceptor extends TkpdAuthInterceptor {
 
     @Override
     public void throwChainProcessCauseHttpError(Response response) throws IOException {
-        String responseError = response.body().string();
-        if (responseError != null && !responseError.isEmpty() && responseError.contains("header")) {
-            CartErrorResponse cartErrorResponse = new Gson().fromJson(
-                    responseError, CartErrorResponse.class
-            );
-            if (cartErrorResponse.getCartHeaderResponse() != null) {
-                String message = cartErrorResponse.getCartHeaderResponse().getMessageFormatted();
-                if (message == null || message.isEmpty()) {
-                    switch (response.code()) {
-                        case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
-                            message = ErrorNetMessage.MESSAGE_ERROR_SERVER;
-                            break;
-                        case ResponseStatus.SC_FORBIDDEN:
-                            message = ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN;
-                            break;
-                        case ResponseStatus.SC_REQUEST_TIMEOUT:
-                        case ResponseStatus.SC_GATEWAY_TIMEOUT:
-                            message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
-                            break;
-                        default:
-                            message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
-                            break;
+        String responseError = response.peekBody(512).string();
+        int errorCode = response.code();
+        if (responseError != null && !responseError.contains(RESPONSE_STATUS_REQUEST_DENIED))
+            if (!responseError.isEmpty() && responseError.contains("header")) {
+                CartErrorResponse cartErrorResponse = new Gson().fromJson(
+                        responseError, CartErrorResponse.class
+                );
+                if (cartErrorResponse.getCartHeaderResponse() != null) {
+                    String message = cartErrorResponse.getCartHeaderResponse().getMessageFormatted();
+                    if (message == null || message.isEmpty()) {
+                        switch (errorCode) {
+                            case ResponseStatus.SC_INTERNAL_SERVER_ERROR:
+                                message = ErrorNetMessage.MESSAGE_ERROR_SERVER;
+                                break;
+                            case ResponseStatus.SC_FORBIDDEN:
+                                message = ErrorNetMessage.MESSAGE_ERROR_FORBIDDEN;
+                                break;
+                            case ResponseStatus.SC_REQUEST_TIMEOUT:
+                            case ResponseStatus.SC_GATEWAY_TIMEOUT:
+                                message = ErrorNetMessage.MESSAGE_ERROR_TIMEOUT;
+                                break;
+                            default:
+                                message = ErrorNetMessage.MESSAGE_ERROR_DEFAULT;
+                                break;
+                        }
                     }
+                    throw new CartResponseErrorException(
+                            errorCode,
+                            cartErrorResponse.getCartHeaderResponse().getErrorCode(),
+                            message);
                 }
-                throw new CartResponseErrorException(
-                        response.code(),
-                        cartErrorResponse.getCartHeaderResponse().getErrorCode(),
-                        message);
             }
-        }
-        throw new CartHttpErrorException(response.code());
     }
 
     @Override
