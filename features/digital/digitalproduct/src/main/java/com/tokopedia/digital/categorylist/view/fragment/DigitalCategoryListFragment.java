@@ -75,7 +75,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String PARAM_IS_COUPON_ACTIVE = "PARAM_IS_COUPON_APPLIED";
 
-    private static final int DEFAULT_DELAY_TIME = 1000;
+    private static final int DEFAULT_DELAY_TIME = 500;
 
     public static final int DEFAULT_COUPON_APPLIED = 1;
     public static final int DEFAULT_COUPON_NOT_APPLIED = 0;
@@ -91,8 +91,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     DigitalItemHeaderHolder headerSubscription;
     @BindView(R2.id.header_fav_number)
     DigitalItemHeaderHolder headerFavNumber;
-    @BindView(R2.id.container_ticker_view)
-    LinearLayout containerTickerView;
     @BindView(R2.id.ticker_view)
     TickerView tickerView;
     @BindView(R2.id.separator_for_ticker)
@@ -229,7 +227,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
-                        .resIconId(R.drawable.ic_header_digital_category_my_transaction)
+                        .resIconId(R.drawable.ic_digital_homepage_header_my_transaction)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.TRANSACTION)
                         .build()
         );
@@ -241,7 +239,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_FAVORITE_NUMBER)
-                        .resIconId(R.drawable.ic_header_digital_category_favorit_number)
+                        .resIconId(R.drawable.ic_digital_homepage_header_fav_number)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.FAVORITE_NUMBER)
                         .build()
         );
@@ -252,8 +250,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                                 R.string.title_header_menu_digital_categories_subscription_digital_module
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS)
-                        .resIconId(R.drawable.ic_header_digital_category_subscription)
+                                + TkpdBaseURL.DigitalWebsite.PATH_MY_BILLS)
+                        .resIconId(R.drawable.ic_digital_homepage_header_mybills)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.SUBSCRIPTION)
                         .build()
         );
@@ -490,13 +488,11 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void showCouponAppliedTicker() {
-        containerTickerView.setVisibility(View.VISIBLE);
-        separatorForTicker.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
+        tickerView.setVisibility(View.INVISIBLE);
         tickerView.setListMessage(messages);
         tickerView.setHighLightColor(ContextCompat.getColor(context, R.color.green_200));
-        tickerView.setTickerHeight(getResources().getDimensionPixelSize(R.dimen.dp_75));
         tickerView.buildView();
 
         tickerView.postDelayed(new Runnable() {
@@ -511,10 +507,12 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 tickerView.setItemTextAppearance(R.style.TextView_Micro);
             }
         }, DEFAULT_DELAY_TIME);
+
+        separatorForTicker.setVisibility(View.VISIBLE);
     }
 
     private void hideCouponAppliedTicker() {
-        containerTickerView.setVisibility(View.GONE);
+        tickerView.setVisibility(View.GONE);
         separatorForTicker.setVisibility(View.GONE);
     }
 }

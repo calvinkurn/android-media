@@ -26,7 +26,6 @@ import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil
 import static com.tokopedia.tkpd.home.favorite.domain.interactor.GetWishlistUtil.KEY_PAGE;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.ITEM_COUNT;
 import static com.tokopedia.tkpd.home.presenter.WishListImpl.PAGE_NO;
-import static com.tokopedia.tkpd.home.presenter.WishListImpl.PARAM_USER_ID;
 
 /**
  * @author Kulomady on 1/18/17.
@@ -44,7 +43,6 @@ public class CloudWishlistDataStore {
 
         Map<String, Object> variables = new HashMap<>();
 
-        variables.put(PARAM_USER_ID, Integer.parseInt(userId));
         variables.put(PAGE_NO, param.get(KEY_PAGE));
         variables.put(ITEM_COUNT, param.get(KEY_COUNT));
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tokopedia.tkpd">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tokopedia.tkpd">
 
     <uses-sdk tools:overrideLibrary="com.tokopedia.core"/>
 
@@ -22,6 +22,8 @@
     <uses-permission
         android:name="android.permission.WRITE_CONTACTS"
         tools:node="remove"/>
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".ConsumerMainApplication"
@@ -296,10 +298,41 @@
             android:name=".home.ReactNativeBrandListOsActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.tokopedia.digital.product.additionalfeature.etoll.view.activity.DigitalCheckETollBalanceNFCActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+            <intent-filter>
+                <action android:name="android.nfc.action.TECH_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+        </activity>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
 
         <activity
             android:name=".home.TkpdYoutubeVideoActivity"
             android:screenOrientation="sensor"/>
+
+        <receiver
+            android:name="com.tokopedia.tkpd.utils.NotificationBroadcast">
+            <intent-filter>
+                <action android:name="com.tokopedia.tkpd.utils.delete" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

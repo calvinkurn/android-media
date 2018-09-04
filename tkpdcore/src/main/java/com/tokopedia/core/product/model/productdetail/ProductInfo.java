@@ -119,6 +119,7 @@ public class ProductInfo implements Parcelable {
     private Boolean hasVariant = false;
 
     private String productStockWording;
+    private boolean alwaysAvailable;
 
     private boolean limitedStock = false;
 
@@ -131,6 +132,14 @@ public class ProductInfo implements Parcelable {
 
     public void setProductInstallments(List<ProductInstallment> productInstallments) {
         this.productInstallments = productInstallments;
+    }
+
+    public boolean isAlwaysAvailable() {
+        return alwaysAvailable;
+    }
+
+    public void setAlwaysAvailable(boolean alwaysAvailable) {
+        this.alwaysAvailable = alwaysAvailable;
     }
 
     public String getProductWeightUnit() {

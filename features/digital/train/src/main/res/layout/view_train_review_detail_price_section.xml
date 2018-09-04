@@ -12,10 +12,10 @@
 
         <TextView
             android:text="@string/train_review_label_total_payment"
-            android:textColor="@color/black"
+            style="@style/TextView.Small.BlackPrimary"
+            android:textStyle="bold"
             android:layout_gravity="top"
             android:layout_weight="1"
-            android:textStyle="bold"
             android:layout_width="0dp"
             android:layout_height="wrap_content" />
 

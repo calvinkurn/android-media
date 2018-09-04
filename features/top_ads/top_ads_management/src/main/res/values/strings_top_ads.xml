@@ -284,8 +284,8 @@
     <string name="keyword_enter_product_description"><i>Contoh Penulisan:\nPakaian Wanita\nSepatu Bola</i></string>
     <string name="top_ads_keywords_add_how_to"><i>Masukkan atau tempel kata kunci, satu kata kunci per baris.</i></string>
     <string name="lihat_detail">Lihat Detail</string>
-    <string name="top_ads_see_detail_info_keyword_phrase">Promo tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama.</string>
-    <string name="top_ads_see_detail_info_keyword_match">Promo tampil jika kata kunci dalam pencarian sama dengan yang Anda pasang.</string>
+    <string name="top_ads_see_detail_info_keyword_phrase">Iklan tetap tampil meski pembeli memasukkan kata sebelum atau setelah kata kunci utama.</string>
+    <string name="top_ads_see_detail_info_keyword_match">Iklan tampil jika kata kunci dalam pencarian sama dengan yang Anda pasang.</string>
     <string name="topads_keyword_example">Contoh kata kunci\t\t\t:</string>
     <string name="topads_keyword_search_example">Contoh pencarian\t\t\t:</string>
     <string name="topads_keyword_example_value">&#160;pakaian wanita</string>
@@ -293,5 +293,5 @@
     <string name="topads_keyword_search_example_value_exact"><![CDATA[<i>&#160;pakaian wanita</i>]]></string>
     <string name="top_ads_keyword_subtitle_negative">Memblokir kata kunci yang tidak diinginkan.</string>
     <string name="top_ads_keyword_subtitle">Iklan tampil pada kata kunci yang sesuai.</string>
-    <string name="topads_keyword_local_empty_title">Tambah kata kunci yang akan dimasukkan ke grup promo.</string>
+    <string name="topads_keyword_local_empty_title">Tambah kata kunci yang akan dimasukkan ke grup iklan.</string>
 </resources>

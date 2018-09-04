@@ -7,6 +7,7 @@ query WhitelistQuery() {
         title_identifier
         description
         post_success
+        image_url
         error
     }
 }

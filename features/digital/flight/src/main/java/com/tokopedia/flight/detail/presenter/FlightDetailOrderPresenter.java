@@ -68,7 +68,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
 
     @Inject
     public FlightDetailOrderPresenter(FlightOrderToCancellationJourneyMapper flightOrderToCancellationJourneyMapper,
-                                      UserSession userSession, FlightGetOrderUseCase flightGetOrderUseCase) {
+                                      UserSession userSession,
+                                      FlightGetOrderUseCase flightGetOrderUseCase) {
         this.flightOrderToCancellationJourneyMapper = flightOrderToCancellationJourneyMapper;
         this.userSession = userSession;
         this.flightGetOrderUseCase = flightGetOrderUseCase;
@@ -222,6 +223,11 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         return flightOrderToCancellationJourneyMapper.transform(flightOrderJourneyList);
     }
 
+    @Override
+    public void onMoreAirlineInfoClicked() {
+        getView().navigateToWebview(FlightUrl.AIRLINES_CONTACT_URL);
+    }
+
     private boolean isDepartureDateMoreThan6Hours(Date departureDate) {
         Date currentDate = FlightDateUtil.getCurrentDate();
         long diffHours = (departureDate.getTime() - currentDate.getTime()) / TimeUnit.HOURS.toMillis(1);
@@ -240,8 +246,8 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
             } else {
                 getView().setPaymentLabel(R.string.flight_order_payment_label);
                 getView().setPaymentDescription(renderPaymentDescriptionText(flightOrder.getPayment()));
-                if (flightOrder.getPayment().getTotalAmount() > 0) {
-                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getTotalAmount()));
+                if (flightOrder.getPayment().getNeedToPayAmount() > 0) {
+                    getView().setTotalTransfer(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(flightOrder.getPayment().getNeedToPayAmount()));
                 } else {
                     getView().hideTotalTransfer();
                 }
@@ -382,7 +388,7 @@ public class FlightDetailOrderPresenter extends BaseDaggerPresenter<FlightDetail
         boolean canGoToCancelPage = false;
         for (FlightOrderJourney item : getView().getFlightOrder().getJourneys()) {
             if (isDepartureDateMoreThan6Hours(
-                    FlightDateUtil.stringToDate(item.getDepartureTime()))) {
+                    FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, item.getDepartureTime()))) {
                 canGoToCancelPage = true;
             }
         }

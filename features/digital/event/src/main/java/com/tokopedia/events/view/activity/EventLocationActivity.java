@@ -112,7 +112,7 @@ public class EventLocationActivity extends TActivity implements HasComponent<Eve
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }
