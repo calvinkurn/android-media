@@ -159,7 +159,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     if ((cartShopHolderData.isPartialSelected() || cartShopHolderData.isAllSelected()) &&
                             cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                            if (cartItemHolderData.isSelected()) {
+                            if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
                                 cartItemDataList.add(cartItemHolderData.getCartItemData());
                             }
                         }
@@ -345,12 +345,14 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         for (Object object : cartDataList) {
             if (object instanceof CartShopHolderData) {
                 CartShopHolderData cartShopHolderData = (CartShopHolderData) object;
-                if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
+                if (cartShopHolderData.isAllSelected()) {
                     if (cartShopHolderData.getShopGroupData().isError()) {
                         canProcess = false;
                         break;
+                    } else {
+                        checkedCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
                     }
-
+                } else if (cartShopHolderData.isPartialSelected()) {
                     if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                             if (cartItemHolderData.isSelected()) {

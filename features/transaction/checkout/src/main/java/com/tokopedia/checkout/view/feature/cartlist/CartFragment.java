@@ -784,8 +784,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
-//        cartAdapter.deleteItem(cartItemData);
-//        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
+
     }
 
     @Override
