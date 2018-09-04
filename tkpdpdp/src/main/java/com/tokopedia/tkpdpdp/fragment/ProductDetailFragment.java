@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,6 +41,7 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
@@ -122,6 +124,8 @@ import com.tokopedia.tkpdpdp.customview.TransactionDetailView;
 import com.tokopedia.tkpdpdp.customview.VideoDescriptionLayout;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
 import com.tokopedia.tkpdpdp.dialog.ReportProductDialogFragment;
+import com.tokopedia.tkpdpdp.estimasiongkir.presentation.activity.RatesEstimationDetailActivity;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.AppBarStateChangeListener;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.presenter.ProductDetailPresenter;
@@ -330,6 +334,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     protected void initialPresenter() {
         this.presenter = new ProductDetailPresenterImpl(this, this);
+        this.presenter.initGetRateEstimationUseCase();
     }
 
     @Override
@@ -841,6 +846,19 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onProductDetailLoaded(@NonNull ProductDetailData successResult) {
         presenter.processGetGTMTicker();
+
+        float weight = 0f;
+        try {
+            weight = Float.parseFloat(successResult.getInfo().getProductWeight());
+        } catch (Exception e){}
+
+        if ("gr".equalsIgnoreCase(successResult.getInfo().getProductWeightUnit())){
+            weight /= 1000;
+        }
+
+        presenter.getCostEstimation(getActivity(),
+                weight, successResult.getShopInfo().getShopDomain());
+
         this.productData = successResult;
         this.headerInfoView.renderData(successResult);
         this.pictureView.renderData(successResult);
@@ -2045,6 +2063,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void refreshData() {
         presenter.requestProductDetail(getActivity(), productPass, INIT_REQUEST, true, useVariant);
     }
+
+    @Override
+    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
+        priceSimulationView.updateRateEstimation(ratesModel);
+    }
+
+    @Override
+    public void moveToEstimationDetail() {
+        startActivity(RatesEstimationDetailActivity.Companion.createIntent(getActivity(), productData.getShopInfo().getShopDomain(),
+                Float.parseFloat(productData.getInfo().getProductWeight()), productData.getInfo().getProductWeightUnit()));
+    }
+
     private void renderTopAds(int itemSize) {
         if (!firebaseRemoteConfig.getBoolean(TkpdCache.RemoteConfigKey.MAINAPP_SHOW_PDP_TOPADS, true))
             return;

@@ -304,13 +304,15 @@ public class DiscoverySearchView extends FrameLayout implements Filter.FilterLis
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s != null) {
+                    String keyword = s.toString();
+
                     if (copyText) {
-                        s = s.subSequence(0, s.length() - 1);
+                        keyword = keyword.trim();
                         copyText = false;
                     }
-                    mUserQuery = s;
+                    mUserQuery = keyword;
                     if (queryListener != null) {
-                        queryListener.onQueryChanged(s.toString());
+                        queryListener.onQueryChanged(keyword);
                     }
                 }
             }
