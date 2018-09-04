@@ -78,7 +78,10 @@ ext {
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
     tkpdBankDBVersion = '2.22'
+    transactionCheckoutVersion = '2.22'
 
+    groupIdTransaction = 'com.tokopedia.transaction'
+    artifactIdCheckout = 'checkout'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -370,8 +373,8 @@ ext {
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
             userSession       : ":libraries:user_session",
-            imagePicker     : ":libraries:image_picker",
-            cameraView      : ":libraries:camera_view",
+            imagePicker       : ":libraries:image_picker",
+            cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",

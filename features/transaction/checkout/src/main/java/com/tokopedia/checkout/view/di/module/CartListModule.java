@@ -9,14 +9,17 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
-import com.tokopedia.checkout.view.adapter.CartListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
-import com.tokopedia.checkout.view.view.cartlist.CartItemDecoration;
-import com.tokopedia.checkout.view.view.cartlist.CartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListPresenter;
-import com.tokopedia.checkout.view.view.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
+import com.tokopedia.checkout.view.feature.cartlist.CartItemDecoration;
+import com.tokopedia.checkout.view.feature.cartlist.CartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListPresenter;
+import com.tokopedia.checkout.view.feature.cartlist.ICartListView;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartAdapter;
+import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -30,17 +33,31 @@ import rx.subscriptions.CompositeSubscription;
 public class CartListModule {
 
     private final ICartListView cartListView;
-    private final CartListAdapter.ActionListener cartListActionListener;
+    private final CartAdapter.ActionListener cartActionListener;
+    private final CartItemAdapter.ActionListener cartItemActionListener;
 
     public CartListModule(CartFragment cartFragment) {
         this.cartListView = cartFragment;
-        this.cartListActionListener = cartFragment;
+        this.cartActionListener = cartFragment;
+        this.cartItemActionListener = cartFragment;
     }
 
     @Provides
     @CartListScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
+    }
+
+    @Provides
+    @CartListScope
+    AddWishListUseCase providesTkpTkpdAddWishListUseCase() {
+        return new AddWishListUseCase(cartListView.getActivity());
+    }
+
+    @Provides
+    @CartListScope
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase() {
+        return new RemoveWishListUseCase(cartListView.getActivity());
     }
 
     @Provides
@@ -53,11 +70,14 @@ public class CartListModule {
                                                  CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                  CompositeSubscription compositeSubscription,
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
-                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase) {
+                                                 CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
+                                                 AddWishListUseCase addWishListUseCase,
+                                                 RemoveWishListUseCase removeWishListUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
-                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase
+                compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
+                addWishListUseCase, removeWishListUseCase
         );
     }
 
@@ -69,8 +89,8 @@ public class CartListModule {
 
     @Provides
     @CartListScope
-    CartListAdapter provideCartListAdapter() {
-        return new CartListAdapter(cartListActionListener);
+    CartAdapter provideCartListAdapter() {
+        return new CartAdapter(cartActionListener, cartItemActionListener);
     }
 
 }

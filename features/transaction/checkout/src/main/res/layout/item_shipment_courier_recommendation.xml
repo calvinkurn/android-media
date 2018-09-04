@@ -25,7 +25,7 @@
             android:layout_weight="1"
             android:paddingBottom="@dimen/dp_16"
             android:paddingTop="@dimen/dp_16"
-            android:text="Durasi Pengiriman" />
+            android:text="@string/label_shipping_duration" />
 
         <TextView
             android:id="@+id/tv_choose_duration"

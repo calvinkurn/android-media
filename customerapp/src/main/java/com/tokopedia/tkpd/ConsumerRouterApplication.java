@@ -37,10 +37,9 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
-import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
-import com.tokopedia.checkout.view.view.cartlist.CartActivity;
+import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -88,6 +87,7 @@ import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
+import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -100,11 +100,11 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.reactnative.IReactNativeRouter;
+import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
 import com.tokopedia.core.router.transactionmodule.UnifiedOrderRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
-import com.tokopedia.core.router.transactionmodule.sharedata.CouponListResult;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
@@ -302,6 +302,7 @@ import com.tokopedia.tokocash.historytokocash.presentation.model.PeriodRangeMode
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.TokopointRouter;
+import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
@@ -318,7 +319,6 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
@@ -333,7 +333,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -905,7 +904,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getHomeFeedIntent(Context context) {
+    public Intent checkoutModuleRouterGetHomeFeedIntent(Context context) {
         return ParentIndexHome.getHomeFeedIntent(context);
     }
 
@@ -1037,12 +1036,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeIntent(Context context) {
         return new Intent(context, ParentIndexHome.class);
-    }
-
-    @Override
-    public Intent getHomePageIntent(Context context) {
-        // Force navigation to home tab
-        return ParentIndexHome.getHomeIntent(context);
     }
 
     @Override
@@ -1719,24 +1712,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         requestParams.putObject(AddToCartUseCase.PARAM_ADD_TO_CART, addToCartRequest);
         return CartComponentInjector.newInstance(this).getAddToCartUseCase()
                 .createObservable(requestParams)
-                .map(new Func1<AddToCartDataResponse, AddToCartResult>() {
-                    @Override
-                    public AddToCartResult call(AddToCartDataResponse addToCartDataResponse) {
-                        List<String> messageList = addToCartDataResponse.getMessage();
-                        StringBuilder stringBuilder = new StringBuilder();
-                        for (int i = 0; i < messageList.size(); i++) {
-                            String string = messageList.get(i);
-                            stringBuilder.append(string);
-                            stringBuilder.append(" ");
-                        }
-                        return new AddToCartResult.Builder()
-                                .message(stringBuilder.toString())
-                                .success(addToCartDataResponse.getSuccess() == 1)
-                                .cartId(addToCartDataResponse.getData() != null
-                                        ? String.valueOf(addToCartDataResponse.getData().getCartId())
-                                        : "")
-                                .build();
+                .map(addToCartDataResponse -> {
+                    List<String> messageList = addToCartDataResponse.getMessage();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (int i = 0; i < messageList.size(); i++) {
+                        String string = messageList.get(i);
+                        stringBuilder.append(string);
+                        stringBuilder.append(" ");
                     }
+                    return new AddToCartResult.Builder()
+                            .message(stringBuilder.toString())
+                            .success(addToCartDataResponse.getSuccess() == 1)
+                            .cartId(addToCartDataResponse.getData() != null
+                                    ? String.valueOf(addToCartDataResponse.getData().getCartId())
+                                    : "")
+                            .build();
                 });
     }
 
@@ -1774,34 +1764,26 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartListIntent(
-            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(context, additionalStringData, defaultSelectedTab)
-                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(context, additionalStringData);
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartListCouponActive(
+                getAppContext(), additionalStringData, defaultSelectedTab
+        )
+                : LoyaltyActivity.newInstanceNewCheckoutCartListCouponNotActive(
+                getAppContext(), additionalStringData
+        );
     }
 
     @Override
     public Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
-            Context context, boolean couponActive, String additionalStringData, String defaultSelectedTab
+            boolean couponActive, String additionalStringData, String defaultSelectedTab
     ) {
-        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(context, additionalStringData, defaultSelectedTab)
-                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(context, additionalStringData);
-    }
-
-    @Override
-    public Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize) {
-        TKPDMapParam<String, String> tkpdMapParam = new TKPDMapParam<>();
-        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE, page);
-        tkpdMapParam.put(GetCouponListCartMarketPlaceUseCase.PARAM_PAGE_SIZE, pageSize);
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putObject(
-                GetCouponListCartMarketPlaceUseCase.PARAM_REQUEST_AUTH_MAP_STRING,
-                com.tokopedia.abstraction.common.utils.network.AuthUtil.generateParamsNetwork(
-                        this, tkpdMapParam, userSession.getUserId(), userSession.getDeviceId()
-                )
+        return couponActive ? LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponActive(
+                getAppContext(), additionalStringData, defaultSelectedTab
+        )
+                : LoyaltyActivity.newInstanceNewCheckoutCartShipmentCouponNotActive(
+                getAppContext(), additionalStringData
         );
-        return CartComponentInjector.newInstance(this)
-                .getGetCouponListCartMarketPlaceUseCase().createObservable(requestParams);
     }
 
     @Override
@@ -1820,13 +1802,42 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetProductDetailIntent(Context context, ProductPass productPass) {
-        return ProductInfoActivity.createInstance(context, productPass);
+    public Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product) {
+        ProductItem data = new ProductItem();
+        data.setId(product.getId());
+        data.setName(product.getName());
+        data.setPrice(product.getPriceFormat());
+        data.setImgUri(product.getImage().getM_url());
+        Bundle bundle = new Bundle();
+        Intent intent = ProductDetailRouter.createInstanceProductDetailInfoActivity(getAppContext());
+        bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
+        intent.putExtras(bundle);
+        return intent;
     }
 
     @Override
-    public Intent checkoutModuleRouterGetShopInfoIntent(Context context, String shopId) {
-        return ShopPageActivity.createIntent(context, shopId);
+    public Intent checkoutModuleRouterGetTransactionSummaryIntent() {
+        return TransactionPurchaseRouter.createIntentTxSummary(getAppContext());
+    }
+
+    @Override
+    public void checkoutModuleRouterResetBadgeCart() {
+        CartBadgeNotificationReceiver.resetBadgeCart(getAppContext());
+    }
+
+    @Override
+    public String checkoutModuleRouterGetAutoApplyCouponBranchUtil() {
+        return BranchSdkUtils.getAutoApplyCouponIfAvailable(getAppContext());
+    }
+
+    @Override
+    public Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass) {
+        return ProductInfoActivity.createInstance(getAppContext(), productPass);
+    }
+
+    @Override
+    public Intent checkoutModuleRouterGetShopInfoIntent(String shopId) {
+        return ShopPageActivity.createIntent(getAppContext(), shopId);
     }
 
     @Override
@@ -1840,22 +1851,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetPickupPointActivityFromCartMultipleAddressIntent(Activity activity,
-                                                                                          int cartPosition,
-                                                                                          String districtName,
-                                                                                          HashMap<String, String> params) {
-        return PickupPointActivity.createInstance(activity, cartPosition, districtName, params);
-    }
-
-    @Override
-    public Intent checkoutModuleRouterGetPickupPointActivityFromCartSingleAddressIntent(Activity activity,
-                                                                                        String districtName,
-                                                                                        HashMap<String, String> params) {
-        return PickupPointActivity.createInstance(activity, districtName, params);
-    }
-
-    @Override
-    public ChuckInterceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
+    public Interceptor checkoutModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
 
