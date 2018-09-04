@@ -455,15 +455,26 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
-                getSelectedCartDataList(), EnhancedECommerceCartMapData.REMOVE_ACTION
-        ));
+        List<CartShopHolderData> cartShopHolderDataList = getAllCartDataList();
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
-        for (CartItemData cartItemData : getSelectedCartDataList()) {
-            if (cartItemData.isError()) {
-                toBeDeletedCartItem.add(cartItemData);
+
+        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+            if (cartShopHolderData.getShopGroupData().isError()) {
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                }
+            } else {
+                for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (cartItemHolderData.getCartItemData().isError()) {
+                        toBeDeletedCartItem.add(cartItemHolderData.getCartItemData());
+                    }
+                }
             }
         }
+
+        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
+                toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
+        ));
         final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(toBeDeletedCartItem.size());
         dialog.setOnOkClickListener(view -> {
             if (toBeDeletedCartItem.size() > 0) {
@@ -498,8 +509,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataEnableToCheckout() {
         if (isAdded()) {
-//            btnToShipment.setBackgroundResource(R.drawable.orange_button_rounded);
-//            btnToShipment.setTextColor(getResources().getColor(R.color.white));
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(null));
         }
     }
@@ -507,8 +516,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onCartDataDisableToCheckout(String message) {
         if (isAdded()) {
-//            btnToShipment.setBackgroundResource(R.drawable.bg_grey_button_rounded_checkout_module);
-//            btnToShipment.setTextColor(getResources().getColor(R.color.grey_500));
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
     }
