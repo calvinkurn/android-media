@@ -384,7 +384,7 @@
     <string name="flight_cancellation_should_choose_at_least_one_passenger_error">Harap pilih setidaknya satu penumpang untuk di batalkan.</string>
     <string name="flight_cancellation_review_dialog_success_title">Pengajuan Pembatalan Pemesanan Telah Berhasil</string>
     <string name="flight_cancellation_review_dialog_non_refundable_success_description">Pembatalan pesanan Anda akan segera diproses.</string>
-    <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda.</string>
+    <string name="flight_cancellation_review_dialog_refundable_success_description">Pembatalan pesanan Anda akan segera diproses. Mohon tunggu konfirmasi dari pihak maskapai terkait untuk proses pengembalian dana pemesanan tiket pesawat Anda. Pengembalian dana Anda akan diproses dalam 7 hari kerja berikutnya.</string>
     <string name="flight_label_additional_data">Data Penunjang</string>
     <string name="flight_cancellation_review_total_refund_label">Total Refund</string>
     <string name="flight_cancellation_terms_and_condition_button_text">Selengkapnya</string>

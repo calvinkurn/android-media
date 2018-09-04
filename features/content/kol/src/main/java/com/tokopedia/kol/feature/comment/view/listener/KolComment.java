@@ -17,11 +17,13 @@ public interface KolComment {
 
         Context getContext();
 
-        void onGoToProfile(String url);
+        void openRedirectUrl(String url);
 
         void showLoading();
 
         void onErrorGetCommentsFirstTime(String errorMessage);
+
+        void onServerErrorGetCommentsFirstTime(String errorMessage);
 
         void onSuccessGetCommentsFirstTime(KolComments kolComments);
 

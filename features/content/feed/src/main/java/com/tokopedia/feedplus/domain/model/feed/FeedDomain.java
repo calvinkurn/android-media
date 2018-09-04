@@ -16,12 +16,24 @@ public class FeedDomain {
     private final boolean hasNext;
 
     @Nullable
+    private String title;
+
+    @Nullable
     private WhitelistDomain whitelist;
 
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
                       boolean hasNext) {
         this.listFeed = listFeed;
         this.hasNext = hasNext;
+    }
+
+    @Nullable
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@Nullable String title) {
+        this.title = title;
     }
 
     @Nullable

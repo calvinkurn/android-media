@@ -78,6 +78,7 @@ ext {
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
     tkpdRecentviewVersion = '2.22'
+    tkpdBankDBVersion = '2.22'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -331,14 +332,16 @@ ext {
             recentview            : ":features:discovery:recentview",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
-            groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
+            groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
-            settingbank         : ":features:user:settingbank",
+            settingbank           : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
-            contactUs             : ":features:operational:contact_us",
+            bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
+            vote                  : ":features:user:vote",
+            contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",

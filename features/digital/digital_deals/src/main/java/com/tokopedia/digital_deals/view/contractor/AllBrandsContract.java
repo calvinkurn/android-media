@@ -23,7 +23,7 @@ public class AllBrandsContract {
 
         void navigateToActivity(Intent intent);
 
-        void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted);
+        void renderBrandList(List<Brand> brandList, boolean isSearchSubmitted, Boolean... fromSearchResult);
 
         RequestParams getParams();
 

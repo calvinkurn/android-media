@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -69,6 +71,8 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.applink.TkpdApplinkDelegate;
@@ -102,6 +106,7 @@ import io.branch.referral.BranchError;
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
+        ProductAddDeeplinkModule.class,
         TransactionApplinkModule.class,
         DigitalApplinkModule.class,
         PdpApplinkModule.class,
@@ -132,7 +137,9 @@ import io.branch.referral.BranchError;
         AccountHomeApplinkModule.class,
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
-        ProductAddDeeplinkModule.class
+        ProductAddDeeplinkModule.class,
+        ChangePasswordDeeplinkModule.class,
+        SettingBankApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -146,6 +153,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader(),
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
@@ -176,7 +184,9 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader()
+                new ProductAddDeeplinkModuleLoader(),
+                new ChangePasswordDeeplinkModuleLoader(),
+                new SettingBankApplinkModuleLoader()
             );
         }
 
