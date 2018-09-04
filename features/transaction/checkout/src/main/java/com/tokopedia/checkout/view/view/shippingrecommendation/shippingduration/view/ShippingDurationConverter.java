@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.view.shippingrecommendation.shippingduration.view;
 
-import android.text.TextUtils;
-
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -45,10 +43,12 @@ public class ShippingDurationConverter {
                 for (ProductData product : serviceData.getProducts()) {
                     if (product.getError() != null &&
                             product.getError().getErrorMessage() != null &&
-                            product.getError().getErrorId() != null &&
-                            product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                        serviceData.getTexts().setTextRangePrice(
-                                product.getError().getErrorMessage());
+                            product.getError().getErrorId() != null) {
+                        if (product.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
+                            serviceData.getTexts().setTextRangePrice(product.getError().getErrorMessage());
+                        } else {
+                            shippingDurationViewModel.setErrorMessage(product.getError().getErrorMessage());
+                        }
                     }
                 }
             }
@@ -63,20 +63,8 @@ public class ShippingDurationConverter {
                                                                              int selectedSpId, int selectedServiceId) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
-            if (productData.getError() != null) {
-                if (!TextUtils.isEmpty(productData.getError().getErrorId())) {
-                    if (productData.getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
-                        addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
-                                selectedServiceId, shippingCourierViewModels, productData);
-                    }
-                } else {
-                    addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
-                            selectedServiceId, shippingCourierViewModels, productData);
-                }
-            } else {
-                addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
-                        selectedServiceId, shippingCourierViewModels, productData);
-            }
+            addShippingCourierViewModel(shippingDurationViewModel, shopShipmentList, selectedSpId,
+                    selectedServiceId, shippingCourierViewModels, productData);
         }
 
         return shippingCourierViewModels;
