@@ -77,6 +77,7 @@ ext {
     tkpdOmsVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdUpdateInactivePhoneVersion = '2.22'
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
 
@@ -354,7 +355,8 @@ ext {
             withdraw              : ":features:payment:withdraw",
             productDraftDatabase  : ":features:merchant:product_draft_database",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            updateinactivephone   : ":features:user:updateinactivephone"
     ]
 
     libraries = [
