@@ -153,7 +153,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
                 new TransactionApplinkModuleLoader(),
                 new DigitalApplinkModuleLoader(),
                 new PdpApplinkModuleLoader(),
