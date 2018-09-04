@@ -204,7 +204,6 @@ public class CartRemoveProductAdapter extends RecyclerView.Adapter<RecyclerView.
             mCbRemoveProduct.setOnClickListener(checkBoxClickedListener(position));
             mCbRemoveProduct.setOnCheckedChangeListener(onChangeStateListener(position));
 
-//            mTvSenderName.setText(originData.getShopName());
             mTvProductName.setText(originData.getProductName());
             mTvProductPrice.setText(originData.getPriceFormatted());
             mTvTotalProductItem.setText(String.valueOf(updatedData.getQuantity()));

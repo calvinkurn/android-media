@@ -1240,7 +1240,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSuccessAddWishlist(String productId) {
         hideProgressLoading();
-        showToastMessageGreen("Sukses menambah wishlist");
+        showToastMessageGreen(getString(R.string.toast_message_add_wishlist_success));
         cartAdapter.notifyByProductId(productId, true);
     }
 
@@ -1254,7 +1254,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onSuccessRemoveWishlist(String productId) {
         hideProgressLoading();
-        showToastMessageGreen("Sukses menghapus wishlist");
+        showToastMessageGreen(getString(R.string.toast_message_remove_wishlist_success));
         cartAdapter.notifyByProductId(productId, false);
     }
 
