@@ -66,6 +66,10 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
         return false
     }
 
+    override fun showGetListError(throwable: Throwable?) {
+        super.showGetListError(throwable)
+    }
+
     override fun renderList(list: MutableList<SettingListPaymentModel>) {
         updateViewCounter(list.size)
         if(list.size > 0 && list.size < 4){

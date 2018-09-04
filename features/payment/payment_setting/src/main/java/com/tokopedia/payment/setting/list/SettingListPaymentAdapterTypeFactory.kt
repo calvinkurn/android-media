@@ -4,6 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
@@ -21,8 +23,16 @@ class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSett
         return SettingListAddCardViewHolder.LAYOUT;
     }
 
+    override fun type(viewModel: ErrorNetworkModel?): Int {
+        return SettingListEmptyViewHolder.LAYOUT
+    }
+
     override fun type(viewModel: EmptyModel?): Int {
         return SettingListEmptyViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: LoadingModel?): Int {
+        return SettingListLoadingPaymentViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -32,6 +42,8 @@ class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSett
             return SettingListEmptyViewHolder(parent, listenerEmptyViewHolder)
         }else if(type == SettingListAddCardViewHolder.LAYOUT){
             return SettingListAddCardViewHolder(parent, listenerEmptyViewHolder)
+        }else if(type == SettingListLoadingPaymentViewHolder.LAYOUT){
+            return SettingListLoadingPaymentViewHolder(parent)
         }
         return super.createViewHolder(parent, type)
     }
