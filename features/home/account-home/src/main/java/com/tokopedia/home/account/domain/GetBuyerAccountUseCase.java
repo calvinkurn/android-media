@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
+import rx.functions.Func2;
 
 import static com.tokopedia.home.account.AccountConstants.VARIABLES;
 
@@ -31,18 +32,34 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private GraphqlUseCase graphqlUseCase;
     private BuyerAccountMapper mapper;
+    private Observable<WalletModel> tokocashAccountBalance;
     private WalletPref walletPref;
 
     @Inject
-    public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase, BuyerAccountMapper mapper,
+    public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
+                                  Observable<WalletModel> tokocashAccountBalance,
+                                  BuyerAccountMapper mapper,
                                   WalletPref walletPref) {
         this.graphqlUseCase = graphqlUseCase;
+        this.tokocashAccountBalance = tokocashAccountBalance;
         this.mapper = mapper;
         this.walletPref = walletPref;
     }
 
     @Override
     public Observable<BuyerViewModel> createObservable(RequestParams requestParams) {
+        return Observable.zip(
+                getAccountData(requestParams),
+                tokocashAccountBalance,
+                (accountModel, walletModel) -> {
+                    accountModel.setWallet(walletModel);
+                    return accountModel;
+                })
+                .doOnNext(this::saveLocallyWallet)
+                .map(mapper);
+    }
+
+    private Observable<AccountModel> getAccountData(RequestParams requestParams) {
         return Observable
                 .just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
@@ -58,13 +75,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     }
 
                     return Observable.error(new Exception("Query and/or variable are empty."));
-                })
-                .doOnNext(graphqlResponse -> saveLocallyWallet(graphqlResponse))
-                .map(mapper);
+                }).map(graphqlResponse -> graphqlResponse.getData(AccountModel.class));
     }
 
-    private void saveLocallyWallet(GraphqlResponse graphqlResponse) {
-        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+    private void saveLocallyWallet(AccountModel accountModel) {
         WalletModel walletModel = accountModel.getWallet();
         if (!walletModel.isLinked()){
             WalletModel.WalletAction action = walletModel.getAction();
