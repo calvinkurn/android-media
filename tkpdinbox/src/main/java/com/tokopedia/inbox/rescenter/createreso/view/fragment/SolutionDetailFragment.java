@@ -360,6 +360,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
         complaintResult.problem.trouble = model.getProblem().getTrouble();
         complaintResult.problem.type = model.getProblem().getType();
         complaintResult.problem.id = 0;
+        complaintResult.isChecked = true;
         if (resultViewModel != null) {
             resultViewModel.complaints.add(complaintResult);
         } else {

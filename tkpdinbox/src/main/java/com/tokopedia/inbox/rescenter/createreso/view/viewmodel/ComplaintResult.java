@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 public class ComplaintResult implements Parcelable{
     public ProblemResult problem;
     public ProblemOrderResult order;
+    public boolean isChecked;
     private static final String PARAM_PROBLEM = "problem";
     private static final String PARAM_ORDER = "order";
 

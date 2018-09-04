@@ -33,7 +33,11 @@ public class EditAppealSolutionModel implements Parcelable {
         if (complaints != null) {
             JsonArray complaintArray = new JsonArray();
             for (ComplaintResult complaintResult : complaints) {
-                complaintArray.add(complaintResult.writeToJson());
+                if (complaintResult.problem.type != 1) {
+                    complaintArray.add(complaintResult.writeToJson());
+                } else if (complaintResult.isChecked) {
+                    complaintArray.add(complaintResult.writeToJson());
+                }
             }
             object.add(PARAM_COMPLAINT, complaintArray);
         }
