@@ -6,11 +6,9 @@ import android.os.Bundle;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -20,6 +18,8 @@ import com.tokopedia.contactus.inboxticket2.di.DaggerInboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxComponent;
 import com.tokopedia.contactus.inboxticket2.di.InboxModule;
 import com.tokopedia.contactus.inboxticket2.view.contract.InboxBaseContract;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 
 import javax.inject.Inject;
 
@@ -160,25 +160,11 @@ public abstract class InboxBaseActivity extends BaseSimpleActivity implements In
 
     @Override
     public void setSnackBarErrorMessage(String message, boolean clickable) {
-        Snackbar snackbar = Snackbar.make(getRootView(), message, Snackbar.LENGTH_INDEFINITE);
-        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
-        LayoutInflater inflater = LayoutInflater.from(this);
-        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
-        TextView tv = snackView.findViewById(R.id.tv_msg);
-        tv.setText(message);
-
+        Snackbar snackbar = ToasterError.make(getRootView(), message, BaseToaster.LENGTH_SHORT);
         if (clickable) {
-            TextView okBtn = snackView.findViewById(R.id.snack_ok);
-            okBtn.setVisibility(View.VISIBLE);
-            okBtn.setOnClickListener(view -> snackbar.dismiss());
-        } else {
-            snackbar.setDuration(Snackbar.LENGTH_SHORT);
+            snackbar.setDuration(BaseToaster.LENGTH_INDEFINITE);
+            snackbar.setAction(R.string.ok, v -> snackbar.dismiss());
         }
-
-        layout.addView(snackView, 0);
-        layout.setPadding(0, 0, 0, 0);
-        textView.setVisibility(View.INVISIBLE);
         snackbar.show();
     }
 }

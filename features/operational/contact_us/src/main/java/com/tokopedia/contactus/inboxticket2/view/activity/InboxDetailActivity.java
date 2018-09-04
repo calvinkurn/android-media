@@ -128,15 +128,19 @@ public class InboxDetailActivity extends InboxBaseActivity
         textToolbar.setVisibility(View.VISIBLE);
 
         int textSizeLabel = 11;
-        if (ticketDetail.getStatus().equalsIgnoreCase("solved")
-                || ticketDetail.getStatus().equalsIgnoreCase("open")) {
+        if (ticketDetail.getStatus().equalsIgnoreCase(utils.SOLVED)
+                || ticketDetail.getStatus().equalsIgnoreCase(utils.OPEN)) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.on_going),
                     getResources().getColor(R.color.yellow_110),
                     getResources().getColor(R.color.black_38), textSizeLabel));
             rvMessageList.setPadding(0, 0, 0,
                     getResources().getDimensionPixelSize(R.dimen.text_toolbar_height_collapsed));
+            if (ticketDetail.isShowRating()) {
+                toggleTextToolbar(View.GONE);
+                rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
+            }
 
-        } else if (ticketDetail.getStatus().equalsIgnoreCase("closed")
+        } else if (ticketDetail.getStatus().equalsIgnoreCase(utils.CLOSED)
                 && !ticketDetail.isShowRating()) {
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.closed),
                     getResources().getColor(R.color.grey_200),
@@ -147,11 +151,8 @@ public class InboxDetailActivity extends InboxBaseActivity
             tvTicketTitle.setText(utils.getStatusTitle(ticketDetail.getSubject() + ".   " + getString(R.string.need_rating),
                     getResources().getColor(R.color.red_30),
                     getResources().getColor(R.color.red_150), textSizeLabel));
-            viewHelpRate.setVisibility(View.VISIBLE);
-            textToolbar.setVisibility(View.GONE);
+            toggleTextToolbar(View.GONE);
             rateCommentID = commentsItems.get(commentsItems.size() - 1).getId();
-            rvMessageList.setPadding(0, 0, 0,
-                    getResources().getDimensionPixelSize(R.dimen.help_rate_height));
         }
 
         if (!TextUtils.isEmpty(ticketDetail.getNumber())) {
@@ -523,9 +524,7 @@ public class InboxDetailActivity extends InboxBaseActivity
             builder.setTitle(getString(R.string.title_dialog_wrong_scan));
             builder.setMessage(R.string.abandon_message_warning);
             builder.setNegativeButton(getString(R.string.batal),
-                    (dialog, i) -> {
-                        dialog.dismiss();
-                    });
+                    (dialog, i) -> dialog.dismiss());
             builder.setPositiveButton(getString(R.string.keular),
                     (dialogInterface, i) -> {
                         ContactUsTracking.sendGTMInboxTicket("",

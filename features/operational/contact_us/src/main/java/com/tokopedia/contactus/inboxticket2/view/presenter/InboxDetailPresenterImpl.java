@@ -134,7 +134,7 @@ public class InboxDetailPresenterImpl
         if (item.getItemId() == R.id.action_search) {
             mView.toggleSearch(View.VISIBLE);
             return true;
-        } else {
+        } else if (item.getItemId() == android.R.id.home) {
             if (mView.isSearchMode()) {
                 mView.toggleSearch(View.GONE);
                 if (mTicketDetail.isShowRating()) {
@@ -151,6 +151,8 @@ public class InboxDetailPresenterImpl
             } else {
                 return false;
             }
+        } else {
+            return false;
         }
     }
 
@@ -170,7 +172,6 @@ public class InboxDetailPresenterImpl
         if (text.length() > 0) {
             search(text);
         } else {
-            mView.enterSearchMode("", -1);
             if (searchIndices != null)
                 searchIndices.clear();
         }
@@ -182,7 +183,6 @@ public class InboxDetailPresenterImpl
         if (text.length() > 0) {
             search(text);
         } else {
-            mView.enterSearchMode("", -1);
             if (searchIndices != null)
                 searchIndices.clear();
         }
@@ -656,7 +656,7 @@ public class InboxDetailPresenterImpl
                 DataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
-                    if (mTicketDetail.getStatus().equals("open")) {
+                    if (mTicketDetail.getStatus().equals(getUtils().OPEN) || mTicketDetail.getStatus().equals(getUtils().SOLVED)) {
                         mView.toggleTextToolbar(View.VISIBLE);
                     } else {
                         mView.showIssueClosed();
