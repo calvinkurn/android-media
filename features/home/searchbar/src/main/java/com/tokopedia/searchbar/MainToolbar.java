@@ -73,7 +73,7 @@ public class MainToolbar extends Toolbar {
         btnQrCode.setOnClickListener(v -> {
             searchBarAnalytics.eventTrackingSqanQr();
             getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
-                    .gotoQrScannerPage(getContext()));
+                    .gotoQrScannerPage());
         });
 
         btnWishlist.setOnClickListener(v -> {
