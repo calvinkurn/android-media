@@ -103,11 +103,14 @@ public class SimilarSearchActivity extends BaseSimpleActivity implements Similar
     @Override
     public void finish() {
         super.finish();
-        View view = getFragment().getView();
-        if(view != null) {
-            view.clearAnimation();
-            if (canCancelAnimation()) {
-                view.animate().cancel();
+        Fragment fragment = getFragment();
+        if(fragment != null) {
+            View view = fragment.getView();
+            if (view != null) {
+                view.clearAnimation();
+                if (canCancelAnimation()) {
+                    view.animate().cancel();
+                }
             }
         }
         overridePendingTransition(0,0);
