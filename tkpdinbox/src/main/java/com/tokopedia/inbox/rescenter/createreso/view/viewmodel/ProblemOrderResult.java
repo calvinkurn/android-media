@@ -12,6 +12,8 @@ import com.google.gson.JsonObject;
 public class ProblemOrderResult implements Parcelable {
     public ProblemOrderDetailResult detail;
 
+    private static final String PARAM_DETAIL = "detail";
+
     public ProblemOrderResult() {
         detail = new ProblemOrderDetailResult();
     }
@@ -20,7 +22,7 @@ public class ProblemOrderResult implements Parcelable {
         JsonObject object = new JsonObject();
         try {
             if (detail != null) {
-                object.add("detail", detail.writeToJson());
+                object.add(PARAM_DETAIL, detail.writeToJson());
             }
         } catch (Exception e) {
             e.printStackTrace();
