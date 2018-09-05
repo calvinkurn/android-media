@@ -115,6 +115,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                         .eventClickAtcCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
                 setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 finish();
+                dialog.dismiss();
             }
         });
         dialog.setOnOkClickListener(new View.OnClickListener() {
