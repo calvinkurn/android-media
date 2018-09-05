@@ -387,7 +387,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
-        onNeedUpdateViewItem(itemPosition);
+        cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
     }
@@ -545,7 +545,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.setHasPerformChecklistChange();
         boolean needToUpdateParent = cartAdapter.setItemSelected(position, parentPosition, checked);
         if (needToUpdateParent) {
-            onNeedUpdateViewItem(parentPosition);
+            cartAdapter.notifyDataSetChanged();
         }
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
@@ -1024,6 +1024,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
+        if (subtotalPrice.equals("-")) {
+            cbSelectAll.setChecked(false);
+        } else {
+            cbSelectAll.setChecked(true);
+        }
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }
@@ -1436,14 +1441,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 showToastMessageRed(getString(R.string.message_delete_empty_selection));
             }
         });
-    }
-
-    private void onNeedUpdateViewItem(final int position) {
-        if (cartRecyclerView.isComputingLayout()) {
-            cartRecyclerView.post(() -> cartAdapter.notifyItemChanged(position));
-        } else {
-            cartAdapter.notifyItemChanged(position);
-        }
     }
 
     @Override
