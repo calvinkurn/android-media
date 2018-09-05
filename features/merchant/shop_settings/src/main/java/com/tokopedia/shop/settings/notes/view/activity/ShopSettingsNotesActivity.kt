@@ -1,4 +1,4 @@
-package com.tokopedia.shop.settings.notes.view
+package com.tokopedia.shop.settings.notes.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -7,11 +7,11 @@ import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.view.View
-import android.widget.TextView
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
-import com.tokopedia.shop.settings.etalase.view.activity.ShopSettingsEtalaseActivity
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
+import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesListFragment
+import com.tokopedia.shop.settings.notes.view.fragment.ShopSettingsNotesReorderFragment
 import kotlinx.android.synthetic.main.partial_toolbar_save_button.*
 import java.util.*
 

@@ -25,8 +25,10 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.design.utils.StringUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -116,24 +118,27 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 startActivityForResult(intent, REQUEST_EDIT_SCHEDULE)
             }
             itemMenuTitle.equals(getString(R.string.remove_schedule), ignoreCase = true) -> {
-                val builder = AlertDialog.Builder(activity!!,
-                        R.style.AppCompatAlertDialogStyle)
-                builder.setTitle(R.string.remove_schedule)
-                builder.setMessage(R.string.remove_schedule_message)
-                builder.setCancelable(true)
-                builder.setNegativeButton(R.string.cancel) { dialog, _ -> dialog.cancel() }
-                builder.setPositiveButton(R.string.label_remove) { _, _ ->
-                    //remove schedule
-                    showSubmitLoading(getString(R.string.title_loading))
-                    shopSettingsInfoPresenter.updateShopSchedule(
-                            if (shopBasicDataModel!!.isClosed)
-                                ShopScheduleActionDef.CLOSED
-                            else
-                                ShopScheduleActionDef.OPEN,
-                            false, "", "", "")
+                activity?.let { it ->
+                    Dialog(it, Dialog.Type.PROMINANCE).apply {
+                        setTitle(getString(R.string.remove_schedule))
+                        setDesc(getString(R.string.remove_schedule_message))
+                        setBtnOk(getString(R.string.action_delete))
+                        setBtnCancel(getString(R.string.cancel))
+                        setOnOkClickListener {
+                            //remove schedule
+                            showSubmitLoading(getString(R.string.title_loading))
+                            shopSettingsInfoPresenter.updateShopSchedule(
+                                    if (shopBasicDataModel!!.isClosed)
+                                        ShopScheduleActionDef.CLOSED
+                                    else
+                                        ShopScheduleActionDef.OPEN,
+                                    false, "", "", "")
+                            dismiss()
+                        }
+                        setOnCancelClickListener { dismiss() }
+                        show()
+                    }
                 }
-                val alert = builder.create()
-                alert.show()
             }
             itemMenuTitle.equals(getString(R.string.label_open_shop_now), ignoreCase = true) -> {
                 // open now
@@ -168,8 +173,23 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_EDIT_BASIC_INFO, REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
+            REQUEST_EDIT_SCHEDULE -> if (resultCode == Activity.RESULT_OK) {
                 needReload = true
+                if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
+                    val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
+                    if (!message.isEmpty()) {
+                        ToasterNormal.showClose(activity!!, message)
+                    }
+                }
+            }
+            REQUEST_EDIT_BASIC_INFO -> if (resultCode == Activity.RESULT_OK) {
+                needReload = true
+                if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
+                    val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
+                    if (!message.isEmpty()) {
+                        ToasterNormal.showClose(activity!!, message)
+                    }
+                }
             }
         }
     }
@@ -211,10 +231,10 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             if (URLUtil.isNetworkUrl(it)) {
                 it
             } else {
-                getString(R.string.tokopedia_domain) +"/$it"
+                getString(R.string.tokopedia_domain) + "/$it"
             }
         }
-        if (shopBasicDataModel.tagline.isNullOrBlank()){
+        if (shopBasicDataModel.tagline.isNullOrBlank()) {
             tvShopSloganTitle.visibility = View.GONE
             tvShopSlogan.visibility = View.GONE
         } else {
@@ -223,7 +243,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             tvShopSlogan.visibility = View.VISIBLE
         }
 
-        if (shopBasicDataModel.description.isNullOrBlank()){
+        if (shopBasicDataModel.description.isNullOrBlank()) {
             tvShopDescriptionTitle.visibility = View.GONE
             tvShopDescription.visibility = View.GONE
         } else {
@@ -345,6 +365,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
+        ToasterNormal.showClose(activity!!, successMessage)
         loadShopBasicData()
     }
 

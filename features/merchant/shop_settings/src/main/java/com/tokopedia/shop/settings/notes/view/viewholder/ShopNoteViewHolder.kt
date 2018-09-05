@@ -29,16 +29,11 @@ class ShopNoteViewHolder(itemView: View,
     }
 
     interface OnShopNoteViewHolderListener {
-        val keyword: String
         fun onIconMoreClicked(shopNoteViewModel: ShopNoteViewModel)
     }
 
     override fun bind(shopNoteViewModel: ShopNoteViewModel) {
-        var keyword = ""
-        if (onOnShopNoteViewHolderListener != null) {
-            keyword = onOnShopNoteViewHolderListener.keyword
-        }
-        tvNoteName.text = getSpandableColorText(shopNoteViewModel.title!!, keyword, boldColor)
+        tvNoteName.text = shopNoteViewModel.title!!
         tvLastUpdate.text = toReadableString(FORMAT_DATE_TIME, shopNoteViewModel.updateTimeUTC)
         ivMenuMore.setOnClickListener {
             onOnShopNoteViewHolderListener?.onIconMoreClicked(shopNoteViewModel)

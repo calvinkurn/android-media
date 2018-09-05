@@ -157,7 +157,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
 
     override fun onSuccessUpdateShopBasicData(successMessage: String) {
         hideSubmitLoading()
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, successMessage) })
         finish()
     }
 
@@ -241,6 +241,7 @@ class ShopEditBasicInfoActivity : BaseSimpleActivity(), UpdateShopSettingsInfoPr
         private val REQUEST_CODE_IMAGE = 846
 
         val EXTRA_SHOP_MODEL = "shop_model"
+        val EXTRA_MESSAGE = "message"
 
         @JvmStatic
         fun createIntent(context: Context, shopBasicDataModel: ShopBasicDataModel?): Intent {

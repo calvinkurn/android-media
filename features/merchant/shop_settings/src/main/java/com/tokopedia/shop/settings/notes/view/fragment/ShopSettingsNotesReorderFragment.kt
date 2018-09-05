@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.tokopedia.shop.settings.notes.view
+package com.tokopedia.shop.settings.notes.view.fragment
 
 import android.app.ProgressDialog
 import android.content.Context

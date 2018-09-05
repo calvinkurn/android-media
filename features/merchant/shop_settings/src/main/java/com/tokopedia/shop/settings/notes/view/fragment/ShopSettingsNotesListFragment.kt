@@ -1,6 +1,6 @@
 @file:Suppress("DEPRECATION")
 
-package com.tokopedia.shop.settings.notes.view
+package com.tokopedia.shop.settings.notes.view.fragment
 
 import android.app.Activity
 import android.app.ProgressDialog
@@ -9,36 +9,33 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
-import android.text.TextUtils
 import android.view.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.common.di.DaggerShopSettingsComponent
-import com.tokopedia.shop.settings.etalase.view.fragment.ShopSettingsEtalaseListFragment
 import com.tokopedia.shop.settings.notes.data.ShopNoteViewModel
 import com.tokopedia.shop.settings.notes.view.activity.ShopSettingNotesAddEditActivity
 import com.tokopedia.shop.settings.notes.view.adapter.ShopNoteAdapter
 import com.tokopedia.shop.settings.notes.view.adapter.factory.ShopNoteFactory
 import com.tokopedia.shop.settings.notes.view.presenter.ShopSettingNoteListPresenter
 import com.tokopedia.shop.settings.notes.view.viewholder.ShopNoteViewHolder
-import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 
-class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View, ShopNoteViewHolder.OnShopNoteViewHolderListener {
+class ShopSettingsNotesListFragment : BaseListFragment<ShopNoteViewModel, ShopNoteFactory>(), ShopSettingNoteListPresenter.View,
+        ShopNoteViewHolder.OnShopNoteViewHolderListener {
     @Inject
     lateinit var shopSettingNoteListPresenter: ShopSettingNoteListPresenter
     private var shopNoteModels: ArrayList<ShopNoteViewModel>? = null
@@ -50,9 +47,6 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
 
     private var onShopSettingsNoteFragmentListener: OnShopSettingsNoteFragmentListener? = null
-
-    override val keyword: String
-        get() = searchInputView.searchText
 
     interface OnShopSettingsNoteFragmentListener {
         fun goToReorderFragment(shopNoteViewModels: ArrayList<ShopNoteViewModel>)
@@ -75,16 +69,6 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
         super.onCreate(savedInstanceState)
         GraphqlClient.init(context!!)
         shopSettingNoteListPresenter.getShopNotes()
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_shop_search_list, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        hideSearchInputView()
-        searchInputView.setSearchHint(getString(R.string.search_note))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
@@ -127,10 +111,6 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
         return swipeRefreshLayout
     }
 
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-    }
-
     override fun getRecyclerView(view: View): RecyclerView? {
         recyclerView = super.getRecyclerView(view)
         return recyclerView
@@ -151,32 +131,21 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        val searchText = searchInputView.searchText
+        val emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_empty_state
+        emptyModel.title = getString(R.string.shop_has_no_notes)
+        emptyModel.content = getString(R.string.shop_notes_info)
+        emptyModel.buttonTitleRes = R.string.add_note
+        emptyModel.callback = object : BaseEmptyViewHolder.Callback {
+            override fun onEmptyContentItemTextClicked() {
 
-        if (TextUtils.isEmpty(searchText)) {
-            val emptyModel = EmptyModel()
-            emptyModel.iconRes = R.drawable.ic_empty_state
-            emptyModel.title = getString(R.string.shop_has_no_notes)
-            emptyModel.content = getString(R.string.shop_notes_info)
-            emptyModel.buttonTitleRes = R.string.add_note
-            emptyModel.callback = object : BaseEmptyViewHolder.Callback {
-                override fun onEmptyContentItemTextClicked() {
-
-                }
-
-                override fun onEmptyButtonClicked() {
-                    onAddNoteButtonClicked()
-                }
             }
-            return emptyModel
-        } else {
-            val emptyModel = EmptyResultViewModel()
-            emptyModel.iconRes = R.drawable.ic_empty_search
-            emptyModel.title = getString(R.string.shop_has_no_note_search, searchText)
-            emptyModel.content = getString(R.string.change_your_keyword)
-            return emptyModel
-        }
 
+            override fun onEmptyButtonClicked() {
+                onAddNoteButtonClicked()
+            }
+        }
+        return emptyModel
     }
 
     override fun loadData(page: Int) {
@@ -228,9 +197,22 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
             if (pos == 0) {
                 goToEditNote(shopNoteViewModel)
             } else {
-                shopNoteIdToDelete = shopNoteViewModel.id
-                showSubmitLoading(getString(R.string.title_loading))
-                shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
+                activity?.let { it ->
+                    Dialog(it, Dialog.Type.PROMINANCE).apply {
+                        setTitle(getString(R.string.title_dialog_delete_shop_note))
+                        setDesc(getString(R.string.desc_dialog_delete_shop_note, shopNoteViewModel.title))
+                        setBtnOk(getString(R.string.action_delete))
+                        setBtnCancel(getString(R.string.cancel))
+                        setOnOkClickListener {
+                            shopNoteIdToDelete = shopNoteViewModel.id
+                            showSubmitLoading(getString(R.string.title_loading))
+                            shopSettingNoteListPresenter.deleteShopNote(shopNoteIdToDelete!!)
+                            dismiss()
+                        }
+                        setOnCancelClickListener { dismiss() }
+                        show()
+                    }
+                }
             }
             menus.dismiss()
         }
@@ -239,37 +221,12 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
 
     override fun onSuccessGetShopNotes(shopNoteModels: ArrayList<ShopNoteViewModel>) {
         this.shopNoteModels = shopNoteModels
-        onSearchSubmitted(keyword)
+        renderList(shopNoteModels, false)
         activity!!.invalidateOptionsMenu()
     }
 
     override fun onErrorGetShopNotes(throwable: Throwable) {
         showGetListError(throwable)
-    }
-
-    override fun onSearchSubmitted(text: String) {
-        shopNoteAdapter!!.clearAllElements()
-        isLoadingInitialData = true
-        val shopNoteViewModels: List<ShopNoteViewModel>
-        if (shopNoteModels == null) {
-            shopNoteViewModels = ArrayList()
-        } else if (shopNoteModels!!.size > 0 && !TextUtils.isEmpty(text)) {
-            val textLowerCase = text.toLowerCase()
-            shopNoteViewModels = ArrayList()
-            for (shopNoteModel in shopNoteModels!!) {
-                if (shopNoteModel.title!!.toLowerCase().contains(textLowerCase) || shopNoteModel.content!!.toLowerCase().contains(textLowerCase)) {
-                    shopNoteViewModels.add(shopNoteModel)
-                }
-            }
-        } else {
-            shopNoteViewModels = shopNoteModels!!
-        }
-        renderList(shopNoteViewModels, false)
-        showSearchViewWithDataSizeCheck()
-    }
-
-    override fun onSearchTextChanged(text: String) {
-        onSearchSubmitted(text)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

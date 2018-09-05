@@ -9,7 +9,8 @@
     android:orientation="vertical"
     android:descendantFocusability="beforeDescendants"
     android:focusableInTouchMode="true"
-    android:id="@+id/vgRoot">
+    android:id="@+id/vgRoot"
+    android:background="@color/white">
 
     <include layout="@layout/partial_toolbar_save_button" />
 

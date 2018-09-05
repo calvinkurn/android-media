@@ -198,7 +198,7 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
 
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
-        setResult(Activity.RESULT_OK)
+        setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_MESSAGE, successMessage) })
         finish()
     }
 
@@ -249,6 +249,8 @@ class ShopEditScheduleActivity : BaseSimpleActivity(), UpdateShopShedulePresente
         val EXTRA_SHOP_MODEL = "shop_model"
         val EXTRA_TITLE = "title"
         val EXTRA_IS_CLOSED_NOW = "is_closed_now"
+
+        const val EXTRA_MESSAGE = "message"
 
         val SAVED_SELECTED_START_DATE = "svd_selected_start_date"
         val SAVED_SELECTED_END_DATE = "svd_selected_end_date"

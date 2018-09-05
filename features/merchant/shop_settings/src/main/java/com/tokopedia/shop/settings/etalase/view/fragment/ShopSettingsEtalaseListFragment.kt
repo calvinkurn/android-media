@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -230,10 +231,23 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
             if (itemMenus.title.equals(getString(R.string.label_change), ignoreCase = true)) {
                 goToEditEtalase(shopEtalaseViewModel)
             } else {
-                shopEtalaseIdToDelete = shopEtalaseViewModel.id
-                shopEtalaseNameToDelete = shopEtalaseViewModel.name
-                showSubmitLoading(getString(R.string.title_loading))
-                shopSettingEtalaseListPresenter.deleteShopEtalase(shopEtalaseIdToDelete!!)
+                activity?.let { it ->
+                    Dialog(it, Dialog.Type.PROMINANCE).apply {
+                        setTitle(getString(R.string.title_dialog_delete_shop_etalase))
+                        setDesc(getString(R.string.desc_dialog_delete_shop_etalase, shopEtalaseViewModel.name))
+                        setBtnOk(getString(R.string.action_delete))
+                        setBtnCancel(getString(R.string.cancel))
+                        setOnOkClickListener {
+                            shopEtalaseIdToDelete = shopEtalaseViewModel.id
+                            shopEtalaseNameToDelete = shopEtalaseViewModel.name
+                            showSubmitLoading(getString(R.string.title_loading))
+                            shopSettingEtalaseListPresenter.deleteShopEtalase(shopEtalaseIdToDelete!!)
+                            dismiss()
+                        }
+                        setOnCancelClickListener { dismiss() }
+                        show()
+                    }
+                }
             }
             menus.dismiss()
         }
