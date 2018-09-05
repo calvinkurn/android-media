@@ -52,7 +52,8 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     protected void initView() { 
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getSupportActionBar().hide();
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
     }
 
     @Override
@@ -64,10 +65,11 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     public void onBackPressed() {
         Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof RemoveCartItemFragment) {
-            ((RemoveCartItemFragment) currentFragment)
-                    .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
-        } else if (currentFragment instanceof ICartListAnalyticsListener) {
+//        if (currentFragment instanceof RemoveCartItemFragment) {
+//            ((RemoveCartItemFragment) currentFragment)
+//                    .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
+//        } else
+        if (currentFragment instanceof ICartListAnalyticsListener) {
             ((ICartListAnalyticsListener) currentFragment).sendAnalyticsOnClickBackArrow();
         }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -116,7 +118,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     protected Fragment getNewFragment() {
-        return CartFragment.newInstance();
+        return CartFragment.newInstance("");
     }
-
 }

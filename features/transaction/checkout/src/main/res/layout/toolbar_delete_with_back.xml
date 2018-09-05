@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
+        style="@style/TitleTextAppearance"/>
 
     <Button
         android:layout_alignParentRight="true"
