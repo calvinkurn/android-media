@@ -72,7 +72,7 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
     }
 
     public void setEtalaseName(String etalaseName) {
-        this.etalaseName = etalaseName;
+        this.etalaseName = etalaseName == null? "" : etalaseName;
     }
 
     public long getEtalaseNumProduct() {
