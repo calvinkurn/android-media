@@ -126,7 +126,7 @@
                 android:layout_width="match_parent"
                 android:hint="@string/shop_address_fax_placeholder"
                 android:imeOptions="actionNext"
-                android:inputType="textPhonetic"/>
+                android:inputType="phone"/>
 
         </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
