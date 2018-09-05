@@ -198,14 +198,19 @@ public class CartMapper implements ICartMapper {
                 }
 
                 if (cartItemData.isSingleChild()) {
-                    if (cartItemData.isError()) {
-                        shopGroupData.setError(true);
-                        shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                        shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                    } else if (cartItemData.isWarning()) {
-                        shopGroupData.setWarning(true);
-                        shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                        shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                    if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
+                        cartItemData.setParentHasErrorOrWarning(false);
+                        if (cartItemData.isError()) {
+                            shopGroupData.setError(true);
+                            shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
+                            shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                        } else if (cartItemData.isWarning()) {
+                            shopGroupData.setWarning(true);
+                            shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
+                            shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                        }
+                    } else {
+                        cartItemData.setParentHasErrorOrWarning(true);
                     }
                 }
 

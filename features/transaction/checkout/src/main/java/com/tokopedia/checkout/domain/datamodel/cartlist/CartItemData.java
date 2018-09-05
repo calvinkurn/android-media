@@ -15,6 +15,7 @@ public class CartItemData implements Parcelable {
     private UpdatedData updatedData;
     private MessageErrorData errorData;
     private boolean singleChild;
+    private boolean parentHasErrorOrWarning;
     private boolean isError;
     private boolean isWarning;
     private String warningMessageTitle;
@@ -100,6 +101,14 @@ public class CartItemData implements Parcelable {
 
     public void setErrorData(MessageErrorData errorData) {
         this.errorData = errorData;
+    }
+
+    public boolean isParentHasErrorOrWarning() {
+        return parentHasErrorOrWarning;
+    }
+
+    public void setParentHasErrorOrWarning(boolean parentHasError) {
+        this.parentHasErrorOrWarning = parentHasError;
     }
 
     public static class OriginData implements Parcelable {
@@ -754,6 +763,8 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.errorData, flags);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.singleChild ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
         dest.writeString(this.warningMessageTitle);
         dest.writeString(this.errorMessageTitle);
     }
@@ -764,6 +775,8 @@ public class CartItemData implements Parcelable {
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.isError = in.readByte() != 0;
         this.isWarning = in.readByte() != 0;
+        this.singleChild = in.readByte() != 0;
+        this.parentHasErrorOrWarning = in.readByte() != 0;
         this.warningMessageTitle = in.readString();
         this.errorMessageTitle = in.readString();
     }

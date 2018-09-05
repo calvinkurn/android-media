@@ -237,26 +237,39 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderWarningAndError(CartItemHolderData data) {
-        if (!data.getCartItemData().isSingleChild()) {
-            renderErrorItemHeader(data);
-            renderWarningItemHeader(data);
-            if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
-                    !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
-                    (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
-                llWarningAndError.setVisibility(View.VISIBLE);
+        if (data.getCartItemData().isParentHasErrorOrWarning()) {
+            if (data.getCartItemData().isSingleChild()) {
+                renderErrorItemHeader(data);
+                renderWarningItemHeader(data);
             } else {
-                llWarningAndError.setVisibility(View.GONE);
+                disableView(data);
             }
         } else {
-            if (data.getCartItemData().isError()) {
-                flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
-                btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
+            if (!data.getCartItemData().isSingleChild()) {
+                renderErrorItemHeader(data);
+                renderWarningItemHeader(data);
+                if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
+                        !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
+                        (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
+                    llWarningAndError.setVisibility(View.VISIBLE);
+                } else {
+                    llWarningAndError.setVisibility(View.GONE);
+                }
             } else {
-                flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
-                btnDelete.setImageResource(R.drawable.ic_delete_cart);
+                disableView(data);
             }
-            llWarningAndError.setVisibility(View.GONE);
         }
+    }
+
+    private void disableView(CartItemHolderData data) {
+        if (data.getCartItemData().isError()) {
+            flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
+        } else {
+            flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart);
+        }
+        llWarningAndError.setVisibility(View.GONE);
     }
 
     private void renderProductInfo(CartItemHolderData data, int parentPosition) {
