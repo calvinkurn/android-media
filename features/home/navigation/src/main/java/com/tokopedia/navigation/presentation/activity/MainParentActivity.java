@@ -125,7 +125,9 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+        //TODO milhamj should remove instanceof?
+        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)
+                && getApplicationContext() instanceof GlobalNavRouter) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             this.finish();
