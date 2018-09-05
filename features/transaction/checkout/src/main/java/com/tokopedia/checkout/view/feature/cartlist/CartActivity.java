@@ -46,14 +46,10 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
+    protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initView() {
-
-    }
+    protected void initView() { }
 
     @Override
     public void setTitle(CharSequence title) {
