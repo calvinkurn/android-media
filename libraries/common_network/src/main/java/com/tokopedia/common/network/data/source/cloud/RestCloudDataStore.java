@@ -217,7 +217,7 @@ public class RestCloudDataStore implements RestDataStore {
                 //E.g. error response like HTTP error code = 400,401,410 or 500 etc.
                 returnResponse = new RestResponseIntermediate(null, request.getTypeOfT(), false);
                 returnResponse.setCode(response.code());
-                returnResponse.setErrorBody(response.body() == null ? response.errorBody().toString() : response.body());
+                returnResponse.setErrorBody(response.body() == null ? response.errorBody().string() : response.body());
                 returnResponse.setError(true);
             }
         } catch (Exception e) {
