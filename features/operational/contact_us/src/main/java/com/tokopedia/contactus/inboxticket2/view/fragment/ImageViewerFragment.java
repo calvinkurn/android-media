@@ -77,12 +77,12 @@ public class ImageViewerFragment extends Fragment {
 
             @Override
             public void OnStateZoom() {
-                vpImageViewer.SetAllowPageSwitching(false);
+                vpImageViewer.setAllowPageSwitching(false);
             }
 
             @Override
             public void OnStateDefault() {
-                vpImageViewer.SetAllowPageSwitching(true);
+                vpImageViewer.setAllowPageSwitching(true);
             }
         });
         return contentView;
