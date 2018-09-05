@@ -49,5 +49,7 @@ public class TemplateChatContract {
         void switchTemplateAvailability(boolean enabled);
 
         void setArrange(boolean enabled, ArrayList<Integer> arrayList, int from, int to);
+
+        void reloadTemplate();
     }
 }

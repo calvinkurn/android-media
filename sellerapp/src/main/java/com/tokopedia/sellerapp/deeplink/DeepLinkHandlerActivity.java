@@ -19,6 +19,8 @@ import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
@@ -33,6 +35,8 @@ import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
 import com.tokopedia.tracking.applink.TrackingAppLinkModule;
 import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.transaction.applink.TransactionApplinkModule;
+import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
 
 
 /**
@@ -42,12 +46,14 @@ import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
         DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
+        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
         InboxDeeplinkModule.class,
         ShopAppLinkModule.class,
         ProfileApplinkModule.class,
-        TrackingAppLinkModule.class
+        TrackingAppLinkModule.class,
+        ProductAddDeeplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
 
@@ -58,12 +64,14 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
+                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new ShopAppLinkModuleLoader(),
                 new ProfileApplinkModuleLoader(),
-                new TrackingAppLinkModuleLoader()
+                new TrackingAppLinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader()
         );
     }
 

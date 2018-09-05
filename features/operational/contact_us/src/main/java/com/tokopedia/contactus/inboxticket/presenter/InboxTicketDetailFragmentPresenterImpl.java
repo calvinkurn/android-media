@@ -4,11 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
-import com.tokopedia.core.R;
-import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractor;
 import com.tokopedia.contactus.createticket.interactor.ContactUsRetrofitInteractorImpl;
 import com.tokopedia.contactus.inboxticket.InboxTicketConstant;
@@ -24,12 +19,18 @@ import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.InboxTicketDe
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReply;
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.contactus.inboxticket.model.replyticket.ReplyResult;
+import com.tokopedia.core.R;
+import com.tokopedia.core.customadapter.ImageUpload;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.core.util.SessionHandler;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.UUID;
+
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 
 /**
  * Created by Nisie on 4/22/16.
@@ -308,26 +309,16 @@ public class InboxTicketDetailFragmentPresenterImpl implements InboxTicketDetail
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == ImageUploadHandler.REQUEST_CODE)
-                && (resultCode == Activity.RESULT_OK || resultCode == GalleryBrowser.RESULT_CODE)) {
-
+        if (requestCode == InboxTicketDetailFragment.REQUEST_CODE_INBOX_TICKET && resultCode == Activity.RESULT_OK && data != null) {
             int position = viewListener.getImageAdapter().getList().size();
             ImageUpload image = new ImageUpload();
             image.setPosition(position);
             image.setImageId("image" + UUID.randomUUID().toString());
-
-            switch (resultCode) {
-                case GalleryBrowser.RESULT_CODE:
-                    image.setFileLoc(data.getStringExtra(ImageGallery.EXTRA_URL));
-                    break;
-                case Activity.RESULT_OK:
-                    image.setFileLoc(imageUploadHandler.getCameraFileloc());
-                    break;
-                default:
-                    break;
+            ArrayList<String> imageUrlOrPathList = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+            if (imageUrlOrPathList!= null && imageUrlOrPathList.size() > 0) {
+                image.setFileLoc(imageUrlOrPathList.get(0));
             }
             viewListener.addImage(image);
-
         }
     }
 

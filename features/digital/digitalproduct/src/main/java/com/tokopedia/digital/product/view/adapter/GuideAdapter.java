@@ -62,6 +62,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
     }
 
     private YouTubeThumbnailView.OnInitializedListener youtubeListenerInitialize(String youtubeViewUrl, ProgressBar progressBar) {
+        progressBar.setVisibility(View.VISIBLE);
         return new YouTubeThumbnailView.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader loader) {
@@ -77,7 +78,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
 
                     @Override
                     public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader.ErrorReason errorReason) {
-
+                        youtubeListenerInitialize(youtubeViewUrl, progressBar);
                     }
                 });
             }
@@ -85,6 +86,7 @@ public class GuideAdapter extends RecyclerView.Adapter<GuideAdapter.GuideViewHol
             @Override
             public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
                 progressBar.setVisibility(View.GONE);
+                youtubeListenerInitialize(youtubeViewUrl, progressBar);
             }
         };
     }

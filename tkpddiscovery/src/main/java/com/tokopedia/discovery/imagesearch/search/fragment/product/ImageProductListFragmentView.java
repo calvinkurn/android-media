@@ -40,9 +40,9 @@ public interface ImageProductListFragmentView extends CustomerView {
 
     void setProductList(List<Visitable> list);
 
-    void disableWishlistButton(int adapterPosition);
+    void disableWishlistButton(String productId);
 
-    void enableWishlistButton(int adapterPosition);
+    void enableWishlistButton(String productId);
 
     void showNetworkError(int startRow);
 

@@ -10,7 +10,7 @@ import android.view.View;
  *
  * Created by Tokopedia 05 on 7/11/2016.
  */
-public class WrapContentViewPager extends ViewPager {
+public class  WrapContentViewPager extends ViewPager {
     private View currentView;
 
     public WrapContentViewPager(Context context) {

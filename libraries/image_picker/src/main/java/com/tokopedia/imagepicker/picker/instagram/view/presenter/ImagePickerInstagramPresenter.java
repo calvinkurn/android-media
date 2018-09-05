@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.ClearCacheMediaInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.domain.interactor.GetListMediaInstagramUseCase;
-import com.tokopedia.imagepicker.picker.instagram.domain.interactor.SaveCookiesInstagramUseCase;
 import com.tokopedia.imagepicker.picker.instagram.view.model.InstagramMediaResponse;
 
 import rx.Subscriber;

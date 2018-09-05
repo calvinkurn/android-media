@@ -7,6 +7,7 @@ import com.tokopedia.transaction.orders.orderlist.data.Color;
 import com.tokopedia.transaction.orders.orderlist.data.DotMenuList;
 import com.tokopedia.transaction.orders.orderlist.data.MetaData;
 import com.tokopedia.transaction.orders.orderlist.data.Order;
+import com.tokopedia.transaction.orders.orderlist.data.Popup;
 
 import java.util.List;
 
@@ -16,8 +17,6 @@ import java.util.List;
 
 public class ListAdapterContract {
     public interface View extends CustomerView {
-        void setButtonData(int leftVisibility, int rightVisibility, String leftText, String rightText, String leftButtonUri, String rightButtonUri, Color leftButtonColor, Color rightButtonColor);
-
         void setDotMenuVisibility(int visibility);
 
         void setCategoryAndTitle(String categoryName, String title);
@@ -30,7 +29,7 @@ public class ListAdapterContract {
 
         void setConditionalInfo(int successCondInfoVisiblity, String successConditionalText, Color color);
 
-        void setFailStatusBgColor(boolean statusFail);
+        void setFailStatusBgColor(String statusColor);
 
         void setStatus(String statusText);
 
@@ -38,7 +37,9 @@ public class ListAdapterContract {
 
         void setPaymentAvatar(String imgUrl);
 
+        void setActionButtonData(ActionButton leftActionButton, ActionButton rightActionButton, int leftVisibility, int rightVisibility);
     }
+
     public interface Presenter extends CustomerPresenter<View> {
         void setActionButtonData(List<ActionButton> actionButtons);
 

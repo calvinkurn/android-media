@@ -147,4 +147,10 @@ public class TemplateChatSettingPresenter extends BaseDaggerPresenter<TemplateCh
         }
         return array;
     }
+
+    @Override
+    public void reloadTemplate() {
+        getView().showLoading();
+        getTemplate();
+    }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.model;
 
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-import com.tokopedia.shop.common.util.TextApiUtils;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge;
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel;

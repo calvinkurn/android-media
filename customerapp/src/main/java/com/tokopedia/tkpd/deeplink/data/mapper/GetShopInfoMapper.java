@@ -1,13 +1,11 @@
 package com.tokopedia.tkpd.deeplink.data.mapper;
 
-import com.tokopedia.core.network.exception.ServerErrorException;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
-import com.tokopedia.seller.common.data.response.DataResponse;
+import com.tokopedia.product.manage.item.common.data.source.cloud.DataResponse;
 
 import javax.inject.Inject;
 
 import retrofit2.Response;
-import rx.Observable;
 import rx.functions.Func1;
 
 /**
