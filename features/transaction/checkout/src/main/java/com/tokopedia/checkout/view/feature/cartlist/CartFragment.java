@@ -70,6 +70,7 @@ import com.tokopedia.checkout.view.feature.removecartitem.RemoveCartItemFragment
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.core.manage.people.address.model.Token;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -272,11 +273,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             StateListAnimator stateListAnimator = new StateListAnimator();
             if (available) {
-                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", NO_ELEVATION));
+                appBarLayout.setElevation(NO_ELEVATION);
+//                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", NO_ELEVATION));
             } else {
-                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", HAS_ELEVATION));
+                appBarLayout.setElevation(HAS_ELEVATION);
+//                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", HAS_ELEVATION));
             }
-            appBarLayout.setStateListAnimator(stateListAnimator);
+//            appBarLayout.setStateListAnimator(stateListAnimator);
         }
     }
 
@@ -368,16 +371,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection));
         }
-//        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
-//        if (!(fragment instanceof RemoveCartItemFragment)
-//                && cartAdapter.getCartItemDataList() != null
-//                && cartAdapter.getCartItemDataList().size() > 0) {
-//            getChildFragmentManager().beginTransaction()
-//                    .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartAdapter.getCartItemDataList()))
-//                    .addToBackStack(null)
-//                    .commit();
-//            setVisibilityRemoveButton(false);
-//        }
+        setVisibilityRemoveButton(false);
     }
 
     @Override
@@ -815,11 +809,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
 
-        if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-            mIsMenuVisible = true;
-            getActivity().invalidateOptionsMenu();
-        }
+//        if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+//            mIsMenuVisible = true;
+//            getActivity().invalidateOptionsMenu();
+//        }
         cartAdapter.checkForShipmentForm();
+
+        setVisibilityRemoveButton(true);
+        notifyBottomCartParent();
     }
 
     private void showErrorLayout(String message) {
@@ -1132,6 +1129,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         int scrollTo = ((View) tvPromoCodeEmptyCart.getParent().getParent()).getTop() + tvPromoCodeEmptyCart.getTop();
         scrollViewEmptyCart.smoothScrollTo(0, scrollTo);
 
+        setVisibilityRemoveButton(false);
+        notifyBottomCartParent();
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden) {
+            cartAdapter.resetData();
+            dPresenter.processInitialGetCartData();
+            notifyBottomCartParent();
+        }
     }
 
     @Override
@@ -1587,5 +1596,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void sendAnalyticsOnButtonSelectAllUnchecked() {
         cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukUnChecklist();
+    }
+
+    private void notifyBottomCartParent() {
+        if (getActivity() instanceof CartNotifyListener) {
+            ((CartNotifyListener)getActivity()).onNotifyCart();
+        }
     }
 }
