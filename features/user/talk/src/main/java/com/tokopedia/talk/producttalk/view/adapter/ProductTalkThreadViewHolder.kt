@@ -5,8 +5,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkThreadViewModel
 import com.tokopedia.talk.R
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 class ProductTalkThreadViewHolder(val v: View) :
         AbstractViewHolder<TalkThreadViewModel>(v) {

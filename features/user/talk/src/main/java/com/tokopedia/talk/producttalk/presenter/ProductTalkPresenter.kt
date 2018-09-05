@@ -1,39 +1,46 @@
 package com.tokopedia.talk.producttalk.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.talk.common.di.TalkScope
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkListViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * @author by Steven
  */
-class ProductTalkPresenter(private val userSession: UserSession,
-                           private val getProductTalkUseCase : GetProductTalkUseCase) :
+class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
+                                               @TalkScope val getProductTalkUseCase : GetProductTalkUseCase) :
         ProductTalkContract.Presenter,
         BaseDaggerPresenter<ProductTalkContract.View>() {
 
-    override fun getProductTalk() {
-        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1)
-                , object : Subscriber<ProductTalkListViewModel>(){
-            override fun onNext(t: ProductTalkListViewModel?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun attachView(view: ProductTalkContract.View?) {
+        super.attachView(view)
+    }
+
+    override fun getProductTalk(productId: String) {
+        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1, productId)
+                , object : Subscriber<ProductTalkViewModel>(){
+            override fun onNext(viewModel: ProductTalkViewModel) {
+                view.show(viewModel)
             }
 
             override fun onCompleted() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
-            override fun onError(e: Throwable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            override fun onError(e: Throwable) {
+                e.toString()
             }
 
         })
     }
 
     override fun detachView() {
+        getProductTalkUseCase.unsubscribe()
         super.detachView()
     }
 

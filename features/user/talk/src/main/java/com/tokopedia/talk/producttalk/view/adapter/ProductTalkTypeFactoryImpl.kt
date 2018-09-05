@@ -3,19 +3,21 @@ package com.tokopedia.talk
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadTypeFactory
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkListTypeFactory
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkThreadViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
+import com.tokopedia.talk.producttalk.view.adapter.ProductTalkTitleViewHolder
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 /**
  * @author by nisie on 6/12/18.
  */
 class ProductTalkTypeFactoryImpl() :
         BaseAdapterTypeFactory(),
-        ProductTalkThreadTypeFactory {
-    override fun type(viewModel: ProductTalkViewModel): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        ProductTalkListTypeFactory {
+
+    override fun type(viewModel: ProductTalkTitleViewModel): Int {
+        return ProductTalkTitleViewHolder.LAYOUT
     }
 
     override fun type(viewModel: TalkThreadViewModel): Int {
@@ -25,6 +27,7 @@ class ProductTalkTypeFactoryImpl() :
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
+            ProductTalkTitleViewHolder.LAYOUT -> ProductTalkTitleViewHolder(view)
             ProductTalkThreadViewHolder.LAYOUT -> ProductTalkThreadViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

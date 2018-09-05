@@ -2,16 +2,15 @@ package com.tokopedia.talk.producttalk.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkThreadViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 /**
  * @author by Steven
  */
-interface ProductTalkThreadTypeFactory{
+interface ProductTalkListTypeFactory{
 
-
-    fun type(viewModel: ProductTalkViewModel): Int
+    fun type(viewModel: ProductTalkTitleViewModel):Int
 
     fun type(viewModel: TalkThreadViewModel):Int
 

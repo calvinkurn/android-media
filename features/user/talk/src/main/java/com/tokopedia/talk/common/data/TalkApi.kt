@@ -15,4 +15,8 @@ interface TalkApi {
     @GET(TalkUrl.PATH_GET_INBOX_TALK)
     fun getInboxTalk(@QueryMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<InboxTalkPojo>>>
+
+    @GET(TalkUrl.PATH_GET_PRODUCT_TALK)
+    fun getProductTalk(@QueryMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<InboxTalkPojo>>>
 }
