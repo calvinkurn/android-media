@@ -154,6 +154,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                 getString(R.string.sedang_dikirim), ApplinkConst.PURCHASE_SHIPPED));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
+        childBuyer.add(new DrawerNotification.ChildDrawerNotification(BUYER_INFO,
+                getString(R.string.buyer_info), ApplinkConst.BUYER_INFO));
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
