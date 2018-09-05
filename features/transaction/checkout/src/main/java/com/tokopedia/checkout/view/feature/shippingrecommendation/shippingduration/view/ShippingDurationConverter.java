@@ -37,9 +37,7 @@ public class ShippingDurationConverter {
             if (shippingCourierViewModels.size() > 0) {
                 shippingDurationViewModels.add(shippingDurationViewModel);
             }
-            if (serviceData.getProducts() != null && serviceData.getProducts() != null &&
-                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_INSTANT ||
-                    serviceData.getServiceId() == CourierConstant.SERVICE_ID_SAME_DAY) {
+            if (serviceData.getProducts() != null && serviceData.getProducts().size() > 0) {
                 for (ProductData product : serviceData.getProducts()) {
                     if (product.getError() != null &&
                             product.getError().getErrorMessage() != null &&
