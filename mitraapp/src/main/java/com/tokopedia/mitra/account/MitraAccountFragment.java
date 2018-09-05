@@ -1,4 +1,4 @@
-package com.tokopedia.mitra.homepage.fragment;
+package com.tokopedia.mitra.account;
 
 
 import android.os.Bundle;

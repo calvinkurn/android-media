@@ -14,4 +14,7 @@
     <string name="mitra_homepage_login_label">Silakan masuk/login untuk memulai transaksi.</string>
     <string name="mitra_homepage_login_button_label">Masuk</string>
     <string name="mitra_homepage_login_failed_error_message">Login tidak berhasil.</string>
+    <string name="mitra_account_name_label">Nama</string>
+    <string name="mitra_account_phone_number_label">Nomor Ponsel</string>
+    <string name="mitra_account_logout_label">Keluar Akun</string>
 </resources>

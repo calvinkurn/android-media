@@ -9,61 +9,61 @@ import com.tokopedia.core.util.SessionHandler;
 public class UserSessionImpl implements UserSession {
 
     private SessionHandler sessionHandler;
-    private FCMCacheManager fcmCacheManager;
+    com.tokopedia.user.session.UserSession userSession;
 
     public UserSessionImpl(Context context) {
         this.sessionHandler = new SessionHandler(context);
-        this.fcmCacheManager = new FCMCacheManager(context);
+        this.userSession = new com.tokopedia.user.session.UserSession(context);
     }
 
     @Override
     public String getAccessToken() {
-        return sessionHandler.getAuthAccessToken();
+        return userSession.getAccessToken();
     }
 
     @Override
     public String getFreshToken() {
-        return sessionHandler.getAuthRefreshToken();
+        return userSession.getFreshToken();
     }
 
     @Override
     public String getUserId() {
-        return sessionHandler.getLoginID();
+        return userSession.getUserId();
     }
 
     @Override
     public String getDeviceId() {
-        return fcmCacheManager.getRegistrationId();
+        return userSession.getDeviceId();
     }
 
     @Override
     public boolean isLoggedIn() {
-        return sessionHandler.isV4Login();
+        return userSession.isLoggedIn();
     }
 
     @Override
     public String getShopId() {
-        return sessionHandler.getShopID();
+        return userSession.getShopId();
     }
 
     @Override
     public boolean hasShop() {
-        return sessionHandler.isUserHasShop();
+        return userSession.hasShop();
     }
 
     @Override
     public String getName() {
-        return sessionHandler.getLoginName();
+        return userSession.getName();
     }
 
     @Override
     public String getProfilePicture() {
-        return sessionHandler.getProfilePicture();
+        return userSession.getProfilePicture();
     }
 
     @Override
     public boolean isMsisdnVerified() {
-        return sessionHandler.isMsisdnAlreadyVerified();
+        return userSession.isMsisdnVerified();
     }
 
     @Override

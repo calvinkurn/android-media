@@ -8,7 +8,7 @@ import com.tokopedia.mitra.BaseActivityTest;
 import com.tokopedia.mitra.BuildConfig;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.TestMenuItem;
-import com.tokopedia.mitra.homepage.fragment.MitraAccountFragment;
+import com.tokopedia.mitra.account.MitraAccountFragment;
 import com.tokopedia.mitra.homepage.fragment.MitraHelpFragment;
 import com.tokopedia.mitra.homepage.fragment.MitraHomepageFragment;
 

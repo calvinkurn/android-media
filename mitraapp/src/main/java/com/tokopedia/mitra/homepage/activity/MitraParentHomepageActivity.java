@@ -11,7 +11,7 @@ import android.view.MenuItem;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.homepage.fragment.MitraAccountFragment;
+import com.tokopedia.mitra.account.MitraAccountFragment;
 import com.tokopedia.mitra.homepage.fragment.MitraHelpFragment;
 import com.tokopedia.mitra.homepage.fragment.MitraHomepageFragment;
 
