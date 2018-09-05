@@ -10,6 +10,9 @@ import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.common.data.source.KolAuthInterceptor;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.common.network.KolUrl;
+import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
