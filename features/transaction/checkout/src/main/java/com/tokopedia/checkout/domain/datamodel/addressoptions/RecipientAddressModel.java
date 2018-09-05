@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.addressoptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.view.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 /**
@@ -35,6 +35,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private Store store;
 
     private boolean selected;
+    private boolean stateExtraPaddingTop;
 
     public RecipientAddressModel() {
     }
@@ -68,6 +69,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         unixTime = in.readString();
         store = in.readParcelable(Store.class.getClassLoader());
         selected = in.readByte() != 0;
+        stateExtraPaddingTop = in.readByte() != 0;
     }
 
     @Override
@@ -102,6 +104,7 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         dest.writeString(unixTime);
         dest.writeParcelable(store, flags);
         dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeByte((byte) (stateExtraPaddingTop ? 1 : 0));
     }
 
     @Override
@@ -279,6 +282,14 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     public void setProvinceId(String provinceId) {
         this.provinceId = provinceId;
+    }
+
+    public boolean isStateExtraPaddingTop() {
+        return stateExtraPaddingTop;
+    }
+
+    public void setStateExtraPaddingTop(boolean stateExtraPaddingTop) {
+        this.stateExtraPaddingTop = stateExtraPaddingTop;
     }
 
     @Override

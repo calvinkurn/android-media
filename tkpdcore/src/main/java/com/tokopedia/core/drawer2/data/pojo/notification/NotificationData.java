@@ -33,6 +33,12 @@ public class NotificationData {
     @SerializedName("total_notif")
     @Expose
     private int totalNotif;
+    @SerializedName("buyer_order_status")
+    @Expose
+    private NotificationBuyerOrder buyerOrder;
+    @SerializedName("seller_order_status")
+    @Expose
+    private NotificationSellerOrder sellerOrder;
 
     public int getTotalCart() {
         return totalCart;
@@ -98,4 +104,19 @@ public class NotificationData {
         this.resolutionModel = resolutionModel;
     }
 
+    public NotificationBuyerOrder getBuyerOrder() {
+        return buyerOrder;
+    }
+
+    public void setBuyerOrder(NotificationBuyerOrder buyerOrder) {
+        this.buyerOrder = buyerOrder;
+    }
+
+    public NotificationSellerOrder getSellerOrder() {
+        return sellerOrder;
+    }
+
+    public void setSellerOrder(NotificationSellerOrder sellerOrder) {
+        this.sellerOrder = sellerOrder;
+    }
 }

@@ -14,7 +14,7 @@ import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -124,7 +124,7 @@ public class CustomPushListener extends PushMessageListener {
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
-            Intent notificationIntent = new Intent(context, ParentIndexHome.class);
+            Intent notificationIntent = new Intent(context, MainParentActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
             builder.setSmallIcon(R.drawable.ic_stat_notify_white)

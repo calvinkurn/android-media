@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import com.tokopedia.abstraction.R;
 
 public class TouchViewPager extends ViewPager {
+
     private boolean allowPageSwitching = true;
 
     public TouchViewPager(Context context) {
@@ -29,8 +30,8 @@ public class TouchViewPager extends ViewPager {
         }
     }
 
-    public void SetAllowPageSwitching(boolean permission){
-        allowPageSwitching = permission;
+    public void setAllowPageSwitching(boolean allowPageSwitching) {
+        this.allowPageSwitching = allowPageSwitching;
     }
 
     @Override

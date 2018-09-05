@@ -1,26 +1,41 @@
 package com.tokopedia.transactiondata.apiservice;
 
-import java.io.IOException;
+import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
 
 /**
  * @author anggaprasetiyo on 29/01/18.
  */
 
-public class CartResponseErrorException extends IOException {
+public class CartResponseErrorException extends ResponseErrorException {
 
     private static final long serialVersionUID = -3672249531132491023L;
 
-    private final CartHeaderResponse cartHeaderResponse;
-    private final int errorCode;
+    private final int httpErrorCode;
+    private final String internalServiceErrorCode;
 
-    public CartResponseErrorException(int errorCode, CartHeaderResponse cartHeaderResponse) {
-        this.cartHeaderResponse = cartHeaderResponse;
-        this.errorCode = errorCode;
+    CartResponseErrorException(String message) {
+        super(message);
+        this.httpErrorCode = 0;
+        this.internalServiceErrorCode = "0";
     }
 
-    @Override
-    public String getMessage() {
-        return cartHeaderResponse.getMessageFormatted();
+    CartResponseErrorException(int httpErrorCode, String internalServiceErrorCode, String messageError) {
+        super(messageError);
+        this.internalServiceErrorCode = internalServiceErrorCode;
+        this.httpErrorCode = httpErrorCode;
     }
 
+    CartResponseErrorException() {
+        super();
+        this.httpErrorCode = 0;
+        this.internalServiceErrorCode = "0";
+    }
+
+    public int getHttpErrorCode() {
+        return httpErrorCode;
+    }
+
+    public String getInternalServiceErrorCode() {
+        return internalServiceErrorCode;
+    }
 }

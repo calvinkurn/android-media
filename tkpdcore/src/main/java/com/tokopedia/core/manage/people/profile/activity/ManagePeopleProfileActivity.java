@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
@@ -19,6 +21,7 @@ import com.tokopedia.core.manage.people.profile.model.PeopleProfilePass;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfileImpl;
 import com.tokopedia.core.manage.people.profile.presenter.ManagePeopleProfilePresenter;
 
+@DeepLink(ApplinkConst.SETTING_PROFILE)
 public class ManagePeopleProfileActivity extends BasePresenterActivity<ManagePeopleProfilePresenter>
         implements ManagePeopleProfileView, ManagePeopleProfileResultReceiver.Receiver {
 
