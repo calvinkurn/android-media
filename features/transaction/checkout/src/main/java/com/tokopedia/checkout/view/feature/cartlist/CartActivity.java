@@ -49,7 +49,10 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initView() { }
+    protected void initView() { 
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        getSupportActionBar().hide();
+    }
 
     @Override
     public void setTitle(CharSequence title) {

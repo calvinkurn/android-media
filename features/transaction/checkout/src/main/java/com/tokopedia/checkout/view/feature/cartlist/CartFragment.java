@@ -93,7 +93,8 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
 
 public class CartFragment extends BaseCheckoutFragment implements CartAdapter.ActionListener,
         CartItemAdapter.ActionListener, ICartListView, TopAdsItemClickListener,
-        RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener {
+        RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
+        ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
@@ -270,6 +271,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             toolbar = toolbarRemoveView();
         }
         appbar.addView(toolbar);
+        ((BaseCheckoutActivity)getActivity()).setSupportActionBar(appbar);
     }
 
     private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
@@ -285,6 +287,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         toolbar.setOnClickRemove(this);
         toolbar.setTitle(getString(R.string.cart));
         return toolbar;
+    }
+
+    @Override
+    public void onToolbarRemoveAllCart() {
+        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
+        if (!(fragment instanceof RemoveCartItemFragment)
+                && cartListAdapter.getCartItemDataList() != null
+                && cartListAdapter.getCartItemDataList().size() > 0) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
+                    .addToBackStack(null)
+                    .commit();
+            setVisibilityRemoveButton(false);
+        }
     }
 
     @Override
