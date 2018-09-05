@@ -621,7 +621,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             } else {
                 shippingCourierBottomsheet = null;
                 shippingDurationBottomsheet = null;
-                onChangeShippingDuration(shipmentCartItemModel, shipmentPresenter.getRecipientAddressModel(),
+                RecipientAddressModel recipientAddressModel;
+                if (shipmentPresenter.getRecipientAddressModel() != null) {
+                    recipientAddressModel = shipmentPresenter.getRecipientAddressModel();
+                } else {
+                    recipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                }
+                onChangeShippingDuration(shipmentCartItemModel, recipientAddressModel,
                         shipmentCartItemModel.getShopShipmentList(), position);
             }
         }
@@ -967,18 +973,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          RecipientAddressModel recipientAddressModel,
                                          List<ShopShipment> shopShipmentList,
                                          int cartPosition) {
-        ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
-                recipientAddressModel);
-        if (shipmentDetailData != null) {
-            shippingDurationBottomsheet = ShippingDurationBottomsheet.newInstance(
-                    shipmentDetailData, shipmentAdapter.getLastServiceId(), shopShipmentList,
-                    recipientAddressModel, cartPosition);
-            shippingDurationBottomsheet.setShippingDurationBottomsheetListener(this);
-
-            if (getActivity() != null) {
-                shippingDurationBottomsheet.show(getActivity().getSupportFragmentManager(), null);
-            }
-        }
+        showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
     }
 
     private void showCourierChoiceBottomSheet(ShipmentDetailData shipmentDetailData,
@@ -1357,6 +1352,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                          RecipientAddressModel recipientAddressModel,
                                          List<ShopShipment> shopShipmentList,
                                          int cartPosition) {
+        showShippingDurationBottomsheet(shipmentCartItemModel, recipientAddressModel, shopShipmentList, cartPosition);
+    }
+
+    private void showShippingDurationBottomsheet(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, List<ShopShipment> shopShipmentList, int cartPosition) {
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
                 recipientAddressModel);
         if (shipmentDetailData != null) {
