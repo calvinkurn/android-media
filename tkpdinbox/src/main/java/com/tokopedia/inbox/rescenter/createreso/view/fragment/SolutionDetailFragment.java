@@ -387,7 +387,7 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void initCheckedValue() {
+    public void initCheckedItem() {
         if (editAppealSolutionModel != null) {
             editAppealSolutionModel.complaints.get(0).isChecked = true;
         }

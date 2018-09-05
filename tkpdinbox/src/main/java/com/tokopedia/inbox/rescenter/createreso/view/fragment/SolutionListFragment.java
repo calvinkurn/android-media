@@ -356,7 +356,6 @@ public class SolutionListFragment extends BaseDaggerFragment
 
         btnEditSolution.setOnClickListener(view -> {
             showLoading();
-
             presenter.submitEditAppeal(solutionViewModel);
             dialog.dismiss();
         });
