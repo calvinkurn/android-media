@@ -8,11 +8,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -42,6 +45,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddr
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
+import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
@@ -233,7 +237,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setupArguments(Bundle arguments) {
+        String args = arguments.getString(CartFragment.class.getSimpleName());
+        if (args != null && !args.isEmpty()) {
+            isToolbarWithBackButton = false;
+        }
+    }
 
+    private void setVisibilityRemoveButton(boolean state) {
+        if (toolbar != null) {
+            if (toolbar instanceof ToolbarRemoveView) {
+                ((ToolbarRemoveView)toolbar).setVisibilityRemove(state);
+            } else if (toolbar instanceof ToolbarRemoveWithBackView) {
+                ((ToolbarRemoveWithBackView)toolbar).setVisibilityRemove(state);
+            }
+        }
     }
 
     @Override
@@ -264,6 +281,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
+    private boolean isToolbarWithBackButton = true;
+
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
         if (isToolbarWithBackButton) {
@@ -272,7 +291,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             toolbar = toolbarRemoveView();
         }
         appbar.addView(toolbar);
-        ((BaseCheckoutActivity)getActivity()).setSupportActionBar(appbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(appbar);
     }
 
     private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
@@ -292,16 +311,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onToolbarRemoveAllCart() {
-        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
-        if (!(fragment instanceof RemoveCartItemFragment)
-                && cartListAdapter.getCartItemDataList() != null
-                && cartListAdapter.getCartItemDataList().size() > 0) {
-            getChildFragmentManager().beginTransaction()
-                    .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartListAdapter.getCartItemDataList()))
-                    .addToBackStack(null)
-                    .commit();
-            setVisibilityRemoveButton(false);
-        }
+//        Fragment fragment = getChildFragmentManager().findFragmentById(R.id.rl_content);
+//        if (!(fragment instanceof RemoveCartItemFragment)
+//                && cartAdapter.getCartItemDataList() != null
+//                && cartAdapter.getCartItemDataList().size() > 0) {
+//            getChildFragmentManager().beginTransaction()
+//                    .replace(R.id.rl_content, RemoveCartItemFragment.newInstance(cartAdapter.getCartItemDataList()))
+//                    .addToBackStack(null)
+//                    .commit();
+//            setVisibilityRemoveButton(false);
+//        }
     }
 
     @Override
