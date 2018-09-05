@@ -134,7 +134,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                     getString(R.string.title_dev_options)));
         }
 
-        SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.logout));
+        SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.account_home_button_logout));
         itemOut.setIconResource(R.drawable.ic_setting_out);
         itemOut.setHideArrow(true);
         settingItems.add(itemOut);
@@ -211,10 +211,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     private void showDialogLogout() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.logout)+" dari Tokopedia");
-        dialog.setDesc(getString(R.string.logout_confirmation));
-        dialog.setBtnOk(getString(R.string.logout));
-        dialog.setBtnCancel(getString(R.string.cancel));
+        dialog.setTitle(getString(R.string.account_home_label_logout));
+        dialog.setDesc(getString(R.string.account_home_label_logout_confirmation));
+        dialog.setBtnOk(getString(R.string.account_home_button_logout));
+        dialog.setBtnCancel(getString(R.string.account_home_label_cancel));
         dialog.setOnOkClickListener(v -> {
             dialog.dismiss();
             doLogout();
