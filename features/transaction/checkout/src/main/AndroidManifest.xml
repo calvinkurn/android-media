@@ -10,7 +10,7 @@
         <activity
             android:name=".view.feature.cartlist.CartActivity"
             android:label="@string/checkout_module_title_activity_cart"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".view.feature.addressoptions.CartAddressChoiceActivity"
             android:label="@string/checkout_module_title_shipping_dest"

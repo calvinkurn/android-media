@@ -45,6 +45,8 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemTickerErrorHolderData;
+import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
+import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponent;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.component.CartListComponent;
@@ -96,6 +98,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
 
+    private View toolbar;
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
@@ -238,6 +241,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void initView(View view) {
+        setupToolbar(view);
         cartRecyclerView = view.findViewById(R.id.rv_cart);
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button);
         tvTotalPrice = view.findViewById(R.id.tv_total_prices);
@@ -256,6 +260,31 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
+    }
+
+    private void setupToolbar(View view) {
+        Toolbar appbar = view.findViewById(R.id.toolbar);
+        if (isToolbarWithBackButton) {
+            toolbar = toolbarRemoveWithBackView();
+        } else {
+            toolbar = toolbarRemoveView();
+        }
+        appbar.addView(toolbar);
+    }
+
+    private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {
+        ToolbarRemoveWithBackView toolbar = new ToolbarRemoveWithBackView(getActivity());
+        toolbar.navigateUp(getActivity());
+        toolbar.setOnClickRemove(this);
+        toolbar.setTitle(getString(R.string.cart));
+        return toolbar;
+    }
+
+    private ToolbarRemoveView toolbarRemoveView() {
+        ToolbarRemoveView toolbar = new ToolbarRemoveView(getActivity());
+        toolbar.setOnClickRemove(this);
+        toolbar.setTitle(getString(R.string.cart));
+        return toolbar;
     }
 
     @Override
