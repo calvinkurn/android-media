@@ -4,22 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/dp_16">
 
 
         <android.support.v7.widget.AppCompatImageView
-            android:layout_width="@dimen/dp_300"
-            android:layout_height="@dimen/dp_200"
-            android:scaleType="fitCenter"
+            android:layout_width="@dimen/dp_200"
+            android:layout_height="@dimen/dp_40"
             android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_mitra_welcome" />
+            android:layout_marginBottom="@dimen/dp_60"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_mitra_tokopedia_logo" />
 
         <android.support.v7.widget.AppCompatTextView
             style="@style/TextView.TitleBig.Bold"
