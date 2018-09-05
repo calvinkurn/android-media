@@ -138,6 +138,24 @@ public interface ShipmentContract {
 
         void sendAnalyticsOnCourierChanged(String agent, String service);
 
+
+        void sendAnalyticsOnClickChooseShipmentDurationOnShipmentRecomendation();
+
+        void sendAnalyticsOnClickButtonCloseShipmentRecommendationDuration();
+
+        void sendAnalyticsOnClickChecklistShipmentRecommendationDuration(String duration);
+
+        void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier);
+
+        void sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+
+        void sendAnalyticsOnClickSelectedCourierShipmentRecommendation(String courierName);
+
+        void sendAnalyticsOnClickButtonCloseShipmentRecommendationCourier();
+
+        void sendAnalyticsOnClickChangeDurationShipmentRecommendation();
+
+        void sendAnalyticsOnClickButtonDoneShowCaseDurationShipmentRecommendation();
     }
 
     interface Presenter extends CustomerPresenter<View> {
