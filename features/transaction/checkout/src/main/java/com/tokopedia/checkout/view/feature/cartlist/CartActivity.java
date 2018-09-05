@@ -39,22 +39,10 @@ public class CartActivity extends BaseCheckoutActivity
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().hide();
-        super.onCreate(savedInstanceState);
-    }
+    protected void initInjector() { }
 
     @Override
-    protected void initInjector() {
-
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
+    protected void setupURIPass(Uri data) { }
 
     @Override
     protected void setupBundlePass(Bundle extras) { }
