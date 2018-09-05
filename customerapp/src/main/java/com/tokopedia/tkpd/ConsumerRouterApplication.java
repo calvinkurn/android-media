@@ -49,7 +49,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -2715,7 +2715,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     public Intent getInboxHelpIntent(Context context) {
-        return InboxTicketActivity.getCallingIntent(context);
+        return InboxListActivity.getCallingIntent(context);
     }
 
     @Override
@@ -2725,7 +2725,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxTicketActivity.class);
+        return new Intent(context, InboxListActivity.class);
     }
 
     @Override

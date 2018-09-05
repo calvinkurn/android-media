@@ -63,7 +63,7 @@ public class InboxListActivity extends InboxBaseActivity
         return taskStackBuilder;
     }
 
-    private static Intent getCallingIntent(Context context) {
+    public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxListActivity.class);
     }
 
