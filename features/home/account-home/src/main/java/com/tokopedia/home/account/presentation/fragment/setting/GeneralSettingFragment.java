@@ -43,6 +43,8 @@ import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.home.account.presentation.listener.LogoutView;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.navigation_common.model.WalletPref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
     @Inject LogoutPresenter presenter;
+    @Inject WalletPref walletPref;
 
     private View loadingView;
     private View baseSettingView;
@@ -106,8 +109,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
                     getString(R.string.title_shop_setting), getString(R.string.subtitle_shop_setting)));
         }
+
+        WalletModel walletModel = walletPref.retrieveWallet();
+        String walletName = walletModel != null ? walletModel.getText() + "," : "";
+        String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
-                getString(R.string.title_tkpd_pay_setting), getString(R.string.subtitle_tkpd_pay_setting)));
+                getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
