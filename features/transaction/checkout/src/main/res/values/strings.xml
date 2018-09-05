@@ -207,5 +207,6 @@
     <string name="action_label_done">Selesai</string>
     <string name="label_change_courier">Ubah Kurir</string>
     <string name="label_shipping_duration">Durasi Pengiriman</string>
+    <string name="label_shipment_address">Alamat Pengiriman</string>
 
 </resources>
