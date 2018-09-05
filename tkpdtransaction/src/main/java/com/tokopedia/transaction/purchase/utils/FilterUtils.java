@@ -30,19 +30,19 @@ public class FilterUtils {
         ));
         list.add(new TxFilterItem(
                 TransactionPurchaseRouter.TRANSACTION_CONFIRMED_FILTER_ID,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_confirmed)
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_confirmed)
         ));
         list.add(new TxFilterItem(
                 TransactionPurchaseRouter.TRANSACTION_PROCESSED_FILTER_ID,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_processed)
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_processed)
         ));
         list.add(new TxFilterItem(
                 TransactionPurchaseRouter.ONGOING_DELIVERY_FILTER_ID,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_shipped)
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_shipped)
         ));
         list.add(new TxFilterItem(
                 TransactionPurchaseRouter.TRANSACTION_DELIVERED_FILTER_ID,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_delivered)
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_delivered)
         ));
         list.add(new TxFilterItem(
                 TransactionPurchaseRouter.TRANSACTION_DONE_FILTER_ID,
