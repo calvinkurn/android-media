@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -282,7 +283,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().getOriginData().getWholesalePriceFormatted() != null) {
             this.tvProductPrice.setText(data.getCartItemData().getOriginData().getWholesalePriceFormatted());
         } else {
-            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+            this.tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    data.getCartItemData().getOriginData().getPricePlan(), false));
         }
 
         ImageHandler.loadImageRounded2(
