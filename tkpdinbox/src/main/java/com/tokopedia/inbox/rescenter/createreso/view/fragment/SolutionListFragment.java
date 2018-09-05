@@ -186,7 +186,8 @@ public class SolutionListFragment extends BaseDaggerFragment
                 tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage()
                         .replace(
                                 getActivity().getResources().getString(R.string.string_return_value),
-                                solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()));
+                                CurrencyFormatter.formatDotRupiah(
+                                        String.valueOf(solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()))));
             } else {
                 tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage());
             }
