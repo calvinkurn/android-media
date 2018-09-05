@@ -34,6 +34,8 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     private static final String EXTRA_PARENT_APP_LINK = "EXTRA_PARENT_APP_LINK";
     private static final String KEY_APP_LINK_QUERY_URL = "url";
 
+    private FragmentGeneralWebView fragmentGeneralWebView;
+
     private String url;
 
     public static Intent newInstance(Context context, String url) {
@@ -101,9 +103,9 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
     protected void initView() {
         Fragment fragment = getFragmentManager().findFragmentById(com.tokopedia.digital.R.id.container);
         if (fragment == null || !(fragment instanceof FragmentGeneralWebView)) {
-
+            fragmentGeneralWebView = FragmentGeneralWebView.createInstance(getEncodedUrl(url), true);
             getFragmentManager().beginTransaction().replace(com.tokopedia.digital.R.id.container,
-                    FragmentGeneralWebView.createInstance(getEncodedUrl(url), true)).commit();
+                    fragmentGeneralWebView).commit();
         }
     }
 
@@ -164,11 +166,24 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
-            startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
-            finish();
+        if (fragmentGeneralWebView.getWebview().canGoBack()) {
+            fragmentGeneralWebView.getWebview().goBack();
         } else {
-            super.onBackPressed();
+            if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
+                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                finish();
+            } else {
+                super.onBackPressed();
+            }
         }
+    }
+
+    @Override
+    protected int getContentId() {
+        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
+            return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
+        }
+
+        return super.getContentId();
     }
 }

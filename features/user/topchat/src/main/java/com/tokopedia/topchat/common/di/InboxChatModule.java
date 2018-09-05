@@ -4,7 +4,7 @@ package com.tokopedia.topchat.common.di;
 import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -23,6 +23,15 @@ import com.tokopedia.core.network.retrofit.interceptors.DigitalHmacAuthIntercept
 import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.network.constant.TkpdBaseURL;
+import com.tokopedia.shop.common.data.repository.ShopCommonRepositoryImpl;
+import com.tokopedia.shop.common.data.source.ShopCommonDataSource;
+import com.tokopedia.shop.common.data.source.cloud.ShopCommonCloudDataSource;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonApi;
+import com.tokopedia.shop.common.data.source.cloud.api.ShopCommonWSApi;
+import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
+import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.shop.common.domain.repository.ShopCommonRepository;
 import com.tokopedia.topchat.chatroom.data.mapper.GetExistingChatMapper;
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory;
 import com.tokopedia.topchat.chatlist.data.factory.SearchFactory;
@@ -49,6 +58,7 @@ import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepository;
 import com.tokopedia.topchat.chatroom.data.repository.ReplyRepositoryImpl;
 import com.tokopedia.topchat.chatroom.domain.AttachImageUseCase;
+import com.tokopedia.topchat.chatroom.domain.GetChatShopInfoUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetReplyListUseCase;
 import com.tokopedia.topchat.chatroom.domain.GetUserStatusUseCase;
 import com.tokopedia.topchat.chatroom.domain.ReplyMessageUseCase;
@@ -59,6 +69,8 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.chattemplate.domain.usecase.GetTemplateUseCase;
 import com.tokopedia.topchat.common.di.qualifier.RetrofitJsDomainQualifier;
+import com.tokopedia.topchat.common.di.qualifier.RetrofitTomeDomainQualifier;
+import com.tokopedia.topchat.common.di.qualifier.RetrofitWsDomainQualifier;
 import com.tokopedia.topchat.uploadimage.data.factory.ImageUploadFactory;
 import com.tokopedia.topchat.uploadimage.data.mapper.GenerateHostMapper;
 import com.tokopedia.topchat.uploadimage.data.mapper.UploadImageMapper;
@@ -254,6 +266,66 @@ public class InboxChatModule {
         return new GetExistingChatUseCase(threadExecutor, postExecutor, replyRepository);
     }
 
+    //Add ShopInfo provides.. Change it to use component after shop_common Component & module are
+    // Implemented
+    @InboxChatScope
+    @Provides
+    public com.tokopedia.abstraction.common.data.model.session.UserSession
+            providesUserSessionAbstraction(@ApplicationContext Context context) {
+        return ((AbstractionRouter)context).getSession();
+    }
+
+    @InboxChatScope
+    @Provides
+    public ShopCommonWSApi provideShopCommonWsApi(@RetrofitWsDomainQualifier Retrofit retrofit) {
+        return retrofit.create(ShopCommonWSApi.class);
+    }
+
+    @InboxChatScope
+    @Provides
+    public ShopCommonApi provideShopCommonApi(@RetrofitTomeDomainQualifier Retrofit retrofit) {
+        return retrofit.create(ShopCommonApi.class);
+    }
+
+
+    @InboxChatScope
+    @Provides
+    public ShopCommonCloudDataSource provideShopCommonCloudDataSource(ShopCommonApi shopCommonApi,
+                                                                      ShopCommonWSApi shopCommonWS4Api,
+                                                                      com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+        return new ShopCommonCloudDataSource(shopCommonApi, shopCommonWS4Api, userSession);
+    }
+
+    @InboxChatScope
+    @Provides
+    public ShopCommonDataSource provideShopCommonDataSource(ShopCommonCloudDataSource shopInfoCloudDataSource) {
+        return new ShopCommonDataSource(shopInfoCloudDataSource);
+    }
+
+    @InboxChatScope
+    @Provides
+    public ShopCommonRepository provideShopCommonRepository(ShopCommonDataSource shopInfoDataSource) {
+        return new ShopCommonRepositoryImpl(shopInfoDataSource);
+    }
+
+    @InboxChatScope
+    @Provides
+    GetShopInfoUseCase provideGetShopInfoUseCase(ShopCommonRepository shopCommonRepository) {
+        return new GetShopInfoUseCase(shopCommonRepository);
+    }
+
+    @InboxChatScope
+    @Provides
+    ToggleFavouriteShopUseCase provideToggleFavouriteShopUseCase(ShopCommonRepository shopCommonRepository){
+        return new ToggleFavouriteShopUseCase(shopCommonRepository);
+    }
+
+    @InboxChatScope
+    @Provides
+    GetChatShopInfoUseCase provideGetChatShopInfo(GetShopInfoUseCase getShopInfoUseCase) {
+        return new GetChatShopInfoUseCase(getShopInfoUseCase);
+    }
+
     @InboxChatScope
     @Provides
     ChatService provideChatService() {
@@ -425,6 +497,26 @@ public class InboxChatModule {
     Retrofit provideChatRetrofitJsDomain(OkHttpClient okHttpClient,
                                  Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(TopChatUrl.TOPCHAT_JS_API)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @InboxChatScope
+    @RetrofitWsDomainQualifier
+    @Provides
+    Retrofit provideWsRetrofitDomain(OkHttpClient okHttpClient,
+                                       Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.BASE_DOMAIN)
+                .client(okHttpClient)
+                .build();
+    }
+
+    @InboxChatScope
+    @RetrofitTomeDomainQualifier
+    @Provides
+    Retrofit provideTomeRetrofitDomain(OkHttpClient okHttpClient,
+                                     Retrofit.Builder retrofitBuilder) {
+        return retrofitBuilder.baseUrl(TkpdBaseURL.TOME_DOMAIN)
                 .client(okHttpClient)
                 .build();
     }

@@ -2,14 +2,14 @@ package com.tokopedia.feedplus.view.adapter.viewholder.kol;
 
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.CardView;
-import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.kol.WhitelistViewModel;
@@ -24,8 +24,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     private CardView cardView;
     private ImageView ivPhoto;
     private TextView tvTitle, tvDesc;
-
-    private UserSession userSession;
+    private Button btnPost;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_post_entry;
@@ -37,7 +36,7 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
         this.ivPhoto = itemView.findViewById(R.id.iv_photo);
         this.tvTitle = itemView.findViewById(R.id.tv_title);
         this.tvDesc = itemView.findViewById(R.id.tv_desc);
-        userSession = mainView.getUserSession();
+        this.btnPost = itemView.findViewById(R.id.btn_post);
     }
 
     @Override
@@ -47,21 +46,12 @@ public class WhitelistViewHolder extends AbstractViewHolder<WhitelistViewModel> 
     }
 
     private void initView(WhitelistViewModel model) {
-        tvTitle.setText(!TextUtils.isEmpty(model.getWhitelist().getTitle()) ?
-                formatName(model.getWhitelist().getTitle(),
-                        model.getWhitelist().getTitleIdentifier()) :
-                "");
-        tvDesc.setText(!TextUtils.isEmpty(model.getWhitelist().getDesc()) ?
-                model.getWhitelist().getDesc() :
-                "");
-        ImageHandler.loadImageCircle2(ivPhoto.getContext(), ivPhoto, userSession.getProfilePicture());
+        tvTitle.setText(MethodChecker.fromHtml(model.getWhitelist().getTitle()));
+        tvDesc.setText(MethodChecker.fromHtml(model.getWhitelist().getDesc()));
+        ImageHandler.loadImageCircle2(ivPhoto.getContext(), ivPhoto, model.getWhitelist().getImage());
     }
 
     private void initViewListener(final WhitelistViewModel model) {
-        cardView.setOnClickListener(view -> mainView.onWhitelistClicked(model.getWhitelist().getUrl()));
-    }
-
-    private String formatName(String nameTemp, String identifier) {
-        return nameTemp.replace(identifier, userSession.getName());
+        btnPost.setOnClickListener(view -> mainView.onWhitelistClicked(model.getWhitelist().getUrl()));
     }
 }

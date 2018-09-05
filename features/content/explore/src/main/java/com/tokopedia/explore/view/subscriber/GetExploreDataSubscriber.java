@@ -3,6 +3,7 @@ package com.tokopedia.explore.view.subscriber;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.explore.domain.entity.Category;
 import com.tokopedia.explore.domain.entity.Content;
 import com.tokopedia.explore.domain.entity.GetDiscoveryKolData;
@@ -48,7 +49,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         }
         view.dismissLoading();
         if (clearData) {
-            view.onErrorGetExploreDataFirstPage();
+            view.onErrorGetExploreDataFirstPage(ErrorHandler.getErrorMessage(view.getContext(), e));
         } else {
             view.onErrorGetExploreDataMore();
         }
@@ -64,7 +65,7 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
 
             if (!TextUtils.isEmpty(discoveryKolData.getError())) {
                 view.dismissLoading();
-                view.onErrorGetExploreDataFirstPage();
+                view.onErrorGetExploreDataFirstPage(discoveryKolData.getError());
                 return;
             }
         }
@@ -75,7 +76,8 @@ public class GetExploreDataSubscriber extends Subscriber<GraphqlResponse> {
         List<ExploreCategoryViewModel> categoryViewModelList
                 = convertToCategoryViewModelList(discoveryKolData.getCategories());
         view.onSuccessGetExploreData(
-                new ExploreViewModel(kolPostViewModelList, categoryViewModelList)
+                new ExploreViewModel(kolPostViewModelList, categoryViewModelList),
+                clearData
         );
         view.dismissLoading();
     }

@@ -2,8 +2,10 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -20,6 +22,8 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.events.EventModuleRouter;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.di.DaggerEventComponent;
@@ -31,6 +35,7 @@ import com.tokopedia.events.view.customview.CustomSeatLayout;
 import com.tokopedia.events.view.presenter.SeatSelectionPresenter;
 import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
@@ -81,13 +86,14 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     @BindView(R2.id.main_content)
     FrameLayout mainContent;
 
-    EventComponent eventComponent;
+    private EventComponent eventComponent;
     @Inject
     SeatSelectionPresenter mPresenter;
 
-    SelectedSeatViewModel selectedSeatViewModel;
+    private SelectedSeatViewModel selectedSeatViewModel;
 
-    SeatLayoutViewModel seatLayoutViewModel;
+    private SeatLayoutViewModel seatLayoutViewModel;
+    private FinishActivityReceiver finishReceiver = new FinishActivityReceiver(this);
 
     int price;
     int maxTickets;
@@ -99,6 +105,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> actualseat = new ArrayList<>();
     String areaId;
     private int quantity;
+    FirebaseRemoteConfigImpl remoteConfig;
 
 
     @Override
@@ -109,6 +116,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         executeInjector();
         selectedSeatViewModel = new SelectedSeatViewModel();
         seatLayoutViewModel = new SeatLayoutViewModel();
+        remoteConfig = new FirebaseRemoteConfigImpl(this);
 
         mPresenter.attachView(this);
         mPresenter.initialize();
@@ -116,6 +124,9 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
+        LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
     }
 
 
@@ -126,7 +137,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }
@@ -288,6 +299,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public void setSelectedSeatModel() {
         seatIds.clear();
         physicalRowIds.clear();
+        areacodes.clear();
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 int k = 0;
@@ -302,6 +314,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                 seatIds.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
+            selectedSeatViewModel.setQuantity(selectedSeats.size());
             mPresenter.verifySeatSelection(selectedSeatViewModel);
         } else {
 
@@ -332,4 +345,5 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     public String getScreenName() {
         return mPresenter.getSCREEN_NAME();
     }
+
 }

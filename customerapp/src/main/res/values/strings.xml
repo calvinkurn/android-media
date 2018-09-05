@@ -21,6 +21,7 @@
     <string name="lihat_semua_product">Lihat Semua Produk</string>
     <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
     <string name="drawer_title_wishlist">Wishlist</string>
+    <string name="drawer_title_mybills">MyBills</string>
     <string name="drawer_title_buyer">Pembelian</string>
     <string name="drawer_title_payment_status">Status Pembayaran</string>
     <string name="drawer_title_order_status">Status Pemesanan</string>
@@ -83,7 +84,6 @@
     <string name="longpress_bayar">Bayar</string>
     <string name="longpress_jual">Jual</string>
     <string name="longpress_share">Share</string>
-    <string name="coupon_copy_text">Kode voucher tersalin</string>
     <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
 

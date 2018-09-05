@@ -46,15 +46,18 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
+        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
 
-        Donation donation = new Donation();
-        donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
-        donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
-        donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
-        dataResult.setDonation(donation);
+        if (shipmentAddressFormDataResponse.getDonation() != null) {
+            Donation donation = new Donation();
+            donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
+            donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
+            donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+            dataResult.setDonation(donation);
+        }
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();

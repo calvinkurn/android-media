@@ -16,9 +16,9 @@ public interface ContentExploreContract {
     interface View extends CustomerView {
         Context getContext();
 
-        void onSuccessGetExploreData(ExploreViewModel exploreViewModel);
+        void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData);
 
-        void onErrorGetExploreDataFirstPage();
+        void onErrorGetExploreDataFirstPage(String message);
 
         void onErrorGetExploreDataMore();
 
@@ -30,13 +30,25 @@ public interface ContentExploreContract {
 
         void clearData();
 
-        void onCategoryClicked(int position, int categoryId);
+        void onCategoryClicked(int position, int categoryId, String categoryName);
+
+        void onCategoryReset();
+
+        void showRefreshing();
 
         void showLoading();
 
         void dismissLoading();
 
+        void showEmpty();
+
         void goToKolPostDetail(KolPostViewModel kolPostViewModel);
+
+        void dropKeyboard();
+
+        void scrollToTop();
+
+        void resetDataParam();
     }
 
     interface Presenter extends CustomerPresenter<View> {

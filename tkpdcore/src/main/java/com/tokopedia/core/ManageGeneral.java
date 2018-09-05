@@ -25,7 +25,11 @@ import com.tokopedia.core.var.TkpdState;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Moved to com.tokopedia.home.account.presentation.activity.GeneralSettingActivity
+ */
 @SuppressLint("ValidFragment")
+@Deprecated
 public class ManageGeneral extends TkpdActivity implements NotificationReceivedListener {
     private static final String EXTRA_STATE_TAB_POSITION = "EXTRA_STATE_TAB_POSITION";
     public final static int TAB_POSITION_MANAGE_PROFILE = 0;

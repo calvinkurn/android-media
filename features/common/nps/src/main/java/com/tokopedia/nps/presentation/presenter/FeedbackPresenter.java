@@ -39,9 +39,6 @@ public class FeedbackPresenter {
 
         UserSession userSession = new UserSession(mView.context());
 
-        Field[] fields = Build.VERSION_CODES.class.getFields();
-        String osName = fields[Build.VERSION.SDK_INT + 1].getName();
-
         RequestParams requestParams = RequestParams.create();
         requestParams.putString("rating", rating);
         requestParams.putString("category", category);
@@ -50,7 +47,6 @@ public class FeedbackPresenter {
         requestParams.putString("app_version", GlobalConfig.VERSION_NAME);
         requestParams.putString("device_model", String.format("%s %s", Build.MANUFACTURER, Build.MODEL));
         requestParams.putString("os_type", "1");
-        requestParams.putString("os_version", String.format("%s %s", osName, Build.VERSION.SDK_INT));
 
         postFeedbackUseCase.execute(requestParams, new FeedbackSubscriber());
     }
