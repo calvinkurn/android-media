@@ -37,6 +37,14 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void initInjector() {
 
     }
@@ -50,11 +58,7 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initView() { 
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().hide();
-    }
+    protected void initView() { }
 
     @Override
     public void setTitle(CharSequence title) {
@@ -118,6 +122,6 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     @Override
     protected Fragment getNewFragment() {
-        return CartFragment.newInstance("");
+        return CartFragment.newInstance();
     }
 }
