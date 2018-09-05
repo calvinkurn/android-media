@@ -14,7 +14,7 @@ import com.moengage.pushbase.push.MoEngageNotificationUtils;
 import com.moengage.pushbase.push.PushMessageListener;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.home.ParentIndexHome;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 public class CustomPushListener extends PushMessageListener {
 
@@ -114,7 +114,8 @@ public class CustomPushListener extends PushMessageListener {
 
             ConfigurationProvider configurationProvider = ConfigurationProvider.getInstance(context);
             configurationProvider.updateNotificationId(NOTIFICATION_ID);
-            Intent deleteIntent = new Intent(DELETE_NOTIFY);
+            Intent deleteIntent = new Intent(context,NotificationBroadcast.class);
+            deleteIntent.setAction(DELETE_NOTIFY);
             deleteIntent.putExtra(EXTRA_DELETE_NOTIFICATION_ID, NOTIFICATION_ID);
             PendingIntent pIntent5 = PendingIntent.getBroadcast(
                     context,
@@ -123,10 +124,10 @@ public class CustomPushListener extends PushMessageListener {
                     PendingIntent.FLAG_UPDATE_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon5, pIntent5);
 
-            Intent notificationIntent = new Intent(context, ParentIndexHome.class);
+            Intent notificationIntent = new Intent(context, MainParentActivity.class);
             PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             remoteView.setOnClickPendingIntent(R.id.image_icon6, contentIntent);
-            builder.setSmallIcon(R.drawable.qc_launcher)
+            builder.setSmallIcon(R.drawable.ic_stat_notify_white)
                     .setCustomContentView(remoteView)
                     .setCustomBigContentView(remoteView)
                     .setContentTitle(context.getResources().getString(R.string.app_name))

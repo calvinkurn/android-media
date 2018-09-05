@@ -6,7 +6,7 @@ import android.support.v4.app.TaskStackBuilder;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.ProductProblemResponseDomain;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemListViewModel;
 
@@ -25,7 +25,7 @@ public interface CreateResolutionCenter {
 
         void showCreateResoResponse(boolean isSuccess, String message);
 
-        void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel, ArrayList<ProblemResult> problemResults);
+        void transitionToChooseProductAndProblemPage(ProductProblemListViewModel productProblemListViewModel, ArrayList<ComplaintResult> complaintResults);
 
         void transitionToSolutionPage(ResultViewModel resultViewModel);
 
@@ -74,7 +74,7 @@ public interface CreateResolutionCenter {
 
         void loadProductProblem(String orderId, String resolutionId);
 
-        void addResultFromStep1(ArrayList<ProblemResult> problemResultList);
+        void addResultFromStep1(ArrayList<ComplaintResult> complaintResults);
 
         void addResultFromStep2(ResultViewModel resultViewModel);
 

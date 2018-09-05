@@ -21,6 +21,8 @@ public class ProductDetailEntity {
     private List<Attachments> attachments;
     @SerializedName("count")
     private int count;
+    @SerializedName("refundAmount")
+    private RefundAmount refundAmount;
 
     public Product getProduct() {
         return product;
@@ -60,6 +62,14 @@ public class ProductDetailEntity {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public RefundAmount getRefundAmount() {
+        return refundAmount;
+    }
+
+    public void setRefundAmount(RefundAmount refundAmount) {
+        this.refundAmount = refundAmount;
     }
 
     public static class Product {
@@ -181,6 +191,31 @@ public class ProductDetailEntity {
 
         public void setIsVideo(int isVideo) {
             this.isVideo = isVideo;
+        }
+    }
+
+    public static class RefundAmount {
+
+        @SerializedName("integer")
+        private int integer;
+
+        @SerializedName("idr")
+        private String idr;
+
+        public int getInteger() {
+            return integer;
+        }
+
+        public void setInteger(int integer) {
+            this.integer = integer;
+        }
+
+        public String getIdr() {
+            return idr;
+        }
+
+        public void setIdr(String idr) {
+            this.idr = idr;
         }
     }
 }
