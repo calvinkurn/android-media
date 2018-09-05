@@ -163,7 +163,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
                 menus.setOnActionClickListener {
                     menus.dismiss()
                 }
-                menus.setOnItemMenuClickListener { itemMenus, pos ->
+                menus.setOnItemMenuClickListener { itemMenus, _ ->
                     resetParam()
                     adapter.clearAllElements()
                     when (itemMenus.title) {
