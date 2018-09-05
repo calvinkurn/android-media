@@ -387,6 +387,13 @@ public class SolutionDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void initCheckedValue() {
+        if (editAppealSolutionModel != null) {
+            editAppealSolutionModel.complaints.get(0).isChecked = true;
+        }
+    }
+
+    @Override
     public void calculateTotalRefund(ComplaintResult complaintResult) {
         int totalValue = 0;
         if (resultViewModel != null) {

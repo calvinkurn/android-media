@@ -187,7 +187,7 @@ public class SolutionListFragment extends BaseDaggerFragment
                         .replace(
                                 getActivity().getResources().getString(R.string.string_return_value),
                                 CurrencyFormatter.formatDotRupiah(
-                                        String.valueOf(solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()))));
+                                        String.valueOf(solutionResponseViewModel.getCurrentSolution().getAmount().getInteger()))));
             } else {
                 tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage());
             }
@@ -285,14 +285,11 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void showErrorGetSolution(String error) {
         llSolution.setVisibility(View.GONE);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (isEditAppeal) {
-                    presenter.initEditAppeal(editAppealSolutionModel);
-                } else {
-                    presenter.initResultViewModel(resultViewModel);
-                }
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> {
+            if (isEditAppeal) {
+                presenter.initEditAppeal(editAppealSolutionModel);
+            } else {
+                presenter.initResultViewModel(resultViewModel);
             }
         });
     }

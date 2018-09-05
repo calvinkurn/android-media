@@ -19,7 +19,6 @@ public class ComplaintResult implements Parcelable{
         this.problem = new ProblemResult();
         this.problem.id = -1;
         this.order = new ProblemOrderResult();
-        isChecked = true;
     }
 
     public JsonObject writeToJson() {
