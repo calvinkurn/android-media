@@ -387,7 +387,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
-        onNeedUpdateViewItem(itemPosition);
+        cartAdapter.notifyDataSetChanged();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
     }
@@ -545,7 +545,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.setHasPerformChecklistChange();
         boolean needToUpdateParent = cartAdapter.setItemSelected(position, parentPosition, checked);
         if (needToUpdateParent) {
-            onNeedUpdateViewItem(parentPosition);
+            cartAdapter.notifyDataSetChanged();
         }
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
