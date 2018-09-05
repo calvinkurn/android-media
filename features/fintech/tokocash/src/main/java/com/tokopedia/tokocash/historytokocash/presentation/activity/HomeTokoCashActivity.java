@@ -17,6 +17,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.accountsetting.presentation.activity.AccountSettingActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
 import com.tokopedia.tokocash.network.api.WalletUrl;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 
 /**
  * Created by nabillasabbaha on 2/5/18.
@@ -86,10 +87,19 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null &&
                         data.hasExtra(AccountSettingActivity.KEY_INTENT_RESULT)) {
                     setResult(RESULT_OK);
+                    sendBroadcastTokocash();
                     finish();
                 }
                 break;
         }
+    }
+
+    private void sendBroadcastTokocash() {
+        Intent intent = new Intent(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        Bundle extras = new Bundle();
+        extras.putString(TokocashPendingDataBroadcastReceiver.class.getSimpleName(), TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        intent.putExtras(extras);
+        sendBroadcast(intent);
     }
 
     @Override

@@ -6,9 +6,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.common.applink.ApplinkConstant;
 import com.tokopedia.inbox.rescenter.inboxv2.view.fragment.ResoInboxFragment;
 
 /**
@@ -19,6 +21,16 @@ public class ResoInboxActivity extends BasePresenterActivity implements HasCompo
     public static final String TAG = ResoInboxFragment.class.getSimpleName();
     public static final String PARAM_IS_SELLER = "is_seller";
     public static final String PARAM_HEADER_TEXT = "header_text";
+
+    @DeepLink(ApplinkConstant.RESCENTER_BUYER)
+    public static Intent newApplinkBuyerInstance(Context context, Bundle bundle) {
+        return newBuyerInstance(context).putExtras(bundle);
+    }
+
+    @DeepLink(ApplinkConstant.RESCENTER_SELLER)
+    public static Intent newApplinkSellerInstance(Context context, Bundle bundle) {
+        return newSellerInstance(context).putExtras(bundle);
+    }
 
     public static Intent newSellerInstance(Context context) {
         Intent intent = new Intent(context, ResoInboxActivity.class);
