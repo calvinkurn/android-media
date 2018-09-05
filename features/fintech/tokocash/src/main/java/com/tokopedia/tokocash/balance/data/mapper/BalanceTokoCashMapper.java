@@ -51,8 +51,13 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
                 }
                 action.setLabelAction(labelActionName);
 
+                String labelName = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
+                if (labelName.isEmpty()) {
+                    labelName = wallet.getText();
+                }
+                balanceTokoCash.setTitleText(labelName);
+
                 balanceTokoCash.setBalance(wallet.getBalance());
-                balanceTokoCash.setTitleText(wallet.getText());
                 balanceTokoCash.setActionBalance(action);
                 return balanceTokoCash;
             }
@@ -82,10 +87,9 @@ public class BalanceTokoCashMapper implements Func1<Wallet, BalanceTokoCash> {
 
             String labelName = remoteConfig.getString(TkpdCache.RemoteConfigKey.MAINAPP_WALLET_LABEL_NAME);
             if (labelName.isEmpty()) {
-                balanceTokoCash.setTitleText(wallet.getText());
-            } else {
-                balanceTokoCash.setTitleText(labelName);
+                labelName = wallet.getText();
             }
+            balanceTokoCash.setTitleText(labelName);
 
             //set ab tags
             ArrayList<String> abTags = new ArrayList<>();

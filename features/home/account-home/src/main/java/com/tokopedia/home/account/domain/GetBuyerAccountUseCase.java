@@ -79,13 +79,6 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
     }
 
     private void saveLocallyWallet(AccountModel accountModel) {
-        WalletModel walletModel = accountModel.getWallet();
-        if (!walletModel.isLinked()){
-            WalletAction action = walletModel.getAction();
-            action.setText(action.getText());
-            action.setApplink(action.getApplink());
-            walletModel.setAction(action);
-        }
         walletPref.saveWallet(accountModel.getWallet());
     }
 }

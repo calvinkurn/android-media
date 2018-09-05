@@ -59,15 +59,15 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-//        if (!accountModel.getWallet().isLinked()){
+        if (!accountModel.getWallet().isLinked()){
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
+            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+        } else {
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
-//        } else {
-//            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-//            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-//            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
-//        }
+        }
         tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
         tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
         tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);

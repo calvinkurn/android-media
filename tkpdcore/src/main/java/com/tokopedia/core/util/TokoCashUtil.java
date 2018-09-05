@@ -2,7 +2,6 @@ package com.tokopedia.core.util;
 
 import android.content.Context;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.drawer2.data.pojo.AbTag;
 import com.tokopedia.core.drawer2.data.pojo.Wallet;
 import com.tokopedia.core.drawer2.data.pojo.topcash.Action;
@@ -13,8 +12,6 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 
 import java.util.ArrayList;
-
-import static com.tokopedia.core.gcm.Constants.Applinks.WALLET_ACTIVATION;
 
 /**
  * Created by nabillasabbaha on 11/13/17.
@@ -103,9 +100,9 @@ public class TokoCashUtil {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
         } else {
-            data.setAppLinkActionButton(WALLET_ACTIVATION);
-            data.setLabelActionButton(context.getString(R.string.title_activation));
-            data.setLabelTitle(context.getString(R.string.label_tokocash));
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks());
+            data.setLabelActionButton(tokoCashData.getAction().getText());
+            data.setLabelTitle(tokoCashData.getText());
         }
 
         data.setRedirectUrlActionButton(tokoCashData.getAction().getRedirectUrl() == null ? ""
@@ -146,9 +143,9 @@ public class TokoCashUtil {
             data.setAppLinkActionButton(tokoCashData.getAction().getApplinks() == null ? ""
                     : tokoCashData.getAction().getApplinks());
         } else {
-            data.setAppLinkActionButton(WALLET_ACTIVATION);
-            data.setLabelActionButton(context.getString(R.string.title_activation));
-            data.setLabelTitle(context.getString(R.string.label_tokocash));
+            data.setAppLinkActionButton(tokoCashData.getAction().getApplinks());
+            data.setLabelActionButton(tokoCashData.getAction().getText());
+            data.setLabelTitle(tokoCashData.getText());
         }
 
         return data;

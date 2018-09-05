@@ -16,6 +16,7 @@ class TokoCashAccountBalanceMapper implements Func1<BalanceTokoCash, WalletModel
         walletModel.setApplink(balanceTokoCash.getApplinks());
         walletModel.setText(balanceTokoCash.getTitleText());
         walletModel.setBalance(balanceTokoCash.getBalance());
+        walletModel.setLinked(balanceTokoCash.getLink());
 
         WalletAction walletAction = new WalletAction();
         walletAction.setApplink(balanceTokoCash.getActionBalance().getApplinks());
