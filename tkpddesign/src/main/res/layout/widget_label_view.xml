@@ -24,7 +24,6 @@
         android:layout_width="0dp"
         android:maxLines="1"
         tools:text="@string/app_name"
-        android:layout_marginBottom="@dimen/dp_2"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_16"
         app:layout_goneMarginRight="@dimen/dp_8"
@@ -41,7 +40,7 @@
         android:layout_width="0dp"
         android:maxLines="1"
         android:visibility="gone"
-        tools:text="Test something really use full ganteng"
+        tools:text="Test something really use full"
         tools:visibility="visible"
         app:layout_constraintStart_toStartOf="@+id/text_view_title"
         app:layout_constraintTop_toBottomOf="@+id/text_view_title"
@@ -61,7 +60,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-<<<<<<< HEAD
     <TextView
         android:id="@+id/text_view_badge"
         android:layout_width="@dimen/dp_24"
@@ -95,6 +93,4 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-=======
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
 </android.support.constraint.ConstraintLayout>

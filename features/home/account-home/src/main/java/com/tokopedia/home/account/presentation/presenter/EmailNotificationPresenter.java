@@ -57,7 +57,7 @@ public class EmailNotificationPresenter extends BaseDaggerPresenter<EmailNotific
         });
     }
 
-    public void saveEmailNotifUseCase(HashMap<String, String> setting){
+    public void saveEmailNotifUseCase(HashMap<String, Integer> setting){
         saveEmailNotifUseCase.setBodyParams(setting);
         saveEmailNotifUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

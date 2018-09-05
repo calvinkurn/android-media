@@ -117,30 +117,26 @@ public class TxSummaryPresenterImpl implements TxSummaryPresenter {
     private void setSummaryData(Context context, List<Integer> countList, List<TxSummaryItem> summaryItemList) {
         summaryItemList.add(new TxSummaryItem(
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_confirmed),
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_confirmed),
             "",
-//                context.getString(R.string.payment_status_desc),
                 countList.get(0)
         ));
         summaryItemList.add(new TxSummaryItem(
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_processed),
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_processed),
                 "",
-//                context.getString(R.string.order_status_desc),
                 countList.get(1)
         ));
         summaryItemList.add(new TxSummaryItem(
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_shipped),
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_shipped),
                 "",
-//                context.getString(R.string.title_receive_confirmation_dashboard_desc),
                 countList.get(2)
         ));
         summaryItemList.add(new TxSummaryItem(
                 TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED,
-                context.getString(com.tokopedia.transaction.R.string.label_tx_delivered),
+                context.getString(com.tokopedia.transaction.R.string.tkpdtransaction_label_tx_delivered),
                 "",
-//                context.getString(R.string.title_receive_confirmation_dashboard_desc),
                 countList.get(3)
         ));
         summaryItemList.add(new TxSummaryItem(

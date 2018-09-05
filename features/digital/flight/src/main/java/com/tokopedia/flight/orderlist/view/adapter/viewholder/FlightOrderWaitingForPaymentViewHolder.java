@@ -125,10 +125,10 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 tvPaymentUniqueCodeLabel.setVisibility(View.VISIBLE);
                 tvPaymentUniqueCode.setVisibility(View.VISIBLE);
                 tvPaymentDescription.setVisibility(View.GONE);
-                if (element.getPayment().getTotalAmount() > 0){
+                if (element.getPayment().getNeedToPayAmount() > 0){
                     tvPaymentCostLabel.setVisibility(View.VISIBLE);
                     tvPaymentCost.setVisibility(View.VISIBLE);
-                    tvPaymentCost.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(element.getPayment().getTotalAmount()));
+                    tvPaymentCost.setText(CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(element.getPayment().getNeedToPayAmount()));
                 } else {
                     tvPaymentCostLabel.setVisibility(View.GONE);
                     tvPaymentCost.setVisibility(View.GONE);

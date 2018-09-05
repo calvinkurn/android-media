@@ -219,7 +219,6 @@
             android:name=".transaction.neworder.view.presenter.OrderWidgetJobService"
             android:label="@string/app_name"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-<<<<<<< HEAD
 
         <activity android:name=".product.edit.view.activity.ProductAddWholesaleActivity"
             android:label="@string/product_label_product_wholesale"
@@ -236,8 +235,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"/>
-=======
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
     </application>
 
 </manifest>

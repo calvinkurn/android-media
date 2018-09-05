@@ -24,11 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
-<<<<<<< HEAD
 import android.view.Gravity;
-=======
 import android.util.Log;
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;

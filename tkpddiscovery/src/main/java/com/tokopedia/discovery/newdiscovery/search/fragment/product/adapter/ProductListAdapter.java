@@ -9,6 +9,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
@@ -35,7 +36,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     private int startFrom;
     private int totalData;
     private Context context;
-    private GuidedSearchViewModel guidedSearch;
 
     public ProductListAdapter(Context context, OnItemChangeView itemChangeView, ProductListTypeFactory typeFactory) {
         super(itemChangeView);
@@ -183,34 +183,31 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(0) && getItemList().get(0) instanceof HeaderViewModel;
     }
 
-    public void addGuidedSearch(String currentKey, String currentPage) {
-        if (guidedSearch != null && !guidedSearch.getItemList().isEmpty()) {
-            for (GuidedSearchViewModel.Item item : guidedSearch.getItemList()) {
-                item.setPreviousKey(currentKey);
-                item.setCurrentPage(currentPage);
-            }
-            int start = getItemCount();
-            list.add(guidedSearch);
-            notifyItemInserted(start);
-        }
-    }
-
-    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
-        this.guidedSearch = guidedSearch;
-    }
-
-    public boolean isGuidedSearch(int position) {
-        return checkDataSize(position) && getItemList().get(position) instanceof GuidedSearchViewModel;
-    }
-
-    public boolean hasGuidedSearch() {
-        return guidedSearch != null;
-    }
-
     public void updateQuickFilter(List<Option> quickFilterOptions) {
         if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
             ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
             notifyItemChanged(ADAPTER_POSITION_HEADER);
+        }
+    }
+
+    public void updateGuidedSearch(GuidedSearchViewModel guidedSearch) {
+        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
+            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setGuidedSearch(guidedSearch);
+            notifyItemChanged(ADAPTER_POSITION_HEADER);
+        }
+    }
+
+    @Override
+    public int getIconTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case TkpdState.RecyclerView.VIEW_PRODUCT:
+                return R.drawable.ic_list_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
+                return R.drawable.ic_grid_default_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return R.drawable.ic_grid_box_green;
+            default:
+                return R.drawable.ic_grid_default_green;
         }
     }
 }

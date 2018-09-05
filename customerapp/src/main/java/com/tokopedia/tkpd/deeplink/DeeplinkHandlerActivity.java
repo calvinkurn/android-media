@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -69,9 +71,11 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.applink.ApplinkDelegateImpl;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -128,15 +132,13 @@ import io.branch.referral.BranchError;
         CustomerCareApplinkModule.class,
         TopChatAppLinkModule.class,
         TokopointApplinkModule.class,
-<<<<<<< HEAD
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         InstantLoanAppLinkModule.class,
-        RecentViewApplinkModule.class
-=======
-        InstantLoanAppLinkModule.class,
-        ProductAddDeeplinkModule.class
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
+        RecentViewApplinkModule.class,
+        ProductAddDeeplinkModule.class,
+        ChangePasswordDeeplinkModule.class,
+        SettingBankApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -145,7 +147,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
         if(applinkDelegate == null) {
-            applinkDelegate = new ApplinkDelegateImpl(
+            applinkDelegate = new TkpdApplinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
@@ -176,20 +178,17 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new CustomerCareApplinkModuleLoader(),
                 new TopChatAppLinkModuleLoader(),
                 new TokopointApplinkModuleLoader(),
-<<<<<<< HEAD
                 new HomeNavigationApplinkModuleLoader(),
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
-                new RecentViewApplinkModuleLoader()
+                new RecentViewApplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader(),
+                new ChangePasswordDeeplinkModuleLoader(),
+                new SettingBankApplinkModuleLoader()
             );
         }
 
         return applinkDelegate;
-=======
-                new InstantLoanAppLinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader()
-        );
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
     }
 
     @Override

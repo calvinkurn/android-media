@@ -81,7 +81,7 @@ public abstract class SearchSectionGeneralAdapter extends RecyclerView.Adapter<A
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
                 return BrowseProductRouter.GridType.GRID_3;
             default:
-                return BrowseProductRouter.GridType.GRID_1;
+                return BrowseProductRouter.GridType.GRID_2;
         }
     }
 

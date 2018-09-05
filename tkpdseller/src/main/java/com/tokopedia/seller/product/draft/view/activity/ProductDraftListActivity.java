@@ -12,11 +12,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.base.di.component.HasComponent;
-<<<<<<< HEAD
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-=======
 import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
->>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;

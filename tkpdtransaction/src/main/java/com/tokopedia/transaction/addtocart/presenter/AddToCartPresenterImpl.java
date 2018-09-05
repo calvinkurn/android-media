@@ -513,10 +513,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void setCacheCart(@NonNull Context context, int quantity) {
-//        LocalCacheHandler cache = new LocalCacheHandler(context, TransactionConstant.CART);
-//        int existing = cache.getInt(TransactionConstant.IS_HAS_CART, 0);
-//        cache.putInt(TransactionConstant.IS_HAS_CART, existing + quantity);
-//        cache.applyEditor();
+
     }
 
     private void createDialogAtcSuccess(final Context context, String message) {

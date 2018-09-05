@@ -242,7 +242,6 @@ public class FavoritePresenter
         @NonNull
         private List<Visitable> getDataFavoriteViewModel(DataFavorite dataFavorite) {
             List<Visitable> elementList = new ArrayList<>();
-//            addWishlist(dataFavorite, elementList);
             addTopAdsShop(dataFavorite, elementList);
             addFavoriteShop(dataFavorite, elementList);
 
@@ -272,7 +271,6 @@ public class FavoritePresenter
         @Override
         public void onNext(DataFavorite dataFavorite) {
             List<Visitable> dataFavoriteItemList = new ArrayList<>();
-//            addWishlist(dataFavorite, dataFavoriteItemList);
             addTopAdsShop(dataFavorite, dataFavoriteItemList);
             addFavoriteShop(dataFavorite, dataFavoriteItemList);
             getView().refreshDataFavorite(dataFavoriteItemList);
