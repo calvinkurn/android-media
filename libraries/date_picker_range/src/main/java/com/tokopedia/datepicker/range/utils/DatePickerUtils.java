@@ -3,9 +3,9 @@ package com.tokopedia.datepicker.range.utils;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 
 import java.text.DateFormat;
 import java.text.Format;

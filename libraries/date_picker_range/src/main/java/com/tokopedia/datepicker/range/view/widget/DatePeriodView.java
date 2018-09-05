@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.utils.DateLabelUtils;
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 
 /**
  * Created by zulfikarrahman on 12/29/16.

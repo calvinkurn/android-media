@@ -5,8 +5,8 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
-import com.tokopedia.seller.common.datepicker.view.adapter.DatePickerTabPagerAdapter;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.adapter.DatePickerTabPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;

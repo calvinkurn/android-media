@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tokopedia.core.app.TkpdFragment;
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.view.adapter.DatePickerPeriodAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;

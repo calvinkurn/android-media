@@ -3,7 +3,7 @@ package com.tokopedia.tkpd.tokocash.datepicker;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
 import com.tokopedia.tkpd.R;
 
 /**

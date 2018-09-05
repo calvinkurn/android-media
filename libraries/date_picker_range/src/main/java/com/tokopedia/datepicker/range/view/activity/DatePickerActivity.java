@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.activity.BaseTabActivity;
-import com.tokopedia.datepicker.range.view.listener.DatePickerTabListener;
+import com.tokopedia.abstraction.base.view.activity.BaseTabActivity;
+import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.view.adapter.DatePickerTabPagerAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.datepicker.range.view.fragment.DatePickerCustomFragment;
 import com.tokopedia.datepicker.range.view.fragment.DatePickerPeriodFragment;
+import com.tokopedia.datepicker.range.view.listener.DatePickerTabListener;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 
 import java.util.ArrayList;
@@ -94,11 +94,6 @@ public class DatePickerActivity extends BaseTabActivity {
             maxDateRange = extras.getInt(DatePickerConstant.EXTRA_MAX_DATE_RANGE, -1);
             periodRangeModelList = extras.getParcelableArrayList(DatePickerConstant.EXTRA_DATE_PERIOD_LIST);
         }
-    }
-
-    @Override
-    public boolean isToolbarWhite() {
-        return true;
     }
 
     @Override

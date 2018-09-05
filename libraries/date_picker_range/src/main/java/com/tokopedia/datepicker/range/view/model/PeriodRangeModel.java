@@ -3,7 +3,7 @@ package com.tokopedia.datepicker.range.view.model;
 import android.content.Context;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.utils.DatePickerUtils;
 
 /**

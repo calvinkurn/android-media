@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 
 import java.util.List;
 

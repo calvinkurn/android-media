@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 
 /**
  * Created by zulfikarrahman on 12/29/16.

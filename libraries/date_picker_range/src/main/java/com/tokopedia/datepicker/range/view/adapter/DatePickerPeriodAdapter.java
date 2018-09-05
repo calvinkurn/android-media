@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
-import com.tokopedia.seller.R;
+import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.datepicker.range.view.widget.DatePeriodView;
 
