@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
-        style="@style/TitleTextAppearance"/>
+        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"/>
 
     <Button
         android:layout_alignParentRight="true"
@@ -34,9 +34,7 @@
         android:id="@+id/btn_remove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textAllCaps="false"
-        android:textColor="#61000000"
+        style="@style/MenuTextAppearance"
         android:background="@null"
         android:text="@string/delete"/>
 

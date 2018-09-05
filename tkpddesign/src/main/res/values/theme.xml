@@ -28,6 +28,10 @@
         <item name="android:textSize">@dimen/sp_12</item>
     </style>
 
+    <style name="MenuTextAppearance" parent="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Menu">
+        <item name="android:textSize">@dimen/sp_14</item>
+    </style>
+
     <style name="BaseTabBar" parent="Widget.Design.TabLayout">
         <item name="tabGravity">fill</item>
         <item name="tabIndicatorHeight">3dp</item>

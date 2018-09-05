@@ -218,17 +218,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return true;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (mIsMenuVisible) {
-            inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
-            MenuItem item = menu.getItem(0);
-            item.setActionView(R.layout.layout_menu_delete);
-            TextView deleteTextView = (TextView) item.getActionView();
-            getOnClickMenuDeleteButtonListener(deleteTextView);
-        }
-        super.onCreateOptionsMenu(menu, inflater);
-    }
+//    @Override
+//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+//        if (mIsMenuVisible) {
+//            inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
+//            MenuItem item = menu.getItem(0);
+//            item.setActionView(R.layout.layout_menu_delete);
+//            TextView deleteTextView = (TextView) item.getActionView();
+//            getOnClickMenuDeleteButtonListener(deleteTextView);
+//        }
+//        super.onCreateOptionsMenu(menu, inflater);
+//    }
 
     @Override
     protected void initialListener(Activity activity) {
