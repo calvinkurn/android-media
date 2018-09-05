@@ -189,7 +189,7 @@ class ShopSettingsNotesListFragment : BaseSearchListFragment<ShopNoteViewModel, 
     }
 
     override fun onItemClicked(shopNoteViewModel: ShopNoteViewModel) {
-        goToEditNote(shopNoteViewModel)
+        //no-op
     }
 
     private fun goToEditNote(shopNoteViewModel: ShopNoteViewModel) {

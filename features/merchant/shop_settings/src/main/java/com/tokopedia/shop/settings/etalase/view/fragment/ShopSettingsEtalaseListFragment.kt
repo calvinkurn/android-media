@@ -199,10 +199,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
     }
 
     override fun onItemClicked(baseShopEtalaseViewModel: BaseShopEtalaseViewModel) {
-        if (baseShopEtalaseViewModel is ShopEtalaseViewModel &&
-                baseShopEtalaseViewModel.type == ShopEtalaseTypeDef.ETALASE_CUSTOM) {
-            goToEditEtalase(baseShopEtalaseViewModel)
-        }
+        //no-op
     }
 
     private fun goToEditEtalase(shopEtalaseViewModel: ShopEtalaseViewModel) {
