@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -256,6 +257,22 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 ((ToolbarRemoveView)toolbar).setVisibilityRemove(state);
             } else if (toolbar instanceof ToolbarRemoveWithBackView) {
                 ((ToolbarRemoveWithBackView)toolbar).setVisibilityRemove(state);
+            }
+        }
+    }
+
+    private static final int HAS_ELEVATION = 8;
+    private static final int NO_ELEVATION = 0;
+
+    private void onContentAvailabilityChanged(boolean available) {
+        if (getActivity() == null)
+            return;
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        if (actionBar != null) {
+            if (available) {
+                actionBar.setElevation(NO_ELEVATION);
+            } else {
+                actionBar.setElevation(HAS_ELEVATION);
             }
         }
     }
@@ -807,7 +824,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().invalidateOptionsMenu();
             refreshHandler.finishRefresh();
             showErrorContainer();
-            mDataPasserListener.onContentAvailabilityChanged(false);
+            onContentAvailabilityChanged(false);
             NetworkErrorHelper.showEmptyState(getActivity(), llNetworkErrorView, message,
                     () -> {
                         llNetworkErrorView.setVisibility(View.GONE);
@@ -1168,14 +1185,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void renderLoadGetCartData() {
         showMainContainerLoadingInitData();
-        mDataPasserListener.onContentAvailabilityChanged(false);
+        onContentAvailabilityChanged(false);
     }
 
     @Override
     public void renderLoadGetCartDataFinish() {
         cartAdapter.resetData();
         showMainContainer();
-        mDataPasserListener.onContentAvailabilityChanged(true);
+        onContentAvailabilityChanged(true);
     }
 
     @Override
