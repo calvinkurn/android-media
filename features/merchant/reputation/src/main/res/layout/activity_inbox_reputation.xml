@@ -1,26 +1,19 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_alignParentTop="true"
     android:layout_centerHorizontal="true"
     android:orientation="vertical"
     android:background="@color/white">
 
     <android.support.design.widget.TabLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/indicator"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:tabGravity="fill"
-        app:tabIndicatorColor="@color/tkpd_main_green"
-        app:tabIndicatorHeight="@dimen/dp_3"
+        style="@style/TabBar.White"
         app:tabMode="scrollable"
-        app:tabSelectedTextColor="@color/tkpd_main_green"
-        app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-        app:tabPadding="0dp"/>
+        app:tabBackground="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <View
         android:layout_width="match_parent"
