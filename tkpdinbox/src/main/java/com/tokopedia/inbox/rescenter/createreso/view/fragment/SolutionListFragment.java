@@ -220,7 +220,9 @@ public class SolutionListFragment extends BaseDaggerFragment
             problemResult.quantity = data.getProblem().getQty();
             problemResult.amount = data.getProblem().getAmount().getInteger();
             problemResult.remark = data.getProblem().getRemark();
-
+            if (data.getShipping() != null) {
+                complaintResult.isChecked = data.getShipping().isChecked();
+            }
             complaintResult.problem = problemResult;
             complaintResult.order = orderResult;
             resultList.add(complaintResult);
@@ -354,6 +356,7 @@ public class SolutionListFragment extends BaseDaggerFragment
 
         btnEditSolution.setOnClickListener(view -> {
             showLoading();
+
             presenter.submitEditAppeal(solutionViewModel);
             dialog.dismiss();
         });
