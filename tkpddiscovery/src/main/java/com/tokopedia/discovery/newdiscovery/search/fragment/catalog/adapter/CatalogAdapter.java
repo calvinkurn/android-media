@@ -184,4 +184,9 @@ public class CatalogAdapter extends SearchSectionGeneralAdapter {
     public boolean isEmptyItem(int position) {
         return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchModel;
     }
+
+    @Override
+    public void changeSingleGridView() {
+        super.changeSingleGridView();
+    }
 }
