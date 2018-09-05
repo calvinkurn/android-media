@@ -239,7 +239,6 @@ public class CreateTicketFormFragment extends BasePresenterFragment<CreateTicket
             }
 
         });
-
     }
 
     private void showImagePickerDialog() {

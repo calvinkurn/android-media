@@ -184,6 +184,14 @@ public class DeepLinkChecker {
                 linkSegment.get(0).equals("discovery") && linkSegment.size() == 2);
     }
 
+    private static boolean isEGold(List<String> linkSegment) {
+        return linkSegment.get(0).equals("emas");
+    }
+
+    private static boolean isMutualFund(List<String> linkSegment) {
+        return linkSegment.get(0).equals("reksa-dana");
+    }
+
     public static String getDiscoveryPageId(String url) {
         if (getDeepLinkType(url) != DISCOVERY_PAGE) return "";
         Uri uriData = Uri.parse(url);
@@ -208,7 +216,9 @@ public class DeepLinkChecker {
                 && !isContent(linkSegment)
                 && !isCatalog(linkSegment)
                 && !isTopPicks(linkSegment))
-                && !isTokoPoint(linkSegment);
+                && !isTokoPoint(linkSegment)
+                && !isEGold(linkSegment)
+                && !isMutualFund(linkSegment);
     }
 
     private static boolean isShop(List<String> linkSegment) {
@@ -219,7 +229,9 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("reset.pl")
                 && !linkSegment.get(0).equals("activation.pl")
                 && !linkSegment.get(0).equals("referral"))
-                && !isTokoPoint(linkSegment);
+                && !isTokoPoint(linkSegment)
+                && !isEGold(linkSegment)
+                && !isMutualFund(linkSegment);
     }
 
     private static boolean isSearch(String url) {

@@ -33,5 +33,6 @@ public class FeedTopadsViewHolder extends AbstractViewHolder<FeedTopAdsViewModel
     public void bind(FeedTopAdsViewModel element) {
         topAdsWidgetView.setData(element.getList());
         topAdsWidgetView.setAdapterPosition(getAdapterPosition());
+        topAdsWidgetView.notifyDataChange();
     }
 }

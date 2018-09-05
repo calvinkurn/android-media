@@ -46,23 +46,9 @@ public class SimpleHomeActivity extends TActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.RECENT_VIEW)
-    public static Intent getRecentViewApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return newRecentViewInstance(context)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
     public static Intent newWishlistInstance(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-        return intent;
-    }
-
-    public static Intent newRecentViewInstance(Context context) {
-        Intent intent = new Intent(context, SimpleHomeActivity.class);
-        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.PRODUCT_HISTORY_FRAGMENT);
         return intent;
     }
 

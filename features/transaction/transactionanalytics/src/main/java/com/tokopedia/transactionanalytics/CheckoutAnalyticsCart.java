@@ -24,6 +24,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         super(analyticTracker);
     }
 
+    @Deprecated
     public void eventClickAtcCartClickKuponFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -48,6 +49,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickAtcCartClickGunakanKodeFormGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -178,7 +180,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-
+    @Deprecated
     public void eventClickAtcCartClickArrowBackFromHapus() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -204,7 +206,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         );
     }
 
-
+    @Deprecated
     public void eventClickAtcCartClickXFromGunakanKodePromoAtauKupon() {
         sendEventCategoryAction(
                 EventName.CLICK_ATC,
@@ -299,11 +301,108 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
         sendEnhancedEcommerce(dataLayer);
     }
 
+    @Deprecated
     public void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap) {
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.E_COMMERCE, cartMap
         );
         sendEnhancedEcommerce(dataLayer);
+    }
+
+
+    private void enhancedECommerceGoToCheckoutStep1(Map<String, Object> cartMap, String eventLabel) {
+        Map<String, Object> dataLayer = DataLayer.mapOf(
+                Key.EVENT, EventName.CHECKOUT,
+                Key.EVENT_CATEGORY, EventCategory.CART,
+                Key.EVENT_ACTION, EventAction.CLICK_CHECKOUT,
+                Key.EVENT_LABEL, eventLabel,
+                Key.E_COMMERCE, cartMap
+        );
+        sendEnhancedEcommerce(dataLayer);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessDefault(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_DEFAULT);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessCheckAll(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_CHECK_ALL);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShop(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialProduct(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_PRODUCT);
+    }
+
+    public void enhancedECommerceGoToCheckoutStep1SuccessPartialShopAndProduct(Map<String, Object> cartMap) {
+        enhancedECommerceGoToCheckoutStep1(cartMap, EventLabel.CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT);
+    }
+
+    //PHASE 2
+    public void eventClickCheckoutCartClickCheckoutFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_CHECKOUT,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickCheckoutCartClickPilihSemuaProdukChecklist() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                EventLabel.CHECKLIST
+        );
+    }
+
+    public void eventClickCheckoutCartClickPilihSemuaProdukUnChecklist() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_CHECKOUT,
+                EventCategory.CART,
+                EventAction.CLICK_PILIH_SEMUA_PRODUK,
+                EventLabel.UN_CHECKLIST
+        );
+    }
+
+    public void eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.CART,
+                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.CART,
+                EventAction.CLICK_GUNAKAN_KODE_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.FAILED
+        );
+    }
+
+    public void eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.CART,
+                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_COUPON,
+                EventCategory.CART,
+                EventAction.CLICK_KUPON_FROM_GUNAKAN_KODE_PROMO_ATAU_KUPON,
+                EventLabel.FAILED
+        );
     }
 }

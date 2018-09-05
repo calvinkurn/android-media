@@ -18,7 +18,7 @@ import com.tokopedia.design.base.BaseDialog;
 public class Dialog extends BaseDialog {
 
     private TextView title, desc;
-    private Button btnCancel, btnOk;
+    private TextView btnCancel, btnOk;
 
     private Type type = Type.RETORIC;
 
@@ -89,11 +89,11 @@ public class Dialog extends BaseDialog {
         this.btnCancel.setText(title);
     }
 
-    public Button getBtnCancel() {
+    public TextView getBtnCancel() {
         return btnCancel;
     }
 
-    public Button getBtnOk() {
+    public TextView getBtnOk() {
         return btnOk;
     }
 }
