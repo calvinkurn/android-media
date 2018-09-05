@@ -147,7 +147,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-    private ActionListener mDataPasserListener;
+//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -159,25 +159,25 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return fragment;
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        try {
-            mDataPasserListener = (ActionListener) activity;
-        } catch (ClassCastException e) {
-            mDataPasserListener = new ActionListener() {
-                @Override
-                public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-
-                }
-
-                @Override
-                public void onContentAvailabilityChanged(boolean available) {
-
-                }
-            };
-        }
-    }
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        try {
+//            mDataPasserListener = (ActionListener) activity;
+//        } catch (ClassCastException e) {
+//            mDataPasserListener = new ActionListener() {
+//                @Override
+//                public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
+//
+//                }
+//
+//                @Override
+//                public void onContentAvailabilityChanged(boolean available) {
+//
+//                }
+//            };
+//        }
+//    }
 
     @Override
     public void onDetach() {
@@ -868,6 +868,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         llNetworkErrorView.setVisibility(View.GONE);
         cardFooter.setVisibility(View.GONE);
         cardHeader.setVisibility(View.GONE);
+        onContentAvailabilityChanged(false);
     }
 
     private void showSnackbarRetry(String message) {
@@ -1520,13 +1521,13 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartPageAnalytics.sendScreenName(getActivity(), screenName);
     }
 
-    public interface ActionListener {
-
-        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
-
-        void onContentAvailabilityChanged(boolean available);
-
-    }
+//    public interface ActionListener {
+//
+//        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
+//
+//        void onContentAvailabilityChanged(boolean available);
+//
+//    }
 
     @Override
     protected String getScreenName() {
