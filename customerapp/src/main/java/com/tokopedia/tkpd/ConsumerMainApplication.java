@@ -83,6 +83,7 @@ import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
@@ -254,6 +255,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
 
+        UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE = ConsumerAppBaseUrl.UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD;
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
     }

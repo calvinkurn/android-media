@@ -30,6 +30,8 @@ public class HeaderHomeView extends BaseCustomView {
     private HomeCategoryListener listener;
     private HeaderViewModel headerViewModel;
 
+    private View view;
+
     private View tokoCashHolder;
     private TextView tvTitleTokocash;
     private TextView tvBalanceTokocash;
@@ -84,8 +86,6 @@ public class HeaderHomeView extends BaseCustomView {
     public void setListener(HomeCategoryListener listener) {
         this.listener = listener;
     }
-
-    private View view;
 
     private void renderHeaderTokocashWithTokopoint() {
         if (view == null) {

@@ -18,20 +18,20 @@ import java.util.List;
 
 public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.EmailNotifViewHolder> {
 
-    private static final String SELECTED = "1";
-    private static final String NOT_SELECTED = "0";
+    private static final int SELECTED = 1;
+    private static final int NOT_SELECTED = 0;
 
     private OnItemChangeListener itemChangeListener;
 
     private List<EmailNotifViewModel> items;
     private AppNotificationSettingModel notification;
-    private HashMap<String, String> selectedSetting = new HashMap<>();
+    private HashMap<String, Integer> selectedSetting = new HashMap<>();
 
     public EmailNotifAdapter(List<EmailNotifViewModel> items) {
         this.items = items;
     }
 
-    public HashMap<String, String> getSelectedSetting() {
+    public HashMap<String, Integer> getSelectedSetting() {
         return selectedSetting;
     }
 
@@ -59,11 +59,11 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
     }
 
     private void generateMapSetting(){
-        selectedSetting.put(SettingType.FLAG_ADMIN_MESSAGE, String.valueOf(notification.getFlagAdminMessage()));
-        selectedSetting.put(SettingType.FLAG_MESSAGE, String.valueOf(notification.getFlagMessage()));
-        selectedSetting.put(SettingType.FLAG_NEWSLETTER, String.valueOf(notification.getFlagNewsletter()));
-        selectedSetting.put(SettingType.FLAG_REVIEW, String.valueOf(notification.getFlagreview()));
-        selectedSetting.put(SettingType.FLAG_TALK, String.valueOf(notification.getFlagTalkProduct()));
+        selectedSetting.put(SettingType.FLAG_ADMIN_MESSAGE, notification.getFlagAdminMessage());
+        selectedSetting.put(SettingType.FLAG_MESSAGE, notification.getFlagMessage());
+        selectedSetting.put(SettingType.FLAG_NEWSLETTER, notification.getFlagNewsletter());
+        selectedSetting.put(SettingType.FLAG_REVIEW, notification.getFlagreview());
+        selectedSetting.put(SettingType.FLAG_TALK, notification.getFlagTalkProduct());
     }
 
     public void setItemChangeListener(OnItemChangeListener itemChangeListener) {

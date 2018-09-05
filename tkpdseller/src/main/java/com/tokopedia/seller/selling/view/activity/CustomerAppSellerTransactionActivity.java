@@ -451,16 +451,6 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // todo oka: activate option menu
-//        getMenuInflater().inflate(com.tokopedia.core.R.menu.cart_and_search, menu);
-//        LocalCacheHandler Cache = new LocalCacheHandler(getBaseContext(), DrawerHelper.DRAWER_CACHE);
-//        int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-//        if (CartCache > 0) {
-//            menu.findItem(com.tokopedia.core.R.id.action_cart).setIcon(com.tokopedia.core.R.drawable.ic_cart_white_new_active);
-//        } else {
-//            menu.findItem(com.tokopedia.core.R.id.action_cart).setIcon(com.tokopedia.core.R.drawable.
-//                    ic_cart_white_new);
-//        }
         return super.onCreateOptionsMenu(menu);
     }
 

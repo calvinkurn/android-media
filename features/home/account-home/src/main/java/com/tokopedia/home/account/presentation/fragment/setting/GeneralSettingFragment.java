@@ -104,7 +104,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)));
         if (userSession.hasShop()) {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                    getString(R.string.title_shop_setting), getString(R.string.title_shop_setting)));
+                    getString(R.string.title_shop_setting), getString(R.string.subtitle_shop_setting)));
         }
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), getString(R.string.subtitle_tkpd_pay_setting)));

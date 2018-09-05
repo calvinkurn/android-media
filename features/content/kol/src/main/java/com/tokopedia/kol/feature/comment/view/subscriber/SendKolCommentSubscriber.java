@@ -2,8 +2,8 @@ package com.tokopedia.kol.feature.comment.view.subscriber;
 
 import android.text.TextUtils;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.kol.R;
+import com.tokopedia.kol.common.network.GraphqlErrorHandler;
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain;
 import com.tokopedia.kol.feature.comment.view.listener.KolComment;
 
@@ -29,7 +29,7 @@ public class SendKolCommentSubscriber extends Subscriber<SendKolCommentDomain> {
     public void onError(Throwable e) {
         viewListener.dismissProgressDialog();
         viewListener.onErrorSendComment(
-                ErrorHandler.getErrorMessage(viewListener.getContext(), e)
+                GraphqlErrorHandler.getErrorMessage(viewListener.getContext(), e)
         );
     }
 
