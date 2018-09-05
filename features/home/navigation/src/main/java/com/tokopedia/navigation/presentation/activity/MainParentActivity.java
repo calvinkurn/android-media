@@ -384,16 +384,13 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -598,7 +595,7 @@ public class MainParentActivity extends AppCompatActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
-    public static class UserSession{
+    public static class UserSession {
         public static boolean isFirstTimeUser(Context context) {
             return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
         }
