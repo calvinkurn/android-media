@@ -84,40 +84,4 @@ public class WalletModel {
     public void setBalance(String balance) {
         this.balance = balance;
     }
-
-//    public class WalletAction {
-//        @SerializedName("text")
-//        @Expose
-//        private String text;
-//        @SerializedName("redirect_url")
-//        @Expose
-//        private String redirectUrl;
-//        @SerializedName("applinks")
-//        @Expose
-//        private String applink;
-//
-//        public String getText() {
-//            return text;
-//        }
-//
-//        public void setText(String text) {
-//            this.text = text;
-//        }
-//
-//        public String getRedirectUrl() {
-//            return redirectUrl;
-//        }
-//
-//        public void setRedirectUrl(String redirectUrl) {
-//            this.redirectUrl = redirectUrl;
-//        }
-//
-//        public String getApplink() {
-//            return applink;
-//        }
-//
-//        public void setApplink(String applink) {
-//            this.applink = applink;
-//        }
-//    }
 }
