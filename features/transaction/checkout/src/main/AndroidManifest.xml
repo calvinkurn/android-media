@@ -9,8 +9,7 @@
 
         <activity
             android:name=".view.feature.cartlist.CartActivity"
-            android:label="@string/checkout_module_title_activity_cart"
-            android:theme="@android:style/Theme.NoTitleBar"
+            android:theme="@style/AppTheme.AppBarOverlay.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".view.feature.addressoptions.CartAddressChoiceActivity"
