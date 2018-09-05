@@ -108,7 +108,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
 
         } else {
 
-            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))){
+            for(String url : Objects.requireNonNull(arguments.getStringArrayList(ImageUploadHandler.FILELOC))) {
                 int position = viewListener.getAdapter().getList().size();
                 final ImageUpload image = new ImageUpload();
                 image.setPosition(position);
@@ -116,40 +116,7 @@ public class ImageUploadFragmentPresenterImpl implements ImageUploadFragmentPres
                 image.setImageId(SendReviewUseCase.IMAGE + UUID.randomUUID().toString());
                 viewListener.getAdapter().addImage(image);
                 viewListener.setPreviewImage(image);
-//                if (!imgFile.exists()) {
-//                    return;
-//                }
             }
-
-//            getSendReviewFormUseCase.execute(RequestParams.EMPTY, new Subscriber<SendReviewPass>() {
-//                @Override
-//                public void onCompleted() {
-//
-//                }
-//
-//                @Override
-//                public void onError(Throwable e) {
-//                    Log.e(TAG, e.getMessage());
-//                }
-//
-//                @Override
-//                public void onNext(SendReviewPass sendReviewPass) {
-//
-//                    if (sendReviewPass.getListImage().isEmpty()) {
-//                        viewListener.getAdapter().addList(imageArray);
-//                        viewListener.setPreviewImage(imageArray.get(0));
-//                    } else {
-//                        for (int i = 0; i < sendReviewPass.getListImage().size(); i++) {
-//                            sendReviewPass.getListImage().get(i).setPosition(i);
-//                        }
-//                        viewListener.getAdapter().addList(sendReviewPass.getListImage());
-////                        image.setPosition(viewListener.getAdapter().getList().size());
-//                        viewListener.getAdapter().addList(imageArray);
-//                        viewListener.setPreviewImage(imageArray.get(0));
-//                    }
-//
-//                }
-//            });
         }
     }
 

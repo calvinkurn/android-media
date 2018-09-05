@@ -242,21 +242,13 @@ public class ImageUploadPreviewFragment extends
     }
 
     private void openImagePicker() {
-
-        ArrayList<Integer> placeholderDrawableRes = new ArrayList<>();
-        placeholderDrawableRes.add(R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(R.drawable.ic_place_grey_24dp);
-
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(com.tokopedia.tkpd.tkpdreputation.R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
                 DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
                 null
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
-                placeholderDrawableRes,
+                null,
                 R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);

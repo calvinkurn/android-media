@@ -404,12 +404,6 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
     }
 
     private void openImagePicker() {
-        ArrayList<Integer> placeholderDrawableRes = new ArrayList<>();
-        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
-        placeholderDrawableRes.add(com.tokopedia.core.R.drawable.ic_place_grey_24dp);
 
         ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
                 new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
@@ -417,7 +411,7 @@ public class InboxReputationFormFragment extends BaseDaggerFragment
                 null
                 ,new ImagePickerMultipleSelectionBuilder(
                 new ArrayList<>(),
-                placeholderDrawableRes,
+                null,
                 com.tokopedia.core.R.string.empty_desc,
                 MAX_IMAGE_LIMIT - adapter.getList().size()));
         Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
