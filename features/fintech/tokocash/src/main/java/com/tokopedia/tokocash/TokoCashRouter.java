@@ -37,4 +37,5 @@ public interface TokoCashRouter extends TokoCashCoreRouter {
 
     Observable<PendingCashback> getPendingCashbackUseCase();
 
+    Intent getLoginIntent();
 }
