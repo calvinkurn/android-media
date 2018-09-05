@@ -157,9 +157,13 @@
 
     <style name="Switch" parent="Widget.AppCompat.CompoundButton.Switch">
         <item name="android:thumb">@drawable/bg_switch_thumb_selector</item>
+<<<<<<< HEAD
         <item name="android:track">@drawable/bg_switch_track_selector</item>
         <item name="android:scaleX">0.8</item>
         <item name="android:scaleY">0.8</item>
+=======
+        <item name="track">@drawable/bg_switch_track_selector</item>
+>>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>

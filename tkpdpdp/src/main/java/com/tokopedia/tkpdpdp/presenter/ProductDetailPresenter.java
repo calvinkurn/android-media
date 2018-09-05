@@ -27,6 +27,8 @@ import java.util.Map;
  */
 public interface ProductDetailPresenter {
 
+    void initGetRateEstimationUseCase();
+
     void processDataPass(@NonNull ProductPass productPass);
 
     void processToProductInfo(@NonNull Context context, @NonNull Bundle bundle);
@@ -34,6 +36,8 @@ public interface ProductDetailPresenter {
     void processToBrowseProduct(@NonNull Context context, @NonNull Bundle bundle);
 
     void processToCreateShop(@NonNull Context context);
+
+    void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain);
 
     void processToShopInfo(@NonNull Context context, @NonNull Bundle bundle);
 

@@ -61,6 +61,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+<<<<<<< HEAD
     <TextView
         android:id="@+id/text_view_badge"
         android:layout_width="@dimen/dp_24"
@@ -94,4 +95,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
+=======
+>>>>>>> b1aa5ddf8db127ba1c5017a7887c45eb0aa615e8
 </android.support.constraint.ConstraintLayout>

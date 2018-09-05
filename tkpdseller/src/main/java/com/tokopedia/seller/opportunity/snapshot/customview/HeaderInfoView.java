@@ -15,7 +15,6 @@ import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.opportunity.snapshot.listener.SnapShotFragmentView;
 import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.seller.product.common.utils.CurrencyUtils;
 
 /**
  * Created by hangnadi on 3/1/17.
