@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.tokopedia.challenges.domain.usecase.PostMapBranchUrlUseCase;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.share.ShareInstagramBottomSheet;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -97,7 +99,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             @Override
             public void onGenerateLink(String shareContents, String shareUri) {
                 getView().hideProgress();
-                getView().setNewUrl(shareUri);
+                //getView().setNewUrl(shareUri);
                 shareLink(true, shareUri, challengeItem.getTitle(), packageName);
             }
         });
@@ -122,7 +124,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
-                    getView().setNewUrl(shareUri);
+                    // getView().setNewUrl(shareUri);
                     postMapBranchUrl(submissionItem.getId(), shareUri, packageName, submissionItem.getTitle(), false);
 
                 }
@@ -179,30 +181,34 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     }
 
     private void createInstagramIntent(String title, String contains, File media, boolean isVideo) {
-        String type = "image/*";
-        //String filename = "/myVideo.mp4";
-        //mediaPath = Environment.getExternalStorageDirectory() + filename;
+        ShareInstagramBottomSheet shareInstagramBottomSheet = new ShareInstagramBottomSheet();
 
-        // Create the new Intent using the 'Send' action.
-        if (isVideo) {
-            type = "video/*";
-        }
-        Intent share = new Intent(Intent.ACTION_SEND);
-
-        // Set the MIME type
-        share.setType(type);
-
-        // Create the URI from the media
-        // File media = new File(mediaPath);
-        Uri uri = Uri.fromFile(media);
-
-        // Add the URI to the Intent.
-        share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.putExtra(Intent.EXTRA_TITLE, title);
-        share.putExtra(Intent.EXTRA_SUBJECT, title);
-        share.putExtra(Intent.EXTRA_TEXT, contains);
-        share.setPackage(PACKAGENAME_INSTAGRAM);
-        getView().getActivity().startActivity(Intent.createChooser(share, "Share"));
+        shareInstagramBottomSheet.setData(title, contains, media, isVideo);
+        shareInstagramBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), ShareInstagramBottomSheet.class.getCanonicalName());
+//        String type = "image/*";
+//        //String filename = "/myVideo.mp4";
+//        //mediaPath = Environment.getExternalStorageDirectory() + filename;
+//
+//        // Create the new Intent using the 'Send' action.
+//        if (isVideo) {
+//            type = "video/*";
+//        }
+//        Intent share = new Intent(Intent.ACTION_SEND);
+//
+//        // Set the MIME type
+//        share.setType(type);
+//
+//        // Create the URI from the media
+//        // File media = new File(mediaPath);
+//        Uri uri = Uri.fromFile(media);
+//
+//        // Add the URI to the Intent.
+//        share.putExtra(Intent.EXTRA_STREAM, uri);
+//        share.putExtra(Intent.EXTRA_TITLE, title);
+//        share.putExtra(Intent.EXTRA_SUBJECT, title);
+//        share.putExtra(Intent.EXTRA_TEXT, contains);
+//        share.setPackage(PACKAGENAME_INSTAGRAM);
+//        getView().getActivity().startActivity(Intent.createChooser(share, "Share"));
     }
 
     private void convertHttpPathToLocalPath(String title, String contains, String mediaUrl, boolean isVideo) {
@@ -247,6 +253,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                             try {
                                 return future.get();
                             } catch (InterruptedException | ExecutionException e) {
+                                getView().hideProgress();
                                 e.printStackTrace();
                                 throw new RuntimeException(e.getMessage());
                             }
@@ -259,23 +266,22 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
     private void shareToInstagram(String title, String shareContents, boolean isChallenge) {
 
-        String mediaUrl;
+        String mediaUrl = null;
         boolean isVideo = false;
         if (isChallenge) {
-            if (TextUtils.isEmpty(getView().getChallengeItem().getSharing().getAssets().getVideo())) {
-                mediaUrl = getView().getChallengeItem().getThumbnailUrl();
-            } else {
-                mediaUrl = getView().getChallengeItem().getSharing().getAssets().getVideo();
-                isVideo = true;
-            }
+            mediaUrl = getView().getChallengeItem().getSharing().getAssets().getVideo();
+            isVideo = true;
+
         } else {
-            if (TextUtils.isEmpty(getView().getSubmissionItem().getSharing().getAssets().getVideo())) {
-                mediaUrl = getView().getSubmissionItem().getThumbnailUrl();
-            } else {
-                mediaUrl = getView().getSubmissionItem().getSharing().getAssets().getVideo();
+            if (getView().getSubmissionItem().getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
+                mediaUrl = getView().getSubmissionItem().getMedia().get(0).getImageUrl();
+            } else if (getView().getSubmissionItem().getMedia() != null && getView().getSubmissionItem().getMedia().get(0).getVideo() != null && getView().getSubmissionItem().getMedia().get(0).getVideo().getSources() != null) {
+                mediaUrl = getView().getSubmissionItem().getMedia().get(0).getVideo().getSources().get(1).getSource();
                 isVideo = true;
             }
         }
-        convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
+        if (mediaUrl != null) {
+            convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
+        }
     }
 }

@@ -11,8 +11,6 @@ public class ShareBottomSheetContract {
     public interface View extends CustomerView {
         Activity getActivity();
 
-        void setNewUrl(String shareUri);
-
         void showProgress(String message);
 
         void hideProgress();

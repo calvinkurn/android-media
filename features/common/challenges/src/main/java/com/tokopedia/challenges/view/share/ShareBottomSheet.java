@@ -33,18 +33,6 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public static final String KEY_COPY = "salinlink";
     private static final String TYPE = "text/plain";
     public static final String KEY_OTHER = "lainnya";
-    private String url;
-    private String title;
-    private String og_url;
-    private String og_title;
-    private String og_image;
-    private String submissionId;
-    private String deepLink;
-
-    private boolean isVideo;
-    private String mediaUrl;
-    private String hashtag;
-
     private RecyclerView mRecyclerView;
     @Inject
     public ShareBottomSheetPresenter presenter;
@@ -154,12 +142,6 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     }
 
     @Override
-    public void setNewUrl(String shareUri) {
-        this.url = shareUri;
-    }
-
-
-    @Override
     public void showProgress(String message) {
         if (progress == null) {
             progress = new ProgressDialog(getContext());
@@ -167,6 +149,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         if (!progress.isShowing()) {
             progress.setMessage(message);
             progress.setIndeterminate(true);
+            progress.setCanceledOnTouchOutside(false);
             progress.show();
         }
     }
