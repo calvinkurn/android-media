@@ -30,7 +30,12 @@ import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.CheckoutDealPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -63,9 +68,14 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     private FrameLayout progressParLayout;
     private DealFragmentCallbacks fragmentCallbacks;
     private ImageView ivRemovePromo;
+    private int quantity;
 
     @Inject
     CheckoutDealPresenter mPresenter;
+    @Inject
+    DealsAnalytics dealsAnalytics;
+    private DealsDetailsResponse dealDetails;
+    private boolean promoApplied = false;
 
     @Override
     protected void initInjector() {
@@ -148,6 +158,11 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void renderFromDetails(DealsDetailsResponse dealDetails, PackageViewModel packageViewModel) {
 
 
+        if (dealDetails == null)
+            return;
+
+        this.dealDetails = dealDetails;
+        quantity = packageViewModel.getSelectedQuantity();
         ImageHandler.loadImage(getContext(), imageViewBrand,
                 dealDetails.getImageWeb(),
                 R.color.grey_1100, R.color.grey_1100);
@@ -227,6 +242,7 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
         clPromoApplied.setVisibility(View.VISIBLE);
         tvDiscount.setText(message);
         tvVoucherCode.setText(text);
+        promoApplied = true;
         if (discountAmount != 0) {
             clPromoAmount.setVisibility(View.VISIBLE);
             TextView view = getRootView().findViewById(R.id.tv_promo_discount);
@@ -245,6 +261,12 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     }
 
     @Override
+    public void showFailureMessageProductExpired() {
+        Utils.getSingletonInstance().showSnackBarDeals(getContext().getResources().getString(R.string.product_expired)
+                , getContext(), mainContent, false);
+    }
+
+    @Override
     protected String getScreenName() {
         return null;
     }
@@ -259,11 +281,16 @@ public class CheckoutHomeFragment extends BaseDaggerFragment implements Checkout
     public void onClick(View v) {
         if (v.getId() == R.id.ll_select_payment_method) {
             mPresenter.getPaymentLink();
+            if(dealDetails.getBrand()!=null){
+                dealsAnalytics.sendEcommercePayment(dealDetails.getId(), quantity, dealDetails.getSalesPrice(),
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle(), promoApplied);
+            }
         } else if (v.getId() == R.id.tv_promocode) {
             mPresenter.clickGoToPromo();
         } else if (v.getId() == R.id.tv_no_locations) {
             fragmentCallbacks.replaceFragment(mPresenter.getOutlets(), 0);
         } else if (v.getId() == R.id.iv_remove_promo) {
+            promoApplied = false;
             mPresenter.updatePromoCode("");
             tvApplyPromo.setVisibility(View.VISIBLE);
             clPromoApplied.setVisibility(View.GONE);

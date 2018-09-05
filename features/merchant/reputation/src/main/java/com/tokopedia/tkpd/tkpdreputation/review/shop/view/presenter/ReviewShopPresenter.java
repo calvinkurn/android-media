@@ -92,10 +92,10 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
     public void postLikeDislikeReview(String reviewId, int likeStatus, String productId){
         getView().showProgressLoading();
         likeDislikeReviewUseCase.execute(LikeDislikeReviewUseCase.getParam(reviewId, likeStatus, productId, userSession.getShopId()),
-                getSubscriberPostLikeDislike(reviewId));
+                getSubscriberPostLikeDislike(reviewId, likeStatus));
     }
 
-    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike(final String reviewId) {
+    private Subscriber<LikeDislikeDomain> getSubscriberPostLikeDislike(final String reviewId, int likeStatus) {
         return new Subscriber<LikeDislikeDomain>() {
             @Override
             public void onCompleted() {
@@ -106,7 +106,7 @@ public class ReviewShopPresenter extends BaseDaggerPresenter<ReviewShopContract.
             public void onError(Throwable e) {
                 if(isViewAttached()){
                     getView().hideProgressLoading();
-                    getView().onErrorPostLikeDislike(e);
+                    getView().onErrorPostLikeDislike(e, reviewId, likeStatus);
                 }
             }
 

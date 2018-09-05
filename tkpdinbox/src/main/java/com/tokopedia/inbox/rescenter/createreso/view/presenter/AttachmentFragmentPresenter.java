@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.core.gallery.MediaItem;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.R;
@@ -18,6 +18,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
 

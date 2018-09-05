@@ -9,8 +9,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.GraphqlClient;
-import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
@@ -37,7 +37,7 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements HasCo
         return tokoPointComponent;
     }
 
-    @DeepLink(ApplinkConstant.COUPON_LISTING)
+    @DeepLink(ApplinkConst.COUPON_LISTING)
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, MyCouponListingActivity.class);
     }
