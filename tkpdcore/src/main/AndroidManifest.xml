@@ -5,7 +5,6 @@
     android:installLocation="preferExternal">
 
     <uses-sdk
-        android:minSdkVersion="16"
         android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
