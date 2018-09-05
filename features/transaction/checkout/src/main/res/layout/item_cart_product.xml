@@ -4,7 +4,6 @@
     android:id="@+id/ll_item_product_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical"
     android:paddingBottom="@dimen/dp_3"
     android:paddingLeft="@dimen/dp_16"
