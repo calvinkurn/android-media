@@ -98,7 +98,7 @@ public class OrderDetailActivity extends TActivity
 
     private TkpdProgressDialog smallProgressDialog;
 
-    @DeepLink({TransactionAppLink.PURCHASE_ORDER_DETAIL})
+    @DeepLink({ApplinkConst.PURCHASE_ORDER_DETAIL})
     public static Intent createInstance(Context context, Bundle bundle) {
         String orderId = bundle.getString(PARAM_ORDER_ID, "0");
         return createInstance(context, orderId);
