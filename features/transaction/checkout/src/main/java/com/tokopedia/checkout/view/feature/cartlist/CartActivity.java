@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Window;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.checkout.R;
@@ -19,10 +20,12 @@ import java.util.List;
  * @author anggaprasetiyo on 18/01/18.
  */
 
-public class CartActivity extends BaseCheckoutActivity implements CartFragment.ActionListener {
+public class CartActivity extends BaseCheckoutActivity
+//        implements CartFragment.ActionListener
+{
 
-    private static final int HAS_ELEVATION = 8;
-    private static final int NO_ELEVATION = 0;
+//    private static final int HAS_ELEVATION = 8;
+//    private static final int NO_ELEVATION = 0;
 
     @DeepLink(CheckoutAppLink.CART)
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -36,6 +39,14 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().hide();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     protected void initInjector() {
 
     }
@@ -46,14 +57,10 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
+    protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initView() {
-
-    }
+    protected void initView() { }
 
     @Override
     public void setTitle(CharSequence title) {
@@ -64,10 +71,11 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
     @Override
     public void onBackPressed() {
         Fragment currentFragment = getCurrentFragment();
-        if (currentFragment instanceof RemoveCartItemFragment) {
-            ((RemoveCartItemFragment) currentFragment)
-                    .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
-        } else if (currentFragment instanceof ICartListAnalyticsListener) {
+//        if (currentFragment instanceof RemoveCartItemFragment) {
+//            ((RemoveCartItemFragment) currentFragment)
+//                    .getCheckoutAnalyticsCart().eventClickAtcCartClickArrowBackFromHapus();
+//        } else
+        if (currentFragment instanceof ICartListAnalyticsListener) {
             ((ICartListAnalyticsListener) currentFragment).sendAnalyticsOnClickBackArrow();
         }
         if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -92,31 +100,30 @@ public class CartActivity extends BaseCheckoutActivity implements CartFragment.A
 
     }
 
-    @Override
-    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-        Fragment fragment = getCurrentFragment();
-        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
-                    .addToBackStack(null)
-                    .commit();
-        }
-    }
-
-    @Override
-    public void onContentAvailabilityChanged(boolean available) {
-        if (getSupportActionBar() != null) {
-            if (available) {
-                getSupportActionBar().setElevation(NO_ELEVATION);
-            } else {
-                getSupportActionBar().setElevation(HAS_ELEVATION);
-            }
-        }
-    }
+//    @Override
+//    public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
+//        Fragment fragment = getCurrentFragment();
+//        if (fragment == null || !(fragment instanceof RemoveCartItemFragment)) {
+//            getSupportFragmentManager().beginTransaction()
+//                    .replace(R.id.parent_view, RemoveCartItemFragment.newInstance(cartItemData))
+//                    .addToBackStack(null)
+//                    .commit();
+//        }
+//    }
+//
+//    @Override
+//    public void onContentAvailabilityChanged(boolean available) {
+//        if (getSupportActionBar() != null) {
+//            if (available) {
+//                getSupportActionBar().setElevation(NO_ELEVATION);
+//            } else {
+//                getSupportActionBar().setElevation(HAS_ELEVATION);
+//            }
+//        }
+//    }
 
     @Override
     protected Fragment getNewFragment() {
-        return CartFragment.newInstance();
+        return CartFragment.newInstance("");
     }
-
 }
