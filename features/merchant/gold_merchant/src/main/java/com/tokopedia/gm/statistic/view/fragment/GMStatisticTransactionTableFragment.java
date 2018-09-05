@@ -18,7 +18,6 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;

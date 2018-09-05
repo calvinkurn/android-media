@@ -1,36 +1,37 @@
-package com.tokopedia.seller.base.view.fragment;
+package com.tokopedia.gm.statistic.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.tokopedia.seller.R;
-import com.tokopedia.product.manage.item.common.util.ItemType;
-import com.tokopedia.seller.base.view.listener.DatePickerList;
-import com.tokopedia.product.manage.item.common.view.presenter.DatePickerView;
-import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.product.manage.item.common.view.presenter.DatePickerPresenter;
-import com.tokopedia.seller.common.datepicker.utils.DatePickerUtils;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.core.base.presentation.BaseDaggerFragment;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.utils.DatePickerUtils;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.presenter.DatePickerPresenter;
+import com.tokopedia.datepicker.range.view.presenter.DatePickerView;
 import com.tokopedia.design.label.DateLabelView;
+import com.tokopedia.gm.statistic.view.listener.DatePicker;
+import com.tokopedia.seller.R;
 
 import javax.inject.Inject;
 
-/**
- * Created by nathan on 7/21/17.
- */
-
-public abstract class BaseListDateFragment<T extends ItemType> extends BaseListFragment<BlankPresenter, T>
-        implements DatePickerList, DatePickerView {
+public abstract class BaseDatePickerFragment extends BaseDaggerFragment implements DatePicker, DatePickerView {
 
     protected DateLabelView dateLabelView;
 
     @Inject
     public DatePickerPresenter datePickerPresenter;
     private DatePickerViewModel datePickerViewModel;
-    private boolean needReloadData;
+
+    protected long getStartDate(){
+        return datePickerViewModel.getStartDate();
+    }
+
+    protected long getEndDate() {
+        return datePickerViewModel.getEndDate();
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,6 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         dateLabelView = (DateLabelView) view.findViewById(R.id.date_label_view);
         dateLabelView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,26 +49,25 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
                 openDatePicker();
             }
         });
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (needReloadData) {
-            // reload from page 1
-            loadData();
-            needReloadData = false;
+        reloadDataForDate();
+    }
+
+    protected void disableDateLabelView(){
+        if (dateLabelView!= null) {
+            dateLabelView.setEnabled(false);
         }
     }
 
-    @Override
-    protected final void loadData() {
-        super.loadData();
-    }
-
-    @Override
-    protected final void searchForPage(int page) {
-        reloadDataForDate();
+    protected void enableDateLabelView(){
+        if (dateLabelView!= null) {
+            dateLabelView.setEnabled(true);
+        }
     }
 
     @Override
@@ -80,17 +79,19 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
 
     @Override
     public void onSuccessLoadDatePicker(DatePickerViewModel datePickerViewModel) {
-        this.datePickerViewModel = datePickerViewModel;
-        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
-        setDateLabelView();
+        if (! datePickerViewModel.equal(this.datePickerViewModel)) {
+            this.datePickerViewModel = datePickerViewModel;
+            loadDataByDate(datePickerViewModel);
+            setDateLabelView(datePickerViewModel);
+        }
     }
 
-    @Override
-    public abstract void loadDataByDateAndPage(DatePickerViewModel datePickerViewModel, int page);
-
-    private void setDateLabelView() {
-        dateLabelView.setDate(datePickerViewModel.getStartDate(), datePickerViewModel.getEndDate());
+    protected void setDateLabelView(DatePickerViewModel datePickerViewModel) {
+        dateLabelView.setDate(datePickerViewModel.getStartDate(),
+                datePickerViewModel.getEndDate());
     }
+
+    public abstract void loadDataByDate(DatePickerViewModel datePickerViewModel);
 
     @Override
     public void onErrorLoadDatePicker(Throwable throwable) {
@@ -99,8 +100,8 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
         } else {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
         }
-        setDateLabelView();
-        loadDataByDateAndPage(datePickerViewModel, getCurrentPage());
+        setDateLabelView(datePickerViewModel);
+        loadDataByDate(datePickerViewModel);
     }
 
     @Override
@@ -135,12 +136,20 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
         }
     }
 
-    protected void onDateSelected(Intent intent) {
+    private void onDateSelected(Intent intent) {
         DatePickerViewModel datePickerViewModel = DatePickerUtils.convertDatePickerFromIntent(intent);
+        datePickerViewModel = revisitExtraIntent(intent, datePickerViewModel, this.datePickerViewModel);
         if (datePickerViewModel!= null && !datePickerViewModel.equal(this.datePickerViewModel)) {
             datePickerPresenter.saveDateSetting(datePickerViewModel);
-            needReloadData = true;
         }
+    }
+
+    /**
+     * if there are any intent extra to be put on datepickerViewModel, add it here
+     */
+    public DatePickerViewModel revisitExtraIntent(Intent intent, DatePickerViewModel datePickerViewModel,
+                                                  DatePickerViewModel prevDatePickerViewModel){
+        return datePickerViewModel;
     }
 
     @Override
@@ -149,8 +158,8 @@ public abstract class BaseListDateFragment<T extends ItemType> extends BaseListF
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onDestroy() {
+        super.onDestroy();
         datePickerPresenter.detachView();
     }
 }

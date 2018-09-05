@@ -1,8 +1,8 @@
-package com.tokopedia.seller.base.view.listener;
+package com.tokopedia.gm.statistic.view.listener;
 
 import android.content.Intent;
 
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 /**
  * Created by nathan on 7/18/17.
