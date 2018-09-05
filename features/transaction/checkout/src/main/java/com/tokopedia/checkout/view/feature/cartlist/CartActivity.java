@@ -39,7 +39,9 @@ public class CartActivity extends BaseCheckoutActivity
     }
 
     @Override
-    protected void setupLayout(Bundle savedInstanceState) { } // overriding setup toolbar bcause we dont need it
+    protected int getLayoutRes() {
+        return R.layout.activity_cart;
+    }
 
     @Override
     protected void initInjector() { }
