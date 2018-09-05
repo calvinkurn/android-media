@@ -15,7 +15,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.uber:okbuck:0.37.2'
-        classpath ('com.android.tools.build:gradle:3.1.4') {
+        classpath ('com.android.tools.build:gradle:3.2.0-rc02') {
             exclude module: 'proguard-gradle'
         }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
@@ -31,7 +31,7 @@ buildscript {
                 exclude group: 'com.google.guava', module: 'guava-jdk5'
             }
         }
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.40"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.2.51"
     }
 }
 
