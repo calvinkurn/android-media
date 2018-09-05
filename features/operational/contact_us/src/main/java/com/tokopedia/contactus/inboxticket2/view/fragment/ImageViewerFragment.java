@@ -91,7 +91,7 @@ public class ImageViewerFragment extends Fragment {
     @OnClick(R2.id.close_button)
     void closeFragment() {
         if (getActivity() != null)
-            getActivity().onBackPressed();
+            getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override

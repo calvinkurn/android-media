@@ -529,7 +529,7 @@ public class InboxDetailActivity extends InboxBaseActivity
     @Override
     public void onBackPressed() {
         if (imageUploadAdapter.getItemCount() > 1 || (textToolbar.getVisibility() == View.VISIBLE &&
-                edMessage.isFocused() && edMessage.getText().length() > 0)) {
+                edMessage.isFocused() && edMessage.getText().length() > 0) && getSupportFragmentManager().getBackStackEntryCount() <= 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle(getString(R.string.inbox_title_dialog_wrong_scan));
             builder.setMessage(R.string.abandon_message_warning);

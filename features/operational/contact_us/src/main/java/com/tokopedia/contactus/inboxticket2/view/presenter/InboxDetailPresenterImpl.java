@@ -18,6 +18,7 @@ import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
 import com.tokopedia.contactus.inboxticket2.domain.AttachmentItem;
 import com.tokopedia.contactus.inboxticket2.domain.CommentsItem;
 import com.tokopedia.contactus.inboxticket2.domain.CreatedBy;
+import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.contactus.inboxticket2.domain.StepTwoResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketDetailResponse;
@@ -77,6 +78,7 @@ public class InboxDetailPresenterImpl
     private PostRatingUseCase postRatingUseCase;
     private BadReasonAdapter badReasonAdapter;
     private String NO = "NO";
+    private String error;
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private static final String PARAM_IMAGE_ID = "id";
@@ -353,22 +355,21 @@ public class InboxDetailPresenterImpl
                 fileUploaded = getFileUploaded(imageUploads);
                 return postMessageUseCase.createObservable(RequestParams.create()).subscribeOn(Schedulers.io());
             }).flatMap(typeRestResponseMap -> {
-                Type token = new TypeToken<DataResponse<CreateTicketResult>>() {
+                Type token = new TypeToken<InboxDataResponse<CreateTicketResult>>() {
                 }.getType();
                 RestResponse res1 = typeRestResponseMap.get(token);
-                DataResponse ticketListResponse = res1.getData();
+                InboxDataResponse ticketListResponse = res1.getData();
                 CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
                 if (createTicket != null && createTicket.getIsSuccess() > 0) {
                     if (createTicket.getPostKey() != null && createTicket.getPostKey().length() > 0) {
                         postMessageUseCase2.setQueryMap(fileUploaded, createTicket.getPostKey());
                         return postMessageUseCase2.createObservable(RequestParams.create());
                     } else {
-                        mView.hideSendProgress();
+                        error = (String) ticketListResponse.getErrorMessage().get(0);
                         return Observable.just(null);
                     }
                 } else {
-                    mView.hideSendProgress();
-                    mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.max_reply_wait), true);
+                    error = (String) ticketListResponse.getErrorMessage().get(0);
                     return Observable.just(null);
                 }
             }).subscribeOn(Schedulers.io())
@@ -381,6 +382,8 @@ public class InboxDetailPresenterImpl
 
                         @Override
                         public void onError(Throwable e) {
+                            mView.hideSendProgress();
+                            mView.setSnackBarErrorMessage(error, true);
                             e.printStackTrace();
                         }
 
@@ -388,16 +391,18 @@ public class InboxDetailPresenterImpl
                         public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                             mView.hideSendProgress();
                             if (typeRestResponseMap != null && !typeRestResponseMap.isEmpty()) {
-                                Type token = new TypeToken<DataResponse<StepTwoResponse>>() {
+                                Type token = new TypeToken<InboxDataResponse<StepTwoResponse>>() {
                                 }.getType();
                                 RestResponse res1 = typeRestResponseMap.get(token);
-                                DataResponse responseStep2 = res1.getData();
+                                InboxDataResponse responseStep2 = res1.getData();
                                 StepTwoResponse stepTwoResponse = (StepTwoResponse) responseStep2.getData();
                                 if (stepTwoResponse != null && stepTwoResponse.getIsSuccess() > 0) {
                                     addNewLocalComment();
                                 } else {
-                                    mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.network_error), true);
+                                    mView.setSnackBarErrorMessage((String) responseStep2.getErrorMessage().get(0), true);
                                 }
+                            } else {
+                                mView.setSnackBarErrorMessage(error, true);
                             }
 
                         }
@@ -419,15 +424,15 @@ public class InboxDetailPresenterImpl
                 @Override
                 public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                     mView.hideSendProgress();
-                    Type token = new TypeToken<DataResponse<CreateTicketResult>>() {
+                    Type token = new TypeToken<InboxDataResponse<CreateTicketResult>>() {
                     }.getType();
                     RestResponse res1 = typeRestResponseMap.get(token);
-                    DataResponse ticketListResponse = res1.getData();
+                    InboxDataResponse ticketListResponse = res1.getData();
                     CreateTicketResult createTicket = (CreateTicketResult) ticketListResponse.getData();
                     if (createTicket != null && createTicket.getIsSuccess() > 0) {
                         addNewLocalComment();
                     } else {
-                        mView.setSnackBarErrorMessage(mView.getActivity().getResources().getString(R.string.max_reply_wait), true);
+                        mView.setSnackBarErrorMessage((String) ticketListResponse.getErrorMessage().get(0), true);
                     }
                 }
             });
@@ -650,10 +655,10 @@ public class InboxDetailPresenterImpl
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 mView.hideProgressBar();
                 mView.hideSendProgress();
-                Type token = new TypeToken<DataResponse<RatingResponse>>() {
+                Type token = new TypeToken<InboxDataResponse<RatingResponse>>() {
                 }.getType();
                 RestResponse res1 = typeRestResponseMap.get(token);
-                DataResponse ticketListResponse = res1.getData();
+                InboxDataResponse ticketListResponse = res1.getData();
                 RatingResponse ratingResponse = (RatingResponse) ticketListResponse.getData();
                 if (ratingResponse.getIsSuccess() > 0) {
                     if (mTicketDetail.getStatus().equals(getUtils().OPEN) || mTicketDetail.getStatus().equals(getUtils().SOLVED)) {
@@ -663,6 +668,7 @@ public class InboxDetailPresenterImpl
                         mView.updateClosedStatus(mTicketDetail.getSubject());
                     }
                 } else {
+                    mView.setSnackBarErrorMessage((String) ticketListResponse.getErrorMessage().get(0), true);
                     mView.toggleTextToolbar(View.GONE);
                 }
             }
