@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
+import android.animation.ObjectAnimator;
+import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBar;
@@ -106,6 +109,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
 
     private View toolbar;
+    private AppBarLayout appBarLayout;
     private RecyclerView cartRecyclerView;
     private TextView btnToShipment;
     private TextView tvTotalPrice;
@@ -265,15 +269,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int NO_ELEVATION = 0;
 
     private void onContentAvailabilityChanged(boolean available) {
-        if (getActivity() == null)
-            return;
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        if (actionBar != null) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            StateListAnimator stateListAnimator = new StateListAnimator();
             if (available) {
-                actionBar.setElevation(NO_ELEVATION);
+                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", NO_ELEVATION));
             } else {
-                actionBar.setElevation(HAS_ELEVATION);
+                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", HAS_ELEVATION));
             }
+            appBarLayout.setStateListAnimator(stateListAnimator);
         }
     }
 
@@ -307,6 +310,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void setupToolbar(View view) {
         Toolbar appbar = view.findViewById(R.id.toolbar);
+        appBarLayout = view.findViewById(R.id.app_bar_layout);
         if (isToolbarWithBackButton) {
             toolbar = toolbarRemoveWithBackView();
         } else {
