@@ -38,12 +38,15 @@ public class KolModule {
                                                         httpLoggingInterceptor,
                                             KolAuthInterceptor kolAuthInterceptor,
                                             @KolQualifier OkHttpRetryPolicy retryPolicy,
-                                            @KolChuckQualifier Interceptor chuckInterceptor) {
+                                            @KolChuckQualifier Interceptor chuckInterceptor,
+                                            @ApplicationContext Context context) {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder()
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS)
-                .addInterceptor(kolAuthInterceptor);
+                .addInterceptor(kolAuthInterceptor)
+                .addInterceptor(new FingerprintInterceptor((NetworkRouter) context,
+                        new UserSession(context)));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             clientBuilder.addInterceptor(httpLoggingInterceptor);
