@@ -14,10 +14,13 @@ import com.tokopedia.notifcenter.view.fragment.NotifCenterFragment
 class NotifCenterActivity : BaseSimpleActivity() {
 
     companion object {
-        @DeepLink(ApplinkConst.BUYER_INFO)
-        fun createIntent(context: Context, bundle: Bundle) = createIntent(context)
-
         fun createIntent(context: Context) = Intent(context, NotifCenterActivity::class.java)
+    }
+
+    object DeeplinkIntent {
+        @DeepLink(ApplinkConst.BUYER_INFO)
+        @JvmStatic
+        fun createIntent(context: Context, extras: Bundle) = Companion.createIntent(context)
     }
 
     override fun getNewFragment() = NotifCenterFragment.createInstance()
