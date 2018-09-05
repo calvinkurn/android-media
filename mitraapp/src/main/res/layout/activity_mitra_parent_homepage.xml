@@ -6,6 +6,37 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:background="@color/white"
+        android:elevation="@dimen/dp_4"
+        android:gravity="center_horizontal"
+        android:theme="?toolbarTheme"
+        app:contentInsetLeft="0dp"
+        app:contentInsetStart="0dp"
+        app:contentInsetStartWithNavigation="0dp"
+        app:elevation="@dimen/dp_4"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:titleTextAppearance="?titleTextAppearance">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="132dp"
+                android:layout_height="34dp"
+                android:foregroundGravity="center_horizontal"
+                app:srcCompat="@drawable/ic_mitra_tokopedia_logo" />
+        </LinearLayout>
+
+
+    </android.support.v7.widget.Toolbar>
+
     <FrameLayout
         android:id="@+id/parent_view"
         android:layout_width="match_parent"

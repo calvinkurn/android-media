@@ -31,8 +31,16 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements B
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setupToolbar();
         homeNavigation = findViewById(R.id.mitra_bottom_nav);
         homeNavigation.setOnNavigationItemSelectedListener(this);
+    }
+
+    private void setupToolbar() {
+        if (getSupportActionBar()!= null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        }
     }
 
     @Override
@@ -48,7 +56,7 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements B
                 inflateFragment(MitraAccountFragment.newInstance());
                 break;
         }
-        return false;
+        return true;
     }
 
     private void inflateFragment(Fragment fragment) {

@@ -45,6 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_16"
         android:text="@string/mitra_welcome_button_text" />
 
 </RelativeLayout>
