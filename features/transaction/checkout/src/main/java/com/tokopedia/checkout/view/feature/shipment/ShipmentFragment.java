@@ -29,6 +29,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
+import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
@@ -319,17 +320,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addAddressShipmentData(recipientAddressModel);
         }
         shipmentAdapter.addCartItemDataList(shipmentCartItemModelList);
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder cartIdsStringBuilder = new StringBuilder();
         for (int i = 0; i < shipmentCartItemModelList.size(); i++) {
             if (shipmentCartItemModelList.get(i).getCartItemModels() != null &&
                     shipmentCartItemModelList.get(i).getCartItemModels().size() > 0) {
-                stringBuilder.append(shipmentCartItemModelList.get(i).getCartItemModels().get(0).getCartId());
-                if (i < shipmentCartItemModelList.size() - 1) {
-                    stringBuilder.append(",");
+                for (CartItemModel cartItemModel : shipmentCartItemModelList.get(i).getCartItemModels()) {
+                    cartIdsStringBuilder.append(cartItemModel.getCartId());
+                    cartIdsStringBuilder.append(",");
                 }
             }
         }
-        shipmentAdapter.setCartIds(stringBuilder.toString());
+        cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
+        shipmentAdapter.setCartIds(cartIdsStringBuilder.toString());
 
         shipmentAdapter.addShipmentDonationModel(shipmentDonationModel);
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
