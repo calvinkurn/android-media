@@ -427,7 +427,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onRetryClicked() {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rvShipment.setVisibility(View.VISIBLE);
-                        llCheckoutButtonContainer.setVisibility(View.VISIBLE);
                         shipmentPresenter.processInitialLoadCheckoutPage(false);
                     }
                 });
