@@ -63,7 +63,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             sendBuzzPointEvent(model.getId());
         }
         getView().setLikes(model.getMe().isLiked());
-        getView().setApprovedView(model.getStatus(),model.getStatusMessage());
+        getView().setApprovedView(model.getStatus(), model.getStatusMessage());
         getView().setPointsView(String.valueOf(model.getPoints()));
         getView().setDetailTitle(model.getTitle());
         getView().setDetailContent(model.getDescription());
@@ -77,7 +77,6 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public void likeBtnClick(SubmissionResult result) {
-
         RequestParams requestParams = RequestParams.create();
         if (result.getMe() != null)
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
@@ -96,6 +95,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+
             }
         });
 
@@ -205,7 +205,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
                 Utils.FROMNOCACHE = true;
-                ChallengesCacheHandler.setCache();
+                ChallengesCacheHandler.resetCache();
                 String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
                 RouteManager.route(getView().getActivity(), applink);
                 getView().getActivity().finish();

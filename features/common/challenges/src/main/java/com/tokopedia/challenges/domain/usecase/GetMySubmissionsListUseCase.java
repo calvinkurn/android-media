@@ -5,7 +5,6 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -42,7 +41,7 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
         if (ChallengesCacheHandler.MY_SUBMISSTIONS_LIST_CACHE) {
             headers.put("Cache-Control","max-age=0");
             Utils.FROMNOCACHE = false;
-            ChallengesCacheHandler.resetMySubmissionsListCache();
+            ChallengesCacheHandler.setMySubmissionsListCache();
         }
 
         RestRequest restRequest1 = new RestRequest.Builder(url, SubmissionResponse.class).setHeaders(headers)

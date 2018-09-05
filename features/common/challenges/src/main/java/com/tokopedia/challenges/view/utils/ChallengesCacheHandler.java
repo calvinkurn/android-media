@@ -6,28 +6,39 @@ public class ChallengesCacheHandler {
     public static boolean CHALLENGES_SUBMISSTIONS_LIST_CACHE;
     public static boolean SUBMISSTION_DETAILS_CACHE;
     public static boolean CHALLENGES_DETAILS_CACHE;
+    public static boolean CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE;
 
-    public static void setCache() {
+
+    public static void resetCache() {
         OPEN_CHALLENGES_LIST_CACHE = true;
         MY_SUBMISSTIONS_LIST_CACHE = true;
         CHALLENGES_SUBMISSTIONS_LIST_CACHE = true;
         SUBMISSTION_DETAILS_CACHE = true;
         CHALLENGES_DETAILS_CACHE = true;
+        CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = true;
     }
 
-    public static void resetOpenChallengesListCache() {
+    public static void setOpenChallengesListCache() {
         OPEN_CHALLENGES_LIST_CACHE = false;
     }
-    public static void resetMySubmissionsListCache() {
+
+    public static void setMySubmissionsListCache() {
         MY_SUBMISSTIONS_LIST_CACHE = false;
     }
-    public static void resetChallengeSubmissionssListCache() {
+
+    public static void setChallengeSubmissionssListCache() {
         CHALLENGES_SUBMISSTIONS_LIST_CACHE = false;
     }
-    public static void resetSubmissionsDetailsCache() {
+
+    public static void setSubmissionsDetailsCache() {
         SUBMISSTION_DETAILS_CACHE = false;
     }
-    public static void resetChallengesDetailsCache() {
+
+    public static void setChallengesDetailsCache() {
         CHALLENGES_DETAILS_CACHE = false;
+    }
+
+    public static void setChallengeAllSubmissionssListCache() {
+        CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = false;
     }
 }

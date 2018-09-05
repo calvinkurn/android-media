@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -77,7 +78,17 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
                     challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false);
+//            String mediaUrl;
+//            boolean isVideo;
+//            if (TextUtils.isEmpty(submissionsResult.getSharing().getAssets().getVideo())) {
+//                mediaUrl = submissionsResult.getThumbnailUrl();
+//                isVideo = false;
+//            } else {
+//                mediaUrl = submissionsResult.getSharing().getAssets().getVideo();
+//                isVideo = true;
+//            }
+            ShareBottomSheet.showSubmissionShare(((AppCompatActivity) context).getSupportFragmentManager(),submissionsResult);
+         //   ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false, mediaUrl, submissionsResult.getCollection().getHashTag(), isVideo);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
                     ChallengesAnalytics.EVENT_ACTION_SHARE,

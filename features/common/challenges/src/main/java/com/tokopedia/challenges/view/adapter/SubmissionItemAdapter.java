@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -248,7 +249,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false);
+                String mediaUrl;
+                boolean isVideo;
+                if (TextUtils.isEmpty(categoryItems.get(getIndex()).getSharing().getAssets().getVideo())) {
+                    mediaUrl = categoryItems.get(getIndex()).getThumbnailUrl();
+                    isVideo = false;
+                } else {
+                    mediaUrl = categoryItems.get(getIndex()).getSharing().getAssets().getVideo();
+                    isVideo = true;
+                }
+                ShareBottomSheet.showSubmissionShare(((AppCompatActivity) getActivity()).getSupportFragmentManager(),categoryItems.get(getIndex()));
+               // ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false, mediaUrl, categoryItems.get(getIndex()).getCollection().getHashTag(), isVideo);
                 if (categoryItems.get(getIndex()).getCollection() != null) {
                     analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                             ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,

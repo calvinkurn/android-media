@@ -107,7 +107,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     getView().showMessage("Upload Initiated Please Wait");
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
                     getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
-                    ChallengesCacheHandler.setCache();
+                    ChallengesCacheHandler.resetCache();
                 }
 
             }
@@ -147,7 +147,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         if (description.length() <= 0) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_desc_blank));
             return false;
-        } else if (description.length() > 50) {
+        } else if (description.length() > 300) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
             return false;
         } else

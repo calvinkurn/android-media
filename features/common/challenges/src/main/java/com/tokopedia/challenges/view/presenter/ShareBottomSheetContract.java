@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public class ShareBottomSheetContract {
     public interface View extends CustomerView {
@@ -14,8 +16,15 @@ public class ShareBottomSheetContract {
         void showProgress(String message);
 
         void hideProgress();
+
+        Result getChallengeItem();
+
+        SubmissionResult getSubmissionItem();
     }
 
     public interface Presenter extends CustomerPresenter<View> {
+        void createAndShareChallenge(String packageName);
+
+        void createAndShareSubmission(String packageName);
     }
 }

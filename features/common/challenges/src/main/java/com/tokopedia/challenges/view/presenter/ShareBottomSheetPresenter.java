@@ -8,6 +8,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
@@ -17,8 +18,12 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.PostMapBranchUrlUseCase;
+import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
 
@@ -80,22 +85,46 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         });
     }
 
-    public void createAndShareUrl(String packageName, final String url, String submissionId, String deepLink, final boolean isChallenge, String title, String og_url, String og_title, String og_image) {
+    @Override
+    public void createAndShareChallenge(String packageName) {
+        Result challengeItem = getView().getChallengeItem();
+        if (challengeItem == null) {
+            return;
+        }
+        String url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId());
+        getView().showProgress("Please wait");
+        ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            @Override
+            public void onGenerateLink(String shareContents, String shareUri) {
+                getView().hideProgress();
+                getView().setNewUrl(shareUri);
+                shareLink(true, shareUri, challengeItem.getTitle(), packageName);
+            }
+        });
 
+    }
+
+    @Override
+    public void createAndShareSubmission(String packageName) {
+        SubmissionResult submissionItem = getView().getSubmissionItem();
+        if (submissionItem == null) {
+            return;
+        }
+        String url = submissionItem.getSharing().getMetaTags().getOgUrl();
+        if (TextUtils.isEmpty(url)) {
+            url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId());
+        }
         if (url.startsWith("https://tokopedia.link") || url.startsWith("http://tokopedia.link")) {
-            shareLink(isChallenge, url, title, packageName);
+            shareLink(false, url, submissionItem.getTitle(), packageName);
         } else {
             getView().showProgress("Please wait");
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, title, og_url, og_title, og_image, deepLink, new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
                     getView().setNewUrl(shareUri);
-                    if (isChallenge) {
-                        shareLink(isChallenge, shareUri, title, packageName);
-                    } else {
-                        postMapBranchUrl(submissionId, shareUri, packageName, title, isChallenge);
-                    }
+                    postMapBranchUrl(submissionItem.getId(), shareUri, packageName, submissionItem.getTitle(), false);
+
                 }
             });
         }
@@ -133,11 +162,9 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         } else if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_OTHER)) {
             Intent intent = getIntent(title, getShareContents(isChallenge, branchUrl, title));
             getView().getActivity().startActivity(Intent.createChooser(intent, getView().getActivity().getString(R.string.other)));
-        }
-        else if (PACKAGENAME_INSTAGRAM.equalsIgnoreCase(packageName)) {
-            convertHttpPathToLocalPath(title, getShareContents(isChallenge, branchUrl, title), "https://images.indi.com/s3/indi-upload-ap-southeast-1/Image/26f9ed21a1356e8c125cf0116b872198.jpg");
-        }
-        else {
+        } else if (PACKAGENAME_INSTAGRAM.equalsIgnoreCase(packageName)) {
+            shareToInstagram(title, getShareContents(isChallenge, branchUrl, title), isChallenge);
+        } else {
             ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).shareBranchUrlForChallenge(getView().getActivity(), packageName, branchUrl, getShareContents(isChallenge, branchUrl, title));
         }
     }
@@ -151,12 +178,15 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         return mIntent;
     }
 
-    private void createInstagramIntent(String title, String contains, File media) {
+    private void createInstagramIntent(String title, String contains, File media, boolean isVideo) {
         String type = "image/*";
         //String filename = "/myVideo.mp4";
         //mediaPath = Environment.getExternalStorageDirectory() + filename;
 
         // Create the new Intent using the 'Send' action.
+        if (isVideo) {
+            type = "video/*";
+        }
         Intent share = new Intent(Intent.ACTION_SEND);
 
         // Set the MIME type
@@ -175,8 +205,8 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         getView().getActivity().startActivity(Intent.createChooser(share, "Share"));
     }
 
-    private void convertHttpPathToLocalPath(String title, String contains, String mediaUrl) {
-         downloadObservable(mediaUrl)
+    private void convertHttpPathToLocalPath(String title, String contains, String mediaUrl, boolean isVideo) {
+        downloadObservable(mediaUrl)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
@@ -195,7 +225,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                     public void onNext(File file) {
                         getView().hideProgress();
                         if (file != null)
-                            createInstagramIntent(title, contains, file);
+                            createInstagramIntent(title, contains, file, isVideo);
                     }
                 });
     }
@@ -225,5 +255,27 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                         }
                     }
                 });
+    }
+
+    private void shareToInstagram(String title, String shareContents, boolean isChallenge) {
+
+        String mediaUrl;
+        boolean isVideo = false;
+        if (isChallenge) {
+            if (TextUtils.isEmpty(getView().getChallengeItem().getSharing().getAssets().getVideo())) {
+                mediaUrl = getView().getChallengeItem().getThumbnailUrl();
+            } else {
+                mediaUrl = getView().getChallengeItem().getSharing().getAssets().getVideo();
+                isVideo = true;
+            }
+        } else {
+            if (TextUtils.isEmpty(getView().getSubmissionItem().getSharing().getAssets().getVideo())) {
+                mediaUrl = getView().getSubmissionItem().getThumbnailUrl();
+            } else {
+                mediaUrl = getView().getSubmissionItem().getSharing().getAssets().getVideo();
+                isVideo = true;
+            }
+        }
+        convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
     }
 }

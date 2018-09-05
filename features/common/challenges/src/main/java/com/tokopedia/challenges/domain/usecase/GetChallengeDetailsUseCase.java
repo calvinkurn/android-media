@@ -38,7 +38,7 @@ public class GetChallengeDetailsUseCase extends RestRequestSupportInterceptorUse
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.CHALLENGES_DETAILS_CACHE) {
             headers.put("Cache-Control", "max-age=0");
-            ChallengesCacheHandler.resetChallengesDetailsCache();
+            ChallengesCacheHandler.setChallengesDetailsCache();
         }
         HashMap<String, Object> parameters=requestParams.getParameters();
         String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);

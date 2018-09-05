@@ -104,6 +104,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
                 .setSmallIcon(R.drawable.chuck_ic_notification_white_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(), largeIconRes))
                 .setPriority(NotificationCompat.PRIORITY_MAX)
+                .setAutoCancel(true)
                 .setOnlyAlertOnce(true);
     }
 

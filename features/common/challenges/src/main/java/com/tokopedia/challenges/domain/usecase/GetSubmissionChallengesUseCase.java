@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
-import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -39,7 +38,7 @@ public class GetSubmissionChallengesUseCase extends RestRequestSupportIntercepto
         HashMap headers = new HashMap();
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE) {
             headers.put("Cache-Control", "max-age=0");
-            ChallengesCacheHandler.resetChallengeSubmissionssListCache();
+            ChallengesCacheHandler.setChallengeSubmissionssListCache();
         }
         //Request 1
 
