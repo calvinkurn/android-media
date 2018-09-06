@@ -51,9 +51,9 @@ public class AddressModelMapper {
         recipientAddress.setRecipientName(addressModel.getReceiverName());
         recipientAddress.setRecipientPhoneNumber(addressModel.getReceiverPhone());
         recipientAddress.setLatitude(!TextUtils.isEmpty(addressModel.getLatitude()) ?
-                Double.parseDouble(addressModel.getLatitude()) : null);
+                addressModel.getLatitude() : null);
         recipientAddress.setLongitude(!TextUtils.isEmpty(addressModel.getLongitude()) ?
-                Double.parseDouble(addressModel.getLongitude()) : null);
+                addressModel.getLongitude() : null);
 
         return recipientAddress;
     }

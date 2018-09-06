@@ -607,8 +607,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderEditAddressSuccess(String latitude, String longitude) {
-        shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(latitude),
-                Double.parseDouble(longitude));
+        shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude);
         int position = shipmentAdapter.getLastChooseCourierItemPosition();
 
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
