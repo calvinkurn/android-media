@@ -240,8 +240,6 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="AppTheme.AppBarOverlay.NoActionBar" parent="Theme.AppCompat.NoActionBar"/>
-
     <style name="AppTheme.AppBarOverlayWhite.White" parent="Theme.AppCompat.NoActionBar">
         <item name="android:textColorPrimary">@color/grey_750</item>
         <item name="actionMenuTextColor">@color/grey_750</item>
