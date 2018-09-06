@@ -62,8 +62,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/iv_image_product"
                     android:layout_toRightOf="@id/iv_image_product"
-                    android:paddingLeft="@dimen/dp_8"
-                    android:paddingRight="@dimen/dp_8">
+                    android:paddingLeft="@dimen/dp_8">
 
                     <LinearLayout
                         android:id="@+id/ll_product_name"
@@ -203,25 +202,25 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
                         android:text="@string/label_note_for_seller"
-                        tools:visibility="visible" />
+                        tools:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_remark"
                         style="@style/TextSmallMediumBlack38"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1.5"
+                        android:layout_marginEnd="@dimen/dp_2"
+                        android:layout_marginRight="@dimen/dp_2"
                         android:ellipsize="end"
                         android:maxLines="1"
-                        tools:text="Saya pesan warna merah yah min. jangan sampai salah kirim barangnya gan!"
-                        tools:visibility="gone" />
+                        android:maxWidth="@dimen/dp_120"
+                        tools:text="Saya gan khsd sdkjbf sdkjf skdjbfg jksdg kjsdbg jksdbg!"
+                        tools:visibility="visible" />
 
                     <TextView
                         android:id="@+id/tv_label_remark_option"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_toEndOf="@id/tv_label_form_remark"
-                        android:layout_toRightOf="@id/tv_label_form_remark"
                         android:layout_weight="2"
                         android:fontFamily="sans-serif-medium"
                         android:text="@string/label_button_add_note"
