@@ -149,6 +149,7 @@ android {
             ext.enableHansel=false
         }
         release {
+            signingConfig signingConfigs.debug
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -217,7 +218,7 @@ android {
 
 
     dexOptions {
-        javaMaxHeapSize "4g"
+        javaMaxHeapSize "8g"
     }
 
     compileOptions {
