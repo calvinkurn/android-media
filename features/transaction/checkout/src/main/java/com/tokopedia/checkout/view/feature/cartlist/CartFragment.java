@@ -910,8 +910,12 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
+    public void onDeleteCartDataSuccess() {
         notifyBottomCartParent();
+    }
+
+    @Override
+    public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
     }
 
     @Override
