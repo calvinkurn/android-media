@@ -37,6 +37,8 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         implements DataEndlessScrollListener.OnDataEndlessScrollListener,
         StickySingleHeaderView.OnStickySingleHeaderAdapter{
 
+    private boolean needToShowEtalase = false;
+
     private ShopProductPromoViewModel shopProductPromoViewModel;
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
@@ -62,6 +64,20 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         visitables.add(shopProductFeaturedViewModel);
         visitables.add(shopProductEtalaseListViewModel);
         visitables.add(shopProductEtalaseTitleViewModel);
+
+        baseListAdapterTypeFactory.attachAdapter(this);
+    }
+
+    public void setNeedToShowEtalase(boolean needToShowEtalase) {
+        if (this.needToShowEtalase != needToShowEtalase) {
+            this.needToShowEtalase = needToShowEtalase;
+            notifyItemChanged(DEFAULT_ETALASE_POSITION);
+            notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
+        }
+    }
+
+    public boolean isNeedToShowEtalase() {
+        return needToShowEtalase;
     }
 
     public void setShopProductPromoViewModel(ShopProductPromoViewModel shopProductPromoViewModel) {

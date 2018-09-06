@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
+import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
@@ -18,34 +19,36 @@ import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
  * Created by normansyahputa on 2/22/18.
  */
 
-public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> implements ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
+public class ShopProductCarouselViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> {
 
+    private TextView tvTitle;
     private RecyclerView recyclerView;
-    private ShopProductAdapter shopProductAdapter;
+    private ShopProductAdapter shopProductFeatureAdapter;
     private boolean isDataSizeSmall;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_feature;
 
-    public ShopProductFeaturedViewHolder(View itemView, int deviceWidth,
+    public ShopProductCarouselViewHolder(View itemView, int deviceWidth,
                                          ShopProductClickedNewListener shopProductClickedNewListener,
-                                         boolean isDataSizeSmall) {
+                                         boolean isDataSizeSmall, String titleString) {
         super(itemView);
         this.isDataSizeSmall = isDataSizeSmall;
-        shopProductAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
+        shopProductFeatureAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
-                null, this,
-                true, deviceWidth, true));
+                null,
+                false, deviceWidth, true));
         findViews(itemView);
+        tvTitle.setText(titleString);
     }
 
     @Override
     public void bind(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
         Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
 
-        shopProductAdapter.replaceProductList(shopProductFeaturedViewModel.getShopProductFeaturedViewModelList());
-        shopProductAdapter.notifyDataSetChanged();
+        shopProductFeatureAdapter.replaceProductList(shopProductFeaturedViewModel.getShopProductFeaturedViewModelList());
+        shopProductFeatureAdapter.notifyDataSetChanged();
 
         if (recyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -53,6 +56,7 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
     }
 
     private void findViews(View view) {
+        tvTitle = view.findViewById(R.id.tv_title);
         recyclerView = view.findViewById(R.id.recyclerViewFeature);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
                 isDataSizeSmall ? LinearLayoutManager.VERTICAL : LinearLayoutManager.HORIZONTAL, false);
@@ -61,16 +65,7 @@ public class ShopProductFeaturedViewHolder extends AbstractViewHolder<ShopProduc
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        recyclerView.setAdapter(shopProductAdapter);
+        recyclerView.setAdapter(shopProductFeatureAdapter);
     }
 
-    @Override
-    public boolean needToShowEtalase() {
-        return true;
-    }
-
-    @Override
-    public int getFeaturedDataSize() {
-        return shopProductAdapter.getShopProductViewModelList().size();
-    }
 }

@@ -63,7 +63,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
-import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 
 /**
  * Created by nathan on 2/15/18.
@@ -72,8 +71,7 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALAS
 public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
         ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedNewListener,
-        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener,
-        ShopProductAdapterTypeFactory.OnShopProductAdapterTypeFactoryListener {
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -109,7 +107,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     private ShopProductAdapter shopProductAdapter;
     private GridLayoutManager gridLayoutManager;
     private boolean needReloadData;
-    private boolean needToShowEtalase;
 
     public static ShopProductListLimitedFragment createInstance(String shopAttribution) {
         ShopProductListLimitedFragment fragment = new ShopProductListLimitedFragment();
@@ -122,7 +119,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list_new, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_product_limited_list, container, false);
         bottomActionView = view.findViewById(R.id.bottom_action_view);
         return view;
     }
@@ -263,7 +260,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void renderShopProductPromo(ShopProductPromoViewModel shopProductPromoViewModel) {
         shopProductAdapter.setShopProductPromoViewModel(shopProductPromoViewModel);
-        if (shopProductPromoViewModel!= null) {
+        if (shopProductPromoViewModel != null) {
             if (!TextUtils.isEmpty(shopProductPromoViewModel.getUrl())) {
                 if (shopInfo != null) {
                     shopPageTracking.eventViewBannerImpression(getString(R.string.shop_info_title_tab_product),
@@ -325,8 +322,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         int deviceWidth = displaymetrics.widthPixels;
         return new ShopProductAdapterTypeFactory(this,
                 this, this,
-                this, this,
-                false, deviceWidth, false
+                this,
+                true, deviceWidth, false
         );
     }
 
@@ -460,16 +457,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             }
 
             if (needShowEmpty) {
-                setNeedToShowEtalase(true);
+                shopProductAdapter.setNeedToShowEtalase(true);
                 shopProductAdapter.addElement(getEmptyDataViewModel());
             } else {
-                setNeedToShowEtalase(false);
+                shopProductAdapter.setNeedToShowEtalase(false);
                 shopProductAdapter.clearAllNonDataElement();
             }
             bottomActionView.setVisibility(View.GONE);
             bottomActionView.hide();
         } else {
-            setNeedToShowEtalase(true);
+            shopProductAdapter.setNeedToShowEtalase(true);
             bottomActionView.setVisibility(View.VISIBLE);
             bottomActionView.show();
             isLoadingInitialData = false;
@@ -570,7 +567,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                     ShopPageTracking.getShopType(shopInfo.getInfo()));
         }
         //this is to reset fling and initial load position
-        recyclerView.smoothScrollBy(1,1);
+        recyclerView.smoothScrollBy(1, 1);
         gridLayoutManager.scrollToPositionWithOffset(DEFAULT_ETALASE_POSITION, 0);
 
         // no need ro rearraged, just notify the adapter to reload product list by etalase id
@@ -710,24 +707,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onSaveInstanceState(outState);
         outState.putString(SAVED_SELECTED_ETALASE_ID, selectedEtalaseId);
         outState.putString(SAVED_SELECTED_ETALASE_NAME, selectedEtalaseName);
-    }
-
-    public void setNeedToShowEtalase(boolean needToShowEtalase) {
-        if (this.needToShowEtalase != needToShowEtalase) {
-            this.needToShowEtalase = needToShowEtalase;
-            shopProductAdapter.notifyItemChanged(DEFAULT_ETALASE_POSITION);
-            shopProductAdapter.notifyItemChanged(DEFAULT_ETALASE_TITLE_POSITION);
-        }
-    }
-
-    @Override
-    public boolean needToShowEtalase() {
-        return needToShowEtalase;
-    }
-
-    @Override
-    public int getFeaturedDataSize() {
-        return shopProductAdapter.getShopProductFeaturedViewModel().getShopProductFeaturedViewModelList().size();
     }
 
     @Override
