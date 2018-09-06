@@ -222,6 +222,8 @@ public class DigitalsViewHolder extends AbstractViewHolder<DigitalsViewModel> im
         titleTxt.setText(element.getTitle());
         if (mRechargeCategory.isEmpty()) {
             rechargeCategoryPresenter.fetchDataRechargeCategory();
+        } else {
+            renderDataRechargeCategory(mRechargeCategory);
         }
     }
 
