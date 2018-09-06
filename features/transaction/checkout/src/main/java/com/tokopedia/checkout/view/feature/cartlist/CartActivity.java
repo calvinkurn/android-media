@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.Window;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.applink.CheckoutAppLink;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutActivity;
 
