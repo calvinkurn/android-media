@@ -2609,7 +2609,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getCartFragment() {
-        return CartFragment.newInstance();
+        return CartFragment.newInstance(CartFragment.class.getSimpleName());
     }
 
     @Override
