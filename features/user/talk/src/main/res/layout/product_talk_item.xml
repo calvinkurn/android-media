@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/card_shadow_top_bottom"
+    android:orientation="vertical"
+    >
+
+    <include
+        android:id="@+id/talkThread"
+        layout="@layout/thread_talk"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/grey_300"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/replyButton"
+        android:layout_width="wrap_content"
+        android:layout_gravity="end"
+        android:layout_height="@dimen/dp_48"
+        android:paddingRight="@dimen/dp_16"
+        android:paddingLeft="@dimen/dp_16"
+        android:fontFamily="sans-serif"
+        android:gravity="end|center_vertical"
+        android:text="@string/reply_talk"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        />
+
+</LinearLayout>

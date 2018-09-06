@@ -1,4 +1,4 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 
@@ -8,10 +8,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
  */
 
 data class ProductTalkViewModel(
-        var listThread: List<Visitable<ProductTalkThreadTypeFactory>>
-) : Visitable<ProductTalkThreadTypeFactory> {
+        var screen: String = "",
+        var listThread: ArrayList<Visitable<*>> = ArrayList(),
+        var hasNextPage: Boolean = false,
+        var page_id: Int = 0
+){
 
-    override fun type(typeFactory: ProductTalkThreadTypeFactory): Int {
-        return typeFactory.type(this)
-    }
 }

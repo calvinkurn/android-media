@@ -1510,6 +1510,12 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Intent getTalkIntent(Context context) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return InboxTalkActivity.Companion.createIntent(context);
+        else {
+            return InboxRouter.getInboxTalkActivityIntent(context);
+        }
     public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                              ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
                                              int productStock, boolean officialStore, String productSku,
