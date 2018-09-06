@@ -270,6 +270,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
 
     public void setApprovedView(String approveText, String statusMessage) {
+        if("Encoding".equalsIgnoreCase(approveText)){
+            approveText = Utils.STATUS_WAITING;
+            statusMessage="status is pending";
+        }
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
@@ -352,7 +356,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        if (!presenter.getParticipatedStatus(submissionResult)) {
+        if (submissionResult !=null && !presenter.getParticipatedStatus(submissionResult)) {
             presenter.sendBuzzPointEvent(submissionResult.getId());
         }
     }

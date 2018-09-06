@@ -1,6 +1,12 @@
 package com.tokopedia.challenges.view.share;
 
+import android.app.Activity;
 import android.app.Dialog;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.DisplayMetrics;
@@ -10,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.RouteManager;
@@ -30,6 +37,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
     private String contains;
     private File media;
     boolean isVideo;
+    private String hastag;
 
     @Override
     public int getLayoutResourceId() {
@@ -42,17 +50,20 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
-        getBottomSheetBehavior().setPeekHeight((int)(screenHeight / 1.5));
+        getBottomSheetBehavior().setPeekHeight((int) (screenHeight / 1.5));
     }
 
 
     @Override
     public void initView(View view) {
         TextView desc = view.findViewById(R.id.tv_desc);
+
         TextView btnCopy = view.findViewById(R.id.btn_copy);
+        btnCopy.setText("Salin " + hastag);
         btnCopy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                copyToClipboard(hastag);
                 createInstagramIntent();
             }
         });
@@ -74,11 +85,12 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         }
     }
 
-    public void setData(String title, String contains, File media, boolean isVideo){
-        this.title =title;
+    public void setData(String title, String contains, File media, boolean isVideo, String hastag) {
+        this.title = title;
         this.contains = contains;
         this.media = media;
         this.isVideo = isVideo;
+        this.hastag = hastag;
     }
 
     private void createInstagramIntent() {
@@ -107,4 +119,12 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         share.setPackage(PACKAGENAME_INSTAGRAM);
         getActivity().startActivity(Intent.createChooser(share, "Share"));
     }
+
+    private void copyToClipboard(String contents) {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Activity.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("Tokopedia", contents);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(getActivity(), R.string.copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
+    }
+
 }

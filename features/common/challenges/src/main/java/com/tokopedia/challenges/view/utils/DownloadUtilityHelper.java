@@ -13,7 +13,7 @@ import com.tokopedia.challenges.R;
 import static android.content.Context.DOWNLOAD_SERVICE;
 
 public class DownloadUtilityHelper {
-    private long DownloadData(Uri uri, View v, Context context, boolean isVideo) {
+    public static long DownloadData(Uri uri, Context context, boolean isVideo) {
 
         long downloadReference;
 
@@ -43,30 +43,4 @@ public class DownloadUtilityHelper {
 
         return downloadReference;
     }
-
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //check if the broadcast message is for our enqueued download
-            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-
-//            if(referenceId == Image_DownloadId) {
-//
-//                Toast toast = Toast.makeText(MainActivity.this,
-//                        "Image Download Complete", Toast.LENGTH_LONG);
-//                toast.setGravity(Gravity.TOP, 25, 400);
-//                toast.show();
-//            }
-//            else if(referenceId == Music_DownloadId) {
-//
-//                Toast toast = Toast.makeText(MainActivity.this,
-//                        "Music Download Complete", Toast.LENGTH_LONG);
-//                toast.setGravity(Gravity.TOP, 25, 400);
-//                toast.show();
-//            }
-
-        }
-    };
 }

@@ -216,7 +216,9 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public boolean getParticipatedStatus(SubmissionResult submissionResult) {
-        return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
-
+        if (submissionResult != null)
+            return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
+        else
+            return false;
     }
 }

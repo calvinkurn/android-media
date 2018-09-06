@@ -1,6 +1,9 @@
 package com.tokopedia.challenges.view.share;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -171,4 +174,5 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public SubmissionResult getSubmissionItem() {
         return submissionItem;
     }
+
 }

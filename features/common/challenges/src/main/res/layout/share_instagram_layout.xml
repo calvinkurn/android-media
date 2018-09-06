@@ -18,6 +18,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/TextView.Title.FontMedium.BlackPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="left"
+        android:text="Bagikan ke Instagram"
+        android:textStyle="bold"
+
+        app:layout_constraintTop_toBottomOf="@+id/img_share"
+        app:layout_constraintWidth_default="wrap" />
 
     <TextView
         android:id="@+id/tv_desc"
@@ -27,10 +41,25 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/img_share"
-        tools:text="1 Set Jumbo Bento for 2 persons on Weekdays (Monday - Friday)" />
+        android:gravity="left"
+        android:paddingLeft="@dimen/dp_8"
+        android:text="Silakan unggah konten ke Instagram dengan cara manual."
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintWidth_default="wrap" />
+
+    <TextView
+        android:id="@+id/tv_desc2"
+        style="@style/TextView.Title.FontMedium.BlackPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="left"
+        android:paddingLeft="@dimen/dp_8"
+        android:text="Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan."
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc"
+        app:layout_constraintWidth_default="wrap" />
 
 
     <TextView
@@ -46,7 +75,7 @@
         android:textColor="@color/white"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc2" />
 
     <TextView
         android:id="@+id/btn_cancel"
