@@ -11,7 +11,9 @@ import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolde
 /**
  * @author by nisie on 9/5/18.
  */
-class CommentTalkTypeFactoryImpl() :
+class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTalkViewHolder
+.TalkCommentItemListener,
+                                 private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         BaseAdapterTypeFactory(),
         ProductTalkChildThreadTypeFactory {
 
@@ -26,7 +28,7 @@ class CommentTalkTypeFactoryImpl() :
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             LoadMoreCommentTalkViewHolder.LAYOUT -> LoadMoreCommentTalkViewHolder(view)
-            CommentTalkViewHolder.LAYOUT -> CommentTalkViewHolder(view)
+            CommentTalkViewHolder.LAYOUT -> CommentTalkViewHolder(view, talkCommentItemListener, talkProductAttachmentItemClickListener)
             else -> super.createViewHolder(view, viewType)
         }
     }

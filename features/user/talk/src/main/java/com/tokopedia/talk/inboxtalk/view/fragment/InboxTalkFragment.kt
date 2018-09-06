@@ -14,6 +14,9 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
 import com.tokopedia.talk.TalkState
+import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
@@ -33,8 +36,8 @@ import javax.inject.Inject
  */
 
 class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
-        InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener {
-
+        InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
+        .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
 
     val REQUEST_REPORT_TALK: Int = 101
     val POS_FILTER_ALL: Int = 0
@@ -83,7 +86,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
 
     private fun setupView() {
-        val adapterTypeFactory = InboxTalkTypeFactoryImpl(this)
+        val adapterTypeFactory = InboxTalkTypeFactoryImpl(this, this, this)
         val listTalk = ArrayList<Visitable<*>>()
         adapter = InboxTalkAdapter(adapterTypeFactory, listTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -99,7 +102,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
 
         filter = "all"
-
         presenter.getInboxTalk(filter, nav)
     }
 
@@ -250,7 +252,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     override fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>) {
         adapter.clearAllElements()
-        adapter.addList(listTalk)
+        adapter.setList(listTalk)
     }
 
     override fun onEmptyTalk() {
@@ -308,9 +310,49 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         bottomMenu.dismiss()
     }
 
+    override fun onCommentMenuButtonClicked(menu: TalkState) {
+        context?.run {
+            val listMenu = ArrayList<Menus.ItemMenus>()
+            if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_report_comment)))
+            if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_delete_comment)))
+
+            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+            bottomMenu.itemMenuList = listMenu
+            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+            bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                onCommentMenuItemClicked(itemMenus, bottomMenu)
+            }
+            bottomMenu.show()
+        }
+    }
+
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus) {
+        when (itemMenu.title) {
+            getString(R.string.menu_report_comment) -> goToReportTalk()
+            getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog()
+        }
+        bottomMenu.dismiss()
+    }
+
+    override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
+        //TODO NISIE GO TO PDP
+    }
+
+
     private fun showErrorReplyTalk() {
         //TODO NISIE GET ERROR MESSAGE FOR REPLY TALK
         NetworkErrorHelper.showRedSnackbar(view, "Error dud")
+    }
+
+    override fun hideFilter() {
+        icon_filter.visibility = View.GONE
+    }
+
+    override fun showFilter() {
+        icon_filter.visibility = View.VISIBLE
     }
 
     private fun goToDetailTalk() {

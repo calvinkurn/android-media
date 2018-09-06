@@ -24,7 +24,7 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
 
     override fun getInboxTalk(filter: String, nav: String) {
         view.showLoadingFull()
-
+        view.hideFilter()
         getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
                 filter,
                 nav,
@@ -37,6 +37,8 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
 
             override fun onError(e: Throwable) {
                 view.hideLoadingFull()
+                view.showFilter()
+
                 if (e is MessageErrorException) {
                     view.onErrorGetInboxTalk(e.message ?: "")
                 } else {
@@ -46,6 +48,8 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
 
             override fun onNext(talkViewModel: InboxTalkViewModel) {
                 view.hideLoadingFull()
+                view.showFilter()
+
                 if (talkViewModel.listTalk.isEmpty()) {
                     view.onEmptyTalk()
                 } else {
@@ -63,6 +67,8 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
         page = 1
         page_id = 0
 
+        view.hideFilter()
+
         getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
                 filter,
                 nav,
@@ -75,6 +81,8 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
 
             override fun onError(e: Throwable) {
                 view.hideRefreshLoad()
+                view.showFilter()
+
                 if (e is MessageErrorException) {
                     view.onErrorGetInboxTalk(e.message ?: "")
                 } else if (GlobalConfig.isAllowDebuggingTools()) {
@@ -86,6 +94,8 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
 
             override fun onNext(talkViewModel: InboxTalkViewModel) {
                 view.hideRefreshLoad()
+                view.showFilter()
+
                 if (talkViewModel.listTalk.isEmpty()) {
                     view.onEmptyTalk()
                 } else {

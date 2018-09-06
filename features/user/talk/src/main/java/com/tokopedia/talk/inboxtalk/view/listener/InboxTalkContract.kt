@@ -20,6 +20,8 @@ interface InboxTalkContract {
         fun onEmptyTalk()
         fun hideRefreshLoad()
         fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>)
+        fun hideFilter()
+        fun showFilter()
     }
 
     interface Presenter : CustomerPresenter<View> {

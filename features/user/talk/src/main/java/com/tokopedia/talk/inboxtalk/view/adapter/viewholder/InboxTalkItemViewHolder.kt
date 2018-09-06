@@ -12,6 +12,8 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.TalkState
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
+import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import kotlinx.android.synthetic.main.inbox_talk_item.view.*
 import kotlinx.android.synthetic.main.inbox_talk_item_product_header.view.*
@@ -23,7 +25,10 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
  */
 
 class InboxTalkItemViewHolder(val v: View,
-                              val listener: TalkItemListener) :
+                              val listener: TalkItemListener,
+                              private val talkCommentListener : CommentTalkViewHolder
+                              .TalkCommentItemListener,
+                              private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
@@ -53,7 +58,7 @@ class InboxTalkItemViewHolder(val v: View,
         element?.run {
 
             if (!element.talkThread.listChild.isEmpty()) {
-                val typeFactoryImpl = CommentTalkTypeFactoryImpl()
+                val typeFactoryImpl = CommentTalkTypeFactoryImpl(talkCommentListener, talkProductAttachmentItemClickListener)
                 adapter = CommentTalkAdapter(typeFactoryImpl, element.talkThread.listChild)
                 listComment.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
                         .VERTICAL, false)
@@ -77,8 +82,8 @@ class InboxTalkItemViewHolder(val v: View,
                         .headThread.menu.allowReply)
             }
 
-            if (element.talkThread.headThread.isRead) notification.visibility = View.VISIBLE
-            else notification.visibility = View.GONE
+            if (element.talkThread.headThread.isRead) notification.visibility = View.GONE
+            else notification.visibility = View.VISIBLE
 
             setupMenuButton(element.talkThread.headThread.menu)
 

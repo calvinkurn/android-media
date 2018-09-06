@@ -30,4 +30,9 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         this.notifyItemRangeInserted(visitables.size, list.size)
     }
 
+    fun setList(list: ArrayList<Visitable<*>>) {
+        this.visitables.addAll(list)
+        this.notifyDataSetChanged()
+    }
+
 }

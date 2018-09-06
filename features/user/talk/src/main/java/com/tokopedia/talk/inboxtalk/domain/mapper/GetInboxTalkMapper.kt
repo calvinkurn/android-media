@@ -6,6 +6,8 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.ProductTalkItemViewModel
 import com.tokopedia.talk.TalkState
 import com.tokopedia.talk.TalkThreadViewModel
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.common.domain.CommentProduct
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
@@ -61,7 +63,9 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
-                    true
+                    true,
+                    mapProductAttachment(data)
+
             ))
         }
 
@@ -73,10 +77,25 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
-                        pojo.talk_follow_status == IS_FOLLOWED
+                        pojo.talk_follow_status == IS_FOLLOWED,
+                        ArrayList()
                 ),
                 listTalk
         )
+    }
+
+    private fun mapProductAttachment(pojo: TalkCommentItem):
+            ArrayList<TalkProductAttachmentViewModel> {
+        val listProduct = ArrayList<TalkProductAttachmentViewModel>()
+        for (data: CommentProduct in pojo.listProduct) {
+            listProduct.add(TalkProductAttachmentViewModel(
+                    data.product_name,
+                    data.product_id,
+                    data.product_image,
+                    data.product_price
+            ))
+        }
+        return listProduct
     }
 
     private fun mapHeaderTalkState(pojo: InboxTalkItemPojo): TalkState {
