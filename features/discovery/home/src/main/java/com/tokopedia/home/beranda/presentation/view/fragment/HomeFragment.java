@@ -627,12 +627,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onRefresh();
-                        }
-                    });
+                    messageSnackbar =  NetworkErrorHelper.createSnackbarWithAction(
+                            root, getString(com.tokopedia.core.R.string.msg_network_error),
+                            () -> onRefresh()
+                    );
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {

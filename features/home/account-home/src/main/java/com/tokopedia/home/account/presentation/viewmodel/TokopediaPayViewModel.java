@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
+import android.support.annotation.ColorRes;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
@@ -9,6 +10,7 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
  * @author okasurya on 7/17/18.
  */
 public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFactory> {
+    private @ColorRes int amountColorLeft;
     private String labelLeft;
     private String amountLeft;
     private String labelRight;
@@ -19,6 +21,14 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
+    }
+
+    public @ColorRes int getAmountColorLeft() {
+        return amountColorLeft;
+    }
+
+    public void setAmountColorLeft(@ColorRes int amountColorLeft) {
+        this.amountColorLeft = amountColorLeft;
     }
 
     public String getLabelLeft() {
