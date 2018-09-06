@@ -32,11 +32,10 @@ import static org.mockito.Mockito.verify;
 
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 27, application = TestMitraApplication.class, manifest = "TestAndroidManifest.xml")
+@Config(application = TestMitraApplication.class, manifest = "TestAndroidManifest.xml")
 public class MitraHomepageFragmentTest extends BaseFragmentTest {
 
     private ActivityController<MitraParentHomepageActivity> activityController;
-    private MitraHomepageContract.Presenter presenter;
     private MitraParentHomepageActivity activity;
     MitraHomepageFragment fragment;
 
@@ -46,8 +45,6 @@ public class MitraHomepageFragmentTest extends BaseFragmentTest {
         activity = activityController.create().start().postCreate(null).resume().visible().get();
         fragment = MitraHomepageFragment.newInstance();
         startFragment(activity, fragment);
-        presenter = Mockito.mock(MitraHomepageContract.Presenter.class);
-
         fragment.presenter = spy(fragment.presenter);
     }
 
@@ -79,6 +76,7 @@ public class MitraHomepageFragmentTest extends BaseFragmentTest {
 
     @Test
     public void navigateToLoginPage_unloggin_navigateToLoginPage() {
+        fragment.navigateToLoginPage();
         ShadowActivity shadowActivity = Shadows.shadowOf(activity);
         Intent expectedIntent = new Intent(activity, LoginPhoneNumberActivity.class);
         Intent actualIntent = shadowActivity.getNextStartedActivity();

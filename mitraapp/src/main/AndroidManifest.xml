@@ -11,7 +11,7 @@
         android:supportsRtl="true">
         <activity
             android:name="com.tokopedia.mitra.welcome.MitraWelcomeActivity"
-            android:label="@string/title_activity_welcome"
+            android:label="@string/app_name"
             android:theme="@style/Theme.White">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

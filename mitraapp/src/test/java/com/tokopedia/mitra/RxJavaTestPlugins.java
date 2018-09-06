@@ -8,7 +8,8 @@ import rx.plugins.RxJavaPlugins;
 import rx.plugins.RxJavaSchedulersHook;
 import rx.schedulers.Schedulers;
 
-public class RxJavaTestPlugins {private static Scheduler immediateScheduler;
+public class RxJavaTestPlugins {
+    private static Scheduler immediateScheduler;
 
     private static RxJavaSchedulersHook javaImmediateHook = new RxJavaSchedulersHook() {
         @Override

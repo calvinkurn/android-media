@@ -70,4 +70,9 @@ public class UserSessionImpl implements UserSession {
     public boolean isHasPassword() {
         return sessionHandler.isHasPassword();
     }
+
+    @Override
+    public String getPhoneNumber() {
+        return userSession.getPhoneNumber();
+    }
 }

@@ -27,4 +27,6 @@ public interface UserSession {
     boolean isMsisdnVerified();
 
     boolean isHasPassword();
+
+    String getPhoneNumber();
 }

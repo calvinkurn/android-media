@@ -17,4 +17,8 @@
     <string name="mitra_account_name_label">Nama</string>
     <string name="mitra_account_phone_number_label">Nomor Ponsel</string>
     <string name="mitra_account_logout_label">Keluar Akun</string>
+    <string name="mitra_account_logout_title">Keluar Akun</string>
+    <string name="mitra_account_logout_desc">Apakah Anda yakin ingin keluar?</string>
+    <string name="mitra_account_logout_cancel_button_label">Batal</string>
+    <string name="mitra_account_logout_confirm_button_label">Keluar</string>
 </resources>

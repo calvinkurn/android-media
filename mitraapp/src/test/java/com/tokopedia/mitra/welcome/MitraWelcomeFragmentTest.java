@@ -23,7 +23,6 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 27)
 public class MitraWelcomeFragmentTest extends BaseFragmentTest {
     private ActivityController<MitraWelcomeActivity> activityController;
     private MitraWelcomeActivity activity;

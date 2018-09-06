@@ -18,7 +18,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 27)
+@Config(sdk = 27)
 public class MitraWelcomeActivityTest extends TestCase {
     private ActivityController<MitraWelcomeActivity> activityController;
     private MitraWelcomeActivity activity;

@@ -51,6 +51,7 @@ public class MitraWelcomeFragment extends BaseDaggerFragment {
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), MitraParentHomepageActivity.class);
                 getActivity().startActivity(intent);
+                getActivity().finish();
             }
         });
     }
