@@ -33,7 +33,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".notes.view.ShopSettingsNotesActivity"
+            android:name=".notes.view.activity.ShopSettingsNotesActivity"
             android:label="@string/shop_settings_manage_notes"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
