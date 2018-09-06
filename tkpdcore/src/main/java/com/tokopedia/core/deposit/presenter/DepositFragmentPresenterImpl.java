@@ -95,6 +95,11 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
     @Override
+    public void getSellerDetails() {
+
+    }
+
+    @Override
     public void onEndDateClicked(DatePickerUtil datePicker) {
         String date = viewListener.getEndDate();
         datePicker.SetDate(getDay(date), getStartMonth(date), getStartYear(date));

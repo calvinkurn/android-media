@@ -13,6 +13,7 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -73,6 +74,31 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @BindView(R2.id.topup_button)
     TextView topupButton;
+
+    /*@BindView(R2.id.sp_title)
+    TextView spTitle;
+
+    @BindView(R2.id.sp_status)
+    TextView spStatus;
+
+    @BindView(R2.id.sp_not_enabled)
+    TextView spNotEnabled;
+
+    @BindView(R2.id.sp_kyc_status)
+    LinearLayout spKYCStatusLayout;
+
+    @BindView(R2.id.sp_kyc_status_desc)
+    TextView spKYCStatusDesc;
+
+    @BindView(R2.id.sp_details_list)
+    RecyclerView detailListRecyclerView;
+
+    @BindView(R2.id.sp_action_list)
+    RecyclerView actionListRecyclerView;
+
+    @BindView(R2.id.sp_list_separator)
+    View spListSeparator;*/
+
 
     DatePickerUtil datePicker;
     DepositAdapter adapter;
@@ -178,7 +204,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
             public void onClick(View v) {
                 UnifyTracking.eventDepositTopUp();
                 Bundle bundle = new Bundle();
-                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url,getActivity()));
+                bundle.putString("url", URLGenerator.generateURLSessionLoginV4(url, getActivity()));
                 Intent intent = new Intent(context, LoyaltyDetail.class);
                 intent.putExtras(bundle);
                 context.startActivity(intent);
@@ -446,7 +472,7 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     private void intentToAddPassword(Context context) {
         context.startActivity(
-                ((TkpdCoreRouter)context.getApplicationContext())
+                ((TkpdCoreRouter) context.getApplicationContext())
                         .getAddPasswordIntent(context));
     }
 }
