@@ -65,8 +65,18 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onNeedToRefresh(int childPosition) {
+    public void onNeedToRefreshSingleProduct(int childPosition) {
         notifyItemChanged(childPosition);
+    }
+
+    @Override
+    public void onNeedToRefreshSingleShop(int parentPosition) {
+        actionListener.onNeedToRefreshSingleShop(parentPosition);
+    }
+
+    @Override
+    public void onNeedToRefreshMultipleShop() {
+        actionListener.onNeedToRefreshMultipleShop();
     }
 
     public interface ActionListener {
@@ -99,5 +109,8 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onWishlistCheckChanged(String productId, boolean isChecked);
 
+        void onNeedToRefreshSingleShop(int parentPosition);
+
+        void onNeedToRefreshMultipleShop();
     }
 }

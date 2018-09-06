@@ -301,14 +301,18 @@ public class CartListPresenter implements ICartListPresenter {
                                     if (itemQty >= wholesalePrice.getQtyMin()) {
                                         subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
                                         hasCalculateWholesalePrice = true;
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrice.getPrdPrcFmt());
+                                        String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                                wholesalePrice.getPrdPrc(), false);
+                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
                                         break;
                                     }
                                 }
                                 if (!hasCalculateWholesalePrice) {
                                     if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
                                         subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrcFmt());
+                                        String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                                wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc(), false);
+                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
                                     } else {
                                         subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
                                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
@@ -877,10 +881,5 @@ public class CartListPresenter implements ICartListPresenter {
     @Override
     public void setHasPerformChecklistChange() {
         hasPerformChecklistChange = true;
-    }
-
-    @Override
-    public boolean hasPerformChecklistChange() {
-        return hasPerformChecklistChange;
     }
 }

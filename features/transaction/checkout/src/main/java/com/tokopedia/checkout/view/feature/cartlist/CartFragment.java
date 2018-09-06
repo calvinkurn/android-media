@@ -563,6 +563,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onNeedToRefreshSingleShop(int parentPosition) {
+        cartAdapter.notifyItemChanged(parentPosition);
+    }
+
+    @Override
+    public void onNeedToRefreshMultipleShop() {
+        cartAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }

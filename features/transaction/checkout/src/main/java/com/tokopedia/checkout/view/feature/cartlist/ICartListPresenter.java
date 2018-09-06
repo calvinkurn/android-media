@@ -47,5 +47,4 @@ public interface ICartListPresenter {
 
     void setHasPerformChecklistChange();
 
-    boolean hasPerformChecklistChange();
 }
