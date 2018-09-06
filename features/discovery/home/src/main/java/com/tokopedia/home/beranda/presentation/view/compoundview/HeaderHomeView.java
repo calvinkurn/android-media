@@ -209,9 +209,9 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashActionContainer.setVisibility(VISIBLE);
             tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
             tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
+            tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
 
             if (homeHeaderWalletAction.isLinked()) {
-                tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
                 tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 tvBalanceTokocash.setVisibility(VISIBLE);
                 tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
@@ -227,7 +227,6 @@ public class HeaderHomeView extends BaseCustomView {
                 tvBalanceTokocash.setVisibility(GONE);
                 tvActionTokocash.setVisibility(VISIBLE);
                 tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
                 if (headerViewModel.isPendingTokocashChecked()
                         && headerViewModel.getCashBackData() != null) {
                     if (headerViewModel.getCashBackData().getAmount() > 0) {
