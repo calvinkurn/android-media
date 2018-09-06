@@ -209,6 +209,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashActionContainer.setVisibility(VISIBLE);
             tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
             tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
+            tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
             tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
 
             if (homeHeaderWalletAction.isLinked()) {
