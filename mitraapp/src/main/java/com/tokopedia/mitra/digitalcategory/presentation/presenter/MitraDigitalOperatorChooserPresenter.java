@@ -3,8 +3,6 @@ package com.tokopedia.mitra.digitalcategory.presentation.presenter;
 import android.util.Log;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
-import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.mitra.digitalcategory.data.api.entity.ResponseAgentDigitalCategory;
 import com.tokopedia.mitra.digitalcategory.domain.usecase.MitraDigitalCategoryUseCase;
@@ -17,25 +15,26 @@ import javax.inject.Inject;
 import rx.Subscriber;
 
 /**
- * Created by Rizky on 30/08/18.
+ * Created by Rizky on 06/09/18.
  */
-public class MitraDigitalCategoryPresenter extends BaseDaggerPresenter<MitraDigitalCategoryContract.View>
-        implements MitraDigitalCategoryContract.Presenter {
+public class MitraDigitalOperatorChooserPresenter
+        extends BaseDaggerPresenter<MitraDigitalOperatorChooserContract.View>
+        implements MitraDigitalOperatorChooserContract.Presenter {
 
-    private final String TAG = MitraDigitalCategoryPresenter.class.getSimpleName();
+    private final String TAG = MitraDigitalOperatorChooserPresenter.class.getSimpleName();
 
     private MitraDigitalCategoryUseCase mitraDigitalCategoryUseCase;
     private RechargeCategoryDetailMapper rechargeCategoryDetailMapper;
 
     @Inject
-    public MitraDigitalCategoryPresenter(MitraDigitalCategoryUseCase mitraDigitalCategoryUseCase,
-                                         RechargeCategoryDetailMapper rechargeCategoryDetailMapper) {
+    public MitraDigitalOperatorChooserPresenter(MitraDigitalCategoryUseCase mitraDigitalCategoryUseCase,
+                                                RechargeCategoryDetailMapper rechargeCategoryDetailMapper) {
         this.mitraDigitalCategoryUseCase = mitraDigitalCategoryUseCase;
         this.rechargeCategoryDetailMapper = rechargeCategoryDetailMapper;
     }
 
     @Override
-    public void getCategory(int categoryId) {
+    public void getOperators(int categoryId) {
         RequestParams requestParams = mitraDigitalCategoryUseCase.createRequestParams(categoryId);
         mitraDigitalCategoryUseCase.execute(requestParams, new Subscriber<GraphqlResponse>() {
             @Override
@@ -55,15 +54,9 @@ public class MitraDigitalCategoryPresenter extends BaseDaggerPresenter<MitraDigi
                 ResponseAgentDigitalCategory responseAgentDigitalCategory = graphqlResponse.getData(ResponseAgentDigitalCategory.class);
                 DigitalCategoryModel digitalCategoryModel = rechargeCategoryDetailMapper.map(responseAgentDigitalCategory);
 
-                getView().renderWidgetView(digitalCategoryModel,
-                        digitalCategoryModel.getDefaultOperatorId());
+                getView().renderOperators(digitalCategoryModel.getRenderOperatorModel().getRenderProductModels());
             }
         });
-    }
-
-    private ClientNumber transforInputFieldToClientNumber(InputFieldModel inputFieldModel) {
-        return new ClientNumber(inputFieldModel.getName(), inputFieldModel.getType(), inputFieldModel.getText(),
-                inputFieldModel.getPlaceholder(), inputFieldModel.getDefault(), inputFieldModel.getValidation());
     }
 
 }

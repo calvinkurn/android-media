@@ -6,6 +6,7 @@ import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.common_digital.product.presentation.model.RenderOperatorModel;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
+import com.tokopedia.common_digital.product.presentation.model.Rule;
 import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.mitra.digitalcategory.data.api.entity.ResponseAgentDigitalCategory;
 import com.tokopedia.mitra.digitalcategory.data.api.entity.ResponseInputField;
@@ -75,6 +76,8 @@ public class RechargeCategoryDetailMapper {
         int defaultProducId = responseOperator.getAttributes().getDefaultProductId();
         String image = responseOperator.getAttributes().getImage();
         String name = responseOperator.getAttributes().getName();
+        Rule rule = responseOperator.getAttributes().getRule();
+        List<String> prefixList = responseOperator.getAttributes().getPrefix();
 //        String description = responseOperator.getAttributes().getDescription();
         List<Product> products = transformProducts(responseOperator.getAttributes().getProduct());
 //            List<ClientNumber> clientNumbers = transformProductClientNumbers(responseRenderProduct.getInputFields());
@@ -82,6 +85,8 @@ public class RechargeCategoryDetailMapper {
                 .operatorId(id)
                 .name(name)
                 .image(image)
+                .prefixList(prefixList)
+                .rule(rule)
                 .defaultProductId(defaultProducId)
 //                    .clientNumberList(clientNumbers)
                 .products(products)
@@ -166,6 +171,7 @@ public class RechargeCategoryDetailMapper {
     private List<Product> transformProducts(List<ResponseProduct> responseProducts) {
         List<Product> products = new ArrayList<>();
         for (ResponseProduct responseProduct : responseProducts) {
+            String productId = responseProduct.getId();
             String info = responseProduct.getAttributes().getInfo();
             int status = responseProduct.getAttributes().getStatus();
             String detail = responseProduct.getAttributes().getDetail();
@@ -175,6 +181,7 @@ public class RechargeCategoryDetailMapper {
             String price = responseProduct.getAttributes().getPrice();
             products.add(new Product.Builder()
                     .info(info)
+                    .productId(productId)
                     .status(status)
                     .detail(detail)
                     .detailUrl(detailUrl)

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.mitra.digitalcategory.domain.usecase.AgentDigitalCategoryUseCase;
+import com.tokopedia.mitra.digitalcategory.domain.usecase.MitraDigitalCategoryUseCase;
 import com.tokopedia.mitra.digitalcategory.presentation.mapper.RechargeCategoryDetailMapper;
 
 import dagger.Module;
@@ -24,9 +24,9 @@ public class AgentDigitalCategoryModule {
 
     @Provides
     @AgentDigitalCategoryScope
-    AgentDigitalCategoryUseCase provideAgentDigitalCategoryUseCase(@ApplicationContext  Context context,
+    MitraDigitalCategoryUseCase provideAgentDigitalCategoryUseCase(@ApplicationContext  Context context,
                                                                    GraphqlUseCase graphqlUseCase) {
-        return new AgentDigitalCategoryUseCase(context, graphqlUseCase);
+        return new MitraDigitalCategoryUseCase(context, graphqlUseCase);
     }
 
 }

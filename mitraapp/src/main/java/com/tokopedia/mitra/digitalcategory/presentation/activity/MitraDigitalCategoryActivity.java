@@ -8,7 +8,7 @@ import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalCat
 /**
  * Created by Rizky on 30/08/18.
  */
-public class AgentDigitalCategoryActivity extends BaseSimpleActivity {
+public class MitraDigitalCategoryActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {

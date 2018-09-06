@@ -2,6 +2,7 @@ package com.tokopedia.mitra.digitalcategory.di;
 
 import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalCategoryFragment;
+import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalOperatorChooserFragment;
 
 import dagger.Component;
 
@@ -13,5 +14,7 @@ import dagger.Component;
 public interface AgentDigitalCategoryComponent {
 
     void inject(MitraDigitalCategoryFragment mitraDigitalCategoryFragment);
+
+    void inject(MitraDigitalOperatorChooserFragment mitraDigitalOperatorChooserFragment);
 
 }

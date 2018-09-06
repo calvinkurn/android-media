@@ -5,28 +5,42 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.tokopedia.common_digital.product.presentation.compoundview.ClientNumberInputView;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
-import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.mitra.R;
+import com.tokopedia.mitra.digitalcategory.presentation.adapter.WidgetItemAdapter;
 
 import java.util.List;
 
 /**
  * Created by Rizky on 31/08/18.
  */
-public class DigitalWidgetView extends FrameLayout {
+public class DigitalWidgetView<T> extends FrameLayout {
 
-    private ClientNumberInputView clientNumberInputView;
-    private DigitalOperatorDropdownInputView operatorDropdownInputView;
-    private DigitalOperatorRadioInputView operatorRadioInputView;
+    private MitraClientNumberInputView mitraClientNumberInputView;
+    private DigitalWidgetDropdownInputView digitalWidgetDropdownInputView;
+    private RecyclerView recyclerview;
+    private DigitalWidgetRadioInputView digitalWidgetRadioInputView;
+
+    private ActionListener actionListener;
+
+    interface ActionListener<T> {
+
+        void onItemSelected(T itemId);
+
+        void onOperatorNotFound();
+
+        void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId);
+
+    }
 
     public DigitalWidgetView(@NonNull Context context) {
         super(context);
@@ -52,54 +66,69 @@ public class DigitalWidgetView extends FrameLayout {
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_digital_operator_chooser,
                 this, true);
-        clientNumberInputView = view.findViewById(R.id.operator_client_number_input_view);
-        operatorDropdownInputView = view.findViewById(R.id.operator_dropdown_input_view);
-        operatorRadioInputView = view.findViewById(R.id.operator_radio_input_view);
+        mitraClientNumberInputView = view.findViewById(R.id.client_number_input_view);
+        recyclerview = view.findViewById(R.id.recyclerview);
+        digitalWidgetDropdownInputView = view.findViewById(R.id.dropdown_input_view);
+        digitalWidgetRadioInputView = view.findViewById(R.id.radio_input_view);
     }
 
-    public void showOperatorChooser(List<InputFieldModel> inputFieldModels,
-                                    List<RenderProductModel> renderProductModels,
-                                    String defaultOperatorId) {
-        if (inputFieldModels.get(0).getType().equals("tel")) {
-            showClientNumber(transformInputFieldToClientNumber(inputFieldModels.get(0)));
-        } else if (inputFieldModels.get(0).getType().equals("select")) {
-            showDropdown(renderProductModels, defaultOperatorId);
-        } else if (inputFieldModels.get(0).getType().equals("radio")) {
-            showRadio(renderProductModels, defaultOperatorId);
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
+    }
+
+    public void renderWidget(InputFieldModel inputFieldModel, List<T> items, String defaultId) {
+        if (inputFieldModel.getType().equals("tel") || inputFieldModel.getType().equals("numeric") ||
+                inputFieldModel.getType().equals("text")) {
+            showClientNumber(transformInputFieldToClientNumber(inputFieldModel), items);
+        } else if (inputFieldModel.getType().equals("select")) {
+            showDropdown(items, inputFieldModel, defaultId);
+        } else if (inputFieldModel.getType().equals("list")) {
+            showList(items, defaultId);
+        } if (inputFieldModel.getType().equals("radio")) {
+            showRadio(items, inputFieldModel, defaultId);
         }
     }
 
-    private void showRadio(List<RenderProductModel> renderProductModels, String defaultOperatorId) {
-        operatorRadioInputView.setVisibility(VISIBLE);
+    private void showList(List<T> items, String defaultId) {
+        recyclerview.setVisibility(VISIBLE);
+        recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        WidgetItemAdapter widgetItemAdapter = new WidgetItemAdapter(items, defaultId);
+        recyclerview.setAdapter(widgetItemAdapter);
+
+        widgetItemAdapter.notifyDataSetChanged();
     }
 
-    private void showDropdown(List<RenderProductModel> renderProductModels, String defaultOperatorId) {
-        operatorDropdownInputView.setVisibility(VISIBLE);
-        operatorDropdownInputView.renderOperatorList(renderProductModels, defaultOperatorId);
-        operatorDropdownInputView.setActionListener(new DigitalOperatorDropdownInputView.ActionListener() {
-            @Override
-            public void onClickOperatorDropdown() {
+    private void showRadio(List<T> items, InputFieldModel inputFieldModel, String defaultId) {
+        digitalWidgetRadioInputView.setVisibility(VISIBLE);
+        digitalWidgetRadioInputView.setActionListener(item -> {
+            actionListener.onItemSelected(item);
+        });
+        digitalWidgetRadioInputView.renderInitDataList(items, inputFieldModel, defaultId);
+    }
 
+    private void showDropdown(List<T> items, InputFieldModel inputFieldModel, String defaultId) {
+        digitalWidgetDropdownInputView.setVisibility(VISIBLE);
+        digitalWidgetDropdownInputView.setActionListener(new DigitalWidgetDropdownInputView.ActionListener() {
+            @Override
+            public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
+                actionListener.onClickDropdown(inputFieldModel, selectedItemId);
+            }
+
+            @Override
+            public void onItemSelected(Object item) {
+                actionListener.onItemSelected(item);
             }
         });
+        digitalWidgetDropdownInputView.renderDropdownView(items, inputFieldModel, defaultId);
     }
 
-    private void showClientNumber(ClientNumber clientNumber) {
-        clientNumberInputView.setVisibility(VISIBLE);
-        clientNumberInputView.renderData(clientNumber);
-        clientNumberInputView.setActionListener(new ClientNumberInputView.ActionListener() {
+    private void showClientNumber(ClientNumber clientNumber, List<T> items) {
+        mitraClientNumberInputView.setVisibility(VISIBLE);
+        mitraClientNumberInputView.renderData(clientNumber, items);
+        mitraClientNumberInputView.setActionListener(new MitraClientNumberInputView.MitraClientNumberActionListener() {
             @Override
             public void onButtonContactPickerClicked() {
-
-            }
-
-            @Override
-            public void onClientNumberInputValid(String tempClientNumber) {
-
-            }
-
-            @Override
-            public void onClientNumberInputInvalid() {
 
             }
 
@@ -112,22 +141,22 @@ public class DigitalWidgetView extends FrameLayout {
             public void onClientNumberCleared() {
 
             }
+
+            @Override
+            public void onOperatorFoundByPrefix(Operator operator) {
+                actionListener.onItemSelected(operator);
+            }
+
+            @Override
+            public void onOperatorNotFound() {
+                actionListener.onOperatorNotFound();
+            }
         });
     }
 
     private ClientNumber transformInputFieldToClientNumber(InputFieldModel inputFieldModel) {
         return new ClientNumber(inputFieldModel.getName(), inputFieldModel.getType(), inputFieldModel.getText(),
                 inputFieldModel.getPlaceholder(), inputFieldModel.getDefault(), inputFieldModel.getValidation());
-    }
-
-    public void renderWidget(InputFieldModel inputFieldModel) {
-        if (inputFieldModel.getType().equals("tel")) {
-            showClientNumber(transformInputFieldToClientNumber(inputFieldModel));
-        } else if (inputFieldModel.getType().equals("select")) {
-            showDropdown(renderProductModels, defaultOperatorId);
-        } else if (inputFieldModel.getType().equals("radio")) {
-            showRadio(renderProductModels, defaultOperatorId);
-        }
     }
 
 }

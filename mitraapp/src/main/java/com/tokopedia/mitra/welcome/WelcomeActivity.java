@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.digitalcategory.presentation.activity.AgentDigitalCategoryActivity;
+import com.tokopedia.mitra.digitalcategory.presentation.activity.MitraDigitalCategoryActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
@@ -20,7 +20,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            Intent intent = new Intent(WelcomeActivity.this, AgentDigitalCategoryActivity.class);
+            Intent intent = new Intent(WelcomeActivity.this, MitraDigitalCategoryActivity.class);
             startActivity(intent);
         });
     }

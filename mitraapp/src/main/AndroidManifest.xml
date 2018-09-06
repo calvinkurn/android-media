@@ -19,7 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".digitalcategory.presentation.activity.AgentDigitalCategoryActivity" />
+        <activity android:name=".digitalcategory.presentation.activity.MitraDigitalCategoryActivity"
+            android:theme="@style/Theme.White" />
+        <activity android:name=".digitalcategory.presentation.activity.MitraDigitalChooserActivity"
+            android:theme="@style/Theme.White" />
     </application>
 
 </manifest>

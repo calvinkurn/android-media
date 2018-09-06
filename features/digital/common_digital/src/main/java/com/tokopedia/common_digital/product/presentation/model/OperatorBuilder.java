@@ -1,7 +1,5 @@
 package com.tokopedia.common_digital.product.presentation.model;
 
-import android.os.Parcel;
-
 import java.util.List;
 
 public class OperatorBuilder {
@@ -73,6 +71,7 @@ public class OperatorBuilder {
     }
 
     public Operator createOperator() {
-        return new Operator(operatorId, operatorType, name, image, lastorderUrl, defaultProductId, rule, prefixList, clientNumberList, productList, ussdCode);
+        return new Operator(operatorId, operatorType, name, image, lastorderUrl, defaultProductId,
+                rule, prefixList, clientNumberList, productList, ussdCode);
     }
 }

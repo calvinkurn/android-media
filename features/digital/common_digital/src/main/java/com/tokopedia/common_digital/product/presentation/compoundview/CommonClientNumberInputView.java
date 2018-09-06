@@ -2,7 +2,6 @@ package com.tokopedia.common_digital.product.presentation.compoundview;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -30,31 +29,32 @@ import java.util.regex.Pattern;
 /**
  * @author anggaprasetiyo on 5/6/17.
  */
-public class ClientNumberInputView extends LinearLayout {
+public abstract class CommonClientNumberInputView extends LinearLayout {
 
-    private TextView tvLabel;
-    private AutoCompleteTextView autoCompleteTextView;
-    private Button btnClear;
-    private ImageView imgOperator;
-    private Button btnContactPicker;
-    private RelativeLayout pulsaFramelayout;
-    private TextView tvErrorClientNumber;
+    protected TextView tvLabel;
+    protected AutoCompleteTextView autoCompleteTextView;
+    protected Button btnClear;
+    protected ImageView imgOperator;
+    protected Button btnContactPicker;
+    protected RelativeLayout pulsaFramelayout;
+    protected TextView tvErrorClientNumber;
 
     private ActionListener actionListener;
     private Context context;
-    private ClientNumber clientNumber;
 
-    public ClientNumberInputView(Context context) {
+    protected ClientNumber clientNumber;
+
+    public CommonClientNumberInputView(Context context) {
         super(context);
         init(context);
     }
 
-    public ClientNumberInputView(Context context, AttributeSet attrs) {
+    public CommonClientNumberInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
     }
 
-    public ClientNumberInputView(Context context, AttributeSet attrs, int defaultStyle) {
+    public CommonClientNumberInputView(Context context, AttributeSet attrs, int defaultStyle) {
         super(context, attrs, defaultStyle);
         init(context);
     }
@@ -80,17 +80,14 @@ public class ClientNumberInputView extends LinearLayout {
 
     }
 
-    private OnFocusChangeListener getFocusChangeListener() {
-        return new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
-                    if (autoCompleteTextView.getText().length() > 0) {
-                        setBtnClearVisible();
-                    } else {
-                        setBtnClearInvisible();
-                    }
+    protected OnFocusChangeListener getFocusChangeListener() {
+        return (view, hasFocus) -> {
+            if (hasFocus) {
+                actionListener.onClientNumberHasFocus(((TextView) view).getText().toString());
+                if (autoCompleteTextView.getText().length() > 0) {
+                    setBtnClearVisible();
+                } else {
+                    setBtnClearInvisible();
                 }
             }
         };
@@ -176,7 +173,7 @@ public class ClientNumberInputView extends LinearLayout {
         this.btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
     }
 
-    private void setupLayoutParamAndInputType(ClientNumber clientNumber) {
+    protected void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
@@ -196,7 +193,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     @NonNull
-    private OnClickListener getButtonContactPickerClickListener() {
+    protected OnClickListener getButtonContactPickerClickListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -206,7 +203,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     @NonNull
-    private OnClickListener getButtonClearClickListener() {
+    protected OnClickListener getButtonClearClickListener() {
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -217,32 +214,7 @@ public class ClientNumberInputView extends LinearLayout {
     }
 
     @NonNull
-    private TextWatcher getTextWatcherInput(final ClientNumber clientNumber) {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                String tempInput = charSequence.toString();
-                btnClear.setVisibility(tempInput.length() > 0 ? VISIBLE : GONE);
-                tvErrorClientNumber.setText("");
-                tvErrorClientNumber.setVisibility(GONE);
-                if (tempInput.isEmpty()) {
-                    actionListener.onClientNumberInputInvalid();
-                } else {
-                    actionListener.onClientNumberInputValid(tempInput);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        };
-    }
+    protected abstract TextWatcher getTextWatcherInput(final ClientNumber clientNumber);
 
     public boolean isValidInput(List<String> prefixList) {
         String clientNumberInput = autoCompleteTextView.getText().toString();
@@ -274,9 +246,9 @@ public class ClientNumberInputView extends LinearLayout {
 
         void onButtonContactPickerClicked();
 
-        void onClientNumberInputValid(String tempClientNumber);
+//        void onClientNumberInputValid(String tempClientNumber);
 
-        void onClientNumberInputInvalid();
+//        void onClientNumberInputInvalid();
 
         void onClientNumberHasFocus(String clientNumber);
 
