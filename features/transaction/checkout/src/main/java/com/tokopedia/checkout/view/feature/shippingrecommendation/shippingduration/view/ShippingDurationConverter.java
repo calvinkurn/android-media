@@ -3,7 +3,6 @@ package com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurat
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
