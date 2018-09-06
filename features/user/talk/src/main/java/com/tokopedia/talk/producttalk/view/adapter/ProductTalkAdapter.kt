@@ -46,6 +46,11 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
         this.visitables.add(loadModel)
         this.notifyItemRangeInserted(visitables.size, 1)
     }
+
+    fun dismissLoadModel() {
+        this.visitables.remove(loadModel)
+        this.notifyItemRemoved(visitables.size)
+    }
 }
 
 

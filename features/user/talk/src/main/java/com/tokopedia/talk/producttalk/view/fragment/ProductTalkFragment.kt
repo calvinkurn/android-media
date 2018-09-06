@@ -145,6 +145,7 @@ class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, Prod
     }
 
     override fun onLoadClicked() {
+        adapter.dismissLoadModel()
         presenter.getProductTalk(productId)
     }
 
