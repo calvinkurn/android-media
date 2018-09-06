@@ -103,6 +103,12 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                 shopProductAdapter.getShopProductViewModelList().size() <= SMALL_DATA_LIMIT;
     }
 
+    private boolean isFeaturedDataSizeSmall() {
+        return shopProductAdapter != null &&
+                shopProductAdapter.getShopProductFeaturedViewModel().getShopProductFeaturedViewModelList().size()
+                        <= SMALL_DATA_LIMIT;
+    }
+
     public int type(ErrorNetworkModel errorNetworkModel) {
         return ErrorNetworkWrapViewHolder.LAYOUT;
     }
@@ -150,7 +156,9 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
         } else if (type == ShopProductPromoViewHolder.LAYOUT) {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductCarouselViewHolder.LAYOUT) {
-            return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener, isDataSizeSmall(),
+            return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
+                    shopProductAdapter.getShopProductFeaturedViewModel().getShopProductFeaturedViewModelList(),
+                    isFeaturedDataSizeSmall(),
                     parent.getContext().getString(R.string.shop_page_label_featured_product));
         } else if (type == ShopProductViewHolder.GRID_LAYOUT ||
                 type == ShopProductViewHolder.LIST_LAYOUT) {

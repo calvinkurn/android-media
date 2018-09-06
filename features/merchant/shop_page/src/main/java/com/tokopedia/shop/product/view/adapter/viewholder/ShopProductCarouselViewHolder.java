@@ -13,28 +13,33 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductViewModel;
+
+import java.util.List;
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
 
-public class ShopProductCarouselViewHolder extends AbstractViewHolder<ShopProductFeaturedViewModel> {
+public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopProductViewModel> {
 
     private TextView tvTitle;
     private RecyclerView recyclerView;
-    private ShopProductAdapter shopProductFeatureAdapter;
-    private boolean isDataSizeSmall;
+    private ShopProductAdapter shopProductCarouselAdapter;
+    private boolean isVerticalLayout;
 
     @LayoutRes
-    public static final int LAYOUT = R.layout.item_shop_product_feature;
+    public static final int LAYOUT = R.layout.item_shop_product_carousel;
 
     public ShopProductCarouselViewHolder(View itemView, int deviceWidth,
                                          ShopProductClickedNewListener shopProductClickedNewListener,
-                                         boolean isDataSizeSmall, String titleString) {
+                                         List<ShopProductViewModel> shopProductViewModelList,
+                                         boolean isVerticalLayout, String titleString) {
         super(itemView);
-        this.isDataSizeSmall = isDataSizeSmall;
-        shopProductFeatureAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
+        this.isVerticalLayout = isVerticalLayout;
+        shopProductCarouselAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
                 null,
@@ -44,11 +49,14 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<ShopProduc
     }
 
     @Override
-    public void bind(ShopProductFeaturedViewModel shopProductFeaturedViewModel) {
+    public void bind(BaseShopProductViewModel baseShopProductViewModel) {
         Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
 
-        shopProductFeatureAdapter.replaceProductList(shopProductFeaturedViewModel.getShopProductFeaturedViewModelList());
-        shopProductFeatureAdapter.notifyDataSetChanged();
+        if (baseShopProductViewModel instanceof ShopProductFeaturedViewModel) {
+            shopProductCarouselAdapter.replaceProductList(
+                    ((ShopProductFeaturedViewModel)baseShopProductViewModel).getShopProductFeaturedViewModelList());
+        }
+        shopProductCarouselAdapter.notifyDataSetChanged();
 
         if (recyclerViewState != null) {
             recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
@@ -57,15 +65,15 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<ShopProduc
 
     private void findViews(View view) {
         tvTitle = view.findViewById(R.id.tv_title);
-        recyclerView = view.findViewById(R.id.recyclerViewFeature);
+        recyclerView = view.findViewById(R.id.recyclerViewCarousel);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
-                isDataSizeSmall ? LinearLayoutManager.VERTICAL : LinearLayoutManager.HORIZONTAL, false);
+                isVerticalLayout ? LinearLayoutManager.VERTICAL : LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         RecyclerView.ItemAnimator animator = recyclerView.getItemAnimator();
         if (animator instanceof SimpleItemAnimator) {
             ((SimpleItemAnimator) animator).setSupportsChangeAnimations(false);
         }
-        recyclerView.setAdapter(shopProductFeatureAdapter);
+        recyclerView.setAdapter(shopProductCarouselAdapter);
     }
 
 }
