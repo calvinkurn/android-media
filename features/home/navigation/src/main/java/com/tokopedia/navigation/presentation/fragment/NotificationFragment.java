@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation.domain.model.DrawerNotification;
 import com.tokopedia.navigation.presentation.adapter.NotificationAdapter;
@@ -124,7 +125,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     }
 
     @Override
-    public void renderNotification(NotificationsModel data, boolean isHasShop) {
+    public void renderNotification(NotificationsModel data, NotifcenterUnread unread,
+                                   boolean isHasShop) {
         if (!isHasAdded) {
             if (isHasShop) {
                 adapter.add(sellerInfoData(), SELLER_INFO);
@@ -133,7 +135,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
             adapter.add(complain(isHasShop));
             isHasAdded = !isHasAdded;
         }
-        adapter.updateValue(data);
+        adapter.updateValue(data, unread);
     }
 
     private List<DrawerNotification> getData() {

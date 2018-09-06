@@ -6,6 +6,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class NotifcenterUnread {
 
+    public static final String NOTIF_99 = "99+";
+    public static final int NOTIF_99_NUMBER = 99;
+    public static final int NOTIF_100_NUMBER = 100;
+
     @SerializedName("notif_unread")
     @Expose
     private String notifUnread;

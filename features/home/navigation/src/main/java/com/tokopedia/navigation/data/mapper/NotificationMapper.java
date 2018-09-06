@@ -11,13 +11,13 @@ import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
 
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
+
 /**
  * Created by meta on 25/07/18.
  */
 public class NotificationMapper implements Func1<GraphqlResponse, NotificationEntity> {
-
-    private static final String NOTIF_99 = "99+";
-    private static final int NOTIF_99_NUMBER = 99;
 
     public static boolean isHasShop(NotificationEntity entity) {
         return entity != null
