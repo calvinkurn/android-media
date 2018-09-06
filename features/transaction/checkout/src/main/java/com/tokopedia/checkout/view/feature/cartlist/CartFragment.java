@@ -417,20 +417,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onCartItemQuantityPlusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickButtonPlusCartItem();
         cartAdapter.increaseQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
     public void onCartItemQuantityMinusButtonClicked(CartItemHolderData cartItemHolderData, int position, int parentPosition) {
         sendAnalyticsOnClickButtonMinusCartItem();
         cartAdapter.decreaseQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
     public void onCartItemQuantityReseted(int position, int parentPosition, boolean needRefreshItemView) {
         cartAdapter.resetQuantity(position, parentPosition);
-        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
@@ -646,6 +643,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onNeedToRefreshMultipleShop() {
         cartAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNeedToRecalculate() {
+        dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
     }
 
     @Override
