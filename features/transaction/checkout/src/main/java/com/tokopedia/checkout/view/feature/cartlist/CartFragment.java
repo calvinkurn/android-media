@@ -150,7 +150,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
 
-//    private ActionListener mDataPasserListener;
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
@@ -161,26 +160,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         fragment.setArguments(bundle);
         return fragment;
     }
-
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        try {
-//            mDataPasserListener = (ActionListener) activity;
-//        } catch (ClassCastException e) {
-//            mDataPasserListener = new ActionListener() {
-//                @Override
-//                public void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData) {
-//
-//                }
-//
-//                @Override
-//                public void onContentAvailabilityChanged(boolean available) {
-//
-//                }
-//            };
-//        }
-//    }
 
     @Override
     public void onDetach() {
@@ -235,18 +214,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     protected boolean getOptionsMenuEnable() {
         return true;
     }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        if (mIsMenuVisible) {
-//            inflater.inflate(R.menu.menu_checkout_cart_remove, menu);
-//            MenuItem item = menu.getItem(0);
-//            item.setActionView(R.layout.layout_menu_delete);
-//            TextView deleteTextView = (TextView) item.getActionView();
-//            getOnClickMenuDeleteButtonListener(deleteTextView);
-//        }
-//        super.onCreateOptionsMenu(menu, inflater);
-//    }
 
     @Override
     protected void initialListener(Activity activity) { }
@@ -368,7 +335,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         } else {
             showToastMessageRed(getString(R.string.message_delete_empty_selection));
         }
-        setVisibilityRemoveButton(false);
     }
 
     @Override
@@ -806,10 +772,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
 
-//        if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
-//            mIsMenuVisible = true;
-//            getActivity().invalidateOptionsMenu();
-//        }
         cartAdapter.checkForShipmentForm();
 
         setVisibilityRemoveButton(true);
@@ -909,12 +871,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDeleteCartDataSuccess() {
-        notifyBottomCartParent();
-    }
-
-    @Override
     public void renderActionDeleteCartDataSuccess(CartItemData cartItemData, String message, boolean addWishList) {
+
     }
 
     @Override
@@ -1231,6 +1189,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         NetworkErrorHelper.showSnackbar(getActivity(), getActivity().getString(R.string.default_request_error_unknown));
     }
 
+    @Override
+    public void onDeleteCartDataSuccess() {
+        notifyBottomCartParent();
+    }
+
     @NonNull
     private com.tokopedia.design.component.Dialog getDialogDeleteConfirmation(int count) {
         final com.tokopedia.design.component.Dialog dialog =
@@ -1520,14 +1483,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartPageAnalytics.sendScreenName(getActivity(), screenName);
     }
 
-//    public interface ActionListener {
-//
-//        void onRemoveAllCartMenuClicked(List<CartItemData> cartItemData);
-//
-//        void onContentAvailabilityChanged(boolean available);
-//
-//    }
-
     @Override
     protected String getScreenName() {
         return ConstantTransactionAnalytics.ScreenName.CART;
@@ -1538,42 +1493,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onStart();
         sendAnalyticsScreenName(getScreenName());
     }
-
-//    private void getOnClickMenuDeleteButtonListener(TextView deleteTextView) {
-//        deleteTextView.setOnClickListener(view -> {
-//            sendAnalyticsOnClickRemoveButtonHeader();
-//            List<CartItemData> cartItemDataList = cartAdapter.getSelectedCartItemData();
-//            if (cartItemDataList.size() > 0) {
-//                final com.tokopedia.design.component.Dialog dialog = getDialogDeleteConfirmation(cartItemDataList.size());
-//                dialog.setOnOkClickListener(v -> {
-//                    if (cartItemDataList.size() > 0) {
-//                        dPresenter.processDeleteAndRefreshCart(cartItemDataList, true);
-//                        sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
-//                                dPresenter.generateCartDataAnalytics(
-//                                        cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-//                                )
-//                        );
-//                    }
-//                    dialog.dismiss();
-//                });
-//                dialog.setOnCancelClickListener(v -> {
-//                    if (cartItemDataList.size() > 0) {
-//                        dPresenter.processDeleteAndRefreshCart(cartItemDataList, false);
-//                        sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-//                                dPresenter.generateCartDataAnalytics(
-//                                        cartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-//                                )
-//                        );
-//
-//                    }
-//                    dialog.dismiss();
-//                });
-//                dialog.show();
-//            } else {
-//                showToastMessageRed(getString(R.string.message_delete_empty_selection));
-//            }
-//        });
-//    }
 
     private void onNeedUpdateViewItem(final int position) {
         if (cartRecyclerView.isComputingLayout()) {
