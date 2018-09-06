@@ -15,6 +15,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase;
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.topchat.R;
 import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase;
@@ -193,27 +194,30 @@ public class ChatRoomPresenter extends BaseDaggerPresenter<ChatRoomContract.View
 
     @Override
     public void onGoToDetail(String id, String role, String source) {
-        if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
-                (OFFICIAL_TAG.toLowerCase())) {
-            if (role.equals(SELLER.toLowerCase())
-                    && !TextUtils.isEmpty(source)
-                    && source.equals(TkpdInboxRouter.SHOP)) {
-                getView().finishActivity();
-            } else if (role.equals(SELLER.toLowerCase())) {
-                Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
-                        ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                getView().startActivityForResult(intent, ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST);
-            } else {
-                if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
-                    getView().startActivity(
-                            ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
-                                    .getTopProfileIntent(getView().getContext(), id)
-                    );
-                }
-            }
-
-        }
+        Intent intent = TalkDetailsActivity.getCallingIntent("140460303",getView().getContext());
+        getView().startActivity(intent);
+//
+//        if (role != null && id != null && !role.equals(ADMIN_TAG.toLowerCase()) && !role.equals
+//                (OFFICIAL_TAG.toLowerCase())) {
+//            if (role.equals(SELLER.toLowerCase())
+//                    && !TextUtils.isEmpty(source)
+//                    && source.equals(TkpdInboxRouter.SHOP)) {
+//                getView().finishActivity();
+//            } else if (role.equals(SELLER.toLowerCase())) {
+//                Intent intent = ((TkpdInboxRouter) getView().getActivity().getApplicationContext
+//                        ()).getShopPageIntent(getView().getActivity(), String.valueOf(id));
+//                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                getView().startActivityForResult(intent, ChatRoomFragment.CHAT_GO_TO_SHOP_DETAILS_REQUEST);
+//            } else {
+//                if (getView().getActivity().getApplicationContext() instanceof TkpdInboxRouter) {
+//                    getView().startActivity(
+//                            ((TkpdInboxRouter) getView().getActivity().getApplicationContext())
+//                                    .getTopProfileIntent(getView().getContext(), id)
+//                    );
+//                }
+//            }
+//
+//        }
     }
 
     private void uploadWithApi(final String path, final ImageUploadViewModel model) {
