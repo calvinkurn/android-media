@@ -6,7 +6,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
-import com.tokopedia.talk.producttalk.view.adapter.ProductTalkListTypeFactory
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
@@ -25,7 +24,7 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
     private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
-        if (response.body()!= null ){
+         if (response.body()!= null ){
 //                (response.body().header!= null &&
 //                        response.body().header!= null &&
 //                response.body().header.messages.isEmpty() ||
@@ -39,7 +38,7 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
 
     private fun mapToViewModel(pojo: InboxTalkPojo): ProductTalkViewModel {
 
-        val listThread = ArrayList<Visitable<ProductTalkListTypeFactory>>()
+        val listThread = ArrayList<Visitable<*>>()
 
         for (data: InboxTalkItemPojo in pojo.list) {
             listThread.add(mapThread(data))
