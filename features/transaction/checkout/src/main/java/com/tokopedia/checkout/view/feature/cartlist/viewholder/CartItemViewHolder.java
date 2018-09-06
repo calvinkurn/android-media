@@ -230,7 +230,12 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 if (!data.getCartItemData().isError()) {
                     data.setSelected(isChecked);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        actionListener.onCartItemCheckChanged(getAdapterPosition(), parentPosition, data.isSelected());
+                        boolean needToUpdateParent = actionListener.onCartItemCheckChanged(getAdapterPosition(), parentPosition, data.isSelected());
+                        if (needToUpdateParent) {
+                            viewHolderListener.onNeedToRefreshAllShop();
+                        } else {
+                            handleRefreshType(data, viewHolderListener, parentPosition);
+                        }
                     }
                 }
             }
@@ -481,7 +486,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().getOriginData().getWholesalePrice() != null &&
                 data.getCartItemData().getOriginData().getWholesalePrice().size() > 0) {
             if (data.getCartItemData().getOriginData().isPreOrder()) {
-                viewHolderListener.onNeedToRefreshMultipleShop();
+                viewHolderListener.onNeedToRefreshAllShop();
             } else {
                 viewHolderListener.onNeedToRefreshSingleShop(parentPosition);
             }
@@ -696,7 +701,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
         void onNeedToRefreshSingleShop(int parentPosition);
 
-        void onNeedToRefreshMultipleShop();
+        void onNeedToRefreshAllShop();
 
     }
 }

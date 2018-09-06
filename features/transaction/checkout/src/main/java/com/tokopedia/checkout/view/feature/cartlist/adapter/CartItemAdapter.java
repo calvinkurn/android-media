@@ -75,7 +75,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     @Override
-    public void onNeedToRefreshMultipleShop() {
+    public void onNeedToRefreshAllShop() {
         actionListener.onNeedToRefreshMultipleShop();
     }
 
@@ -105,7 +105,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
         void onQuantityChanged();
 
-        void onCartItemCheckChanged(int position, int parentPosition, boolean checked);
+        boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked);
 
         void onWishlistCheckChanged(String productId, boolean isChecked);
 
