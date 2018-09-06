@@ -16,7 +16,7 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
  */
 
 class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemClickListener,
-                                   var listProduct: ArrayList<TalkProductAttachmentViewModel>)
+                                   private var listProduct: ArrayList<TalkProductAttachmentViewModel>)
     : RecyclerView.Adapter<TalkProductAttachmentAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -30,7 +30,7 @@ class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemCl
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(parent.inflate(R.layout.attach_product_base_layout))
+            ViewHolder(parent.inflate(R.layout.talk_product_attachment))
 
     override fun getItemCount(): Int {
         return listProduct.size

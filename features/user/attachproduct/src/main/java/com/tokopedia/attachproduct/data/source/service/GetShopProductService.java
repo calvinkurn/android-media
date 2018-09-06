@@ -1,9 +1,6 @@
 package com.tokopedia.attachproduct.data.source.service;
+
 import com.tokopedia.attachproduct.data.source.api.TomeGetShopProductAPI;
-import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.network.constant.TkpdBaseURL;
 
 import retrofit2.Retrofit;

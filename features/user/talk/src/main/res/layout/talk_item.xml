@@ -13,7 +13,7 @@
         android:id="@+id/prof_pict"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:background="@drawable/circle_red"
+        android:background="@drawable/circle"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <LinearLayout
@@ -93,6 +93,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/talk_content"
         tools:itemCount="3"
-        tools:listitem="@layout/attach_product_base_layout"
+        tools:listitem="@layout/talk_product_attachment"
         />
 </android.support.constraint.ConstraintLayout>

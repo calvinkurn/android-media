@@ -7,15 +7,14 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.domain.usecase.CheckNewFeedUseCase;
 import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
-import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;
+import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.GetFirstPageFeedsSubscriber;
 import com.tokopedia.feedplus.view.subscriber.LikeKolPostSubscriber;
@@ -44,7 +43,6 @@ public class FeedPlusPresenter
     private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private final FavoriteShopUseCase doFavoriteShopUseCase;
     private final GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
-    private final CheckNewFeedUseCase checkNewFeedUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
@@ -59,7 +57,6 @@ public class FeedPlusPresenter
                       GetFirstPageFeedsUseCase getFirstPageFeedsUseCase,
                       FavoriteShopUseCase favoriteShopUseCase,
                       GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase,
-                      CheckNewFeedUseCase checkNewFeedUseCase,
                       LikeKolPostUseCase likeKolPostUseCase,
                       FollowKolPostGqlUseCase followKolPostGqlUseCase,
                       SendVoteUseCase sendVoteUseCase,
@@ -70,7 +67,6 @@ public class FeedPlusPresenter
         this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
         this.doFavoriteShopUseCase = favoriteShopUseCase;
         this.getFirstPageFeedsUseCase = getFirstPageFeedsUseCase;
-        this.checkNewFeedUseCase = checkNewFeedUseCase;
         this.likeKolPostUseCase = likeKolPostUseCase;
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
@@ -202,9 +198,7 @@ public class FeedPlusPresenter
 
     @Override
     public void checkNewFeed(String firstCursor) {
-//        checkNewFeedUseCase.execute(
-//                CheckNewFeedUseCase.getParam(sessionHandler, firstCursor),
-//                new CheckNewFeedSubscriber(viewListener));
+
     }
 
     @Override
