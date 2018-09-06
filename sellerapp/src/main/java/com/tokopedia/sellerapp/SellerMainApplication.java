@@ -207,7 +207,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = SellerAppBaseUrl.GRAPHQL_DOMAIN;
-        com.tokopedia.network.constant.TkpdBaseURL.HOME_DATA_BASE_URL = SellerAppBaseUrl.HOME_DATA_BASE_URL;
 
     }
 

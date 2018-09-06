@@ -227,8 +227,6 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
 
-        com.tokopedia.network.constant.TkpdBaseURL.HOME_DATA_BASE_URL = ConsumerAppBaseUrl.HOME_DATA_BASE_URL;
-
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
     }
