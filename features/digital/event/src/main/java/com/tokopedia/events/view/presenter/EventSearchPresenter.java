@@ -55,6 +55,7 @@ public class EventSearchPresenter
     private String highlight;
     private boolean isLoading;
     private boolean isLastPage;
+    private boolean showCards;
     private final int PAGE_SIZE = 20;
     private String searchTag;
     private List<EventsContract.AdapterCallbacks> adapterCallbacks;
@@ -69,8 +70,8 @@ public class EventSearchPresenter
         adapterCallbacks = new ArrayList<>();
     }
 
-    @Override
-    public void getEventsListBySearch(String searchText) {
+
+    private void getEventsListBySearch(String searchText) {
         highlight = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchEventsListRequestUseCase.TAG, searchText);
@@ -92,7 +93,7 @@ public class EventSearchPresenter
 
             @Override
             public void onNext(SearchDomainModel searchDomainModel) {
-                getView().setSuggestions(processSearchResponse(searchDomainModel), highlight);
+                getView().setSuggestions(processSearchResponse(searchDomainModel), highlight, showCards);
                 checkIfToLoad(getView().getLayoutManager());
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
@@ -155,6 +156,7 @@ public class EventSearchPresenter
     public void searchTextChanged(String searchText) {
         if (searchText != null) {
             if (searchText.length() > 2) {
+                showCards = false;
                 getEventsListBySearch(searchText);
                 searchTag = searchText;
                 UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);
@@ -169,6 +171,7 @@ public class EventSearchPresenter
 
     @Override
     public void searchSubmitted(String searchText) {
+        showCards = true;
         getEventsListBySearch(searchText);
         searchTag = searchText;
         UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_SEARCH, searchText);

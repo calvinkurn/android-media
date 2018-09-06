@@ -40,7 +40,7 @@ public class EventSearchContract {
 
         void setTopEvents(List<CategoryItemsViewModel> searchViewModels);
 
-        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight);
+        void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards);
 
         void removeFooter();
 
@@ -52,8 +52,6 @@ public class EventSearchContract {
     }
 
     public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView> {
-
-        void getEventsListBySearch(String searchText);
 
         void setupCallback(EventsContract.AdapterCallbacks callbacks);
 

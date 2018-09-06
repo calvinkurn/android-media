@@ -145,7 +145,7 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public void setTopEvents(List<CategoryItemsViewModel> searchViewModels) {
         if (searchViewModels != null && !searchViewModels.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, searchViewModels, mPresenter, true);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
             rvTopEventSuggestions.removeOnScrollListener(rvOnScrollListener);
@@ -163,9 +163,9 @@ public class EventSearchActivity extends TActivity implements
     }
 
     @Override
-    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight) {
+    public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
         if (suggestions != null && !suggestions.isEmpty()) {
-            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter);
+            TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter, showCards);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
