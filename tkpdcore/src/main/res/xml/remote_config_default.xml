@@ -237,18 +237,18 @@
     </entry>
     <entry>
         <key>mainapp_wallet_label_register</key>
-        <value>Aktivasi TokoCash</value>
+        <value></value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink_register</key>
-        <value>tokopedia://wallet/activation</value>
+        <value></value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink</key>
-        <value>tokopedia://wallet</value>
+        <value></value>
     </entry>
     <entry>
         <key>mainapp_wallet_label_name</key>
-        <value>TokoCash</value>
+        <value></value>
     </entry>
 </defaultsMap>
