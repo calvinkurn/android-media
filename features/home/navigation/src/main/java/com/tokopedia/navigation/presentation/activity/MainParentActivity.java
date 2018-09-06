@@ -308,7 +308,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
