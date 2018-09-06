@@ -1313,7 +1313,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     && (recipientAddressModel.getLatitude() == null ||
                     recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
                     recipientAddressModel.getLongitude() == null ||
-                    recipientAddressModel.getLongitude().equalsIgnoreCase(""))) {
+                    recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
                 setPinpoint(cartItemPosition);
             } else {
                 shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
