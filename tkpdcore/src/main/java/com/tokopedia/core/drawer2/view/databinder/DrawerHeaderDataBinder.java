@@ -23,9 +23,11 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerWalletAction;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.util.DataBindAdapter;
 import com.tokopedia.core.util.DataBinder;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.var.TkpdCache;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +52,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
 
         void onTokoPointActionClicked(String mainPageUrl, String title);
+
+        void onGotoTokoCard();
     }
 
     public interface RetryTokoCashListener {
@@ -126,6 +130,9 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         TextView tvTokoPointAction;
         @BindView(R2.id.tv_tokopoint_count)
         TextView tvTokoPointCount;
+
+        @BindView(R2.id.drawer_tokocard)
+        RelativeLayout tokocardLayout;
 
 
         public ViewHolder(View itemView) {
@@ -241,7 +248,17 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setTopPoints(holder);
         setTopCash(holder);
         setTokoPoint(holder);
+        setTokoCard(holder);
         setListener(holder);
+    }
+
+    private void setTokoCard(ViewHolder holder){
+        FirebaseRemoteConfigImpl remoteConfig = new FirebaseRemoteConfigImpl(context);
+        boolean showTokoCard = remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SHOW_TOKOCARD, true);
+
+        if(!showTokoCard){
+            holder.tokocardLayout.setVisibility(View.GONE);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -332,6 +349,15 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                 listener.onGoToProfileCompletion();
             }
         });
+        holder.tokocardLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onGotoTokoCard();
+            }
+        });
+
+
+
     }
 
     private void setTopCash(ViewHolder holder) {

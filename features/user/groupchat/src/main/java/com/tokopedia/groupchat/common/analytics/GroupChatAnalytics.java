@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ImageAnnouncementViewModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public class GroupChatAnalytics {
     private static final String EVENT_NAME_PROMO_CLICK = "promoClick";
     private static final String EVENT_NAME_PROMO_VIEW = "promoView";
     private static final String EVENT_NAME_CLICK_BACK = "clickBack";
+    private static final String EVENT_NAME_INTERNAL_PROMOTION = "internalPromotion";
+
 
     public static final String COMPONENT_FLASH_SALE = "flashsale";
     public static final String COMPONENT_BANNER = "banner";
@@ -226,7 +229,7 @@ public class GroupChatAnalytics {
     public void eventClickQuickReply(String channelId) {
         analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
-                "click on quick relpy component",
+                "click on quick reply component",
                 channelId
         );
     }
@@ -244,6 +247,15 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "click on masuk untuk chat (non login user)",
                 channelId
+        );
+    }
+
+    public void eventViewBannerPushPromo(ImageAnnouncementViewModel messageItem) {
+        analyticTracker.sendEventTracking(
+                EVENT_NAME_INTERNAL_PROMOTION,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                "view banner push promo",
+                messageItem.getMessageId()
         );
     }
 }

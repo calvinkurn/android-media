@@ -272,6 +272,8 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
         public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
+        public static final String SHOW_TOKOCARD = "app_enable_toko_card";
+        public static final String APP_ENABLE_UPDATE_INACTIVE_PHONE = "app_enable_update_inactive_phone";
     }
 
 }

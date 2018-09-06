@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * Created by nabillasabbaha on 12/19/17.
  */
-
+@Deprecated
 public class GetReasonHelpDataUseCase extends UseCase<List<HelpHistoryTokoCash>> {
 
     private WalletRepository walletRepository;

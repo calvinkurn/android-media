@@ -32,6 +32,8 @@ public class CheckoutDealContractor {
         void showPromoSuccessMessage(String text, String message, long discountAmount);
 
         void updateAmount(String s);
+
+        void showFailureMessageProductExpired();
     }
 
     public interface Presenter extends CustomerPresenter<View> {

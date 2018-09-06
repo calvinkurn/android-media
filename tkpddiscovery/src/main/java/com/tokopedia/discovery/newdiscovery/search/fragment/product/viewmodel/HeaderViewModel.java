@@ -18,6 +18,7 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
 
     SuggestionModel suggestionModel;
     List<Option> quickFilterList = new ArrayList<>();
+    private GuidedSearchViewModel guidedSearch;
     CpmModel cpmModel;
 
     @Override
@@ -55,5 +56,13 @@ public class HeaderViewModel implements Visitable<ProductListTypeFactory> {
     public void setQuickFilterList(List<Option> quickFilterList) {
         this.quickFilterList.clear();
         this.quickFilterList.addAll(quickFilterList);
+    }
+
+    public void setGuidedSearch(GuidedSearchViewModel guidedSearch) {
+        this.guidedSearch = guidedSearch;
+    }
+
+    public GuidedSearchViewModel getGuidedSearch() {
+        return guidedSearch;
     }
 }

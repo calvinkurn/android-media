@@ -172,7 +172,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         if (isViewAttached()) {
                             if (productViewModel.getProductList().isEmpty()) {
                                 getView().removeLoading();
-                                getView().showBottomBarNavigation(false);
                             } else {
                                 List<Visitable> list = new ArrayList<Visitable>();
                                 getView().removeLoading();
@@ -181,11 +180,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 }
                                 list.addAll(productViewModel.getProductList());
                                 getView().setProductList(list);
-                                if (getView().isEvenPage()) {
-                                    getView().addGuidedSearch();
-                                }
                                 getView().addLoading();
-                                getView().showBottomBarNavigation(true);
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
                         }
@@ -204,7 +199,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             getView().removeLoading();
                             getView().hideRefreshLayout();
                             getView().showNetworkError(searchParameter.getStartRow());
-                            getView().showBottomBarNavigation(false);
                         }
                     }
                 });
@@ -241,6 +235,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     public void onCompleted() {
                         //getView().getDynamicFilter();
                         getView().getQuickFilter();
+                        getView().getGuidedSearch();
                         getView().hideRefreshLayout();
                     }
 
@@ -250,7 +245,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             getView().removeLoading();
                             getView().showNetworkError(0);
                             getView().hideRefreshLayout();
-                            getView().showBottomBarNavigation(false);
                         }
                     }
 
@@ -265,7 +259,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 getView().removeLoading();
                                 getView().setEmptyProduct();
                                 getView().setTotalSearchResultCount("0");
-                                getView().showBottomBarNavigation(false);
                             } else {
                                 HeaderViewModel headerViewModel = new HeaderViewModel();
                                 headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
@@ -278,7 +271,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 getView().setProductList(list);
                                 getView().addLoading();
                                 getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-                                getView().showBottomBarNavigation(true);
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
                             getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());

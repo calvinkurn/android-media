@@ -395,5 +395,24 @@ public class CheckoutAnalyticsChangeAddress extends TransactionAnalytics {
     }
 
 
+    //PHASE 2
+
+    public void eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruSuccess() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU,
+                EventLabel.SUCCESS
+        );
+    }
+
+    public void eventClickAddressCartChangeAddressClickTambahFromTambahAlamatBaruFailed() {
+        sendEventCategoryActionLabel(
+                EventName.CLICK_ADDRESS,
+                EventCategory.CART_CHANGE_ADDRESS,
+                EventAction.CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU,
+                EventLabel.FAILED
+        );
+    }
 
 }

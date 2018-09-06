@@ -109,6 +109,8 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
 
+    private GuidedSearchViewModel cachedGuidedSearch;
+
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
@@ -224,11 +226,9 @@ public class ProductListFragment extends SearchSectionFragment
         setHeaderTopAds(true);
         if (productViewModel.getProductList().isEmpty()) {
             setEmptyProduct();
-            showBottomBarNavigation(false);
         } else {
             setProductList(initMappingProduct());
             adapter.addLoading();
-            showBottomBarNavigation(true);
         }
 
         adapter.setTotalData(productViewModel.getTotalData());
@@ -389,49 +389,8 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void showBottomBarNavigation(boolean show) {
-        super.showBottomBarNavigation(show);
-    }
-
-    @Override
     public String getScreenNameId() {
         return AppScreen.SCREEN_SEARCH_PAGE_PRODUCT_TAB;
-    }
-
-    @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        openSortActivity();
-                        return true;
-                    case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageProduct(getActivity());
-                        openFilterActivity();
-                        return true;
-                    case 2:
-                        switchLayoutType();
-                        return true;
-                    case 3:
-                        startShareActivity(productViewModel.getShareUrl());
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
     }
 
     @Override
@@ -463,7 +422,6 @@ public class ProductListFragment extends SearchSectionFragment
             public int getSpanSize(int position) {
                 if (adapter.isEmptyItem(position) ||
                         adapter.isHeaderBanner(position) ||
-                        adapter.isGuidedSearch(position) ||
                         adapter.isTopAds(position) ||
                         adapter.isLoading(position)) {
                     return spanCount;
@@ -472,6 +430,11 @@ public class ProductListFragment extends SearchSectionFragment
                 }
             }
         };
+    }
+
+    @Override
+    protected boolean isSortEnabled() {
+        return true;
     }
 
     @Override
@@ -490,7 +453,13 @@ public class ProductListFragment extends SearchSectionFragment
         getGuidedSearch();
     }
 
-    private void getGuidedSearch() {
+    @Override
+    public void getGuidedSearch() {
+        if (cachedGuidedSearch != null) {
+            onGetGuidedSearchComplete(cachedGuidedSearch);
+            return;
+        }
+
         String query = productViewModel.getQuery();
         if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionCurrentKeyword())) {
             query = productViewModel.getSuggestionModel().getSuggestionCurrentKeyword();
@@ -600,7 +569,7 @@ public class ProductListFragment extends SearchSectionFragment
         if (router.isSupportedDelegateDeepLink(appLink)) {
             router.actionApplink(getActivity(), appLink);
         } else if (appLink != "") {
-            Intent intent = new Intent(getActivity(), BannerWebView.class);
+            Intent intent = new Intent(getContext(), BannerWebView.class);
             intent.putExtra("url", appLink);
             startActivity(intent);
         }
@@ -639,7 +608,6 @@ public class ProductListFragment extends SearchSectionFragment
         }
         getSelectedFilter().put(option.getKey(), mapValue);
         clearDataFilterSort();
-        showBottomBarNavigation(false);
         reloadData();
         UnifyTracking.eventSearchResultQuickFilter(option.getKey(), option.getValue(), isQuickFilterSelected);
     }
@@ -731,13 +699,9 @@ public class ProductListFragment extends SearchSectionFragment
         if (adapter == null) {
             return;
         }
-        if (!adapter.hasGuidedSearch()) {
-            getGuidedSearch();
-        }
         showRefreshLayout();
         adapter.clearData();
         initTopAdsParams();
-        showBottomBarNavigation(false);
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
         presenter.loadData(searchParameter, isForceSearch(), getAdditionalParams());
@@ -817,21 +781,9 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void addGuidedSearch() {
-        String currentKey = productViewModel.getQuery();
-        String currentPage = String.valueOf(adapter.getStartFrom() / 12);
-
-        SearchTracking.eventImpressionGuidedSearch(
-                getActivity(),
-                currentKey,
-                currentPage
-        );
-        adapter.addGuidedSearch(currentKey, currentPage);
-    }
-
-    @Override
     public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
-        adapter.setGuidedSearch(guidedSearchViewModel);
+        cachedGuidedSearch = guidedSearchViewModel;
+        adapter.updateGuidedSearch(cachedGuidedSearch);
     }
 
     @Override
