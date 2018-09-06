@@ -38,13 +38,13 @@ class ShopSettingAddressAddEditFragment: BaseDaggerFragment(), ShopSettingAddres
     companion object {
         private const val DISTRICT_RECOMMENDATION_REQUEST_CODE = 1
 
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "city_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "city_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "province_id"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "province_name"
-        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "zipcodes"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_ID = "district_recommendation_address_district_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_DISTRICT_NAME = "district_recommendation_address_district_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_ID = "district_recommendation_address_city_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_CITY_NAME = "district_recommendation_address_city_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_ID = "district_recommendation_address_province_id"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_PROVINCE_NAME = "district_recommendation_address_province_name"
+        private const val INTENT_DISTRICT_RECOMMENDATION_ADDRESS_ZIPCODES = "district_recommendation_address_zipcodes"
 
         private const val PARAM_EXTRA_SHOP_ADDRESS = "shop_address"
         private const val PARAM_EXTRA_IS_ADD_NEW = "is_add_new"
