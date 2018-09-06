@@ -1,7 +1,6 @@
 package com.tokopedia.talk.inboxtalk.domain
 
 import com.tokopedia.talk.common.data.TalkApi
-import com.tokopedia.talk.common.di.TalkScope
 import com.tokopedia.talk.inboxtalk.domain.mapper.GetInboxTalkMapper
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.usecase.RequestParams
@@ -27,6 +26,9 @@ class GetInboxTalkUseCase @Inject constructor(val api: TalkApi,
         private val PARAM_PAGE: String = "page"
         private val PARAM_PER_PAGE: String = "per_page"
         private val PARAM_PAGE_ID: String = "page_id"
+        private val PARAM_WITH_COMMENT: String = "with_comment"
+        private val TOTAL_COMMENT: Int = 1
+        private val DEFAULT_PER_PAGE: Int = 10
 
         fun getParam(
                 filter: String,
@@ -38,8 +40,11 @@ class GetInboxTalkUseCase @Inject constructor(val api: TalkApi,
             requestParams.putString(PARAM_FILTER, filter)
             requestParams.putString(PARAM_NAV, nav)
             requestParams.putInt(PARAM_PAGE, page)
-            requestParams.putInt(PARAM_PER_PAGE, 10)
+            requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE)
             requestParams.putInt(PARAM_PAGE_ID, page_id)
+            requestParams.putInt(PARAM_WITH_COMMENT, TOTAL_COMMENT)
+
+            requestParams.putString("loadtest", "2590134-346801")
 
             return requestParams
         }

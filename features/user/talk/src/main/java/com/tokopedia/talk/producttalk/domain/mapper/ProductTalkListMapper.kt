@@ -9,6 +9,7 @@ import com.tokopedia.talk.common.domain.TalkCommentItem
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkListTypeFactory
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import retrofit2.Response
 import rx.functions.Func1
@@ -20,6 +21,8 @@ import javax.inject.Inject
 class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<InboxTalkPojo>>,
         ProductTalkViewModel> {
 
+    private val IS_READ = 2
+    private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
         if (response.body()!= null ){
@@ -49,14 +52,16 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
 
     private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
-        val listTalk = ArrayList<ProductTalkItemViewModel>()
+        val listTalk = ArrayList<Visitable<*>>()
         for (data: TalkCommentItem in pojo.list) {
             listTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
                     data.comment_create_time_fmt,
                     data.comment_message,
-                    ArrayList()
+                    mapCommentTalkState(data),
+                    true,
+                    true
             ))
         }
 
@@ -66,11 +71,38 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
                         pojo.talk_user_name,
                         pojo.talk_create_time_fmt,
                         pojo.talk_message,
-                        ArrayList()
+                        mapHeaderTalkState(pojo),
+                        pojo.talk_read_status == IS_READ,
+                        pojo.talk_follow_status == IS_FOLLOWED
                 ),
-                listTalk
+                listTalk)
+    }
+
+
+    private fun mapHeaderTalkState(pojo: InboxTalkItemPojo): TalkState {
+        return TalkState(
+                pojo.talk_state.allow_report,
+                pojo.talk_state.allow_delete,
+                pojo.talk_state.allow_follow,
+                pojo.talk_state.allow_unmasked,
+                pojo.talk_state.allow_reply,
+                pojo.talk_state.reported,
+                pojo.talk_state.masked,
+                pojo.talk_follow_status == IS_FOLLOWED
         )
     }
 
+    private fun mapCommentTalkState(pojo: TalkCommentItem): TalkState {
+        return TalkState(
+                pojo.comment_state.allow_report,
+                pojo.comment_state.allow_delete,
+                pojo.comment_state.allow_follow,
+                pojo.comment_state.allow_unmasked,
+                pojo.comment_state.allow_reply,
+                pojo.comment_state.reported,
+                pojo.comment_state.masked,
+                false
+        )
+    }
 
 }

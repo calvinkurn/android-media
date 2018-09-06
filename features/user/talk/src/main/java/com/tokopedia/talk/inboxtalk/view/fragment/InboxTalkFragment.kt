@@ -19,11 +19,13 @@ import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
-import kotlinx.android.synthetic.main.fragment_inbox_talk.*
+import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject
 
 /**
@@ -31,15 +33,21 @@ import javax.inject.Inject
  */
 
 class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
-        InboxTalkContract
-        .View {
+        InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener {
+
 
     val REQUEST_REPORT_TALK: Int = 101
+    val POS_FILTER_ALL: Int = 0
+    val POS_FILTER_UNREAD: Int = 1
+    val FILTER_ALL: String = "all"
+    val FILTER_UNREAD: String = "unread"
 
     private lateinit var alertDialog: Dialog
     private lateinit var adapter: InboxTalkAdapter
     private lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var viewModel: InboxTalkViewModel
+    private lateinit var filter: String
+    private lateinit var bottomMenu: Menus
 
     @Inject
     lateinit var presenter: InboxTalkPresenter
@@ -63,12 +71,11 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_inbox_talk, container, false)
+        return inflater.inflate(R.layout.fragment_talk_inbox, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupView()
         initData()
 
@@ -76,7 +83,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
 
     private fun setupView() {
-        val adapterTypeFactory = InboxTalkTypeFactoryImpl()
+        val adapterTypeFactory = InboxTalkTypeFactoryImpl(this)
         val listTalk = ArrayList<Visitable<*>>()
         adapter = InboxTalkAdapter(adapterTypeFactory, listTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -91,11 +98,13 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             viewModel = InboxTalkViewModel(nav)
         }
 
-        presenter.getInboxTalk("all", nav)
+        filter = "all"
+
+        presenter.getInboxTalk(filter, nav)
     }
 
     private fun onRefreshData() {
-        presenter.refreshTalk()
+        presenter.refreshTalk(filter, nav)
         swipeToRefresh.isRefreshing = true
 
     }
@@ -105,27 +114,26 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             context?.run {
                 val menuItem = arrayOf(resources.getString(R.string.filter_all_talk),
                         resources.getString(R.string.filter_not_read))
-                val filterMenu = Menus(this)
-                filterMenu.setItemMenuList(menuItem)
-                filterMenu.setActionText(getString(R.string.button_cancel))
-                filterMenu.setOnActionClickListener { filterMenu.dismiss() }
-                filterMenu.setOnItemMenuClickListener { itemMenus, pos ->
-                    onFilterClicked(pos,
-                            filterMenu)
+                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+                bottomMenu.setItemMenuList(menuItem)
+                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+                bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                    onFilterClicked(pos, bottomMenu)
                 }
-                filterMenu.show()
+                bottomMenu.show()
             }
         }
     }
 
     private fun onFilterClicked(pos: Int, filterMenu: Menus) {
-        when {
-            pos == 0 -> goToReportTalk()
-            pos == 1 -> showDeleteTalkDialog()
-            pos == 2 -> showDeleteCommentTalkDialog()
-            pos == 2 -> showUnfollowTalkDialog()
+        when (pos) {
+            POS_FILTER_ALL -> filter = FILTER_ALL
+            POS_FILTER_UNREAD -> filter = FILTER_UNREAD
         }
 
+        //TODO NISIE: SET MENU ICON TO CHECKED
+        presenter.getInboxTalk(filter, nav)
         filterMenu.dismiss()
     }
 
@@ -232,8 +240,17 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     override fun onErrorGetInboxTalk(errorMessage: String) {
         NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
-            presenter.getInboxTalk("", "")
+            presenter.getInboxTalk(filter, nav)
         }
+    }
+
+    override fun hideRefreshLoad() {
+        swipeToRefresh.isRefreshing = false
+    }
+
+    override fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>) {
+        adapter.clearAllElements()
+        adapter.addList(listTalk)
     }
 
     override fun onEmptyTalk() {
@@ -251,6 +268,53 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         activity?.run {
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
+    }
+
+    override fun onReplyTalkButtonClick(allowReply: Boolean) {
+        if (allowReply) goToDetailTalk()
+        else showErrorReplyTalk()
+    }
+
+    override fun onMenuButtonClicked(menu: TalkState) {
+        context?.run {
+            val listMenu = ArrayList<Menus.ItemMenus>()
+            if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_delete_talk)))
+            if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_unfollow_talk)))
+            if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_follow_talk)))
+            if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
+                    .menu_report_talk)))
+
+            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+            bottomMenu.itemMenuList = listMenu
+            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+            bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                onMenuItemClicked(itemMenus, bottomMenu)
+            }
+            bottomMenu.show()
+        }
+    }
+
+    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus) {
+        when (itemMenu.title) {
+            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog()
+            getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
+            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
+            getString(R.string.menu_report_talk) -> goToReportTalk()
+        }
+        bottomMenu.dismiss()
+    }
+
+    private fun showErrorReplyTalk() {
+        //TODO NISIE GET ERROR MESSAGE FOR REPLY TALK
+        NetworkErrorHelper.showRedSnackbar(view, "Error dud")
+    }
+
+    private fun goToDetailTalk() {
+
     }
 
     override fun onDestroy() {

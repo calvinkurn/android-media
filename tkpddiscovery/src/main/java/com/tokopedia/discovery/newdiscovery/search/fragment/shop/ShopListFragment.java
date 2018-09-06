@@ -236,7 +236,6 @@ public class ShopListFragment extends SearchSectionFragment
         if (isHasNextPage) {
             adapter.addLoading();
         }
-        showBottomBarNavigation(true);
     }
 
     private void enrichPositionData(List<ShopViewModel.ShopItem> shopItemList, int startRow) {
@@ -262,12 +261,6 @@ public class ShopListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        showBottomBarNavigation(false);
-    }
-
-    @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         loadShopFirstTime();
@@ -277,34 +270,6 @@ public class ShopListFragment extends SearchSectionFragment
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         onFirstTimeLaunch();
-    }
-
-    @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(adapter.getTitleTypeRecyclerView()), adapter.getIconTypeRecyclerView()));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        SearchTracking.eventSearchResultOpenFilterPageShop(getActivity());
-                        openFilterActivity();
-                        return true;
-                    case 1:
-                        switchLayoutType();
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
     }
 
     @Override
@@ -361,6 +326,11 @@ public class ShopListFragment extends SearchSectionFragment
                 }
             }
         };
+    }
+
+    @Override
+    protected boolean isSortEnabled() {
+        return false;
     }
 
     @Override
@@ -453,7 +423,6 @@ public class ShopListFragment extends SearchSectionFragment
     @Override
     public void reloadData() {
         adapter.clearData();
-        showBottomBarNavigation(false);
         loadShopFirstTime();
     }
 

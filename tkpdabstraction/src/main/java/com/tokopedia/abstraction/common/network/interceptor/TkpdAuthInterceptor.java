@@ -353,7 +353,6 @@ public class TkpdAuthInterceptor extends TkpdBaseInterceptor {
     }
 
     protected void refreshTokenAndGcmUpdate() throws IOException {
-        abstractionRouter.refreshToken();
         abstractionRouter.gcmUpdate();
     }
 

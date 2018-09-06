@@ -1,6 +1,7 @@
 package com.tokopedia.talk.inboxtalk.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.di.TalkScope
@@ -18,58 +19,11 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
     : BaseDaggerPresenter<InboxTalkContract.View>(),
         InboxTalkContract.Presenter {
 
-    var page: Int = 0
+    var page: Int = 1
     var page_id: Int = 0
 
     override fun getInboxTalk(filter: String, nav: String) {
         view.showLoadingFull()
-//
-//        val list: ArrayList<Visitable<*>> = ArrayList()
-//
-//        val listChild: ArrayList<Visitable<ProductTalkChildThreadTypeFactory>> = ArrayList()
-//
-//
-//        list.add(InboxTalkItemViewModel
-//        (ProductHeader("alskjdlakjsdlakjsldkajlsdjlasjkdlaskjdlaksjdlakjsld",
-//                "https://cdn-images-1.medium.com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg"),
-//                TalkThreadViewModel(
-//                        ProductTalkItemViewModel(
-//                                "https://cdn-images-1.medium" +
-//                                        ".com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg",
-//                                "Nisie",
-//                                "15 Sep pukul 15.40",
-//                                "Gan ready gaaak?",
-//                                ArrayList()
-//                        ), listChild)))
-//
-//
-//        list.add(InboxTalkItemViewModel
-//        (ProductHeader("dsa",
-//                "https://cdn-images-1.medium.com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg"),
-//                TalkThreadViewModel(
-//                        ProductTalkItemViewModel(
-//                                "https://cdn-images-1.medium" +
-//                                        ".com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg",
-//                                "Nisie",
-//                                "15 Sep pukul 15.40",
-//                                "Gan ready gaaak?",
-//                                ArrayList()
-//                        ), listChild)))
-//
-//        list.add(InboxTalkItemViewModel
-//        (ProductHeader("asd",
-//                "https://cdn-images-1.medium.com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg"),
-//                TalkThreadViewModel(
-//                        ProductTalkItemViewModel(
-//                                "https://cdn-images-1.medium" +
-//                                        ".com/fit/c/72/72/1*EZ5_P3ZgjQwUJWO9CosQHw.jpeg",
-//                                "Nisie",
-//                                "15 Sep pukul 15.40",
-//                                "Gan ready gaaak?",
-//                                ArrayList()
-//                        ), listChild)))
-//
-//        view.onSuccessGetInboxTalk(list)
 
         getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
                 filter,
@@ -105,8 +59,44 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
         })
     }
 
-    override fun refreshTalk() {
+    override fun refreshTalk(filter: String, nav: String) {
+        page = 1
+        page_id = 0
 
+        getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
+                filter,
+                nav,
+                page,
+                page_id
+        ), object : Subscriber<InboxTalkViewModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                view.hideRefreshLoad()
+                if (e is MessageErrorException) {
+                    view.onErrorGetInboxTalk(e.message ?: "")
+                } else if (GlobalConfig.isAllowDebuggingTools()) {
+                    view.onErrorGetInboxTalk(e.toString())
+                } else {
+                    view.onErrorGetInboxTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
+                }
+            }
+
+            override fun onNext(talkViewModel: InboxTalkViewModel) {
+                view.hideRefreshLoad()
+                if (talkViewModel.listTalk.isEmpty()) {
+                    view.onEmptyTalk()
+                } else {
+                    view.onSuccessRefreshInboxTalk(talkViewModel.listTalk)
+                    if (talkViewModel.hasNextPage) {
+                        page += 1
+                        page_id = talkViewModel.page_id
+                    }
+                }
+            }
+        })
     }
 
     override fun detachView() {

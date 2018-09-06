@@ -1,4 +1,4 @@
-package com.tokopedia.talk.producttalk.view.adapter
+package com.tokopedia.talk.common.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder

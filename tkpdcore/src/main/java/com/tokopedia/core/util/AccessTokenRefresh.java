@@ -51,11 +51,18 @@ public class AccessTokenRefresh {
         try {
             Response<String> response = responseCall.clone().execute();
 
-            tokenResponseError = response.errorBody().string();
-            checkShowForceLogout(tokenResponseError);
+            if (response.errorBody() != null) {
+                tokenResponseError = response.errorBody().string();
+                checkShowForceLogout(tokenResponseError);
+            } else if (response.body() != null) {
+                tokenResponse = response.body();
+            }else{
+                return "";
+            }
 
-            tokenResponse = response.body();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

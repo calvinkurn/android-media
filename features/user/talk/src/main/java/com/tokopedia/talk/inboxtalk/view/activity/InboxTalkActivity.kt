@@ -17,7 +17,7 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.activity_inbox_talk.*
+import kotlinx.android.synthetic.main.activity_talk_inbox.*
 import javax.inject.Inject
 
 /**
@@ -55,7 +55,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.activity_inbox_talk
+        return R.layout.activity_talk_inbox
     }
 
     override fun getNewFragment(): Fragment? = null
@@ -93,6 +93,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
         inboxTalkPagerAdapter = InboxTalkPagerAdapter(supportFragmentManager, titles)
 
+        viewPager.offscreenPageLimit = title.length
         viewPager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
         viewPager.adapter = inboxTalkPagerAdapter
 

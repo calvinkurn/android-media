@@ -77,6 +77,7 @@ ext {
     tkpdOmsVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdBankDBVersion = '2.22'
     tkpdTalkVersion = '2.22'
 
     networkDependencies = [
@@ -329,30 +330,31 @@ ext {
             home                  : ":features:discovery:home",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
-            groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
+            groupchat             : ":features:user:groupchat",
             profile               : ":features:user:profile",
-            settingbank         : ":features:user:settingbank",
+            settingbank           : ":features:user:settingbank",
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
+            bankdb                : ":features:user:bankdb",
             talk                  : ":features:user:talk",
-            contactUs             : ":features:operational:contact_us",
+            attachproduct         : ":features:user:attachproduct",
             otp                   : ":features:user:otp",
+            vote                  : ":features:user:vote",
+            contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
-            vote                  : ":features:user:vote",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
             withdraw              : ":features:payment:withdraw",
             productDraftDatabase  : ":features:merchant:product_draft_database",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train",
-            attachproduct         : ":features:user:attachproduct"
+            train                 : ":features:digital:train"
     ]
 
     libraries = [
@@ -369,9 +371,8 @@ ext {
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
-            userSession       : ":libraries:user_session",
-            imagePicker     : ":libraries:image_picker",
-            cameraView      : ":libraries:camera_view",
+            imagePicker       : ":libraries:image_picker",
+            cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",
             youtubeApi        : ":libraries:YouTubeAndroidPlayerApi",
             analytics         : ":libraries:analytics",

@@ -22,4 +22,6 @@ interface TalkComponent {
 
     fun getTalkApi(): TalkApi
 
+    fun retrofitBuilder(): Retrofit.Builder
+
 }

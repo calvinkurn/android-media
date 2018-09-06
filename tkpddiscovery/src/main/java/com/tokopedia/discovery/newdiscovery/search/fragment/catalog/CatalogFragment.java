@@ -221,7 +221,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     protected void onLoadMoreCatalog() {
-        showBottomBarNavigation(false);
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogLoadMore(getDepartmentId());
         } else {
@@ -314,6 +313,11 @@ public class CatalogFragment extends SearchSectionFragment implements
                 }
             }
         };
+    }
+
+    @Override
+    protected boolean isSortEnabled() {
+        return true;
     }
 
     @Override
@@ -443,42 +447,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public int getStartFrom() {
         return catalogAdapter.getStartFrom();
-    }
-
-    @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(catalogAdapter.getTitleTypeRecyclerView()), catalogAdapter.getIconTypeRecyclerView()));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        openSortActivity();
-                        return true;
-                    case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
-                        openFilterActivity();
-                        return true;
-                    case 2:
-                        switchLayoutType();
-                        return true;
-                    case 3:
-                        startShareActivity(getShareUrl());
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
     }
 
     @Override
