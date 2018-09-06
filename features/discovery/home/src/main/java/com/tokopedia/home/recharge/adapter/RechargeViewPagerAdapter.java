@@ -16,7 +16,7 @@ import java.util.List;
  * @author kulomady 05 on 7/11/2016.
  *         Modified by Nabilla Sabbaha on 4/10/2017
  */
-public class RechargeViewPagerAdapter extends FragmentPagerAdapter {
+public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
     private List<Category> categoryList;
     private int currentPosition = -1;
 
