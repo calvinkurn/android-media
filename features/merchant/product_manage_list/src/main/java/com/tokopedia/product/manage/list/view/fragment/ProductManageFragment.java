@@ -595,13 +595,13 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
     public void onSuccessGetFreeClaim(DataDeposit dataDeposit) {
         FreeDeposit freeDeposit = dataDeposit.getFreeDeposit();
 
-        if (freeDeposit.getNominal() > 0 && freeDeposit.getStatus() == 1){
+        //if (freeDeposit.getNominal() > 0 && freeDeposit.getStatus() == 1){
             topAdsWidgetFreeClaim.setContent(MethodChecker.fromHtml(getString(R.string.free_claim_template, freeDeposit.getNominalFmt(),
                     freeDeposit.getRemainingDays()+"", TopAdsFreeClaimConstantKt.TOPADS_FREE_CLAIM_URL)));
             topAdsWidgetFreeClaim.setVisibility(View.VISIBLE);
-        } else {
+        /*} else {
             topAdsWidgetFreeClaim.setVisibility(View.GONE);
-        }
+        }*/
 
     }
 
