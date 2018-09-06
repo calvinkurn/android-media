@@ -80,15 +80,15 @@ public class RatesDataConverter {
         shipmentCartData.setDestinationAddress(userAddress.getAddress());
         shipmentCartData.setDestinationDistrictId(String.valueOf(userAddress.getDistrictId()));
         shipmentCartData.setDestinationLatitude(!TextUtils.isEmpty(userAddress.getLatitude()) ?
-                Double.parseDouble(userAddress.getLatitude()) : null);
+                userAddress.getLatitude() : null);
         shipmentCartData.setDestinationLongitude(!TextUtils.isEmpty(userAddress.getLongitude()) ?
-                Double.parseDouble(userAddress.getLongitude()) : null);
+                userAddress.getLongitude() : null);
         shipmentCartData.setDestinationPostalCode(userAddress.getPostalCode());
         shipmentCartData.setOriginDistrictId(String.valueOf(groupShop.getShop().getDistrictId()));
         shipmentCartData.setOriginLatitude(!TextUtils.isEmpty(groupShop.getShop().getLatitude()) ?
-                Double.parseDouble(groupShop.getShop().getLatitude()) : null);
+                groupShop.getShop().getLatitude() : null);
         shipmentCartData.setOriginLongitude(!TextUtils.isEmpty(groupShop.getShop().getLongitude()) ?
-                Double.parseDouble(groupShop.getShop().getLongitude()) : null);
+                groupShop.getShop().getLongitude() : null);
         shipmentCartData.setOriginPostalCode(groupShop.getShop().getPostalCode());
         shipmentCartData.setCategoryIds(getCategoryIds(groupShop.getProducts()));
         shipmentCartData.setProductInsurance(isForceInsurance(groupShop.getProducts()) ? 1 : 0);
