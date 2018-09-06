@@ -23,24 +23,24 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
+import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService;
+import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftAddActivity;
+import com.tokopedia.product.manage.item.main.draft.view.activity.ProductDraftEditActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
 import com.tokopedia.seller.base.view.fragment.BaseListFragment;
 import com.tokopedia.seller.base.view.presenter.BlankPresenter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.draft.di.component.DaggerProductDraftListComponent;
 import com.tokopedia.seller.product.draft.di.module.ProductDraftListModule;
 import com.tokopedia.seller.product.draft.view.adapter.ProductDraftAdapter;
 import com.tokopedia.seller.product.draft.view.adapter.ProductEmptyDataBinder;
 import com.tokopedia.seller.product.draft.view.listener.ProductDraftListView;
-import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.seller.product.edit.view.activity.ProductAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDraftAddActivity;
-import com.tokopedia.seller.product.edit.view.activity.ProductDraftEditActivity;
-import com.tokopedia.seller.product.edit.view.imagepickerbuilder.AddProductImagePickerBuilder;
-import com.tokopedia.seller.product.edit.view.service.UploadProductService;
+import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -178,7 +178,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
             item.getSubMenu().findItem(R.id.label_view_add_image).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
-                    openImagePickerToAddProduct();
+                    startActivity(ProductAddNameCategoryActivity.Companion.createInstance(getActivity()));
                     return true;
                 }
             });
@@ -194,21 +194,16 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
         return super.onOptionsItemSelected(item);
     }
 
-    private void openImagePickerToAddProduct(){
-        Intent intent = AddProductImagePickerBuilder.createPickerIntentPrimary(getContext(), null);
-        startActivityForResult(intent, REQUEST_CODE_ADD_IMAGE);
-    }
-
     @Override
     public void onItemClicked(ProductDraftViewModel productDraftViewModel) {
         Intent intent;
         if (productDraftViewModel.isEdit()) {
-            intent = ProductDraftEditActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
+            intent = ProductDraftEditActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         } else {
-            intent = ProductDraftAddActivity.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
+            intent = ProductDraftAddActivity.Companion.createInstance(getActivity(), productDraftViewModel.getProductDraftId());
         }
         UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.EDIT_DRAFT);
-        startActivityForResult(intent, ProductAddActivity.PRODUCT_REQUEST_CODE);
+        startActivity(intent);
     }
 
     @Override
@@ -224,17 +219,6 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
                     }
                 }
                 break;
-            case REQUEST_CODE_ADD_IMAGE:
-            {
-                if (resultCode == Activity.RESULT_OK &&
-                        intent != null) {
-                    ArrayList<String> imageUrlOrPathList = intent.getStringArrayListExtra(PICKER_RESULT_PATHS);
-                    if (imageUrlOrPathList != null && imageUrlOrPathList.size() > 0) {
-                        ProductAddActivity.start(ProductDraftListFragment.this, getActivity(), imageUrlOrPathList);
-                    }
-                }
-            }
-            break;
         }
     }
 
@@ -328,7 +312,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     @Override
     public void onEmptyButtonClicked() {
         UnifyTracking.eventDraftProductClicked(AppEventTracking.EventLabel.ADD_PRODUCT);
-        ProductAddActivity.start(getActivity());
+        startActivity(new Intent(getActivity(), ProductAddNameCategoryActivity.class));
     }
 
     @Override
@@ -356,7 +340,7 @@ public class ProductDraftListFragment extends BaseListFragment<BlankPresenter, P
     public void onSaveBulkDraftSuccess(List<Long> draftProductIdList) {
         hideProgressDialog();
         if (draftProductIdList.size() == 1) {
-            ProductDraftAddActivity.start(getContext(), this, draftProductIdList.get(0));
+            ProductDraftAddActivity.Companion.createInstance(getActivity(), draftProductIdList.get(0));
         } else {
             resetPageAndSearch();
             CommonUtils.UniversalToast(getActivity(), getString(R.string.product_draft_instagram_save_success, draftProductIdList.size()));

@@ -23,9 +23,10 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
 
     private boolean isSelected;
 
-    public ShopEtalaseViewModel(String id, String name) {
+    public ShopEtalaseViewModel(String id, String name, boolean isUseAce) {
         setEtalaseId(id);
         setEtalaseName(name);
+        setUseAce(isUseAce? USE_ACE: 0);
     }
 
     public ShopEtalaseViewModel(EtalaseModel etalaseModel) {

@@ -11,10 +11,6 @@ public class CatalogEntity {
     @SerializedName("catalogs")
     private ArrayList<CatalogsValueEntity> catalogs;
 
-    @Expose
-    @SerializedName("has_next")
-    private boolean hasNext;
-
     public ArrayList<CatalogsValueEntity> getCatalogs() {
         return catalogs;
     }
@@ -23,19 +19,10 @@ public class CatalogEntity {
         this.catalogs = catalogs;
     }
 
-    public boolean isHasNext() {
-        return hasNext;
-    }
-
-    public void setHasNext(boolean hasNext) {
-        this.hasNext = hasNext;
-    }
-
     @Override
     public String toString() {
         return "CatalogEntity{" +
                 "catalogs=" + catalogs +
-                ", hasNext=" + hasNext +
                 '}';
     }
 }

@@ -19,7 +19,7 @@
 
     <TextView
         android:id="@+id/tv_price"
-        style="@style/TextSmall"
+        style="@style/TextMidNormalBlack70"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/tv_courier_name"
@@ -32,7 +32,7 @@
 
     <TextView
         android:id="@+id/tv_delivery_time_range"
-        style="@style/TextSmall"
+        style="@style/TextSmallNormalBlack54"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_courier_name"

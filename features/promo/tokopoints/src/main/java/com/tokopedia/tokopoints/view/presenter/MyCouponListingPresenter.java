@@ -46,6 +46,9 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
         Map<String, Object> variablesMain = new HashMap<>();
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1); // start with first page
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_coupon_listing),
                 TokoPointPromosEntity.class,

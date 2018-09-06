@@ -1,9 +1,7 @@
 package com.tokopedia.contactus.inboxticket.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -12,7 +10,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,14 +17,6 @@ import android.widget.TextView;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.customadapter.ImageUpload;
-import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.RefreshHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.contactus.inboxticket.InboxTicketConstant;
 import com.tokopedia.contactus.inboxticket.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.inboxticket.adapter.InboxTicketDetailAdapter;
@@ -37,26 +26,33 @@ import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.InboxTicketDe
 import com.tokopedia.contactus.inboxticket.model.inboxticketdetail.TicketReplyDatum;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenter;
 import com.tokopedia.contactus.inboxticket.presenter.InboxTicketDetailFragmentPresenterImpl;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.tokopedia.core.R;
+import com.tokopedia.core.R2;
+import com.tokopedia.core.app.BasePresenterFragment;
+import com.tokopedia.core.customadapter.ImageUpload;
+import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import butterknife.BindView;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
+
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
 
 /**
  * Created by Nisie on 4/22/16.
  */
-@RuntimePermissions
 public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicketDetailFragmentPresenter>
         implements InboxTicketDetailFragmentView, InboxTicketConstant {
 
 
+    public static final int REQUEST_CODE_INBOX_TICKET = 8412;
     private View noView;
     private View yesView;
     private String commentId;
@@ -205,23 +201,7 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         attachButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder myAlertDialog = new AlertDialog.Builder(context);
-                myAlertDialog.setMessage(context.getString(R.string.dialog_upload_option));
-                myAlertDialog.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        InboxTicketDetailFragmentPermissionsDispatcher.actionImagePickerWithCheck(InboxTicketDetailFragment.this);
-                    }
-                });
-                myAlertDialog.setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        InboxTicketDetailFragmentPermissionsDispatcher.actionCameraWithCheck(InboxTicketDetailFragment.this);
-                    }
-                });
-                Dialog dialog = myAlertDialog.create();
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.show();
+                openImagePicker();
             }
         });
 
@@ -256,16 +236,6 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
 
     private void commentRating(String isHelpful){
         presenter.commentRating(isHelpful);
-    }
-
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    public void actionCamera() {
-        presenter.actionCamera();
-    }
-
-    @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        presenter.actionImagePicker();
     }
 
     @Override
@@ -352,6 +322,16 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), error);
         }
+    }
+
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_INBOX_TICKET);
     }
 
     @Override
@@ -488,67 +468,5 @@ public class InboxTicketDetailFragment extends BasePresenterFragment<InboxTicket
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        InboxTicketDetailFragmentPermissionsDispatcher.onRequestPermissionsResult(
-                InboxTicketDetailFragment.this, requestCode, grantResults);
-    }
-
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showRationaleForStorageAndCamera(final PermissionRequest request) {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
-    }
-
-    @OnShowRationale(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showRationaleForStorage(final PermissionRequest request) {
-        RequestPermissionUtil.onShowRationale(getActivity(), request, Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    void showDeniedForCamera() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    void showNeverAskForCamera() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.CAMERA);
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showDeniedForStorage() {
-        RequestPermissionUtil.onPermissionDenied(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnNeverAskAgain(Manifest.permission.READ_EXTERNAL_STORAGE)
-    void showNeverAskForStorage() {
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showDeniedForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
-    }
-
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
-    void showNeverAskForStorageAndCamera() {
-        List<String> listPermission = new ArrayList<>();
-        listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-        listPermission.add(Manifest.permission.CAMERA);
-        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-
-        RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
 }

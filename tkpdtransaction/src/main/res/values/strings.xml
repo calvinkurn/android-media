@@ -268,4 +268,14 @@
     <string name="bottom_btn_text">Beli Lagi</string>
     <string name="date">date</string>
     <string name="label_oder_detail_btn_unggah_awb">Unggah</string>
+    <string name="text_redeem_voucher">Redeem Voucher</string>
+    <string name="text_valid_till">Berlaku hingga </string>
+    <string name="thank_you">Thank You</string>
+    <string name="help_text">disini</string>
+    <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
+    <string name="contact_us_applink">https://www.tokopedia.com/bantuan/</string>
+    <string name="type_of_ticket_events">Jenis Ticket Events</string>
+    <string name="address">Alamat</string>
+    <string name="category_ticket">Kategori Ticket</string>
+    <string name="number_of_bookings">Jumlah Booking</string>
 </resources>

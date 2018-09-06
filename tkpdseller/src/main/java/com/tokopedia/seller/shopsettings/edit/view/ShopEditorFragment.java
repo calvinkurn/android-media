@@ -30,12 +30,12 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
-import com.tokopedia.imagepicker.picker.main.builder.ImageSelectionTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenter;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorPresenterImpl;
 import com.tokopedia.seller.shopsettings.edit.presenter.ShopEditorView;
+
 import java.util.ArrayList;
 
 import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;

@@ -170,7 +170,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         viewPager.currentItem = tabPosition
         swipeToRefresh.setOnRefreshListener { refreshData() }
 
-        mainLayout.requestFocus();
+        mainLayout.requestFocus()
 
         getShopInfo()
     }
@@ -180,7 +180,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         if (!TextUtils.isEmpty(shopId)) {
             presenter.getShopInfo(shopId!!)
         } else {
-            presenter.getShopInfoByDomain(shopDomain!!)
+            if(shopDomain!=null)
+                presenter.getShopInfoByDomain(shopDomain!!)
         }
     }
 

@@ -9,6 +9,15 @@ public class ContentFeedKol {
   @SerializedName("imageurl")
   @Expose
   private String imageurl;
+  @SerializedName("youtube")
+  @Expose
+  private String youtube;
+  @SerializedName("video")
+  @Expose
+  private String video;
+  @SerializedName("type")
+  @Expose
+  private String type;
 
   @SerializedName("tags")
   @Expose
@@ -28,5 +37,17 @@ public class ContentFeedKol {
 
   public List<TagsFeedKol> getTags() {
     return this.tags;
+  }
+
+  public String getYoutube() {
+    return youtube;
+  }
+
+  public String getVideo() {
+    return video;
+  }
+
+  public String getType() {
+    return type;
   }
 }
