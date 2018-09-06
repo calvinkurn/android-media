@@ -20,7 +20,7 @@ public interface AccountHomeRouter {
 
     Intent getManageProfileIntent(Context context);
 
-    Intent getManagePasswordIntent(Context context);
+    Intent getChangePasswordIntent(Context context);
 
     Intent getManageAddressIntent(Context context);
 
@@ -36,7 +36,7 @@ public interface AccountHomeRouter {
 
     void goToManageShopProduct(Context context);
 
-    void goToManageBankAccount(Context context);
+    Intent getSettingBankIntent(Context context);
 
     void goToManageCreditCard(Context context);
 
