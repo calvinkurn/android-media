@@ -3,6 +3,7 @@ package com.tokopedia.tokopoints.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.graphql.data.model.GraphqlError;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -10,6 +11,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
@@ -18,6 +20,7 @@ import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,12 +34,14 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     private GraphqlUseCase mSaveCouponUseCase;
     private GraphqlUseCase mValidateCouponUseCase;
     private GraphqlUseCase mRedeemCouponUseCase;
+    private GraphqlUseCase mStartSendGift;
 
     @Inject
     public HomepagePresenter(GraphqlUseCase getTokoPointDetailUseCase,
                              GraphqlUseCase getTokoPointPromoUseCase,
                              GraphqlUseCase saveCouponUseCase,
                              GraphqlUseCase redeemCouponUseCase,
+                             GraphqlUseCase startSendGift,
                              GraphqlUseCase validateCouponUseCase
     ) {
 
@@ -45,6 +50,7 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
         this.mSaveCouponUseCase = saveCouponUseCase;
         this.mValidateCouponUseCase = validateCouponUseCase;
         this.mRedeemCouponUseCase = redeemCouponUseCase;
+        this.mStartSendGift = startSendGift;
     }
 
 
@@ -279,5 +285,59 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
     @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
+    }
+
+    @Override
+    public void startSendGift(int id, int isGift) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
+        variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, isGift);
+
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tp_gql_pre_validate_redeem),
+                PreValidateRedeemBase.class,
+                variables);
+        mStartSendGift.clearRequest();
+        mStartSendGift.addRequest(request);
+        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //NA
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                PreValidateRedeemBase data = response.getData(PreValidateRedeemBase.class);
+                if (data != null
+                        && data.getPreValidateRedeem() != null
+                        && data.getPreValidateRedeem().getIsValid() == 1) {
+                    //TODO navigate to send gift screen
+                } else {
+                    //show error
+                    //show error
+                    List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);
+
+                    String errorTitle = "Kupon Gagal Dikirim";
+                    String errorMessage = "Oops, ada yang tidak beres. Coba ulangi beberapa saat lagi.";
+
+                    if (errors != null && errors.size() > 0) {
+                        String[] mesList = errors.get(0).getMessage().split("|");
+                        if (mesList.length == 3) {
+                            errorTitle = mesList[0];
+                            errorMessage = mesList[1];
+                        } else if (mesList.length == 2) {
+                            errorMessage = mesList[0];
+                        }
+                    }
+
+                    getView().onPreValidateError(errorTitle,errorMessage);
+                }
+            }
+        });
     }
 }

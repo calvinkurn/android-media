@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -35,11 +36,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     private boolean mIsLimitEnable;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView quota, description, pointLabel, pointValue,
+        TextView quota, description, pointLabel, pointValue,
                 timeLabel, timeValue, disabledError, btnContinue,
                 labelPoint, textDiscount;
         ImageView imgBanner, imgTime, imgPoint;
-        public boolean isVisited = false;
+        ImageButton btnSendGift;
+        boolean isVisited = false;
 
         public ViewHolder(View view) {
             super(view);
@@ -56,6 +58,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             imgPoint = view.findViewById(R.id.img_points_stack);
             labelPoint = view.findViewById(R.id.text_point_label);
             textDiscount = view.findViewById(R.id.text_point_discount);
+            btnSendGift = view.findViewById(R.id.btn_send_gift);
         }
     }
 
@@ -161,6 +164,14 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
         } else {
             holder.textDiscount.setVisibility(View.VISIBLE);
             holder.textDiscount.setText(item.getDiscountPercentageStr());
+        }
+
+        if (item.getIsGift() == 1) {
+            holder.btnSendGift.setVisibility(View.VISIBLE);
+            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getIsGift()));
+        } else {
+            holder.btnSendGift.setVisibility(View.GONE);
+            holder.btnSendGift.setOnClickListener(null);
         }
 
         holder.btnContinue.setOnClickListener(v -> {

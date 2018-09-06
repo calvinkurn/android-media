@@ -40,5 +40,6 @@
     <string name="tp_label_tnc">Ketentuan</string>
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
     <string name="tp_label_refresh_repeat">Refresh Ulang</string>
+    <string name="tp_label_send">Kirim</string>
 
 </resources>

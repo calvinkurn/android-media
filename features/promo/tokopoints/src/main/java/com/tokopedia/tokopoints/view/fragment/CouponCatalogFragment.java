@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -451,15 +453,15 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
         TextView quota = getView().findViewById(R.id.text_quota_count);
         TextView pointValue = getView().findViewById(R.id.text_point_value_coupon);
-        TextView btnAction1 = getView().findViewById(R.id.button_action_1);
+        TextView btnAction2 = getView().findViewById(R.id.button_action_2);
         ImageView imgBanner = getView().findViewById(R.id.img_banner);
 
-        btnAction1.setEnabled(!data.isDisabledButton());
+        btnAction2.setEnabled(!data.isDisabledButton());
 
         if (data.isDisabledButton()) {
-            btnAction1.setTextColor(ContextCompat.getColor(btnAction1.getContext(), R.color.black_12));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.black_12));
         } else {
-            btnAction1.setTextColor(ContextCompat.getColor(btnAction1.getContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
         }
 
         //Quota text handling
@@ -487,6 +489,22 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             ImageUtil.unDimImage(imgBanner);
             pointValue.setTextColor(ContextCompat.getColor(pointValue.getContext(), R.color.orange_red));
         }
+    }
+
+    @Override
+    public void onPreValidateError(String title, String message) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+
+        adb.setTitle(title);
+        adb.setMessage(message);
+
+        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
+                }
+        );
+
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
     }
 
     private void decorateDialog(AlertDialog dialog) {
@@ -524,11 +542,14 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TextView labelPoint = getView().findViewById(R.id.text_point_label);
         TextView textDiscount = getView().findViewById(R.id.text_point_discount);
 
-        btnAction1.setVisibility(View.VISIBLE);
-        btnAction2.setVisibility(View.GONE);
-        btnAction1.setEnabled(!data.isDisabledButton());
+        btnAction2.setVisibility(View.VISIBLE);
+        btnAction2.setEnabled(!data.isDisabledButton());
         description.setText(data.getTitle());
-        btnAction1.setText(data.getButtonStr());
+        btnAction2.setText(data.getButtonStr());
+        btnAction2.setBackgroundResource(R.drawable.bg_button_orange);
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnAction1.getLayoutParams();
+        layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
+
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
         //setting points info if exist in response
         if (data.getPointsStr() == null || data.getPointsStr().isEmpty()) {
@@ -588,9 +609,9 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         if (data.isDisabledButton()) {
-            btnAction1.setTextColor(ContextCompat.getColor(btnAction1.getContext(), R.color.black_12));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.black_12));
         } else {
-            btnAction1.setTextColor(ContextCompat.getColor(btnAction1.getContext(), R.color.white));
+            btnAction2.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.white));
         }
 
         if (data.getPointsSlash() <= 0) {
@@ -608,7 +629,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             textDiscount.setText(data.getDiscountPercentageStr());
         }
 
-        btnAction1.setOnClickListener(v -> {
+        if (data.getIsGift() == 1) {
+            btnAction1.setVisibility(View.VISIBLE);
+            btnAction1.setText(R.string.tp_label_send);
+            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getIsGift()));
+        }
+
+        btnAction2.setOnClickListener(v -> {
             //call validate api the show dialog
             mPresenter.startValidateCoupon(data);
 
@@ -659,6 +686,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
 
         btnAction1.setVisibility(View.GONE);
+        btnAction2.setBackgroundResource(R.drawable.bg_button_green);
 
         if (data.getUsage() != null) {
             imgLabel.setImageResource(R.drawable.ic_tp_time);
@@ -676,7 +704,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             textMinExchangeValue.setText(data.getMinimumUsage());
         }
 
-        value.setTextColor(ContextCompat.getColor(btnAction1.getContext(), R.color.medium_green));
+        value.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.medium_green));
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
         btnAction2.setOnClickListener(v -> {

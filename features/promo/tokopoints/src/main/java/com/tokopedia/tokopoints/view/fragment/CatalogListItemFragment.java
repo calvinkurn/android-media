@@ -491,4 +491,20 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         dialog.show();
         decorateDialog(dialog);
     }
+
+    @Override
+    public void onPreValidateError(String title, String message) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+
+        adb.setTitle(title);
+        adb.setMessage(message);
+
+        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
+                }
+        );
+
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
+    }
 }

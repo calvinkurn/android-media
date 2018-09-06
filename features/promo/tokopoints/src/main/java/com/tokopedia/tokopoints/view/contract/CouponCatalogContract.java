@@ -52,6 +52,8 @@ public interface CouponCatalogContract {
         void onRealCodeReFreshError();
 
         void refreshCatalog(CatalogStatusItem data);
+
+        void onPreValidateError(String title, String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {

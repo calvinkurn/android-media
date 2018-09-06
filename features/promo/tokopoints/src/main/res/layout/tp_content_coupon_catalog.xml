@@ -2,8 +2,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:fillViewport="true"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -241,37 +241,37 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_disabled_error">
 
-                    <TextView
+                    <Button
                         android:id="@+id/button_action_1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_button_orange"
+                        android:background="@drawable/bg_tp_bg_gift"
+                        android:drawableLeft="@drawable/ic_tp_gift"
+                        android:drawablePadding="@dimen/dp_8"
+                        android:drawableStart="@drawable/ic_tp_gift"
                         android:fontFamily="sans-serif"
-                        android:gravity="center_horizontal"
-                        android:padding="@dimen/tp_padding_medium"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/tp_text_size_xsmall"
-                        android:textStyle="normal"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/dp_12"
+                        android:textAllCaps="false"
+                        android:textColor="@color/black_54"
+                        android:textSize="@dimen/tp_text_size_small"
+                        android:visibility="visible" />
 
-                    <TextView
+                    <Button
                         android:id="@+id/button_action_2"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="42dp"
+                        android:layout_gravity="center_vertical"
                         android:layout_weight="1"
                         android:background="@drawable/bg_button_green"
                         android:fontFamily="sans-serif"
-                        android:gravity="center_horizontal"
-                        android:padding="@dimen/tp_padding_medium"
+                        android:gravity="center"
+                        android:textAllCaps="false"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/tp_text_size_xsmall"
-                        android:textStyle="normal"
-                        android:visibility="gone"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent" />
+                        android:textSize="@dimen/tp_text_size_small"
+                        android:visibility="visible" />
 
                 </LinearLayout>
 

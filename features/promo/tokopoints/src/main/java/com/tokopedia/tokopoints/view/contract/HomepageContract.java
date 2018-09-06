@@ -52,6 +52,8 @@ public interface HomepageContract {
         void onErrorTicker(String errorMessage);
 
         void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
+
+        void onPreValidateError(String title, String message);
     }
 
     interface Presenter extends CustomerPresenter<View> {
