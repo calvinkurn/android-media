@@ -98,4 +98,8 @@ public class ContactUsTracking extends UnifyTracking {
                 String.format(ContactUsEventTracking.Label.LabelGeneric, "")
         ).getEvent());
     }
+
+    public static void sendGTMInboxTicket(String event, String category, String action, String label) {
+        sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
+    }
 }
