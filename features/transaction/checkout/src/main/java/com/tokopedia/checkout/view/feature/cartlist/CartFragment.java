@@ -106,6 +106,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, WishListActionListener,
         ToolbarRemoveView.OnToolbarRemoveAllCartListener {
 
+    private static final int HAS_ELEVATION = 8;
+    private static final int NO_ELEVATION = 0;
+
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
 
@@ -266,20 +269,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
-    private static final int HAS_ELEVATION = 8;
-    private static final int NO_ELEVATION = 0;
 
     private void onContentAvailabilityChanged(boolean available) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            StateListAnimator stateListAnimator = new StateListAnimator();
             if (available) {
                 appBarLayout.setElevation(NO_ELEVATION);
-//                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", NO_ELEVATION));
             } else {
                 appBarLayout.setElevation(HAS_ELEVATION);
-//                stateListAnimator.addState(new int[0], ObjectAnimator.ofFloat(appBarLayout, "elevation", HAS_ELEVATION));
             }
-//            appBarLayout.setStateListAnimator(stateListAnimator);
         }
     }
 
