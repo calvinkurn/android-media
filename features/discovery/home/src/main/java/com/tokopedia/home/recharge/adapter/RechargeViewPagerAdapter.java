@@ -2,6 +2,7 @@ package com.tokopedia.home.recharge.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.ViewGroup;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @author kulomady 05 on 7/11/2016.
  *         Modified by Nabilla Sabbaha on 4/10/2017
  */
-public class RechargeViewPagerAdapter extends FragmentStatePagerAdapter {
+public class RechargeViewPagerAdapter extends FragmentPagerAdapter {
     private List<Category> categoryList;
     private int currentPosition = -1;
 
