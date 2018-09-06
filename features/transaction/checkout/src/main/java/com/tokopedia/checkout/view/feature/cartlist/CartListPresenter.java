@@ -119,6 +119,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void attachView(ICartListView view) {
+
+    }
+
+    @Override
     public void detachView() {
         compositeSubscription.unsubscribe();
         if (addWishListUseCase != null) {

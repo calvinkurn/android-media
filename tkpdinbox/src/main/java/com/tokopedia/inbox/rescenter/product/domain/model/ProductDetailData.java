@@ -15,6 +15,8 @@ public class ProductDetailData {
     private String productPrice;
     private String trouble;
     private String troubleReason;
+    private String troubleAmountString;
+    private int troubleAmount;
     private List<AttachmentProductDomainData> attachment;
     private int quantity;
 
@@ -97,5 +99,21 @@ public class ProductDetailData {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getTroubleAmountString() {
+        return troubleAmountString;
+    }
+
+    public void setTroubleAmountString(String troubleAmountString) {
+        this.troubleAmountString = troubleAmountString;
+    }
+
+    public int getTroubleAmount() {
+        return troubleAmount;
+    }
+
+    public void setTroubleAmount(int troubleAmount) {
+        this.troubleAmount = troubleAmount;
     }
 }

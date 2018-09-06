@@ -18,4 +18,8 @@ public class RouteManager {
     public static Intent getIntent(Context context, String applink) {
         return ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, applink);
     }
+
+    public static boolean isSupportApplink(Context context, String applink) {
+        return ((ApplinkRouter) context.getApplicationContext()).isSupportApplink(applink);
+    }
 }

@@ -6,13 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 
 /**
  * @author anggaprasetiyo on 1/9/17.
  */
 
-public interface IBaseView {
+public interface IBaseView extends CustomerView {
 
     void navigateToActivityRequest(Intent intent, int requestCode);
 

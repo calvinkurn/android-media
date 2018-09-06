@@ -63,6 +63,8 @@ public interface ApplinkConst {
     String LOGIN = "tokopedia://login";
     String OFFICIAL_STORES = "tokopedia://official-stores";
     String RESCENTER = "tokopedia://resolution/{resolution_id}";
+    String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
     String TOPCHAT = "tokopedia://topchat/{message_id}";
     String TOPCHAT_IDLESS = "tokopedia://topchat";
     String GROUPCHAT_LIST = "tokopedia://groupchat";
@@ -84,8 +86,8 @@ public interface ApplinkConst {
     String BRAND_LIST_WITH_SLASH = "tokopedia://official-store/brand/";
     String REGISTER = "tokopedia://registration";
     String PROFILE = "tokopedia://people/{user_id}";
+    String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
-
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
@@ -100,6 +102,7 @@ public interface ApplinkConst {
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
 
+    String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
     String TC_LANDING = "tokopedia://tc-landing";
@@ -113,6 +116,40 @@ public interface ApplinkConst {
 
     String ORDER_TRACKING = "tokopedia://shipping/tracking/{order_id}";
 
+    String FLIGHT = "tokopedia://pesawat";
+
+    String PRODUCT_MANAGE = "tokopedia://seller/product/manage";
+    String PRODUCT_DRAFT = "tokopedia://seller/product/draft";
+    String SELLER_TRANSACTION = "tokopedia://seller";
+    String SELLER_OPPORTUNITY = "tokopedia://seller/opportunity";
+    String SELLER_CENTER = "tokopedia://seller/seller-center";
+    String CONTACT_US = "tokopedia://contact-us";
+    String CONTACT_US_NATIVE = "tokopedia://contactus";
+
+    String ORDER_LIST = "tokopedia://order";
+    String TOKOPOINTS = "tokopedia://tokopoints";
+    String COUPON_LISTING = "tokopedia://tokopoints/kupon-saya";
+
+    String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
+    String SETTING_PAYMENT = "tokopedia://setting/payment";
+    String SETTING_ACCOUNT = "tokopedia://setting/account";
+    String SETTING_PASSWORD = "tokopedia://setting/password";
+    String SETTING_PROFILE = "tokopedia://setting/profile";
+    String NOTIFICATION = "tokopedia://notification";
+    String PMS = "tokopedia://buyer/payment";
+    String PURCHASE_ORDER = "tokopedia://buyer/order";
+    String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
+    String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
+    String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
+    String PURCHASE_SHIPPED = "tokopedia://buyer/shipped";
+    String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
+    String PURCHASE_HISTORY = "tokopedia://buyer/history";
+
+    String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
+    String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
+    String SELLER_PURCHASE_DELIVERED = "tokopedia://seller/delivered";
+
+    String DEPOSIT = "tokopedia://saldo";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
 
