@@ -255,128 +255,134 @@ public class CartListPresenter implements ICartListPresenter {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
+
+        // Collect all Cart Item, if has no error and selected
+        List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
-            if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
-                for (int i = 0; i < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); i++) {
-                    CartItemHolderData cartItemHolderData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i);
-                    if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
-                        CartItemData cartItemData = cartShopHolderData.getShopGroupData().getCartItemDataList().get(i).getCartItemData();
-                        if (cartItemData != null && cartItemData.getOriginData() != null) {
-                            if (cartItemData.getOriginData().getParentId().equals("0")) {
-                                cartItemData.getOriginData().setParentId(String.valueOf(i + 1));
-                            }
+            if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
+                            allCartItemDataList.add(cartItemHolderData);
                         }
                     }
                 }
-                double totalCashbackPerShop = 0;
-                double totalPricePerShop = 0;
-                int totalItemQtyPerShop = 0;
-                Map<String, Double> cashbackWholesalePriceMap = new HashMap<>();
-                Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
-                Map<String, CartItemData> cartItemParentIdMap = new HashMap<>();
-                for (CartItemHolderData data : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                    if (data.isSelected() && !data.getCartItemData().isError()) {
-                        if (data.getCartItemData().getOriginData() != null) {
-                            String parentId = data.getCartItemData().getOriginData().getParentId();
-                            String productId = data.getCartItemData().getOriginData().getProductId();
-                            int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
-                            if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
-                                for (CartItemHolderData dataForQty : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                                    if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
-                                            parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId()) &&
-                                            dataForQty.getCartItemData().getOriginData().getPricePlan() ==
-                                                    data.getCartItemData().getOriginData().getPricePlan()) {
-                                        itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
-                                    }
-                                }
-                            }
-
-                            totalItemQtyPerShop = totalItemQtyPerShop + 1;
-                            List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
-                            boolean hasCalculateWholesalePrice = false;
-                            if (wholesalePrices != null && wholesalePrices.size() > 0) {
-                                double subTotalWholesalePrice = 0;
-                                double itemCashback = 0;
-                                for (WholesalePrice wholesalePrice : wholesalePrices) {
-                                    if (itemQty >= wholesalePrice.getQtyMin()) {
-                                        subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
-                                        hasCalculateWholesalePrice = true;
-                                        String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                                wholesalePrice.getPrdPrc(), false);
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
-                                        break;
-                                    }
-                                }
-                                if (!hasCalculateWholesalePrice) {
-                                    if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
-                                        subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
-                                        String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
-                                                wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc(), false);
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
-                                    } else {
-                                        subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                                    }
-                                }
-                                if (data.getCartItemData().getOriginData().isCashBack()) {
-                                    String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
-                                    double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                    itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
-                                }
-                                if (!subtotalWholesalePriceMap.containsKey(parentId)) {
-                                    subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
-                                }
-                                if (!cashbackWholesalePriceMap.containsKey(parentId)) {
-                                    cashbackWholesalePriceMap.put(parentId, itemCashback);
-                                }
-                            } else {
-                                if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
-                                    double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                                    if (data.getCartItemData().getOriginData().isCashBack()) {
-                                        String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
-                                        double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                        double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
-                                        totalCashbackPerShop = totalCashbackPerShop + itemCashback;
-                                    }
-                                    totalPricePerShop = totalPricePerShop + itemPrice;
-                                    data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                                    cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data.getCartItemData());
-                                } else {
-                                    CartItemData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
-                                    if (calculatedHolderData.getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
-                                        double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
-                                        if (data.getCartItemData().getOriginData().isCashBack()) {
-                                            String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
-                                            double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
-                                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
-                                            totalCashbackPerShop = totalCashbackPerShop + itemCashback;
-                                        }
-                                        totalPricePerShop = totalPricePerShop + itemPrice;
-                                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-                if (!subtotalWholesalePriceMap.isEmpty()) {
-                    for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                        totalPricePerShop += item.getValue();
-                    }
-                }
-
-                if (!cashbackWholesalePriceMap.isEmpty()) {
-                    for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
-                        totalCashbackPerShop += item.getValue();
-                    }
-                }
-
-                totalCashback += totalCashbackPerShop;
-                totalPrice += totalPricePerShop;
-                totalItemQty += totalItemQtyPerShop;
             }
+        }
+
+        // Set cart item parent id if current value is 0
+        for (int i = 0; i < allCartItemDataList.size(); i++) {
+            CartItemData cartItemData = allCartItemDataList.get(i).getCartItemData();
+            if (cartItemData != null && cartItemData.getOriginData() != null) {
+                if (cartItemData.getOriginData().getParentId().equals("0")) {
+                    cartItemData.getOriginData().setParentId(String.valueOf(i + 1));
+                }
+            }
+        }
+
+        // Calculate total price, total item, and wholesale price (if any)
+        for (CartItemHolderData data : allCartItemDataList) {
+            double totalCashbackPerShop = 0;
+            double totalPricePerShop = 0;
+            Map<String, Double> cashbackWholesalePriceMap = new HashMap<>();
+            Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
+            Map<String, CartItemData> cartItemParentIdMap = new HashMap<>();
+            if (data.getCartItemData().getOriginData() != null) {
+                String parentId = data.getCartItemData().getOriginData().getParentId();
+                String productId = data.getCartItemData().getOriginData().getProductId();
+                int itemQty = data.getCartItemData().getUpdatedData().getQuantity();
+                if (!TextUtils.isEmpty(parentId) && !parentId.equals("0")) {
+                    for (CartItemHolderData dataForQty : allCartItemDataList) {
+                        if (!productId.equals(dataForQty.getCartItemData().getOriginData().getProductId()) &&
+                                parentId.equals(dataForQty.getCartItemData().getOriginData().getParentId()) &&
+                                dataForQty.getCartItemData().getOriginData().getPricePlan() ==
+                                        data.getCartItemData().getOriginData().getPricePlan()) {
+                            itemQty += dataForQty.getCartItemData().getUpdatedData().getQuantity();
+                        }
+                    }
+                }
+
+                totalItemQty = totalItemQty + 1;
+                List<WholesalePrice> wholesalePrices = data.getCartItemData().getOriginData().getWholesalePrice();
+                boolean hasCalculateWholesalePrice = false;
+                if (wholesalePrices != null && wholesalePrices.size() > 0) {
+                    double subTotalWholesalePrice = 0;
+                    double itemCashback = 0;
+                    for (WholesalePrice wholesalePrice : wholesalePrices) {
+                        if (itemQty >= wholesalePrice.getQtyMin()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrice.getPrdPrc();
+                            hasCalculateWholesalePrice = true;
+                            String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                    wholesalePrice.getPrdPrc(), false);
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
+                            break;
+                        }
+                    }
+                    if (!hasCalculateWholesalePrice) {
+                        if (itemQty > wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc()) {
+                            subTotalWholesalePrice = itemQty * wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc();
+                            String wholesalePriceFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                                    wholesalePrices.get(wholesalePrices.size() - 1).getPrdPrc(), false);
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(wholesalePriceFormatted);
+                        } else {
+                            subTotalWholesalePrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
+                    }
+                    if (data.getCartItemData().getOriginData().isCashBack()) {
+                        String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                        double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                        itemCashback = cashbackPercentage / PERCENTAGE * subTotalWholesalePrice;
+                    }
+                    if (!subtotalWholesalePriceMap.containsKey(parentId)) {
+                        subtotalWholesalePriceMap.put(parentId, subTotalWholesalePrice);
+                    }
+                    if (!cashbackWholesalePriceMap.containsKey(parentId)) {
+                        cashbackWholesalePriceMap.put(parentId, itemCashback);
+                    }
+                } else {
+                    if (!cartItemParentIdMap.containsKey(data.getCartItemData().getOriginData().getParentId())) {
+                        double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                        if (data.getCartItemData().getOriginData().isCashBack()) {
+                            String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                            double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                            double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
+                            totalCashbackPerShop = totalCashbackPerShop + itemCashback;
+                        }
+                        totalPricePerShop = totalPricePerShop + itemPrice;
+                        data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data.getCartItemData());
+                    } else {
+                        CartItemData calculatedHolderData = cartItemParentIdMap.get(data.getCartItemData().getOriginData().getParentId());
+                        if (calculatedHolderData.getOriginData().getPricePlan() != data.getCartItemData().getOriginData().getPricePlan()) {
+                            double itemPrice = itemQty * data.getCartItemData().getOriginData().getPricePlan();
+                            if (data.getCartItemData().getOriginData().isCashBack()) {
+                                String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
+                                double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
+                                double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
+                                totalCashbackPerShop = totalCashbackPerShop + itemCashback;
+                            }
+                            totalPricePerShop = totalPricePerShop + itemPrice;
+                            data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
+                        }
+                    }
+                }
+            }
+
+            if (!subtotalWholesalePriceMap.isEmpty()) {
+                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                    totalPricePerShop += item.getValue();
+                }
+            }
+
+            if (!cashbackWholesalePriceMap.isEmpty()) {
+                for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
+                    totalCashbackPerShop += item.getValue();
+                }
+            }
+
+            totalCashback += totalCashbackPerShop;
+            totalPrice += totalPricePerShop;
         }
 
         String totalPriceString = "-";
