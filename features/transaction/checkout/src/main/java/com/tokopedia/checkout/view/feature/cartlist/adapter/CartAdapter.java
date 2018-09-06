@@ -235,6 +235,30 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 cartShopHolderData.setPartialSelected(false);
                 needToUpdateParent = !shopAlreadySelected;
             }
+
+            // Check is it the last cash back item to uncheck & still contain non cash back item
+            boolean isTheLastCashbackItem = true;
+            boolean hasUncheckedItem = false;
+            if (!selected) {
+                // Check does it still contain unchecked item
+                for (CartItemHolderData data : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                    if (data.isSelected() && !data.getCartItemData().getOriginData().isCashBack()) {
+                        hasUncheckedItem = true;
+                        break;
+                    }
+                }
+                // Check is it the last cash back item to be unchecked
+                for (int j = 0; j < cartShopHolderData.getShopGroupData().getCartItemDataList().size(); j++) {
+                    CartItemHolderData data = cartShopHolderData.getShopGroupData().getCartItemDataList().get(j);
+                    if (j != position && data.isSelected() && data.getCartItemData().getOriginData().isCashBack()) {
+                        isTheLastCashbackItem = false;
+                        break;
+                    }
+                }
+            }
+            if (hasUncheckedItem && isTheLastCashbackItem) {
+                needToUpdateParent = true;
+            }
         }
 
         return needToUpdateParent;
