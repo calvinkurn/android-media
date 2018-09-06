@@ -48,6 +48,7 @@
     <activity
         android:name="com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity"
         android:hardwareAccelerated="true"
+        android:theme="@style/Theme.White"
         android:label="@string/title_activity_inbox_ticket"
         android:screenOrientation="portrait" />
     <activity

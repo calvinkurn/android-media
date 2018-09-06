@@ -119,6 +119,11 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
+    public void attachView(ICartListView view) {
+
+    }
+
+    @Override
     public void detachView() {
         compositeSubscription.unsubscribe();
         if (addWishListUseCase != null) {
@@ -574,6 +579,7 @@ public class CartListPresenter implements ICartListPresenter {
                     } else {
                         CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                         view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
+                        view.onDeleteCartDataSuccess();
                     }
                 } else {
                     view.renderErrorActionDeleteCartData(

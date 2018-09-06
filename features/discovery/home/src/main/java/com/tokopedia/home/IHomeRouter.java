@@ -25,4 +25,6 @@ public interface IHomeRouter {
     Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
 
     Intent getInstantLoanIntent(Context context);
+
+    void goToManageShop(Context context);
 }

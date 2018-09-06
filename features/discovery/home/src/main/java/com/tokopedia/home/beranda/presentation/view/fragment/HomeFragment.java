@@ -7,7 +7,9 @@ import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -31,11 +33,9 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.presentation.EndlessRecyclerviewListener;
-import com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant;
-import com.tokopedia.core.constants.TokocashPendingDataBroadcastReceiverConstant;
 import com.tokopedia.core.drawer.listener.TokoCashUpdateListener;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.core.helper.KeyboardHelper;
 import com.tokopedia.core.home.BannerWebView;
@@ -53,6 +53,7 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
+import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -77,9 +78,17 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderView
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
+import com.tokopedia.loyalty.LoyaltyRouter;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
+import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.searchbar.MainToolbar;
+import com.tokopedia.showcase.ShowCaseObject;
+import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 import com.tokopedia.tokopoints.ApplinkConstant;
-import com.tokopedia.tokopoints.view.activity.TokoPointsHomeActivity;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -88,15 +97,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import static com.tokopedia.core.constants.HomeFragmentBroadcastReceiverConstant.EXTRA_ACTION_RECEIVER;
-import static com.tokopedia.tokopoints.ApplinkConstant.HOMEPAGE;
+import rx.Observable;
 
 /**
  * @author by errysuprayogi on 11/27/17.
  */
 public class HomeFragment extends BaseDaggerFragment implements HomeContract.View,
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
-        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener {
+        TokoCashUpdateListener, HomeFeedListener, CountDownView.CountDownListener,
+        NotificationListener, FragmentListener {
 
     private static final String TAG = HomeFragment.class.getSimpleName();
     private static final String MAINAPP_SHOW_REACT_OFFICIAL_STORE = "mainapp_react_show_os";
@@ -112,13 +121,14 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private Trace trace;
     private SnackbarRetry messageSnackbar;
     private String[] tabSectionTitle;
-    private HomeFragmentBroadcastReceiver homeFragmentBroadcastReceiver;
     private EndlessRecyclerviewListener feedLoadMoreTriggerListener;
     private LinearLayoutManager layoutManager;
     private FloatingTextButton floatingTextButton;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
     private RecyclerView.OnScrollListener onEggScrollListener;
+
+    private MainToolbar mainToolbar;
 
     public static HomeFragment newInstance() {
 
@@ -133,13 +143,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public void onCreate(@Nullable Bundle savedInstanceState) {
         trace = TrackingUtils.startTrace("beranda_trace");
         super.onCreate(savedInstanceState);
-        homeFragmentBroadcastReceiver = new HomeFragmentBroadcastReceiver();
-        getActivity().registerReceiver(
-                homeFragmentBroadcastReceiver,
-                new IntentFilter(
-                        HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP
-                )
-        );
     }
 
     @Override
@@ -153,6 +156,27 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 getActivity().getApplication()).getBaseAppComponent()).build();
         component.inject(this);
         component.inject(presenter);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(BerandaComponent component){
+        component.inject(this);
+        component.inject(presenter);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public HomePresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(HomePresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void clearAll(){
+        adapter.clearItems();
+        adapter.notifyDataSetChanged();
     }
 
     private void fetchRemoteConfig() {
@@ -173,14 +197,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        mainToolbar = view.findViewById(R.id.toolbar);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
+
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
@@ -202,6 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         initEggTokenScrollListener();
+        registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,6 +282,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onResume() {
         super.onResume();
+        if (getActivity() instanceof ShowCaseListener) { // show on boarding and notify mainparent
+            ((ShowCaseListener) getActivity()).onReadytoShowBoarding(buildShowCase());
+        }
         presenter.onResume();
     }
 
@@ -266,7 +296,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().unregisterReceiver(homeFragmentBroadcastReceiver);
         presenter.onDestroy();
         presenter.detachView();
         recyclerView.setAdapter(null);
@@ -274,8 +303,8 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         recyclerView.setLayoutManager(null);
         layoutManager = null;
         feedLoadMoreTriggerListener = null;
-        homeFragmentBroadcastReceiver = null;
         presenter = null;
+        unRegisterBroadcastReceiverTokoCash();
     }
 
     private void initRefreshLayout() {
@@ -433,7 +462,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void onRequestPendingCashBack() {
-        getActivity().sendBroadcast(new Intent(TokocashPendingDataBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP));
+        presenter.getTokocashPendingBalance();
     }
 
     @Override
@@ -569,6 +598,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void setItems(List<Visitable> items) {
+        if (items.get(0) instanceof HeaderViewModel) {
+            HeaderViewModel dataHeader = (HeaderViewModel) items.get(0);
+            updateHeaderItem(dataHeader);
+        }
         adapter.setItems(items);
     }
 
@@ -600,6 +633,31 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 messageSnackbar.showRetrySnackbar();
             } else {
                 NetworkErrorHelper.showEmptyState(getActivity(), root, message,
+                        new NetworkErrorHelper.RetryClickedListener() {
+                            @Override
+                            public void onRetryClicked() {
+                                onRefresh();
+                            }
+                        });
+            }
+        }
+    }
+
+    @Override
+    public void showNetworkError() {
+        if (isAdded() && getActivity() != null) {
+            if (adapter.getItemCount() > 0) {
+                if (messageSnackbar == null) {
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            onRefresh();
+                        }
+                    });
+                }
+                messageSnackbar.showRetrySnackbar();
+            } else {
+                NetworkErrorHelper.showEmptyState(getActivity(), root, getString(R.string.msg_network_error),
                         new NetworkErrorHelper.RetryClickedListener() {
                             @Override
                             public void onRetryClicked() {
@@ -767,6 +825,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
     }
 
+    public void openWebViewURL(String url) {
+        openWebViewURL(url, getActivity());
+    }
+
     @Override
     public void onReceivedTokoCashData(DrawerTokoCash tokoCashData) {
         presenter.updateHeaderTokoCashData(tokoCashData.getHomeHeaderWalletAction());
@@ -822,53 +884,98 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return getUserVisibleHint();
     }
 
-    public void scrollToTop() {
+    @Override
+    public void onScrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
     }
 
-    public class HomeFragmentBroadcastReceiver extends BroadcastReceiver {
+    /**
+     * Tokocash & Tokopoint
+     */
+    @Override
+    public Observable<TokoCashData> getTokocashBalance() {
+        if (getActivity() != null && getActivity().getApplication() instanceof TkpdCoreRouter) {
+            return ((TkpdCoreRouter) getActivity().getApplication()).getTokoCashBalance();
+        }
+        return null;
+    }
 
+    @Override
+    public Observable<PendingCashback> getTokocashPendingCashback() {
+        if (getActivity() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            return ((TokoCashRouter) getActivity().getApplication()).getPendingCashbackUseCase();
+        }
+        return null;
+    }
+
+    @Override
+    public Observable<TokoPointDrawerData> getTokopoint() {
+        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter){
+            return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
+        }
+        return null;
+    }
+
+    protected void registerBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().registerReceiver(
+                tokoCashBroadcaseReceiver,
+                new IntentFilter(TokocashPendingDataBroadcastReceiver.class.getSimpleName())
+        );
+    }
+
+    protected void unRegisterBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().unregisterReceiver(tokoCashBroadcaseReceiver);
+    }
+
+    private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!HomeFragmentBroadcastReceiverConstant.INTENT_ACTION_MAIN_APP.equalsIgnoreCase(intent.getAction()))
-                return;
-            switch (intent.getIntExtra(EXTRA_ACTION_RECEIVER, 0)) {
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA:
-                    TokoPointDrawerData tokoPointDrawerData = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOPOINT_DRAWER_DATA
-                    );
-                    if (tokoPointDrawerData != null)
-                        presenter.updateHeaderTokoPointData(tokoPointDrawerData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA:
-                    HomeHeaderWalletAction homeHeaderWalletAction = intent.getParcelableExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_DRAWER_DATA
-                    );
-                    if (homeHeaderWalletAction != null)
-                        presenter.updateHeaderTokoCashData(homeHeaderWalletAction);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA:
-                    int amount = intent.getIntExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING_AMOUNT, 0);
-                    String amountText = intent.getStringExtra(
-                            HomeFragmentBroadcastReceiverConstant.EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT);
-
-                    CashBackData cashBackData = new CashBackData();
-                    cashBackData.setAmount(amount);
-                    cashBackData.setAmountText(amountText);
-
-                    if (cashBackData != null)
-                        presenter.updateHeaderTokoCashPendingData(cashBackData);
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR:
-                    presenter.onHeaderTokocashErrorFromBroadcast();
-                    break;
-                case HomeFragmentBroadcastReceiverConstant.ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR:
-                    presenter.onHeaderTokopointErrorFromBroadcast();
-                    break;
-                default:
-                    break;
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String data = extras.getString(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+                if (data != null && !data.isEmpty())
+                    presenter.getHeaderData(false); // update header data
             }
         }
+    };
+
+    @Override
+    public void onNotifyBadgeNotification(int number) {
+        if (mainToolbar != null) {
+            mainToolbar.setNotificationNumber(number);
+        }
+    }
+
+    public void startShopInfo(String shopId) {
+        if(getActivity() != null
+                && getActivity().getApplication() != null
+                && getActivity().getApplication() instanceof IHomeRouter){
+            IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
+            startActivity(homeRouter.getShopPageIntent(getActivity(), shopId));
+        }
+    }
+
+    @Override
+    public void startDeeplinkShopInfo(String url) {
+        if(getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+    }
+
+    private ArrayList<ShowCaseObject> buildShowCase() {
+        if (mainToolbar == null)
+            return null;
+        ArrayList<ShowCaseObject> list = new ArrayList<>();
+        list.add(new ShowCaseObject(mainToolbar.getBtnNotification(),
+                getString(R.string.sc_notif_title),
+                getString(R.string.sc_notif_desc)));
+        list.add(new ShowCaseObject(mainToolbar.getBtnWishlist(),
+                getString(R.string.sc_wishlist_title),
+                getString(R.string.sc_wishlist_desc)));
+        return list;
     }
 }

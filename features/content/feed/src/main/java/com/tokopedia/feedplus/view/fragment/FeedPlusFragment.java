@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RestrictTo;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookSdk;
@@ -40,8 +41,6 @@ import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.home.BrandsWebViewActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.product.model.share.ShareData;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
@@ -49,7 +48,6 @@ import com.tokopedia.feedplus.FeedModuleRouter;
 import com.tokopedia.feedplus.R;
 import com.tokopedia.feedplus.view.activity.BlogWebViewActivity;
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity;
-import com.tokopedia.feedplus.view.activity.RecentViewActivity;
 import com.tokopedia.feedplus.view.activity.TransparentVideoActivity;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory;
@@ -58,6 +56,7 @@ import com.tokopedia.feedplus.view.adapter.viewholder.productcard.AddFeedViewHol
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel;
 import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent;
+import com.tokopedia.feedplus.view.di.FeedPlusComponent;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.presenter.FeedPlusPresenter;
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager;
@@ -121,33 +120,26 @@ public class FeedPlusFragment extends BaseDaggerFragment
     private static final String ARGS_ITEM_ROW_NUMBER = "item_row_number";
     private static final String FIRST_CURSOR = "FIRST_CURSOR";
 
-    public static final String KEY_EXPLORE_NATIVE_ENABLE = "mainapp_explore_native_enable";
-    public static final String KEY_EXPLORE_URL = "mainapp_explore_url";
-    public static final String DEFAULT_EXPLORE_URL = "tokopedia://webview?url=https%3A%2F%2Fm.tokopedia.com%2Fcontent%2Fexplore%3Fwebview%3Dtrue";
-
-    RecyclerView recyclerView;
-    SwipeToRefresh swipeToRefresh;
-    RelativeLayout mainContent;
-    View newFeed;
-    Trace trace;
-    private View tabExplore;
+    private RecyclerView recyclerView;
+    private SwipeToRefresh swipeToRefresh;
+    private View mainContent;
+    private View newFeed;
     private ShareBottomDialog shareBottomDialog;
     private TkpdProgressDialog progressDialog;
-    private RemoteConfig remoteConfig;
     private AbstractionRouter abstractionRouter;
     private FeedModuleRouter feedModuleRouter;
 
-    @Inject
-    FeedPlusPresenter presenter;
-
+    private Trace trace;
     private LinearLayoutManager layoutManager;
     private FeedPlusAdapter adapter;
     private CallbackManager callbackManager;
     private TopAdsInfoBottomSheet infoBottomSheet;
     private String firstCursor = "";
     private int loginIdInt;
+    private boolean hasLoadedOnce = false;
 
-    boolean hasLoadedOnce = false;
+    @Inject
+    FeedPlusPresenter presenter;
 
     public static FeedPlusFragment newInstance() {
         FeedPlusFragment fragment = new FeedPlusFragment();
@@ -182,7 +174,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(FIRST_CURSOR, firstCursor);
     }
@@ -223,9 +215,32 @@ public class FeedPlusFragment extends BaseDaggerFragment
         loginIdInt = TextUtils.isEmpty(loginIdString) ? 0 : Integer.valueOf(loginIdString);
     }
 
+    public boolean isMainViewVisible() {
+        return getUserVisibleHint();
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void reInitInjector(FeedPlusComponent component){
+        component.inject(this);
+        presenter.attachView(this);
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public FeedPlusPresenter getPresenter(){ return presenter; }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void resetToFirstTime(){
+        isLoadedOnce = false;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(FeedPlusPresenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         setRetainInstance(true);
@@ -234,7 +249,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout);
         mainContent = parentView.findViewById(R.id.main);
         newFeed = parentView.findViewById(R.id.layout_new_feed);
-        tabExplore = parentView.findViewById(R.id.tab_explore);
 
         prepareView();
         GraphqlClient.init(getActivity());
@@ -308,9 +322,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
     }
 
     @Override
@@ -528,14 +541,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onShowEmptyWithRecentView(ArrayList<Visitable> listFeed) {
-        adapter.unsetEndlessScrollListener();
-        adapter.showEmpty();
-        adapter.addList(listFeed);
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
     public void onShowEmpty() {
         adapter.unsetEndlessScrollListener();
         adapter.showEmpty();
@@ -631,13 +636,6 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public int getColor(int color) {
         return MethodChecker.getColor(getActivity(), color);
-    }
-
-    @Override
-    public void onSeeAllRecentView() {
-        UnifyTracking.eventFeedViewAll();
-        Intent intent = RecentViewActivity.getCallingIntent(getActivity());
-        getActivity().startActivity(intent);
     }
 
     @Override
@@ -778,7 +776,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     public void scrollToTop() {
-        if (recyclerView != null) recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     @Override
@@ -791,19 +791,21 @@ public class FeedPlusFragment extends BaseDaggerFragment
         }
     }
 
+    private boolean isLoadedOnce = false;
+
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null) {
+                && getActivity()!= null && presenter != null
+                && !isLoadedOnce) {
 
-            if (!hasLoadedOnce) {
-                presenter.fetchFirstPage();
-                if (trace != null)
-                    trace.stop();
-                hasLoadedOnce = true;
-            }
+            presenter.fetchFirstPage();
+            if (trace != null)
+                trace.stop();
 
             presenter.checkNewFeed(firstCursor);
             ScreenTracking.screen(getScreenName());
+
+            isLoadedOnce = !isLoadedOnce;
         }
     }
 
@@ -935,23 +937,39 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int rowNumber, int id) {
-        presenter.followKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.followKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
 
     }
 
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnlikeKolClicked(int rowNumber, int id) {
-        presenter.unlikeKol(id, rowNumber, this);
+        if (getUserSession() != null && getUserSession().isLoggedIn()) {
+            presenter.unlikeKol(id, rowNumber, this);
+        } else {
+            startActivity(feedModuleRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
@@ -975,11 +993,11 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void onGoToListKolRecommendation(int page, int rowNumber, String url) {
-        //TODO milhamj revert remote config
-//        if (remoteConfig != null && !remoteConfig.getBoolean(KEY_EXPLORE_NATIVE_ENABLE, false)) {
-//            url = remoteConfig.getString(KEY_EXPLORE_URL, DEFAULT_EXPLORE_URL);
-//        }
-        feedModuleRouter.openRedirectUrl(getActivity(), url);
+        if (getParentFragment() instanceof FeedPlusContainerFragment) {
+            ((FeedPlusContainerFragment) getParentFragment()).goToExplore(true);
+        } else {
+            feedModuleRouter.openRedirectUrl(getActivity(), url);
+        }
     }
 
     @Override
