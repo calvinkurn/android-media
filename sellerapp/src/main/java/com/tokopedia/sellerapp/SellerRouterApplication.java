@@ -217,7 +217,7 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter,ProductEditModuleRouter, TopAdsWebViewRouter,
-        , ShopSettingRouter{
+        ShopSettingRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
