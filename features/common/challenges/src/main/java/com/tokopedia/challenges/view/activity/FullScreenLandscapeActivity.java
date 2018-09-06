@@ -1,4 +1,5 @@
 package com.tokopedia.challenges.view.activity;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -52,6 +53,13 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
         videoView.start();
+
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                finish();
+            }
+        });
     }
 
     @Override

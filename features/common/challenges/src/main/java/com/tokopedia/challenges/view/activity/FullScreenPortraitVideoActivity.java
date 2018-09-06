@@ -1,8 +1,10 @@
 package com.tokopedia.challenges.view.activity;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -38,7 +40,7 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
 
         videoUrl = getIntent().getStringExtra("videoUrl");
         pos = getIntent().getIntExtra("seekPos", 0);
-        videoThumbnail  = findViewById(R.id.video_thumbnail);
+        videoThumbnail = findViewById(R.id.video_thumbnail);
         playIcon = findViewById(R.id.play_icon);
         startVideoPlay(videoUrl);
     }
@@ -53,6 +55,14 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
         videoView.start();
+
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                Log.d("dhgsudghs", "" + mediaPlayer.getDuration()+"  "+videoView.getDuration());
+                finish();
+            }
+        });
     }
 
     @Override

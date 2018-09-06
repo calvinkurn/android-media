@@ -2,6 +2,7 @@ package com.tokopedia.challenges.view.fragments.submit;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
@@ -48,6 +49,10 @@ public interface IChallengesSubmitContract {
         void setSubmitButtonText(String text);
 
         void setChooseImageText(String text);
+
+        void saveLocalpath(String newPostId, String filePath);
+
+        void sendBroadcast(Intent intent1);
     }
 
     interface Presenter extends CustomerPresenter<View> {

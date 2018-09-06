@@ -326,7 +326,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
 
         if (challengeResult.getSharing().getAssets() != null && !TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false, null);
+            videoPlayer.setVideoThumbNail(challengeResult.getSharing().getAssets().getImage(), challengeResult.getSharing().getAssets().getVideo(), false, null, false);
         } else {
             clVideoPlayer.setVisibility(View.GONE);
         }

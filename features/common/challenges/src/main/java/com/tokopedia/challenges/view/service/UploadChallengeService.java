@@ -129,7 +129,10 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         builder.setContentIntent(pendingIntent);
         Notification notification = builder.setContentText(getString(R.string.submitted_success)).build();
         notificationManager.notify(TAG, notificationID, notification);
-        sendBroadcast(new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE));
+        Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
+        intent1.putExtra("submissionId", uploadFingerprints.getNewPostId());
+        intent1.putExtra("filePath", getUploadFilePath());
+        sendBroadcast(intent1);
         stopSelf();
 
     }
