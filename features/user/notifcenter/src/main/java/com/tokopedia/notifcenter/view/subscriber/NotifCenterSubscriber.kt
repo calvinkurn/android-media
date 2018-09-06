@@ -59,6 +59,7 @@ class NotifCenterSubscriber(val view: NotifCenterContract.View, val dateUtil: No
             val prettyDate = dateUtil.getPrettyDate(notification.createTimeUnix)
             visitables.add(
                     NotifItemViewModel(
+                            notification.notifId,
                             notification.title,
                             notification.dataNotification.infoThumbnailUrl,
                             notification.createTime,

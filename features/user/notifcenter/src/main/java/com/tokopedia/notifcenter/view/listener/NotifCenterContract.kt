@@ -30,7 +30,7 @@ interface NotifCenterContract {
 
         fun fetchDataWithoutCache()
 
-        fun updatePage()
+        fun updatePage(lastNotifId: String)
 
         fun updateFilterId(filterId: Int)
 

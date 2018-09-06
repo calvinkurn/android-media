@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactory
 
 data class NotifItemViewModel(
+        val notifId: String = "",
         val title: String = "",
         val image: String = "",
         val time: String = "",

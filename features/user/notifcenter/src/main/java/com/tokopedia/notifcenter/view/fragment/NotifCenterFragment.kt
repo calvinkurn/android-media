@@ -77,8 +77,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     override fun onSuccessFetchData(visitables: List<Visitable<*>>, canLoadMore: Boolean) {
         this.canLoadMore = canLoadMore
 
-        if (canLoadMore) {
-            presenter.updatePage()
+        if (canLoadMore && !visitables.isEmpty() && visitables.last() is NotifItemViewModel) {
+            presenter.updatePage((visitables.last() as NotifItemViewModel).notifId)
         }
 
         if (!visitables.isEmpty() && visitables.first() is NotifItemViewModel

@@ -16,7 +16,7 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
     : BaseDaggerPresenter<NotifCenterContract.View>(), NotifCenterContract.Presenter {
 
     private var filterId = 0
-    private var page = 0
+    private var lastNotifId = ""
 
     override fun detachView() {
         super.detachView()
@@ -26,7 +26,7 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
     override fun fetchData() {
         view.showLoading()
         notifCenterUseCase.execute(
-                NotifCenterUseCase.getRequestParams(page, filterId),
+                NotifCenterUseCase.getRequestParams(filterId, lastNotifId),
                 NotifCenterSubscriber(view, dateUtil)
         )
     }
@@ -34,13 +34,13 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
     override fun fetchDataWithoutCache() {
         view.showLoading()
         notifCenterUseCase.executeNoCache(
-                NotifCenterUseCase.getRequestParams(page, filterId),
+                NotifCenterUseCase.getRequestParams(filterId, lastNotifId),
                 NotifCenterSubscriber(view, dateUtil)
         )
     }
 
-    override fun updatePage() {
-        this.page++
+    override fun updatePage(lastNotifId: String) {
+        this.lastNotifId = lastNotifId
     }
 
     override fun updateFilterId(filterId: Int) {
@@ -49,6 +49,6 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
 
     override fun resetParam() {
         filterId = 0
-        page = 0
+        lastNotifId = ""
     }
 }
