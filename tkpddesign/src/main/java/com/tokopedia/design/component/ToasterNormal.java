@@ -35,4 +35,10 @@ public class ToasterNormal extends BaseToaster {
                     }
                 }).show();
     }
+
+    public static void show(@NonNull Activity activity,
+                                 String snackbarText) {
+        ToasterNormal.make(activity.findViewById(android.R.id.content),
+                snackbarText, BaseToaster.LENGTH_LONG).show();
+    }
 }

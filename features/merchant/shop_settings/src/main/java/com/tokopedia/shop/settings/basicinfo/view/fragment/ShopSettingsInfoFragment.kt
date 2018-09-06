@@ -178,7 +178,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_SCHEDULE && data != null) {
                     val message: String = data.getStringExtra(ShopEditScheduleActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.showClose(activity!!, message)
+                        ToasterNormal.show(activity!!, message)
                     }
                 }
             }
@@ -187,7 +187,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
                 if (requestCode == REQUEST_EDIT_BASIC_INFO && data != null) {
                     val message: String = data.getStringExtra(ShopEditBasicInfoActivity.EXTRA_MESSAGE)
                     if (!message.isEmpty()) {
-                        ToasterNormal.showClose(activity!!, message)
+                        ToasterNormal.show(activity!!, message)
                     }
                 }
             }
@@ -365,7 +365,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     override fun onSuccessUpdateShopSchedule(successMessage: String) {
         hideSubmitLoading()
         activity?.setResult(Activity.RESULT_OK)
-        ToasterNormal.showClose(activity!!, successMessage)
+        ToasterNormal.show(activity!!, successMessage)
         loadShopBasicData()
     }
 
