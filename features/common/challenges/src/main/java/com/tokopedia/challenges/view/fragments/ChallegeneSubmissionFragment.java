@@ -19,17 +19,14 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
@@ -39,7 +36,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
@@ -97,6 +93,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private WebView longDescription;
     private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
+    public static boolean isVideoPlaying = false;
 
     private View progressBar;
     private View flHeader;
@@ -145,11 +142,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onStart() {
         super.onStart();
-        if (VIDEO_POS != -1) {
-            if (videoPlayer != null)
-                videoPlayer.startPlay(VIDEO_POS);
-        }
-
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE) {
             ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = true;// for all submission list
             mPresenter.loadSubmissions();
@@ -157,10 +149,21 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (videoPlayer != null)
+    public void onResume() {
+        super.onResume();
+        if (VIDEO_POS != -1) {
+            if (videoPlayer != null)
+                videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (videoPlayer != null) {
             VIDEO_POS = videoPlayer.getPosition();
+            isVideoPlaying = false;
+        }
+        super.onPause();
     }
 
     @Nullable
@@ -460,7 +463,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            tvHowBuzzPointsText.setText(Utils.generateText(getActivity(),buzzPointText));
+            tvHowBuzzPointsText.setText(Utils.generateText(getActivity(), buzzPointText));
         }
     }
 

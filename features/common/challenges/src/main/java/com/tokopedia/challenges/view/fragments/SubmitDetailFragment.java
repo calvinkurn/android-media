@@ -179,26 +179,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
             if (challengeImage != null)
-                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS);
+                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (challengeImage != null)
+    public void onPause() {
+        if (challengeImage != null && challengeImage.isVideoPlaying()) {
             ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (challengeImage != null)
-            challengeImage.resetVideoView();
+            ChallegeneSubmissionFragment.isVideoPlaying = false;
+        }
+        super.onPause();
     }
 
     private void setClickListeners() {
@@ -261,22 +256,22 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         if (!TextUtils.isEmpty(videoPath)) {
             File file = new File(videoPath);
             if (file.exists())
-            challengeImage.setVideoThumbNail(thumbnailUrl, videoPath, false, this, true);
-        }
-        else {
+                challengeImage.setVideoThumbNail(thumbnailUrl, videoPath, false, this, true);
+        } else {
             challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this, false);
-            if (TextUtils.isEmpty(videoUrl)) {
-                challengeImage.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
-                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                        transaction.add(R.id.image_viewer, fragemnt);
-                        transaction.addToBackStack("ImageViewer");
-                        transaction.commit();
-                    }
-                });
-            }
+        }
+
+        if ((!TextUtils.isEmpty(thumbnailUrl) && TextUtils.isEmpty(videoUrl)) || (!TextUtils.isEmpty(videoPath) && Utils.isImage(videoPath))) {
+            challengeImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
+                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                    transaction.add(R.id.image_viewer, fragemnt);
+                    transaction.addToBackStack("ImageViewer");
+                    transaction.commit();
+                }
+            });
         }
     }
 
@@ -290,9 +285,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
 
     public void setApprovedView(String approveText, String statusMessage) {
-        if("Encoding".equalsIgnoreCase(approveText)){
+        if ("Encoding".equalsIgnoreCase(approveText)) {
             approveText = Utils.STATUS_WAITING;
-            statusMessage="status is pending";
+            statusMessage = "status is pending";
         }
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
@@ -376,7 +371,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        if (submissionResult !=null && !presenter.getParticipatedStatus(submissionResult)) {
+        if (submissionResult != null && !presenter.getParticipatedStatus(submissionResult)) {
             presenter.sendBuzzPointEvent(submissionResult.getId());
         }
     }

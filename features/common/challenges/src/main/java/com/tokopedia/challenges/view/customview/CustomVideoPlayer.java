@@ -1,40 +1,31 @@
 package com.tokopedia.challenges.view.customview;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.media.AudioManager;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.VideoView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.view.activity.FullScreenPortraitVideoActivity;
+import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
+import com.tokopedia.challenges.view.utils.Utils;
 
 import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 
 import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
@@ -56,6 +47,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     private boolean isFullScreen;
     private boolean videoRotation = false;
     private boolean isLocalFile = false;
+
 
     public CustomVideoPlayer(@NonNull Context context) {
         super(context);
@@ -88,11 +80,12 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         this.isFullScreen = isFullScreen;
         this.isLocalFile = localFile;
         this.customVideoPlayerListener = customVideoPlayerListener;
-        if (TextUtils.isEmpty(videoUrl)) {
+        if (TextUtils.isEmpty(videoUrl) || Utils.isImage(videoUrl)) {
             playIcon.setVisibility(GONE);
         }
-        startPlay(0);
+        startPlay(0, ChallegeneSubmissionFragment.isVideoPlaying);
     }
+
 
     protected int getLayout() {
         return R.layout.custom_video_view;
@@ -100,21 +93,31 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
 
     @Override
     public int getPosition() {
-        return videoView.getCurrentPosition();
+        if (videoView != null)
+            return videoView.getCurrentPosition();
+        return 0;
+    }
+
+    @Override
+    public boolean isVideoPlaying() {
+        if (videoView != null)
+            return videoView.isPlaying();
+        else return false;
     }
 
 
-    public void startPlay(int pos) {
+    public void startPlay(int pos, boolean isVideoPlaying) {
         this.pos = pos;
         if (!TextUtils.isEmpty(videoUrl)) {
             if (pos != -1 && pos != 0) {
                 if (videoView != null) {
                     videoView.seekTo(pos);
-                    videoView.start();
+                    if (isVideoPlaying)
+                        videoView.start();
                     return;
                 }
             }
-            if (!TextUtils.isEmpty(videoUrl)) {
+            if (!TextUtils.isEmpty(videoUrl) && !Utils.isImage(videoUrl)) {
                 thumbNail.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -135,16 +138,6 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     public void hideMediaController() {
         if (mediaController != null && mediaController.isShowing()) {
             mediaController.hide();
-        }
-    }
-
-    public void resetVideoView() {
-        if (videoView != null && videoView.isPlaying()) {
-            videoView.pause();
-        } else {
-            RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) videoView.getLayoutParams();
-            int heightinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
-            params1.height = heightinDp;
         }
     }
 
@@ -179,6 +172,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
+                pos = 0;
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) videoView.getLayoutParams();
                 int heightinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
                 params1.height = heightinDp;
@@ -322,6 +316,7 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
+                pos = 0;
                 RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams) videoView.getLayoutParams();
                 int heightinDp = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 200, getResources().getDisplayMetrics());
                 params1.height = heightinDp;

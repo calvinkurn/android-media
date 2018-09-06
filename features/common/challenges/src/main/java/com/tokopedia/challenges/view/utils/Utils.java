@@ -53,6 +53,7 @@ public class Utils {
     public static final String STATUS_DECLINED = "Declined";
     public static final String STATUS_WAITING = "Waiting";
     public static boolean FROMNOCACHE;
+    private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
 
     synchronized public static Utils getSingletonInstance() {
@@ -268,5 +269,13 @@ public class Utils {
         }
 
         return ssb.build();
+    }
+
+    public static boolean isImage(String videoUrl) {
+        for (int i=0; i<isImage.length; i++) {
+            if (videoUrl.endsWith(isImage[i]))
+                return true;
+        }
+        return false;
     }
 }

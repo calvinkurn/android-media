@@ -43,7 +43,30 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
         startVideoPlay(videoUrl);
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+            if (videoView != null) {
+                videoView.seekTo(ChallegeneSubmissionFragment.VIDEO_POS);
+                if (ChallegeneSubmissionFragment.isVideoPlaying)
+                    videoView.start();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (videoView != null) {
+            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
+            ChallegeneSubmissionFragment.isVideoPlaying = false;
+        }
+        super.onPause();
+    }
+
     public void startVideoPlay(String videoUrl) {
+
         videoView.setVideoURI(Uri.parse(videoUrl));
         videoThumbnail.setVisibility(View.GONE);
         playIcon.setVisibility(View.GONE);
@@ -52,8 +75,9 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
 
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
-        videoView.start();
-
+        if (getIntent().getBooleanExtra("isPlaying", false)) {
+            videoView.start();
+        }
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -73,9 +97,16 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
     }
 
     @Override
+    public boolean isVideoPlaying() {
+        return videoView.isPlaying();
+    }
+
+    @Override
     public void onBackPressed() {
-        if (videoView != null)
+        if (videoView != null) {
             ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
+            ChallegeneSubmissionFragment.isVideoPlaying = isVideoPlaying();
+        }
         super.onBackPressed();
     }
 
