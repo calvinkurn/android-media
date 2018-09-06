@@ -18,10 +18,12 @@ interface InboxTalkContract {
         fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>)
         fun onErrorGetInboxTalk(errorMessage: String)
         fun onEmptyTalk()
+        fun hideRefreshLoad()
+        fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>)
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun refreshTalk()
+        fun refreshTalk(filter: String, nav: String)
         fun getInboxTalk(filter: String, nav: String)
     }
 }

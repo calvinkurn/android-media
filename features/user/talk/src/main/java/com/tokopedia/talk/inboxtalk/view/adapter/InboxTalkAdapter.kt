@@ -9,8 +9,8 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
  */
 
 class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
-                       listBank: ArrayList<Visitable<*>>)
-    : BaseAdapter<InboxTalkTypeFactoryImpl>(adapterTypeFactory, listBank) {
+                       listTalk: ArrayList<Visitable<*>>)
+    : BaseAdapter<InboxTalkTypeFactoryImpl>(adapterTypeFactory, listTalk) {
 
     var emptyModel = EmptyInboxTalkViewModel()
 

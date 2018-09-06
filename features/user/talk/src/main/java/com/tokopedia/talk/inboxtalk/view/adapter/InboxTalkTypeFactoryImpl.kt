@@ -12,7 +12,7 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
  * @author by nisie on 8/29/18.
  */
 
-class InboxTalkTypeFactoryImpl() :
+class InboxTalkTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHolder.TalkItemListener) :
         BaseAdapterTypeFactory(),
         InboxTalkTypeFactory {
 
@@ -26,7 +26,7 @@ class InboxTalkTypeFactoryImpl() :
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
-            InboxTalkItemViewHolder.LAYOUT -> InboxTalkItemViewHolder(view)
+            InboxTalkItemViewHolder.LAYOUT -> InboxTalkItemViewHolder(view, talkItemListener)
             EmptyInboxTalkViewHolder.LAYOUT -> EmptyInboxTalkViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

@@ -1,7 +1,9 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.common.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.LoadProductTalkViewModel
+import com.tokopedia.talk.ProductTalkItemViewModel
 
 /**
  * @author by Steven

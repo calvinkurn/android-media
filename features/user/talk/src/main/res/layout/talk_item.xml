@@ -58,7 +58,7 @@
             android:id="@+id/menu"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            app:srcCompat="@drawable/ic_webview_overflow_button"
+            app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
             android:layout_alignParentRight="true"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@id/prof_pict"

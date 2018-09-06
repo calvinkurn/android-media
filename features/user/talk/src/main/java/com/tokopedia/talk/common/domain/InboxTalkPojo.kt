@@ -60,6 +60,9 @@ data class InboxTalkItemPojo(
         @SerializedName("talk_shop_id")
         val talk_shop_id: String = "",
         @Expose
+        @SerializedName("talk_state")
+        val talk_state: TalkState = TalkState(),
+        @Expose
         @SerializedName("talk_total_comment")
         val talk_total_comment: String = "",
         @Expose
@@ -90,9 +93,6 @@ data class TalkCommentItem(
         @SerializedName("comment_create_time_fmt")
         val comment_create_time_fmt: String = "",
         @Expose
-        @SerializedName("comment_create_time_list")
-        val listCreateTime: List<TalkCreateTime> = ArrayList(),
-        @Expose
         @SerializedName("comment_id")
         val comment_id: String = "",
         @Expose
@@ -104,9 +104,6 @@ data class TalkCommentItem(
         @Expose
         @SerializedName("comment_is_seller")
         val comment_is_seller: Int = 0,
-        @Expose
-        @SerializedName("comment_id")
-        val comment_products: String = "",
         @Expose
         @SerializedName("comment_message")
         val comment_message: String = "",
@@ -145,16 +142,6 @@ data class TalkCommentItem(
         val comment_user_name: String = ""
 )
 
-data class TalkCreateTime(
-        @Expose
-        @SerializedName("date_time_android")
-        val date_time_android: String = "",
-        @Expose
-        @SerializedName("date_time_ios")
-        val date_time_ios: String = ""
-)
-
-
 data class CommentProduct(
         @Expose
         @SerializedName("product_id")
@@ -173,6 +160,31 @@ data class CommentProduct(
         val product_status: Int = 0
 )
 
+
+data class TalkState(
+        @Expose
+        @SerializedName("allow_report")
+        val allow_report: Boolean = false,
+        @Expose
+        @SerializedName("allow_delete")
+        val allow_delete: Boolean = false,
+        @Expose
+        @SerializedName("allow_follow")
+        val allow_follow: Boolean = false,
+        @Expose
+        @SerializedName("allow_unmasked")
+        val allow_unmasked: Boolean = false,
+        @Expose
+        @SerializedName("allow_reply")
+        val allow_reply: Boolean = false,
+        @Expose
+        @SerializedName("reported")
+        val reported: Boolean = false,
+        @Expose
+        @SerializedName("masked")
+        val masked: Boolean = false
+)
+
 data class CommentState(
         @Expose
         @SerializedName("allow_report")
@@ -186,6 +198,9 @@ data class CommentState(
         @Expose
         @SerializedName("allow_unmasked")
         val allow_unmasked: Boolean = false,
+        @Expose
+        @SerializedName("allow_reply")
+        val allow_reply: Boolean = false,
         @Expose
         @SerializedName("reported")
         val reported: Boolean = false,

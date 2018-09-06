@@ -9,8 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 
 data class TalkThreadViewModel(
         var headThread: ProductTalkItemViewModel,
-        var listChild: List<Visitable<ProductTalkChildThreadTypeFactory>>
-) : ProductTalkListViewModel(){
+        var listChild: ArrayList<Visitable<*>>
+) : ProductTalkListViewModel() {
 
     override fun type(typeFactory: ProductTalkThreadTypeFactory): Int {
         return typeFactory.type(this)
