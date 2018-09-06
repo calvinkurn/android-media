@@ -54,6 +54,8 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             getView().setChallengeImage(model.getMedia().get(0).getImageUrl(), "");
         } else if (model.getMedia() != null && model.getMedia().get(0).getVideo() != null && model.getMedia().get(0).getVideo().getSources() != null) {
             getView().setChallengeImage(model.getThumbnailUrl(), model.getMedia().get(0).getVideo().getSources().get(1).getSource());
+        } else {
+            getView().setChallengeImage("", "");
         }
         if (getParticipatedStatus(model)) {
             getView().isParticipated(true);

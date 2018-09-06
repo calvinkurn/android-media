@@ -18,4 +18,5 @@
     <color name="status_bg_color">#daf5db</color>
     <color name="black_56">#8f000000</color>
     <color name="black_18">#2e000000</color>
+    <color name="video_background">#d4d4d4</color>
 </resources>

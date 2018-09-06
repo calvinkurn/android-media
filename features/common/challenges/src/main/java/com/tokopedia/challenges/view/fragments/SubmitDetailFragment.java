@@ -27,6 +27,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.ChallengesAnalytics;
@@ -46,6 +47,7 @@ import com.tokopedia.design.component.ToasterError;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -142,6 +144,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             presenter.getSubmissionDetails(submissionId);
         } else {
             hidProgressBar();
+            submissionId = submissionResult.getId();
             presenter.setDataInFields(submissionResult);
             if (fromSubmission) {
                 String mediaUrl;
@@ -189,6 +192,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         super.onStop();
         if (challengeImage != null)
             ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (challengeImage != null)
+            challengeImage.resetVideoView();
     }
 
     private void setClickListeners() {
@@ -243,20 +253,30 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String thumbnailUrl, String videoUrl) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), "Challenge Submission");
+        String videoPath = localCacheHandler.getString(submissionId);
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(thumbnailUrl);
-        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this);
-        if (TextUtils.isEmpty(videoUrl)) {
-            challengeImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.add(R.id.image_viewer, fragemnt);
-                    transaction.addToBackStack("ImageViewer");
-                    transaction.commit();
-                }
-            });
+
+        if (!TextUtils.isEmpty(videoPath)) {
+            File file = new File(videoPath);
+            if (file.exists())
+            challengeImage.setVideoThumbNail(thumbnailUrl, videoPath, false, this, true);
+        }
+        else {
+            challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this, false);
+            if (TextUtils.isEmpty(videoUrl)) {
+                challengeImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
+                        FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
+                        transaction.add(R.id.image_viewer, fragemnt);
+                        transaction.addToBackStack("ImageViewer");
+                        transaction.commit();
+                    }
+                });
+            }
         }
     }
 
