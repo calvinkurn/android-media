@@ -4,8 +4,12 @@
     package="com.tokopedia.core"
     android:installLocation="preferExternal">
 
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="16"-->
+        <!--android:targetSdkVersion="25"-->
+        <!--tools:overrideLibrary="com.readystatesoftware.chuck" />-->
+
     <uses-sdk
-        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission

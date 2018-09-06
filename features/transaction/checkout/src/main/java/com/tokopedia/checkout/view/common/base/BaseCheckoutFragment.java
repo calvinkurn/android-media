@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.common.base;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +60,7 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         injectView(view);
         initView(view);
@@ -67,6 +68,26 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
         setViewListener();
         setActionVar();
     }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed()) {
+            onResume();
+        }
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!getUserVisibleHint()) {
+            return;
+        }
+        loadData();
+    }
+
+    protected void loadData() { }
 
     protected abstract void onFirstTimeLaunched();
 
@@ -120,7 +141,9 @@ public abstract class BaseCheckoutFragment extends TkpdBaseV4Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         saveStateToArguments();
-        unbinder.unbind();
+        if(unbinder != null) {
+            unbinder.unbind();
+        }
     }
 
     private void injectView(View view) {

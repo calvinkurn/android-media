@@ -39,7 +39,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -236,6 +236,16 @@ public abstract class SellerRouterApplication extends MainApplication
         super.onCreate();
         initializeDagger();
         initializeRemoteConfig();
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
     }
 
     private void initializeRemoteConfig() {
@@ -1372,7 +1382,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return new TkpdAuthInterceptor();
     }
 
-    @Override
+
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
