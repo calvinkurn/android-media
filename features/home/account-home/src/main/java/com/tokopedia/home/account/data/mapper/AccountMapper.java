@@ -81,12 +81,10 @@ private static final String NO_SHOP = "-1";
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         if (!accountModel.getWallet().isLinked()){
-            tokopediaPayViewModel.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
-            tokopediaPayViewModel.setAmountColorLeft(android.R.color.primary_text_light);
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());

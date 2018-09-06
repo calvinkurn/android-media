@@ -59,6 +59,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
+        tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
         if (!accountModel.getWallet().isLinked()){
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());

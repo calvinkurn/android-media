@@ -10,25 +10,17 @@ import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewMode
  * @author okasurya on 7/17/18.
  */
 public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFactory> {
-    private @ColorRes int amountColorLeft;
     private String labelLeft;
     private String amountLeft;
     private String labelRight;
     private String amountRight;
     private String applinkLeft;
     private String applinkRight;
+    private boolean isLinked;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
         return typeFactory.type(this);
-    }
-
-    public @ColorRes int getAmountColorLeft() {
-        return amountColorLeft;
-    }
-
-    public void setAmountColorLeft(@ColorRes int amountColorLeft) {
-        this.amountColorLeft = amountColorLeft;
     }
 
     public String getLabelLeft() {
@@ -79,6 +71,14 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.applinkRight = applinkRight;
     }
 
+    public boolean isLinked() {
+        return isLinked;
+    }
+
+    public void setLinked(boolean linked) {
+        isLinked = linked;
+    }
+
     public TokopediaPayViewModel() {
     }
 
@@ -95,6 +95,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeString(this.amountRight);
         dest.writeString(this.applinkLeft);
         dest.writeString(this.applinkRight);
+        dest.writeByte(this.isLinked ? (byte) 1 : (byte) 0);
     }
 
     protected TokopediaPayViewModel(Parcel in) {
@@ -104,6 +105,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.amountRight = in.readString();
         this.applinkLeft = in.readString();
         this.applinkRight = in.readString();
+        this.isLinked = in.readByte() != 0;
     }
 
     public static final Creator<TokopediaPayViewModel> CREATOR = new Creator<TokopediaPayViewModel>() {

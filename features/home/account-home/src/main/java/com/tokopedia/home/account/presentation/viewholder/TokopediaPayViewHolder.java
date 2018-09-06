@@ -29,7 +29,11 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     @Override
     public void bind(TokopediaPayViewModel element) {
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
-        tokopediaPayCardView.setAmountColorLeft(element.getAmountColorLeft());
+        if(element.isLinked()) {
+            tokopediaPayCardView.setAmountColorLeft(android.R.color.primary_text_light);
+        } else {
+            tokopediaPayCardView.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
+        }
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());
         tokopediaPayCardView.setTextAmountRight(element.getAmountRight());
         tokopediaPayCardView.setTextDesctRight(element.getLabelRight());
