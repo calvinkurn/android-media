@@ -286,12 +286,10 @@ public class CartListPresenter implements ICartListPresenter {
         }
 
         // Calculate total price, total item, and wholesale price (if any)
+        Map<String, Double> cashbackWholesalePriceMap = new HashMap<>();
+        Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
+        Map<String, CartItemData> cartItemParentIdMap = new HashMap<>();
         for (CartItemHolderData data : allCartItemDataList) {
-            double totalCashbackPerShop = 0;
-            double totalPricePerShop = 0;
-            Map<String, Double> cashbackWholesalePriceMap = new HashMap<>();
-            Map<String, Double> subtotalWholesalePriceMap = new HashMap<>();
-            Map<String, CartItemData> cartItemParentIdMap = new HashMap<>();
             if (data.getCartItemData().getOriginData() != null) {
                 String parentId = data.getCartItemData().getOriginData().getParentId();
                 String productId = data.getCartItemData().getOriginData().getProductId();
@@ -352,9 +350,9 @@ public class CartListPresenter implements ICartListPresenter {
                             String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                             double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                             double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
-                            totalCashbackPerShop = totalCashbackPerShop + itemCashback;
+                            totalCashback = totalCashback + itemCashback;
                         }
-                        totalPricePerShop = totalPricePerShop + itemPrice;
+                        totalPrice = totalPrice + itemPrice;
                         data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                         cartItemParentIdMap.put(data.getCartItemData().getOriginData().getParentId(), data.getCartItemData());
                     } else {
@@ -365,29 +363,26 @@ public class CartListPresenter implements ICartListPresenter {
                                 String cashbackPercentageString = data.getCartItemData().getOriginData().getProductCashBack().replace("%", "");
                                 double cashbackPercentage = Double.parseDouble(cashbackPercentageString);
                                 double itemCashback = cashbackPercentage / PERCENTAGE * itemPrice;
-                                totalCashbackPerShop = totalCashbackPerShop + itemCashback;
+                                totalCashback = totalCashback + itemCashback;
                             }
-                            totalPricePerShop = totalPricePerShop + itemPrice;
+                            totalPrice = totalPrice + itemPrice;
                             data.getCartItemData().getOriginData().setWholesalePriceFormatted(null);
                         }
                     }
                 }
             }
+        }
 
-            if (!subtotalWholesalePriceMap.isEmpty()) {
-                for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
-                    totalPricePerShop += item.getValue();
-                }
+        if (!subtotalWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : subtotalWholesalePriceMap.entrySet()) {
+                totalPrice += item.getValue();
             }
+        }
 
-            if (!cashbackWholesalePriceMap.isEmpty()) {
-                for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
-                    totalCashbackPerShop += item.getValue();
-                }
+        if (!cashbackWholesalePriceMap.isEmpty()) {
+            for (Map.Entry<String, Double> item : cashbackWholesalePriceMap.entrySet()) {
+                totalCashback += item.getValue();
             }
-
-            totalCashback += totalCashbackPerShop;
-            totalPrice += totalPricePerShop;
         }
 
         String totalPriceString = "-";
