@@ -816,6 +816,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartAdapter.checkForShipmentForm();
 
         setVisibilityRemoveButton(true);
+//        notifyBottomCartParent();
     }
 
     private void showErrorLayout(String message) {
@@ -1139,7 +1140,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (!hidden) {
             cartAdapter.resetData();
             dPresenter.processInitialGetCartData();
-            notifyBottomCartParent();
+//            notifyBottomCartParent();
         }
     }
 
