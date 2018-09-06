@@ -18,7 +18,7 @@ class TopAdsWebViewFragment: BaseSessionWebViewFragment(){
         }
     }
 
-    override fun shouldOverrideUrlLoading(webView: WebView?, url: String?): Boolean {
+    /*override fun shouldOverrideUrlLoading(webView: WebView?, url: String?): Boolean {
         activity?.run {
             if (url != null && application is TopAdsWebViewRouter){
                 var tempUrl: String = url
@@ -35,5 +35,5 @@ class TopAdsWebViewFragment: BaseSessionWebViewFragment(){
             }
         }
         return super.shouldOverrideUrlLoading(webView, url)
-    }
+    }*/
 }
