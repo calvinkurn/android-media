@@ -19,6 +19,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.model.upload.UploadFingerprints;
 import com.tokopedia.challenges.view.service.UploadChallengeService;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -94,7 +95,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onError(Throwable e) {
                 getView().hideProgress();
                 e.printStackTrace();
-                getView().showMessage("Image Upl oaded Failed");
+                getView().showMessage("Image Uploaded Failed");
             }
 
             @Override
@@ -112,6 +113,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     intent1.putExtra("filePath", filePath);
                     getView().sendBroadcast(intent1);
                 }
+                ChallengesCacheHandler.resetCache();
 
             }
         });
@@ -127,7 +129,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                 getView().showMessage("Konten Anda diterima!");
                 getView().hideProgress();
-                Utils.FROMNOCACHE = true;
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }
@@ -149,10 +150,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     private boolean isValidateDescription(@NonNull String description) {
-        if (description.length() <= 0){
+        if (description.length() <= 0) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_desc_blank));
             return false;
-        }else if (description.length() > 50) {
+        } else if (description.length() > 300) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
             return false;
         } else
@@ -160,10 +161,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     }
 
     private boolean isValidateTitle(@NonNull String title) {
-        if (title.length() <= 0){
+        if (title.length() <= 0) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_title_blank));
-        return false;
-        }else if (title.length() > 50) {
+            return false;
+        } else if (title.length() > 50) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_title_size));
             return false;
         } else

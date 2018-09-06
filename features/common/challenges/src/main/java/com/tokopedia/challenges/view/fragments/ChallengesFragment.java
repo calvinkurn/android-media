@@ -20,6 +20,7 @@ import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
 import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.EmptyStateViewHelper;
 
 import java.util.List;
@@ -42,6 +43,10 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private List<Result> pastChallenges;
     @Inject
     ChallengesAnalytics analytics;
+    private boolean pastChallenge;
+    private boolean isFirst = true;
+    private boolean isFirstPastChallengeItem;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
                     ChallengesAnalytics.EVENT_ACTION_CLICK,
                     ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES);
+            pastChallenge = false;
 
         });
 
@@ -81,9 +87,13 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
                     ChallengesAnalytics.EVENT_ACTION_CLICK,
                     ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES);
+            pastChallenge = true;
         });
 
         challengeHomePresenter.getOpenChallenges();
+        if (isFirst) {
+            isFirst = false;
+        }
         return view;
     }
 
@@ -99,15 +109,17 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
+        pastChallenge = isPastChallenge;
         recyclerView.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             pastChallenges = resultList;
         } else {
             openChallenges = resultList;
         }
-        if (listAdpater != null) {
+        if (listAdpater != null && isFirstPastChallengeItem) {
             listAdpater.setData(resultList, isPastChallenge);
             listAdpater.notifyDataSetChanged();
+
         } else {
             listAdpater = new ChallengesListAdapter(getActivity(), resultList, isPastChallenge);
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -115,6 +127,25 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             recyclerView.setAdapter(listAdpater);
         }
         EmptyStateViewHelper.hideEmptyState(getView());
+        if (isPastChallenge) {
+            isFirstPastChallengeItem = true;
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        /**
+         * Fetch data without cache
+         */
+        if (ChallengesCacheHandler.OPEN_CHALLENGES_LIST_CACHE) {
+            if (pastChallenge) {
+                challengeHomePresenter.getPastChallenges();
+            } else {
+                challengeHomePresenter.getOpenChallenges();
+            }
+        }
+
     }
 
     @Override

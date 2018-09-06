@@ -11,10 +11,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.utils.TabUtil;
 
 /**
@@ -55,6 +58,7 @@ public class ChallengesHomeActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_home);
         analytics = new ChallengesAnalytics(this);
         tabLayout = findViewById(R.id.tab_challenges);
@@ -104,9 +108,9 @@ public class ChallengesHomeActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if(viewPager.getCurrentItem()>0){
+        if (viewPager.getCurrentItem() > 0) {
             viewPager.setCurrentItem(0);
-        }else{
+        } else {
             super.onBackPressed();
         }
     }

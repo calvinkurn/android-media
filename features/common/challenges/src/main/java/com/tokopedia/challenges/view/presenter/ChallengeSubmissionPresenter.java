@@ -32,11 +32,11 @@ import rx.Subscriber;
 public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeSubmissonContractor.View> implements ChallengeSubmissonContractor.Presenter {
 
     private final GetChallengeSettingUseCase getChallengeSettingUseCase;
-    GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
-    GetTermsNConditionUseCase getTermsNConditionUseCase;
-    GetChallengeDetailsUseCase getChallengeDetailsUseCase;
-    GetWinnersUseCase getWinnersUseCase;
-    GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase;
+    private GetSubmissionChallengesUseCase getSubmissionChallengesUseCase;
+    private GetTermsNConditionUseCase getTermsNConditionUseCase;
+    private GetChallengeDetailsUseCase getChallengeDetailsUseCase;
+    private GetWinnersUseCase getWinnersUseCase;
+    private GetSubmissionInChallengeUseCase getSubmissionInChallengeUseCase;
 
     @Inject
     public ChallengeSubmissionPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallengeDetailsUseCase getChallengeDetailsUseCase,
@@ -163,7 +163,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
     }
 
 
-    private void loadSubmissions() {
+    public void loadSubmissions() {
         getSubmissionChallengesUseCase.setRequestParams(getView().getSubmissionsParams());
         getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

@@ -53,6 +53,7 @@ import com.tokopedia.challenges.view.model.challengesubmission.SubmissionRespons
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ChallengeSubmissionPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.challenges.view.utils.Utils;
@@ -81,14 +82,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private RecyclerView submissionRecyclerView, awardRecylerView, winnerRecyclerView;
     private List<SubmissionResult> submissionResults, winnerResults;
     private CustomVideoPlayer videoPlayer;
-    private ConstraintLayout timerView;
-    private RelativeLayout rlExpiry;
-    private ConstraintLayout clAbout;
-    private ConstraintLayout clVideoPlayer;
-    private ConstraintLayout clAwards;
-    private ConstraintLayout clSubmissions;
-    private ConstraintLayout clWinners;
-    private ConstraintLayout clHowBuzzPoints;
+    private View timerView;
+    private View rlExpiry;
+    private View clAbout;
+    private View clVideoPlayer;
+    private View clAwards;
+    private View clSubmissions;
+    private View clWinners;
+    private View clHowBuzzPoints;
     private ProgressBar timerProgressBar;
     private CountDownView countDownView;
     private TextView tvHashTag;
@@ -97,8 +98,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private NestedScrollView nestedScrollView;
     public static int VIDEO_POS = -1;
 
-    private FrameLayout progressBar;
-    private FrameLayout flHeader;
+    private View progressBar;
+    private View flHeader;
     private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
     private CoordinatorLayout mainContent;
     private ConstraintLayout baseMainContent;
@@ -147,6 +148,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         if (VIDEO_POS != -1) {
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS);
+        }
+
+        if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE) {
+            ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = true;// for all submission list
+            mPresenter.loadSubmissions();
         }
     }
 
@@ -338,9 +344,16 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else {
             clAwards.setVisibility(View.GONE);
         }
-        if (!isPastChallenge) {
-            submitButton.setVisibility(View.VISIBLE);
 
+        if (isPastChallenge) {
+            btnShare.setVisibility(View.GONE);
+            submitButton.setVisibility(View.GONE);
+            bottomMarginView.setVisibility(View.GONE);
+        } else {
+            btnShare.setOnClickListener(this);
+            submitButton.setOnClickListener(this);
+            btnShare.setVisibility(View.VISIBLE);
+            submitButton.setVisibility(View.VISIBLE);
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
@@ -377,7 +390,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             clWinners.setVisibility(View.VISIBLE);
             LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
             winnerRecyclerView.setLayoutManager(mLayoutManager);
-            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isWinnerList);
+            winnerItemAdapter = new SubmissionItemAdapter(submissionResponse.getSubmissionResults(), this, LinearLayoutManager.HORIZONTAL, isPastChallenge);
             winnerItemAdapter.isWinnerLayout(true);
             winnerRecyclerView.setAdapter(winnerItemAdapter);
         }
@@ -447,7 +460,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            tvHowBuzzPointsText.setText(Html.fromHtml(buzzPointText));
+            tvHowBuzzPointsText.setText(Utils.generateText(getActivity(),buzzPointText));
         }
     }
 
@@ -491,7 +504,17 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesAnalytics.EVENT_ACTION_CLICK, ChallengesAnalytics.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true);
+            String mediaUrl;
+            boolean isVideo;
+            if (TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
+                mediaUrl = challengeResult.getThumbnailUrl();
+                isVideo = false;
+            } else {
+                mediaUrl = challengeResult.getSharing().getAssets().getVideo();
+                isVideo = true;
+            }
+            // ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true, mediaUrl, challengeResult.getHashTag(), isVideo);
+            ShareBottomSheet.showChallengeShare((getActivity()).getSupportFragmentManager(), challengeResult);
         }
     }
 

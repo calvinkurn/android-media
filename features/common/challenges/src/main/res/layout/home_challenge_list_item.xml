@@ -16,12 +16,14 @@
 
         <ImageView
             android:id="@+id/img_challenge"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:background="@drawable/placeholder_image_bg"
             android:maxHeight="@dimen/dp_200"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -31,20 +33,19 @@
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_16"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/img_challenge" />
 
         <TextView
             android:id="@+id/tv_hastags"
-            style="@style/TextView.Micro.Green"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_title" />
 
         <View
@@ -56,13 +57,15 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_hastags" />
 
         <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
             android:paddingBottom="@dimen/dp_8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view_line">
 
             <TextView
@@ -70,16 +73,16 @@
                 style="@style/TextView.Micro.Bold.Black40"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_3"
                 android:gravity="center_vertical|center_horizontal"
+                android:paddingBottom="@dimen/dp_4"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_4"
-                android:paddingBottom="@dimen/dp_4"
-                android:layout_marginRight="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_3"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="test link" />
 
             <ImageView
@@ -88,9 +91,9 @@
                 android:layout_height="@dimen/dp_30"
                 android:padding="@dimen/dp_3"
                 android:src="@drawable/ic_share_via_card"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintLeft_toLeftOf="parent" />
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/tv_status"
@@ -100,10 +103,10 @@
                 android:layout_marginRight="@dimen/dp_10"
                 android:layout_marginTop="@dimen/dp_3"
                 android:gravity="center_vertical|center_horizontal"
+                android:paddingBottom="@dimen/dp_4"
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_4"
-                android:paddingBottom="@dimen/dp_4"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

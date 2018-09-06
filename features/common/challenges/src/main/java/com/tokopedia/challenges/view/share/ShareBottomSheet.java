@@ -1,6 +1,9 @@
 package com.tokopedia.challenges.view.share;
 
+import android.app.DownloadManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -10,23 +13,20 @@ import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.BaseActivity;
+import com.tokopedia.challenges.view.model.Challenge;
+import com.tokopedia.challenges.view.model.Result;
+import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetContract;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetPresenter;
-import com.tokopedia.core.util.ClipboardHandler;
-import com.tokopedia.design.bottomsheet.BottomSheetView;
-import com.tokopedia.design.component.BottomSheets;
+import com.tokopedia.challenges.view.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -36,53 +36,56 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public static final String KEY_COPY = "salinlink";
     private static final String TYPE = "text/plain";
     public static final String KEY_OTHER = "lainnya";
-    private String url;
-    private String title;
-    private String og_url;
-    private String og_title;
-    private String og_image;
-    private String submissionId;
-    private String deepLink;
-    private boolean isChallenge;
     private RecyclerView mRecyclerView;
     @Inject
     public ShareBottomSheetPresenter presenter;
     private ChallengesComponent challengesComponent;
     private ProgressDialog progress;
     private View closeButton;
+    private SubmissionResult submissionItem;
+    private Result challengeItem;
+    private boolean isChallenge;
 
-    public static ShareBottomSheet newInstance(String url, String title, String og_url, String og_title, String og_image, String submissionId, String deepLink, boolean isChallenge) {
+
+    private static ShareBottomSheet newInstance(Result challengeItem) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
-        bundle.putString("url", url);
-        bundle.putString("title", title);
-        bundle.putString("og_url", og_url);
-        bundle.putString("og_title", og_title);
-        bundle.putString("og_image", og_image);
-        bundle.putString("submission_id", submissionId);
-        bundle.putString("deep_link", deepLink);
-        bundle.putBoolean("is_challenge", isChallenge);
+        bundle.putParcelable("challengeItem", challengeItem);
+        bundle.putBoolean("is_challenge", true);
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    public static void show(FragmentManager fragmentManager, String url, String title, String og_url, String og_title, String og_image, String submissionId, String deepLink, boolean isChallenge) {
-        newInstance(url, title, og_url, og_title, og_image, submissionId, deepLink, isChallenge).show(fragmentManager, "");
+    private static ShareBottomSheet newInstance(SubmissionResult submissionItem) {
+        ShareBottomSheet fragment = new ShareBottomSheet();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("submissionItem", submissionItem);
+        bundle.putBoolean("is_challenge", false);
+        fragment.setArguments(bundle);
+        return fragment;
     }
+
+    public static void showChallengeShare(FragmentManager fragmentManager, Result challengeItem) {
+        newInstance(challengeItem).show(fragmentManager, "");
+    }
+
+    public static void showSubmissionShare(FragmentManager fragmentManager, SubmissionResult submissionItem) {
+        newInstance(submissionItem).show(fragmentManager, "");
+    }
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottomsheet_share_layout, container, false);
 
-        url = getArguments().getString("url");
-        title = getArguments().getString("title");
-        og_url = getArguments().getString("og_url");
-        og_title = getArguments().getString("og_title");
-        og_image = getArguments().getString("og_image");
-        submissionId = getArguments().getString("submission_id");
-        deepLink = getArguments().getString("deep_link");
-        isChallenge = getArguments().getBoolean("is_challenge");
+        isChallenge = getArguments().getBoolean("is_challenge", false);
+        if (isChallenge) {
+            challengeItem = getArguments().getParcelable("challengeItem");
+        } else {
+            submissionItem = getArguments().getParcelable("submissionItem");
+        }
+
         initView(view);
         closeButton = view.findViewById(R.id.item_close);
         closeButton.setOnClickListener(v -> dismiss());
@@ -134,17 +137,12 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
     @Override
     public void onItemClick(String packageName) {
-        if (url == null) {
-            url = deepLink;
+        if (isChallenge) {
+            presenter.createAndShareChallenge(packageName);
+        } else {
+            presenter.createAndShareSubmission(packageName);
         }
-        presenter.createAndShareUrl(packageName, url, submissionId, deepLink, isChallenge, title, og_url, og_title, og_image);
     }
-
-    @Override
-    public void setNewUrl(String shareUri) {
-        this.url = shareUri;
-    }
-
 
     @Override
     public void showProgress(String message) {
@@ -154,6 +152,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         if (!progress.isShowing()) {
             progress.setMessage(message);
             progress.setIndeterminate(true);
+            progress.setCanceledOnTouchOutside(false);
             progress.show();
         }
     }
@@ -165,4 +164,15 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
             progress = null;
         }
     }
+
+    @Override
+    public Result getChallengeItem() {
+        return challengeItem;
+    }
+
+    @Override
+    public SubmissionResult getSubmissionItem() {
+        return submissionItem;
+    }
+
 }

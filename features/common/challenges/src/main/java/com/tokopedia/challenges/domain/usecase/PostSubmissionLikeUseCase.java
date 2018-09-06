@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.challenges.data.IndiAuthInterceptor;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResponse;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
@@ -35,6 +36,7 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
     @Override
     protected List<RestRequest> buildRequest() {
         Utils.FROMNOCACHE = true;
+        ChallengesCacheHandler.resetCache(); // it can be called from different -2 screens
         List<RestRequest> tempRequest = new ArrayList<>();
 
         boolean setLiked = requestParams.getBoolean(IS_LIKED, false);

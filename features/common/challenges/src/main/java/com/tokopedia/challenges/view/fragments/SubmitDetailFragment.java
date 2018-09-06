@@ -147,7 +147,20 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             submissionId = submissionResult.getId();
             presenter.setDataInFields(submissionResult);
             if (fromSubmission) {
-                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
+                String mediaUrl;
+                boolean isVideo;
+//                if (TextUtils.isEmpty(submissionResult.getSharing().getAssets().getVideo())) {
+////                    mediaUrl = submissionResult.getThumbnailUrl();
+////                    isVideo = false;
+////                } else {
+////                    mediaUrl = submissionResult.getSharing().getAssets().getVideo();
+////                    isVideo = true;
+////                }
+                ShareBottomSheet.showSubmissionShare(getActivity().getSupportFragmentManager(), submissionResult);
+//                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(),
+//                        submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(),
+//                        submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS,
+//                                submissionResult.getId()), false, mediaUrl, submissionResult.getCollection().getHashTag(), isVideo);
 
             }
         }
@@ -190,7 +203,19 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
+            String mediaUrl;
+            boolean isVideo;
+//            if (TextUtils.isEmpty(submissionResult.getSharing().getAssets().getVideo())) {
+//                mediaUrl = submissionResult.getThumbnailUrl();
+//                isVideo = false;
+//            } else {
+//                mediaUrl = submissionResult.getSharing().getAssets().getVideo();
+//                isVideo = true;
+//            }
+//            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(),
+//                    submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(),
+//                    Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false,mediaUrl,submissionResult.getCollection().getHashTag(),isVideo);
+            ShareBottomSheet.showSubmissionShare((getActivity()).getSupportFragmentManager(), submissionResult);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
                     ChallengesAnalytics.EVENT_ACTION_SHARE,
@@ -212,8 +237,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
     }
 
-    public void showStatusInfo() {
+    public void showStatusInfo(String statusMessage) {
         statusView.setVisibility(View.VISIBLE);
+        if (!TextUtils.isEmpty(statusMessage))
+            statusText.setText(statusMessage);
     }
 
     @Override
@@ -262,7 +289,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
 
-    public void setApprovedView(String approveText) {
+    public void setApprovedView(String approveText, String statusMessage) {
+        if("Encoding".equalsIgnoreCase(approveText)){
+            approveText = Utils.STATUS_WAITING;
+            statusMessage="status is pending";
+        }
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
@@ -271,7 +302,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if (Utils.STATUS_WAITING.equalsIgnoreCase(approveText)) {
-            showStatusInfo();
+            showStatusInfo(statusMessage);
+        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
+            showStatusInfo(statusMessage);
         }
     }
 
@@ -294,11 +327,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         if (isPastChallenge) {
             this.participateTitle.setVisibility(View.GONE);
             this.participateTextView.setVisibility(View.GONE);
+            hideShareAndLikeButtons();
         } else {
             this.participateTitle.setText(participateTitle);
             String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
             this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
-
+            showShareAndLikeButtons();
         }
     }
 
@@ -342,7 +376,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        if (!presenter.getParticipatedStatus(submissionResult)) {
+        if (submissionResult !=null && !presenter.getParticipatedStatus(submissionResult)) {
             presenter.sendBuzzPointEvent(submissionResult.getId());
         }
     }
@@ -418,17 +452,17 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
-        inflater.inflate(R.menu.menu_submission_detail, menu);
-        mMenu = menu;
-        for (int i = 0; i < mMenu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            SpannableString s = new SpannableString(item.getTitle());
-            s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
-            s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            item.setTitle(s);
+        if (presenter.getParticipatedStatus(submissionResult)) {
+            inflater.inflate(R.menu.menu_submission_detail, menu);
+            mMenu = menu;
+            for (int i = 0; i < mMenu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                SpannableString s = new SpannableString(item.getTitle());
+                s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
+                s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                item.setTitle(s);
+            }
         }
-
     }
 
 
@@ -436,8 +470,18 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete && submissionResult != null) {
-            presenter.deleteSubmittedPost(submissionResult.getId());
+            presenter.deleteSubmittedPost(submissionResult.getId(), submissionResult.getCollection().getId());
         }
         return true;
+    }
+
+    private void hideShareAndLikeButtons() {
+        btnShare.setVisibility(View.GONE);
+        likeBtn.setVisibility(View.GONE);
+    }
+
+    private void showShareAndLikeButtons() {
+        btnShare.setVisibility(View.VISIBLE);
+        likeBtn.setVisibility(View.VISIBLE);
     }
 }

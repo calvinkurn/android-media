@@ -1,8 +1,18 @@
 package com.tokopedia.challenges.view.utils;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
@@ -220,10 +230,43 @@ public class Utils {
     }
 
     public static String getImageUrl(String url) {
-        return url + "?height=200";
+        return url + "?height=500";
     }
 
     public static String getImageUrlForSubmission(String url) {
-        return url + "?height=200";
+        return url + "?height=500";
+    }
+
+    public static void convertTextToBulletText(TextView textView, Context context, String text) {
+        SpannableString spannableString = new SpannableString(text);
+        int startIndexOfLink = text.indexOf("\u2022");
+
+        spannableString.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                //TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(context.getResources().getColor(R.color.green_250)); // specific color for this link
+            }
+        }, startIndexOfLink, startIndexOfLink + "\u2022".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+
+        textView.setText(spannableString, TextView.BufferType.SPANNABLE);
+    }
+
+    public static SpannableStringBuilder generateText(@NonNull Context context, @NonNull String text) {
+        SimpleSpanBuilder ssb = new SimpleSpanBuilder();
+
+        for (String each : text.split("~")) {
+            ssb.appendWithSpace("\u25CF", new ForegroundColorSpan(Color.GREEN));
+            ssb.appendWithLineBreak(each);
+        }
+
+        return ssb.build();
     }
 }

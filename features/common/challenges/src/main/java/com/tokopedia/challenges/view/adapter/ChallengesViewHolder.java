@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -52,7 +53,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         imgShare.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_COMPLETED);
-            imgShare.setVisibility(View.GONE);
+            imgShare.setVisibility(View.INVISIBLE);
         } else if (challengesResult.getMe().getSubmissionCounts().getApproved() > 0 || challengesResult.getMe().getSubmissionCounts().getWaiting() > 0) {
             Utils.setTextViewBackground(context, tvStatus, Utils.STATUS_PARTICIPATED);
         } else {
@@ -81,7 +82,20 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(), challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(), challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), true);
+            String mediaUrl;
+            boolean isVideo;
+            if (TextUtils.isEmpty(challengesResult.getSharing().getAssets().getVideo())) {
+                mediaUrl = challengesResult.getThumbnailUrl();
+                isVideo = false;
+            } else {
+                mediaUrl = challengesResult.getSharing().getAssets().getVideo();
+                isVideo = true;
+            }
+            ShareBottomSheet.showChallengeShare(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult);
+//            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(),
+//                    challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),
+//                    challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()),
+//                    true, mediaUrl, challengesResult.getHashTag(), isVideo);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                         ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES,

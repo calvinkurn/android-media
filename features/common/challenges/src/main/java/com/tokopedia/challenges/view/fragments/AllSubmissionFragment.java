@@ -30,6 +30,7 @@ import com.tokopedia.challenges.view.presenter.AllSubmissionPresenter;
 import java.util.List;
 
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.Utils;
 
@@ -238,5 +239,19 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
                 mPresenter.loadMoreItems(true);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        //CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE because challege details screen also call the same API
+        if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
+            ((SubmissionItemAdapter) recyclerview.getAdapter()).clearList();
+            ((SubmissionItemAdapter) recyclerview.getAdapter()).notifyDataSetChanged();
+            mPresenter.setPageStart(0);
+            mPresenter.loadMoreItems(true);
+            ChallengesCacheHandler.setChallengeAllSubmissionssListCache();
+        }
+
     }
 }

@@ -72,7 +72,7 @@ public class AwardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             layout = itemView.findViewById(R.id.main_constrant);
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            int devicewidth = (int) (displaymetrics.widthPixels / 1.6);
+            int devicewidth = (int) (displaymetrics.widthPixels / 1.3);
             itemView.getLayoutParams().width = devicewidth;
         }
 

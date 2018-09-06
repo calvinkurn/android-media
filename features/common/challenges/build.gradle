@@ -22,15 +22,14 @@ dependencies {
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    implementation project(rootProject.ext.features.core)
-    implementation project(rootProject.ext.libraries.network)
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
-    compile project(path: ':libraries:applink')
+    implementation rootProject.ext.networkDependencies.glide
+    compile project(path: ':tkpdcore')
 }
 
 apply from: '../../../publish_local.gradle'
