@@ -81,7 +81,7 @@ private static final String NO_SHOP = "-1";
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         if (!accountModel.getWallet().isLinked()){
-            tokopediaPayViewModel.setAmountColorLeft(R.color.tkpd_main_green);
+            tokopediaPayViewModel.setAmountColorLeft(com.tokopedia.design.R.color.tkpd_main_green);
             tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
