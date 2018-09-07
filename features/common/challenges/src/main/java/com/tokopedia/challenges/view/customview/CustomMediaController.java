@@ -56,11 +56,13 @@ public class CustomMediaController extends MediaController {
                 public void onClick(View v) {
                     if (isFullScreen) {
                         ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenPortraitVideoActivity.class);
                         intent.putExtra("fullScreenInd", "");
                         intent.putExtra("seekPos", iCurrentPos.getPosition());
+                        intent.putExtra("isPlaying", iCurrentPos.isVideoPlaying());
                         intent.putExtra("videoUrl", videoUrl);
                         ((Activity) getContext()).startActivityForResult(intent, 100);
                     }
@@ -73,11 +75,13 @@ public class CustomMediaController extends MediaController {
                 public void onClick(View v) {
                     if (isFullScreen) {
                         ChallegeneSubmissionFragment.VIDEO_POS = iCurrentPos.getPosition();
+                        ChallegeneSubmissionFragment.isVideoPlaying = iCurrentPos.isVideoPlaying();
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenLandscapeActivity.class);
                         intent.putExtra("fullScreenInd", "");
                         intent.putExtra("seekPos", iCurrentPos.getPosition());
+                        intent.putExtra("isPlaying", iCurrentPos.isVideoPlaying());
                         intent.putExtra("videoUrl", videoUrl);
                         ((Activity) getContext()).startActivityForResult(intent, 100);
                     }
@@ -89,6 +93,7 @@ public class CustomMediaController extends MediaController {
 
     public interface ICurrentPos {
         int getPosition();
+        boolean isVideoPlaying();
     }
 }
 

@@ -113,12 +113,17 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
                 postId = fingerprints.getNewPostId();
+                getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
-                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
-                    getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
-                    ChallengesCacheHandler.resetCache();
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath,postId));
+                }else {
+                    Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
+                    intent1.putExtra("submissionId", fingerprints.getNewPostId());
+                    intent1.putExtra("filePath", filePath);
+                    getView().sendBroadcast(intent1);
                 }
+                ChallengesCacheHandler.resetCache();
 
             }
         });
@@ -139,6 +144,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 }
             }else if(intent.getAction() == ACTION_UPLOAD_FAIL){
                 getView().setSnackBarErrorMessage("Submission Fails!");
+                getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
             }
             deinit();
         }

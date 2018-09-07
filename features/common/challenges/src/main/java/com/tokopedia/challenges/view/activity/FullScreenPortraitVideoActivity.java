@@ -1,8 +1,10 @@
 package com.tokopedia.challenges.view.activity;
 
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -38,9 +40,30 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
 
         videoUrl = getIntent().getStringExtra("videoUrl");
         pos = getIntent().getIntExtra("seekPos", 0);
-        videoThumbnail  = findViewById(R.id.video_thumbnail);
+        videoThumbnail = findViewById(R.id.video_thumbnail);
         playIcon = findViewById(R.id.play_icon);
         startVideoPlay(videoUrl);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
+            if (videoView != null) {
+                videoView.seekTo(ChallegeneSubmissionFragment.VIDEO_POS);
+                if (ChallegeneSubmissionFragment.isVideoPlaying)
+                    videoView.start();
+            }
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (videoView != null) {
+            ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
+            ChallegeneSubmissionFragment.isVideoPlaying = false;
+        }
+        super.onPause();
     }
 
     public void startVideoPlay(String videoUrl) {
@@ -52,7 +75,18 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
 
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
-        videoView.start();
+        if (getIntent().getBooleanExtra("isPlaying", false)) {
+            videoView.start();
+        }
+
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                Log.d("dhgsudghs", "" + mediaPlayer.getDuration() + "  " + videoView.getDuration());
+                ChallegeneSubmissionFragment.VIDEO_POS = mediaPlayer.getDuration();
+                finish();
+            }
+        });
     }
 
     @Override
@@ -66,9 +100,16 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
     }
 
     @Override
+    public boolean isVideoPlaying() {
+        return videoView.isPlaying();
+    }
+
+    @Override
     public void onBackPressed() {
-        if (videoView != null)
+        if (videoView != null) {
             ChallegeneSubmissionFragment.VIDEO_POS = getPosition();
+            ChallegeneSubmissionFragment.isVideoPlaying = isVideoPlaying();
+        }
         super.onBackPressed();
     }
 

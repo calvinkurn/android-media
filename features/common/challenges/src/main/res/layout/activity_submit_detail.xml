@@ -79,6 +79,7 @@
                     <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                         android:id="@+id/img_challenge"
                         android:layout_width="match_parent"
+                        android:background="@color/video_background"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/dp_30" />
 
@@ -342,9 +343,4 @@
             <include layout="@layout/details_loader" />
         </LinearLayout>
     </RelativeLayout>
-
-    <FrameLayout
-        android:id="@+id/image_viewer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </RelativeLayout>

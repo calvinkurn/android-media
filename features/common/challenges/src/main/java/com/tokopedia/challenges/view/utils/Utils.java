@@ -274,4 +274,12 @@ public class Utils {
     public static boolean checkIsPastChallenge(String challengeTime) {
         return (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeTime));
     }
+
+    public static boolean isImage(String videoUrl) {
+        for (int i=0; i<isImage.length; i++) {
+            if (videoUrl.endsWith(isImage[i]))
+                return true;
+        }
+        return false;
+    }
 }

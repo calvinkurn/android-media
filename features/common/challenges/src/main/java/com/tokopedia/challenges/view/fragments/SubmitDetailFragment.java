@@ -1,5 +1,7 @@
 package com.tokopedia.challenges.view.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -27,12 +29,14 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.adapter.TouchImageAdapter;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -46,6 +50,7 @@ import com.tokopedia.design.component.ToasterError;
 
 import org.w3c.dom.Text;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -71,6 +76,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView btnSubmit;
     private View llShare;
 
+    public interface ImageListener {
+        void openImage(ArrayList<String> urls);
+    }
+
+    private ImageListener listener;
 
     @Inject
     SubmitDetailPresenter presenter;
@@ -94,6 +104,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        listener = (SubmitDetailActivity) activity;
+        super.onAttach(activity);
     }
 
     @Nullable
@@ -142,6 +158,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             presenter.getSubmissionDetails(submissionId);
         } else {
             hidProgressBar();
+            submissionId = submissionResult.getId();
             presenter.setDataInFields(submissionResult);
             if (fromSubmission) {
                 String mediaUrl;
@@ -176,19 +193,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
             if (challengeImage != null)
-                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS);
+                challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if (challengeImage != null)
+    public void onPause() {
+        if (challengeImage != null && challengeImage.isVideoPlaying()) {
             ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
+            ChallegeneSubmissionFragment.isVideoPlaying = false;
+        }
+        super.onPause();
     }
 
     private void setClickListeners() {
@@ -243,18 +262,24 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String thumbnailUrl, String videoUrl) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), "Challenge Submission");
+        String videoPath = localCacheHandler.getString(submissionId);
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(thumbnailUrl);
-        challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this);
-        if (TextUtils.isEmpty(videoUrl)) {
+
+        if (!TextUtils.isEmpty(videoPath)) {
+            File file = new File(videoPath);
+            if (file.exists())
+                challengeImage.setVideoThumbNail(thumbnailUrl, videoPath, false, this, true);
+        } else {
+            challengeImage.setVideoThumbNail(thumbnailUrl, videoUrl, false, this, false);
+        }
+
+        if ((!TextUtils.isEmpty(thumbnailUrl) && TextUtils.isEmpty(videoUrl)) || (!TextUtils.isEmpty(videoPath) && Utils.isImage(videoPath))) {
             challengeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.add(R.id.image_viewer, fragemnt);
-                    transaction.addToBackStack("ImageViewer");
-                    transaction.commit();
+                    listener.openImage(imageUrls);
                 }
             });
         }
@@ -270,6 +295,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
 
     public void setApprovedView(String approveText, String statusMessage) {
+        if ("Encoding".equalsIgnoreCase(approveText)) {
+            approveText = Utils.STATUS_WAITING;
+            statusMessage = "status is pending";
+        }
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
@@ -351,7 +380,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void OnVideoStart() {
-        if (!presenter.getParticipatedStatus(submissionResult)) {
+        if (submissionResult != null && !presenter.getParticipatedStatus(submissionResult)) {
             presenter.sendBuzzPointEvent(submissionResult.getId());
         }
     }

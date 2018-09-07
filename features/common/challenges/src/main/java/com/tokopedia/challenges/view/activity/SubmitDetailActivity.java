@@ -6,17 +6,21 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
+import com.tokopedia.challenges.view.fragments.ImageViewerFragment;
 import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
 
-public class SubmitDetailActivity extends BaseActivity {
+import java.util.ArrayList;
+
+public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFragment.ImageListener {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SubmitDetailActivity.class);
@@ -49,12 +53,12 @@ public class SubmitDetailActivity extends BaseActivity {
     protected Fragment getNewFragment() {
         SubmissionResult model = getIntent().getParcelableExtra("submissionsResult");
         String submissionId = getIntent().getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID);
-        boolean isPastChallenge = getIntent().getBooleanExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,false);
-        boolean fromSubmission = getIntent().getBooleanExtra("fromSubmission",false);
+        boolean isPastChallenge = getIntent().getBooleanExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
+        boolean fromSubmission = getIntent().getBooleanExtra("fromSubmission", false);
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
         arg.putParcelable("submissionsResult", model);
-        arg.putBoolean("fromSubmission",fromSubmission);
+        arg.putBoolean("fromSubmission", fromSubmission);
         arg.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
         arg.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
         fragment.setArguments(arg);
@@ -69,5 +73,19 @@ public class SubmitDetailActivity extends BaseActivity {
         }
 
         updateTitle(getResources().getString(R.string.post_detail));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
+    public void openImage(ArrayList<String> imageUrls) {
+        ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.parent_view, fragemnt);
+        transaction.addToBackStack("ImageViewer");
+        transaction.commit();
     }
 }

@@ -21,6 +21,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.ChallengesModuleRouter;
@@ -433,4 +434,18 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
     }
+
+    @Override
+    public void saveLocalpath(String newPostId, String filePath) {
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), "Challenge Submission");
+        localCacheHandler.putString(newPostId, filePath);
+        localCacheHandler.applyEditor();
+    }
+
+    @Override
+    public void sendBroadcast(Intent intent1) {
+        getContext().sendBroadcast(intent1);
+    }
+
+
 }
