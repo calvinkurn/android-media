@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.interestpick.R
-import com.tokopedia.interestpick.view.InterestPickContract
+import com.tokopedia.interestpick.view.listener.InterestPickContract
 import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import kotlinx.android.synthetic.main.item_interest_pick.view.*
 

@@ -1,4 +1,4 @@
-package com.tokopedia.interestpick.view
+package com.tokopedia.interestpick.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
@@ -12,6 +12,6 @@ interface InterestPickContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-
+        fun fetchData()
     }
 }
