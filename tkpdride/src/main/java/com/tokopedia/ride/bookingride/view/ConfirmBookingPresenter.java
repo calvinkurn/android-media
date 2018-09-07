@@ -208,7 +208,7 @@ public class ConfirmBookingPresenter extends BaseDaggerPresenter<ConfirmBookingC
             @Override
             public void onNext(TokoCashData tokoCashData) {
                 if (tokoCashData != null
-                        && tokoCashData.getLink() == 1) {
+                        && tokoCashData.getLink()) {
                     CommonUtils.dumper("ConfirmBookingPresenter :: tokocash balance == " + tokoCashData.getBalance());
 
                     tokoCashBalance = "(" + tokoCashData.getBalance() + ")";

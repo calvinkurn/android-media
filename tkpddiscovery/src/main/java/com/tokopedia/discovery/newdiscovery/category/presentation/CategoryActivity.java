@@ -24,7 +24,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +50,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private FrameLayout container;
 
     private ProductFragment productFragment;
-    private CatalogFragment catalogFragment;
+    private CategoryCatalogFragment catalogFragment;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -238,8 +238,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryComponent.inject(this);
     }
 
-    private CatalogFragment getCatalogFragment(String departmentId) {
-        return CatalogFragment.createInstanceByCategoryID(departmentId);
+    private CategoryCatalogFragment getCatalogFragment(String departmentId) {
+        return CategoryCatalogFragment.createInstanceByCategoryID(departmentId);
     }
 
     private Fragment getProductFragment(ProductViewModel productViewModel) {

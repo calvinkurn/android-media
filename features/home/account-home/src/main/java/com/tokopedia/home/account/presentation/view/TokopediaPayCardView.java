@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -91,12 +92,11 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     public void setTextAmountLeft(@NonNull String text) {
-        if (text.equalsIgnoreCase(getContext().getString(R.string.label_wallet_activation))) {
-            this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        } else {
-            this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
-        }
         this.textAmountLeft.setText(text);
+    }
+
+    public void setAmountColorLeft(@ColorRes int color) {
+        this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), color));
     }
 
     public void setTextDescLeft(@NonNull String text) {
