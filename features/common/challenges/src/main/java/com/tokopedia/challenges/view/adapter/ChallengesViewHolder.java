@@ -82,16 +82,16 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            String mediaUrl;
-            boolean isVideo;
-            if (TextUtils.isEmpty(challengesResult.getSharing().getAssets().getVideo())) {
-                mediaUrl = challengesResult.getThumbnailUrl();
-                isVideo = false;
-            } else {
-                mediaUrl = challengesResult.getSharing().getAssets().getVideo();
-                isVideo = true;
-            }
-            ShareBottomSheet.showChallengeShare(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult);
+//            String mediaUrl;
+//            boolean isVideo;
+//            if (TextUtils.isEmpty(challengesResult.getSharing().getAssets().getVideo())) {
+//                mediaUrl = challengesResult.getThumbnailUrl();
+//                isVideo = false;
+//            } else {
+//                mediaUrl = challengesResult.getSharing().getAssets().getVideo();
+//                isVideo = true;
+//            }
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult);
 //            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(),
 //                    challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),
 //                    challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()),

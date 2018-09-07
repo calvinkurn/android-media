@@ -97,7 +97,8 @@ public class CountDownView extends FrameLayout {
         }
 
         timerRunning = false;
-        timer.cancel();
+        if (timer != null)
+            timer.cancel();
     }
 
     public void setListener(CountDownListener listener) {
