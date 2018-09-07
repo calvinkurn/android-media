@@ -1045,7 +1045,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(String courier) {
-        checkoutAnalyticsCourierSelection.eventClickCourierCourierSelectionViewPreselectedCourierOption(courier);
+        checkoutAnalyticsCourierSelection.eventViewCourierCourierSelectionViewPreselectedCourierOption(courier);
     }
 
     @Override
