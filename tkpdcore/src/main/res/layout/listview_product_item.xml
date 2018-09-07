@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,7 +28,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:minHeight="38dp"
-        android:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
+        tools:text="Nexus 5X 32 GB sedia carbon black, ice blue,  pure white dan juga warna rose gold"
         android:textColor="@color/tkpd_main_green"
         android:textSize="15sp" />
 
@@ -37,9 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_marginBottom="5dp"
-        android:layout_weight="1"
         android:gravity="center_vertical"
-        android:text="Rp 3.121.500"
+        tools:text="Rp 3.121.500"
         android:textColor="@color/orange_red"
         android:textSize="12sp" />
 
@@ -55,7 +55,7 @@
             android:id="@+id/label_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="left"
+            android:gravity="start"
             android:orientation="horizontal" />
 
         <TextView
@@ -67,6 +67,8 @@
 
 
         <LinearLayout
+            android:layout_marginTop="5dp"
+            android:paddingBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -76,20 +78,16 @@
                 android:id="@+id/location"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                app:drawableLeftCompat="@drawable/ic_icon_location_grey"
+                app:drawableLeftCompat="@drawable/ic_icon_location_grey_wishlist"
                 android:gravity="center_vertical"
-                android:minHeight="25dp"
-                android:text="Jakarta"
+                tools:text="Jakarta"
                 android:textSize="10sp" />
 
             <LinearLayout
                 android:id="@+id/badges_container"
-                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
                 android:orientation="horizontal" />
 
         </LinearLayout>
