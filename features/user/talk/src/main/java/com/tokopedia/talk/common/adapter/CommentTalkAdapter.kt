@@ -16,4 +16,9 @@ class CommentTalkAdapter(adapterTypeFactory: CommentTalkTypeFactoryImpl,
         this.notifyItemRangeInserted(visitables.size, list.size)
     }
 
+    fun add(list: Visitable<*>) {
+        this.visitables.add(0,list)
+        this.notifyItemRangeInserted(0, 1)
+    }
+
 }

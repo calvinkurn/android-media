@@ -39,4 +39,11 @@
     <string name="menu_follow_talk">Ikuti diskusi</string>
     <string name="menu_report_talk">Laporkan Diskusi</string>
 
+    <string name="see_more">Lihat %s jawaban lainnya</string>
+    <string name="any_question">Ada pertanyaan?</string>
+    <string name="discuss_seller">Diskusikan dengan penjual atau pengguna lain</string>
+    <string name="write_question">Tulis Pertanyaan</string>
+    <string name="contact_seller">Atau hubungi langsung penjual</string>
+    <string name="chat_seller">Chat Penjual</string>
+
 </resources>

@@ -3,7 +3,7 @@ package com.tokopedia.talk.producttalk.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
-import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 
@@ -15,7 +15,7 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
                          listProductTalk: ArrayList<Visitable<*>>)
     : BaseAdapter<ProductTalkTypeFactoryImpl>(adapterTypeFactory, listProductTalk) {
 
-    var emptyModel = EmptyInboxTalkViewModel()
+    var emptyModel = EmptyProductTalkViewModel()
     var loadModel = LoadProductTalkThreadViewModel()
 
     fun showEmpty() {
@@ -50,6 +50,7 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
     fun dismissLoadModel() {
         this.visitables.remove(loadModel)
         this.notifyItemRemoved(visitables.size)
+        showLoading()
     }
 }
 
