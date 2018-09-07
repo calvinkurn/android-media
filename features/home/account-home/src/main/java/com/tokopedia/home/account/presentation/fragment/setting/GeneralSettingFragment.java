@@ -43,6 +43,8 @@ import com.tokopedia.home.account.presentation.presenter.LogoutPresenter;
 import com.tokopedia.home.account.presentation.listener.LogoutView;
 import com.tokopedia.home.account.presentation.viewmodel.SettingItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.SwitchSettingItemViewModel;
+import com.tokopedia.navigation_common.model.WalletModel;
+import com.tokopedia.navigation_common.model.WalletPref;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         implements LogoutView, GeneralSettingAdapter.SwitchSettingListener {
 
     @Inject LogoutPresenter presenter;
+    @Inject WalletPref walletPref;
 
     private View loadingView;
     private View baseSettingView;
@@ -106,8 +109,12 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
                     getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)));
         }
+
+        WalletModel walletModel = walletPref.retrieveWallet();
+        String walletName = walletModel != null ? walletModel.getText() + "," : "";
+        String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
-                getString(R.string.title_tkpd_pay_setting), getString(R.string.subtitle_tkpd_pay_setting)));
+                getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_NOTIFICATION_ID,
                 getString(R.string.title_notification_setting), getString(R.string.subtitle_notification_setting)));
         settingItems.add(new SwitchSettingItemViewModel(SettingConstant.SETTING_SHAKE_ID,
@@ -127,7 +134,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                     getString(R.string.title_dev_options)));
         }
 
-        SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.logout));
+        SettingItemViewModel itemOut = new SettingItemViewModel(SettingConstant.SETTING_OUT_ID, getString(R.string.account_home_button_logout));
         itemOut.setIconResource(R.drawable.ic_setting_out);
         itemOut.setHideArrow(true);
         settingItems.add(itemOut);
@@ -204,10 +211,10 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
 
     private void showDialogLogout() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(getString(R.string.logout)+" dari Tokopedia");
-        dialog.setDesc(getString(R.string.logout_confirmation));
-        dialog.setBtnOk(getString(R.string.logout));
-        dialog.setBtnCancel(getString(R.string.cancel));
+        dialog.setTitle(getString(R.string.account_home_label_logout));
+        dialog.setDesc(getString(R.string.account_home_label_logout_confirmation));
+        dialog.setBtnOk(getString(R.string.account_home_button_logout));
+        dialog.setBtnCancel(getString(R.string.account_home_label_cancel));
         dialog.setOnOkClickListener(v -> {
             dialog.dismiss();
             doLogout();
