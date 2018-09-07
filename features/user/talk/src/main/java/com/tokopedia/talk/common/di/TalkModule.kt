@@ -1,7 +1,6 @@
 package com.tokopedia.talk.common.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
@@ -15,14 +14,14 @@ import com.tokopedia.talk.common.data.TalkApi
 import com.tokopedia.talk.common.data.TalkUrl
 import com.tokopedia.talk.inboxtalk.domain.GetInboxTalkUseCase
 import com.tokopedia.talk.inboxtalk.domain.mapper.GetInboxTalkMapper
+import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
+import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 /**
  * @author by nisie on 8/29/18.
@@ -110,5 +109,12 @@ class TalkModule {
     fun provideGetInboxTalkUseCase(api: TalkApi,
                                    getInboxTalkMapper: GetInboxTalkMapper): GetInboxTalkUseCase {
         return GetInboxTalkUseCase(api, getInboxTalkMapper)
+    }
+
+    @TalkScope
+    @Provides
+    fun provideGetProductTalkUseCase(api: TalkApi,
+                                   getProductTalkMapper: ProductTalkListMapper): GetProductTalkUseCase {
+        return GetProductTalkUseCase(api, getProductTalkMapper)
     }
 }

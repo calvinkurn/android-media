@@ -7,10 +7,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.talk.ProductTalkItemViewModel
 import com.tokopedia.talk.R
-import com.tokopedia.talk.TalkState
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.talk_item.view.*
 
 /**

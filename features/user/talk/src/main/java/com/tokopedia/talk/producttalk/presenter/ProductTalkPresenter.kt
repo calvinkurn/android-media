@@ -1,36 +1,88 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.common.di.TalkScope
+import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
+import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.user.session.UserSession
 import rx.Subscriber
+import javax.inject.Inject
 
 /**
  * @author by Steven
  */
-class ProductTalkPresenter(private val userSession: UserSession,
-                           private val getProductTalkUseCase : GetProductTalkUseCase) :
+class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
+                                               @TalkScope val getProductTalkUseCase : GetProductTalkUseCase) :
         ProductTalkContract.Presenter,
         BaseDaggerPresenter<ProductTalkContract.View>() {
 
-    override fun getProductTalk() {
-        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1)
-                , object : Subscriber<ProductTalkListViewModel>(){
-            override fun onNext(t: ProductTalkListViewModel?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun attachView(view: ProductTalkContract.View?) {
+        super.attachView(view)
+
+    }
+
+    var page: Int = 1
+    var pageId: Int = 0
+
+    override fun initProductTalk(productId: String) {
+        view.showLoadingFull()
+        page = 1
+        getProductTalk(productId, true)
+    }
+
+    override fun getProductTalk(productId: String) {
+        getProductTalk(productId, false)
+    }
+
+    override fun resetProductTalk(productId: String) {
+        view.showRefresh()
+        page = 1
+        getProductTalk(productId, true)
+    }
+
+    fun getProductTalk(productId: String, reset: Boolean) {
+        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1, productId)
+                , object : Subscriber<ProductTalkViewModel>(){
+            override fun onNext(viewModel: ProductTalkViewModel) {
+                view.hideLoadingFull()
+                if (viewModel.listThread.isEmpty()) {
+                    view.onEmptyTalk()
+                } else {
+                    if(reset){
+                        view.onSuccessResetTalk(viewModel.listThread)
+                    }else {
+                        view.onSuccessGetTalks(viewModel.listThread)
+                    }
+                    if (viewModel.hasNextPage) {
+                        view.setLoading()
+                        page += 1
+                        pageId = viewModel.page_id
+                    }
+                }
             }
 
             override fun onCompleted() {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
             }
 
-            override fun onError(e: Throwable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            override fun onError(e: Throwable) {
+                view.hideRefresh()
+                view.hideLoadingFull()
+                if (e is MessageErrorException) {
+                    view.onErrorGetTalks(e.message ?: "")
+                } else {
+                    view.onErrorGetTalks(ErrorHandler.getErrorMessage(view.getContext(), e))
+                }
             }
 
         })
     }
 
     override fun detachView() {
+        getProductTalkUseCase.unsubscribe()
         super.detachView()
     }
 

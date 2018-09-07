@@ -3,10 +3,10 @@ package com.tokopedia.talk.common.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.LoadProductTalkViewModel
-import com.tokopedia.talk.ProductTalkItemViewModel
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 
 /**
  * @author by nisie on 9/5/18.
@@ -17,7 +17,7 @@ class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTa
         BaseAdapterTypeFactory(),
         ProductTalkChildThreadTypeFactory {
 
-    override fun type(loadMoreModel: LoadProductTalkViewModel): Int {
+    override fun type(loadMoreModel: LoadProductTalkThreadViewModel): Int {
         return LoadMoreCommentTalkViewHolder.LAYOUT
     }
 

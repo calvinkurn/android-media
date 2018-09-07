@@ -345,7 +345,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToTalk(@NonNull Context context, @NonNull Bundle bundle) {
         UnifyTracking.eventPDPTalk();
-        Intent intent = new Intent(context, TalkProductActivity.class);
+        Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context);
         intent.putExtras(bundle);
         viewListener.navigateToActivityRequest(intent,
                 ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT);

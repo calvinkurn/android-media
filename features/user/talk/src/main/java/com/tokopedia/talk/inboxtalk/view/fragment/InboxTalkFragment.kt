@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
-import com.tokopedia.talk.TalkState
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
@@ -27,6 +26,7 @@ import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHol
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject

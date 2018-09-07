@@ -9,12 +9,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
-import com.tokopedia.talk.TalkState
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.inbox_talk_item.view.*
 import kotlinx.android.synthetic.main.inbox_talk_item_product_header.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
