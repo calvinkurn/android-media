@@ -17,14 +17,14 @@ import javax.inject.Inject
 /**
  * @author by Steven.
  */
-class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<InboxTalkPojo>>,
+class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<InboxTalkPojo>>,
         ProductTalkViewModel> {
 
     private val IS_READ = 2
     private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
-         if (response.body()!= null ){
+        if (response.body() != null) {
 //                (response.body().header!= null &&
 //                        response.body().header!= null &&
 //                response.body().header.messages.isEmpty() ||
@@ -51,6 +51,7 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
 
     private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
+        //TODO NISIE CHECK PRODUCT ATTACHMENT
         val listTalk = ArrayList<Visitable<*>>()
         for (data: TalkCommentItem in pojo.list) {
             listTalk.add(ProductTalkItemViewModel(
@@ -60,10 +61,12 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
-                    true
+                    true,
+                    ArrayList()
             ))
         }
 
+        //TODO NISIE CHECK PRODUCT ATTACHMENT
         return TalkThreadViewModel(
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
@@ -72,7 +75,8 @@ class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<I
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
-                        pojo.talk_follow_status == IS_FOLLOWED
+                        pojo.talk_follow_status == IS_FOLLOWED,
+                        ArrayList()
                 ),
                 listTalk)
     }

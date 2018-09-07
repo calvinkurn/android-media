@@ -86,7 +86,6 @@ public class FeedPlusPresenter
         getFirstPageFeedsUseCase.unsubscribe();
         doFavoriteShopUseCase.unsubscribe();
         getFirstPageFeedsCloudUseCase.unsubscribe();
-        checkNewFeedUseCase.unsubscribe();
         likeKolPostUseCase.unsubscribe();
         followKolPostGqlUseCase.unsubscribe();
         sendVoteUseCase.unsubscribe();
