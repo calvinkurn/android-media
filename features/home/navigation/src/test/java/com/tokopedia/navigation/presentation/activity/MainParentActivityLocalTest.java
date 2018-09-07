@@ -7,14 +7,18 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.DeepLinkActivity;
+import com.tokopedia.ShadowBottomNavigationView;
 import com.tokopedia.ShadowLocalBroadcastManager;
 import com.tokopedia.ShadowTaskStackBuilder;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.home.HomeApp;
+import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.user.session.UserSession;
 
@@ -36,17 +40,22 @@ import java.lang.reflect.Field;
 import java.util.List;
 
 import static junit.framework.Assert.fail;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-@Config(application = HomeApp.class, manifest = "AndroidTestManifest.xml", shadows = {ShadowTaskStackBuilder.class, ShadowLocalBroadcastManager.class})
+@Config(application = HomeApp.class, manifest = "AndroidTestManifest.xml",
+        shadows = {ShadowTaskStackBuilder.class, ShadowLocalBroadcastManager.class, ShadowBottomNavigationView.class})
 @RunWith(RobolectricTestRunner.class)
 public class MainParentActivityLocalTest {
 
@@ -135,6 +144,35 @@ public class MainParentActivityLocalTest {
         verify(mActivityPresenter, times(1)).isFirstTimeUser();
 
         assertEquals(mActivityController.get().isFinishing(), false);
+
+        // verify selected tab is home
+        assertEquals(((BottomNavigation)mActivity.findViewById(R.id.bottomnav)).getCurrentItem(),0);
+    }
+
+    @Test
+    public void test_tap_all_navigation() throws Exception{
+        skip_onboarding();
+
+        // tap all navigation view
+        MenuItem menuItem = mock(MenuItem.class);
+        doReturn(R.id.menu_feed).when(menuItem).getItemId();
+        mActivityController.get().onNavigationItemSelected(menuItem);
+
+        BottomNavigation bottomNavigation = mActivityController.get().findViewById(R.id.bottomnav);
+        MenuItem selectedMenuItem = ((ShadowBottomNavigationView) shadowOf(bottomNavigation)).getSelectedMenuItem();
+        assertThat(selectedMenuItem.getItemId(), is(R.id.menu_home));
+
+        ((ShadowBottomNavigationView) shadowOf(bottomNavigation)).selectMenuItem(1);
+
+        assertEquals(bottomNavigation.getMenu().getItem(0).isChecked(), false);
+        assertEquals(bottomNavigation.getMenu().getItem(1).isChecked(), true);
+
+        doReturn(false).when(mActivityController.get().presenter).isUserLogin();
+
+        ((ShadowBottomNavigationView) shadowOf(bottomNavigation)).selectMenuItem(2);
+        assertTrue(mActivityController.get().fragmentList.get(1)==mActivityController.get().currentFragment);
+        assertFalse(mActivityController.get().fragmentList.get(2)==mActivityController.get().currentFragment);
+
     }
 
     @Test
