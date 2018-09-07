@@ -115,12 +115,13 @@ public class Menus extends BaseBottomSheetView {
         public class ViewHolder extends RecyclerView.ViewHolder {
 
             public TextView title;
-            public ImageView icon;
+            public ImageView icon, iconEnd;
 
             public ViewHolder(View view) {
                 super(view);
                 title = view.findViewById(R.id.tv_title_menu);
                 icon = view.findViewById(R.id.iv_icon_menu);
+                iconEnd = view.findViewById(R.id.iv_icon_menu_end);
             }
         }
 
@@ -164,6 +165,12 @@ public class Menus extends BaseBottomSheetView {
                 } else {
                     holder.icon.setVisibility(View.INVISIBLE);
                 }
+                if (itemMenus.iconEnd != 0) {
+                    holder.iconEnd.setImageResource(itemMenus.iconEnd);
+                    holder.iconEnd.setVisibility(View.VISIBLE);
+                } else {
+                    holder.iconEnd.setVisibility(View.GONE);
+                }
                 holder.title.setText(itemMenus.title);
 
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -206,6 +213,7 @@ public class Menus extends BaseBottomSheetView {
 
         public String title;
         public int icon;
+        public int iconEnd;
 
         public ItemMenus(String title) {
             this.title = title;
