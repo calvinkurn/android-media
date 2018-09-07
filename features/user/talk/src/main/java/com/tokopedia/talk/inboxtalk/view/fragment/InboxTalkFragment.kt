@@ -253,6 +253,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     override fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>) {
         adapter.hideEmpty()
         adapter.addList(list)
+
+        if(activity is )
     }
 
     override fun onErrorGetInboxTalk(errorMessage: String) {
