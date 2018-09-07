@@ -233,12 +233,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 if (!data.getCartItemData().isError()) {
                     data.setSelected(isChecked);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        boolean needToUpdateParent = actionListener.onCartItemCheckChanged(getAdapterPosition(), parentPosition, data.isSelected());
-                        if (needToUpdateParent) {
-                            viewHolderListener.onNeedToRefreshAllShop();
-                        } else {
-                            handleRefreshType(data, viewHolderListener, parentPosition);
-                        }
+                        actionListener.onCartItemCheckChanged(getAdapterPosition(), parentPosition, data.isSelected());
+                        viewHolderListener.onNeedToRefreshAllShop();
                     }
                 }
             }
