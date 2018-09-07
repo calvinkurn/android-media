@@ -41,8 +41,6 @@ public class CustomSwitchPreference extends SwitchPreference {
 
         Switch aSwitch = findSwitch(holder.itemView.findViewById(android.R.id.widget_frame));
         if (aSwitch != null){
-            aSwitch.setScaleX(0.8f);
-            aSwitch.setScaleY(0.8f);
             aSwitch.setTrackDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
                     R.drawable.bg_switch_track_selector));
 
