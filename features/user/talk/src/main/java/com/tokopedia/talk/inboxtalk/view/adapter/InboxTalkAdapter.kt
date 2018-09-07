@@ -2,6 +2,7 @@ package com.tokopedia.talk.inboxtalk.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 
 /**
@@ -15,24 +16,29 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
     var emptyModel = EmptyInboxTalkViewModel()
 
     fun showEmpty() {
-        this.visitables.clear()
         this.visitables.add(emptyModel)
         this.notifyDataSetChanged()
     }
 
     fun hideEmpty() {
-        this.visitables.clear()
+        this.visitables.remove(emptyModel)
         this.notifyDataSetChanged()
     }
 
     fun addList(list: ArrayList<Visitable<*>>) {
         this.visitables.addAll(list)
-        this.notifyItemRangeInserted(visitables.size, list.size)
+        this.notifyItemInserted(visitables.size)
     }
 
     fun setList(list: ArrayList<Visitable<*>>) {
         this.visitables.addAll(list)
         this.notifyDataSetChanged()
+    }
+
+    fun checkCanLoadMore(index: Int): Boolean {
+        return if (index == itemCount - 1) {
+            visitables[index] is LoadingMoreModel
+        } else false
     }
 
 }

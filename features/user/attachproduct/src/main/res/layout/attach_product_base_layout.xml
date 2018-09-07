@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_card_attach_product"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/dp_8">
 
     <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/attach_product_chat_image"
         android:layout_width="54dp"
         android:layout_height="54dp"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_10"
         android:adjustViewBounds="true"
         android:gravity="center"
         android:src="@drawable/ic_loading_toped"/>
@@ -34,15 +34,15 @@
             android:id="@+id/attach_product_chat_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
             android:lineSpacingExtra="4sp"
             android:maxLines="2"
             android:maxWidth="172dp"
-            tools:text="Nama Produk"
-            android:ellipsize="end"
             android:textColor="@color/black_70"
             android:textSize="14sp"
-            android:textStyle="normal"/>
+            android:textStyle="normal"
+            tools:text="Nama Produk"/>
 
         <TextView
             android:id="@+id/attach_product_chat_price"

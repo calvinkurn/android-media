@@ -40,5 +40,7 @@
     <string name="menu_report_talk">Laporkan Diskusi</string>
     <string name="menu_report_comment">Laporkan Komentar</string>
     <string name="menu_delete_comment">Hapus Komentar</string>
+    <string name="empty_talk_title">Belum ada diskusi untuk produk ini</string>
+    <string name="empty_bank_subtitle">Jadilah yang pertama bertanya dengan penjual atau pengguna lain</string>
 
 </resources>

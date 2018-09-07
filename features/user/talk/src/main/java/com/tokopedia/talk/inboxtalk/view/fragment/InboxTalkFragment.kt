@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -92,6 +93,19 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         talk_rv.layoutManager = linearLayoutManager
         talk_rv.adapter = adapter
+        talk_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val index = linearLayoutManager.findLastVisibleItemPosition()
+                if (index != -1 && adapter.checkCanLoadMore(index)) {
+                    presenter.getInboxTalk(filter, nav)
+                }
+            }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+        })
         swipeToRefresh.setOnRefreshListener { onRefreshData() }
         icon_filter.setButton1OnClickListener(showFilterDialog())
     }
@@ -134,8 +148,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             POS_FILTER_UNREAD -> filter = FILTER_UNREAD
         }
 
+
         //TODO NISIE: SET MENU ICON TO CHECKED
-        presenter.getInboxTalk(filter, nav)
+        presenter.getInboxTalkWithFilter(filter, nav)
         filterMenu.dismiss()
     }
 
@@ -228,12 +243,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.show()
     }
 
-    override fun showLoadingFull() {
-        progressBar.visibility = View.VISIBLE
+    override fun showLoading() {
+        adapter.showLoading()
     }
 
-    override fun hideLoadingFull() {
-        progressBar.visibility = View.GONE
+    override fun hideLoading() {
+        adapter.hideLoading()
     }
 
     override fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>) {
@@ -242,8 +257,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     override fun onErrorGetInboxTalk(errorMessage: String) {
-        NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
-            presenter.getInboxTalk(filter, nav)
+        if (adapter.itemCount == 0) {
+            NetworkErrorHelper.showEmptyState(context, view, errorMessage) {
+                presenter.getInboxTalk(filter, nav)
+            }
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, NetworkErrorHelper.RetryClickedListener {
+                presenter.getInboxTalk(filter, nav)
+            })
         }
     }
 
@@ -251,13 +272,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         swipeToRefresh.isRefreshing = false
     }
 
-    override fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>) {
+    override fun onEmptyTalk() {
         adapter.clearAllElements()
-        adapter.setList(listTalk)
+        adapter.showEmpty()
     }
 
-    override fun onEmptyTalk() {
-        adapter.showEmpty()
+    override fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>) {
+        adapter.clearAllElements()
+        adapter.setList(listTalk)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -354,6 +376,18 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     override fun showFilter() {
         icon_filter.visibility = View.VISIBLE
+    }
+
+    override fun showLoadingFilter() {
+        progressBar.visibility = View.VISIBLE
+        talk_rv.visibility = View.GONE
+        swipeToRefresh.isEnabled = false
+    }
+
+    override fun hideLoadingFilter() {
+        progressBar.visibility = View.GONE
+        talk_rv.visibility = View.VISIBLE
+        swipeToRefresh.isEnabled = true
     }
 
     private fun goToDetailTalk() {

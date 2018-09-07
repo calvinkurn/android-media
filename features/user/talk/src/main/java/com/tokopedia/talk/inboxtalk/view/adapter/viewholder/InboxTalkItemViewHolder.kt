@@ -26,7 +26,7 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
 
 class InboxTalkItemViewHolder(val v: View,
                               val listener: TalkItemListener,
-                              private val talkCommentListener : CommentTalkViewHolder
+                              private val talkCommentListener: CommentTalkViewHolder
                               .TalkCommentItemListener,
                               private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
@@ -46,7 +46,7 @@ class InboxTalkItemViewHolder(val v: View,
     private val talkContent: TextView = itemView.talk_content
     private val listComment: RecyclerView = itemView.list_child
     private val replyButton: TextView = itemView.replyButton
-
+    private val separatorChild: View = itemView.separatorChild
 
     private lateinit var adapter: CommentTalkAdapter
 
@@ -64,8 +64,10 @@ class InboxTalkItemViewHolder(val v: View,
                         .VERTICAL, false)
                 listComment.adapter = adapter
                 listComment.visibility = View.VISIBLE
+                separatorChild.visibility = View.VISIBLE
             } else {
                 listComment.visibility = View.GONE
+                separatorChild.visibility = View.GONE
             }
 
             productName.text = MethodChecker.fromHtml(element.productHeader.productName)
@@ -98,7 +100,7 @@ class InboxTalkItemViewHolder(val v: View,
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener{listener.onMenuButtonClicked(menu)}
+        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu) }
     }
 
 }

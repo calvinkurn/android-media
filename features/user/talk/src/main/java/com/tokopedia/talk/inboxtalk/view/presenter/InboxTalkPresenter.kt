@@ -1,7 +1,6 @@
 package com.tokopedia.talk.inboxtalk.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.di.TalkScope
@@ -19,94 +18,165 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
     : BaseDaggerPresenter<InboxTalkContract.View>(),
         InboxTalkContract.Presenter {
 
+    var isRequesting: Boolean = false
     var page: Int = 1
     var page_id: Int = 0
 
     override fun getInboxTalk(filter: String, nav: String) {
-        view.showLoadingFull()
-        view.hideFilter()
-        getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
-                filter,
-                nav,
-                page,
-                page_id
-        ), object : Subscriber<InboxTalkViewModel>() {
-            override fun onCompleted() {
+        if (!isRequesting) {
+            view.showLoading()
+            view.hideFilter()
+            isRequesting = true
+            getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
+                    filter,
+                    nav,
+                    page,
+                    page_id
+            ), object : Subscriber<InboxTalkViewModel>() {
+                override fun onCompleted() {
 
-            }
-
-            override fun onError(e: Throwable) {
-                view.hideLoadingFull()
-                view.showFilter()
-
-                if (e is MessageErrorException) {
-                    view.onErrorGetInboxTalk(e.message ?: "")
-                } else {
-                    view.onErrorGetInboxTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
-            }
 
-            override fun onNext(talkViewModel: InboxTalkViewModel) {
-                view.hideLoadingFull()
-                view.showFilter()
+                override fun onError(e: Throwable) {
+                    view.hideLoading()
+                    onErrorTalk(e)
+                }
 
-                if (talkViewModel.listTalk.isEmpty()) {
-                    view.onEmptyTalk()
-                } else {
-                    view.onSuccessGetInboxTalk(talkViewModel.listTalk)
+                override fun onNext(talkViewModel: InboxTalkViewModel) {
+                    view.hideLoading()
+                    view.showFilter()
+                    isRequesting = false
+
+                    if (page == 1 && talkViewModel.listTalk.isEmpty()) {
+                        view.onEmptyTalk()
+                    } else if (!talkViewModel.listTalk.isEmpty()) {
+                        view.onSuccessGetInboxTalk(talkViewModel.listTalk)
+                    }
+
                     if (talkViewModel.hasNextPage) {
                         page += 1
                         page_id = talkViewModel.page_id
+                        view.showLoading()
+                    } else {
+                        view.hideLoading()
                     }
+
                 }
-            }
-        })
+            })
+        }
     }
 
-    override fun refreshTalk(filter: String, nav: String) {
-        page = 1
-        page_id = 0
+    override fun getInboxTalkWithFilter(filter: String, nav: String) {
+        if (!isRequesting) {
+            page = 1
+            page_id = 0
+            view.showLoadingFilter()
+            view.hideFilter()
+            isRequesting = true
+            getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
+                    filter,
+                    nav,
+                    page,
+                    page_id
+            ), object : Subscriber<InboxTalkViewModel>() {
+                override fun onCompleted() {
 
-        view.hideFilter()
-
-        getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
-                filter,
-                nav,
-                page,
-                page_id
-        ), object : Subscriber<InboxTalkViewModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable) {
-                view.hideRefreshLoad()
-                view.showFilter()
-
-                if (e is MessageErrorException) {
-                    view.onErrorGetInboxTalk(e.message ?: "")
-                } else if (GlobalConfig.isAllowDebuggingTools()) {
-                    view.onErrorGetInboxTalk(e.toString())
-                } else {
-                    view.onErrorGetInboxTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
                 }
-            }
 
-            override fun onNext(talkViewModel: InboxTalkViewModel) {
-                view.hideRefreshLoad()
-                view.showFilter()
+                override fun onError(e: Throwable) {
+                    view.hideLoadingFilter()
+                    onErrorTalk(e)
 
-                if (talkViewModel.listTalk.isEmpty()) {
-                    view.onEmptyTalk()
-                } else {
-                    view.onSuccessRefreshInboxTalk(talkViewModel.listTalk)
+                }
+
+                override fun onNext(talkViewModel: InboxTalkViewModel) {
+                    view.hideLoadingFilter()
+                    view.showFilter()
+                    isRequesting = false
+
+                    if (page == 1 && talkViewModel.listTalk.isEmpty()) {
+                        view.onEmptyTalk()
+                    } else if (!talkViewModel.listTalk.isEmpty()) {
+                        view.onSuccessGetListFirstPage(talkViewModel.listTalk)
+                    }
+
                     if (talkViewModel.hasNextPage) {
                         page += 1
                         page_id = talkViewModel.page_id
+                        view.showLoading()
+                    } else {
+                        view.hideLoading()
                     }
+
                 }
-            }
-        })
+            })
+        }
+    }
+
+
+    override fun refreshTalk(filter: String, nav: String) {
+        if (!isRequesting) {
+            page = 1
+            page_id = 0
+
+            view.hideFilter()
+            isRequesting = true
+
+            getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
+                    filter,
+                    nav,
+                    page,
+                    page_id
+            ), object : Subscriber<InboxTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideRefreshLoad()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: InboxTalkViewModel) {
+                    view.hideRefreshLoad()
+                    view.showFilter()
+                    isRequesting = false
+
+                    if (talkViewModel.listTalk.isEmpty()) {
+                        view.onEmptyTalk()
+                    } else {
+                        view.onSuccessGetListFirstPage(talkViewModel.listTalk)
+                        if (talkViewModel.hasNextPage) {
+                            page += 1
+                            page_id = talkViewModel.page_id
+                        }
+                    }
+
+                    if (talkViewModel.hasNextPage) {
+                        page += 1
+                        page_id = talkViewModel.page_id
+                        view.showLoading()
+                    } else {
+                        view.hideLoading()
+                    }
+
+                }
+            })
+        } else {
+            view.hideRefreshLoad()
+        }
+    }
+
+
+    private fun onErrorTalk(e: Throwable) {
+        view.showFilter()
+        isRequesting = false
+
+        if (e is MessageErrorException) {
+            view.onErrorGetInboxTalk(e.message ?: "")
+        } else {
+            view.onErrorGetInboxTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
+        }
     }
 
     override fun detachView() {

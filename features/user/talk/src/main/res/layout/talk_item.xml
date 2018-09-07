@@ -13,7 +13,6 @@
         android:id="@+id/prof_pict"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        android:background="@drawable/circle"
         app:layout_constraintLeft_toLeftOf="parent"/>
 
     <LinearLayout

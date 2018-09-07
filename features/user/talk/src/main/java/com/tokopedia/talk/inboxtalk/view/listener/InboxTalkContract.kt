@@ -13,19 +13,22 @@ interface InboxTalkContract {
 
     interface View : CustomerView {
         fun getContext(): Context?
-        fun showLoadingFull()
-        fun hideLoadingFull()
+        fun showLoading()
+        fun hideLoading()
         fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>)
         fun onErrorGetInboxTalk(errorMessage: String)
         fun onEmptyTalk()
         fun hideRefreshLoad()
-        fun onSuccessRefreshInboxTalk(listTalk: ArrayList<Visitable<*>>)
         fun hideFilter()
         fun showFilter()
+        fun showLoadingFilter()
+        fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
+        fun hideLoadingFilter()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun refreshTalk(filter: String, nav: String)
         fun getInboxTalk(filter: String, nav: String)
+        fun getInboxTalkWithFilter(filter: String, nav: String)
     }
 }
