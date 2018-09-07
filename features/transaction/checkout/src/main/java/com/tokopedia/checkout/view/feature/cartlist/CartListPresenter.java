@@ -572,8 +572,9 @@ public class CartListPresenter implements ICartListPresenter {
             public void onError(Throwable e) {
                 view.hideProgressLoading();
                 e.printStackTrace();
-                handleErrorCartList(e);
-                if (removeAllItem) {
+                if (!removeAllItem) {
+                    handleErrorCartList(e);
+                } else {
                     processInitialGetCartData();
                 }
             }
