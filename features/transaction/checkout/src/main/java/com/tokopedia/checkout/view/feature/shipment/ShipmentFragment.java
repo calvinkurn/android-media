@@ -959,11 +959,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                  RecipientAddressModel recipientAddressModel) {
         sendAnalyticsOnClickChooseCourierSelection();
 
+        RecipientAddressModel currentAddress;
+        if (recipientAddressModel != null) {
+            currentAddress = recipientAddressModel;
+        } else {
+            currentAddress = shipmentCartItemModel.getRecipientAddressModel();
+        }
         ShipmentDetailData shipmentDetailData = getShipmentDetailData(shipmentCartItemModel,
-                recipientAddressModel);
+                currentAddress);
         if (shipmentDetailData != null) {
             showCourierChoiceBottomSheet(shipmentDetailData, shipmentCartItemModel.getShopShipmentList(),
-                    recipientAddressModel, position);
+                    currentAddress, position);
         }
     }
 
