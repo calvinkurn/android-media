@@ -224,6 +224,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (args != null && !args.isEmpty()) {
             isToolbarWithBackButton = false;
         }
+        setVisibilityRemoveButton(false);
     }
 
     private void setVisibilityRemoveButton(boolean state) {
@@ -235,7 +236,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
         }
     }
-
 
     private void onContentAvailabilityChanged(boolean available) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
