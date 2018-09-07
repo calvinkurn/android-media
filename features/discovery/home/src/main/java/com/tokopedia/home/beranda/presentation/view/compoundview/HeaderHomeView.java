@@ -231,6 +231,7 @@ public class HeaderHomeView extends BaseCustomView {
                 if (headerViewModel.isPendingTokocashChecked()
                         && headerViewModel.getCashBackData() != null) {
                     if (headerViewModel.getCashBackData().getAmount() > 0) {
+                        tvActionTokocash.setVisibility(GONE);
                         tvBalanceTokocash.setVisibility(VISIBLE);
                         tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                         tvBalanceTokocash.setTextColor(
