@@ -13,6 +13,8 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -23,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.design.R;
+import com.tokopedia.design.component.badge.BadgeView;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
@@ -860,6 +863,28 @@ public class BottomNavigation extends BottomNavigationView {
         BottomNavigationItemView itemView = getBottomNavigationItemView(position);
         setField(BottomNavigationItemView.class, itemView, "mDefaultMargin", marginTop);
         mMenuView.updateMenuView();
+    }
+
+    /**
+     * Handle badge notification
+     */
+    private SparseArray<BadgeView> mBadgeViews = new SparseArray<>();
+
+    public void setNotification(int badgeNumber, int positionItem) {
+        if (getBottomNavigationItemView(positionItem) == null) {
+            Log.e(this.getClass().getSimpleName(), "BottomNavigationItemView NULL");
+            return;
+        }
+
+        BadgeView badgeView = mBadgeViews.get(positionItem);
+        if (badgeView == null) {
+            badgeView = new BadgeView(getContext());
+            mBadgeViews.put(positionItem, badgeView);
+        }
+
+        badgeView.setGravityOffset(10, 3, true);
+        badgeView.bindTarget(getBottomNavigationItemView(positionItem));
+        badgeView.setBadgeNumber(badgeNumber);
     }
 
     /**

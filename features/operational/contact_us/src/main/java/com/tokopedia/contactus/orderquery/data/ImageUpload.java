@@ -7,15 +7,15 @@ import com.tokopedia.contactus.R;
 
 public class ImageUpload implements Parcelable {
 
-    String imageId;
-    String fileLoc;
-    String picSrc;
-    String picSrcLarge;
-    String picObj;
-    int position;
-    String description;
-    boolean isSelected = false;
-    int imgSrc = R.drawable.ic_upload;
+    private String imageId;
+    private String fileLoc;
+    private String picSrc;
+    private String picSrcLarge;
+    private String picObj;
+    private int position;
+    private String description;
+    private boolean isSelected = false;
+    private int imgSrc = R.drawable.ic_upload;
 
     public ImageUpload() {
 

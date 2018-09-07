@@ -41,7 +41,7 @@ public class InboxRouter {
     public static final int RESO_BUYER = 1;
     public static final int RESO_MINE = 0;
 
-    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity";
+    private static final String INBOX_TICKET_ACTIVITY = "com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity";
     private static final String INBOX_TICKET_FRAGMENT = "com.tokopedia.contactus.inboxticket.fragment.InboxTicketFragment";
 
     private static final String INBOX_MESSAGE_ACTIVITY = "com.tokopedia.inbox.inboxmessage.activity.InboxMessageActivity";

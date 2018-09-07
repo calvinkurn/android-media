@@ -1,5 +1,7 @@
 package com.tokopedia.profilecompletion.view.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -10,10 +12,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 
-
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
@@ -28,6 +31,11 @@ public class ProfileCompletionActivity extends BasePresenterActivity implements 
 
     private static final String ERROR_IMPLEMENT_LISTENER = "Error not implementing " +
             "ProfileCompletionContract.View";
+
+    @DeepLink(Constants.Applinks.PROFILE_COMPLETION)
+    public static Intent getCallingTopProfile(Context context, Bundle bundle) {
+        return new Intent(context, ProfileCompletionActivity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -118,7 +118,7 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
         return bottomNavigation;
     }
 
-    private void onSearchingStart(String keyword) {
+    protected void onSearchingStart(String keyword) {
         searchView.closeSearch();
         showLoadingView(true);
         showContainer(false);
@@ -162,14 +162,14 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
 
     @Override
     public void onSearchViewShown() {
-        bottomNavigation.hideBottomNavigation();
+        hideBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(false);
         CommonUtils.forceShowKeyboard(this);
     }
 
     @Override
     public void onSearchViewClosed() {
-        bottomNavigation.restoreBottomNavigation();
+        showBottomNavigation();
         bottomNavigation.setBehaviorTranslationEnabled(true);
     }
 
@@ -415,7 +415,6 @@ public class DiscoveryActivity extends BaseDiscoveryActivity implements
                 performRequestProduct(searchView.getLastQuery());
             }
         });
-        hideBottomNavigation();
     }
 
     @Override

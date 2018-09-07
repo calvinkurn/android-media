@@ -39,7 +39,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -47,11 +47,8 @@ import com.tokopedia.core.gcm.utils.NotificationUtils;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.home.BannerWebView;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
@@ -82,10 +79,10 @@ import com.tokopedia.seller.product.variant.view.activity.ProductVariantDashboar
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
 import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
+import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
@@ -239,6 +236,16 @@ public abstract class SellerRouterApplication extends MainApplication
         super.onCreate();
         initializeDagger();
         initializeRemoteConfig();
+    }
+
+    @Override
+    public String getStringRemoteConfig(String key) {
+        return remoteConfig.getString(key, "");
+    }
+
+    @Override
+    public void setStringRemoteConfigLocal(String key, String value) {
+        remoteConfig.setString(key, value);
     }
 
     private void initializeRemoteConfig() {
@@ -1375,7 +1382,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return new TkpdAuthInterceptor();
     }
 
-    @Override
+
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
@@ -1455,20 +1462,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_setting_bank", true))
-            return SettingBankActivity.Companion.createIntent(context);
-        else {
-            return ManagePeopleBankActivity.createInstance(context);
-        }
+        return SettingBankActivity.Companion.createIntent(context);
     }
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_new_change_password_enabled", true)) {
-            return ChangePasswordActivity.Companion.createIntent(context);
-        } else {
-            return new Intent(context, ManagePasswordActivity.class);
-        }
+        return ChangePasswordActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -1498,7 +1497,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void logoutToHome(Activity activity) {
         //From DialogLogoutFragment
-        if(activity!= null) {
+        if (activity != null) {
             new GlobalCacheManager().deleteAll();
             Router.clearEtalase(activity);
             DbManagerImpl.getInstance().removeAllEtalase();

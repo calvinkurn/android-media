@@ -44,6 +44,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -53,29 +54,26 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest {
+public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDetailsContract.View, DealsCategoryAdapter.INavigateToActivityRequest {
     private final boolean isShortLayout = true;
 
     private CollapsingToolbarLayout collapsingToolbarLayout;
-    private LinearLayout tvSeeMoreBtn;
     private AppBarLayout appBarLayout;
     private CoordinatorLayout mainContent;
-    private ConstraintLayout baseMainContent;
+    private LinearLayout baseMainContent;
     private FrameLayout flHeader;
 
-    private TextView tvDealsCount;
-    private TextView tvCityName;
-    private TextView tvSeeMore;
     private ImageView ivHeader;
     private ImageView ivBrandLogo;
-    private ImageView ivArrowSeeMore;
     private RecyclerView recyclerViewDeals;
     private View progressBarLayout;
-    private ExpandableTextView tvExpandableDesc;
+
     private ProgressBar progBar;
     private LinearLayout noContent;
     @Inject
     public BrandDetailsPresenter mPresenter;
+    @Inject
+    DealsAnalytics dealsAnalytics;
     private DealsCategoryAdapter dealsAdapter;
     private LinearLayoutManager layoutManager;
     private Toolbar toolbar;
@@ -118,17 +116,12 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
 
 
     private void setViewIds(View view) {
-        tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-        tvSeeMoreBtn = view.findViewById(R.id.expand_view_description);
-        tvDealsCount = view.findViewById(R.id.number_of_locations);
-        tvCityName = view.findViewById(R.id.tv_popular);
+
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         ivHeader = view.findViewById(R.id.header_image);
         ivBrandLogo = view.findViewById(R.id.iv_brand_logo);
         recyclerViewDeals = view.findViewById(R.id.recycler_view);
-        tvSeeMore = view.findViewById(R.id.seemorebutton_description);
-        ivArrowSeeMore = view.findViewById(R.id.down_arrow_description);
         progressBarLayout = view.findViewById(R.id.progress_bar_layout);
         mainContent = view.findViewById(R.id.main_content);
         baseMainContent = view.findViewById(R.id.base_main_content);
@@ -138,32 +131,15 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         toolbar = view.findViewById(R.id.toolbar);
 
         ((BaseSimpleActivity) getActivity()).setSupportActionBar(toolbar);
-        recyclerViewDeals.setNestedScrollingEnabled(false);
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         collapsingToolbarLayout.setTitle(" ");
-        tvSeeMoreBtn.setOnClickListener(this);
-        tvExpandableDesc.setInterpolator(new OvershootInterpolator());
         layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         recyclerViewDeals.setLayoutManager(layoutManager);
+        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.BRAND_PAGE, this, !isShortLayout, true);
+        recyclerViewDeals.setAdapter(dealsAdapter);
 
     }
 
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.expand_view_description) {
-            if (tvExpandableDesc.isExpanded()) {
-                tvSeeMore.setText(R.string.expand);
-                ivArrowSeeMore.animate().rotation(0f);
-
-            } else {
-                tvSeeMore.setText(R.string.collapse);
-                ivArrowSeeMore.animate().rotation(180f);
-
-            }
-            tvExpandableDesc.toggle();
-        }
-    }
 
     @Override
     protected void initInjector() {
@@ -177,40 +153,33 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
         startActivityForResult(intent, requestCode);
     }
 
-
     @Override
     public void renderBrandDetails(List<ProductItem> productItems, Brand brand, int count) {
         collapsingToolbarLayout.setTitle(brand.getTitle());
-        tvExpandableDesc.setText(brand.getDescription());
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
-            tvCityName.setText(String.format(getResources().getString(R.string.deals_brand_detail_location), location.getName()));
             locationName = location.getName();
-        }else {
-            tvCityName.setText(getResources().getString(R.string.text_deals));
         }
         loadBrandImage(ivHeader, brand.getFeaturedImage());
         ImageHandler.loadImage(getActivity(), ivBrandLogo, brand.getFeaturedThumbnailImage(), R.color.grey_1100, R.color.grey_1100);
         if (productItems != null && productItems.size() > 0) {
-            if (count == 0)
-                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), productItems.size()));
-            else
-                tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            dealsAdapter = new DealsCategoryAdapter(productItems, this, !isShortLayout, true);
-
-            recyclerViewDeals.setAdapter(dealsAdapter);
-            recyclerViewDeals.setVisibility(View.VISIBLE);
+            dealsAdapter.clearList();
+            recyclerViewDeals.clearOnScrollListeners();
+            dealsAdapter.addAll(productItems, false);
+            dealsAdapter.notifyDataSetChanged();
+            dealsAdapter.setBrand(brand);
+            dealsAdapter.addBrandHeader(brand.getDescription(), brand.getTitle(), count);
             noContent.setVisibility(View.GONE);
             recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
         } else {
-            tvDealsCount.setText(String.format(getResources().getString(R.string.number_of_items), count));
-            recyclerViewDeals.setVisibility(View.GONE);
+            dealsAdapter.clearList();
+            recyclerViewDeals.clearOnScrollListeners();
+            dealsAdapter.addBrandHeader(brand.getDescription(), brand.getTitle(), 0);
             noContent.setVisibility(View.VISIBLE);
-            recyclerViewDeals.removeOnScrollListener(rvOnScrollListener);
         }
-
         baseMainContent.setVisibility(View.VISIBLE);
-
+        dealsAnalytics.sendEventDealsDigitalView(DealsAnalytics.EVENT_VIEW_BRAND_DETAIL,
+                brand.getTitle());
     }
 
     private void loadBrandImage(ImageView imageView, String featuredImageUrl) {
@@ -224,7 +193,11 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
+                    try {
+                        imageView.setImageBitmap(Utils.getSingletonInstance().setBlur(resource, 3.0f, getContext()));
+                    } catch (Exception e) {
+
+                    }
                 } else {
                     imageView.setImageBitmap(resource);
                 }

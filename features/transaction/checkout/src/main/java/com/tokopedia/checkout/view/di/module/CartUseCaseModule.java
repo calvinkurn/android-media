@@ -14,6 +14,7 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUpdateCartUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCartMultipleAddressListUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
@@ -62,6 +63,11 @@ public class CartUseCaseModule {
     @Provides
     GetCartListUseCase getCartListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
         return new GetCartListUseCase(context, cartRepository, mapper);
+    }
+
+    @Provides
+    GetCartMultipleAddressListUseCase getCartMultipleAddressListUseCase(Context context, ICartRepository cartRepository, ICartMapper mapper) {
+        return new GetCartMultipleAddressListUseCase(context, cartRepository, mapper);
     }
 
     @Provides
