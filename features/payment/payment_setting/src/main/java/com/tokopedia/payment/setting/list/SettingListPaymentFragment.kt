@@ -1,5 +1,7 @@
 package com.tokopedia.payment.setting.list
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,13 +10,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
-import com.tokopedia.payment.setting.list.di.DetailCreditCardModule
+import com.tokopedia.payment.setting.add.di.AddCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import javax.inject.Inject
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
+import com.tokopedia.graphql.data.GraphqlClient
+import com.tokopedia.payment.setting.add.AddCreditCardActivity
+import com.tokopedia.payment.setting.detail.DetailCreditCardActivity
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 
 
@@ -23,6 +28,13 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     @Inject
     lateinit var settingListPaymentPresenter : SettingListPaymentPresenter
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        activity?.run {
+            GraphqlClient.init(this)
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_setting_list_payment, container, false)
@@ -51,11 +63,24 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun onItemClicked(t: SettingListPaymentModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity?.run {
+            this@SettingListPaymentFragment.startActivityForResult(DetailCreditCardActivity.createIntent(this, t), REQUEST_CODE_DETAIL_CREDIT_CARD)
+        }
     }
 
     override fun onClickAddCard() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        activity?.run {
+            this@SettingListPaymentFragment.startActivityForResult(AddCreditCardActivity.createIntent(this), REQUEST_CODE_ADD_CREDIT_CARD)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(resultCode == Activity.RESULT_OK){
+            when (requestCode){
+                REQUEST_CODE_DETAIL_CREDIT_CARD, REQUEST_CODE_ADD_CREDIT_CARD -> settingListPaymentPresenter.getCreditCardList(resources)
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun getScreenName(): String {
@@ -81,7 +106,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun initInjector() {
         DaggerSettingListPaymentComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(DetailCreditCardModule())
+                .settingListPaymentModule(AddCreditCardModule())
                 .build()
                 .inject(this)
         settingListPaymentPresenter.attachView(this)
@@ -97,6 +122,9 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     companion object {
+        val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
+        val REQUEST_CODE_ADD_CREDIT_CARD = 4273
+
         fun createInstance() : SettingListPaymentFragment{
             return SettingListPaymentFragment()
         }

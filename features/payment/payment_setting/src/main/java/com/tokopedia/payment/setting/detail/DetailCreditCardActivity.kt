@@ -15,7 +15,7 @@ class DetailCreditCardActivity : BaseSimpleActivity(){
     }
 
     companion object {
-        fun createIntent(context: Context, settingListPaymentModel: SettingListPaymentModel) : Intent{
+        fun createIntent(context: Context, settingListPaymentModel: SettingListPaymentModel?) : Intent{
             val intent = Intent(context, DetailCreditCardActivity::class.java)
             intent.putExtra(DetailCreditCardFragment.EXTRA_PAYMENT_MODEL, settingListPaymentModel)
             return intent

@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.di.DaggerDetailCreditCardComponent
-import com.tokopedia.payment.setting.list.di.DetailCreditCardModule
+import com.tokopedia.payment.setting.add.di.AddCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import com.tokopedia.payment.setting.util.getBackgroundAssets
@@ -34,6 +34,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.run { GraphqlClient.init(this) }
         settingListPaymentModel = arguments?.getParcelable(EXTRA_PAYMENT_MODEL)
         paymentSettingRouter = activity?.application as PaymentSettingRouter
     }
@@ -97,13 +98,13 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return ""
     }
 
     override fun initInjector() {
         DaggerDetailCreditCardComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .detailCreditCardModule(DetailCreditCardModule())
+                .detailCreditCardModule(AddCreditCardModule())
                 .build()
                 .inject(this)
         detailCreditCardPresenter.attachView(this)

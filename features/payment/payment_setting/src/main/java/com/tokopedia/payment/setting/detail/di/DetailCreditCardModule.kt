@@ -1,4 +1,4 @@
-package com.tokopedia.payment.setting.list.di
+package com.tokopedia.payment.setting.detail.di
 
 import com.tokopedia.payment.setting.detail.DetailCreditCardPresenter
 import dagger.Module

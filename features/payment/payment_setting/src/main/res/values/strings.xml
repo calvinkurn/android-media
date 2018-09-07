@@ -7,4 +7,9 @@
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
     <string name="payment_label_delete_card">Hapus Kartu</string>
     <string name="payment_label_month_year">month/year</string>
+    <string name="payment_label_credit_card">Kartu Kredit</string>
+    <string name="payment_title_delete_credit_card">Hapus kartu kredit?</string>
+    <string name="payment_label_forever_delete_credit_card">Kartu kredit akan terhapus selamanya</string>
+    <string name="payment_label_yes">Ya</string>
+    <string name="payment_label_no">Tidak</string>
 </resources>

@@ -9,5 +9,17 @@
             android:label="@string/payment_title_list_card"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".detail.DetailCreditCardActivity"
+            android:label="@string/payment_label_credit_card"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".add.AddCreditCardActivity"
+            android:label="@string/payment_label_button_add_card"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

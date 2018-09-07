@@ -1,13 +1,13 @@
-package com.tokopedia.payment.setting.list.di
+package com.tokopedia.payment.setting.add.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.payment.setting.add.di.AddCreditCardModule
+import com.tokopedia.payment.setting.add.AddCreditCardFragment
 import com.tokopedia.payment.setting.detail.di.DetailCreditCardScope
 import com.tokopedia.payment.setting.list.SettingListPaymentFragment
 import dagger.Component
 
-@DetailCreditCardScope
+@AddCreditCardScope
 @Component(modules = arrayOf(AddCreditCardModule::class), dependencies = arrayOf(BaseAppComponent::class))
-interface SettingListPaymentComponent{
-    fun inject(settingListPaymentFragment : SettingListPaymentFragment)
+interface AddCreditCardComponent{
+    fun inject(addCreditCardFragment: AddCreditCardFragment)
 }

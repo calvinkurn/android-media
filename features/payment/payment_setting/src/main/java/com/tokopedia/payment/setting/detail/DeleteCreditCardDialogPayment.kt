@@ -36,14 +36,15 @@ class DeleteCreditCardDialogPayment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
         activity?.run {
             return AlertDialog.Builder(this)
-                    .setTitle(R.string.delete_credit_card)
-                    .setMessage(R.string.forever_delete_credit_card)
-                    .setPositiveButton(R.string.label_title_button_yes, DialogInterface.OnClickListener {
+                    .setTitle(R.string.payment_title_delete_credit_card)
+                    .setMessage(R.string.payment_label_forever_delete_credit_card)
+                    .setPositiveButton(R.string.payment_label_yes, DialogInterface.OnClickListener {
                         dialog, whichButton -> mDeleteCreditCardDialogListener?.onConfirmDelete(arguments?.getString(TOKEN_ID))
                     })
-                    .setNegativeButton(R.string.label_title_button_no, DialogInterface.OnClickListener { dialog, which -> })
+                    .setNegativeButton(R.string.payment_label_no, DialogInterface.OnClickListener { dialog, which -> })
                     .create()
         }
+        return super.onCreateDialog(savedInstanceState)
     }
 
     override fun onAttach(context: Context) {
