@@ -1,5 +1,7 @@
 package com.tokopedia.challenges.view.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -34,6 +36,7 @@ import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.adapter.TouchImageAdapter;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -73,6 +76,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView btnSubmit;
     private View llShare;
 
+    public interface ImageListener {
+        void openImage(ArrayList<String> urls);
+    }
+
+    private ImageListener listener;
 
     @Inject
     SubmitDetailPresenter presenter;
@@ -96,6 +104,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        listener = (SubmitDetailActivity) activity;
+        super.onAttach(activity);
     }
 
     @Nullable
@@ -265,11 +279,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             challengeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.add(R.id.image_viewer, fragemnt);
-                    transaction.addToBackStack("ImageViewer");
-                    transaction.commit();
+                    listener.openImage(imageUrls);
                 }
             });
         }
