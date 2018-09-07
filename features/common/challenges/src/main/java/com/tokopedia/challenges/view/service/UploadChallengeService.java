@@ -144,4 +144,14 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         return uploadFilePath;
     }
 
+    @Override
+    public void onProgressFail() {
+        notificationManager.cancel(TAG, notificationID);
+        builder = buildBaseNotification();
+        Notification notification = builder.setContentText(getString(R.string.submit_fail)).build();
+        notificationManager.notify(TAG, notificationID, notification);
+        sendBroadcast(new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_FAIL));
+        stopSelf();
+    }
+
 }

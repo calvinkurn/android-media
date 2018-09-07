@@ -39,6 +39,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     IntializeMultiPartUseCase mIntializeMultiPartUseCase;
     public ChallengeSettings settings;
     public static final String ACTION_UPLOAD_COMPLETE = "action.upload.complete";
+    public static final String ACTION_UPLOAD_FAIL = "action.upload.fail";
     GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
     String postId;
 
@@ -66,7 +67,15 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         String description = getView().getDescription().trim();
         String filePath = getView().getImage();
         if (filePath == null || filePath.isEmpty()) {
-            getView().setSnackBarErrorMessage("Please select image");
+            String errorMsg = null;
+            if (settings.isAllowVideos() && settings.isAllowPhotos()) {
+                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_image_video);
+            } else if (settings.isAllowPhotos()) {
+                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_image);
+            } else if (settings.isAllowVideos()) {
+                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_video);
+            }
+            getView().setSnackBarErrorMessage(errorMsg);
             return;
         } else if (!isValidateTitle(title)) {
             return;
@@ -83,6 +92,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 return;
             }
         }
+
         mIntializeMultiPartUseCase.generateRequestParams(title, description, filePath);
         getView().showProgress("Uploading");
         mIntializeMultiPartUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -95,7 +105,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onError(Throwable e) {
                 getView().hideProgress();
                 e.printStackTrace();
-                getView().showMessage("Image Uploaded Failed");
+                getView().setSnackBarErrorMessage("Image Uploaded Failed");
             }
 
             @Override
@@ -122,11 +132,13 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         @Override
         public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
-                getView().showMessage("Konten Anda diterima!");
+                getView().setSnackBarErrorMessage("Konten Anda diterima!");
                 getView().hideProgress();
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }
+            }else if(intent.getAction() == ACTION_UPLOAD_FAIL){
+                getView().setSnackBarErrorMessage("Submission Fails!");
             }
             deinit();
         }
@@ -216,7 +228,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     @Override
     public void setSubmitButtonText() {
-        ChallengeSettings settings = getView().getChallengeSettings();
+        settings = getView().getChallengeSettings();
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
             getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo_video));
             getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title));

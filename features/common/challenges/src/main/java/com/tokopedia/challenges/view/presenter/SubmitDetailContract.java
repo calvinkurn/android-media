@@ -59,5 +59,9 @@ public interface SubmitDetailContract {
         void setWinnerPosition(String s);
 
         void isParticipated(boolean participated);
+
+        void setlikeInvisiblity();
+
+        void setResubmitInvisible();
     }
 }

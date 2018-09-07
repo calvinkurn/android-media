@@ -14,6 +14,8 @@ public interface IUploadChallengeServiceContract {
         public String getChallengeId();
 
         public String getUploadFilePath();
+
+        void onProgressFail();
     }
 
     public interface UploadChallengePresenter {
