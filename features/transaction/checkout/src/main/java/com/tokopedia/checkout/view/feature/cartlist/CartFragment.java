@@ -236,7 +236,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         }
     }
 
-
     private void onContentAvailabilityChanged(boolean available) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             if (available) {
@@ -284,7 +283,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             toolbar = toolbarRemoveView();
         }
         appbar.addView(toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(appbar);
+        setVisibilityRemoveButton(false);
     }
 
     private ToolbarRemoveWithBackView toolbarRemoveWithBackView() {

@@ -166,15 +166,19 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
 
     @Override
     public void onBackPressed() {
-        if (fragmentGeneralWebView.getWebview().canGoBack()) {
-            fragmentGeneralWebView.getWebview().goBack();
-        } else {
-            if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
-                startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
-                finish();
+        try {
+            if (fragmentGeneralWebView.getWebview().canGoBack()) {
+                fragmentGeneralWebView.getWebview().goBack();
             } else {
-                super.onBackPressed();
+                if (isTaskRoot() && getApplication() instanceof TkpdCoreRouter) {
+                    startActivity(((TkpdCoreRouter) getApplication()).getHomeIntent(this));
+                    finish();
+                } else {
+                    super.onBackPressed();
+                }
             }
+        } catch (Exception e) {
+            super.onBackPressed();
         }
     }
 

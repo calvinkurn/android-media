@@ -36,6 +36,6 @@
         android:layout_height="wrap_content"
         style="@style/MenuTextAppearance"
         android:background="@null"
-        android:text="@string/delete"/>
+        android:text="@string/label_menu_cart_remove"/>
 
 </RelativeLayout>
