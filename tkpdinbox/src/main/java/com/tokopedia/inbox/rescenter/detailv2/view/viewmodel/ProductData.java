@@ -11,7 +11,25 @@ import java.util.List;
 
 public class ProductData implements Parcelable {
 
+    public static final Parcelable.Creator<ProductData> CREATOR = new Parcelable.Creator<ProductData>() {
+        @Override
+        public ProductData createFromParcel(Parcel source) {
+            return new ProductData(source);
+        }
+
+        @Override
+        public ProductData[] newArray(int size) {
+            return new ProductData[size];
+        }
+    };
     private List<ProductItem> productList;
+
+    public ProductData() {
+    }
+
+    protected ProductData(Parcel in) {
+        this.productList = in.createTypedArrayList(ProductItem.CREATOR);
+    }
 
     public List<ProductItem> getProductList() {
         return productList;
@@ -30,23 +48,4 @@ public class ProductData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeTypedList(this.productList);
     }
-
-    public ProductData() {
-    }
-
-    protected ProductData(Parcel in) {
-        this.productList = in.createTypedArrayList(ProductItem.CREATOR);
-    }
-
-    public static final Parcelable.Creator<ProductData> CREATOR = new Parcelable.Creator<ProductData>() {
-        @Override
-        public ProductData createFromParcel(Parcel source) {
-            return new ProductData(source);
-        }
-
-        @Override
-        public ProductData[] newArray(int size) {
-            return new ProductData[size];
-        }
-    };
 }

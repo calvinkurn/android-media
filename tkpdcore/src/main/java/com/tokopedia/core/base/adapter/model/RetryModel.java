@@ -7,6 +7,10 @@ import com.tokopedia.core.base.adapter.Visitable;
  * Created by stevenfredian on 5/31/17.
  */
 
+/**
+ * Use visitable model from tkpd abstraction
+ */
+@Deprecated
 public class RetryModel implements Visitable<AdapterTypeFactory> {
 
     @Override

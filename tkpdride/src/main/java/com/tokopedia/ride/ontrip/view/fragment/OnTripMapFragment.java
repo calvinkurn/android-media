@@ -66,6 +66,7 @@ import com.tokopedia.ride.base.presentation.BaseFragment;
 import com.tokopedia.ride.bookingride.domain.GetFareEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetOverviewPolylineUseCase;
 import com.tokopedia.ride.bookingride.view.activity.GooglePlacePickerActivity;
+import com.tokopedia.ride.bookingride.view.activity.PayPendingFareActivity;
 import com.tokopedia.ride.bookingride.view.activity.RideHomeActivity;
 import com.tokopedia.ride.bookingride.view.viewmodel.ConfirmBookingViewModel;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
@@ -74,10 +75,12 @@ import com.tokopedia.ride.common.configuration.MapConfiguration;
 import com.tokopedia.ride.common.configuration.RideConfiguration;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.di.RideComponent;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
 import com.tokopedia.ride.common.ride.domain.model.Location;
 import com.tokopedia.ride.common.ride.domain.model.PendingPayment;
 import com.tokopedia.ride.common.ride.domain.model.RideRequest;
 import com.tokopedia.ride.common.ride.domain.model.RideRequestAddress;
+import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.completetrip.view.CompleteTripActivity;
 import com.tokopedia.ride.deeplink.RidePushNotificationBuildAndShow;
 import com.tokopedia.ride.ontrip.di.DaggerOnTripComponent;
@@ -120,13 +123,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     private static final int PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE = 1009;
     private static final int REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION = 1010;
 
+    public static final String TAG = OnTripMapFragment.class.getSimpleName();
+
     private static final String EXTRA_RIDE_REQUEST = "EXTRA_RIDE_REQUEST";
-    private static final String EXTRA_RIDE_REQUEST_ID = "EXTRA_RIDE_REQUEST_ID";
-    private static final String EXTRA_ACTION = "EXTRA_ACTION";
-    public static final String EXTRA_RIDE_REQUEST_RESULT = "EXTRA_RIDE_REQUEST_RESULT";
     private static final String INTERRUPT_DIALOG_TAG = "interrupt_dialog";
     private static final String INTERRUPT_TOKOPEDIA_DIALOG_TAG = "interrupt_tokopedia_dialog";
-    public static final String TAG = OnTripMapFragment.class.getSimpleName();
     private static final float DEFAUL_MAP_ZOOM = 14;
     private static final float SELECT_SOURCE_MAP_ZOOM = 16;
     private static final String SMS_INTENT_KEY = "sms";
@@ -327,6 +328,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_ID, confirmBookingViewModel.getProductId());
         requestParams.putString(CreateRideRequestUseCase.PARAM_TIMESTAMP, String.valueOf((new Date().getTime()) / 1000));
         requestParams.putString(CreateRideRequestUseCase.PARAM_PRODUCT_NAME, confirmBookingViewModel.getProductDisplayName());
+        requestParams.putString(CreateRideRequestUseCase.PARAM_API_VERSION, "v2");
         if (!TextUtils.isEmpty(confirmBookingViewModel.getPromoCode())) {
             requestParams.putString(CreateRideRequestUseCase.PARAM_PROMO_CODE, confirmBookingViewModel.getPromoCode());
             requestParams.putString(CreateRideRequestUseCase.PARAM_DEVICE_TYPE, presenter.getDeviceName());
@@ -414,7 +416,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
             requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+            requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
             if (driverlat != 0 && driverLon != 0) {
                 requestParams.putString(GetOverviewPolylineUseCase.PARAM_WAYPOINTS, String.format("%s,%s",
@@ -429,11 +431,11 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public RequestParams getPolyLineParamDriverBetweenDestination(double latitude, double longitude) {
+    public RequestParams getPolyLineParamBetweenTwoLocations(Location origin, Location destination) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_ORIGIN, String.format("%s,%s",
-                latitude,
-                longitude
+                origin.getLatitude(),
+                origin.getLongitude()
         ));
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DESTINATION, String.format("%s,%s",
                 destination.getLatitude(),
@@ -443,7 +445,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_TRAFFIC_MODEL, "best_guess");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_MODE, "driving");
         requestParams.putString(GetOverviewPolylineUseCase.PARAM_DEPARTURE_TIME, (int) (System.currentTimeMillis() / 1000) + "");
-        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.google_api_key));
+        requestParams.putString(GetOverviewPolylineUseCase.PARAM_KEY, getString(R.string.GOOGLE_API_KEY));
 
         return requestParams;
     }
@@ -483,8 +485,9 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void openInterruptConfirmationWebView(String tosUrl) {
+    public void openInterruptConfirmationWebView(String url) {
         if (!isOpenInterruptWebviewDialog) {
+            RideGATracking.eventOpenInterruptScreen(url);
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             android.app.Fragment previousDialog = getFragmentManager().findFragmentByTag(INTERRUPT_DIALOG_TAG);
             if (previousDialog != null) {
@@ -492,7 +495,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
             }
 
             fragmentTransaction.addToBackStack(null);
-            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(tosUrl);
+            DialogFragment dialogFragment = InterruptConfirmationDialogFragment.newInstance(url);
             dialogFragment.setTargetFragment(this, REQUEST_CODE_INTERRUPT_DIALOG);
             //using state loss, because sometimes this dialog comes on top of location enablegit
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -547,8 +550,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_DRIVER_NOT_FOUND:
                 if (resultCode == DriverNotFoundDialogFragment.BOOK_AGAIN_RESULT_CODE) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    setResultWithSourceAndDestination();
                 } else {
                     getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
                     getActivity().finish();
@@ -556,17 +558,16 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 break;
             case REQUEST_CODE_CANCEL_REASON:
                 if (resultCode == Activity.RESULT_OK) {
-                    getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                    getActivity().finish();
+                    setResultWithSourceAndDestination();
                 }
                 break;
             case PLACE_AUTOCOMPLETE_DESTINATION_REQUEST_CODE:
                 if (data != null) {
                     PlacePassViewModel destinationTemp = data.getParcelableExtra(GooglePlacePickerActivity.EXTRA_SELECTED_PLACE);
-                    if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
-                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
-                    } else if (destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
+                    if (destinationTemp == null || destinationTemp.getLatitude() == 0.0 || destinationTemp.getLongitude() == 0.0) {
                         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_zero_error));
+                    } else if (destinationTemp.getLatitude() == source.getLatitude() && destinationTemp.getLongitude() == source.getLongitude()) {
+                        NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.ride_home_map_dest_same_source_error));
                     } else {
                         //update destination
                         changedDestination = destinationTemp;
@@ -661,8 +662,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        getActivity().setResult(OnTripActivity.RIDE_HOME_RESULT_CODE);
-                        getActivity().finish();
+                        setResultWithSourceAndDestination();
                     }
                 });
 
@@ -743,7 +743,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     }
 
     @Override
-    public void onSuccessCancelRideRequest() {
+    public void setResultWithSourceAndDestination() {
         PlacePassViewModel source = null, destination = null;
         if (confirmBookingViewModel != null) {
             source = confirmBookingViewModel.getSource();
@@ -864,7 +864,7 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
         if (confirmBookingViewModel != null) {
             markerId = R.drawable.car_map_icon;
-            markerId = (confirmBookingViewModel.getProductDisplayName().equalsIgnoreCase(getString(R.string.uber_moto_display_name))) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
+            markerId = (RideUtils.isUberMoto(confirmBookingViewModel.getProductDisplayName())) ? R.drawable.moto_map_icon : R.drawable.car_map_icon;
         }
 
         MarkerOptions options;
@@ -984,6 +984,8 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
 
     @Override
     public void hideCancelPanel() {
+        isBackButtonHandleByFragment = false;
+
         //do not hide, layout is already hidden
         if (cancelPanelLayout.getVisibility() == View.GONE) {
             return;
@@ -1422,7 +1424,13 @@ public class OnTripMapFragment extends BaseFragment implements OnTripMapContract
     public void startTopupTokoCashChangeDestinationActivity(PendingPayment pendingPayment, String requestId) {
         Intent topupIntent = TopupTokoCashChangeDestination.getCallingIntent(getActivity(), pendingPayment, requestId);
         startActivityForResult(topupIntent, REQUEST_CODE_TOPUP_PENDING_PAYMENT_CHANGE_DESTINATION);
-
     }
 
+    @Override
+    public void showPendingFareInterrupt(GetPending getPending) {
+        if (getActivity() != null) {
+            startActivity(PayPendingFareActivity.getCallingIntent(getActivity(), getPending));
+            getActivity().finish();
+        }
+    }
 }

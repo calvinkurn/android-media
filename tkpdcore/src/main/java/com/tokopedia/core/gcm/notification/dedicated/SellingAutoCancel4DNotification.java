@@ -22,16 +22,13 @@ public class SellingAutoCancel4DNotification extends BaseNotification {
 
     @Override
     protected void configureNotificationData(Bundle data) {
-        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(
-                new Intent(mContext, SellerRouter.getSellingActivityClass())
-        );
+        Intent intent = SellerRouter.getActivitySellingTransactionList(mContext);
+        mNotificationPass.mIntent = NotificationUtils.configureGeneralIntent(intent);
         mNotificationPass.classParentStack = SellerRouter.getSellingActivityClass();
         mNotificationPass.title = mContext.getString(R.string.title_transaction_cancel);
         mNotificationPass.ticker = data.getString(ARG_NOTIFICATION_DESCRIPTION);
         mNotificationPass.description = data.getString(ARG_NOTIFICATION_DESCRIPTION);
-        Bundle bundle = new Bundle();
-        bundle.putInt(SellerRouter.EXTRA_STATE_TAB_POSITION,
-                SellerRouter.TAB_POSITION_SELLING_TRANSACTION_LIST);
+        Bundle bundle = intent.getExtras();
         mNotificationPass.extraData = bundle;
         mNotificationPass.mIntent.putExtras(bundle);
     }

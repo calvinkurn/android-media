@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
+import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.EditUserInfoMapper;
@@ -32,8 +32,10 @@ public class ProfileCompletionModule {
             @ApplicationContext Context context,
             AccountsService accountsService,
             GetUserInfoMapper getUserInfoMapper,
-            EditUserInfoMapper editUserInfoMapper) {
-        return new ProfileSourceFactory(context, accountsService, getUserInfoMapper, editUserInfoMapper);
+            EditUserInfoMapper editUserInfoMapper,
+            SessionHandler sessionHandler) {
+        return new ProfileSourceFactory(context, accountsService, getUserInfoMapper,
+                editUserInfoMapper, sessionHandler);
     }
 
     @ProfileCompletionScope
@@ -65,11 +67,9 @@ public class ProfileCompletionModule {
 
     @ProfileCompletionScope
     @Provides
-    GetUserInfoUseCase provideGetUserProfileUseCase(ThreadExecutor threadExecutor,
-                                                    PostExecutionThread postExecutor,
-                                                    ProfileRepository profileRepository) {
+    GetUserInfoUseCase provideGetUserProfileUseCase(ProfileRepository profileRepository) {
 
-        return new GetUserInfoUseCase(threadExecutor, postExecutor, profileRepository);
+        return new GetUserInfoUseCase(profileRepository);
     }
 
     @ProfileCompletionScope

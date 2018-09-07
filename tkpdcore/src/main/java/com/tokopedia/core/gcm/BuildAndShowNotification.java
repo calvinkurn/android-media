@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
@@ -21,13 +22,17 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
 import com.tokopedia.core.gcm.model.ApplinkNotificationPass;
 import com.tokopedia.core.gcm.model.NotificationPass;
-import com.tokopedia.core.gcm.utils.GCMUtils;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.MethodChecker;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_ICON;
@@ -38,6 +43,7 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_TITLE;
  * @author by alvarisi on 1/11/17.
  */
 
+@Deprecated
 public class BuildAndShowNotification {
     private final Context mContext;
     private FCMCacheManager cacheManager;
@@ -58,7 +64,7 @@ public class BuildAndShowNotification {
             }
         }
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setAutoCancel(true);
 
@@ -122,8 +128,7 @@ public class BuildAndShowNotification {
             downloadImageAndShowNotification(applinkNotificationPass, mBuilder, configuration);
         } else if(!TextUtils.isEmpty(applinkNotificationPass.getBannerUrl())){
             configureLargeImageNotification(applinkNotificationPass, mBuilder, configuration);
-        } else
-            {
+        } else {
             mBuilder.setLargeIcon(
                     BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
             );
@@ -160,6 +165,21 @@ public class BuildAndShowNotification {
                         }
                         mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
                     }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        mBuilder.setLargeIcon(
+                                BitmapFactory.decodeResource(mContext.getResources(), R.drawable.qc_launcher)
+                        );
+
+                        NotificationManager mNotificationManager =
+                                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+                        Notification notif = mBuilder.build();
+                        if (configuration.isVibrate() && configuration.isBell()) {
+                            notif.defaults |= Notification.DEFAULT_VIBRATE;
+                        }
+                        mNotificationManager.notify(applinkNotificationPass.getNotificationId(), notif);
+                    }
                 });
 
     }
@@ -171,7 +191,7 @@ public class BuildAndShowNotification {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
@@ -233,16 +253,17 @@ public class BuildAndShowNotification {
         NotificationManager mNotificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext)
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(mContext, NotificationChannelId.GENERAL)
                 .setSmallIcon(getDrawableIcon())
                 .setLargeIcon(BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon()))
                 .setAutoCancel(true);
         NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(mContext);
-        mBuilder.setContentTitle(applinkNotificationPass.getTitle());
+
+        mBuilder.setContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
         mBuilder.setContentText(applinkNotificationPass.getDescription());
-        bigStyle.bigText(applinkNotificationPass.getDescription());
+        bigStyle.bigText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
         mBuilder.setStyle(bigStyle);
         mBuilder.setTicker(applinkNotificationPass.getTicker());
 
@@ -290,7 +311,7 @@ public class BuildAndShowNotification {
 
     private void saveIncomingNotification(String title, Bundle data) {
         NotificationEntity notificationEntity = new NotificationEntity();
-        notificationEntity.setCode(String.valueOf(GCMUtils.getCode(data)));
+        notificationEntity.setCode(String.valueOf(getCode(data)));
         notificationEntity.setTitle(title);
         cacheManager.saveIncomingNotification(notificationEntity);
     }
@@ -313,8 +334,8 @@ public class BuildAndShowNotification {
                             mBuilder.setLargeIcon(
                                     Bitmap.createScaledBitmap(
                                             BitmapFactory.decodeFile(file.getAbsolutePath()),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
-                                            mContext.getResources().getDimensionPixelSize(R.dimen.icon_size),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.dp_36),
+                                            mContext.getResources().getDimensionPixelSize(R.dimen.dp_36),
                                             true
                                     )
                             );
@@ -351,8 +372,8 @@ public class BuildAndShowNotification {
                                             true
                                     )
                             );
-                            bigStyle.setBigContentTitle(applinkNotificationPass.getTitle());
-                            bigStyle.setSummaryText(applinkNotificationPass.getDescription());
+                            bigStyle.setBigContentTitle(MethodChecker.fromHtml(applinkNotificationPass.getTitle()));
+                            bigStyle.setSummaryText(MethodChecker.fromHtml(applinkNotificationPass.getDescription()));
 
                             mBuilder.setStyle(bigStyle);
 
@@ -415,7 +436,28 @@ public class BuildAndShowNotification {
             return R.drawable.ic_stat_notify_white;
     }
 
+    private int getCode(Bundle data) {
+        int code;
+        try {
+            code = Integer.parseInt(data.getString("tkp_code", "0"));
+        } catch (NumberFormatException e) {
+            code = 0;
+        }
+        return code;
+    }
+
     public interface OnGetFileListener {
         void onFileReady(File file);
+    }
+
+    private Bitmap getBitmap(String url) {
+        try {
+            return Glide.with(mContext).load(url)
+                    .asBitmap()
+                    .into(60, 60)
+                    .get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException | ExecutionException | TimeoutException e ) {
+            return BitmapFactory.decodeResource(mContext.getResources(), getDrawableLargeIcon());
+        }
     }
 }

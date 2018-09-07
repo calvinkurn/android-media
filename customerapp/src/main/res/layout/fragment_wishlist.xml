@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:iconifiedByDefault="false"
-            app:queryBackground="@color/transparent"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/hint_search_wishlist"
             app:searchIcon="@drawable/icon_magnifier" />
     </android.support.v7.widget.CardView>

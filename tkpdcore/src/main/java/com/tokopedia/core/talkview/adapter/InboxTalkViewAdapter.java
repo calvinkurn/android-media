@@ -1,10 +1,8 @@
 package com.tokopedia.core.talkview.adapter;
 
-import android.app.Activity;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,10 +11,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.reputationproduct.util.ReputationLevelUtils;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
 import com.tokopedia.core.talkview.fragment.TalkViewFragment;
 import com.tokopedia.core.talkview.inbox.model.TalkDetail;
 import com.tokopedia.core.talkview.method.DeleteTalkDialog;
@@ -35,13 +31,16 @@ import java.util.List;
  */
 public class InboxTalkViewAdapter extends TalkViewAdapter{
 
-    public static InboxTalkViewAdapter createAdapter(TalkViewFragment fragment, List<TalkBaseModel> items) {
+    public static InboxTalkViewAdapter createAdapter(TalkViewFragment fragment, List<TalkBaseModel> items, TkpdCoreRouter tkpdCoreRouter) {
         InboxTalkViewAdapter adapter = new InboxTalkViewAdapter();
         adapter.fragment = fragment;
         adapter.items = items;
         adapter.token = new TokenHandler();
+        adapter.tkpdCoreRouter = tkpdCoreRouter;
         return adapter;
     }
+
+    public TkpdCoreRouter tkpdCoreRouter;
 
     @Override
     protected void bindTalkView(TalkViewHolder holder, int position) {
@@ -78,7 +77,7 @@ public class InboxTalkViewAdapter extends TalkViewAdapter{
         if (talk.getCommentIsSeller() == 1) {
             holder.userView.setText(talk.getCommentShopName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentShopImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.VISIBLE);
             holder.reputationUser.setVisibility(View.GONE);
             ReputationLevelUtils.setReputationMedals(context, holder.reputation,
@@ -88,13 +87,13 @@ public class InboxTalkViewAdapter extends TalkViewAdapter{
         } else if (talk.getCommentIsModerator() == 1) {
             holder.userView.setText(talk.getCommentUserName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentUserImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.GONE);
             holder.reputationUser.setVisibility(View.GONE);
         } else {
             holder.userView.setText(talk.getCommentUserName());
             ImageHandler.LoadImageWGender(holder.userImageView, talk.getCommentUserImage(),
-                    (Activity) context, talk.getCommentUserGender());
+                    context, talk.getCommentUserGender());
             holder.reputation.setVisibility(View.GONE);
             holder.reputationUser.setVisibility(View.VISIBLE);
             holder.textReputation.setText(String.format("%s%%", talk.getCommentUserReputation().getPositivePercentage()));
@@ -117,15 +116,13 @@ public class InboxTalkViewAdapter extends TalkViewAdapter{
             @Override
             public void onClick(View v) {
                 if (talk.getCommentIsSeller() == 1) {
-                    Intent intent = new Intent(context, ShopInfoActivity.class);
-                    Bundle bundle = ShopInfoActivity.createBundle(
-                            talk.getCommentShopId(), "");
-                    intent.putExtras(bundle);
+                    Intent intent = tkpdCoreRouter.getShopPageIntent(context, talk.getCommentShopId());
                     context.startActivity(intent);
                 } else {
-                    context.startActivity(
-                            PeopleInfoNoDrawerActivity.createInstance(context, String.valueOf(talk.getCommentUserId()))
-                    );
+                    if (context.getApplicationContext() instanceof TkpdCoreRouter) {
+                        context.startActivity(
+                                ((TkpdCoreRouter) context.getApplicationContext())
+                                    .getTopProfileIntent(context, String.valueOf(talk.getCommentUserId())));}
                 }
             }
         });

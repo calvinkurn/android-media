@@ -55,7 +55,7 @@ public class SpinnerCounterInputView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.SpinnerCounterInputView);
         try {
-            maxLength = styledAttributes.getInt(R.styleable.CounterInputView_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
+            maxLength = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_counter_max_length, DEFAULT_INPUT_VALUE_LENGTH);
             spinnerHintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_hint);
             hintText = styledAttributes.getString(R.styleable.SpinnerCounterInputView_spinner_decimal_hint);
             selectionIndex = styledAttributes.getInt(R.styleable.SpinnerCounterInputView_spinner_decimal_selection_index, 0);
@@ -63,7 +63,7 @@ public class SpinnerCounterInputView extends BaseCustomView {
             values = styledAttributes.getTextArray(R.styleable.SpinnerCounterInputView_spinner_decimal_values);
             showCounterButton = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_show_counter_button, true);
             enabled = styledAttributes.getBoolean(R.styleable.SpinnerCounterInputView_spinner_decimal_enabled, true);
-            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.spinner_decimal_spinner_width));
+            spinnerWidth = styledAttributes.getDimensionPixelSize(R.styleable.SpinnerCounterInputView_spinner_decimal_spinner_width, (int) getResources().getDimension(R.dimen.dp_80));
         } finally {
             styledAttributes.recycle();
         }
@@ -126,6 +126,14 @@ public class SpinnerCounterInputView extends BaseCustomView {
         requestLayout();
     }
 
+    public CounterInputView getCounterInputView() {
+        return counterInputView;
+    }
+
+    public SpinnerTextView getSpinnerTextView() {
+        return spinnerTextView;
+    }
+
     public void setOnItemClickListener(AdapterView.OnItemClickListener onItemClickListener) {
         spinnerTextView.setOnItemClickListener(onItemClickListener);
     }
@@ -176,6 +184,10 @@ public class SpinnerCounterInputView extends BaseCustomView {
 
     public void removeTextChangedListener(TextWatcher watcher) {
         counterInputView.removeTextChangedListener(watcher);
+    }
+
+    public void removeDefaultTextWatcher(){
+        counterInputView.removeDefaultTextWatcher();
     }
 
     public int getSpinnerPosition(){

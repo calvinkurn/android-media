@@ -17,8 +17,24 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
     private String imageUrl;
     private String desc;
     private List<HotlistHashTagViewModel> hashTags;
+    private HotlistPromo hotlistPromo;
+    private String hotlistTitle;
+    private String productCounter;
+    private double totalData;
 
     public HotlistHeaderViewModel() {
+    }
+
+    public String getProductCounter() {
+        return productCounter;
+    }
+
+    public double getTotalData() {
+        return totalData;
+    }
+
+    public void setProductCounter(String productCounter) {
+        this.productCounter = productCounter;
     }
 
     public void setImageUrl(String imageUrl) {
@@ -50,6 +66,22 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         return typeFactory.type(this);
     }
 
+    public void setHotlistPromo(HotlistPromo hotlistPromo) {
+        this.hotlistPromo = hotlistPromo;
+    }
+
+    public HotlistPromo getHotlistPromo() {
+        return hotlistPromo;
+    }
+
+    public void setHotlistTitle(String hotlistTitle) {
+        this.hotlistTitle = hotlistTitle;
+    }
+
+    public String getHotlistTitle() {
+        return hotlistTitle;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -60,12 +92,18 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
         dest.writeString(this.imageUrl);
         dest.writeString(this.desc);
         dest.writeTypedList(this.hashTags);
+        dest.writeParcelable(this.hotlistPromo, flags);
+        dest.writeString(this.hotlistTitle);
+        dest.writeDouble(this.totalData);
     }
 
     protected HotlistHeaderViewModel(Parcel in) {
         this.imageUrl = in.readString();
         this.desc = in.readString();
         this.hashTags = in.createTypedArrayList(HotlistHashTagViewModel.CREATOR);
+        this.hotlistPromo = in.readParcelable(HotlistPromo.class.getClassLoader());
+        this.hotlistTitle = in.readString();
+        this.totalData = in.readDouble();
     }
 
     public static final Creator<HotlistHeaderViewModel> CREATOR = new Creator<HotlistHeaderViewModel>() {
@@ -79,4 +117,8 @@ public class HotlistHeaderViewModel implements Visitable<HotlistAdapterTypeFacto
             return new HotlistHeaderViewModel[size];
         }
     };
+
+    public void setTotalData(double totalData) {
+        this.totalData = totalData;
+    }
 }

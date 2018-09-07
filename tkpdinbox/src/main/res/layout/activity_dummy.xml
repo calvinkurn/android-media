@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.tokopedia.inbox.inboxchat.activity.DummyActivity">
+    tools:context=".inboxchat.chatlist.activity.DummyActivity">
 
 
     <android.support.v7.widget.RecyclerView
@@ -13,7 +13,7 @@
         android:layout_height="495dp"
         android:layout_gravity="center"
         android:scrollbars="vertical"
-        android:padding="@dimen/padding_vs"
+        android:padding="@dimen/dp_5"
         tools:layout_editor_absoluteY="8dp"
         tools:layout_editor_absoluteX="8dp" />
 

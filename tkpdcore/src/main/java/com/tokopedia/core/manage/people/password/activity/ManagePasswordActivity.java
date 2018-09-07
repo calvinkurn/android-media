@@ -8,7 +8,10 @@ import android.os.Handler;
 
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.manage.people.password.fragment.ManagePasswordFragment;
 import com.tokopedia.core.manage.people.password.intentservice.ManagePasswordIntentService;
@@ -18,10 +21,9 @@ import com.tokopedia.core.manage.people.password.presenter.ManagePasswordActivit
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.welcome.WelcomeActivity;
 
 public class ManagePasswordActivity extends BasePresenterActivity<ManagePasswordActivityPresenter>
-                                    implements ManagePasswordActivityView, ManagePasswordResultReceiver.Receiver{
+        implements ManagePasswordActivityView, ManagePasswordResultReceiver.Receiver {
 
     ManagePasswordResultReceiver receiver;
 
@@ -90,7 +92,7 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     }
 
     public void changePassword(Bundle param) {
-        ManagePasswordIntentService.changePassword(this,param,receiver);
+        ManagePasswordIntentService.changePassword(this, param, receiver);
     }
 
     @Override
@@ -100,7 +102,7 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
         if (fragment != null) {
             switch (resultCode) {
                 case ManagePasswordIntentService.SUCCESS_CHANGE_PASSWORD:
-                    onReceiveResultSuccess(fragment,resultData);
+                    onReceiveResultSuccess(fragment, resultData);
                     break;
                 case ManagePasswordIntentService.ERROR_CHANGE_PASSWORD:
                     onReceiveResultError(fragment, resultData);
@@ -129,9 +131,11 @@ public class ManagePasswordActivity extends BasePresenterActivity<ManagePassword
     private void exit() {
         new GlobalCacheManager().deleteAll();
         SessionHandler.clearUserData(this);
+        TrackingUtils.eventMoEngageLogoutUser();
+
         Intent intent;
         if (GlobalConfig.isSellerApp()) {
-            intent = new Intent(this, WelcomeActivity.class);
+            intent = ((TkpdCoreRouter) MainApplication.getAppContext()).getHomeIntent(this);
         } else {
             intent = HomeRouter.getHomeActivity(this);
         }

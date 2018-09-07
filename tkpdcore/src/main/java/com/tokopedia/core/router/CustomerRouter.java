@@ -13,27 +13,12 @@ public class CustomerRouter {
 
     public static final String IS_DEEP_LINK_SEARCH = "IS_DEEP_LINK_SEARCH";
 
-    private static final String DEEPLINK_ACTIVITY = "com.tokopedia.tkpd.deeplink.activity.DeepLinkActivity";
-    private static final String TRUECALLER_ACTIVITY = "com.tokopedia.tkpd.truecaller.TruecallerActivity";
-    private static final String SPLASH_SCREEN_ACTIVITY = "com.tokopedia.tkpd.ConsumerSplashScreen";
-
     public static Class<?> getDeeplinkClass() {
-        try {
-            return Class.forName(DEEPLINK_ACTIVITY);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public static Intent getTruecallerIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, TRUECALLER_ACTIVITY);
-        return intent;
+        return RouterUtils.getDefaultRouter().getDeepLinkClass();
     }
 
     public static Intent getSplashScreenIntent(Context context) {
-        Intent intent = RouterUtils.getActivityIntent(context, SPLASH_SCREEN_ACTIVITY);
-        return intent;
+        return RouterUtils.getRouterFromContext(context).getSplashScreenIntent(context);
     }
 
 }

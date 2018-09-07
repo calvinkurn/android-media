@@ -12,6 +12,7 @@ public class ChildCategoryModel implements Parcelable{
     private String categoryId = "";
     private String categoryName = "";
     private String categoryImageUrl = "";
+    private String categoryUrl = "";
 
     public ChildCategoryModel() {
 
@@ -21,6 +22,7 @@ public class ChildCategoryModel implements Parcelable{
         categoryId = in.readString();
         categoryName = in.readString();
         categoryImageUrl = in.readString();
+        categoryUrl = in.readString();
     }
 
     @Override
@@ -33,6 +35,7 @@ public class ChildCategoryModel implements Parcelable{
         dest.writeString(categoryId);
         dest.writeString(categoryName);
         dest.writeString(categoryImageUrl);
+        dest.writeString(categoryUrl);
     }
 
     @SuppressWarnings("unused")
@@ -71,4 +74,13 @@ public class ChildCategoryModel implements Parcelable{
     public void setCategoryImageUrl(String categoryImageUrl) {
         this.categoryImageUrl = categoryImageUrl;
     }
+
+    public String getCategoryUrl() {
+        return categoryUrl;
+    }
+
+    public void setCategoryUrl(String categoryUrl) {
+        this.categoryUrl = categoryUrl;
+    }
+
 }

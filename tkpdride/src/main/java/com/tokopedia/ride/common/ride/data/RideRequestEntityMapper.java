@@ -1,5 +1,6 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.data.entity.DriverEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationEntity;
 import com.tokopedia.ride.common.ride.data.entity.LocationLatLngEntity;
@@ -112,6 +113,7 @@ public class RideRequestEntityMapper {
             payment.setCurrency(transformCurrency(entity.getCurrencyCode()));
             payment.setTotalAmount(entity.getTotalAmount());
             payment.setReceiptReady(entity.isReceiptReady());
+            payment.setPaymentMethod(transformPaymentMethod(entity.getPaymentMethod()));
         }
         return payment;
     }
@@ -122,5 +124,15 @@ public class RideRequestEntityMapper {
         }
 
         return currencyCode;
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.WALLET_DISPLAY_NAME;
     }
 }

@@ -43,5 +43,4 @@ public class HttpErrorException extends IOException {
     public int getErrorCode() {
         return errorCode;
     }
-
 }

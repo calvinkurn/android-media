@@ -3,16 +3,16 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_vs"
+                android:layout_marginBottom="@dimen/dp_5"
                 android:orientation="vertical"
-                android:padding="@dimen/padding_vs">
+                android:padding="@dimen/dp_5">
 
     <ImageView
         android:id="@+id/product_image"
         android:layout_width="@dimen/img_thumb_m"
         android:layout_height="@dimen/img_thumb_m"
-        android:layout_marginEnd="@dimen/margin_vs"
-        android:layout_marginRight="@dimen/margin_vs"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_toped_step_01"/>
 
@@ -49,8 +49,8 @@
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
         android:layout_below="@id/product_image"
-        android:layout_marginBottom="@dimen/margin_vs"
-        android:layout_marginTop="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_5"
         android:background="@color/greyish_bg"/>
 
     <LinearLayout
@@ -58,8 +58,8 @@
         android:layout_width="@dimen/half_screen"
         android:layout_height="wrap_content"
         android:layout_below="@id/liner"
-        android:layout_marginEnd="@dimen/margin_small"
-        android:layout_marginRight="@dimen/margin_small"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_marginRight="@dimen/dp_10"
         android:orientation="vertical">
 
         <TextView

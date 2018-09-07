@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.opportunity.data.AcceptReplacementModel;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 
 /**
@@ -19,6 +21,7 @@ public class AcceptReplacementUseCase extends UseCase<AcceptReplacementModel> {
 
     private final ReplacementRepository replacementRepository;
 
+    @Inject
     public AcceptReplacementUseCase(ThreadExecutor threadExecutor,
                                     PostExecutionThread postExecutionThread,
                                     ReplacementRepository replacementRepository) {

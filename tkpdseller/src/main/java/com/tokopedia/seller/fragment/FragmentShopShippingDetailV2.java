@@ -2,7 +2,6 @@ package com.tokopedia.seller.fragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
@@ -35,11 +34,9 @@ import com.tkpd.library.utils.ListViewHelper;
 import com.tkpd.library.utils.SimpleSpinnerAdapter;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
@@ -47,6 +44,7 @@ import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.ShippingConfirmationDetail;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.facade.FacadeActionShopTransaction;
@@ -61,6 +59,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShop;
 import com.tokopedia.seller.selling.presenter.listener.SellingView;
 import com.tokopedia.seller.selling.view.activity.SellingDetailActivity;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
@@ -437,9 +436,10 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     public void onBuyerName() {
-        startActivity(
-                PeopleInfoNoDrawerActivity.createInstance(getActivity(), userId)
-        );
+        if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+            startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                    .getTopProfileIntent(getActivity(), userId));
+        }
     }
 
     public void onDetailClick() {
@@ -482,7 +482,7 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcode() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), REQUEST_CODE_BARCODE);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     public void cancelDialog() {
@@ -642,12 +642,8 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        referenceNumber.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_CODE_BARCODE) {
-                referenceNumber.setText(CommonUtils.getBarcode(data));
-            }
-        }
     }
 
     @Override
@@ -687,14 +683,27 @@ public class FragmentShopShippingDetailV2 extends Fragment implements ShopShippi
     }
 
     @Override
-    public void setData(int type, Bundle data) {
+    public void setData(final int type, Bundle data) {
         switch (type) {
             case SellingService.CONFIRM_SHIPPING:
             case SellingService.CANCEL_SHIPPING:
                 Data result = Parcels.unwrap(data.getParcelable(SellingService.MODEL_CONFIRM_SHIPPING_KEY));
+                progressDialog.dismiss();
                 if (result.getIsSuccess() == 1) {
-                    progressDialog.dismiss();
                     finishShipping(false);
+                }else{
+                    NetworkErrorHelper.showDialog(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
+                        @Override
+                        public void onRetryClicked() {
+                            if (bundle != null) {
+                                if(type == SellingService.CONFIRM_SHIPPING) {
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CONFIRM_SHIPPING, bundle);
+                                }else{
+                                    ((SellingDetailActivity) getActivity()).SellingAction(SellingService.CANCEL_SHIPPING, bundle);
+                                }
+                            }
+                        }
+                    });
                 }
                 break;
         }

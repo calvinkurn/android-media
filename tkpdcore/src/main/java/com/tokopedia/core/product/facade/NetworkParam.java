@@ -35,7 +35,8 @@ public class NetworkParam {
     private static final String PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name";
     private static final String PARAM_ID_FOR_OTHER_PRODUCT = "-id";
     private static final String VALUE_DEVICE = "android";
-
+    private static final String PARAM_SOURCE = "source";
+    private static final String VALUE_SNEAK_PEAK = "sneak_peak";
 
 
     public static Map<String, String> paramProductDetail(ProductPass productPass) {
@@ -147,5 +148,19 @@ public class NetworkParam {
         params.put(PARAM_ADS_TYPE, adsType);
         params.put(PARAM_DEVICE_ID, VALUE_DEVICE);
         return params;
+    }
+
+    public static Map<String, String> paramProductSneakPeakTalk(String productId, String shopId) {
+        Map<String, String> param = paramProductTalk(productId, shopId);
+        param.put(PARAM_PER_PAGE, String.valueOf(1));
+        param.put(PARAM_SOURCE, VALUE_SNEAK_PEAK);
+        return param;
+    }
+
+    public static Map<String, String> paramSneakPeakTalkComment(String talkId, String shopId) {
+        Map<String, String> param = paramTalkComment(talkId, shopId);
+        param.put(PARAM_PER_PAGE, String.valueOf(1));
+        param.put(PARAM_SOURCE, VALUE_SNEAK_PEAK);
+        return param;
     }
 }

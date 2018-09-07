@@ -19,6 +19,7 @@ import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
 
 public class RideHistoryActivity extends BaseActivity implements RideHistoryFragment.OnFragmentInteractionListener, HasComponent<RideComponent> {
 
+    private static final int REQUEST_CODE_TRIP_DETAIL = 101;
     private RideComponent rideComponent;
 
     public static Intent getCallingIntent(Activity activity) {
@@ -76,7 +77,7 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
     @Override
     public void actionNavigateToDetail(RideHistoryViewModel rideHistory) {
         Intent intent = RideHistoryDetailActivity.getCallingIntent(this, rideHistory);
-        startActivity(intent);
+        startActivityForResult(intent, REQUEST_CODE_TRIP_DETAIL);
     }
 
     @Override
@@ -89,5 +90,18 @@ public class RideHistoryActivity extends BaseActivity implements RideHistoryFrag
         rideComponent = DaggerRideComponent.builder()
                 .appComponent(getApplicationComponent())
                 .build();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_TRIP_DETAIL) {
+            if (resultCode == RESULT_OK) {
+                RideHistoryFragment fragment = (RideHistoryFragment) getFragmentManager().findFragmentById(R.id.fl_container);
+                if (fragment != null) {
+                    fragment.actionRefreshHistoriesData();
+                }
+            }
+        }
     }
 }

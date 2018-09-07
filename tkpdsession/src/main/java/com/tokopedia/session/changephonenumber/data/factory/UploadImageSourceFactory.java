@@ -2,16 +2,16 @@ package com.tokopedia.session.changephonenumber.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.apiservices.accounts.UploadImageService;
-import com.tokopedia.session.changephonenumber.data.mapper.SubmitImageMapper;
-import com.tokopedia.session.changephonenumber.data.mapper.ValidateImageMapper;
-import com.tokopedia.session.changephonenumber.data.mapper.GetUploadHostMapper;
-import com.tokopedia.session.changephonenumber.data.mapper.UploadImageMapper;
-import com.tokopedia.session.changephonenumber.data.source.CloudSubmitImageDataSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateImageSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudGetUploadHostSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudUploadImageDataSource;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.network.service.UploadImageService;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.SubmitImageMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.ValidateImageMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.GetUploadHostMapper;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.UploadImageMapper;
+import com.tokopedia.session.changephonenumber.data.source.changephonenumberrequest.CloudSubmitImageDataSource;
+import com.tokopedia.session.changephonenumber.data.source.changephonenumberrequest.CloudValidateImageSource;
+import com.tokopedia.session.changephonenumber.data.source.changephonenumberrequest.CloudGetUploadHostSource;
+import com.tokopedia.session.changephonenumber.data.source.changephonenumberrequest.CloudUploadImageDataSource;
 
 /**
  * Created by nisie on 3/9/17.

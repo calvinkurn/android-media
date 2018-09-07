@@ -15,25 +15,32 @@ import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
 import com.tokopedia.core.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ListViewManageShopLocation extends BaseAdapter {
+
+	private List<String> addressList;
 
 	ArrayList<String> LocationNameList;
 	ArrayList<String> LocationAddressList;
 	ArrayList<String> LocationPhoneList;
 	ArrayList<String> LocationFaxList;
 	ArrayList<String> LocationEmailList;
+
 	private Activity context;
 	private String IsAllowShop;
 	private LayoutInflater inflater;
 
 	public ListViewManageShopLocation(Activity context,
 			ArrayList<String> LocationNameList,
+			ArrayList<String> LocationAddress,
 			ArrayList<String> LocationAddressList,
 			ArrayList<String> LocationPhoneList,
 			ArrayList<String> LocationFaxList,
 			ArrayList<String> LocationEmailList, String IsAllowShop) {
+
 		this.LocationNameList = LocationNameList;
+		this.addressList = LocationAddress;
 		this.LocationAddressList = LocationAddressList;
 		this.LocationPhoneList = LocationPhoneList;
 		this.LocationFaxList = LocationFaxList;
@@ -103,8 +110,10 @@ public class ListViewManageShopLocation extends BaseAdapter {
 		} else
 			holder = (Holder) convertView.getTag();
 
+		String address = addressList.get(position) + "\n" + LocationAddressList.get(position);
+
 		holder.LocationName.setText(LocationNameList.get(position));
-		holder.LocationAddress.setText(LocationAddressList.get(position));
+		holder.LocationAddress.setText(address);
 		holder.LocationPhone.setText(LocationPhoneList.get(position));
 		holder.LocationFax.setText(LocationFaxList.get(position));
 		holder.LocationEmail.setText(LocationEmailList.get(position));

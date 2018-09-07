@@ -40,7 +40,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
     private static final String HEADER_AUTHORIZATION = "Authorization";
     private static final String HEADER_X_AUTHORIZATION = "X-Tkpd-Authorization";
     private static final String AUTO_RIDE = "AUTO_RIDE";
-    private static final String DEFAULT_ERROR_MESSAGE_DATA_NULL = "Tidak ada data";
+
     private String authorizationString;
 
     public RideInterceptor(String authorizationString) {
@@ -54,6 +54,7 @@ public class RideInterceptor extends TkpdAuthInterceptor {
         int code = response.code();
         switch (code) {
             case 409:
+            case 417:
                 response.body().close();
                 throw new InterruptConfirmationHttpException(bodyResponse);
             default:
@@ -126,20 +127,6 @@ public class RideInterceptor extends TkpdAuthInterceptor {
 
         return builder.build();
     }
-
-    /*private Request.Builder getBearerHeaderBuilder(Request request, String oAuth, String userId) {
-
-        return request.newBuilder()
-                .header("Tkpd-UserId", userId)
-                .header("Authorization", oAuth)
-                .header("X-Device", "android-" + GlobalConfig.VERSION_NAME)
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                //TODO remove skip payment and auto ride
-                //.header("tkpd-skip-payment", "true")
-                .header("", "true")
-                .header(HEADER_X_APP_VERSION, "android-" + String.valueOf(GlobalConfig.VERSION_NAME))
-                .method(request.method(), request.body());
-    }*/
 
     @Override
     protected Map<String, String> getHeaderMap(String path, String strParam, String method, String authKey, String contentTypeHeader) {

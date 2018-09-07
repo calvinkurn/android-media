@@ -3,6 +3,7 @@ package com.tokopedia.transaction.addtocart.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,10 +13,12 @@ import android.support.annotation.StringRes;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,8 +36,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
@@ -48,6 +51,8 @@ import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.router.transactionmodule.TransactionAddToCartRouter;
 import com.tokopedia.core.router.transactionmodule.passdata.ProductCartPass;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
 import com.tokopedia.transaction.addtocart.listener.AddToCartViewListener;
@@ -63,6 +68,11 @@ import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenter;
 import com.tokopedia.transaction.addtocart.presenter.AddToCartPresenterImpl;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
 import com.tokopedia.transaction.addtocart.services.ATCIntentService;
+import com.tokopedia.transaction.addtocart.utils.KeroppiConstants;
+import com.tokopedia.transaction.common.data.pickuppoint.Store;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.GetPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
+import com.tokopedia.design.pickuppoint.PickupPointLayout;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -78,15 +88,17 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity.RESULT_NOT_SELECTED_DESTINATION;
+import static com.tokopedia.transaction.common.constant.PickupPointIntentConstant.INTENT_DATA_STORE;
 
 /**
  * @author Angga.Prasetiyo on 11/03/2016.
  */
 public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         implements AddToCartViewListener, AdapterView.OnItemSelectedListener,
-        TextWatcher, ATCResultReceiver.Receiver {
+        TextWatcher, ATCResultReceiver.Receiver, PickupPointLayout.ViewListener {
     public static final int REQUEST_CHOOSE_ADDRESS = 0;
     public static final int REQUEST_CHOOSE_LOCATION = 2;
+    private static final int REQUEST_CHOOSE_PICKUP_POINT = 3;
     private static final String EXTRA_STATE_ORDER_DATA = "orderData";
     private static final String EXTRA_STATE_DESTINATION_DATA = "destinationData";
     private static final String EXTRA_STATE_LOCATION_PASS_DATA = "locationPassData";
@@ -105,6 +117,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     private List<Attribute> mShipmentRateAttrs;
     private Observable<Long> incrementObservable = Observable.interval(200, TimeUnit.MILLISECONDS);
     private SnackbarRetry snackbarRetry;
+    private String insuranceInfo;
+    private boolean mustReCalculateShippingRate;
+    private boolean hasRecalculateShippingRate;
+    private Store pickupBooth;
 
     @BindView(R2.id.tv_ticker_gtm)
     TextView tvTickerGTM;
@@ -166,6 +182,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     TextView arrowMaxHour;
     @BindView(R2.id.desc_max_hour)
     TextView descMaxHour;
+    @BindView(R2.id.img_insurance_info)
+    ImageView imgInsuranceInfo;
+    @BindView(R2.id.pickup_point_layout)
+    PickupPointLayout pickupPointLayout;
+    @BindView(R2.id.layout_pickup_booth_info)
+    LinearLayout layoutPickupBoothInfo;
 
     private ATCResultReceiver atcReceiver;
     private Subscription subscription;
@@ -201,6 +223,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         progressInitDialog = new TkpdProgressDialog(this, TkpdProgressDialog.MAIN_PROGRESS);
         increaseButton.setOnTouchListener(onIncrementButtonTouchListener());
         decreaseButton.setOnTouchListener(onDecrementButtonTouchListener());
+        pickupPointLayout.setListener(this);
+        pickupPointLayout.enableChooserButton(this);
     }
 
     @Override
@@ -299,10 +323,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             case 1:
                 spInsurance.setSelection(0);
                 spInsurance.setEnabled(false);
+                orderData.setMustInsurance(1);
                 break;
             default:
                 spInsurance.setSelection(1);
                 spInsurance.setEnabled(true);
+                orderData.setMustInsurance(0);
                 break;
         }
         if (data.getProductPreorder() != null
@@ -383,15 +409,29 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 android.R.layout.simple_spinner_item, datas);
         agencyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spShippingAgency.setAdapter(agencyAdapter);
-        spShippingAgency.setEnabled(true);
+        if (pickupBooth != null) {
+            for (int i = 0; i < datas.size(); i++) {
+                if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
+                    spShippingAgency.setSelection(i);
+                    spShippingAgency.setEnabled(false);
+                }
+            }
+        } else {
+            spShippingAgency.setEnabled(true);
+            Log.e("pickupPointLayout", "SetVisibility");
+            pickupPointLayout.setVisibility(View.GONE);
+            for (int i = 0; i < datas.size(); i++) {
+                if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
+                    spShippingAgency.setSelection(i);
+                }
+                if (datas.get(i).getShipperId().equals(TkpdState.SHIPPING_ID.ALFAMART)) {
+                    pickupPointLayout.setVisibility(View.GONE);
+                }
+            }
+        }
         spShippingAgency.setOnItemSelectedListener(this);
         spShippingService.setOnItemSelectedListener(this);
         spShippingService.setEnabled(true);
-        for (int i = 0; i < datas.size(); i++) {
-            if (datas.get(i).getShipperId().equals(orderData.getShipment())) {
-                spShippingAgency.setSelection(i);
-            }
-        }
         btnBuy.setEnabled(true);
 
         this.mShipmentRateAttrs = new ArrayList<>(datas);
@@ -480,7 +520,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 new NetworkErrorHelper.RetryClickedListener() {
                     @Override
                     public void onRetryClicked() {
-                        presenter.calculateProduct(AddToCartActivity.this, orderData);
+                        presenter.calculateProduct(AddToCartActivity.this, orderData,
+                                mustReCalculateShippingRate);
                     }
                 });
         snackbarRetry.showRetrySnackbar();
@@ -581,14 +622,24 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                     android.R.layout.simple_spinner_item, list);
             serviceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spShippingService.setAdapter(serviceAdapter);
-            orderData.setShipment(((Attribute) parent.getAdapter()
-                    .getItem(position)).getShipperId());
+            String shipperId = ((Attribute) parent.getAdapter()
+                    .getItem(position)).getShipperId();
+            orderData.setShipment(shipperId);
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i).getShipperProductId().equals(orderData.getShipmentPackage())) {
                     spShippingService.setSelection(i);
                 }
             }
             tvErrorShipping.setVisibility(View.GONE);
+            mustReCalculateShippingRate = shipperId.equalsIgnoreCase(TkpdState.SHIPPING_ID.WAHANA);
+            if (mustReCalculateShippingRate) {
+                if (!hasRecalculateShippingRate) {
+                    presenter.calculateProduct(this, orderData, mustReCalculateShippingRate);
+                    hasRecalculateShippingRate = true;
+                }
+            } else {
+                hasRecalculateShippingRate = false;
+            }
         } else if (parent.getAdapter().getItem(position) instanceof Product) {
             orderData.setShipmentPackage(((Product) parent.getAdapter()
                     .getItem(position)).getShipperProductId());
@@ -610,16 +661,65 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 viewFieldLocation.setVisibility(View.GONE);
                 clearRetryInstantCourierSnackbar();
             }
-            if (product.getMaxHoursId() != null && product.getDescHoursId() != null) {
+
+            if (product.getInsuranceMode() != null) {
+                setInsuranceInfoButtonVisibility(product);
+            }
+
+            if (!TextUtils.isEmpty(product.getMaxHoursId())
+                    && !TextUtils.isEmpty(product.getDescHoursId())) {
                 arrowMaxHour.setText(product.getMaxHoursId());
                 descMaxHour.setText(product.getDescHoursId());
                 shipmentHourAtcLayout.setVisibility(View.VISIBLE);
             } else {
                 shipmentHourAtcLayout.setVisibility(View.GONE);
             }
+            if (pickupBooth != null) {
+                layoutPickupBoothInfo.setVisibility(View.GONE);
+            } else {
+                layoutPickupBoothInfo.setVisibility(View.GONE);
+            }
         } else if (parent.getAdapter().getItem(position) instanceof Insurance) {
             orderData.setInsurance(((Insurance) parent.getAdapter().getItem(position)).isInsurance()
                     ? Insurance.INSURANCE : Insurance.NOT_INSURANCE);
+        }
+    }
+
+    private void setInsuranceInfoButtonVisibility(Product product) {
+        setInsuranceSpinnerVisibility(product);
+
+        if (product.getShipperProductName().equals(getString(R.string.atc_selection_shipment_package_info))) {
+            imgInsuranceInfo.setVisibility(View.GONE);
+        } else {
+            if (product.getInsuranceUsedInfo() != null && product.getInsuranceUsedInfo().length() > 0) {
+                insuranceInfo = product.getInsuranceUsedInfo();
+                imgInsuranceInfo.setVisibility(View.VISIBLE);
+            } else {
+                imgInsuranceInfo.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Override
+    public void setInsuranceSpinnerVisibility(Product product) {
+        if (product.getInsuranceMode() != null) {
+            if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.MUST) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(0);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.NO) {
+                spInsurance.setEnabled(false);
+                spInsurance.setSelection(1);
+            } else if (product.getInsuranceMode() == KeroppiConstants.InsuranceType.OPTIONAL) {
+                spInsurance.setEnabled(true);
+                if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.YES) {
+                    spInsurance.setSelection(0);
+                } else if (product.getInsuranceUsedDefault() == KeroppiConstants.InsuranceUsedDefault.NO) {
+                    spInsurance.setSelection(1);
+                }
+            }
+        } else {
+            spInsurance.setEnabled(true);
+            spInsurance.setSelection(1);
         }
     }
 
@@ -673,6 +773,12 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                         this.mLocationPass = locationPass;
                     }
                     break;
+                case REQUEST_CHOOSE_PICKUP_POINT:
+                    pickupBooth = data.getParcelableExtra(INTENT_DATA_STORE);
+                    pickupPointLayout.setData(this, pickupBooth.getStoreName(), pickupBooth.getAddress());
+                    // TODO : disable spinner alfamart
+                    // TODO : show view alfamart
+                    break;
             }
         } else if (resultCode == RESULT_NOT_SELECTED_DESTINATION) {
             renderFormAddress(
@@ -712,6 +818,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         presenter.sendToGTM(this);
         Intent intent1 = new Intent(this, AddAddressActivity.class);
         Bundle bundle = new Bundle();
+        bundle.putBoolean(ManageAddressConstant.IS_DISTRICT_RECOMMENDATION, false);
         bundle.putBoolean(ManageAddressConstant.IS_EDIT, false);
         intent1.putExtras(bundle);
         startActivityForResult(intent1, ManageAddressConstant.REQUEST_CODE_PARAM_CREATE);
@@ -722,21 +829,6 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         if (presenter.isValidOrder(this, orderData)) {
             presenter.addToCartService(this, atcReceiver, createFinalOrderData());
             presenter.sendAppsFlyerATC(this, orderData);
-
-            processCartAnalytics(mProductDetail);
-        }
-    }
-
-    private void processCartAnalytics(ProductDetail productDetail) {
-        if (productDetail != null) {
-            com.tokopedia.core.analytics.model.Product product = new com.tokopedia.core.analytics.model.Product();
-            product.setCategoryName(productDetail.getProductCatName());
-            product.setCategoryId(productDetail.getProductCatId());
-            product.setName(productDetail.getProductName());
-            product.setId(productDetail.getProductId());
-            product.setPrice(productDetail.getProductPrice());
-
-            TrackingUtils.sendMoEngageAddToCart(product);
         }
     }
 
@@ -758,8 +850,24 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
         } else etQuantity.setText("1");
     }
 
+    @OnClick(R2.id.img_insurance_info)
+    void showInsuranceInfo() {
+        BottomSheetView bottomSheetView = new BottomSheetView(this);
+        bottomSheetView.renderBottomSheet(new BottomSheetView.BottomSheetField
+                .BottomSheetFieldBuilder()
+                .setTitle(getString(R.string.title_bottomsheet_insurance))
+                .setBody(insuranceInfo)
+                .setImg(R.drawable.ic_insurance)
+                .build());
+
+        bottomSheetView.show();
+    }
+
     private OrderData createFinalOrderData() {
         OrderData finalOrder = this.orderData;
+        if (pickupBooth != null) {
+            orderData.setPickupStoreId(pickupBooth.getId());
+        }
         finalOrder.setNotes(etRemark.getText().toString());
         return finalOrder;
     }
@@ -802,7 +910,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
             tilAmount.setError(null);
             tilAmount.setErrorEnabled(false);
             presenter.calculateAllPrices(AddToCartActivity.this, orderData);
-            presenter.calculateProduct(AddToCartActivity.this, orderData);
+            presenter.calculateProduct(AddToCartActivity.this, orderData,
+                    mustReCalculateShippingRate);
         }
     }
 
@@ -814,7 +923,10 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
                 break;
             case ATCIntentService.RESULT_ADD_TO_CART_SUCCESS:
                 hideProgressLoading();
-                presenter.sendAnalyticsATCSuccess(this, productCartPass, createFinalOrderData());
+                presenter.sendAddToCartCheckoutAnalytic(this,
+                        productCartPass,
+                        mProductDetail,
+                        etQuantity.getText().toString());
                 presenter.processAddToCartSuccess(this,
                         resultData.getString(ATCIntentService.EXTRA_MESSAGE));
                 presenter.setCacheCart(this);
@@ -861,6 +973,8 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GTMContainer gtmContainer = new GTMContainer(this);
+        gtmContainer.clearEnhanceEcommerce();
         if (savedInstanceState != null) {
             this.orderData = savedInstanceState.getParcelable(EXTRA_STATE_ORDER_DATA);
             this.mDestination = savedInstanceState.getParcelable(EXTRA_STATE_DESTINATION_DATA);
@@ -894,6 +1008,7 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected void onResume() {
         super.onResume();
+        unregisterShake();
     }
 
     private void showBuyError(String errorMessage) {
@@ -1004,5 +1119,40 @@ public class AddToCartActivity extends BasePresenterActivity<AddToCartPresenter>
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    private void showCancelPickupBoothDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.label_dialog_title_cancel_pickup);
+        builder.setMessage(R.string.label_dialog_message_cancel_pickup_booth);
+        builder.setPositiveButton(R.string.title_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                pickupPointLayout.unSetData(AddToCartActivity.this);
+                spShippingAgency.setEnabled(true);
+                spShippingAgency.setSelection(0);
+                pickupBooth = null;
+            }
+        });
+        builder.setNegativeButton(R.string.title_no, null);
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void onChoosePickupPoint() {
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
+    }
+
+    @Override
+    public void onClearPickupPoint() {
+        showCancelPickupBoothDialog();
+    }
+
+    @Override
+    public void onEditPickupPoint() {
+        startActivityForResult(PickupPointActivity.createInstance(this, mDestination.getDistrictName(),
+                GetPickupPointsUseCase.generateParams(orderData)), REQUEST_CHOOSE_PICKUP_POINT);
     }
 }

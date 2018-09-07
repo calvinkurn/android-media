@@ -38,6 +38,7 @@ public class CreateRideRequestUseCase extends UseCase<RideRequest> {
     public static final String PARAM_DEVICE_TYPE = "device_type";
     public static final String PARAM_APP_LATITUDE = "alat";
     public static final String PARAM_APP_LONGITUDE = "along";
+    public static final String PARAM_API_VERSION = "api_version";
 
     private BookingRideRepository bookingRideRepository;
 

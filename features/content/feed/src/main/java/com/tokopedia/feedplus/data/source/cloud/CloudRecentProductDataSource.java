@@ -1,0 +1,66 @@
+package com.tokopedia.feedplus.data.source.cloud;
+
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.abstraction.common.utils.network.CacheUtil;
+import com.tokopedia.core.base.common.service.MojitoService;
+import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.feedplus.data.mapper.RecentProductMapper;
+import com.tokopedia.feedplus.data.source.local.LocalFeedDataSource;
+import com.tokopedia.feedplus.domain.model.feed.FeedDomain;
+import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
+import com.tokopedia.feedplus.domain.usecase.GetRecentViewUseCase;
+import com.tokopedia.usecase.RequestParams;
+
+import java.util.List;
+
+import rx.Observable;
+import rx.functions.Action1;
+
+/**
+ * @author Kulomady on 12/9/16.
+ */
+
+public class CloudRecentProductDataSource {
+
+    private final GlobalCacheManager globalCacheManager;
+    private final MojitoService mojitoService;
+    private RecentProductMapper recentProductMapper;
+
+    public CloudRecentProductDataSource(GlobalCacheManager globalCacheManager,
+                                        MojitoService mojitoService,
+                                        RecentProductMapper recentProductMapper) {
+        this.mojitoService = mojitoService;
+        this.recentProductMapper = recentProductMapper;
+        this.globalCacheManager = globalCacheManager;
+    }
+
+    public Observable<List<RecentViewProductDomain>> getRecentProduct(RequestParams requestParams) {
+
+        return mojitoService.getRecentProduct(
+                String.valueOf(requestParams.getParameters()
+                        .get(GetRecentViewUseCase.PARAM_USER_ID)))
+                .map(recentProductMapper)
+                .doOnNext(saveToCache());
+    }
+
+    private Action1<List<RecentViewProductDomain>> saveToCache() {
+        return new Action1<List<RecentViewProductDomain>>() {
+            @Override
+            public void call(final List<RecentViewProductDomain> listRecentView) {
+                FeedDomain feedDomain = globalCacheManager.getConvertObjData(
+                        LocalFeedDataSource.KEY_FEED_PLUS, FeedDomain.class);
+
+                if (feedDomain != null) {
+                    feedDomain.setRecentProduct(listRecentView);
+
+                    globalCacheManager.setKey(LocalFeedDataSource.KEY_FEED_PLUS);
+                    globalCacheManager.setValue(
+                            CacheUtil.convertModelToString(feedDomain,
+                                    new TypeToken<FeedDomain>() {
+                                    }.getType()));
+                    globalCacheManager.store();
+                }
+            }
+        };
+    }
+}

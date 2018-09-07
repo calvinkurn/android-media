@@ -9,9 +9,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatDelegate;
+
 
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFinishedFragment;
 import com.tokopedia.profilecompletion.view.fragment.ProfileCompletionFragment;
@@ -22,7 +24,7 @@ import com.tokopedia.session.R;
  * @author by nisie on 6/19/17.
  */
 
-public class ProfileCompletionActivity extends BasePresenterActivity {
+public class ProfileCompletionActivity extends BasePresenterActivity implements HasComponent{
 
     private static final String ERROR_IMPLEMENT_LISTENER = "Error not implementing " +
             "ProfileCompletionContract.View";
@@ -62,8 +64,8 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
         }
         toolbar.setPadding(toolbar.getPaddingLeft(), toolbar.getPaddingTop(), 30, toolbar.getPaddingBottom());
 
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-        Drawable upArrow = ContextCompat.getDrawable(this, android.support.v7.appcompat.R.drawable.abc_ic_ab_back_material);
+
+        Drawable upArrow = ContextCompat.getDrawable(this, R.drawable.ic_action_back);
         if (upArrow != null) {
             upArrow.setColorFilter(ContextCompat.getColor(this, com.tokopedia.core.R.color.grey_700), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
@@ -105,5 +107,10 @@ public class ProfileCompletionActivity extends BasePresenterActivity {
             return (ProfileCompletionFragment) getSupportFragmentManager().findFragmentById(R.id.container);
         else
             throw new RuntimeException(ERROR_IMPLEMENT_LISTENER);
+    }
+
+    @Override
+    public AppComponent getComponent() {
+        return getApplicationComponent();
     }
 }

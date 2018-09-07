@@ -1,5 +1,9 @@
 package com.tokopedia.ride.history.view.viewmodel;
 
+import android.content.Context;
+
+import com.tokopedia.ride.R;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
 import com.tokopedia.ride.common.ride.utils.RideUtils;
 import com.tokopedia.ride.history.domain.model.RideHistory;
@@ -15,7 +19,7 @@ public class RideHistoryViewModelMapper {
         this.googleKey = googleKey;
     }
 
-    public RideHistoryViewModel transform(String mapSize, RideHistory rideHistory) {
+    public RideHistoryViewModel transform(Context context, String mapSize, RideHistory rideHistory) {
         RideHistoryViewModel viewModel = new RideHistoryViewModel();
         viewModel.setDriverCarDisplay(String.format("%s %s %s",
                 rideHistory.getVehicle().getMake(),
@@ -25,7 +29,9 @@ public class RideHistoryViewModelMapper {
         viewModel.setStatus(rideHistory.getStatus());
         viewModel.setTotalFare(RideUtils.formatStringToPriceString(rideHistory.getPayment().getTotalAmount(), rideHistory.getPayment().getCurrency()));
         viewModel.setTokoCashCharged(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPaidAmount(), rideHistory.getPayment().getCurrency()));
-        viewModel.setPendingAmount(RideUtils.formatStringToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmountDisplayFormat(RideUtils.formaNumberToPriceString(rideHistory.getPayment().getPendingAmount(), rideHistory.getPayment().getCurrency()));
+        viewModel.setPendingAmount(rideHistory.getPayment().getPendingAmount());
+        viewModel.setPaymentMethod(transformPaymentMethod(rideHistory.getPayment().getPaymentMethod()));
         viewModel.setCashback(rideHistory.getCashbackAmount());
         viewModel.setDiscount(rideHistory.getDiscountAmount());
         viewModel.setCashbackDisplayFormat(
@@ -42,7 +48,11 @@ public class RideHistoryViewModelMapper {
         viewModel.setRequestId(rideHistory.getRequestId());
         viewModel.setDriverName(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getName());
         viewModel.setDriverPictureUrl(rideHistory.getDriver() == null ? "" : rideHistory.getDriver().getPictureUrl());
-        viewModel.setDisplayStatus(RideHistoryViewModel.transformToDisplayStatus(rideHistory.getStatus()));
+        if (rideHistory.getPayment().getPendingAmount() > 0) {
+            viewModel.setDisplayStatus(context.getString(R.string.status_pending_amount));
+        } else {
+            viewModel.setDisplayStatus(transformToDisplayStatus(context, rideHistory.getStatus()));
+        }
 
         if (rideHistory.getVehicle() != null) {
             viewModel.setLicensePlateNumber(rideHistory.getVehicle().getLicensePlate());
@@ -81,5 +91,52 @@ public class RideHistoryViewModelMapper {
         }
 
         return urlBuffer.toString();
+    }
+
+    private String transformPaymentMethod(String paymentMethod) {
+        if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.CC)) {
+            return PaymentMode.CC_DISPLAY_NAME;
+        } else if (paymentMethod != null && paymentMethod.equalsIgnoreCase(PaymentMode.WALLET)) {
+            return PaymentMode.WALLET_DISPLAY_NAME;
+        }
+
+        return PaymentMode.DEFAULT_DISPLAY_NAME;
+    }
+
+    public static String transformToDisplayStatus(Context context, String status) {
+        switch (status) {
+            case "arriving":
+            case "ARRIVING":
+                return context.getString(R.string.status_arriving);
+
+            case "accepted":
+            case "ACCEPTED":
+                return context.getString(R.string.status_accepted);
+
+            case "no_drivers_available":
+            case "NO_DRIVERS_AVAILABLE":
+                return context.getString(R.string.status_driver_not_available);
+
+            case "processing":
+            case "PROCESSING":
+                return context.getString(R.string.status_processing);
+
+            case "in_progress":
+            case "IN_PROGRESS":
+                return context.getString(R.string.status_ontrip);
+
+            case "driver_canceled":
+            case "DRIVER_CANCELED":
+                return context.getString(R.string.status_driver_cancelled);
+
+            case "rider_canceled":
+            case "RIDER_CANCELED":
+                return context.getString(R.string.status_user_cancelled);
+
+            case "completed":
+            case "COMPLETED":
+                return context.getString(R.string.status_completed);
+        }
+        return status;
     }
 }

@@ -401,11 +401,6 @@ public class ConfirmPaymentPresenterImpl implements ConfirmPaymentPresenter {
             }
 
             @Override
-            public void setDepartments(List<CategoryDB> departments) {
-
-            }
-
-            @Override
             public void setShippingCity(List<District> districts) {
 
             }

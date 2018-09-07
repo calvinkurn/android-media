@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:title="@string/title_etalase" />
 
         <com.tokopedia.seller.common.widget.LabelView
@@ -26,7 +25,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:title="@string/title_category" />
 
         <com.tokopedia.seller.common.widget.LabelView
@@ -34,7 +32,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:title="@string/title_condition" />
 
         <com.tokopedia.seller.common.widget.LabelView
@@ -42,7 +39,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:title="@string/title_catalog" />
 
         <com.tokopedia.seller.common.widget.LabelView
@@ -50,7 +46,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:content_color="@color/tkpd_main_green"
-            app:label_show_arrow="true"
             app:title="@string/title_picture_product" />
     </LinearLayout>
 

@@ -13,6 +13,17 @@ public class HistoryActionEntity {
     @SerializedName("listHistoryAction")
     private List<ListHistoryAction> listHistoryAction;
 
+    @SerializedName("resoStatus")
+    private int resolutionStatus;
+
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
     public List<ListHistoryAction> getListHistoryAction() {
         return listHistoryAction;
     }

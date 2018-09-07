@@ -22,6 +22,11 @@ public class GetNewOrderPresenterImpl extends GetNewOrderPresenter {
 
     @Override
     public void getNewOrderAndCount() {
+        getNewOrderUseCase.executeSync(GetNewOrderWidgetUseCase.createRequestParams(PAGE, "", PER_PAGE, ""), new GetSubscriberNewOrder());
+    }
+
+    @Override
+    public void getNewOrderAndCountAsync() {
         getNewOrderUseCase.execute(GetNewOrderWidgetUseCase.createRequestParams(PAGE, "", PER_PAGE, ""), new GetSubscriberNewOrder());
     }
 

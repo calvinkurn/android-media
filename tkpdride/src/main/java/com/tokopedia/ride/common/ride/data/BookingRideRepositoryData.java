@@ -1,11 +1,16 @@
 package com.tokopedia.ride.common.ride.data;
 
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.ride.bookingride.data.NearbyRidesDestinationMapper;
 import com.tokopedia.ride.bookingride.data.RideAddressCache;
 import com.tokopedia.ride.bookingride.data.RideAddressCacheImpl;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.Promo;
 import com.tokopedia.ride.common.ride.data.entity.CancelReasonsResponseEntity;
 import com.tokopedia.ride.common.ride.data.entity.FareEstimateEntity;
+import com.tokopedia.ride.common.ride.data.entity.GetPendingEntity;
+import com.tokopedia.ride.common.ride.data.entity.PaymentMethodListEntity;
 import com.tokopedia.ride.common.ride.data.entity.PriceEntity;
 import com.tokopedia.ride.common.ride.data.entity.ProductEntity;
 import com.tokopedia.ride.common.ride.data.entity.PromoEntity;
@@ -19,6 +24,9 @@ import com.tokopedia.ride.common.ride.data.entity.TimesEstimateEntity;
 import com.tokopedia.ride.common.ride.data.entity.UpdateDestinationEntity;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.common.ride.domain.model.FareEstimate;
+import com.tokopedia.ride.common.ride.domain.model.GetPending;
+import com.tokopedia.ride.common.ride.domain.model.PayPending;
+import com.tokopedia.ride.common.ride.domain.model.PaymentMethodList;
 import com.tokopedia.ride.common.ride.domain.model.PriceEstimate;
 import com.tokopedia.ride.common.ride.domain.model.Product;
 import com.tokopedia.ride.common.ride.domain.model.Receipt;
@@ -56,6 +64,10 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     private final PriceEstimateEntityMapper priceEstimateEntityMapper;
     private final RideHistoryWrapperMapper rideHistoryWrapperMapper;
     private final UpdateDestinationEntityMapper updateDestinationEntityMapper;
+    private final PaymentMethodListMapper paymentMethodListMapper;
+    private final NearbyRidesDestinationMapper nearbyRidesDestinationMapper;
+    private final PayPendingEntityMapper payPendingEntityMapper;
+    private final GetPendingEntityMapper getPendingEntityMapper;
 
     public BookingRideRepositoryData(BookingRideDataStoreFactory bookingRideDataStoreFactory) {
         mBookingRideDataStoreFactory = bookingRideDataStoreFactory;
@@ -71,6 +83,10 @@ public class BookingRideRepositoryData implements BookingRideRepository {
         priceEstimateEntityMapper = new PriceEstimateEntityMapper();
         rideHistoryWrapperMapper = new RideHistoryWrapperMapper();
         updateDestinationEntityMapper = new UpdateDestinationEntityMapper();
+        paymentMethodListMapper = new PaymentMethodListMapper();
+        nearbyRidesDestinationMapper = new NearbyRidesDestinationMapper();
+        payPendingEntityMapper = new PayPendingEntityMapper();
+        getPendingEntityMapper = new GetPendingEntityMapper();
     }
 
     @Override
@@ -350,5 +366,69 @@ public class BookingRideRepositoryData implements BookingRideRepository {
     @Override
     public Observable<String> sendTip(TKPDMapParam<String, Object> parameters) {
         return mBookingRideDataStoreFactory.createCloudDataStore().sendTip(parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodList> getPaymentMethodList(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getPaymentMethodList(parameters)
+                .doOnNext(new Action1<PaymentMethodListEntity>() {
+                    @Override
+                    public void call(PaymentMethodListEntity paymentMethodListEntity) {
+                        PaymentMethodListCache cache = new PaymentMethodListCacheImpl();
+                        cache.put(paymentMethodListEntity);
+                    }
+                })
+                .map(new Func1<PaymentMethodListEntity, PaymentMethodList>() {
+                    @Override
+                    public PaymentMethodList call(PaymentMethodListEntity paymentMethodListEntity) {
+                        return paymentMethodListMapper.transform(paymentMethodListEntity);
+                    }
+                });
+    }
+
+    public Observable<NearbyRides> getNearbyCars(TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .getNearbyCars(parameters)
+                .map(nearbyRidesDestinationMapper);
+    }
+
+    @Override
+    public Observable<String> requestApi(String url, TKPDMapParam<String, Object> parameters) {
+        return mBookingRideDataStoreFactory.createCloudDataStore()
+                .requestApi(url, parameters);
+    }
+
+    @Override
+    public Observable<PaymentMethodList> getPaymentMethodListFromCache() {
+        return mBookingRideDataStoreFactory.createDiskDataStore()
+                .getPaymentMethodList(new TKPDMapParam<String, Object>())
+                .map(new Func1<PaymentMethodListEntity, PaymentMethodList>() {
+                    @Override
+                    public PaymentMethodList call(PaymentMethodListEntity paymentMethodListEntity) {
+                        return paymentMethodListMapper.transform(paymentMethodListEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<PayPending> payPendingAmount() {
+        return mBookingRideDataStoreFactory.createCloudDataStore().payPendingAmount()
+                .map(new Func1<JsonObject, PayPending>() {
+                    @Override
+                    public PayPending call(JsonObject payPendingEntity) {
+                        return payPendingEntityMapper.transform(payPendingEntity);
+                    }
+                });
+    }
+
+    @Override
+    public Observable<GetPending> getPendingAmount() {
+        return mBookingRideDataStoreFactory.createCloudDataStore().getPendingAmount().map(new Func1<GetPendingEntity, GetPending>() {
+            @Override
+            public GetPending call(GetPendingEntity getPendingEntity) {
+                return getPendingEntityMapper.transform(getPendingEntity);
+            }
+        });
     }
 }

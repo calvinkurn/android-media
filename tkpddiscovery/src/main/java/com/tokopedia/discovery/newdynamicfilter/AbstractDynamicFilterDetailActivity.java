@@ -1,10 +1,9 @@
 package com.tokopedia.discovery.newdynamicfilter;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,13 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.discovery.model.Option;
 import com.tokopedia.design.search.EmptySearchResultView;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdynamicfilter.view.DynamicFilterDetailView;
-
-import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +44,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     protected static final String EXTRA_SEARCH_HINT = "EXTRA_SEARCH_HINT";
     protected static final String EXTRA_IS_SEARCHABLE = "EXTRA_IS_SEARCHABLE";
     protected static final String EXTRA_PAGE_TITLE = "EXTRA_PAGE_TITLE";
+    protected static final String EXTRA_IS_USING_TRACKING = "EXTRA_IS_USING_TRACKING";
 
     protected List<Option> optionList;
     protected T adapter;
@@ -66,6 +65,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     private String pageTitle;
     private boolean isAutoTextChange = false;
     private Subscription subscription;
+    private boolean isUsingTracking;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +114,7 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         isSearchable = getIntent().getBooleanExtra(EXTRA_IS_SEARCHABLE, false);
         searchHint = getIntent().getStringExtra(EXTRA_SEARCH_HINT);
         pageTitle = getIntent().getStringExtra(EXTRA_PAGE_TITLE);
+        isUsingTracking = getIntent().getBooleanExtra(EXTRA_IS_USING_TRACKING, false);
     }
 
     protected void bindView() {
@@ -145,9 +146,20 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         buttonApply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isUsingTracking) {
+                    SearchTracking.eventSearchResultApplyFilterDetail(getActivityContext(), pageTitle);
+                }
                 applyFilter();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isUsingTracking) {
+            SearchTracking.eventSearchResultBackFromFilterDetail(this, pageTitle);
+        }
+        super.onBackPressed();
     }
 
     protected void showLoading() {
@@ -221,6 +233,9 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
     public void onItemCheckedChanged(Option option, boolean isChecked) {
         option.setInputState(Boolean.toString(isChecked));
         hideKeyboard();
+        if (isUsingTracking) {
+            SearchTracking.eventSearchResultFilterJourney(this, pageTitle, option.getName(), true, isChecked);
+        }
     }
 
     private void hideKeyboard() {
@@ -314,5 +329,9 @@ public abstract class AbstractDynamicFilterDetailActivity<T extends RecyclerView
         if (subscription != null) {
             subscription.unsubscribe();
         }
+    }
+
+    private Context getActivityContext() {
+        return this;
     }
 }

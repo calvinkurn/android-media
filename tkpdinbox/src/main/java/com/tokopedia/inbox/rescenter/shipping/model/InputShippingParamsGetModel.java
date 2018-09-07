@@ -17,6 +17,26 @@ public class InputShippingParamsGetModel implements Parcelable {
 
     private String shippingRefNum;
 
+    private boolean isFromChat;
+
+    private boolean isEdit;
+
+    public boolean isEdit() {
+        return isEdit;
+    }
+
+    public void setEdit(boolean edit) {
+        isEdit = edit;
+    }
+
+    public boolean isFromChat() {
+        return isFromChat;
+    }
+
+    public void setFromChat(boolean fromChat) {
+        isFromChat = fromChat;
+    }
+
     public String getResolutionID() {
         return resolutionID;
     }
@@ -49,6 +69,9 @@ public class InputShippingParamsGetModel implements Parcelable {
         this.shippingRefNum = shippingRefNum;
     }
 
+    public InputShippingParamsGetModel() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -60,9 +83,8 @@ public class InputShippingParamsGetModel implements Parcelable {
         dest.writeString(this.conversationID);
         dest.writeString(this.shippingID);
         dest.writeString(this.shippingRefNum);
-    }
-
-    public InputShippingParamsGetModel() {
+        dest.writeByte(this.isFromChat ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isEdit ? (byte) 1 : (byte) 0);
     }
 
     protected InputShippingParamsGetModel(Parcel in) {
@@ -70,9 +92,11 @@ public class InputShippingParamsGetModel implements Parcelable {
         this.conversationID = in.readString();
         this.shippingID = in.readString();
         this.shippingRefNum = in.readString();
+        this.isFromChat = in.readByte() != 0;
+        this.isEdit = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<InputShippingParamsGetModel> CREATOR = new Parcelable.Creator<InputShippingParamsGetModel>() {
+    public static final Creator<InputShippingParamsGetModel> CREATOR = new Creator<InputShippingParamsGetModel>() {
         @Override
         public InputShippingParamsGetModel createFromParcel(Parcel source) {
             return new InputShippingParamsGetModel(source);

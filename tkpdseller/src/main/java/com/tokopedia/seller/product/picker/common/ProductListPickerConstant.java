@@ -21,4 +21,5 @@ public class ProductListPickerConstant {
     public static final String QUERY_ETALASE_ID = "etalase_id";
     public static final String QUERY_PICTURE_STATUS = "picture_status";
     public static final String REQUEST_PER_PAGE_MANAGE_PRODUCT = "20";
+    public static final String REQUEST_PARAM_PRODUCT_VARIANT = "show_variant";
 }

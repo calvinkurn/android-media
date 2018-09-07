@@ -2,7 +2,6 @@ package com.tokopedia.tkpd.home.favorite.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -15,12 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.TopAdsUtil;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.view.viewlistener.FavoriteClickListener;
@@ -88,6 +88,9 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                     .dontAnimate()
                     .placeholder(com.tokopedia.core.R.drawable.loading_page)
                     .error(com.tokopedia.core.R.drawable.error_drawable)
+                    .skipMemoryCache(true)
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .override(375, 97)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model,
@@ -107,7 +110,6 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                             return false;
                         }
                     })
-                    .centerCrop()
                     .into(holder.shopCover);
         }
     }
@@ -147,16 +149,7 @@ public class TopAdsShopAdapter extends RecyclerView.Adapter<TopAdsShopAdapter.Vi
                 Context context = view.getContext();
                 TopAdsUtil.clickTopAdsAction(context, item.getShopClickUrl());
                 UnifyTracking.eventFavoriteViewRecommendation();
-                Intent intent = new Intent(context, ShopInfoActivity.class);
-                Bundle bundle = ShopInfoActivity.createBundle(
-                        item.getShopId(),
-                        item.getShopDomain(),
-                        item.getShopName(),
-                        item.getShopImageUrl(),
-                        item.getShopCoverUrl(),
-                        (item.isFav() ? 1 : 0));
-                bundle.putString(ShopInfoActivity.SHOP_AD_KEY, item.getAdKey());
-                intent.putExtras(bundle);
+                Intent intent = ShopPageActivity.createIntent(context, item.getShopId());
                 context.startActivity(intent);
             }
         };

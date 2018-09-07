@@ -13,6 +13,8 @@ import com.tokopedia.seller.opportunity.viewmodel.opportunitylist.FilterPass;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -33,6 +35,7 @@ public class GetOpportunityFirstTimeUseCase extends UseCase<OpportunityFirstTime
     private final GetOpportunityUseCase getOpportunityUseCase;
     private final GetOpportunityFilterUseCase getOpportunityFilterUseCase;
 
+    @Inject
     public GetOpportunityFirstTimeUseCase(ThreadExecutor threadExecutor,
                                           PostExecutionThread postExecutionThread,
                                           GetOpportunityUseCase getOpportunityUseCase,

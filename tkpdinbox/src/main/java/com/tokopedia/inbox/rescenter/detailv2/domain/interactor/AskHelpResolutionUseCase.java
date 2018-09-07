@@ -29,6 +29,12 @@ public class AskHelpResolutionUseCase extends UseCase<ResolutionActionDomainData
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return repository.askHelpResolution(requestParams.getParameters());
+        return repository.askHelpResolutionV2(requestParams);
+    }
+
+    public static RequestParams getParams(String resolutionId) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_RESOLUTION_ID, resolutionId);
+        return params;
     }
 }

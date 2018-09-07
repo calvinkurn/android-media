@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 
 import java.util.ArrayList;
@@ -60,4 +61,7 @@ public interface MPAddressFragmentListener {
     void showDialogConfirmation(String message, DialogInterface.OnClickListener onPositiveClickListener);
 
     void openFormAddressView(AddressModel data);
+
+    void setToken(Token token);
+
 }

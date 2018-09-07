@@ -106,6 +106,8 @@ public class ShopTalk implements Parcelable {
         report = in.readString();
     }
 
+    public ShopTalk(){}
+
     public static final Creator<ShopTalk> CREATOR = new Creator<ShopTalk>() {
         @Override
         public ShopTalk createFromParcel(Parcel in) {

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.AmountDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDetailDomain;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.productproblem.OrderDomain;
@@ -38,8 +39,8 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.Sh
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusInfoViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusTroubleViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.StatusViewModel;
-import com.tokopedia.inbox.rescenter.detailv2.view.DetailResCenterActivity;
-import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
+import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     private ResultViewModel resultViewModel;
     private String orderId;
+    private String resolutionId;
 
     @Inject
     public CreateResolutionCenterPresenter(GetProductProblemUseCase getProductProblemUseCase,
@@ -82,7 +84,18 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         mainView.showLoading(false);
         resultViewModel.orderId = orderId;
         this.orderId = orderId;
-        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId),
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId, ""),
+                new LoadProductSubscriber(mainView));
+    }
+
+    @Override
+    public void loadProductProblem(String orderId, String resolutionId) {
+        resultViewModel.resolutionId = resolutionId;
+        mainView.showLoading(false);
+        resultViewModel.orderId = orderId;
+        this.orderId = orderId;
+        this.resolutionId = resolutionId;
+        getProductProblemUseCase.execute(getProductProblemUseCase.getProductProblemUseCaseParam(orderId, resolutionId),
                 new LoadProductSubscriber(mainView));
     }
 
@@ -124,6 +137,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
         resultViewModel = new ResultViewModel();
         resultViewModel.problem = problemResultList;
         resultViewModel.orderId = orderId;
+        if (resolutionId != null) {
+            resultViewModel.resolutionId = resolutionId;
+        }
         mainView.updateView(resultViewModel);
     }
 
@@ -161,14 +177,14 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
-    public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId) {
-
-        Intent resInboxIntent = InboxResCenterActivity.createIntent(context);
-        resInboxIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        Intent detailResIntent = DetailResCenterActivity.newInstance(context, resolutionId);
-
+    public TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName) {
+        Intent resInboxIntent = ResoInboxActivity.newBuyerInstance(context);
+        Intent detailResIntent = DetailResChatActivity.newBuyerInstance(context, resolutionId, shopName);
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        if (context.getApplicationContext() instanceof TkpdInboxRouter){
+            Intent intent = ((TkpdInboxRouter) context.getApplicationContext()).getHomeIntent(context);
+            taskStackBuilder.addNextIntent(intent);
+        }
         taskStackBuilder.addNextIntent(resInboxIntent);
         taskStackBuilder.addNextIntent(detailResIntent);
         return taskStackBuilder;

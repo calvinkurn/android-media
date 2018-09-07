@@ -21,5 +21,7 @@ public class List {
     @SerializedName("use_ace")
     @Expose
     public int useAce;
-
+    @SerializedName("etalase_badge")
+    @Expose
+    public String etalaseBadge;
 }

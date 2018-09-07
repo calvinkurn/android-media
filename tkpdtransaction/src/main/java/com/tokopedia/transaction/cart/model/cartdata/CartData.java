@@ -86,6 +86,16 @@ public class CartData implements Parcelable {
     private CartDonation donation;
     @SerializedName("promo_suggestion")
     private CartPromo cartPromo;
+    @SerializedName("is_coupon_active")
+    private int isCouponActive = 0;
+    @SerializedName("autoapply")
+    private AutoApply autoApply;
+    @SerializedName("enable_cancel_partial")
+    @Expose
+    private boolean enableCancelPartial;
+    @SerializedName("default_promo_dialog_tab")
+    @Expose
+    private String defaultPromoDialogTab;
 
     public String getGrandTotalWithoutLP() {
         return grandTotalWithoutLP;
@@ -287,6 +297,38 @@ public class CartData implements Parcelable {
         this.cartPromo = cartPromo;
     }
 
+    public int getIsCouponActive() {
+        return isCouponActive;
+    }
+
+    public void setIsCouponActive(int isCouponActive) {
+        this.isCouponActive = isCouponActive;
+    }
+
+    public AutoApply getAutoApply() {
+        return autoApply;
+    }
+
+    public void setAutoApply(AutoApply autoApply) {
+        this.autoApply = autoApply;
+    }
+
+    public boolean isEnableCancelPartial() {
+        return enableCancelPartial;
+    }
+
+    public void setEnableCancelPartial(boolean enableCancelPartial) {
+        this.enableCancelPartial = enableCancelPartial;
+    }
+
+    public String getDefaultPromoDialogTab() {
+        return defaultPromoDialogTab;
+    }
+
+    public void setDefaultPromoDialogTab(String defaultPromoDialogTab) {
+        this.defaultPromoDialogTab = defaultPromoDialogTab;
+    }
+
     public CartData() {
     }
 
@@ -323,6 +365,10 @@ public class CartData implements Parcelable {
         dest.writeLong(this.cartShippingRate);
         dest.writeParcelable(this.donation, flags);
         dest.writeParcelable(this.cartPromo, flags);
+        dest.writeInt(this.isCouponActive);
+        dest.writeParcelable(this.autoApply, flags);
+        dest.writeByte((byte) (enableCancelPartial ? 1 : 0));
+        dest.writeString(defaultPromoDialogTab);
     }
 
     protected CartData(Parcel in) {
@@ -351,6 +397,10 @@ public class CartData implements Parcelable {
         this.cartShippingRate = in.readLong();
         this.donation = in.readParcelable(CartDonation.class.getClassLoader());
         this.cartPromo = in.readParcelable(CartPromo.class.getClassLoader());
+        this.isCouponActive = in.readInt();
+        this.autoApply = in.readParcelable(AutoApply.class.getClassLoader());
+        this.enableCancelPartial = in.readByte() != 0;
+        this.defaultPromoDialogTab = in.readString();
     }
 
     public static final Creator<CartData> CREATOR = new Creator<CartData>() {

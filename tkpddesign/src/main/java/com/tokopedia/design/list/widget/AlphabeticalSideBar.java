@@ -52,10 +52,10 @@ public class AlphabeticalSideBar extends View {
 
     private void init() {
         alphabetText = "A.D.G.J.M.P.S.V.Z";
-        itemTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.font_caption);
-        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.font_title);
-        magnifierPadding = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_magnifier_padding);
-        int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(R.dimen.alphabetical_sidebar_to_magnifier_distance);
+        itemTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_12);
+        int magnifierTextSize = getContext().getResources().getDimensionPixelSize(R.dimen.sp_20);
+        magnifierPadding = getContext().getResources().getDimensionPixelSize(R.dimen.dp_10);
+        int magnifierToSidebarDistance = getContext().getResources().getDimensionPixelSize(R.dimen.dp_20);
         magnifierRadius = magnifierTextSize / 2 + magnifierPadding;
         touchAreaLeftOffset = magnifierRadius * 2 + magnifierToSidebarDistance;
         itemTopMargin = magnifierRadius;
@@ -69,11 +69,11 @@ public class AlphabeticalSideBar extends View {
         contentTextPaint.setTextSize(itemTextSize);
         contentTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         contentTextPaint.setTextAlign(Paint.Align.CENTER);
-        contentTextPaint.setColor(getContext().getResources().getColor(R.color.medium_green));
+        contentTextPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
         contentTextPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierBackPaint = new Paint();
-        magnifierBackPaint.setColor(getContext().getResources().getColor(R.color.medium_green));
+        magnifierBackPaint.setColor(getContext().getResources().getColor(R.color.tkpd_main_green));
         magnifierBackPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
         magnifierTextPaint = new Paint();

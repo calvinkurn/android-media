@@ -10,7 +10,7 @@
     <com.tokopedia.design.text.TitleGroupView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         app:tgv_icon="@drawable/icon_penjualan"
         app:tgv_title="@string/drawer_title_seller" />
 
@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_new_order" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -27,7 +26,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_confirm_shipping" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -35,7 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_shipping_status" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -43,13 +40,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_opportunity" />
 
     <com.tokopedia.design.text.TitleGroupView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/margin_ms"
+        android:paddingTop="@dimen/dp_8"
         app:tgv_icon="@drawable/icon_inbox"
         app:tgv_title="@string/drawer_title_inbox" />
 
@@ -58,7 +54,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_inbox_message" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -66,7 +61,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_inbox_discussion" />
 
     <com.tokopedia.seller.common.widget.LabelView
@@ -74,7 +68,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:content_color="@color/tkpd_main_green"
-        app:label_show_arrow="true"
         app:title="@string/drawer_title_inbox_review" />
 
 

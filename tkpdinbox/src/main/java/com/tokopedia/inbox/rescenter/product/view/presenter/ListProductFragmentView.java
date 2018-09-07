@@ -34,5 +34,5 @@ public interface ListProductFragmentView {
 
     void showTimeOutMessage();
 
-    void setOnProductItemClick(String productID);
+    void setOnProductItemClick(String productID, String productName);
 }

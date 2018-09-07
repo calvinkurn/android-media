@@ -20,7 +20,6 @@ public interface DataReceiver {
     void setCities(List<City> cities);
     void setProvinces(List<Province> provinces);
     void setBank(List<Bank> banks);
-    void setDepartments(List<CategoryDB> departments);
     void setShippingCity(List<District> districts);
     void onNetworkError(String message);
     void onMessageError(String message);

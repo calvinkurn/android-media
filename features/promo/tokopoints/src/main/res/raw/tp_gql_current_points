@@ -1,0 +1,15 @@
+query UserPointsQuery {
+  tokopoints {
+    resultStatus {
+      code
+    }
+    status {
+      points {
+        reward
+        rewardStr
+        loyalty
+        loyaltyStr
+      }
+    }
+  }
+}

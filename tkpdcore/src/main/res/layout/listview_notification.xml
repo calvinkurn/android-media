@@ -19,7 +19,7 @@
         android:padding="@dimen/padding_vs"
         android:text="Penjualan"
         android:textColor="@color/black"
-        android:textSize="@dimen/font_small"
+        android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         android:visibility="gone" >
     </TextView>

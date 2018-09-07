@@ -92,7 +92,7 @@ public class WishlistViewModelMapper {
         shop.setUrl(shopDomain.getUrl());
         shop.setStatus(shopDomain.getStatus());
         shop.setId(shopDomain.getId());
-        shop.setIsGoldMerchant(shopDomain.isGoldMerchant());
+        shop.setGoldMerchant(shopDomain.isGoldMerchant());
         shop.setOfficial(shopDomain.isOfficial());
         shop.setLocation(shopDomain.getLocation());
         shop.setLuckyMerchant(shopDomain.getLuckiMerchant());

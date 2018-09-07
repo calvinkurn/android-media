@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.tokopedia.core.fragment.FragmentShopPreview">
 
@@ -38,14 +40,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_shop_gold" />
+                    app:srcCompat="@drawable/ic_shop_gold" />
 
                 <ImageView
                     android:id="@+id/image_official_store"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/ic_badge_official"
+                    app:srcCompat="@drawable/ic_badge_official"
                     android:visibility="gone"
                     tools:visibility="visible" />
 

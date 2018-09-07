@@ -95,7 +95,7 @@ public class SearchInputView extends BaseCustomView {
     }
 
     private void init() {
-        View view = inflate(getContext(), R.layout.widget_search_input_view, this);
+        View view = inflate(getContext(), getLayout(), this);
         searchImageView = (ImageView) view.findViewById(R.id.image_view_search);
         searchTextView = (EditText) view.findViewById(R.id.edit_text_search);
         closeImageButton = (ImageButton) view.findViewById(R.id.image_button_close);
@@ -174,7 +174,7 @@ public class SearchInputView extends BaseCustomView {
         closeImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(reset!=null){
+                if (reset != null) {
                     reset.onSearchReset();
                 }
                 searchTextView.setText("");
@@ -182,6 +182,27 @@ public class SearchInputView extends BaseCustomView {
         });
         invalidate();
         requestLayout();
+    }
+
+
+    public ImageView getSearchImageView() {
+        return searchImageView;
+    }
+
+    public void setSearchImageView(ImageView searchImageView) {
+        this.searchImageView = searchImageView;
+    }
+
+    public void setSearchTextView(EditText searchTextView) {
+        this.searchTextView = searchTextView;
+    }
+
+    public ImageButton getCloseImageButton() {
+        return closeImageButton;
+    }
+
+    public void setCloseImageButton(ImageButton closeImageButton) {
+        this.closeImageButton = closeImageButton;
     }
 
     public void setSearchHint(String searchHint) {
@@ -203,5 +224,9 @@ public class SearchInputView extends BaseCustomView {
 
     public String getSearchText() {
         return searchTextView.getText().toString();
+    }
+
+    protected int getLayout() {
+        return R.layout.widget_search_input_view;
     }
 }

@@ -21,11 +21,16 @@ import android.widget.EditText;
 
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gallery.GalleryActivity;
+import com.tokopedia.core.gallery.GalleryType;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
+import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.createreso.view.adapter.AttachmentAdapter;
@@ -46,6 +51,11 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
+import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_GALLERY;
+
 /**
  * Created by yoasfs on 30/08/17.
  */
@@ -54,9 +64,10 @@ import permissions.dispatcher.RuntimePermissions;
 public class AttachmentFragment extends BaseDaggerFragment implements AttachmentFragmentListener.View, AttachmentAdapterListener {
 
     public static final String RESULT_VIEW_MODEL_DATA = "result_view_model_data";
-    private static final int REQUEST_CODE_GALLERY = 1243;
+    private static final int REQUEST_CODE_VIDEO = 1243;
     private static final int COUNT_MAX_ATTACHMENT = 5;
     private static final int COUNT_MIN_STRING = 30;
+    private static final int REQUEST_CODE_IMAGE_REPUTATION = 3479;
 
     private TkpdTextInputLayout tilInformation;
     private EditText etInformation;
@@ -91,11 +102,12 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         AttachmentFragmentPermissionsDispatcher.onRequestPermissionsResult(AttachmentFragment.this, requestCode, grantResults);
     }
 
-    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnShowRationale({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showRationaleForStorageAndCamera(final PermissionRequest request) {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onShowRationale(getActivity(), request, listPermission);
     }
@@ -125,20 +137,22 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         RequestPermissionUtil.onNeverAskAgain(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
     }
 
-    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnPermissionDenied({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showDeniedForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onPermissionDenied(getActivity(), listPermission);
     }
 
-    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @OnNeverAskAgain({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     void showNeverAskForStorageAndCamera() {
         List<String> listPermission = new ArrayList<>();
         listPermission.add(Manifest.permission.READ_EXTERNAL_STORAGE);
         listPermission.add(Manifest.permission.CAMERA);
+        listPermission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
         RequestPermissionUtil.onNeverAskAgain(getActivity(), listPermission);
     }
@@ -270,6 +284,7 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
             @Override
             public void onClick(View view) {
                 presenter.btnContinueClicked();
+                UnifyTracking.eventCreateResoStep3Continue();
             }
         });
     }
@@ -277,27 +292,42 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
     @Override
     public void onAddAttachmentClicked() {
         if (adapter.getList().size() < COUNT_MAX_ATTACHMENT) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage(context.getString(R.string.dialog_upload_option));
-            builder.setPositiveButton(context.getString(R.string.title_gallery), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionImagePickerWithCheck(AttachmentFragment.this);
-                }
-            }).setNegativeButton(context.getString(R.string.title_camera), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    AttachmentFragmentPermissionsDispatcher.actionCameraWithCheck(AttachmentFragment.this);
-                }
-            });
+            if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
 
-            Dialog dialog = builder.create();
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setMessage(context.getString(R.string.dialog_upload_option));
+                builder.setPositiveButton(context.getString(R.string.title_video), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        AttachmentFragmentPermissionsDispatcher.actionVideoPickerWithCheck(AttachmentFragment.this);
+                    }
+                }).setNegativeButton(context.getString(R.string.title_image), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        openImagePicker();
+                    }
+                });
+
+                Dialog dialog = builder.create();
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.show();
+            } else {
+                openImagePicker();
+            }
         } else {
             NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.max_upload_detail_res_center));
         }
 
+    }
+
+    private void openImagePicker() {
+        ImagePickerBuilder builder = new ImagePickerBuilder(getString(R.string.choose_image),
+                new int[]{TYPE_GALLERY, TYPE_CAMERA}, com.tokopedia.imagepicker.picker.gallery.type.GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.ORIGINAL, true,
+                null
+                , null);
+        Intent intent = ImagePickerActivity.getIntent(getActivity(), builder);
+        startActivityForResult(intent, REQUEST_CODE_IMAGE_REPUTATION);
     }
 
     @Override
@@ -318,31 +348,29 @@ public class AttachmentFragment extends BaseDaggerFragment implements Attachment
         getActivity().finish();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void actionCamera() {
         uploadImageDialog.actionCamera();
     }
 
     @NeedsPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-    public void actionImagePicker() {
-        if (TrackingUtils.getGtmString(AppEventTracking.GTM.RESOLUTION_CENTER_UPLOAD_VIDEO).equals("true")) {
-            startActivityForResult(
-                    GalleryActivity.createIntent(getActivity()),
-                    REQUEST_CODE_GALLERY
-            );
-        } else {
-            uploadImageDialog.actionImagePicker();
-        }
+    public void actionVideoPicker() {
+        startActivityForResult(
+                GalleryActivity.createIntent(getActivity(), GalleryType.ofVideoOnly()),
+                REQUEST_CODE_VIDEO
+        );
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case ImageUploadHandler.REQUEST_CODE:
-                presenter.handleDefaultOldUploadImageHandlerResult(resultCode, data);
+            case REQUEST_CODE_IMAGE_REPUTATION:
+                presenter.handleImageResult(resultCode, data);
                 break;
-            case REQUEST_CODE_GALLERY:
-                presenter.handleNewGalleryResult(resultCode, data);
+            case REQUEST_CODE_VIDEO:
+                presenter.handleVideoResult(resultCode, data);
                 break;
             default:
                 break;

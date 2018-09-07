@@ -2,10 +2,15 @@ package com.tokopedia.design.bottomsheet;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.TintContextWrapper;
+import android.text.Html;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,14 +23,16 @@ import com.tokopedia.design.R;
 
 public class BottomSheetView extends BottomSheetDialog {
 
-    private TextView titleBottomSheet;
-    private TextView bodyBottomSheet;
-    private ImageView imgIconBottomSheet;
-    private TextView linkBottomSheet;
-    private TextView btnCloseBottomSheet;
-    private TextView btnOpsiBottomSheet;
-    private Context context;
-    private ActionListener listener;
+    protected TextView titleBottomSheet;
+    protected TextView bodyBottomSheet;
+    protected ImageView imgIconBottomSheet;
+    protected TextView linkBottomSheet;
+    protected TextView btnCloseBottomSheet;
+    protected TextView btnOpsiBottomSheet;
+    protected Context context;
+    protected View bottomSheetView;
+    protected ActionListener listener;
+    protected LayoutInflater layoutInflater;
 
     public BottomSheetView(@NonNull Context context) {
         super(context);
@@ -46,9 +53,14 @@ public class BottomSheetView extends BottomSheetDialog {
         this.listener = listener;
     }
 
-    private void init(Context context) {
+    protected void init(Context context) {
         this.context = context;
-        View bottomSheetView = ((Activity) context).getLayoutInflater().inflate(R.layout.widget_bottom_sheet, null);
+
+        if (context instanceof Activity) layoutInflater = ((Activity) context).getLayoutInflater();
+        else layoutInflater = ((Activity) ((ContextWrapper) context)
+                    .getBaseContext()).getLayoutInflater();
+
+        bottomSheetView = layoutInflater.inflate(getLayout(), null);
         setContentView(bottomSheetView);
 
         titleBottomSheet = (TextView) findViewById(R.id.title_bottom_sheet);
@@ -61,6 +73,10 @@ public class BottomSheetView extends BottomSheetDialog {
         addListener();
     }
 
+    protected int getLayout() {
+        return R.layout.widget_bottom_sheet;
+    }
+
     public void addListener() {
         btnCloseBottomSheet.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,28 +87,64 @@ public class BottomSheetView extends BottomSheetDialog {
     }
 
     public void renderBottomSheet(BottomSheetField bottomSheetField) {
-        imgIconBottomSheet.setImageDrawable(ContextCompat.getDrawable(context, bottomSheetField.getImg()));
-        titleBottomSheet.setText(bottomSheetField.getTitle());
-        bodyBottomSheet.setText(bottomSheetField.getBody());
+        if (bottomSheetField == null) {
+            return;
+        }
 
-        if (bottomSheetField.getUrlTextLink() != null) {
-            linkBottomSheet.setVisibility(View.VISIBLE);
-            linkBottomSheet.setText(bottomSheetField.getLabelTextLink());
-            linkBottomSheet.setOnClickListener(getClickTextLinkListener(bottomSheetField.getUrlTextLink()));
-        } else {
-            linkBottomSheet.setVisibility(View.GONE);
+        if (imgIconBottomSheet != null) {
+            if (bottomSheetField.getImg() <= 0) {
+                imgIconBottomSheet.setVisibility(View.GONE);
+            } else {
+                imgIconBottomSheet.setVisibility(View.VISIBLE);
+                imgIconBottomSheet.setImageResource(bottomSheetField.getImg());
+            }
+        }
+
+
+        titleBottomSheet.setText(bottomSheetField.getTitle());
+
+        if (bodyBottomSheet != null) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                bodyBottomSheet.setText(Html.fromHtml(bottomSheetField.getBody(), Html.FROM_HTML_MODE_LEGACY));
+            } else {
+                bodyBottomSheet.setText(Html.fromHtml(bottomSheetField.getBody()));
+            }
+        }
+
+        if (linkBottomSheet != null) {
+            if (bottomSheetField.getUrlTextLink() != null) {
+                linkBottomSheet.setVisibility(View.VISIBLE);
+                linkBottomSheet.setText(bottomSheetField.getLabelTextLink());
+                linkBottomSheet.setOnClickListener(getClickTextLinkListener(bottomSheetField.getUrlTextLink()));
+            } else {
+                linkBottomSheet.setVisibility(View.GONE);
+            }
         }
 
         if (bottomSheetField.getUrlButton() != null) {
             btnOpsiBottomSheet.setVisibility(View.VISIBLE);
             btnOpsiBottomSheet.setText(bottomSheetField.getLabelButton());
-            btnOpsiBottomSheet.setOnClickListener(getClickButtonListener(bottomSheetField.getUrlButton()));
+            btnOpsiBottomSheet.setOnClickListener(getClickButtonListener(
+                    bottomSheetField.getUrlButton(), bottomSheetField.getAppLinkButton())
+            );
         } else {
             btnOpsiBottomSheet.setVisibility(View.GONE);
         }
+
+        if (bottomSheetField.getLabelCloseButton() != null) {
+            btnCloseBottomSheet.setText(bottomSheetField.getLabelCloseButton());
+        }
     }
 
-    private View.OnClickListener getClickTextLinkListener(final String url) {
+    public void setBtnCloseOnClick(View.OnClickListener onClickListener) {
+        btnCloseBottomSheet.setOnClickListener(onClickListener);
+    }
+
+    public void setBtnOpsiOnClick(View.OnClickListener onClickListener) {
+        btnOpsiBottomSheet.setOnClickListener(onClickListener);
+    }
+
+    protected View.OnClickListener getClickTextLinkListener(final String url) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -101,14 +153,22 @@ public class BottomSheetView extends BottomSheetDialog {
         };
     }
 
-    private View.OnClickListener getClickButtonListener(final String url) {
+    protected View.OnClickListener getClickButtonListener(final String url, final String appLink) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listener.clickOnButton(url);
+                listener.clickOnButton(url, appLink);
                 dismiss();
             }
         };
+    }
+
+    public void setTitleTextSize(float dimension) {
+        titleBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimension);
+    }
+
+    public void setBodyTextSize(float dimension) {
+        bodyBottomSheet.setTextSize(TypedValue.COMPLEX_UNIT_PX, dimension);
     }
 
     public static class BottomSheetField {
@@ -119,16 +179,25 @@ public class BottomSheetView extends BottomSheetDialog {
         private final String urlTextLink;
         private final String urlButton;
         private final String labelButton;
+        private final String labelCloseButton;
         private final String labelTextLink;
+        private final String appLinkButton;
 
         private BottomSheetField(BottomSheetFieldBuilder builder) {
             this.title = builder.title;
             this.body = builder.body;
             this.img = builder.img;
+            this.appLinkButton = builder.appLinkButton;
             this.urlTextLink = builder.urlTextLink;
             this.urlButton = builder.urlButton;
             this.labelTextLink = builder.labelTextLink;
             this.labelButton = builder.labelButton;
+            this.labelCloseButton = builder.labelCloseButton;
+
+        }
+
+        public String getLabelCloseButton() {
+            return labelCloseButton;
         }
 
         public String getTitle() {
@@ -151,6 +220,10 @@ public class BottomSheetView extends BottomSheetDialog {
             return urlButton;
         }
 
+        public String getAppLinkButton() {
+            return appLinkButton;
+        }
+
         public String getLabelButton() {
             return labelButton;
         }
@@ -166,8 +239,10 @@ public class BottomSheetView extends BottomSheetDialog {
             private int img;
             private String urlTextLink;
             private String urlButton;
+            private String appLinkButton;
             private String labelTextLink;
             private String labelButton;
+            private String labelCloseButton;
 
             public BottomSheetFieldBuilder setTitle(String title) {
                 this.title = title;
@@ -184,15 +259,23 @@ public class BottomSheetView extends BottomSheetDialog {
                 return this;
             }
 
-            public BottomSheetFieldBuilder setUrlTextLink(String url, String labelTextLink) {
-                this.urlTextLink = url;
-                this.labelTextLink = labelTextLink;
+
+            public BottomSheetFieldBuilder setUrlButton(String url, String appLink, String labelButton) {
+                this.urlButton = url;
+                this.appLinkButton = appLink;
+                this.labelButton = labelButton;
                 return this;
             }
 
             public BottomSheetFieldBuilder setUrlButton(String url, String labelButton) {
                 this.urlButton = url;
+                this.appLinkButton = "";
                 this.labelButton = labelButton;
+                return this;
+            }
+
+            public BottomSheetFieldBuilder setCloseButton(String labelCloseButton) {
+                this.labelCloseButton = labelCloseButton;
                 return this;
             }
 
@@ -205,6 +288,6 @@ public class BottomSheetView extends BottomSheetDialog {
     public interface ActionListener {
         void clickOnTextLink(String url);
 
-        void clickOnButton(String url);
+        void clickOnButton(String url, String appLink);
     }
 }

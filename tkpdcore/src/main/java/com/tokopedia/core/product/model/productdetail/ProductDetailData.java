@@ -1,10 +1,13 @@
 package com.tokopedia.core.product.model.productdetail;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.product.model.productdetail.discussion.LatestTalkViewModel;
 import com.tokopedia.core.product.model.productdetail.mosthelpful.Review;
 
@@ -51,6 +54,7 @@ public class ProductDetailData implements Parcelable{
      */
     private LatestTalkViewModel latestTalkViewModel;
     private List<Review> reviewList;
+    private Campaign campaign;
 
     public ProductDetailData() {
     }
@@ -142,6 +146,14 @@ public class ProductDetailData implements Parcelable{
 
     public void setReviewList(List<Review> reviewList) {
         this.reviewList = reviewList;
+    }
+
+    public Campaign getCampaign() {
+        return campaign;
+    }
+
+    public void setCampaign(Campaign campaign) {
+        this.campaign = campaign;
     }
 
     public static class Builder {
@@ -237,6 +249,7 @@ public class ProductDetailData implements Parcelable{
         dest.writeTypedList(this.productImages);
         dest.writeParcelable(this.latestTalkViewModel, flags);
         dest.writeTypedList(this.reviewList);
+        dest.writeParcelable(this.campaign,flags);
     }
 
     protected ProductDetailData(Parcel in) {
@@ -251,6 +264,7 @@ public class ProductDetailData implements Parcelable{
         this.productImages = in.createTypedArrayList(ProductImage.CREATOR);
         this.latestTalkViewModel = in.readParcelable(LatestTalkViewModel.class.getClassLoader());
         this.reviewList = in.createTypedArrayList(Review.CREATOR);
+        this.campaign = in.readParcelable(Campaign.class.getClassLoader());
     }
 
     public static final Creator<ProductDetailData> CREATOR = new Creator<ProductDetailData>() {
@@ -264,4 +278,27 @@ public class ProductDetailData implements Parcelable{
             return new ProductDetailData[size];
         }
     };
+
+    public String getEnhanceCategoryFormatted() {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < getBreadcrumb().size(); i++) {
+            list.add(getBreadcrumb().get(i).getDepartmentName());
+        }
+        return TextUtils.join("/", list);
+    }
+
+    public String getEnhanceUrl(String url) {
+        Uri uri = Uri.parse(url);
+        return uri.getLastPathSegment();
+    }
+
+    public String getEnhanceShopType() {
+        if (getShopInfo().getShopIsOfficial() == 1) {
+            return "official_store";
+        } else if (getShopInfo().getShopIsGold() == 1) {
+            return "gold_merchant";
+        } else {
+            return "regular";
+        }
+    }
 }

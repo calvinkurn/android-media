@@ -9,14 +9,13 @@ import android.view.View;
 
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.seller.R;
-import com.tokopedia.seller.base.view.adapter.ItemType;
+import com.tokopedia.product.manage.item.common.util.ItemType;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author normansyahputa on 5/17/17.
- *         another type of {@link com.tokopedia.seller.topads.dashboard.view.fragment.TopAdsAdListFragment}
  */
 
 public abstract class BaseSearchListFragment<P, T extends ItemType> extends BaseListFragment<P, T> implements SearchInputView.Listener {

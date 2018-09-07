@@ -14,6 +14,20 @@ public class HistoryActionViewItem implements Parcelable {
     private String actionByText;
     private String conversationID;
     private String date;
+    private String dateTimestamp;
+    private String dateNumber;
+    private String month;
+    private String createTimestampStr;
+    private String timeNumber;
+
+    public String getDateTimestamp() {
+        return dateTimestamp;
+    }
+
+    public void setDateTimestamp(String dateTimestamp) {
+        this.dateTimestamp = dateTimestamp;
+    }
+
     private String historyText;
 
     public void setActionBy(int actionBy) {
@@ -56,6 +70,30 @@ public class HistoryActionViewItem implements Parcelable {
         this.latest = latest;
     }
 
+    public String getDateNumber() {
+        return dateNumber;
+    }
+
+    public void setDateNumber(String dateNumber) {
+        this.dateNumber = dateNumber;
+    }
+
+    public String getMonth() {
+        return month;
+    }
+
+    public void setMonth(String month) {
+        this.month = month;
+    }
+
+    public String getCreateTimestampStr() {
+        return createTimestampStr;
+    }
+
+    public void setCreateTimestampStr(String createTimestampStr) {
+        this.createTimestampStr = createTimestampStr;
+    }
+
     public HistoryActionViewItem() {
     }
 
@@ -65,6 +103,14 @@ public class HistoryActionViewItem implements Parcelable {
 
     public String getHistoryText() {
         return historyText;
+    }
+
+    public String getTimeNumber() {
+        return timeNumber;
+    }
+
+    public void setTimeNumber(String timeNumber) {
+        this.timeNumber = timeNumber;
     }
 
     @Override
@@ -79,6 +125,10 @@ public class HistoryActionViewItem implements Parcelable {
         dest.writeString(this.actionByText);
         dest.writeString(this.conversationID);
         dest.writeString(this.date);
+        dest.writeString(this.dateTimestamp);
+        dest.writeString(this.dateNumber);
+        dest.writeString(this.month);
+        dest.writeString(this.createTimestampStr);
         dest.writeString(this.historyText);
     }
 
@@ -88,6 +138,10 @@ public class HistoryActionViewItem implements Parcelable {
         this.actionByText = in.readString();
         this.conversationID = in.readString();
         this.date = in.readString();
+        this.dateTimestamp = in.readString();
+        this.dateNumber = in.readString();
+        this.month = in.readString();
+        this.createTimestampStr = in.readString();
         this.historyText = in.readString();
     }
 

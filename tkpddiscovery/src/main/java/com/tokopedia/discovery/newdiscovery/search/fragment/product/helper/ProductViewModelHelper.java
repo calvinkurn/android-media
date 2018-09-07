@@ -1,5 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.search.fragment.product.helper;
 
+import android.content.Context;
+
+import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
@@ -18,6 +22,19 @@ import java.util.List;
  */
 
 public class ProductViewModelHelper {
+
+    private static final String SEARCH_RESULT_ENHANCE_ANALYTIC = "SEARCH_RESULT_ENHANCE_ANALYTIC";
+    private static final String LAST_POSITION_ENHANCE_PRODUCT = "LAST_POSITION_ENHANCE_PRODUCT";
+    private static LocalCacheHandler cache;
+
+    public static ProductViewModel convertToProductViewModelFirstPage(SearchResultModel searchResultModel) {
+        clearPositionCache();
+        return convertToProductViewModel(searchResultModel);
+    }
+
+    private static void clearPositionCache() {
+        LocalCacheHandler.clearCache(MainApplication.getAppContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+    }
 
     public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();
@@ -38,6 +55,7 @@ public class ProductViewModelHelper {
         SuggestionModel model = new SuggestionModel();
         model.setSuggestionText(searchResultModel.getSuggestionText());
         model.setSuggestedQuery(searchResultModel.getSuggestedQuery());
+        model.setSuggestionCurrentKeyword(searchResultModel.getSuggestionCurrentKeyword());
         model.setFormattedResultCount(searchResultModel.getTotalDataText());
         return model;
     }
@@ -45,13 +63,34 @@ public class ProductViewModelHelper {
     private static List<ProductItem> convertToProductItemList(List<ProductModel> productModels) {
         List<ProductItem> productItemList = new ArrayList<>();
 
+        int position = getLastPositionFromCache();
+
         for (ProductModel productModel : productModels) {
-            productItemList.add(convertToProductItem(productModel));
+            position++;
+            productItemList.add(convertToProductItem(productModel, position));
         }
+
+        saveLastPositionToCache(position);
+
         return productItemList;
     }
 
-    private static ProductItem convertToProductItem(ProductModel productModel) {
+    private static int getLastPositionFromCache() {
+        if (cache == null) {
+            cache = new LocalCacheHandler(MainApplication.getAppContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+        }
+        return cache.getInt(LAST_POSITION_ENHANCE_PRODUCT, 0);
+    }
+
+    private static void saveLastPositionToCache(int position) {
+        if (cache == null) {
+            cache = new LocalCacheHandler(MainApplication.getAppContext(), SEARCH_RESULT_ENHANCE_ANALYTIC);
+        }
+        cache.putInt(LAST_POSITION_ENHANCE_PRODUCT, position);
+        cache.applyEditor();
+    }
+
+    private static ProductItem convertToProductItem(ProductModel productModel, int position) {
         ProductItem productItem = new ProductItem();
         productItem.setProductID(productModel.getProductID());
         productItem.setProductName(productModel.getProductName());
@@ -59,14 +98,23 @@ public class ProductViewModelHelper {
         productItem.setImageUrl700(productModel.getImageUrl700());
         productItem.setRating(productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
+        productItem.setCountCourier(productModel.getCountCourier());
+        productItem.setDiscountPercentage(productModel.getDiscountPercentage());
+        productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShopID());
         productItem.setShopName(productModel.getShopName());
         productItem.setShopCity(productModel.getShopCity());
         productItem.setGoldMerchant(productModel.isGoldMerchant());
+        productItem.setOfficial(productModel.isOfficial());
+        productItem.setOfficial(productModel.isOfficial());
         productItem.setWishlisted(productModel.isWishlisted());
         productItem.setBadgesList(convertToBadgesItemList(productModel.getBadgesList()));
         productItem.setLabelList(convertToLabelsItemList(productModel.getLabelList()));
+        productItem.setPosition(position);
+        productItem.setTopLabel(productModel.getTopLabel());
+        productItem.setBottomLabel(productModel.getBottomLabel());
         return productItem;
     }
 
@@ -83,6 +131,7 @@ public class ProductViewModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 

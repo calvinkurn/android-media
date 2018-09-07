@@ -43,11 +43,11 @@ public interface CreateResolutionCenter {
 
         void showCreateComplainDialog(ResultViewModel resultViewModel);
 
-        void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message);
+        void successCreateResoWithoutAttachment(String resolutionId, String cacheKey, String message, String shopName);
 
         void errorCreateResoWithoutAttachment(String error);
 
-        void successCreateResoWithAttachment(String resolutionId, String message);
+        void successCreateResoWithAttachment(String resolutionId, String message, String shopName);
 
         void errorCreateResoWithAttachment(String error);
     }
@@ -72,12 +72,14 @@ public interface CreateResolutionCenter {
 
         void loadProductProblem(String orderId);
 
+        void loadProductProblem(String orderId, String resolutionId);
+
         void addResultFromStep1(ArrayList<ProblemResult> problemResultList);
 
         void addResultFromStep2(ResultViewModel resultViewModel);
 
         void addResultFromStep3(ResultViewModel resultViewModel);
 
-        TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId);
+        TaskStackBuilder getInboxAndDetailResoStackBuilder(Context context, String resolutionId, String shopName);
     }
 }

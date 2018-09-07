@@ -32,10 +32,11 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.appsflyer.AppsFlyerLib.LOG_TAG;
 
 public class GoogleSignInActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
+
+    private static final String LOG_TAG = "GoogleSignInActivity";
     public static final int RC_SIGN_IN_GOOGLE = 7777;
     public static final String KEY_GOOGLE_ACCOUNT = "GoogleSignInAccount";
     public static final String KEY_GOOGLE_ACCOUNT_TOKEN = "GoogleSignInAccAccount";
@@ -160,15 +161,15 @@ public class GoogleSignInActivity extends AppCompatActivity implements GoogleApi
     }
 
     private void handleSignInResult(String accessToken, GoogleSignInResult result) {
-        GoogleSignInAccount account = null;
-        if (result.isSuccess()) {
+        if (result != null && result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
-            account = result.getSignInAccount();
+            GoogleSignInAccount account = result.getSignInAccount();
+            Intent intent = new Intent();
+            intent.putExtra(KEY_GOOGLE_ACCOUNT, account);
+            intent.putExtra(KEY_GOOGLE_ACCOUNT_TOKEN, accessToken);
+            setResult(RESULT_OK, intent);
         }
-        Intent intent = new Intent();
-        intent.putExtra(KEY_GOOGLE_ACCOUNT, account);
-        intent.putExtra(KEY_GOOGLE_ACCOUNT_TOKEN, accessToken);
-        setResult(RESULT_OK, intent);
+
     }
 
     @Override

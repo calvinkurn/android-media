@@ -7,6 +7,8 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.seller.opportunity.data.OpportunityFilterModel;
 import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepository;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.functions.Func1;
 
@@ -17,10 +19,10 @@ import rx.functions.Func1;
 public class GetOpportunityFilterUseCase extends UseCase<OpportunityFilterModel> {
 
     public static final String SHOP_ID = "shop_id";
-    public static final String FILTER_CACHE = "OPPORTUNITY_FILTER_CACHE";
 
     private final ReplacementRepository repository;
 
+    @Inject
     public GetOpportunityFilterUseCase(ThreadExecutor threadExecutor,
                                        PostExecutionThread postExecutionThread,
                                        ReplacementRepository repository) {
@@ -30,13 +32,7 @@ public class GetOpportunityFilterUseCase extends UseCase<OpportunityFilterModel>
 
     @Override
     public Observable<OpportunityFilterModel> createObservable(final RequestParams requestParams) {
-        return repository.getOpportunityCategoryFromLocal()
-                .onErrorResumeNext(new Func1<Throwable, Observable<OpportunityFilterModel>>() {
-                    @Override
-                    public Observable<OpportunityFilterModel> call(Throwable throwable) {
-                        return repository.getOpportunityCategoryFromNetwork(requestParams.getParameters());
-                    }
-                });
+        return repository.getOpportunityCategoryFromNetwork(requestParams.getParameters());
     }
 
     public static RequestParams getRequestParam(String shopID) {

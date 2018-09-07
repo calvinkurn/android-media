@@ -1,7 +1,6 @@
 package com.tokopedia.seller.orderstatus.fragment;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.customView.OrderStatusView;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.people.activity.PeopleInfoNoDrawerActivity;
 import com.tokopedia.core.purchase.model.response.txlist.OrderHistory;
 import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
@@ -39,9 +37,11 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.core.tracking.activity.TrackingActivity;
 import com.tokopedia.core.util.AppUtils;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.seller.OrderHistoryView;
+import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.customadapter.ListViewShopTxDetailProdListV2;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenter;
 import com.tokopedia.seller.orderstatus.presenter.StatusDetailPresenterImpl;
@@ -50,6 +50,7 @@ import com.tokopedia.seller.selling.model.orderShipping.OrderDetail;
 import com.tokopedia.seller.selling.model.orderShipping.OrderPayment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShipment;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
+import com.tokopedia.seller.selling.view.fragment.CustomScannerBarcodeActivity;
 
 import org.parceler.Parcels;
 
@@ -329,10 +330,11 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(
-                        PeopleInfoNoDrawerActivity.createInstance(getActivity(),
-                                presenter.getInvoiceData().getUserId())
-                );
+                if (getActivity().getApplicationContext() instanceof SellerModuleRouter) {
+                    startActivity(((SellerModuleRouter) getActivity().getApplicationContext())
+                            .getTopProfileIntent(getActivity(),
+                                    presenter.getInvoiceData().getUserId()));
+                }
             }
         };
     }
@@ -415,9 +417,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
         editRefDialog.show();
     }
 
-    @NeedsPermission({Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE})
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE})
     public void onScanBarcodeClicked() {
-        startActivityForResult(CommonUtils.requestBarcodeScanner(), 0);
+        CommonUtils.requestBarcodeScanner(this, CustomScannerBarcodeActivity.class);
     }
 
     private boolean checkEditRef(EditText ref) {
@@ -519,7 +521,7 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
                             + "\n"
                             + getActivity().getString(R.string.message_verification_timeout),
                     Toast.LENGTH_LONG).show();
-            Crashlytics.log(0,
+            if(!GlobalConfig.DEBUG) Crashlytics.log(0,
                     "NullPointerException "
                             + getActivity().getClass().getSimpleName(), e.toString());
             getActivity().finish();
@@ -532,11 +534,9 @@ public class FragmentShopTxStatusDetailV2 extends TkpdBaseV4Fragment
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
+        Ref.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
-            final EditText Ref = (EditText) editRefDialog.findViewById(R.id.ref_number);
-            Ref.setText(CommonUtils.getBarcode(data));
-        }
     }
 
     @Override

@@ -8,6 +8,11 @@ import butterknife.ButterKnife;
 /**
  * @author kulomady on 1/24/17.
  */
+
+/**
+ * Use abstract view holder from tkpd abstraction
+ */
+@Deprecated
 public abstract class AbstractViewHolder<T> extends RecyclerView.ViewHolder {
 
     public AbstractViewHolder(View itemView) {

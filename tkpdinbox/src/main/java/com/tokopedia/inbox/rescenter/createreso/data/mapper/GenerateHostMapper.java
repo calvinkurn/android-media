@@ -20,11 +20,6 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
     }
 
     private GenerateHostDomain mappingResponse(Response<TkpdResponse> response) {
-        GenerateHostResponse generateHostResponse =
-                response.body().convertDataObj(GenerateHostResponse.class);
-        GenerateHostDomain model = new GenerateHostDomain(generateHostResponse.getServerId(),
-                generateHostResponse.getUploadHost(),
-                generateHostResponse.getToken());
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -32,12 +27,15 @@ public class GenerateHostMapper implements Func1<Response<TkpdResponse>, Generat
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+
+        GenerateHostResponse generateHostResponse =
+                response.body().convertDataObj(GenerateHostResponse.class);
+        return new GenerateHostDomain(generateHostResponse.getServerId(),
+                generateHostResponse.getUploadHost(),
+                generateHostResponse.getToken());
     }
 }

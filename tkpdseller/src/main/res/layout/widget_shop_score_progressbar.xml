@@ -31,17 +31,17 @@
 
         <ImageView
             android:id="@+id/ic_shop_score_limit"
-            android:layout_width="@dimen/image_width_xs"
-            android:layout_height="@dimen/image_width_xs"
-            android:src="@drawable/ic_pointer_gold_badge" />
+            android:layout_width="@dimen/dp_24"
+            android:layout_height="@dimen/dp_24"
+            app:srcCompat="@drawable/ic_pointer_gold_badge" />
 
         <TextView
-            style="@style/TextView.Caption.BlackDisabled"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_gravity="bottom|start"
             android:text="@string/shop_score_min_value" />
 
         <TextView
-            style="@style/TextView.Caption.BlackDisabled"
+            style="@style/TextView.Micro.BlackDisabled"
             android:layout_gravity="bottom|end"
             android:text="@string/shop_score_max_value" />
     </FrameLayout>

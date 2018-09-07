@@ -263,7 +263,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 rejectOrderWithPrice(modelEditPrices, modelRejectOrder, type);
                 break;
             case CONFIRM_SHIPPING:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 ModelParamSelling modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -286,7 +286,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                         .subscribe(new Subscriber(type, modelParamSelling.getPosition()));
                 break;
             case CANCEL_SHIPPING:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -312,7 +312,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                 multiConfirmShipping(modelParamSellings, type);
                 break;
             case CONFIRM_NEW_ORDER:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));
@@ -330,7 +330,7 @@ public class SellingService extends IntentService implements SellingServiceConst
                         .subscribe(new Subscriber(type, modelParamSelling.getPosition()));
                 break;
             case PARTIAL_NEW_ORDER:
-                /* Update UI: Download Service is Running */
+                /* Update UI: Download CourierService is Running */
                 running = new Bundle();
                 running.putInt(TYPE, type);
                 modelParamSelling = Parcels.unwrap(intent.getParcelableExtra(MODEL_PARAM_SELLING_KEY));

@@ -54,12 +54,39 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
         this.limit = limit;
     }
 
+    public List<ProductItem> getProductItems() {
+        return productItems;
+    }
+
     public void setProductItems(List<ProductItem> productItems) {
         this.productItems = productItems;
     }
 
-    public List<ProductItem> getProductItems() {
-        return productItems;
+    @Override
+    public ComplaintProductVH onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recyclerview_complaint_product_item, parent, false);
+        return new ComplaintProductVH(view);
+    }
+
+    @Override
+    public void onBindViewHolder(ComplaintProductVH holder, int position) {
+        ImageHandler.LoadImage(holder.productImage, getProductItems().get(position).getProductImageUrl());
+        holder.productName.setText(getProductItems().get(position).getProductName());
+        holder.itemView.setOnClickListener(
+                new OnProductClick(
+                        getProductItems().get(position).getProductID(),
+                        getProductItems().get(position).getProductName()
+                ));
+    }
+
+    @Override
+    public int getItemCount() {
+        if (isLimit()) {
+            return getProductItems().size() < 3 ? getProductItems().size() : 3;
+        } else {
+            return getProductItems().size();
+        }
     }
 
     public class ComplaintProductVH extends RecyclerView.ViewHolder {
@@ -74,39 +101,18 @@ public class ComplaintProductAdapter extends RecyclerView.Adapter<ComplaintProdu
         }
     }
 
-    @Override
-    public ComplaintProductVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_complaint_product_item, parent, false);
-        return new ComplaintProductVH(view);
-    }
-
-    @Override
-    public void onBindViewHolder(ComplaintProductVH holder, int position) {
-        ImageHandler.LoadImage(holder.productImage, getProductItems().get(position).getProductImageUrl());
-        holder.productName.setText(getProductItems().get(position).getProductName());
-        holder.itemView.setOnClickListener(new OnProductClick(getProductItems().get(position).getProductID()));
-    }
-
-    @Override
-    public int getItemCount() {
-        if (isLimit()) {
-            return getProductItems().size() < 3 ? getProductItems().size() : 3;
-        } else {
-            return getProductItems().size();
-        }
-    }
-
     private class OnProductClick implements View.OnClickListener {
         private final String productID;
+        private final String productName;
 
-        public OnProductClick(String productID) {
+        public OnProductClick(String productID, String productName) {
             this.productID = productID;
+            this.productName = productName;
         }
 
         @Override
         public void onClick(View view) {
-            listener.setOnActionProductClick(productID);
+            listener.setOnActionProductClick(productID, productName);
         }
     }
 }

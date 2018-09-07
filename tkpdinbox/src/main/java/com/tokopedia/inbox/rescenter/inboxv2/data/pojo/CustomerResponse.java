@@ -1,0 +1,34 @@
+package com.tokopedia.inbox.rescenter.inboxv2.data.pojo;
+
+import com.google.gson.annotations.SerializedName;
+
+/**
+ * Created by yfsx on 24/01/18.
+ */
+public class CustomerResponse {
+    /**
+     * id : 13982149
+     * name : Patrick Buyer
+     */
+
+    @SerializedName("id")
+    private int id;
+    @SerializedName("name")
+    private String name;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

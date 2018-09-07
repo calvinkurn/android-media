@@ -1,15 +1,11 @@
 package com.tokopedia.otp.phoneverification.view.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
-import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.loyaltysystem.util.URLGenerator;
+import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.webview.fragment.FragmentGeneralWebView;
 import com.tokopedia.session.R;
@@ -18,32 +14,17 @@ import com.tokopedia.session.R;
  * @author by nisie on 6/9/17.
  */
 
-public class TokoCashWebViewActivity extends BasePresenterActivity
+public class TokoCashWebViewActivity extends TActivity
         implements FragmentGeneralWebView.OnFragmentInteractionListener {
 
     @Override
-    protected void setupURIPass(Uri data) {
-
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        inflateView(R.layout.activity_simple_fragment);
+        initView();
     }
 
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-
-    @Override
-    protected void initView() {
+    private void initView() {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         FragmentGeneralWebView fragment =
                 (FragmentGeneralWebView) getFragmentManager().findFragmentByTag(
@@ -54,21 +35,6 @@ public class TokoCashWebViewActivity extends BasePresenterActivity
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
     }
 
     public static Intent getIntentCall(Context context) {

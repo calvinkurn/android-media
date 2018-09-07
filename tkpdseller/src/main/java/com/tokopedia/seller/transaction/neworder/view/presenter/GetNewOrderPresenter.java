@@ -10,5 +10,7 @@ import com.tokopedia.seller.transaction.neworder.view.appwidget.GetNewOrderView;
 public abstract class GetNewOrderPresenter extends BaseDaggerPresenter<GetNewOrderView> {
     public abstract void getNewOrderAndCount();
 
+    public abstract void getNewOrderAndCountAsync();
+
     public abstract void unSubscribe();
 }

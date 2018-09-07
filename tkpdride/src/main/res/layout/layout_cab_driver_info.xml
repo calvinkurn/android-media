@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cab_on_trip_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -7,6 +8,34 @@
     android:clickable="true"
     android:orientation="vertical"
     android:visibility="visible">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#eaffeb"
+        android:paddingBottom="@dimen/keyline_1_minus_8dp"
+        android:paddingLeft="@dimen/keyline_1"
+        android:paddingTop="@dimen/keyline_1_minus_8dp">
+
+        <ImageView
+            android:id="@+id/image_payment_method_icon"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/tokocash"
+            android:tint="@color/black_54" />
+
+        <TextView
+            android:id="@+id/tv_payment_method"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/keyline_1"
+            android:text="Payment with TokoCash"
+            android:textColor="@color/black_54"
+            android:textSize="@dimen/fontvs" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/driver_eta_text"
@@ -42,18 +71,17 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/default_user_pic_light" />
+                app:srcCompat="@drawable/default_user_pic_light" />
 
-            <TextView
+            <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/tv_driver_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="-4dp"
                 android:background="@drawable/shape_bg_rounded_white_rectangle"
-                android:drawableLeft="@drawable/star_yellow"
+                app:drawableLeftCompat="@drawable/star_yellow"
                 android:drawablePadding="4dp"
-                android:drawableStart="@drawable/star_yellow"
                 android:padding="4dp"
                 android:text="4.6"
                 android:textColor="@color/black_400"
@@ -109,7 +137,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:clickable="true"
-                android:src="@drawable/icon_call_driver" />
+                app:srcCompat="@drawable/icon_call_driver" />
 
             <ImageView
                 android:id="@+id/icon_message"
@@ -117,15 +145,11 @@
                 android:layout_height="40dp"
                 android:layout_marginLeft="16dp"
                 android:clickable="true"
-                android:src="@drawable/icon_message_driver" />
+                app:srcCompat="@drawable/icon_message_driver" />
 
         </LinearLayout>
     </RelativeLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="#e3e3e3" />
 
     <LinearLayout
         android:id="@+id/layout_on_trip_action"
@@ -149,7 +173,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:padding="3dp"
-                android:src="@drawable/contact"
+                app:srcCompat="@drawable/contact"
                 android:textColor="@color/black" />
 
             <TextView
@@ -184,7 +208,7 @@
                 android:id="@+id/img_help"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_share"
+                app:srcCompat="@drawable/ic_share"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
@@ -222,7 +246,7 @@
                 android:layout_height="24dp"
                 android:layout_centerHorizontal="true"
                 android:padding="3dp"
-                android:src="@drawable/cancel"
+                app:srcCompat="@drawable/cancel"
                 android:textColor="@color/black"
                 android:textSize="17sp" />
 
@@ -239,12 +263,12 @@
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
+    <com.tokopedia.design.component.TextViewCompat
         android:id="@+id/tv_pool_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/forgot_password_bg"
-        android:drawableLeft="@drawable/cabs_pool_looking"
+        app:drawableLeftCompat="@drawable/cabs_pool_looking"
         android:drawablePadding="10dp"
         android:gravity="right"
         android:padding="12dp"

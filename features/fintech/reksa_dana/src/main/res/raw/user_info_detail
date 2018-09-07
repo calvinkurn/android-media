@@ -1,0 +1,19 @@
+query MF() {
+mf_get_user_info() {
+  user_id
+  phone
+  email
+  name
+  signature_image_url
+  info_id
+  autosweep
+  mf_application_status
+  applied_time
+  approved_time
+  result {
+    code
+    message
+    success
+  }
+}
+}

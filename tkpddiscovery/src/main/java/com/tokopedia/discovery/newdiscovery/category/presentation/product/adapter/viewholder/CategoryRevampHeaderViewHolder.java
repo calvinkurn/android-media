@@ -21,13 +21,21 @@ import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.util.NonScrollGridLayoutManager;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.BannerPagerAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.view.CategoryHeaderTransformation;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -42,6 +50,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
     @LayoutRes
     public static final int LAYOUT = R.layout.revamp_category_header;
+    public static final String DEFAULT_ITEM_VALUE = "1";
 
     ImageView imageHeader;
     TextView titleHeader;
@@ -49,6 +58,7 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
     LinearLayout hideLayout;
     RecyclerView revampCategoriesRecyclerView;
     TextView totalProduct;
+    private final TopAdsBannerView topAdsBannerView;
 
     private static final long SLIDE_DELAY = 8000;
 
@@ -79,10 +89,34 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         this.bannerIndicator = (CirclePageIndicator) itemView.findViewById(R.id.indicator_intermediary);
         this.bannerContainer = (RelativeLayout) itemView.findViewById(R.id.banner_container);
         this.imageHeaderContainer = (RelativeLayout) itemView.findViewById(R.id.image_header_container);
+        this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
         this.categoryListener = categoryListener;
     }
 
+    private void initTopAds(String depId) {
+        TopAdsParams adsParams = new TopAdsParams();
+        adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_DIRECTORY);
+        adsParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, depId);
+        adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+
+        Config config = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(adsParams)
+                .build();
+        this.topAdsBannerView.setConfig(config);
+        this.topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                categoryListener.onBannerAdsClicked(applink);
+            }
+        });
+        this.topAdsBannerView.loadTopAds();
+    }
+
     public void bind(final CategoryHeaderModel categoryHeaderModel) {
+        initTopAds(categoryHeaderModel.getDepartementId());
         activeChildren = new ArrayList<>();
         hideLayout.setVisibility(View.GONE);
         if (categoryHeaderModel.getChildCategoryModelList() != null && categoryHeaderModel.getChildCategoryModelList().size() > 9) {
@@ -91,13 +125,17 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
         } else if (categoryHeaderModel.getChildCategoryModelList() != null) {
             activeChildren.addAll(categoryHeaderModel.getChildCategoryModelList());
         }
-        revampCategoriesRecyclerView.setVisibility(View.VISIBLE);
-        revampCategoriesRecyclerView.setHasFixedSize(true);
-        revampCategoriesRecyclerView.setLayoutManager(
-                new NonScrollGridLayoutManager(context, 3,
-                        GridLayoutManager.VERTICAL, false));
-        categoryAdapter = new RevampCategoryAdapter(getCategoryWidth(), activeChildren, categoryListener);
-        revampCategoriesRecyclerView.setAdapter(categoryAdapter);
+        if (activeChildren.size() > 0) {
+            revampCategoriesRecyclerView.setVisibility(View.VISIBLE);
+            revampCategoriesRecyclerView.setHasFixedSize(true);
+            revampCategoriesRecyclerView.setLayoutManager(
+                    new NonScrollGridLayoutManager(context, 3,
+                            GridLayoutManager.VERTICAL, false));
+            categoryAdapter = new RevampCategoryAdapter(getCategoryWidth(), activeChildren, categoryListener);
+            revampCategoriesRecyclerView.setAdapter(categoryAdapter);
+        } else {
+            revampCategoriesRecyclerView.setVisibility(View.GONE);
+        }
         if (categoryHeaderModel.getHeaderModel().getHeaderImageUrl() != null &&
                 !categoryHeaderModel.getHeaderModel().getHeaderImageUrl().equals("")) {
             ImageHandler.loadImageFitTransformation(imageHeader.getContext(), imageHeader,
@@ -131,30 +169,31 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
                 }
             });
         }
-        if (categoryHeaderModel.getTotalData()>0) {
+        if (categoryHeaderModel.getTotalData() > 0) {
             totalProduct.setText(NumberFormat.getNumberInstance(Locale.US)
                     .format(categoryHeaderModel.getTotalData()).replace(',', '.') + " Produk");
             totalProduct.setVisibility(View.VISIBLE);
         }
         if (categoryHeaderModel.getBannerModelList() != null
-                && categoryHeaderModel.getBannerModelList().size()>0) {
-                bannerHandler = new Handler();
-                incrementPage = runnableIncrement();
-                bannerPagerAdapter = new BannerPagerAdapter(context, categoryHeaderModel.getBannerModelList(), categoryHeaderModel.getDepartementId());
-                bannerViewPager.setAdapter(bannerPagerAdapter);
-                bannerViewPager.addOnPageChangeListener(onBannerChange());
-                bannerIndicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_orange));
-                bannerIndicator.setPageColor(ContextCompat.getColor(context, R.color.white));
-                bannerIndicator.setViewPager(bannerViewPager);
-                bannerPagerAdapter.notifyDataSetChanged();
-                RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) bannerViewPager.getLayoutParams();
-                bannerViewPager.setLayoutParams(param);
-                if (categoryHeaderModel.getBannerModelList().size() == 1) bannerIndicator.setVisibility(View.GONE);
-                imageHeaderContainer.setVisibility(View.GONE);
-                bannerContainer.setVisibility(View.VISIBLE);
-                startSlide();
-            }
+                && categoryHeaderModel.getBannerModelList().size() > 0) {
+            bannerHandler = new Handler();
+            incrementPage = runnableIncrement();
+            bannerPagerAdapter = new BannerPagerAdapter(context, categoryHeaderModel.getBannerModelList(), categoryHeaderModel.getDepartementId());
+            bannerViewPager.setAdapter(bannerPagerAdapter);
+            bannerViewPager.addOnPageChangeListener(onBannerChange());
+            bannerIndicator.setFillColor(ContextCompat.getColor(context, R.color.tkpd_dark_orange));
+            bannerIndicator.setPageColor(ContextCompat.getColor(context, R.color.white));
+            bannerIndicator.setViewPager(bannerViewPager);
+            bannerPagerAdapter.notifyDataSetChanged();
+            RelativeLayout.LayoutParams param = (RelativeLayout.LayoutParams) bannerViewPager.getLayoutParams();
+            bannerViewPager.setLayoutParams(param);
+            if (categoryHeaderModel.getBannerModelList().size() == 1)
+                bannerIndicator.setVisibility(View.GONE);
+            imageHeaderContainer.setVisibility(View.GONE);
+            bannerContainer.setVisibility(View.VISIBLE);
+            startSlide();
         }
+    }
 
 
     private Runnable runnableIncrement() {
@@ -199,7 +238,8 @@ public class CategoryRevampHeaderViewHolder extends AbstractViewHolder<CategoryH
 
 
     private void stopSlide() {
-        if (bannerHandler!=null && incrementPage!=null) bannerHandler.removeCallbacks(incrementPage);
+        if (bannerHandler != null && incrementPage != null)
+            bannerHandler.removeCallbacks(incrementPage);
     }
 
     private void startSlide() {

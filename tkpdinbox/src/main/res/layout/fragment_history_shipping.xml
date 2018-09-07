@@ -10,10 +10,9 @@
         android:background="@color/tkpd_main_green"
         android:layout_gravity="center"
         android:gravity="center"
-        android:text="@string/action_input_shipping_ref_number"
+        android:text="@string/action_input_awb_number"
         android:textColor="@color/white"
         android:textSize="@dimen/font_medium"
-        android:textStyle="bold"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />

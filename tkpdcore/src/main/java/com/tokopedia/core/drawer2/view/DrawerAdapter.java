@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.drawer2.view.databinder.DrawerGroupDataBinder;
-import com.tokopedia.core.drawer2.view.databinder.DrawerHeaderDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.databinder.DrawerSeparatorDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
@@ -29,6 +28,7 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
     public static final String IS_INBOX_OPENED = "IS_INBOX_OPENED";
     public static final String IS_SHOP_OPENED = "IS_SHOP_OPENED";
     public static final String IS_PEOPLE_OPENED = "IS_PEOPLE_OPENED";
+    public static final String IS_RESO_OPENED = "IS_RESO_OPENED";
 
     public static final String IS_PRODUCT_OPENED = "IS_PRODUCT_OPENED";
     public static final String IS_PRODUCT_DIGITAL_OPENED = "IS_PRODUCT_OPENED";
@@ -145,6 +145,9 @@ public class DrawerAdapter extends DataBindAdapter implements DrawerGroupDataBin
                 break;
             case TkpdState.DrawerPosition.SELLER_GM_SUBSCRIBE:
                 drawerCache.putBoolean(IS_GM_OPENED, isExpand);
+                break;
+            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
+                drawerCache.putBoolean(IS_RESO_OPENED, isExpand);
                 break;
             default:
                 break;

@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +27,7 @@ public class LoadingStateView extends FrameLayout {
     public static final int VIEW_CONTENT = 3;
 
     @LayoutRes
-    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_line_chart_container_loading;
+    public static final int DEFAULT_LOADING_LAYOUT_RES = R.layout.widget_container_loading;
 
     private FrameLayout frameLayout;
 
@@ -41,6 +42,7 @@ public class LoadingStateView extends FrameLayout {
     private int errorLayoutRes;
     @LayoutRes
     private int emptyLayoutRes;
+    private boolean isFullScreen;
 
     public LoadingStateView(Context context) {
         super(context);
@@ -66,12 +68,23 @@ public class LoadingStateView extends FrameLayout {
         loadingLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_loading_layout, DEFAULT_LOADING_LAYOUT_RES);
         errorLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_error_layout, VIEW_NOT_AVAILABLE);
         emptyLayoutRes = a.getResourceId(R.styleable.LoadingStateView_lsv_empty_layout, VIEW_NOT_AVAILABLE);
+        isFullScreen = a.getBoolean(R.styleable.LoadingStateView_lsv_full_screen, false);
         a.recycle();
     }
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_loading_state_view, this);
         frameLayout = (FrameLayout) view.findViewById(R.id.frame_content);
+        if(isFullScreen) {
+            FrameLayout parentLayout = view.findViewById(R.id.vg_widget_loading_state);
+            ViewGroup.LayoutParams layoutParamsParent = parentLayout.getLayoutParams();
+            layoutParamsParent.width = LayoutParams.MATCH_PARENT;
+            layoutParamsParent.height = LayoutParams.MATCH_PARENT;
+            ViewGroup.LayoutParams layoutParams = frameLayout.getLayoutParams();
+            layoutParams.width = LayoutParams.MATCH_PARENT;
+            layoutParams.height = LayoutParams.MATCH_PARENT;
+            frameLayout.setLayoutParams(layoutParams);
+        }
         setFocusableInTouchMode(true);
     }
 
@@ -191,7 +204,11 @@ public class LoadingStateView extends FrameLayout {
         }
         View viewTemp = LayoutInflater.from(getContext()).inflate(layoutRes, frameLayout, false);
         viewTemp.setVisibility(View.GONE);
-        addView(viewTemp);
+        ViewGroup.LayoutParams layoutParams = viewTemp.getLayoutParams();
+        if (layoutParams instanceof FrameLayout.LayoutParams) {
+            ((LayoutParams) layoutParams).gravity = Gravity.CENTER;
+        }
+        addView(viewTemp, layoutParams);
         return viewTemp;
     }
 

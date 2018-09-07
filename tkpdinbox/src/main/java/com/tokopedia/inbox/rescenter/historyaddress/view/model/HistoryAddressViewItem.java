@@ -14,7 +14,10 @@ public class HistoryAddressViewItem implements Parcelable {
     private String actionByText;
     private String conversationID;
     private String date;
+    private String createTimestamp;
     private String address;
+    private String receiver;
+    private String phoneNumber;
 
     public void setActionBy(int actionBy) {
         this.actionBy = actionBy;
@@ -67,6 +70,30 @@ public class HistoryAddressViewItem implements Parcelable {
         this.address = address;
     }
 
+    public String getCreateTimestamp() {
+        return createTimestamp;
+    }
+
+    public void setCreateTimestamp(String createTimestamp) {
+        this.createTimestamp = createTimestamp;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -79,7 +106,10 @@ public class HistoryAddressViewItem implements Parcelable {
         dest.writeString(this.actionByText);
         dest.writeString(this.conversationID);
         dest.writeString(this.date);
+        dest.writeString(this.createTimestamp);
         dest.writeString(this.address);
+        dest.writeString(this.receiver);
+        dest.writeString(this.phoneNumber);
     }
 
     protected HistoryAddressViewItem(Parcel in) {
@@ -88,7 +118,10 @@ public class HistoryAddressViewItem implements Parcelable {
         this.actionByText = in.readString();
         this.conversationID = in.readString();
         this.date = in.readString();
+        this.createTimestamp = in.readString();
         this.address = in.readString();
+        this.receiver = in.readString();
+        this.phoneNumber = in.readString();
     }
 
     public static final Creator<HistoryAddressViewItem> CREATOR = new Creator<HistoryAddressViewItem>() {

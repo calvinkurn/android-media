@@ -13,6 +13,10 @@ public class CreateResoWithoutAttachmentResponse {
     @Expose
     private ResolutionResponse resolution;
 
+    @SerializedName("shop")
+    @Expose
+    private ShopResponse shop;
+
     @SerializedName("cacheKey")
     @Expose
     private String cacheKey;
@@ -20,6 +24,14 @@ public class CreateResoWithoutAttachmentResponse {
     @SerializedName("successMessage")
     @Expose
     private String successMessage;
+
+    public ShopResponse getShop() {
+        return shop;
+    }
+
+    public void setShop(ShopResponse shop) {
+        this.shop = shop;
+    }
 
     public String getCacheKey() {
         return cacheKey;

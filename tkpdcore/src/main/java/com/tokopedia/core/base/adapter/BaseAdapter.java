@@ -16,6 +16,10 @@ import java.util.List;
  * @author by erry on 02/02/17.
  */
 
+/**
+ * Use BaseAdapter (visitable pattern) from tkpd abstraction
+ */
+@Deprecated
 public class BaseAdapter extends RecyclerView.Adapter<AbstractViewHolder> {
 
     private LoadingModel loadingModel = new LoadingModel();

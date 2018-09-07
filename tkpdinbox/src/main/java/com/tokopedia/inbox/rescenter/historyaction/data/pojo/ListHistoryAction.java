@@ -11,12 +11,10 @@ public class ListHistoryAction {
     private String resConvId;
     @SerializedName("actionBy")
     private int actionBy;
+    @SerializedName("createTime")
+    private CreateTimeResponse createTime;
     @SerializedName("actionByStr")
     private String actionByStr;
-    @SerializedName("createTime")
-    private String createTime;
-    @SerializedName("createTimeStr")
-    private String createTimeStr;
     @SerializedName("remark")
     private String remark;
 
@@ -44,20 +42,12 @@ public class ListHistoryAction {
         this.actionByStr = actionByStr;
     }
 
-    public String getCreateTime() {
+    public CreateTimeResponse getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(String createTime) {
+    public void setCreateTime(CreateTimeResponse createTime) {
         this.createTime = createTime;
-    }
-
-    public String getCreateTimeStr() {
-        return createTimeStr;
-    }
-
-    public void setCreateTimeStr(String createTimeStr) {
-        this.createTimeStr = createTimeStr;
     }
 
     public String getRemark() {

@@ -2,12 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/border_background_view_topads"
     android:padding="16dp">
 
     <TextView
         android:id="@+id/category_name"
-        style="@style/TextView.Subheading"
+        style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1" />
@@ -17,7 +18,7 @@
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_weight="0"
-        android:src="@drawable/chevron_down" />
+        app:srcCompat="@drawable/chevron_down" />
 
     <ProgressBar
         android:id="@+id/category_picker_progress_bar"

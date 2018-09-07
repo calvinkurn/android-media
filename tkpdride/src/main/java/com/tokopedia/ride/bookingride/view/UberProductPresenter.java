@@ -2,16 +2,19 @@ package com.tokopedia.ride.bookingride.view;
 
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.network.exception.model.UnProcessableHttpException;
 import com.tokopedia.core.rxjava.RxUtils;
 import com.tokopedia.ride.R;
+import com.tokopedia.ride.bookingride.domain.GetNearbyCarsUseCase;
 import com.tokopedia.ride.bookingride.domain.GetPriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetProductAndEstimatedUseCase;
 import com.tokopedia.ride.bookingride.domain.GetTimePriceEstimateUseCase;
 import com.tokopedia.ride.bookingride.domain.GetUberProductsUseCase;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.domain.model.ProductEstimate;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.RideProductViewModel;
 import com.tokopedia.ride.bookingride.view.adapter.viewmodel.mapper.RideProductViewModelMapper;
@@ -42,13 +45,16 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     private RideProductViewModelMapper productViewModelMapper;
     private GetProductAndEstimatedUseCase getProductAndEstimatedUseCase;
     private GetPriceEstimateUseCase getPriceEstimateUseCase;
+    private GetNearbyCarsUseCase getNearbyCarsUseCase;
     private CompositeSubscription compositeSubscription;
 
     @Inject
     public UberProductPresenter(GetProductAndEstimatedUseCase getProductAndEstimatedUseCase,
-                                GetPriceEstimateUseCase getPriceEstimateUseCase) {
+                                GetPriceEstimateUseCase getPriceEstimateUseCase,
+                                GetNearbyCarsUseCase getNearbyCarsUseCase) {
         this.getProductAndEstimatedUseCase = getProductAndEstimatedUseCase;
         this.getPriceEstimateUseCase = getPriceEstimateUseCase;
+        this.getNearbyCarsUseCase = getNearbyCarsUseCase;
         this.productViewModelMapper = new RideProductViewModelMapper();
         this.compositeSubscription = new CompositeSubscription();
     }
@@ -103,11 +109,13 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideProgress();
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                        getView().hideNearbyCabs();
                     } else {
                         getView().hideProgress();
                         getView().hideErrorMessage();
                         getView().showProductList();
                         getView().renderProductList(productsList);
+                        getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
                     }
                 }
@@ -160,6 +168,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                         getView().hideProgress();
                         getView().hideProductList();
                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found), getView().getActivity().getString(R.string.btn_text_retry));
+                        getView().hideNearbyCabs();
                     } else {
                         if (destination != null) {
                             actionGetPricesEstimate(source, destination, productEstimates);
@@ -168,7 +177,9 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                             getView().hideErrorMessage();
                             getView().showProductList();
                             getView().renderProductList(productsList);
+                            getView().showFareListHeader();
                         }
+                        getView().displayNearbyCabs(productEstimates);
                         getMinimalProductEstimateAndRender(productEstimates);
                     }
                 }
@@ -177,6 +188,11 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
     }
 
     private void actionSetProductListWhenItsAvailable(PlacePassViewModel destination) {
+        if (!isViewAttached()) {
+            return;
+        }
+
+
         List<Visitable> existingProductList = getView().getProductList();
         if (existingProductList != null && existingProductList.size() > 0) {
             List<Visitable> updatedList = new ArrayList<>();
@@ -251,6 +267,7 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                 if (isViewAttached()) {
                                     getView().hideProgress();
                                     getView().hideProductList();
+                                    getView().hideNearbyCabs();
 
                                     String message = e.getMessage();
                                     if (e instanceof UnknownHostException || e instanceof ConnectException) {
@@ -278,15 +295,57 @@ public class UberProductPresenter extends BaseDaggerPresenter<UberProductContrac
                                         List<Visitable> visitables = new ArrayList<>();
                                         visitables.addAll(rideProductViewModels);
                                         getView().renderProductList(visitables);
+                                        getView().showFareListHeader();
                                     } else {
                                         getView().hideProductList();
                                         getView().showErrorMessage(getView().getActivity().getString(R.string.no_rides_found),
                                                 getView().getActivity().getString(R.string.btn_text_retry)
                                         );
+                                        getView().hideNearbyCabs();
                                     }
                                 }
                             }
                         }));
+    }
+
+
+    private void renderNearbyCarsAroundSource(List<ProductEstimate> productEstimates) {
+        CommonUtils.dumper("nearby rides renderNearbyCarsAroundSource");
+
+        PlacePassViewModel source = getView().getSource();
+        if (source == null || productEstimates == null || !isViewAttached()) {
+            return;
+        }
+
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putString(GetNearbyCarsUseCase.PARAM_LATITUDE, String.valueOf(source.getLatitude()));
+        requestParams.putString(GetNearbyCarsUseCase.PARAM_LONGITUDE, String.valueOf(source.getLongitude()));
+        requestParams.putString(GetNearbyCarsUseCase.PARAM_CAR_ETA, "4");
+        requestParams.putString(GetNearbyCarsUseCase.PARAM_BIKE_ETA, "4");
+        getNearbyCarsUseCase.execute(requestParams, new Subscriber<NearbyRides>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+                CommonUtils.dumper("nearby rides error");
+            }
+
+            @Override
+            public void onNext(NearbyRides nearbyRides) {
+                if (nearbyRides == null) {
+                    CommonUtils.dumper("nearby rides are null");
+                } else {
+                    CommonUtils.dumper("nearby rides");
+                    getView().renderNearbyRides(nearbyRides);
+                }
+            }
+        });
+
     }
 
     @Override

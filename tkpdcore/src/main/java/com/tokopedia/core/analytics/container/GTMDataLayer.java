@@ -3,11 +3,12 @@ package com.tokopedia.core.analytics.container;
 import android.content.Context;
 import android.util.Log;
 import com.google.android.gms.tagmanager.TagManager;
+import com.tokopedia.analytics.debugger.GtmLogger;
 
 import java.util.Map;
 
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
+import rx.Subscriber;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -24,9 +25,10 @@ public class GTMDataLayer {
         gtmBody.context = context;
         gtmBody.values = values;
 
+        log(context, gtmBody);
+
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<GTMBody, Boolean>() {
                     @Override
                     public Boolean call(GTMBody data) {
@@ -35,7 +37,22 @@ public class GTMDataLayer {
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe();
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
     }
 
     static void pushEvent(Context context, String eventName, Map<String, Object> values) {
@@ -46,9 +63,10 @@ public class GTMDataLayer {
         gtmBody.values = values;
         gtmBody.eventName = eventName;
 
+        log(context, gtmBody);
+
         Observable.just(gtmBody)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<GTMBody, Boolean>() {
                     @Override
                     public Boolean call(GTMBody data) {
@@ -57,8 +75,28 @@ public class GTMDataLayer {
                     }
                 })
                 .unsubscribeOn(Schedulers.newThread())
-                .subscribe();
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+
+                    }
+                });
+
+    }
+
+    private static void log(Context context, GTMBody gtmBody) {
+        String name = gtmBody.eventName == null ? (String) gtmBody.values.get("event") : gtmBody.eventName;
+        GtmLogger.getInstance().save(context, name, gtmBody.values);
     }
 
     private static class GTMBody {

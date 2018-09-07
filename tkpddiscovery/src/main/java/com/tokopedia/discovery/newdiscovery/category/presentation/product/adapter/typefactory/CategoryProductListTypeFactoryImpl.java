@@ -8,7 +8,9 @@ import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.DefaultCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.RevampCategoryAdapter;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.listener.ItemClickListener;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.BigGridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryDefaultHeaderViewHolder;
+import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryLifestyleHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.CategoryRevampHeaderViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.GridProductItemViewHolder;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapter.viewholder.ListProductItemViewHolder;
@@ -25,6 +27,7 @@ import com.tokopedia.topads.sdk.base.Config;
 
 public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements CategoryProductListTypeFactory {
 
+    private static final String TEMPLATE_LIFESTYLE = "LIFESTYLE";
     private final ItemClickListener itemClickListener;
     private final DefaultCategoryAdapter.CategoryListener categoryListener;
     private final RevampCategoryAdapter.CategoryListener categoryRevampListener;
@@ -46,6 +49,7 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
             case TkpdState.RecyclerView.VIEW_PRODUCT:
                 return ListProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return BigGridProductItemViewHolder.LAYOUT;
             case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
             default:
                 return GridProductItemViewHolder.LAYOUT;
@@ -55,7 +59,11 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
     @Override
     public int type(CategoryHeaderModel categoryHeaderModel) {
         if (categoryHeaderModel.isRevamp()) {
-            return CategoryRevampHeaderViewHolder.LAYOUT;
+            if (categoryHeaderModel.getTemplate().equals(TEMPLATE_LIFESTYLE)) {
+                return CategoryLifestyleHeaderViewHolder.LAYOUT;
+            } else {
+                return CategoryRevampHeaderViewHolder.LAYOUT;
+            }
         }
         return CategoryDefaultHeaderViewHolder.LAYOUT;
     }
@@ -73,6 +81,10 @@ public class CategoryProductListTypeFactoryImpl extends SearchSectionTypeFactory
             viewHolder = new ListProductItemViewHolder(view, itemClickListener);
         } else if (type == GridProductItemViewHolder.LAYOUT) {
             viewHolder = new GridProductItemViewHolder(view, itemClickListener);
+        } else if (type == BigGridProductItemViewHolder.LAYOUT) {
+            viewHolder = new BigGridProductItemViewHolder(view, itemClickListener);
+        } else if (type == CategoryLifestyleHeaderViewHolder.LAYOUT) {
+            viewHolder = new CategoryLifestyleHeaderViewHolder(view, categoryRevampListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

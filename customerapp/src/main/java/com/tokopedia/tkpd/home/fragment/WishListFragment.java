@@ -24,14 +24,18 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
-import com.tokopedia.core.shopinfo.ShopInfoActivity;
+import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
@@ -47,12 +51,11 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
+import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.Unbinder;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -61,8 +64,12 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         SearchView.OnQueryTextListener, TopAdsItemClickListener,
         WishListProductAdapter.OnWishlistActionButtonClicked {
 
+    private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
+    private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
+    private static final String SHOP_TYPE_REGULER = "reguler";
+
     public static final String FRAGMENT_TAG = "WishListFragment";
-    private Unbinder unbinder;
+    private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
 
     public WishListFragment() {
     }
@@ -71,15 +78,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
         return new WishListFragment();
     }
 
-    @BindView(R.id.swipe_refresh_layout)
-    SwipeToRefresh swipeToRefresh;
-
-    @BindView(R.id.recycler_view)
-    RecyclerView recyclerView;
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBar;
-    @BindView(R.id.wishlist_search_edittext)
-    SearchView searchEditText;
+    private SwipeToRefresh swipeToRefresh;
+    private RecyclerView recyclerView;
+    private ProgressBar progressBar;
+    private SearchView searchEditText;
 
     GridLayoutManager layoutManager;
     WishListProductAdapter adapter;
@@ -106,7 +108,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onProductItemClicked(Product product) {
+    public void onProductItemClicked(int position, Product product) {
         ProductItem data = new ProductItem();
         data.setId(product.getId());
         data.setName(product.getName());
@@ -120,10 +122,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
-    public void onShopItemClicked(Shop shop) {
-        Bundle bundle = ShopInfoActivity.createBundle(shop.getId(), "");
-        Intent intent = new Intent(getActivity(), ShopInfoActivity.class);
-        intent.putExtras(bundle);
+    public void onShopItemClicked(int position, Shop shop) {
+        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getShopPageIntent(getActivity(), shop.getId());
         getActivity().startActivity(intent);
     }
 
@@ -139,6 +139,11 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
+    public void onAddWishList(int position, Data data) {
+        //TODO: next implement wishlist action
+    }
+
+    @Override
     protected String getScreenName() {
         return AppScreen.SCREEN_FRAGMENT_WISHLIST;
     }
@@ -147,12 +152,36 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View parentView = inflater.inflate(R.layout.fragment_wishlist, container, false);
-        unbinder = ButterKnife.bind(this, parentView);
+        initView(parentView);
         wishList.subscribe();
         wishList.initAnalyticsHandler(getActivity());
         prepareView();
         setListener();
+        loadWishlistData();
         return parentView;
+    }
+
+    private void initView(View view) {
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
+        recyclerView = view.findViewById(R.id.recycler_view);
+        progressBar = view.findViewById(R.id.progress_bar);
+        searchEditText = view.findViewById(R.id.wishlist_search_edittext);
+    }
+
+    private AnalyticTracker getAnalyticTracker() {
+        if (getActivity().getApplication() instanceof AbstractionRouter) {
+            return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+        }
+        return null;
+    }
+
+    private void loadWishlistData() {
+        if (searchEditText.getQuery().length() > 0) {
+            wishList.refreshDataOnSearch(searchEditText.getQuery());
+        } else {
+            wishList.fetchDataFromInternet(getContext());
+        }
     }
 
     @Override
@@ -164,14 +193,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        unbinder.unbind();
         wishList.unSubscribe();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        wishList.onResume(getActivity());
     }
 
     @Override
@@ -214,6 +236,40 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void clearSearchView() {
         searchEditText.setQuery("", false);
         searchEditText.clearFocus();
+    }
+
+    @Override
+    public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult) {
+        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
+                new EnhancedECommerceProductCartMapData();
+        enhancedECommerceProductCartMapData.setProductName(dataDetail.getName());
+        enhancedECommerceProductCartMapData.setProductID(String.valueOf(dataDetail.getId()));
+        enhancedECommerceProductCartMapData.setPrice(String.valueOf(dataDetail.getPrice()));
+        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
+        enhancedECommerceProductCartMapData.setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setQty(String.valueOf(dataDetail.getMinimumOrder()));
+        enhancedECommerceProductCartMapData.setShopId(dataDetail.getShop().getId());
+        enhancedECommerceProductCartMapData.setShopType(generateShopType(dataDetail.getShop()));
+        enhancedECommerceProductCartMapData.setShopName(dataDetail.getShop().getName());
+        enhancedECommerceProductCartMapData.setCategoryId(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        enhancedECommerceProductCartMapData.setListName(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
+        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
+        enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
+        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
+        enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
+        checkoutAnalyticsAddToCart.enhancedECommerceAddToCartClickBeli(
+                enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
+    }
+
+    private String generateShopType(com.tokopedia.core.network.entity.wishlist.Shop shop) {
+        if (shop.isOfficial())
+            return SHOP_TYPE_OFFICIAL_STORE;
+        else if (shop.isGoldMerchant())
+            return SHOP_TYPE_GOLD_MERCHANT;
+        else return SHOP_TYPE_REGULER;
     }
 
     @Override
@@ -337,6 +393,22 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     @Override
+    public void showAddToCartMessage(String message) {
+        if (getView() != null) {
+            if (TextUtils.isEmpty(message)) {
+                message = getString(R.string.default_request_error_unknown_short);
+            }
+            Snackbar snackbar = Snackbar.make(getView(),
+                    message.replace("\n", " "),
+                    Snackbar.LENGTH_LONG);
+            View snackbarView = snackbar.getView();
+            TextView tv = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
+            tv.setMaxLines(7);
+            snackbar.show();
+        }
+    }
+
+    @Override
     public String getUserId() {
         return SessionHandler.getLoginID(getActivity());
     }
@@ -394,6 +466,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean isPullToRefresh() {
+        if (swipeToRefresh == null)
+            return false;
         return swipeToRefresh.isRefreshing();
     }
 

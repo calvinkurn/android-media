@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.core.util.TkpdWebView;
 
 /**
  * Created by hangnadi on 6/5/15.
@@ -40,8 +41,7 @@ public class FragmentTermPrivacy extends TkpdFragment {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            view.loadUrl(url);
-            return true;
+            return false;
         }
         @Override
         public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
@@ -61,7 +61,7 @@ public class FragmentTermPrivacy extends TkpdFragment {
     private WebViewHandler webViewHandler;
 
     private class ViewHolder {
-        WebView webView;
+        TkpdWebView webView;
         View loading;
     }
 
@@ -105,7 +105,7 @@ public class FragmentTermPrivacy extends TkpdFragment {
     }
 
     private void initView() {
-        holder.webView = (WebView) rootView.findViewById(R.id.webview);
+        holder.webView = (TkpdWebView) rootView.findViewById(R.id.webview);
         holder.loading = rootView.findViewById(R.id.loading);
     }
 

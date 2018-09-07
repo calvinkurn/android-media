@@ -20,7 +20,7 @@
 
     <TextView
         android:id="@+id/color_title"
-        style="@style/TextView.Subheading.BlackPrimary"
+        style="@style/TextView.Title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"

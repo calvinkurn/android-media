@@ -3,8 +3,6 @@ package com.tokopedia.sellerapp.truecaller;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -54,5 +52,9 @@ public class TruecallerActivity extends Activity implements ITrueCallback{
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, TruecallerActivity.class);
     }
 }

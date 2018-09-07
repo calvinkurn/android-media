@@ -8,5 +8,5 @@
     android:background="@color/tkpd_main_green"
     android:minHeight="?attr/actionBarSize"
     android:theme="@style/AppBarTheme"
-    app:titleTextAppearance="@style/ToolbarText"
-    app:subtitleTextAppearance="@style/ToolbarSubtitleText" />
+    app:subtitleTextAppearance="@style/RideToolbarSubtitleText"
+    app:titleTextAppearance="@style/RideToolbarText" />

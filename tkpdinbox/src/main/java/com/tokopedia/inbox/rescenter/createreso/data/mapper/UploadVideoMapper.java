@@ -20,9 +20,6 @@ public class UploadVideoMapper implements Func1<Response<TkpdResponse>, UploadDo
     }
 
     private UploadDomain mappingResponse(Response<TkpdResponse> response) {
-        UploadResponse uploadResponse = response.body().convertDataObj(UploadResponse.class);
-        UploadDomain model = new UploadDomain(uploadResponse.getPicObj(),
-                uploadResponse.getPicSrc(), true);
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -30,12 +27,12 @@ public class UploadVideoMapper implements Func1<Response<TkpdResponse>, UploadDo
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        UploadResponse uploadResponse = response.body().convertDataObj(UploadResponse.class);
+        return new UploadDomain(uploadResponse.getPicObj(),
+                uploadResponse.getPicSrc(), true);
     }
 }

@@ -51,7 +51,6 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     @Override
     public void onError(Throwable e) {
-        Log.d(this.getClass().getSimpleName(), e.getMessage());
         for (int i = 0; i < e.getStackTrace().length; i++) {
             StackTraceElement element = e.getStackTrace()[i];
             Logger.dump(this.getClass().getSimpleName(), element.toString());
@@ -111,6 +110,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
             model.setStatusData(detailResCenter.getResolution() != null ?
                     mappingStatusData(detailResCenter.getResolution()) : null
             );
+            model.setNextActionDomain(detailResCenter.getNextAction());
         } else {
             model.setSuccess(false);
             model.setMessageError(detailResCenter != null ? detailResCenter.getMessageError() : null);
@@ -120,7 +120,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
 
     private AddressReturData mappingAddressReturData(AddressDomainModel domainModel) {
         AddressReturData data = new AddressReturData();
-        data.setAddressText("<b>" + domainModel.getReceiver()+ "</b>" + "<br>" +
+        data.setAddressText("<b>" + domainModel.getReceiver() + "</b>" + "<br>" +
                 domainModel.getStreet() + "<br>" +
                 domainModel.getDistrict() + ", " + domainModel.getCity() + "<br>" +
                 domainModel.getProvince() + "<br>" +
@@ -196,7 +196,7 @@ public class GetResCenterDetailSubscriber extends rx.Subscriber<DetailResCenter>
     private HistoryData mappingHistoryData(ResolutionHistoryDomainModel domainModel) {
         HistoryData data = new HistoryData();
         List<HistoryItem> viewModels = new ArrayList<>();
-        for (int i = 0; i < domainModel.getList().size() ; i++) {
+        for (int i = 0; i < domainModel.getList().size(); i++) {
             ResolutionHistoryItemDomainModel item = domainModel.getList().get(i);
             HistoryItem viewModel = new HistoryItem();
             viewModel.setHistoryText(item.getRemark());

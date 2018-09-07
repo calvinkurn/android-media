@@ -57,6 +57,10 @@ public interface InputShippingFragmentView {
 
     void renderInputShippingRefNum(String text);
 
+    void setConfirmButtonEnabled();
+
+    void setConfirmButtonDisabled();
+
     void toastTimeOutMessage();
 
     void toastErrorMessage(String message);

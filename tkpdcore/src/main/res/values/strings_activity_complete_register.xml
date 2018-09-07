@@ -9,7 +9,7 @@
     <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="error_invalid_password">Kata sandi terlalu pendek</string>
     <string name="error_incorrect_password">Kata sandi tidak benar</string>
-    <string name="error_field_required">Harus diisi.</string>
+    <string name="error_field_required">Harus diisi</string>
     <string name="error_max_128_character">Maksimal 128 karakter.</string>
     <string name="error_min_5_character">Minimal 5 karakter</string>
     <string name="error_max_35_character">Maksimal 35 karakter</string>

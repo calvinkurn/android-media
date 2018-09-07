@@ -3,6 +3,7 @@ package com.tokopedia.tkpdpdp.customview;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TableRow;
@@ -87,6 +88,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
             ProductBreadcrumb productBreadcrumb = productDepartments.get(productDepartments.size()-1);
 
             tvCategory.setText(MethodChecker.fromHtml(productBreadcrumb.getDepartmentName()));
+            tvCategory.setTextColor(ContextCompat.getColor(getContext(), listener.isSellerApp() ? R.color.font_black_primary_70 : R.color.tkpd_main_green));
             tvCategory.setOnClickListener(new CategoryClick(productBreadcrumb));
             tvCategory.setVisibility(VISIBLE);
         }
@@ -101,6 +103,7 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
                 && !data.getInfo().getProductCatalogUrl().equals("0")) {
             catalogView.setVisibility(VISIBLE);
             tvCatalog.setText(MethodChecker.fromHtml(data.getInfo().getProductCatalogName()));
+            tvCatalog.setTextColor(ContextCompat.getColor(getContext(), listener.isSellerApp() ? R.color.font_black_primary_70 : R.color.tkpd_main_green));
             tvCatalog.setOnClickListener(new CatalogClick(data));
         } else {
             catalogView.setVisibility(GONE);
@@ -164,12 +167,14 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
         @Override
         public void onClick(View v) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BrowseProductRouter.DEPARTMENT_ID, data.getDepartmentId());
-            bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
-            bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
-            bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
-            listener.onProductDepartmentClicked(bundle);
+            if (!listener.isSellerApp()) {
+                Bundle bundle = new Bundle();
+                bundle.putString(BrowseProductRouter.DEPARTMENT_ID, data.getDepartmentId());
+                bundle.putInt(BrowseProductRouter.FRAGMENT_ID, BrowseProductRouter.VALUES_PRODUCT_FRAGMENT_ID);
+                bundle.putString(BrowseProductRouter.AD_SRC, TopAdsApi.SRC_DIRECTORY);
+                bundle.putString(BrowseProductRouter.EXTRA_SOURCE, TopAdsApi.SRC_DIRECTORY);
+                listener.onProductDepartmentClicked(bundle);
+            }
         }
     }
 
@@ -199,7 +204,9 @@ public class DetailInfoView extends BaseView<ProductDetailData, ProductDetailVie
 
         @Override
         public void onClick(View v) {
-            listener.onProductCatalogClicked(data.getInfo().getProductCatalogId());
+            if (!listener.isSellerApp()) {
+                listener.onProductCatalogClicked(data.getInfo().getProductCatalogId());
+            }
         }
     }
 }

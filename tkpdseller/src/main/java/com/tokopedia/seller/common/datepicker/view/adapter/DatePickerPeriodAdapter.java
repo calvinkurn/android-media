@@ -111,13 +111,18 @@ public class DatePickerPeriodAdapter extends BaseLinearRecyclerViewAdapter {
     private void onSelectItem(int position) {
         selectedPosition = position;
         notifyDataSetChanged();
-        if (callback != null) {
-            callback.onItemClicked(getSelectedDate());
+        PeriodRangeModel periodRangeModel = getSelectedDate();
+        if (callback != null && periodRangeModel != null) {
+            callback.onItemClicked(periodRangeModel);
         }
     }
 
     public PeriodRangeModel getSelectedDate() {
-        return data.get(selectedPosition);
+        PeriodRangeModel periodRangeModel = null;
+        if (selectedPosition >= 0 && selectedPosition < data.size()) {
+            periodRangeModel = data.get(selectedPosition);
+        }
+        return periodRangeModel;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

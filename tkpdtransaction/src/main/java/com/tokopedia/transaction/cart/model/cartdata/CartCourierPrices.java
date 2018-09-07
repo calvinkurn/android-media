@@ -13,12 +13,6 @@ import java.util.List;
 
 public class CartCourierPrices {
 
-    private static final int USE_INSURANCE = 1;
-
-    private static final int NO_INSURANCE = 2;
-
-    private static final int MUST_INSURANCE = 3;
-
     private int cartIndex;
 
     private int shipmentPrice = 0;
@@ -27,15 +21,17 @@ public class CartCourierPrices {
 
     private int insuranceMode = 0;
 
+    private int insuranceUsedType;
+
+    private String insuranceUsedInfo;
+
     private int additionFee = 0;
 
     private int cartProductPrice = 0;
 
     private int cartSubtotal = 0;
 
-    private int cartForceInsurance = 0;
-
-    private int cartInsuranceProd = 0;
+    private int useInsurance;
 
     private List<Integer> cartProductInsurances = new ArrayList<>();
 
@@ -169,14 +165,6 @@ public class CartCourierPrices {
         this.cartProductPrice = cartProductPrice;
     }
 
-    public int getCartForceInsurance() {
-        return cartForceInsurance;
-    }
-
-    public void setCartForceInsurance(int cartForceInsurance) {
-        this.cartForceInsurance = cartForceInsurance;
-    }
-
     public String getKeroValue() {
         return keroValue;
     }
@@ -192,19 +180,35 @@ public class CartCourierPrices {
         return ValueConverter.getStringIdrFormat(value);
     }
 
-    public int getCartInsuranceProd() {
-        return cartInsuranceProd;
-    }
-
-    public void setCartInsuranceProd(int cartInsuranceProd) {
-        this.cartInsuranceProd = cartInsuranceProd;
-    }
-
     public List<Integer> getCartProductInsurances() {
         return cartProductInsurances;
     }
 
     public void setCartProductInsurances(List<Integer> cartProductInsurances) {
         this.cartProductInsurances = cartProductInsurances;
+    }
+
+    public int getInsuranceUsedType() {
+        return insuranceUsedType;
+    }
+
+    public void setInsuranceUsedType(int insuranceUsedType) {
+        this.insuranceUsedType = insuranceUsedType;
+    }
+
+    public String getInsuranceUsedInfo() {
+        return insuranceUsedInfo;
+    }
+
+    public void setInsuranceUsedInfo(String insuranceUsedInfo) {
+        this.insuranceUsedInfo = insuranceUsedInfo;
+    }
+
+    public int getUseInsurance() {
+        return useInsurance;
+    }
+
+    public void setUseInsurance(int useInsurance) {
+        this.useInsurance = useInsurance;
     }
 }

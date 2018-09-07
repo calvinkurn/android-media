@@ -26,11 +26,15 @@ public class PaymentEntity {
 
     @SerializedName("pending_amount")
     @Expose
-    private String pendingAmount;
+    private int pendingAmount;
 
     @SerializedName("paid_amount")
     @Expose
     private String paidAmount;
+
+    @SerializedName("payment_method")
+    @Expose
+    private String paymentMethod;
 
     public PaymentEntity() {
     }
@@ -51,11 +55,15 @@ public class PaymentEntity {
         return receiptReady;
     }
 
-    public String getPendingAmount() {
+    public int getPendingAmount() {
         return pendingAmount;
     }
 
     public String getPaidAmount() {
         return paidAmount;
+    }
+
+    public String getPaymentMethod() {
+        return paymentMethod;
     }
 }

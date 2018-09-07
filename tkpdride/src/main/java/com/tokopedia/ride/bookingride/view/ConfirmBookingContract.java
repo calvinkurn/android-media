@@ -53,6 +53,14 @@ public interface ConfirmBookingContract {
         void showErrorTosConfirmationDialog(String message, String tosUrl, String key, String value);
 
         void openInterruptConfirmationDialog(String tosUrl, String type, String id);
+
+        void showPaymentMethod(String label, String url);
+
+        void hidePaymentMethod();
+
+        void showTokoCashBalance(String tokoCashBalance);
+
+        void hideTokoCashBalance();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -60,5 +68,9 @@ public interface ConfirmBookingContract {
         void actionGetFareAndEstimate(RequestParams showProgress);
 
         void initialize();
+
+        void getPaymentMethodList();
+
+        void getPaymentMethodListFromCache();
     }
 }

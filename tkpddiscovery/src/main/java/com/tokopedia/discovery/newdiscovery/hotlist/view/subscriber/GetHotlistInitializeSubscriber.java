@@ -1,6 +1,9 @@
 package com.tokopedia.discovery.newdiscovery.hotlist.view.subscriber;
 
+import com.google.android.gms.tagmanager.DataLayer;
+import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.network.MessageErrorException;
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.network.exception.RuntimeHttpErrorException;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
@@ -9,6 +12,8 @@ import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistBannerModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistHashtagModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistModel;
+import com.tokopedia.discovery.newdiscovery.hotlist.domain.model.HotlistPromoInfo;
+import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistPromo;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.SearchEmptyViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHashTagViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderViewModel;
@@ -18,6 +23,8 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragme
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by hangnadi on 10/8/17.
@@ -26,9 +33,11 @@ import java.util.List;
 public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> {
 
     private final HotlistFragmentContract.View view;
+    private final int page;
 
-    public GetHotlistInitializeSubscriber(HotlistFragmentContract.View view) {
+    public GetHotlistInitializeSubscriber(HotlistFragmentContract.View view, int page) {
         this.view = view;
+        this.page = page;
     }
 
     @Override
@@ -65,13 +74,20 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         view.setQueryModel(hotlistModel.getBanner().getHotlistQueryModel());
         view.setDisableTopads(hotlistModel.getBanner().isDisableTopads());
         view.setShareUrl(hotlistModel.getShareURL());
+        view.loadImageHeader(hotlistModel.getBanner().getBannerImage());
+        view.setTitleHeader(hotlistModel.getBanner().getHotlistTitle());
+        view.setDescription(hotlistModel.getBanner().getBannerDesc());
+        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(),
+                hotlistModel.getAttribute().getHastTags(), hotlistModel.getTotalData());
 
-        HotlistHeaderViewModel header = mappingHotlistHeader(hotlistModel.getBanner(), hotlistModel.getAttribute().getHastTags());
+        view.clearLastProductTracker(page == 1);
 
         if (hotlistModel.getProductList() != null && !hotlistModel.getProductList().isEmpty()) {
             view.initTopAdsParams();
+            List<HotlistProductViewModel> list = mappingHotlistProduct(hotlistModel.getProductList());
+            view.trackImpressionProduct(createDataLayer(list));
             view.renderListView(
-                    mappingHotlist(header, mappingHotlistProduct(hotlistModel.getProductList()))
+                    mappingHotlist(header, list)
             );
         } else {
             view.renderEmptyHotlist(
@@ -81,6 +97,25 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         if (view.getStartFrom() > hotlistModel.getTotalData()){
             view.unSetTopAdsEndlessListener();
         }
+    }
+
+    private Map<String, Object> createDataLayer(List<HotlistProductViewModel> list) {
+        List<Map<String, Object>> productListDataLayer = new ArrayList<>();
+        for (HotlistProductViewModel model : list) {
+            productListDataLayer.add(model.generateImpressionDataLayer());
+        }
+        return DataLayer.mapOf(
+                "event", "productView",
+                "eventCategory", "hotlist page",
+                "eventAction", "product list impression",
+                "eventLabel", "",
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                productListDataLayer.toArray(new Object[productListDataLayer.size()])
+
+                        ))
+        );
     }
 
     private List<Visitable> mappingEmptyHotlist(HotlistHeaderViewModel header, SearchEmptyViewModel emptyHotlist) {
@@ -103,26 +138,41 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
 
     private List<HotlistProductViewModel> mappingHotlistProduct(List<ProductModel> productList) {
         List<HotlistProductViewModel> list = new ArrayList<>();
+        int lastPositionProduct = view.getLastPositionProductTracker();
         for (ProductModel domain : productList) {
+            lastPositionProduct++;
             HotlistProductViewModel model = new HotlistProductViewModel();
             model.setBadgesList(mappingBadges(domain.getBadgesList()));
             model.setLabelList(mappingLabels(domain.getLabelList()));
-            model.setCountReview(domain.getCountReview());
+            model.setCountReview(Integer.toString(domain.getCountReview()));
             model.setGoldMerchant(domain.isGoldMerchant());
+            model.setProductUrl(domain.getProductUrl());
             model.setImageUrl(domain.getImageUrl());
             model.setImageUrl700(domain.getImageUrl700());
             model.setPrice(domain.getPrice());
             model.setProductID(domain.getProductID());
             model.setProductName(domain.getProductName());
-            model.setRating(domain.getRating());
+            model.setRating(Integer.toString(domain.getRating()));
             model.setShopCity(domain.getShopCity());
             model.setShopID(domain.getShopID());
             model.setShopName(domain.getShopName());
             model.setWishlist(domain.isWishlisted());
             model.setWishlistButtonEnabled(true);
             model.setFeatured(domain.isFeatured());
+            model.setTrackerName(String.format(Locale.getDefault(), "/hot/%s - product %d", view.getHotlistAlias().toLowerCase(), page));
+            model.setTrackerPosition(String.valueOf(lastPositionProduct));
+            model.setHomeAttribution(view.getHomeAttribution());
+            model.setCountCourier(Integer.toString(domain.getCountCourier()));
+            model.setOriginalPrice(domain.getOriginalPrice());
+            model.setDiscountPercentage(domain.getDiscountPercentage());
+            model.setOfficial(domain.isOfficial());
+            model.setPriceRange(domain.getPriceRange());
+            model.setTopLabel(domain.getTopLabel());
+            model.setBottomLabel(domain.getBottomLabel());
+
             list.add(model);
         }
+        view.setLastPositionProductTracker(lastPositionProduct);
         return list;
     }
 
@@ -132,6 +182,7 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
             HotlistProductViewModel.BadgeModel viewModel = new HotlistProductViewModel.BadgeModel();
             viewModel.setImageUrl(domain.getImageUrl());
             viewModel.setTitle(domain.getTitle());
+            viewModel.setShown(domain.isShown());
             list.add(viewModel);
         }
         return list;
@@ -148,12 +199,30 @@ public class GetHotlistInitializeSubscriber extends rx.Subscriber<HotlistModel> 
         return list;
     }
 
-    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags) {
+    private HotlistHeaderViewModel mappingHotlistHeader(HotlistBannerModel banner, List<HotlistHashtagModel> hashTags, double totalData) {
         HotlistHeaderViewModel headerViewModel = new HotlistHeaderViewModel();
         headerViewModel.setImageUrl(banner.getBannerImage());
+        headerViewModel.setTotalData(totalData);
+        headerViewModel.setHotlistTitle(banner.getHotlistTitle());
         headerViewModel.setDesc(banner.getBannerDesc());
         headerViewModel.setHashTags(mappingHashtags(hashTags));
+        if (banner.getHotlistPromoInfo() != null) {
+            HotlistPromoInfo info = banner.getHotlistPromoInfo();
+            headerViewModel.setHotlistPromo(mappingHotlistPromo(info));
+            TrackingUtils.impressionHotlistPromo(banner.getHotlistTitle(), info.getTitle(), info.getVoucherCode());
+        }
         return headerViewModel;
+    }
+
+    private HotlistPromo mappingHotlistPromo(HotlistPromoInfo info) {
+        HotlistPromo hotlistPromo = new HotlistPromo();
+        hotlistPromo.setTitle(info.getTitle());
+        hotlistPromo.setVoucherCode(info.getVoucherCode());
+        hotlistPromo.setPromoPeriod(info.getValidDate());
+        hotlistPromo.setMinimunTransaction(info.getMinimunTransaction());
+        hotlistPromo.setApplinkTermCondition(info.getApplinkTermCondition());
+        hotlistPromo.setUrlTermCondition(info.getUrlTermCondition());
+        return hotlistPromo;
     }
 
     private List<HotlistHashTagViewModel> mappingHashtags(List<HotlistHashtagModel> hashTags) {

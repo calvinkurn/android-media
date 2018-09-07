@@ -342,6 +342,11 @@ public class EditShippingInteractorImpl implements EditShippingRetrofitInteracto
                 .subscribe(subscriber));
     }
 
+    public Observable<Response<TkpdResponse>> getOpenShopData(Map<String, String> params){
+        return myShopService.getApi()
+                .getOpenShopForm(params);
+    }
+
     @Override
     public void onViewDestroyed() {
         compositeSubscription.unsubscribe();

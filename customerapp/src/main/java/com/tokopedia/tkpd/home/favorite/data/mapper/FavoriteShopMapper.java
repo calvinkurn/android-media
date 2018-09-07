@@ -5,6 +5,7 @@ import android.content.Context;
 import com.google.gson.Gson;
 import com.tokopedia.core.network.entity.home.ShopItemData;
 import com.tokopedia.core.network.entity.home.TopAdsData;
+import com.tokopedia.core.var.Badge;
 import com.tokopedia.core.var.ShopItem;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.favorite.domain.model.FavoriteShop;
@@ -85,9 +86,21 @@ public class FavoriteShopMapper implements rx.functions.Func1<Response<String>, 
             favoriteShopItem.setLocation(shopItem.location);
             favoriteShopItem.setShopClickUrl(shopItem.shopClickUrl);
             favoriteShopItem.setName(shopItem.name);
+            favoriteShopItem.setBadgeUrl(getShopBadgeUrl(shopItem.shopBadge));
             favoriteShopItems.add(favoriteShopItem);
         }
         return favoriteShopItems;
+    }
+
+    private String getShopBadgeUrl(List<Badge> shopBadge) {
+        if(shopBadge != null
+                && shopBadge.size() != 0
+                && shopBadge.get(0) != null
+                && shopBadge.get(0).getImageUrl() != null
+                && !shopBadge.get(0).getImageUrl().isEmpty()) {
+            return shopBadge.get(0).getImageUrl();
+        }
+        return "";
     }
 
 

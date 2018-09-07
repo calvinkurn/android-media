@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <LinearLayout
@@ -9,7 +11,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="horizontal"
-        android:padding="@dimen/padding_med">
+        android:padding="@dimen/dp_20">
 
         <CheckBox
             android:id="@+id/checkbox"
@@ -19,7 +21,7 @@
 
         <ImageView
             android:id="@+id/iv_product_image"
-            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center" />
@@ -29,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
             android:orientation="vertical">
 
             <TextView
@@ -40,7 +42,7 @@
                 android:ellipsize="end" />
 
             <LinearLayout
-                android:layout_marginTop="@dimen/margin_vvs"
+                android:layout_marginTop="@dimen/dp_3"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -48,10 +50,10 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/icon_frs"/>
+                    app:srcCompat="@drawable/icon_frs"/>
 
                 <TextView
-                    android:layout_marginLeft="@dimen/margin_vs"
+                    android:layout_marginLeft="@dimen/dp_5"
                     android:id="@+id/tv_free_return"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -65,7 +67,7 @@
         </LinearLayout>
         <TextView
             android:id="@+id/tv_product_name"
-            android:layout_marginLeft="@dimen/margin_vs"
+            android:layout_marginLeft="@dimen/dp_5"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center|left"
@@ -81,7 +83,7 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:gravity="center|left"
-        android:padding="@dimen/padding_small"
+        android:padding="@dimen/dp_10"
         android:textSize="@dimen/font_large"/>
 
     <View

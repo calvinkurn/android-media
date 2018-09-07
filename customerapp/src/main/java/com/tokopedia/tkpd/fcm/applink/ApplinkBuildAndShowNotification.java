@@ -121,7 +121,18 @@ public class ApplinkBuildAndShowNotification {
 
     }
 
+    /**
+     * should not use this function again for performance reason.
+     * There is no need to create this ApplinkBuildAndShowNotification, only for call this function
+     * as this function only use the "context".
+     * Thus, no no need to create PushNotificationRepository, getSavedMessagePushNotificationUseCase, and other objects
+     */
+    @Deprecated
     public void showApplinkNotification(Bundle data){
+        showApplinkNotification(context, data);
+    }
+
+    public static void showApplinkNotification(Context context, Bundle data) {
         ApplinkPushNotificationBuildAndShow buildAndShow = new ApplinkPushNotificationBuildAndShow(data);
         Intent intent = new Intent(context, DeeplinkHandlerActivity.class);
         buildAndShow.process(context, intent);

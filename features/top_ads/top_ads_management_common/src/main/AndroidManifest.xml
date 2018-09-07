@@ -1,0 +1,15 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.topads.common">
+
+    <application
+        android:allowBackup="true"
+        android:label="@string/app_name">
+
+        <activity
+            android:name=".TopAdsWebViewActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.White" />
+    </application>
+
+</manifest>
+

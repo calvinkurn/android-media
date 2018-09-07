@@ -313,6 +313,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListLocation(@NonNull List<CatalogDetailListLocation> locationsData) {
+        if (mLocationsData == null) {
+            return;
+        }
         this.mLocationsData.clear();
         this.mLocationsData.add(0, CatalogDetailListLocation.createSelectionInfo(getString(R.string.sort_browse_catalog_all_location)));
         this.mLocationsData.addAll(locationsData);
@@ -320,6 +323,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderListCatalogProduct(@NonNull List<CatalogDetailItem> catalogDetailItems) {
+        if (mRefresh == null) {
+            return;
+        }
         hideProgressLoading();
         mRefresh.setRefreshing(false);
         mCatalogDetailItems.clear();
@@ -340,6 +346,9 @@ public class CatalogDetailListFragment extends BasePresenterFragment<ICatalogDet
 
     @Override
     public void renderErrorGetCatalogProduct(String message) {
+        if (mContainer == null) {
+            return;
+        }
         hideProgressLoading();
         mContainer.setVisibility(View.GONE);
         mRefresh.setRefreshing(false);

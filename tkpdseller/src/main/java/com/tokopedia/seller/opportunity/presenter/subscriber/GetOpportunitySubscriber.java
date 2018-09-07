@@ -117,6 +117,7 @@ public class GetOpportunitySubscriber extends Subscriber<OpportunityModel> {
             opportunityItemViewModel.setReplacementMultiplierText(opportunityItem
                     .getReplacementMultiplierValueStr() == null ? "" : opportunityItem.getReplacementMultiplierValueStr());
             opportunityItemViewModel.setReplacementMultiplierValue(opportunityItem.getReplacementMultiplierValue());
+            opportunityItemViewModel.setReplacementTnc(opportunityItem.getReplacementTnc());
             list.add(opportunityItemViewModel);
         }
         return list;

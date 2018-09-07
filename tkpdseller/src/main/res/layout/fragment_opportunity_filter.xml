@@ -9,7 +9,7 @@
         android:id="@+id/search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_vs"
+        android:layout_marginBottom="@dimen/dp_5"
         android:background="@drawable/cards_ui"
         android:hint="@string/search_product"
         android:iconifiedByDefault="false"

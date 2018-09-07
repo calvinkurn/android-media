@@ -22,7 +22,7 @@
             android:layout_centerVertical="true"
             app:iconifiedByDefault="false"
             app:searchIcon="@drawable/icon_magnifier"
-            app:queryBackground="@color/transparent"
+            app:queryBackground="@android:color/transparent"
             app:queryHint="@string/search_shop_info_hint" />
 
 

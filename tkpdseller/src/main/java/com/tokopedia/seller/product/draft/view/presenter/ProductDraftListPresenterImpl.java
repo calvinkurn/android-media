@@ -1,17 +1,11 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
-import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +45,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
     }
 
     @Override
-    public void deleteProductDraft(long draftId) {
-        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftId),
+    public void deleteProductDraft(long draftProductId) {
+        deleteSingleDraftProductUseCase.execute(DeleteSingleDraftProductUseCase.createRequestParams(draftProductId),
                 getDeleteSubscriber());
     }
 
@@ -80,8 +74,8 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
         };
     }
 
-    private Subscriber<List<UploadProductInputDomainModel>> getSubscriber(){
-        return new Subscriber<List<UploadProductInputDomainModel>>() {
+    private Subscriber<List<ProductDraftViewModel>> getSubscriber(){
+        return new Subscriber<List<ProductDraftViewModel>>() {
             @Override
             public void onCompleted() {
 
@@ -95,17 +89,11 @@ public class ProductDraftListPresenterImpl extends ProductDraftListPresenter {
             }
 
             @Override
-            public void onNext(List<UploadProductInputDomainModel> uploadProductInputDomainModels) {
-                if (uploadProductInputDomainModels == null || uploadProductInputDomainModels.size() == 0 ) {
+            public void onNext(List<ProductDraftViewModel> productViewModels) {
+                if (productViewModels == null || productViewModels.size() == 0 ) {
                     getView().onSearchLoaded(new ArrayList<ProductDraftViewModel>(), 0);
                 } else {
-                    // map to View Model
-                    List<ProductDraftViewModel> viewModelList = new ArrayList<>();
-                    for (int i=0, sizei = uploadProductInputDomainModels.size(); i<sizei; i++) {
-                        UploadProductInputDomainModel domainModel = uploadProductInputDomainModels.get(i);
-                        viewModelList.add(ProductDraftListMapper.mapDomainToView(domainModel));
-                    }
-                    getView().onSearchLoaded(viewModelList, viewModelList.size());
+                    getView().onSearchLoaded(productViewModels, productViewModels.size());
                 }
 
             }

@@ -64,6 +64,11 @@ public class OnboardingActivity extends BaseOnboardingActivity {
     }
 
     @Override
+    public void onSkipPressed() {
+
+    }
+
+    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {

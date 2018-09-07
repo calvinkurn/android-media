@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.util.DateFormatUtils;
 import com.tokopedia.inbox.R;
+import com.tokopedia.inbox.rescenter.detailv2.view.animation.GlowingView;
 import com.tokopedia.inbox.rescenter.historyawb.view.model.HistoryAwbViewItem;
 import com.tokopedia.inbox.rescenter.historyawb.view.presenter.HistoryShippingFragmentView;
 
@@ -30,14 +32,18 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     private final HistoryShippingFragmentView fragmentView;
     private List<HistoryAwbViewItem> arraylist;
     private Context context;
+    private boolean isFinished;
+    public static final int STATUS_FINISHED = 500;
+    public static final int STATUS_CANCEL = 0;
 
     public HistoryShippingAdapter(HistoryShippingFragmentView fragmentView) {
         this.fragmentView = fragmentView;
         this.arraylist = new ArrayList<>();
     }
 
-    public void setArraylist(List<HistoryAwbViewItem> arraylist) {
+    public void setArraylist(List<HistoryAwbViewItem> arraylist, int resolutionStatus) {
         this.arraylist = arraylist;
+        this.isFinished = resolutionStatus == STATUS_CANCEL || resolutionStatus == STATUS_FINISHED;
     }
 
     public List<HistoryAwbViewItem> getArraylist() {
@@ -54,6 +60,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
         View actionTrack;
         View actionEdit;
         View lineIndicator;
+        GlowingView glowingView;
 
         public ShippingViewHolder(View itemView) {
             super(itemView);
@@ -64,6 +71,7 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
             actionTrack = itemView.findViewById(R.id.action_track);
             actionEdit = itemView.findViewById(R.id.action_edit);
             lineIndicator = itemView.findViewById(R.id.line_indicator);
+            glowingView = (GlowingView) itemView.findViewById(R.id.view_glowing);
         }
     }
 
@@ -131,22 +139,30 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void renderData(ShippingViewHolder holder, HistoryAwbViewItem item) {
         holder.date.setText(
-                context.getString(R.string.template_history_additional_information, item.getActionByText(), item.getDate())
+                context.getString(R.string.template_history_additional_information, item.getActionByText(),
+                        item.getCreateTimestamp())
         );
-        holder.history.setText(item.getRemark().concat(": ").concat(item.getShippingRefNumber()));
+        holder.history.setText(item.getRemark().concat(" - ").concat(item.getShippingRefNumber()));
     }
 
     private void renderView(ShippingViewHolder holder, HistoryAwbViewItem item) {
         setIndicator(holder, item);
         setPadding(holder);
-        if (item.isLatest()) {
-            holder.date.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTypeface(Typeface.DEFAULT_BOLD);
-            holder.history.setTextColor(ContextCompat.getColor(context, R.color.black));
-        } else {
+        if (isFinished) {
             holder.date.setTypeface(null, Typeface.NORMAL);
             holder.history.setTypeface(null, Typeface.NORMAL);
             holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+        } else {
+            if (item.isLatest()) {
+                holder.date.setTypeface(Typeface.DEFAULT_BOLD);
+                holder.history.setTypeface(Typeface.DEFAULT_BOLD);
+                holder.history.setTextColor(ContextCompat.getColor(context, R.color.black_70));
+            } else {
+                holder.date.setTypeface(null, Typeface.NORMAL);
+                holder.history.setTypeface(null, Typeface.NORMAL);
+                holder.history.setTextColor(ContextCompat.getColor(context, R.color.label_text_color));
+            }
+
         }
     }
 
@@ -155,10 +171,18 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
                 holder.getAdapterPosition() == getArraylist().size() - 1 ?
                         View.GONE : View.VISIBLE
         );
-
-        holder.indicator.setImageResource(
-                item.isLatest() ? R.drawable.ic_check_circle_48dp : R.drawable.ic_dot_grey_24dp
-        );
+        if (isFinished) {
+            holder.indicator.setImageResource(R.drawable.ic_dot_grey_24dp);
+        } else {
+            holder.indicator.setImageResource(
+                    item.isLatest() ? R.drawable.bg_circle_green : R.drawable.ic_dot_grey_24dp
+            );
+            holder.indicator.setVisibility(item.isLatest() ? View.GONE : View.VISIBLE);
+            holder.glowingView.setVisibility(item.isLatest() ? View.VISIBLE : View.GONE);
+            if (holder.glowingView.getVisibility() == View.VISIBLE) {
+                holder.glowingView.renderData(new Object());
+            }
+        }
     }
 
     private void setPadding(ShippingViewHolder holder) {
@@ -188,5 +212,12 @@ public class HistoryShippingAdapter extends BaseLinearRecyclerViewAdapter {
     @Override
     public int getItemCount() {
         return getArraylist().size() + super.getItemCount();
+    }
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        if (holder instanceof ShippingViewHolder) {
+            ((ShippingViewHolder)holder).glowingView.renderData(new Object());
+        }
     }
 }

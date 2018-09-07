@@ -3,6 +3,7 @@ package com.tokopedia.design.card;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -50,7 +51,10 @@ public class EmptyCardContentView extends BaseCustomView {
         init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.EmptyCardContentView);
         try {
-            defaultIcon = styledAttributes.getDrawable(R.styleable.EmptyCardContentView_eccv_icon);
+            int drawableResId = styledAttributes.getResourceId(R.styleable.EmptyCardContentView_eccv_icon, -1);
+            if (drawableResId != -1){
+                defaultIcon = AppCompatResources.getDrawable(getContext(), drawableResId);
+            }
             defaultTitleText = styledAttributes.getString(R.styleable.EmptyCardContentView_eccv_title_text);
             defaultDescText = styledAttributes.getString(R.styleable.EmptyCardContentView_eccv_desc_text);
             defaultContentText = styledAttributes.getString(R.styleable.EmptyCardContentView_eccv_content_text);

@@ -33,11 +33,13 @@ public class HistoryAddressFragment extends BaseDaggerFragment
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
     private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
+    private static final String EXTRA_PARAM_RESOLUTION_STATUS = "resolution_status";
 
     private RecyclerView recyclerview;
     private HistoryAddressAdapter adapter;
 
     private String resolutionID;
+    private int resolutionStatus;
 
     private ArrayList<HistoryAddressViewItem> viewData;
 
@@ -75,6 +77,16 @@ public class HistoryAddressFragment extends BaseDaggerFragment
     @Override
     public void setResolutionID(String resolutionID) {
         this.resolutionID = resolutionID;
+    }
+
+    @Override
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
+    @Override
+    public int getResolutionStatus() {
+        return resolutionStatus;
     }
 
     @Override
@@ -132,7 +144,7 @@ public class HistoryAddressFragment extends BaseDaggerFragment
 
     @Override
     public void renderData() {
-        adapter.setArraylist(getViewData());
+        adapter.setArraylist(getViewData(), getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 
@@ -140,12 +152,14 @@ public class HistoryAddressFragment extends BaseDaggerFragment
     public void onSaveState(Bundle state) {
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
         state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
+        state.putInt(EXTRA_PARAM_RESOLUTION_STATUS, getResolutionStatus());
     }
 
     @Override
     public void onRestoreState(Bundle savedState) {
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setViewData(savedState.<HistoryAddressViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
+        setResolutionStatus(savedState.getInt(EXTRA_PARAM_RESOLUTION_STATUS));
     }
 
     @Override

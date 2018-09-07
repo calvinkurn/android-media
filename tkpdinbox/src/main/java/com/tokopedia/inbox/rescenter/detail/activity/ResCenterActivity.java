@@ -24,6 +24,8 @@ import com.tokopedia.inbox.rescenter.detail.service.DetailResCenterReceiver;
 /**
  * Created by hangnadi on 2/9/16.
  */
+
+@Deprecated
 public class ResCenterActivity extends BasePresenterActivity<ResCenterPresenter> implements
         ResCenterView,
         DetailResCenterReceiver.Receiver {

@@ -24,11 +24,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.crashlytics.android.Crashlytics;
 import com.tkpd.library.ui.widget.TouchViewPager;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
@@ -37,6 +38,7 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customadapter.TouchImageAdapter;
 import com.tokopedia.core.customadapter.TouchImageAdapter.OnImageStateChange;
+import com.tokopedia.core.gcm.utils.NotificationChannelId;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RequestPermissionUtil;
 
@@ -58,13 +60,23 @@ public class PreviewProductImageDetail extends TActivity {
 
     public static final String FILELOC = "fileloc";
     public static final String IMG_POSITION = "img_pos";
+    private static final String IMAGE_DESC = "image_desc";
+    private static final String FROM_CHAT = "from_chat";
+    private static final String TITLE = "title";
+    private static final String PREVIEW_IMAGE_PDP = "PREVIEW_IMAGE_PDP";
     private TouchViewPager vpImage;
-    private Button tvDownload;
+    private View tvDownload;
     private ImageView closeButton;
+    private TextView title, subtitle;
     private TouchImageAdapter adapter;
     private ArrayList<String> fileLocations;
     private int lastPos = 0;
     private int position = 0;
+
+    @Override
+    protected void forceRotation() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +85,24 @@ public class PreviewProductImageDetail extends TActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         hideActionBar();
-        inflateView(R.layout.activity_preview_image);
-        initView();
-        Bundle extras;
+        Bundle extras = getIntent().getExtras();
 
-        if (getIntent().getExtras() != null) {
-            extras = getIntent().getExtras();
+        if (extras != null) {
+            if(extras.getBoolean(FROM_CHAT,false)){
+                inflateView(R.layout.activity_preview_image_new);
+                initTitleView();
+                title.setText(extras.getString(TITLE));
+                subtitle.setText(extras.getString(IMG_POSITION));
+            } else {
+                inflateView(R.layout.activity_preview_image);
+            }
+        }
+
+        initView();
+
+        if (extras != null) {
             fileLocations = extras.getStringArrayList(FILELOC);
-            position = extras.getInt(IMG_POSITION);
+            position = extras.getInt(IMG_POSITION,0);
         } else {
             fileLocations = new ArrayList<>();
         }
@@ -91,8 +113,13 @@ public class PreviewProductImageDetail extends TActivity {
 
     private void initView() {
         vpImage = (TouchViewPager) findViewById(R.id.view_pager_product);
-        tvDownload = (Button) findViewById(R.id.download_image);
+        tvDownload = findViewById(R.id.download_image);
         closeButton = (ImageView) findViewById(R.id.close_button);
+    }
+
+    private void initTitleView() {
+        title = findViewById(R.id.title);
+        subtitle = findViewById(R.id.subtitle);
     }
 
 
@@ -245,7 +272,7 @@ public class PreviewProductImageDetail extends TActivity {
         final NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         final NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(PreviewProductImageDetail.this);
+                new NotificationCompat.Builder(PreviewProductImageDetail.this, NotificationChannelId.GENERAL);
         notificationBuilder.setContentTitle(filenameParam)
                 .setContentText(getString(com.tokopedia.core.R.string.download_in_process))
                 .setSmallIcon(com.tokopedia.core.R.drawable.ic_stat_notify_white)
@@ -258,8 +285,22 @@ public class PreviewProductImageDetail extends TActivity {
         SimpleTarget<Bitmap> targetListener = new SimpleTarget<Bitmap>() {
             @Override
             public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                final String path = CommonUtils.SaveImageFromBitmap(PreviewProductImageDetail.this,
-                        resource, filenameParam);
+                final String path;
+                try {
+                    path = CommonUtils.SaveImageFromBitmap(
+                            PreviewProductImageDetail.this,
+                            resource,
+                            filenameParam
+                    );
+                } catch (Exception e) {
+                    Crashlytics.log(
+                            0,
+                            PREVIEW_IMAGE_PDP,
+                            e.getMessage()
+                    );
+                    return;
+                }
+
                 if (path == null) {
                     notificationBuilder.setContentText(getString(com.tokopedia.core.R.string.download_failed))
                             .setProgress(0, 0, false);
@@ -341,7 +382,7 @@ public class PreviewProductImageDetail extends TActivity {
                         .show();
             }
         };
-        ImageHandler.loadImageBitmap2(getApplicationContext(), fileLocations.get(vpImage.getCurrentItem()), targetListener);
+        ImageHandler.loadImageBitmap2(PreviewProductImageDetail.this, fileLocations.get(vpImage.getCurrentItem()), targetListener);
     }
 
     @OnShowRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -366,5 +407,31 @@ public class PreviewProductImageDetail extends TActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         PreviewProductImageDetailPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
+
+    public static Intent getCallingIntent(Context context, ArrayList<String> images,
+                                          ArrayList<String> imageDesc, int position) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, false);
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putInt(PreviewProductImageDetail.IMG_POSITION, position);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent getCallingIntentChat(Context context, ArrayList<String> images,
+                                              ArrayList<String> imageDesc, String title, String date) {
+        Intent intent = new Intent(context, PreviewProductImageDetail.class);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PreviewProductImageDetail.FROM_CHAT, true);
+        bundle.putString(PreviewProductImageDetail.TITLE, title);
+        bundle.putStringArrayList(PreviewProductImageDetail.FILELOC, images);
+        bundle.putStringArrayList(PreviewProductImageDetail.IMAGE_DESC, imageDesc);
+        bundle.putString(PreviewProductImageDetail.IMG_POSITION, date);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
 
 }

@@ -26,6 +26,7 @@ public class HistoryAwbMapper implements Func1<Response<TkpdResponse>, HistoryAw
             if (!response.body().isError()) {
                 HistoryAwbEntity entity = response.body().convertDataObj(HistoryAwbEntity.class);
                 domainData.setSuccess(true);
+                domainData.setResolutionStatus(entity.getResolutionStatus());
                 domainData.setListHistoryAwb(mappingEntityDomain(entity.getListHistoryAwb()));
             } else {
                 domainData.setSuccess(false);
@@ -51,6 +52,7 @@ public class HistoryAwbMapper implements Func1<Response<TkpdResponse>, HistoryAw
             data.setConversationID(item.getResConvId());
             data.setShipmentID(item.getShippingId());
             data.setShippingRefNumber(item.getShippingRefNum());
+            data.setCreateTimestamp(item.getCreateTimeFullStr());
             data.setButtonEdit(item.getButton() != null && item.getButton().getEditResi() == 1);
             data.setButtonTrack(item.getButton() != null && item.getButton().getTrackResi() == 1);
             list.add(data);

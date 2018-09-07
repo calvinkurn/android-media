@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -15,23 +14,17 @@ import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.di.scope.ApplicationScope;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.cache.data.source.ApiCacheDataSource;
-import com.tokopedia.core.cache.data.source.db.CacheApiDataManager;
-import com.tokopedia.core.cache.di.module.CacheModule;
-import com.tokopedia.core.cache.di.qualifier.ApiCacheQualifier;
-import com.tokopedia.core.cache.domain.ApiCacheRepository;
-import com.tokopedia.core.cache.domain.interactor.CacheApiClearAllUseCase;
-import com.tokopedia.core.cache.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.network.core.OkHttpRetryPolicy;
+import com.tokopedia.core.network.di.qualifier.AccountsQualifier;
 import com.tokopedia.core.network.di.qualifier.AceQualifier;
 import com.tokopedia.core.network.di.qualifier.CartQualifier;
 import com.tokopedia.core.network.di.qualifier.DefaultAuthWithErrorHandler;
 import com.tokopedia.core.network.di.qualifier.GoldMerchantQualifier;
 import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
@@ -40,7 +33,10 @@ import com.tokopedia.core.network.di.qualifier.UploadWsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.di.qualifier.YoutubeQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.DebugInterceptor;
+import com.tokopedia.core.network.di.qualifier.InboxQualifier;
+import com.tokopedia.core.network.retrofit.interceptors.FingerprintInterceptor;
 import com.tokopedia.core.util.SessionHandler;
 
 import dagger.Component;
@@ -53,8 +49,7 @@ import retrofit2.Retrofit;
 @ApplicationScope
 @Component(modules = {
         AppModule.class,
-        UtilModule.class,
-        CacheModule.class
+        UtilModule.class
 })
 public interface AppComponent {
 
@@ -106,6 +101,9 @@ public interface AppComponent {
     @CartQualifier
     Retrofit cartRetrofit();
 
+    @AccountsQualifier
+    Retrofit accountRetrofit();
+
     Retrofit.Builder retrofitBuilder();
 
     Gson gson();
@@ -135,16 +133,8 @@ public interface AppComponent {
 
     ImageHandler imageHandler();
 
-    @ApiCacheQualifier
-    LocalCacheHandler localCacheHandler();
+    BearerInterceptor bearerInterceptor();
 
-    CacheApiDataManager cacheApiDataManager();
+    FingerprintInterceptor fingerprintInterceptor();
 
-    ApiCacheRepository apiCacheRepository();
-
-    CacheApiWhiteListUseCase cacheApiWhiteListUseCase();
-
-    ApiCacheDataSource apiCacheDataSource();
-
-    CacheApiClearAllUseCase cacheApiClearAllUseCase();
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,18 +23,18 @@
                 android:padding="@dimen/dynamic_filter_item_padding"
                 android:background="@color/grey_200">
 
-                <EditText
+                <com.tokopedia.design.component.EditTextCompat
                     android:id="@+id/filter_detail_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/TextView.Body1.BlackPrimary"
+                    style="@style/TextView.Small"
                     android:textColorHint="@color/font_black_disabled_38"
                     android:paddingTop="@dimen/filter_detail_search_padding_top_bottom"
                     android:paddingBottom="@dimen/filter_detail_search_padding_top_bottom"
                     android:paddingStart="@dimen/filter_detail_search_padding_side"
                     android:paddingEnd="@dimen/filter_detail_search_padding_side"
                     android:background="@color/white"
-                    android:drawableLeft="@drawable/ic_search_icon"
+                    app:drawableLeftCompat="@drawable/ic_search_icon"
                     android:drawablePadding="16dp"
                     android:maxLines="1"
                     android:imeOptions="actionSearch" />
@@ -78,7 +79,7 @@
             android:layout_height="@dimen/dynamic_filter_apply_button_height"
             android:gravity="center"
             android:background="@color/medium_green"
-            style="@style/TextView.Button.White"
+            style="@style/TextView.Small.WhitePrimary"
             android:text="@string/dynamic_filter_apply_button_text"/>
 
     </LinearLayout>

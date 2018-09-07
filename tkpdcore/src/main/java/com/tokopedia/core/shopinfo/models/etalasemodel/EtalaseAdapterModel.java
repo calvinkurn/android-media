@@ -8,6 +8,7 @@ public class EtalaseAdapterModel {
     private int useAce;
     private String etalaseName;
     private String etalaseId;
+    private String etalaseBadge;
 
     public EtalaseAdapterModel() {
     }
@@ -34,6 +35,14 @@ public class EtalaseAdapterModel {
 
     public String getEtalaseId() {
         return etalaseId;
+    }
+
+    public String getEtalaseBadge() {
+        return etalaseBadge;
+    }
+
+    public void setEtalaseBadge(String etalaseBadge) {
+        this.etalaseBadge = etalaseBadge;
     }
 
     @Override

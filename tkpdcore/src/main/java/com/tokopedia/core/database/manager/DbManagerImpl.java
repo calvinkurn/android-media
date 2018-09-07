@@ -44,64 +44,6 @@ public class DbManagerImpl implements DbManager{
         return dbManager;
     }
 
-    public List<CategoryDB> getDepartmentChild(int level, int depId){
-        ConditionGroup conditionGroup = ConditionGroup.clause()
-                .and(CategoryDB_Table.levelId.eq(level))
-                .and(CategoryDB_Table.parentId.eq(depId));
-
-
-        List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(conditionGroup).queryList();
-        return categoryDBs;
-    }
-
-    public List<CategoryDB> getDepartmentParent(){
-        List<CategoryDB> categoryDBs = new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.parentId.is(0)).queryList();
-        return categoryDBs;
-    }
-
-    @Override
-    public void saveGudangIfNotInDb() {
-        EtalaseDB gudang = new Select().from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalse_name.eq(EtalaseVariable.ETALASE_GUDANG)).querySingle();
-        if(gudang ==null){
-            new EtalaseDB(-1, EtalaseVariable.ETALASE_GUDANG, -1).save();
-            Log.d(TAG, "save gudang term in add product");
-        }else{
-            dumper("kata-kata gudang term in add product");
-        }
-    }
-
-    @Override
-    public long saveEtalase(GetEtalaseModel.EtalaseModel etalaseModel) {
-        //[START] UPDATE FROM SERVER
-        EtalaseDB createEtalaseDB = new Select().from(EtalaseDB.class)
-                .where(EtalaseDB_Table.etalse_name.eq(etalaseModel.getEtalase_name()))
-                .querySingle();
-
-        Log.d(TAG, messageTAG+" etalase : "+ createEtalaseDB);
-
-        long id = -1;
-        if(createEtalaseDB !=null&& createEtalaseDB.getEtalaseId()==-2){
-            Log.d(TAG, messageTAG+" update etalase created from android : "+ createEtalaseDB);
-            createEtalaseDB.setEtalaseId(Integer.parseInt(etalaseModel.getEtalase_id()));
-            createEtalaseDB.setEtalaseTotal(Integer.parseInt(etalaseModel.getEtalase_total_product()));
-            createEtalaseDB.save();
-            id = createEtalaseDB.getId();
-        }else{
-            int etalaseId = Integer.parseInt(etalaseModel.getEtalase_id());
-            EtalaseDB etalaseDB = new EtalaseDB(
-                    etalaseId,
-                    etalaseModel.getEtalase_name(),
-                    Integer.parseInt(etalaseModel.getEtalase_total_product()));
-            etalaseDB.save();
-            id = etalaseDB.Id;
-        }
-        //[END] UPDATE FROM SERVER
-
-        return id;
-    }
-
     @Override
     public boolean isEtalaseEmpty(String etalaseName) {
         List<EtalaseDB> etalaseDBs = new Select().from(EtalaseDB.class)
@@ -129,26 +71,6 @@ public class DbManagerImpl implements DbManager{
         new Delete().from(EtalaseDB.class).execute();
     }
 
-    @Override
-    public List<EtalaseDB> getEtalases() {
-        List<EtalaseDB> allEtalaseDB = new Select().from(EtalaseDB.class)
-                .queryList();
-        EtalaseDB gudang = new EtalaseDB(-1, EtalaseVariable.ETALASE_GUDANG, -1);
-        for(int i = 0; i< allEtalaseDB.size(); i++){
-            if(gudang.getEtalaseName().equals(allEtalaseDB.get(i).getEtalaseName())){
-                allEtalaseDB.remove(i);
-            }
-        }
-        return allEtalaseDB;
-    }
-
-    @Override
-    public CategoryDB getKategoriByDepId(int depId) {
-        return new Select().from(CategoryDB.class).where(
-                CategoryDB_Table.departmentId.is(depId)
-        ).querySingle();
-    }
-
     public PictureDB getGambarById(long photoId){
         return new Select().from(PictureDB.class).where(PictureDB_Table.Id.is(photoId))
                 .querySingle();
@@ -168,12 +90,6 @@ public class DbManagerImpl implements DbManager{
         new Delete().from(WholesalePriceDB.class).where(
                 WholesalePriceDB_Table.Id.is(wholeSaleAdapterModel.getbDid())).
                 execute();
-    }
-
-    public CategoryDB getCategoryDb(String identifier){
-        return new Select().from(CategoryDB.class)
-                .where(CategoryDB_Table.categoryIdentifier.eq(identifier))
-                .querySingle();
     }
 
     public List<Bank> getListBankFromDB(String query) {

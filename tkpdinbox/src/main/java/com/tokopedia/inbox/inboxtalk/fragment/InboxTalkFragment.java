@@ -104,8 +104,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        displayLoading(true);
-        requestFromCache();
+        if (getUserVisibleHint()) {
+            displayLoading(true);
+            requestFromCache();
+        }
     }
 
     @Override
@@ -222,6 +224,15 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
             if (!isVisibleToUser) {
                 snackbarRetry.pauseRetrySnackbar();
             }
+        }
+
+        if (isVisibleToUser
+                && adapter != null
+                && adapter.getData() != null
+                && adapter.getData().isEmpty()
+                && (snackbarRetry == null || (snackbarRetry != null && !snackbarRetry.isShown()))) {
+            displayLoading(true);
+            requestFromCache();
         }
         super.setUserVisibleHint(isVisibleToUser);
     }
@@ -346,16 +357,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onStateResponse(List<RecyclerViewItem> list, int position, int page, boolean hasNext, String filterString) {
-        floatingActionButton.show();
-        isRequest = false;
-//        if (pagingHandler.getPage() == 1) {
-//            refresh.finishRefresh();
-//            items.clear();
-//        }
-        items.addAll(list);
-        adapter.notifyDataSetChanged();
         dialog.setSelection(filterString);
-        displayLoading(false);
+        if(items == null || items.size() == 0) presenter.refreshInboxTalk(getActivity(),getParam());
     }
 
     @Override
@@ -447,8 +450,8 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         presenter.unSubscribe();
+        super.onDestroy();
     }
 
     @Override
@@ -457,6 +460,10 @@ public class InboxTalkFragment extends BasePresenterFragment<InboxTalkPresenter>
         switch (requestCode) {
             case GO_TO_DETAIL:
                 if (data == null) {
+                    return;
+                }
+
+                if(items == null || items.size() == 0){
                     return;
                 }
 

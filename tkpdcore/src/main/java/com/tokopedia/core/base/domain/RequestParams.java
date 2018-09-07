@@ -1,5 +1,7 @@
 package com.tokopedia.core.base.domain;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 
 import java.util.HashMap;
@@ -8,7 +10,13 @@ import java.util.Map;
 
 /**
  * @author kulomady on 12/24/16.
+ * refer RequestParams {@link com.tokopedia.usecase}
  */
+
+/**
+ * Use Usecase from tkpd usecase
+ */
+@Deprecated
 public class RequestParams {
     public static final RequestParams EMPTY = RequestParams.create();
 
@@ -38,6 +46,10 @@ public class RequestParams {
     }
 
     public void putObject(String key, Object object) {
+        parameters.put(key, object);
+    }
+
+    public void putJsonArray(String key, JsonArray object){
         parameters.put(key, object);
     }
 

@@ -8,7 +8,7 @@
         android:title="@string/title_search"/>
     <item
         android:id="@+id/action_cart"
-        android:icon="@drawable/ic_new_action_cart"
+        android:icon="@drawable/ic_cart_white_new"
         app:showAsAction="ifRoom"
         android:title="@string/title_activity_cart"/>
 </menu>

@@ -57,7 +57,7 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext())
+        return new ViewHolder(parent.getContext(), LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.featured_product_item, parent, false),
                 onItemClickListener);
     }
@@ -89,10 +89,10 @@ public class FeaturedProductAdapter extends RecyclerView.Adapter<FeaturedProduct
         private final OnItemClickListener onItemClickListener;
         private Context context;
 
-        public ViewHolder(View itemView, OnItemClickListener onItemClickListener) {
+        public ViewHolder(Context context, View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             this.onItemClickListener = onItemClickListener;
-            this.context = MainApplication.getAppContext();
+            this.context = context;
             ButterKnife.bind(this, itemView);
         }
 

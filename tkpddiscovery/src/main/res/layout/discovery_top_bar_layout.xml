@@ -21,7 +21,7 @@
         android:layout_weight="1"
         android:text="@string/filter"
         android:layout_marginLeft="32dp"
-        style="@style/TextView.Title.Bold.BlackPrimary" />
+        style="@style/TextView.TitleBig.Bold" />
         />
 
 </LinearLayout>

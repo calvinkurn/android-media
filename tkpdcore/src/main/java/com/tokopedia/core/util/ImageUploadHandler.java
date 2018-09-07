@@ -12,17 +12,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.UUID;
 
 /**
@@ -47,22 +42,29 @@ public class ImageUploadHandler {
         uploadimage.context = fragment.getActivity();
         return uploadimage;
     }
+    public static ImageUploadHandler createInstance(android.support.v4.app.Fragment fragment) {
+        ImageUploadHandler uploadimage = new ImageUploadHandler();
+        uploadimage.fragmentv4 = fragment;
+        uploadimage.context = fragment.getActivity();
+        return uploadimage;
+    }
+
+
+
 
     public class Model {
         public String cameraFileLoc;
     }
 
     public static final int REQUEST_CODE = 111;
+    public static final int REQUEST_CODE_GALLERY = 1243;
 
     private Activity activity;
     private Fragment fragment;
+
+    private android.support.v4.app.Fragment fragmentv4;
     private Context context;
     private Model model = new Model();
-
-    public void actionImagePicker() {
-        Intent imageGallery = new Intent(context, GalleryBrowser.class);
-        startActivity(imageGallery, ImageGallery.TOKOPEDIA_GALLERY);
-    }
 
     public void actionCamera() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -73,11 +75,13 @@ public class ImageUploadHandler {
     private void startActivity(Intent intent, int code) {
         if (activity != null)
             activity.startActivityForResult(intent, code);
+        else if(fragmentv4 != null)
+            fragmentv4.startActivityForResult(intent,code);
         else
             fragment.startActivityForResult(intent, code);
     }
 
-    private Uri getOutputMediaFileUri() {
+    public Uri getOutputMediaFileUri() {
         return MethodChecker.getUri(context, getOutputMediaFile());
     }
 
@@ -114,68 +118,8 @@ public class ImageUploadHandler {
         this.model.cameraFileLoc = fileloc;
     }
 
-    public static File writeImageToTkpdPath(InputStream source) throws IOException {
-        OutputStream outStream = null;
-        File dest = null;
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-        outStream = new FileOutputStream(dest);
-
-        byte[] buffer = new byte[1024];
-
-        int length;
-        //copy the file content in bytes
-        while ((length = source.read(buffer)) > 0) {
-
-            outStream.write(buffer, 0, length);
-
-        }
-
-        source.close();
-        outStream.close();
-
-        Log.d(TAG, "File is copied successful!");
-
-        return dest;
-    }
-
-    public static File writeImageToTkpdPath(File source) throws IOException {
-        InputStream inStream = null;
-        OutputStream outStream = null;
-        File dest = null;
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
-        if (!directory.exists()) {
-            directory.mkdirs();
-        }
-        dest = new File(directory.getAbsolutePath() + "/image.jpg");
-
-        inStream = new FileInputStream(source);
-        outStream = new FileOutputStream(dest);
-
-        byte[] buffer = new byte[1024];
-
-        int length;
-        //copy the file content in bytes
-        while ((length = inStream.read(buffer)) > 0) {
-
-            outStream.write(buffer, 0, length);
-
-        }
-
-        inStream.close();
-        outStream.close();
-
-        Log.d(TAG, "File is copied successful!");
-
-        return dest;
-    }
-
     public static File writeImageToTkpdPath(byte[] buffer) throws IOException {
-        File directory = new File(FileUtils.getFolderPathForUpload(Environment.getExternalStorageDirectory().getAbsolutePath()));
+        File directory = new File(FileUtils.getFolderPathForUploadRandom());
         if (!directory.exists()) {
             directory.mkdirs();
         }
@@ -220,5 +164,7 @@ public class ImageUploadHandler {
         tempPicToUpload.compress(Bitmap.CompressFormat.JPEG, 70, bao);
         return bao.toByteArray();
     }
+
+
 
 }

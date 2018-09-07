@@ -1,0 +1,21 @@
+query hachikoCatalogDetailQuery($slug: String, $catalog_id: Int) {
+  detail: hachikoCatalogDetail(slug: $slug, catalog_id: $catalog_id) {
+    id
+    expired
+    points
+    points_str
+    button_str
+    title
+    sub_title
+    thumbnail_url
+    thumbnail_url_mobile
+    image_url
+    image_url_mobile
+    overview
+    quota
+    is_gift
+    how_to_use
+    tnc
+    cta
+  }
+}

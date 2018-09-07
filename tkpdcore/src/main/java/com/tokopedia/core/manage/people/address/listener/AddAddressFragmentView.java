@@ -1,12 +1,6 @@
 package com.tokopedia.core.manage.people.address.listener;
 
-import android.app.Activity;
-import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
+import android.content.Context;
 
 import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.District;
@@ -16,90 +10,61 @@ import com.tokopedia.core.manage.people.address.fragment.adapter.RegencyAdapter;
 import com.tokopedia.core.manage.people.address.model.Destination;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by nisie on 9/6/16.
  */
 public interface AddAddressFragmentView {
-    void removeError();
 
-    EditText getReceiverName();
-
-    EditText getReceiverPhone();
-
-    EditText getPostCode();
-
-    EditText getAddressType();
-
-    EditText getAddress();
-
-    Spinner getSpinnerProvince();
-
-    Spinner getSpinnerRegency();
-
-    Spinner getSpinnerSubDistrict();
-
-    String getString(int stringId);
-
-    void setError(TextInputLayout textInputLayout, String errorMessage);
-
-    TextInputLayout getReceiverNameLayout();
-
-    TextInputLayout getAddressLayout();
-
-    TextInputLayout getAddressTypeLayout();
-
-    TextInputLayout getPostCodeLayout();
-
-    TextInputLayout getReceiverPhoneLayout();
-
-    TextView getSpinnerProvinceError();
-
-    TextView getSpinnerRegencyError();
-
-    TextView getSpinnerSubDistrictError();
+    Context context();
 
     boolean isEdit();
 
-    void setProvince(List<Province> provinces);
-
-    void setDistrict(List<District> districts);
-
-    void setCity(List<City> cities);
-
-    void resetRegency();
-
-    ProvinceAdapter getProvinceAdapter();
-
-    Activity getActivity();
-
-    void showLoadingRegency();
-
-    void showLoadingDistrict();
-
-    void resetSubDistrict();
-
-    RegencyAdapter getRegencyAdapter();
+    boolean isDistrictRecommendation();
 
     void showLoading();
 
-    void hideSubDistrict();
-
     void finishLoading();
 
-    void finishActivity(Destination address);
+    void finishActivity();
 
     void showErrorSnackbar(String errorMessage);
 
-    void showErrorSnackbar(String message, View.OnClickListener listener);
+    void setActionsEnabled(boolean actionsEnabled);
 
-    void setActionsEnabled(boolean b);
+    String getPassword();
 
-    Bundle getArguments();
+    boolean isValidAddress();
 
-    EditText getPassword();
+    Destination getAddress();
 
-    TextInputLayout getPasswordLayout();
+    void setAddress(Destination address);
 
-    void setResult(Destination address);
+    void setProvince(List<Province> provinces);
+
+    void resetRegency();
+
+    void hideSubDistrict();
+
+    void resetSubDistrict();
+
+    ProvinceAdapter getProvinceAdapter();
+
+    RegencyAdapter getRegencyAdapter();
+
+    void showLoadingRegency();
+
+    void setCity(List<City> cities);
+
+    void changeProvince(List<City> cities);
+
+    void showLoadingDistrict();
+
+    void setDistrict(List<District> districts);
+
+    void errorSaveAddress();
+
+    void successSaveAddress();
+
 }

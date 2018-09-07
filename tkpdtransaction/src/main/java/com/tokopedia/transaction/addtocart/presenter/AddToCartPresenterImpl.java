@@ -43,6 +43,7 @@ import com.tokopedia.transaction.addtocart.model.kero.Data;
 import com.tokopedia.transaction.addtocart.model.kero.Product;
 import com.tokopedia.transaction.addtocart.model.responseatcform.AtcFormData;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Destination;
+import com.tokopedia.transaction.addtocart.model.responseatcform.ProductDetail;
 import com.tokopedia.transaction.addtocart.model.responseatcform.Shipment;
 import com.tokopedia.transaction.addtocart.model.responseatcform.ShipmentPackage;
 import com.tokopedia.transaction.addtocart.receiver.ATCResultReceiver;
@@ -140,9 +141,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 atcFormData.getForm().getDestination(), atcFormData.getForm().getProductDetail()),
                 new KeroNetInteractor.CalculationListener() {
                     @Override
-                    public void onSuccess(Data rates) {
+                    public void onSuccess(Data data) {
                         viewListener.renderFormShipmentRates(filterAvailableKeroShipment(
-                                rates.getAttributes(), atcFormData.getForm().getShipment())
+                                data.getAttributes(), atcFormData.getForm().getShipment())
                         );
                         viewListener.enableBuyButton();
                     }
@@ -201,7 +202,8 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
 
     @Override
     public void calculateProduct(@NonNull final Context context,
-                                 @NonNull final OrderData orderData) {
+                                 @NonNull final OrderData orderData,
+                                 final boolean mustReCalculateAddressShipping) {
         viewListener.disableBuyButton();
         addToCartNetInteractor.calculateCartPrice(context, AuthUtil.generateParamsNetwork(context,
                 NetParamUtil.paramCalculateCart("calculate_product", orderData)),
@@ -210,6 +212,9 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                     public void onSuccess(String price) {
                         viewListener.renderProductPrice(price);
                         viewListener.enableBuyButton();
+                        if (mustReCalculateAddressShipping) {
+                            calculateKeroAddressShipping(context, orderData);
+                        }
                     }
 
                     @Override
@@ -305,7 +310,7 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
                 locationPass.setLongitude(lon);
                 locationPass.setGeneratedAddress(orderData.getAddress().getGeoLocation(context));
             }
-            Intent intent = GeolocationActivity.createInstance(context, locationPass);
+            Intent intent = GeolocationActivity.createInstanceIntent(context, locationPass);
             viewListener.navigateToActivityRequest(intent,
                     AddToCartActivity.REQUEST_CHOOSE_LOCATION);
         } else {
@@ -413,6 +418,43 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
             }
         }
         return true;
+    }
+
+    @Override
+    public void sendAddToCartCheckoutAnalytic(@NonNull Context context,
+                                              @NonNull ProductCartPass productCartPass,
+                                              @NonNull ProductDetail productDetail, String quantity) {
+        String categoryLevelStr = productDetail.getProductCatNameTracking();
+        com.tokopedia.core.analytics.nishikino.model.Product product =
+                new com.tokopedia.core.analytics.nishikino.model.Product();
+        product.setProductName(productCartPass.getProductName());
+        product.setProductID(productCartPass.getProductId());
+        product.setPrice(productCartPass.getPrice());
+        product.setBrand(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setCategory(TextUtils.isEmpty(categoryLevelStr)
+                ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                : categoryLevelStr);
+        product.setVariant(com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER);
+        product.setQty(quantity);
+        product.setShopId(productCartPass.getShopId());
+        product.setShopType(productCartPass.getShopType());
+        product.setShopName(productCartPass.getShopName());
+        product.setCategoryId(productCartPass.getCategoryId());
+        product.setDimension38(
+                TextUtils.isEmpty(productCartPass.getTrackerAttribution())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getTrackerAttribution()
+        );
+        product.setDimension40(
+                TextUtils.isEmpty(productCartPass.getListName())
+                        ? com.tokopedia.core.analytics.nishikino.model.Product.DEFAULT_VALUE_NONE_OTHER
+                        : productCartPass.getListName()
+        );
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(product.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
     }
 
     @Override
@@ -550,17 +592,17 @@ public class AddToCartPresenterImpl implements AddToCartPresenter {
     }
 
     private boolean isAllowedCourier(AtcFormData data) {
-        boolean allowedInstant = data.getForm().getDestination().getLatitude()!=null
+        boolean allowedInstant = data.getForm().getDestination().getLatitude() != null
                 && !data.getForm().getDestination().getLatitude().isEmpty();
-        for (int i = 0; i<data.getForm().getShipment().size(); i++) {
-            for(int j = 0; j<data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
+        for (int i = 0; i < data.getForm().getShipment().size(); i++) {
+            for (int j = 0; j < data.getForm().getShipment().get(i).getShipmentPackage().size(); j++) {
                 ShipmentPackage shipmentPackage = data.getForm().getShipment().get(i)
                         .getShipmentPackage().get(j);
                 boolean packageAvailable = shipmentPackage.getPackageAvailable() == 1;
                 boolean isGojek = shipmentPackage.getShipmentId().equals(GOJEK_ID);
                 if (packageAvailable && !isGojek)
                     return true;
-                else if(allowedInstant)
+                else if (allowedInstant)
                     return true;
             }
         }

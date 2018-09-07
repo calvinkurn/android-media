@@ -5,25 +5,22 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.ride.R;
 import com.tokopedia.ride.R2;
 import com.tokopedia.ride.analytics.RideGATracking;
 import com.tokopedia.ride.base.presentation.BaseFragment;
+import com.tokopedia.ride.bookingride.view.activity.UberSMSChatActivity;
+import com.tokopedia.ride.common.configuration.PaymentMode;
 import com.tokopedia.ride.common.configuration.RideStatus;
 import com.tokopedia.ride.common.ride.domain.model.Driver;
 import com.tokopedia.ride.common.ride.domain.model.LocationLatLng;
@@ -44,6 +41,7 @@ public class DriverDetailFragment extends BaseFragment {
     private static final String EXTRA_TIME_EST = "EXTRA_TIME_EST";
     private static final String EXTRA_STATUS = "EXTRA_STATUS";
     private static final String EXTRA_SHARED = "EXTRA_SHARED";
+    private static final String EXTRA_PAYMENT_METHOD = "EXTRA_PAYMENT_METHOD";
 
     @BindView(R2.id.cab_on_trip_container)
     LinearLayout driverDetailLayoutLinearLayout;
@@ -65,12 +63,17 @@ public class DriverDetailFragment extends BaseFragment {
     TextView poolStatusTextView;
     @BindView(R2.id.help_layout)
     LinearLayout shareRideLayout;
+    @BindView(R2.id.tv_payment_method)
+    TextView paymentMethodTextView;
+    @BindView(R2.id.image_payment_method_icon)
+    ImageView paymentIconImageView;
 
     private Driver driver;
     private Vehicle vehicle;
     private LocationLatLng destination;
     private int eta;
     private String status;
+    private String paymentMethod;
 
 
     private OnFragmentInteractionListener onFragmentInteractionListener;
@@ -89,6 +92,7 @@ public class DriverDetailFragment extends BaseFragment {
         bundle.putString(EXTRA_STATUS, rideRequest.getStatus());
         bundle.putString(EXTRA_PARENT_TAG, tag);
         bundle.putBoolean(EXTRA_SHARED, rideRequest.isShared());
+        bundle.putString(EXTRA_PAYMENT_METHOD, rideRequest.getPayment().getPaymentMethod());
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -139,6 +143,7 @@ public class DriverDetailFragment extends BaseFragment {
         destination = getArguments().getParcelable(EXTRA_DESTINATION);
         eta = (int) getArguments().getFloat(EXTRA_TIME_EST);
         status = getArguments().getString(EXTRA_STATUS);
+        paymentMethod = getArguments().getString(EXTRA_PAYMENT_METHOD);
         renderUi();
     }
 
@@ -146,6 +151,8 @@ public class DriverDetailFragment extends BaseFragment {
         driverDetailLayoutLinearLayout.setVisibility(View.VISIBLE);
         driverNameTextView.setText(driver.getName());
         driverRatingTextView.setText(driver.getRating());
+        paymentMethodTextView.setText(getString(R.string.str_payment_with) + " " + paymentMethod);
+        paymentIconImageView.setImageResource(paymentMethod.equalsIgnoreCase(PaymentMode.WALLET_DISPLAY_NAME) ? R.drawable.tokocash : R.drawable.cc_image);
 
         if (status != null && (status.equalsIgnoreCase(RideStatus.ACCEPTED) || status.equalsIgnoreCase(RideStatus.ARRIVING))) {
             cancelRideLayout.setVisibility(View.VISIBLE);
@@ -166,21 +173,8 @@ public class DriverDetailFragment extends BaseFragment {
         }
 
         shareRideLayout.setVisibility(View.VISIBLE);
-        Glide.with(getActivity()).load(driver.getPictureUrl())
-                .asBitmap()
-                .centerCrop()
-                .error(R.drawable.default_user_pic_light)
-                .into(new BitmapImageViewTarget(driverImageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        if (getActivity() != null && !getActivity().isFinishing()) {
-                            RoundedBitmapDrawable roundedBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getResources(), resource);
-                            roundedBitmapDrawable.setCircular(true);
-                            driverImageView.setImageDrawable(roundedBitmapDrawable);
-                        }
-                    }
-                });
+
+        ImageHandler.loadCircleImageWithPlaceHolder(getActivity(), driverImageView, R.drawable.default_user_pic_light, driver.getPictureUrl());
 
         vehicleDetailTextView.setText(String.format("%s %s", vehicle.getMake(), vehicle.getVehicleModel()));
         vehiclePlateTextView.setText(vehicle.getLicensePlate());
@@ -195,7 +189,11 @@ public class DriverDetailFragment extends BaseFragment {
     @OnClick(R2.id.icon_message)
     public void actionSMSDriver() {
         RideGATracking.eventClickSMS(status);
-        openSmsIntent(driver.getPhoneNumber());
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(UberSMSChatActivity.DRIVER_INFO, driver);
+        bundle.putParcelable(UberSMSChatActivity.VEHICLE_INFO, vehicle);
+        startActivity(UberSMSChatActivity.newInstance(getActivity(), bundle));
     }
 
     @NeedsPermission({Manifest.permission.CALL_PHONE})
@@ -203,14 +201,6 @@ public class DriverDetailFragment extends BaseFragment {
         Intent callIntent = new Intent(Intent.ACTION_CALL);
         callIntent.setData(Uri.parse("tel:" + phoneNumber));
         startActivity(callIntent);
-    }
-
-    public void openSmsIntent(String smsNumber) {
-        if (!TextUtils.isEmpty(smsNumber)) {
-            startActivity(new Intent(Intent.ACTION_VIEW,
-                    Uri.fromParts("sms", smsNumber, null))
-            );
-        }
     }
 
     /**

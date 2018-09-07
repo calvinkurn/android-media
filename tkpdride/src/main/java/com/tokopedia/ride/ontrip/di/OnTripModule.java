@@ -2,6 +2,8 @@ package com.tokopedia.ride.ontrip.di;
 
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.ride.bookingride.di.scope.BookingRideScope;
+import com.tokopedia.ride.bookingride.domain.GetPendingAmountUseCase;
 import com.tokopedia.ride.common.ride.domain.BookingRideRepository;
 import com.tokopedia.ride.ontrip.domain.CancelRideRequestUseCase;
 import com.tokopedia.ride.ontrip.domain.CreateRideRequestUseCase;
@@ -79,5 +81,11 @@ public class OnTripModule {
         return new UpdateRideRequestUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
     }
 
-
+    @Provides
+    @OnTripScope
+    GetPendingAmountUseCase provideGetPendingAmountUseCase(ThreadExecutor threadExecutor,
+                                                           PostExecutionThread postExecutionThread,
+                                                           BookingRideRepository bookingRideRepository) {
+        return new GetPendingAmountUseCase(threadExecutor, postExecutionThread, bookingRideRepository);
+    }
 }

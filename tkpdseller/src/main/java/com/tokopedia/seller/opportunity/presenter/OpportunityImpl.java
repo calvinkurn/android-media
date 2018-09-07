@@ -1,57 +1,69 @@
 package com.tokopedia.seller.opportunity.presenter;
 
-import android.content.Context;
-
-import com.tokopedia.core.base.data.executor.JobExecutor;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.UIThread;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.network.apiservices.replacement.OpportunityService;
-import com.tokopedia.seller.opportunity.data.factory.ActionReplacementSourceFactory;
-import com.tokopedia.seller.opportunity.data.factory.OpportunityDataSourceFactory;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityFilterMapper;
-import com.tokopedia.seller.opportunity.data.mapper.OpportunityListMapper;
-import com.tokopedia.seller.opportunity.domain.repository.ReplacementRepositoryImpl;
+import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.seller.opportunity.data.OpportunityNewPriceData;
 import com.tokopedia.seller.opportunity.domain.interactor.AcceptReplacementUseCase;
-import com.tokopedia.seller.opportunity.listener.OpportunityView;
+import com.tokopedia.seller.opportunity.domain.interactor.GetOpportunityNewPriceUseCase;
 import com.tokopedia.seller.opportunity.presenter.subscriber.AcceptOpportunitySubscriber;
+
+import rx.Subscriber;
 
 /**
  * Created by hangnadi on 2/27/17.
  */
-public class OpportunityImpl implements OpportunityPresenter {
+public class OpportunityImpl extends OpportunityPresenter {
 
-    private final OpportunityView view;
-    private final AcceptReplacementUseCase acceptReplacementUseCase;
+    private AcceptReplacementUseCase acceptReplacementUseCase;
+    private GetOpportunityNewPriceUseCase newPriceUseCase;
 
-    public OpportunityImpl(Context context, OpportunityView view) {
-        this.view = view;
+    public OpportunityImpl(AcceptReplacementUseCase acceptReplacementUseCase,
+                           GetOpportunityNewPriceUseCase newPriceUseCase) {
+        this.acceptReplacementUseCase = acceptReplacementUseCase;
+        this.newPriceUseCase = newPriceUseCase;
+    }
 
-        OpportunityService opportunityService = new OpportunityService();
+    @Override
+    public void getNewPriceInfo() {
+        newPriceUseCase.execute(getNewPriceInfoParams(), new Subscriber<OpportunityNewPriceData>() {
+            @Override
+            public void onCompleted() {
 
-        ReplacementRepositoryImpl repository = new ReplacementRepositoryImpl(
-                new ActionReplacementSourceFactory(context),
-                new OpportunityDataSourceFactory(context,
-                        opportunityService,
-                        new OpportunityListMapper(),
-                        new OpportunityFilterMapper(),
-                        new GlobalCacheManager())
-        );
-        this.acceptReplacementUseCase = new AcceptReplacementUseCase(
-                new JobExecutor(), new UIThread(), repository
-        );
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if(!isViewAttached())
+                    return;
+
+                getView().onErrorPriceInfo(ErrorHandler.getErrorMessage(e));
+                getView().onErrorTakeOpportunity(ErrorHandler.getErrorMessage(e));
+            }
+
+            @Override
+            public void onNext(OpportunityNewPriceData opportunityNewPriceData) {
+                if(!isViewAttached())
+                    return;
+
+                getView().onSuccessNewPrice(opportunityNewPriceData);
+            }
+        });
     }
 
     @Override
     public void acceptOpportunity() {
-        view.showLoadingProgress();
+        getView().showLoadingProgress();
         acceptReplacementUseCase.execute(getAcceptOpportunityParams(),
-                new AcceptOpportunitySubscriber(view));
+                new AcceptOpportunitySubscriber(getView()));
+    }
+
+    private RequestParams getNewPriceInfoParams(){
+        return GetOpportunityNewPriceUseCase.createRequestParams(getView().getOpportunityId());
     }
 
     private RequestParams getAcceptOpportunityParams() {
         RequestParams params = RequestParams.create();
-        params.putString(AcceptReplacementUseCase.PARAMS_ID, view.getOpportunityId());
+        params.putString(AcceptReplacementUseCase.PARAMS_ID, getView().getOpportunityId());
         return params;
     }
 

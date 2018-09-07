@@ -14,6 +14,7 @@ import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.text.watcher.NumberTextWatcher;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.StringUtils;
 
 import java.text.DecimalFormat;
 
@@ -25,7 +26,7 @@ public class DecimalInputView extends BaseCustomView {
 
     private static final String DECIMAL_FORMAT = "#.##";
     private static final String DEFAULT_VALUE = "0";
-    private static final int DEFAULT_INPUT_VALUE_LENGTH = -1;
+    private static final int DEFAULT_INPUT_VALUE_LENGTH = 20;
 
     private TextInputLayout textInputLayout;
     private EditText editText;
@@ -102,8 +103,13 @@ public class DecimalInputView extends BaseCustomView {
 
     public void setText(String textValue) {
         editText.setText(textValue);
+        editText.setSelection(editText.getText().length());
         invalidate();
         requestLayout();
+    }
+
+    public void removeDefaultTextWatcher() {
+        editText.removeTextChangedListener(currentTextWatcher);
     }
 
     public void addTextChangedListener(TextWatcher textWatcher) {
@@ -137,11 +143,15 @@ public class DecimalInputView extends BaseCustomView {
 
     public double getDoubleValue() {
         String valueString = CurrencyFormatHelper.removeCurrencyPrefix(getText());
-        valueString = CurrencyFormatHelper.RemoveNonNumeric(valueString);
-        if (TextUtils.isEmpty(valueString)) {
-            return 0;
+        try {
+            valueString = StringUtils.removeComma(valueString);
+            if (TextUtils.isEmpty(valueString)) {
+                return 0;
+            }
+            return Double.parseDouble(valueString);
+        } catch (NumberFormatException e) {
+            return StringUtils.convertToNumeric(valueString, false);
         }
-        return Double.parseDouble(valueString);
     }
 
     public void setValue(double value) {
@@ -154,8 +164,6 @@ public class DecimalInputView extends BaseCustomView {
     }
 
     public void setMaxLength(int maxLengthInput) {
-        if(maxLengthInput > DEFAULT_INPUT_VALUE_LENGTH) {
-            editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
-        }
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(maxLengthInput)});
     }
 }

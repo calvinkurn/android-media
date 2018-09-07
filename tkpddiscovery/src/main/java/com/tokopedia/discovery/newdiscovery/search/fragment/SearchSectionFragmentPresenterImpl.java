@@ -33,6 +33,9 @@ public abstract class SearchSectionFragmentPresenterImpl<V extends SearchSection
     }
 
     protected RequestParams enrichWithFilterAndSortParams(RequestParams requestParams) {
+        if (getView() == null) {
+            return requestParams;
+        }
         if (getView().getSelectedSort() != null) {
             requestParams.putAll(getView().getSelectedSort());
         }

@@ -13,6 +13,10 @@ import com.tokopedia.core.router.InboxRouter;
  * Created by henrypriyono on 7/21/17.
  */
 
+/**
+ * Extends fragment webview from tkpd abstraction
+ */
+@Deprecated
 public class TkpdCoreWebViewActivity extends TActivity {
 
     public static final String EXTRA_TITLE = "core_web_view_extra_title";
@@ -21,15 +25,21 @@ public class TkpdCoreWebViewActivity extends TActivity {
     protected void setupToolbar() {
         super.setupToolbar();
 
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_webview_back_button);
+        }
 
-        toolbar.setBackgroundResource(R.color.white);
         toolbar.setTitleTextAppearance(this, R.style.WebViewToolbarText);
 
         String title = getIntent().getStringExtra(EXTRA_TITLE);
         if (!TextUtils.isEmpty(title)) {
             toolbar.setTitle(title);
         }
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return true;
     }
 
     @Override

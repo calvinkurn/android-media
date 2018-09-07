@@ -2,9 +2,9 @@ package com.tokopedia.session.changephonenumber.data.factory;
 
 import android.content.Context;
 
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.session.changephonenumber.data.mapper.CheckStatusMapper;
-import com.tokopedia.session.changephonenumber.data.source.CloudCheckStatusSource;
+import com.tokopedia.network.service.AccountsService;
+import com.tokopedia.session.changephonenumber.data.mapper.changephonenumberrequest.CheckStatusMapper;
+import com.tokopedia.session.changephonenumber.data.source.changephonenumberrequest.CloudCheckStatusSource;
 
 /**
  * Created by nisie on 3/10/17.

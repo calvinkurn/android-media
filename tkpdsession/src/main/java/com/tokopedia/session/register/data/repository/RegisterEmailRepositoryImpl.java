@@ -1,9 +1,10 @@
 package com.tokopedia.session.register.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.register.data.RegisterEmailModel;
+import com.tokopedia.session.register.data.model.RegisterEmailModel;
 import com.tokopedia.session.register.data.factory.RegisterEmailSourceFactory;
-import com.tokopedia.session.register.domain.RegisterEmailRepository;
+
+import java.util.HashMap;
 
 import rx.Observable;
 
@@ -21,7 +22,7 @@ public class RegisterEmailRepositoryImpl implements RegisterEmailRepository {
     }
 
     @Override
-    public Observable<RegisterEmailModel> registerEmail(TKPDMapParam<String, Object> parameters) {
+    public Observable<RegisterEmailModel> registerEmail(HashMap<String, Object> parameters) {
         return registerEmailSourceFactory.createCloudRegisterEmailSource().registerEmail(parameters);
     }
 }

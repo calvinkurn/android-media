@@ -1,7 +1,10 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.appsflyer.AFInAppEventParameterName;
 import com.google.gson.Gson;
@@ -11,17 +14,23 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
+import com.tokopedia.core.analytics.container.GTMContainer;
 import com.tokopedia.core.analytics.nishikino.model.Checkout;
+import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.addtocart.model.kero.Rates;
+import com.tokopedia.transaction.addtocart.model.kero.Data;
+import com.tokopedia.transaction.cart.activity.CartActivity;
 import com.tokopedia.transaction.cart.interactor.CartDataInteractor;
 import com.tokopedia.transaction.cart.interactor.ICartDataInteractor;
 import com.tokopedia.transaction.cart.listener.ICartView;
@@ -35,13 +44,15 @@ import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
 import com.tokopedia.transaction.cart.model.cartdata.CartRatesData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutData;
 import com.tokopedia.transaction.cart.model.paramcheckout.CheckoutDropShipperData;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
 import com.tokopedia.transaction.cart.model.voucher.VoucherData;
 import com.tokopedia.transaction.cart.services.TopPayIntentService;
 import com.tokopedia.transaction.exception.HttpErrorException;
 import com.tokopedia.transaction.exception.ResponseErrorException;
-
-import org.json.JSONArray;
+import com.tokopedia.transaction.pickuppoint.di.CartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.di.DaggerCartPickupPointComponent;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.EditCartPickupPointsUseCase;
+import com.tokopedia.transaction.pickuppoint.domain.usecase.RemoveCartPickupPointsUseCase;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -50,6 +61,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
+
+import retrofit2.Response;
 import rx.Subscriber;
 
 /**
@@ -59,15 +73,35 @@ public class CartPresenter implements ICartPresenter {
 
 
     private static final int MUST_INSURANCE_MODE = 3;
-    public static final int OPTIONAL_INSURANCE_MODE = 2;
-    public static final String VOUCHER_CODE = "voucher_code";
-    public static final String IS_SUGGESTED = "suggested";
+    private static final int OPTIONAL_INSURANCE_MODE = 2;
+    private static final String VOUCHER_CODE = "voucher_code";
+    private static final String IS_SUGGESTED = "suggested";
+    private static final String PARAM_CART_PAGE_LOADED = "cart page loaded";
+    private static final String PARAM_CLICK_PAYMENT_OPTION_BUTTON = "click payment option button";
     private final ICartView view;
     private final ICartDataInteractor cartDataInteractor;
+    private Gson gson;
+    private LocalCacheHandler cartCache;
 
-    public CartPresenter(ICartView iCartView) {
+    @Inject
+    EditCartPickupPointsUseCase editCartPickupPointsUseCase;
+
+    @Inject
+    RemoveCartPickupPointsUseCase removeCartPickupPointsUseCase;
+
+    public CartPresenter(ICartView iCartView, LocalCacheHandler cartCache) {
         this.view = iCartView;
         this.cartDataInteractor = new CartDataInteractor();
+        this.gson = new Gson();
+        this.cartCache = cartCache;
+        initializeInjector();
+    }
+
+    void initializeInjector() {
+        AppComponent component = ((CartActivity) view.getActivityContext()).getApplicationComponent();
+        CartPickupPointComponent cartPickupPointComponent = DaggerCartPickupPointComponent.builder()
+                .appComponent(component).build();
+        cartPickupPointComponent.inject(this);
     }
 
     @Override
@@ -90,12 +124,21 @@ public class CartPresenter implements ICartPresenter {
             public void onNext(ResponseTransform<CartData> responseTransform) {
                 CartData cartData = responseTransform.getData();
                 try {
+                    GTMContainer gtmContainer = new GTMContainer(view.getActivity());
+                    gtmContainer.clearEnhanceEcommerce();
                     processCartAnalytics(cartData);
+                    trackStep1CheckoutEE(getCheckoutTrackingData());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
                 processRenderViewCartData(cartData);
-                view.renderVisibleMainCartContainer();
+                view.renderInvisibleLoading();
+                if (!cartData.getCartItemList().isEmpty()) {
+                    view.renderVisibleMainCartContainer();
+                    autoApplyCouponIfAvailable(1);
+
+                }
+                processGetTickerGTM();
             }
         });
     }
@@ -125,8 +168,15 @@ public class CartPresenter implements ICartPresenter {
                 afQty = afQty + cartProduct.getProductQuantity();
                 Product product = new Product();
                 product.setProductID(cartProduct.getProductId());
-                product.setPrice(cartProduct.getProductPriceIdr());
-                product.setQty(cartProduct.getProductQuantity());
+                product.setPrice(cartProduct.getProductPrice());
+                product.setQty(String.valueOf(cartProduct.getProductQuantity()));
+                product.setShopId(cartItem.getCartShop().getShopId());
+                product.setShopType(cartItem.getCartShop().getShopType());
+                product.setShopName(cartItem.getCartShop().getShopName());
+                product.setCartId(cartProduct.getProductCartId());
+                product.setCategoryId(cartProduct.getProductCatId());
+                product.setDimension38(cartProduct.getProductTrackerData().getAttribution());
+                product.setDimension40(cartProduct.getProductTrackerData().getListDataName());
                 product.setProductName(MethodChecker.fromHtml(cartProduct.getProductName()).toString());
 
                 com.tokopedia.core.analytics.model.Product locaProduct
@@ -154,7 +204,6 @@ public class CartPresenter implements ICartPresenter {
             }
         }
         checkoutAnalytics.setCurrency("IDR");
-        checkoutAnalytics.setStep(2);
 
         Map[] afAllItemsPurchased = new Map[afProducts.size()];
         int ctr = 0;
@@ -236,9 +285,21 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
+                        for (int i = 0; i < canceledCartItem.getCartProducts().size(); i++) {
+                            cancelCartAnalytic(
+                                    canceledCartItem.getCartProducts().get(i),
+                                    canceledCartItem,
+                                    String.valueOf(
+                                            canceledCartItem
+                                                    .getCartProducts()
+                                                    .get(i)
+                                                    .getProductQuantity())
+                            );
+                        }
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledCart(canceledCartItem);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -281,9 +342,14 @@ public class CartPresenter implements ICartPresenter {
                         if (!responseTransform.getMessageSuccess().isEmpty())
                             messageSuccess = responseTransform.getMessageSuccess();
                         view.showToastMessage(messageSuccess);
+                        cancelCartAnalytic(
+                                canceledCartProduct,
+                                canceledCartItem,
+                                String.valueOf(canceledCartProduct.getProductQuantity()));
                         try {
                             processCartAnalytics(cartData);
                             trackCanceledProduct(canceledCartItem, canceledCartProduct);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -293,17 +359,18 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processSubmitEditCart(@NonNull CartItem cartData,
-                                      @NonNull List<ProductEditData> cartProductEditDataList) {
+    public void processSubmitEditCart(@NonNull final Context context,
+                                      @NonNull final CartItem cartItem,
+                                      @NonNull final List<ProductEditData> cartProductEditDataList) {
         view.showProgressLoading();
         TKPDMapParam<String, String> maps = new TKPDMapParam<>();
         maps.put("carts", new Gson().toJson(cartProductEditDataList));
-        maps.put("cart_shop_id", cartData.getCartShop().getShopId());
-        maps.put("cart_addr_id", cartData.getCartDestination().getAddressId());
-        maps.put("cart_shipping_id", cartData.getCartShipments().getShipmentId());
-        maps.put("cart_sp_id", cartData.getCartShipments().getShipmentPackageId());
+        maps.put("cart_shop_id", cartItem.getCartShop().getShopId());
+        maps.put("cart_addr_id", cartItem.getCartDestination().getAddressId());
+        maps.put("cart_shipping_id", cartItem.getCartShipments().getShipmentId());
+        maps.put("cart_sp_id", cartItem.getCartShipments().getShipmentPackageId());
         maps.put("lp_flag", "1");
-        maps.put("cart_string", cartData.getCartString());
+        maps.put("cart_string", cartItem.getCartString());
         cartDataInteractor.updateCart(view.getGeneratedAuthParamNetwork(maps),
                 view.getGeneratedAuthParamNetwork(null),
                 new Subscriber<ResponseTransform<CartData>>() {
@@ -328,14 +395,80 @@ public class CartPresenter implements ICartPresenter {
                             messageSuccess = responseTransform.getMessageSuccess();
                         }
                         view.showToastMessage(messageSuccess);
+                        processRenderViewCartData(cartData);
+                        for (int i = 0; i < cartProductEditDataList.size(); i++) {
+                            if (cartProductEditDataList.get(i).getOriginalQuantity()
+                                    > cartProductEditDataList.get(i).getProductQuantity()) {
+
+                                String removedQuantity = String.valueOf(
+                                        cartProductEditDataList
+                                                .get(i)
+                                                .getOriginalQuantity()
+                                                - cartProductEditDataList
+                                                .get(i)
+                                                .getProductQuantity());
+
+                                cancelCartAnalytic(cartItem.getCartProducts().get(i),
+                                        cartItem,
+                                        removedQuantity);
+
+                            } else if (cartProductEditDataList.get(i).getOriginalQuantity()
+                                    < cartProductEditDataList.get(i).getProductQuantity()) {
+
+                                String additionalQuantity = String.valueOf(
+                                        cartProductEditDataList.get(i).getProductQuantity()
+                                                - cartProductEditDataList.get(i).getOriginalQuantity());
+
+                                addToCartAnalytic(
+                                        cartItem.getCartProducts().get(i),
+                                        cartItem,
+                                        additionalQuantity);
+
+                            }
+                        }
                         try {
                             processCartAnalytics(cartData);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        processRenderViewCartData(cartData);
                     }
                 });
+
+    }
+
+    private void cancelCartAnalytic(CartProduct cartProduct,
+                                    @NonNull CartItem canceledCartItem,
+                                    String removedQuantity) {
+        Product analysisProduct = populateDataLayer(cartProduct, removedQuantity);
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(analysisProduct.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.REMOVE_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
+    }
+
+    private void addToCartAnalytic(CartProduct cartProduct,
+                                   @NonNull CartItem canceledCartItem,
+                                   String quantity) {
+        Product analysisProduct = populateDataLayer(cartProduct, quantity);
+        GTMCart gtmCart = new GTMCart();
+        gtmCart.addProduct(analysisProduct.getProduct());
+        gtmCart.setCurrencyCode("IDR");
+        gtmCart.setAddAction(GTMCart.ADD_ACTION);
+        UnifyTracking.eventATCSuccess(gtmCart);
+    }
+
+    @NonNull
+    private Product populateDataLayer(CartProduct cartProduct, String quantity) {
+        Product analysisProduct = new Product();
+        analysisProduct.setProductName(cartProduct.getProductName());
+        analysisProduct.setProductID(cartProduct.getProductId());
+        analysisProduct.setPrice(cartProduct.getProductPrice());
+        analysisProduct.setQty(quantity);
+        analysisProduct.setDimension38(cartProduct.getProductTrackerData().getAttribution());
+        analysisProduct.setDimension40(cartProduct.getProductTrackerData().getListDataName());
+        return analysisProduct;
     }
 
     @Override
@@ -376,25 +509,28 @@ public class CartPresenter implements ICartPresenter {
                         view.showToastMessage(messageSuccess);
                         try {
                             processCartAnalytics(cartData);
+                            trackStep1CheckoutEE(getCheckoutTrackingData());
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                         switchInsurancePrice(cartItemEditable, useInsurance);
+                        processRenderViewCartData(cartData);
                     }
                 });
     }
 
     private void switchInsurancePrice(@NonNull CartItemEditable cartItemEditable, boolean useInsurance) {
         cartItemEditable.setUseInsurance(useInsurance);
-        cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
+        if (cartItemEditable.getCartCourierPrices() != null)
+            cartItemEditable.getCartCourierPrices().setCartSubtotal(useInsurance);
         view.refreshCartList();
     }
 
     @Override
-    public void processCheckVoucherCode(final int instantCheckVoucher) {
+    public void processCheckVoucherCode(final String voucherCode, final int instantCheckVoucher) {
         view.showProgressLoading();
         TKPDMapParam<String, String> params = new TKPDMapParam<>();
-        params.put(VOUCHER_CODE, view.getVoucherCodeCheckoutData());
+        params.put(VOUCHER_CODE, voucherCode);
         params.put(IS_SUGGESTED, String.valueOf(instantCheckVoucher));
         cartDataInteractor.checkVoucherCode(view.getGeneratedAuthParamNetwork(params),
                 new Subscriber<ResponseTransform<VoucherData>>() {
@@ -409,6 +545,7 @@ public class CartPresenter implements ICartPresenter {
                             view.renderErrorCheckVoucher(e.getCause().getMessage());
                             view.renderErrorFromInstantVoucher(instantCheckVoucher);
                             view.hideProgressLoading();
+                            removeBranchPromo();
                         } else {
                             handleThrowableVoucherCode(e);
                         }
@@ -422,7 +559,12 @@ public class CartPresenter implements ICartPresenter {
                         ) + responseTransform.getData().getVoucher().getVoucherAmountIdr();
                         if (voucherData.getVoucher().getVoucherAmount().equals("0"))
                             descVoucher = voucherData.getVoucher().getVoucherPromoDesc();
-                        view.renderSuccessCheckVoucher(descVoucher, instantCheckVoucher);
+                        view.renderSuccessCheckVoucher(
+                                voucherCode,
+                                responseTransform.getData().getVoucher().getVoucherAmountIdr(),
+                                descVoucher,
+                                instantCheckVoucher
+                        );
                         view.hideProgressLoading();
                     }
                 });
@@ -487,6 +629,8 @@ public class CartPresenter implements ICartPresenter {
     @Override
     public void unSubscribeObservable() {
         cartDataInteractor.unSubscribeObservable();
+        editCartPickupPointsUseCase.unsubscribe();
+        removeCartPickupPointsUseCase.unsubscribe();
     }
 
     @Override
@@ -499,40 +643,28 @@ public class CartPresenter implements ICartPresenter {
     }
 
     @Override
-    public void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway) {
-        Gson afGSON = new Gson();
-        Checkout checkoutData = afGSON.fromJson(
-                localCacheHandler.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
-                new TypeToken<Checkout>() {
-                }.getType());
-        checkoutData.setCheckoutOption(gateway);
-        PaymentTracking.eventCartCheckout(checkoutData);
+    public void trackStep1CheckoutEE(Checkout checkoutData) {
+        checkoutData.setStep("1");
+        checkoutData.setCheckoutOption(PARAM_CART_PAGE_LOADED);
+        PaymentTracking.eventCartCheckoutStep1(checkoutData);
+    }
+
+    @Override
+    public void trackStep2CheckoutEE(String paymentId) {
+        Checkout checkoutData = getCheckoutTrackingData();
+        checkoutData.setStep("2");
+        checkoutData.setCheckoutOption(PARAM_CLICK_PAYMENT_OPTION_BUTTON);
+        PaymentTracking.eventCartCheckoutStep2(checkoutData, paymentId);
     }
 
     @Override
     public void processPaymentAnalytics(LocalCacheHandler cacheHandler, ThanksTopPayData thanksTopPayData) {
         Gson afGSON = new Gson();
-        Map[] mapResult = afGSON.fromJson(
-                cacheHandler.getString(Jordan.CACHE_AF_KEY_ALL_PRODUCTS),
-                new TypeToken<Map[]>() {
-                }.getType()
-        );
-        ArrayList<com.tokopedia.core.analytics.model.Product> locaProducts = afGSON.fromJson(
-                cacheHandler.getString(Jordan.CACHE_LC_KEY_ALL_PRODUCTS),
-                new TypeToken<ArrayList<com.tokopedia.core.analytics.model.Product>>() {
-                }.getType()
-        );
         ArrayList<Purchase> purchases = afGSON.fromJson(
                 cacheHandler.getString(Jordan.CACHE_KEY_DATA_AR_ALLPURCHASE),
                 new TypeToken<ArrayList<Purchase>>() {
                 }.getType()
         );
-        JSONArray arrJas = new JSONArray(
-                cacheHandler.getArrayListString(Jordan.CACHE_AF_KEY_JSONIDS)
-        );
-        String revenue = cacheHandler.getString(Jordan.CACHE_AF_KEY_REVENUE);
-        int qty = cacheHandler.getInt(Jordan.CACHE_AF_KEY_QTY);
-        String totalShipping = cacheHandler.getLong(Jordan.CACHE_LC_KEY_SHIPPINGRATE) + "";
 
         /*
           GTM Block
@@ -546,20 +678,30 @@ public class CartPresenter implements ICartPresenter {
             }
         }
 
-        /*
-          AppsFlyer Block
+    }
 
-         */
-        PaymentTracking.eventTransactionAF(
-                thanksTopPayData.getParameter().getPaymentId(),
-                revenue, arrJas, qty, mapResult
-        );
+    @Override
+    public void cancelPromo() {
+        cartDataInteractor.cancelVoucherCache(view.getActivity(), new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {
 
-        /*
-            Branch.io block
-         */
-        BranchSdkUtils.sendCommerceEvent(locaProducts,revenue,totalShipping);
+            }
 
+            @Override
+            public void onError(Throwable e) {
+                handleThrowableGeneral(e);
+            }
+
+            @Override
+            public void onNext(Boolean status) {
+                if (status != null && status) {
+                    view.renderCandelPromoSuccess();
+                } else {
+                    view.showToastMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                }
+            }
+        });
     }
 
     @Override
@@ -570,10 +712,10 @@ public class CartPresenter implements ICartPresenter {
     }
 
     private void trackCanceledCart(CartItem canceledCartItem) {
-        if(canceledCartItem != null
+        if (canceledCartItem != null
                 && canceledCartItem.getCartProducts() != null
                 && !canceledCartItem.getCartProducts().isEmpty()) {
-            for(CartProduct cartProduct : canceledCartItem.getCartProducts()) {
+            for (CartProduct cartProduct : canceledCartItem.getCartProducts()) {
                 trackCanceledProduct(canceledCartItem, cartProduct);
             }
         }
@@ -621,6 +763,7 @@ public class CartPresenter implements ICartPresenter {
         List<String> partialDeliverStringList = new ArrayList<>();
         List<String> rateKeyList = new ArrayList<>();
         List<String> rateDataList = new ArrayList<>();
+        List<CartItem> cartItemList = new ArrayList<>();
 
         for (CartItemEditable data : cartItemEditables) {
             if (data.isDropShipper()) {
@@ -635,6 +778,7 @@ public class CartPresenter implements ICartPresenter {
                 rateKeyList.add(data.getCartCourierPrices().getKey());
                 rateDataList.add(data.getCartCourierPrices().getKeroValue());
             }
+            cartItemList.add(data.getCartItem());
         }
 
         StringBuilder dropShipperParamStringBuilder = new StringBuilder();
@@ -745,7 +889,7 @@ public class CartPresenter implements ICartPresenter {
     private void processRenderViewCartData(CartData data) {
         view.renderCheckboxDonasi(data.getDonation());
         if (data.getCartItemList().isEmpty()) {
-            view.renderErrorEmptyCart();
+            view.renderErrorEmptyCart(data.getAutoApply());
             return;
         }
         if (data.getCashback() != 0)
@@ -778,11 +922,28 @@ public class CartPresenter implements ICartPresenter {
         }
         view.renderButtonCheckVoucherListener();
         view.renderInstantPromo(data.getCartPromo());
+        view.renderPromoView(
+                data.getIsCouponActive() == 1,
+                checkCouponDefaultNull(data.getDefaultPromoDialogTab())
+        );
+        view.renderPartialOrder(data.isEnableCancelPartial());
+        if (promoAutoApplied(data)) {
+            view.renderAutoApplyPromoView(data.getAutoApply());
+        }
+    }
+
+    private String checkCouponDefaultNull(String defaultPromoTab) {
+        if (TextUtils.isEmpty(defaultPromoTab)) return "";
+        else return defaultPromoTab;
+    }
+
+    private boolean promoAutoApplied(CartData data) {
+        return data.getAutoApply() != null && data.getAutoApply().isSuccess();
     }
 
     @Override
     public void processCartRates(String token, String ut, final List<CartItem> cartItemList) {
-        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener());
+        cartDataInteractor.calculateKeroRates(token, ut, cartItemList, keroRatesListener(), view.getActivity());
     }
 
     private ICartDataInteractor.KeroRatesListener keroRatesListener() {
@@ -792,19 +953,19 @@ public class CartPresenter implements ICartPresenter {
                 if (cartRatesData.getRatesResponse() == null) {
                     view.setCartError(cartRatesData.getRatesIndex());
                 } else {
-                    Rates ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
-                            Rates.class);
+                    Data ratesData = new Gson().fromJson(cartRatesData.getRatesResponse(),
+                            Data.class);
                     CartCourierPrices cartCourierPrices = new CartCourierPrices();
                     cartCourierPrices.setKey(cartRatesData.getKeroRatesKey());
                     cartCourierPrices.setCartProductPrice(cartRatesData.getCartTotalProductPrice());
                     cartCourierPrices.setCartIndex(cartRatesData.getRatesIndex());
                     cartCourierPrices.setAdditionFee(cartRatesData.getCartAdditionalLogisticFee());
-                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData.getData()
+                    cartCourierPrices.setKeroWeight(String.valueOf(ratesData
                             .getAttributes()
                             .get(0)
                             .getWeight()));
                     List<com.tokopedia.transaction.addtocart.model.kero.Product> shipmentServices =
-                            ratesData.getData().getAttributes().get(0).getProducts();
+                            ratesData.getAttributes().get(0).getProducts();
 
                     setSubTotalPrice(shipmentServices,
                             cartCourierPrices,
@@ -856,6 +1017,9 @@ public class CartPresenter implements ICartPresenter {
                     courierPrices.setCartSubtotal(false);
                 }
                 courierPrices.setKeroValue(keroShipmentServices.get(i));
+                courierPrices.setUseInsurance(cartRatesData.isInsuranced() ? 1 : 0);
+                courierPrices.setInsuranceUsedInfo(keroShipmentServices.get(i).getInsuranceUsedInfo());
+                courierPrices.setInsuranceUsedType(keroShipmentServices.get(i).getInsuranceUsedType());
             }
         }
 
@@ -869,4 +1033,66 @@ public class CartPresenter implements ICartPresenter {
     }
 
 
+    private void autoApplyCouponIfAvailable(Integer selectedProduct) {
+        String savedCoupon = BranchSdkUtils.getAutoApplyCouponIfAvailable(view.getActivity());
+        if (!TextUtils.isEmpty(savedCoupon)) {
+            processCheckVoucherCode(savedCoupon, selectedProduct);
+            view.setListnerCancelPromoLayoutOnAutoApplyCode();
+        }
+    }
+
+    private void removeBranchPromo() {
+        BranchSdkUtils.removeCouponCode(view.getActivity());
+    }
+
+    private Checkout getCheckoutTrackingData() {
+        return gson.fromJson(
+                cartCache.getString(Jordan.CACHE_KEY_DATA_CHECKOUT),
+                new TypeToken<Checkout>() {
+                }.getType());
+    }
+
+    @Override
+    public void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId) {
+        editCartPickupPointsUseCase.execute(
+                EditCartPickupPointsUseCase.generateParams(view.getActivityContext(), cartId, oldStoreId, newStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("removeCartPickupPoints", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("removeCartPickupPoints", "onError");
+                    }
+
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                        Log.e("removeCartPickupPoints", "onNext");
+                    }
+                });
+    }
+
+    @Override
+    public void processRemovePickupPoint(String cartId, String oldStoreId) {
+        removeCartPickupPointsUseCase.execute(
+                RemoveCartPickupPointsUseCase.generateParams(view.getActivityContext(), cartId, oldStoreId),
+                new Subscriber<Response<TkpdResponse>>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.e("removeCartPickupPoints", "onCompleted");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.e("removeCartPickupPoints", "onError");
+                    }
+
+                    @Override
+                    public void onNext(Response<TkpdResponse> tkpdResponseResponse) {
+                        Log.e("removeCartPickupPoints", "onNext");
+                    }
+                });
+    }
 }

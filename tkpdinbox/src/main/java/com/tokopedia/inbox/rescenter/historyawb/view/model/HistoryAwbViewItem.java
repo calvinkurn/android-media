@@ -16,6 +16,7 @@ public class HistoryAwbViewItem implements Parcelable {
     private ArrayList<Attachment> attachment;
     private String conversationID;
     private String date;
+    private String createTimestamp;
     private String remark;
     private String shipmentID;
     private String shippingRefNumber;
@@ -114,6 +115,14 @@ public class HistoryAwbViewItem implements Parcelable {
         return showTrack;
     }
 
+    public String getCreateTimestamp() {
+        return createTimestamp;
+    }
+
+    public void setCreateTimestamp(String createTimestamp) {
+        this.createTimestamp = createTimestamp;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -126,6 +135,7 @@ public class HistoryAwbViewItem implements Parcelable {
         dest.writeTypedList(this.attachment);
         dest.writeString(this.conversationID);
         dest.writeString(this.date);
+        dest.writeString(this.createTimestamp);
         dest.writeString(this.remark);
         dest.writeString(this.shipmentID);
         dest.writeString(this.shippingRefNumber);
@@ -140,6 +150,7 @@ public class HistoryAwbViewItem implements Parcelable {
         this.attachment = in.createTypedArrayList(Attachment.CREATOR);
         this.conversationID = in.readString();
         this.date = in.readString();
+        this.createTimestamp = in.readString();
         this.remark = in.readString();
         this.shipmentID = in.readString();
         this.shippingRefNumber = in.readString();

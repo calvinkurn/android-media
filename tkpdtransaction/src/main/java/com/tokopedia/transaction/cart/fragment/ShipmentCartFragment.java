@@ -85,8 +85,6 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     CardView cvShipment;
     @BindView(R2.id.iv_icon_geo_location)
     ImageView ivIconGeoLocation;
-    @BindView(R2.id.btn_change_value_location)
-    ImageView btnChangeValueLocation;
     @BindView(R2.id.tv_value_location)
     AppCompatTextView tvValueLocation;
     @BindView(R2.id.tv_error_geo_location)
@@ -186,7 +184,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         );
         spShipment.setOnItemSelectedListener(getShipmentItemSelectionListener());
         spShipmentPackage.setOnItemSelectedListener(getShipmentPackageItemSelectionListener());
-        btnChangeValueLocation.setOnClickListener(getChangeLocationListener());
+        layoutValueLocation.setOnClickListener(getChangeLocationListener());
         tvValueLocation.setOnClickListener(getChangeLocationListener());
     }
 
@@ -313,6 +311,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         calculateShipmentWrapper.setShopId(wrapper.getShopId());
         calculateShipmentWrapper.setAddressId(wrapper.getAddressId());
         calculateShipmentWrapper.setWeight(transactionPassData.getCartTotalWeight());
+        calculateShipmentWrapper.setShippingId(transactionPassData.getCartShipments().getShipmentId());
         presenter.processCalculateShipment(calculateShipmentWrapper);
     }
 
@@ -466,7 +465,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
                     || TextUtils.isEmpty(locationPass.getLatitude()))) {
                 locationArg = locationPass;
             }
-            Intent intent = GeolocationActivity.createInstance(getActivity(), locationArg);
+            Intent intent = GeolocationActivity.createInstanceFromMarketplaceCart(getActivity(), locationArg);
             startActivityForResult(intent, CHOOSE_LOCATION);
         } else {
             Toast.makeText(
@@ -509,8 +508,9 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
         tvErrorGeoLocation.setVisibility(View.GONE);
         ShipmentPackage shipmentPackage = (ShipmentPackage) spShipmentPackage.getSelectedItem();
         if (shipmentPackage.getShowMap() == 1 && (
-                locationPass.getLatitude().equalsIgnoreCase("") ||
-                        locationPass.getLongitude().equalsIgnoreCase(""))) {
+                locationPass == null
+                        || locationPass.getLatitude().equalsIgnoreCase("")
+                        || locationPass.getLongitude().equalsIgnoreCase(""))) {
             tvErrorGeoLocation.setVisibility(View.VISIBLE);
             showSnackbar(getString(com.tokopedia.transaction.R.string.shipment_data_not_complete));
             return true;
@@ -587,7 +587,7 @@ public class ShipmentCartFragment extends BasePresenterFragment<IShipmentCartPre
     @Override
     public void renderResultChooseLocation(@NonNull Bundle bundle) {
         LocationPass locationResult = bundle.getParcelable(GeolocationActivity.EXTRA_EXISTING_LOCATION);
-        if (locationResult != null) {
+        if (locationResult != null && !TextUtils.isEmpty(locationResult.getGeneratedAddress())) {
             this.locationPass = locationResult;
             if (locationResult.getGeneratedAddress().equals(getString(R.string.choose_this_location))) {
                 this.locationPass.setGeneratedAddress(String.format("%s, %s", locationPass.getLatitude(),

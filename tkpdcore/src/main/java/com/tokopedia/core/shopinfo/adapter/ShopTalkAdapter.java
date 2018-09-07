@@ -32,7 +32,7 @@ import butterknife.ButterKnife;
 
 public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
-    private static final int VIEW_TALK = 100;
+    protected static final int VIEW_TALK = 100;
     private boolean actionsEnabled;
     private boolean isHaveNext;
 
@@ -94,9 +94,6 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
         @BindView(R2.id.main_view)
         View mainView;
 
-        @BindView(R2.id.empty_view)
-        View emptyView;
-
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -104,7 +101,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
     }
 
 
-    private ArrayList<ShopTalk> list;
+    protected ArrayList<ShopTalk> list;
     private final Context context;
     ActionShopTalkListener listener;
 
@@ -146,10 +143,8 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     private void bindShopTalk(ViewHolder holder, final int position) {
         if (!isHaveNext && position == list.size()) {
-            holder.emptyView.setVisibility(View.VISIBLE);
             holder.mainView.setVisibility(View.GONE);
         } else {
-            holder.emptyView.setVisibility(View.GONE);
             holder.mainView.setVisibility(View.VISIBLE);
             list.get(position).setPosition(position);
             ImageHandler.LoadImage(holder.productImage, list.get(position).getTalkProductImage());
@@ -160,7 +155,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
             holder.totalComment.setText(list.get(position).getTalkTotalComment());
             if (list.get(position).getTalkUserReputation().getNoReputation() == 0) {
                 holder.reputationRating.setText(list.get(position).getTalkUserReputation().getPositivePercentage() + "%");
-                holder.reputationRating.setVisibility(View.VISIBLE);
+                holder.reputationRating.setVisibility(View.INVISIBLE);
                 holder.reputationIcon.setImageResource(R.drawable.ic_icon_repsis_smile_active);
             } else {
                 holder.reputationRating.setVisibility(View.INVISIBLE);
@@ -252,10 +247,17 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
     private int getMenuID(int position) {
         int menuID;
         ShopTalk talk = list.get(position);
-        if (talk.getTalkShopId().equals(SessionHandler.getShopID(context))) {
-            menuID = R.menu.delete_report_menu;
+        SessionHandler sessionHandler = new SessionHandler(context);
+        String loginUserID = sessionHandler.getLoginID();
+        if (talk.getTalkShopId().equals(sessionHandler.getShopID(context))) {
+            if (loginUserID.equals(talk.getTalkUserId())) {
+                menuID = R.menu.delete_menu;
+            }
+            else {
+                menuID = R.menu.report_menu;
+            }
         } else {
-            if (SessionHandler.getLoginID(context).equals(talk.getTalkUserId())) {
+            if (loginUserID.equals(talk.getTalkUserId())) {
                 if (talk.getTalkFollowStatus() == 1) {
                     menuID = R.menu.unfollow_delete_menu;
                 } else {
@@ -306,7 +308,7 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
         notifyDataSetChanged();
     }
 
-    private boolean isLastItemPosition(int position) {
+    protected boolean isLastItemPosition(int position) {
         return position == list.size() + ((!isHaveNext && !list.isEmpty())? 1 : 0);
     }
 
@@ -322,6 +324,11 @@ public class ShopTalkAdapter extends BaseLinearRecyclerViewAdapter {
 
     public void addList(List<ShopTalk> list) {
         this.list.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void addItem(ShopTalk list) {
+        this.list.add(list);
         notifyDataSetChanged();
     }
 

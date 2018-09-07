@@ -1,13 +1,15 @@
 package com.tokopedia.transaction.cart.presenter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tkpd.library.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.nishikino.model.Checkout;
 import com.tokopedia.transaction.cart.model.CartItemEditable;
 import com.tokopedia.transaction.cart.model.calculateshipment.ProductEditData;
 import com.tokopedia.transaction.cart.model.cartdata.CartItem;
 import com.tokopedia.transaction.cart.model.cartdata.CartProduct;
-import com.tokopedia.transaction.cart.model.thankstoppaydata.ThanksTopPayData;
+import com.tokopedia.transactiondata.entity.response.thankstoppaydata.ThanksTopPayData;
 
 import java.util.List;
 
@@ -24,12 +26,13 @@ public interface ICartPresenter {
     void processCancelCartProduct(@NonNull CartItem cartData,
                                   @NonNull CartProduct cartProductData);
 
-    void processSubmitEditCart(@NonNull CartItem cartData,
+    void processSubmitEditCart(@NonNull Context context,
+                               @NonNull CartItem cartData,
                                @NonNull List<ProductEditData> cartProductEditDataList);
 
     void processUpdateInsurance(@NonNull CartItemEditable cartItemEditable, boolean useInsurance);
 
-    void processCheckVoucherCode(int instantVoucher);
+    void processCheckVoucherCode(String voucherCode, int instantVoucher);
 
     void processGetTickerGTM();
 
@@ -41,9 +44,17 @@ public interface ICartPresenter {
 
     void processValidationPayment(String paymentId);
 
-    void processCheckoutAnalytics(LocalCacheHandler localCacheHandler, String gateway);
+    void trackStep1CheckoutEE(Checkout checkoutData);
+
+    void trackStep2CheckoutEE(String paymentId);
 
     void processPaymentAnalytics(LocalCacheHandler localCacheHandler, ThanksTopPayData data);
 
+    void cancelPromo();
+
     void clearNotificationCart();
+
+    void processUpdatePickupPoint(String cartId, String oldStoreId, String newStoreId);
+
+    void processRemovePickupPoint(String cartId, String oldStoreId);
 }

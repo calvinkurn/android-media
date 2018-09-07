@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.transaction.addtocart.model.kero.Attribute;
 import com.tokopedia.transaction.addtocart.model.kero.Data;
+import com.tokopedia.transaction.addtocart.model.kero.Rates;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface KeroNetInteractor {
     void onViewDestroyed();
 
     interface CalculationListener {
-        void onSuccess(Data rates);
+        void onSuccess(Data data);
 
         void onFailed(String error);
 

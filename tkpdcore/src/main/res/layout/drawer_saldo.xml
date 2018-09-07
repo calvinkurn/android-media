@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/grey_100"
     android:orientation="vertical"
     android:visibility="visible">
@@ -24,7 +25,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                android:src="@drawable/ic_icon_saldo" />
+                app:srcCompat="@drawable/ic_icon_saldo" />
 
             <TextView
                 android:id="@+id/textViewSaldoSub"
@@ -83,7 +84,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                android:src="@drawable/ic_tokocash_icon" />
+                app:srcCompat="@drawable/ic_tokocash_icon" />
 
             <TextView
                 android:id="@+id/toko_cash_label"
@@ -147,7 +148,7 @@
                 android:layout_alignTop="@+id/top_cash_value"
                 android:layout_marginEnd="@dimen/margin_med"
                 android:layout_marginRight="@dimen/margin_med"
-                android:src="@drawable/ic_new_action_refresh"
+                app:srcCompat="@drawable/ic_new_action_refresh"
                 android:tint="@color/tkpd_main_green"
                 android:visibility="gone"/>
 
@@ -167,7 +168,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/margin_small"
                 android:layout_marginStart="@dimen/margin_small"
-                android:src="@drawable/ic_logo_toppoint" />
+                app:srcCompat="@drawable/ic_logo_toppoint" />
 
             <TextView
                 android:id="@+id/textViewLoyaltySub"

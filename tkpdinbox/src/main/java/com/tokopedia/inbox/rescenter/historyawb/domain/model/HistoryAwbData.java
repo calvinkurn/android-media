@@ -10,7 +10,16 @@ public class HistoryAwbData {
     private boolean success;
     private int errorCode;
     private String messageError;
+    private int resolutionStatus;
     private List<HistoryAwbItemDomainData> listHistoryAwb;
+
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
 
     public void setSuccess(boolean success) {
         this.success = success;

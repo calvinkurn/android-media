@@ -4,14 +4,12 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.drawer2.domain.NotificationRepository;
 import com.tokopedia.core.drawer2.data.pojo.notification.NotificationModel;
+import com.tokopedia.core.drawer2.domain.NotificationRepository;
 
 import javax.inject.Inject;
 
 import rx.Observable;
-
-import static com.tokopedia.core.otp.domain.interactor.RequestOtpUseCase.PARAM_TYPE;
 
 /**
  * Created by nisie on 5/5/17.

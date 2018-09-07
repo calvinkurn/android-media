@@ -12,7 +12,6 @@ import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.router.SellerRouter;
-import com.tokopedia.core.router.SessionRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.digital.applink.DigitalApplinkModule;
 import com.tokopedia.digital.applink.DigitalApplinkModuleLoader;
@@ -20,14 +19,25 @@ import com.tokopedia.gm.applink.GMApplinkModule;
 import com.tokopedia.gm.applink.GMApplinkModuleLoader;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
+import com.tokopedia.profile.applink.ProfileApplinkModule;
+import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.sellerapp.SplashScreenActivity;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModule;
 import com.tokopedia.sellerapp.applink.SellerappAplinkModuleLoader;
 import com.tokopedia.sellerapp.deeplink.presenter.DeepLinkAnalyticsImpl;
+import com.tokopedia.shop.applink.ShopAppLinkModule;
+import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
 import com.tokopedia.topads.applink.TopAdsApplinkModule;
 import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
+import com.tokopedia.tracking.applink.TrackingAppLinkModule;
+import com.tokopedia.tracking.applink.TrackingAppLinkModuleLoader;
+import com.tokopedia.transaction.applink.TransactionApplinkModule;
+import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+
 
 /**
  * @author rizkyfadillah on 26/07/17.
@@ -36,20 +46,32 @@ import com.tokopedia.topads.applink.TopAdsApplinkModuleLoader;
         DigitalApplinkModule.class,
         SellerApplinkModule.class,
         TopAdsApplinkModule.class,
+        TransactionApplinkModule.class,
         GMApplinkModule.class,
         SellerappAplinkModule.class,
-        InboxDeeplinkModule.class
+        InboxDeeplinkModule.class,
+        ShopAppLinkModule.class,
+        ProfileApplinkModule.class,
+        TrackingAppLinkModule.class,
+        ProductAddDeeplinkModule.class
 })
 public class DeepLinkHandlerActivity extends AppCompatActivity {
+
+
 
     public static DeepLinkDelegate getDelegateInstance() {
         return new DeepLinkDelegate(
                 new DigitalApplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
                 new TopAdsApplinkModuleLoader(),
+                new TransactionApplinkModuleLoader(),
                 new GMApplinkModuleLoader(),
                 new SellerappAplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader()
+                new InboxDeeplinkModuleLoader(),
+                new ShopAppLinkModuleLoader(),
+                new ProfileApplinkModuleLoader(),
+                new TrackingAppLinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader()
         );
     }
 
@@ -59,7 +81,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
-            if (!SessionHandler.isV4Login(this) || SessionHandler.getShopID(this).isEmpty() || SessionHandler.getShopID(this).equals("0")) {
+            if (!SessionHandler.isV4Login(this) || !SessionHandler.isUserHasShop(this)) {
                 if (SessionHandler.isV4Login(this)) {
                     startActivity(moveToCreateShop(this));
                 } else {
@@ -91,20 +113,9 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
         if (context == null)
             return null;
 
-        if (SessionHandler.isMsisdnVerified()) {
-            Intent intent = SellerRouter.getAcitivityShopCreateEdit(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            intent.putExtra(SellerRouter.ShopSettingConstant.ON_BACK, SellerRouter.ShopSettingConstant.LOG_OUT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            return intent;
-        } else {
-            Intent intent;
-            intent = SessionRouter.getPhoneVerificationActivationActivityIntent(context);
-            intent.putExtra(SellerRouter.ShopSettingConstant.FRAGMENT_TO_SHOW,
-                    SellerRouter.ShopSettingConstant.CREATE_SHOP_FRAGMENT_TAG);
-            return intent;
-        }
+        Intent intent = SellerRouter.getActivityShopCreateEdit(context);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        return intent;
     }
 
     @DeepLink(Constants.Applinks.SellerApp.BROWSER)

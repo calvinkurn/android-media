@@ -13,24 +13,20 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.DeveloperOptions;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.R;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.container.GTMContainer;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
-import com.tokopedia.core.inboxreputation.activity.InboxReputationActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.ArrayList;
 
@@ -40,6 +36,7 @@ import java.util.ArrayList;
 
 public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemListener {
     public static final String DRAWER_CACHE = "DRAWER_CACHE";
+    public static final int REQUEST_LOGIN = 345;
     protected LocalCacheHandler drawerCache;
 
     public DrawerAdapter adapter;
@@ -70,62 +67,55 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
     public abstract void initDrawer(Activity activity);
 
-//    public abstract ToolbarBuyerHandler.OnDrawerToggleClickListener onDrawerToggleClick();
-
     @Override
     public void onItemClicked(DrawerItem item) {
         Intent intent;
         switch (item.getId()) {
             case TkpdState.DrawerPosition.LOGIN:
                 intent = ((TkpdCoreRouter) context.getApplication()).getLoginIntent(context);
-                Intent intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Login", "Login");
                 break;
             case TkpdState.DrawerPosition.REGISTER:
                 intent = ((TkpdCoreRouter) context.getApplication()).getRegisterIntent(context);
-                intentHome = ((TkpdCoreRouter) context.getApplication()).getHomeIntent
-                        (context);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivities(new Intent[]
-                        {
-                                intentHome,
-                                intent
-                        });
-                context.finish();
+                context.startActivityForResult(intent, REQUEST_LOGIN);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Register",AppEventTracking.EventLabel.REGISTER);
                 break;
             case TkpdState.DrawerPosition.INBOX_MESSAGE:
-                if (context.getApplication() instanceof TkpdInboxRouter) {
-                    intent = ((TkpdInboxRouter) context.getApplication()).getInboxMessageIntent
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication()).getInboxMessageIntent
                             (context);
                     context.startActivity(intent);
                     sendGTMNavigationEvent(AppEventTracking.EventLabel.MESSAGE);
+                    ((TkpdCoreRouter) context.getApplication())
+                            .sendTrackingGroupChatLeftNavigation();
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.MESSAGE);
+
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
                 intent = InboxRouter.getInboxTalkActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
+
                 break;
             case TkpdState.DrawerPosition.INBOX_REVIEW:
-                startIntent(context, InboxReputationActivity.class);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
+                if (context.getApplication() instanceof TkpdCoreRouter) {
+                    intent = ((TkpdCoreRouter) context.getApplication())
+                            .getInboxReputationIntent(context);
+                    context.startActivity(intent);
+                    sendGTMNavigationEvent(AppEventTracking.EventLabel.REVIEW);
+                    AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX,AppEventTracking.EventLabel.REVIEW);
+
+                }
                 break;
             case TkpdState.DrawerPosition.INBOX_TICKET:
                 intent = InboxRouter.getInboxTicketActivityIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.HELP);
-                break;
-            case TkpdState.DrawerPosition.RESOLUTION_CENTER:
-                intent = InboxRouter.getInboxResCenterActivityIntent(context);
-                context.startActivity(intent);
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.RESOLUTION_CENTER);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.HELP);
+
                 break;
             case TkpdState.DrawerPosition.DEVELOPER_OPTIONS:
                 startIntent(context, DeveloperOptions.class);
@@ -133,25 +123,35 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             case TkpdState.DrawerPosition.SETTINGS:
                 context.startActivity(new Intent(context, ManageGeneral.class));
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SETTING);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(ManageGeneral.class.getCanonicalName(), AppEventTracking.EventLabel.SETTING);
+
                 break;
             case TkpdState.DrawerPosition.APPSHARE:
                 context.startActivity(new Intent(context, ReferralActivity.class));
-                sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+                sendReferralGTMNavigationEvent(item);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(ReferralActivity.class.getCanonicalName(), AppEventTracking.EventLabel.REFERRAL);
+
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
                 intent = InboxRouter.getContactUsActivityIntent(context);
                 intent.putExtra(InboxRouter.PARAM_URL,
                         URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), "Contact_Us");
+
                 break;
             case TkpdState.DrawerPosition.HELP:
                 intent = InboxRouter.getContactUsActivityIntent(context);
                 context.startActivity(intent);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.HELP);
+
                 break;
             case TkpdState.DrawerPosition.LOGOUT:
                 SessionHandler session = new SessionHandler(context);
                 session.Logout(context);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.SIGN_OUT);
+                AnalyticsEventTrackingHelper.hamburgerOptionClicked("Home", "Logout");
+
                 break;
             default:
                 Log.d(DrawerHelper.class.getSimpleName(), item.getLabel());
@@ -209,5 +209,13 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
             }
         }
         return null;
+    }
+
+    private void sendReferralGTMNavigationEvent(DrawerItem item) {
+        if (context.getString(R.string.drawer_title_appshare).equalsIgnoreCase(item.getLabel())) {
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.APPSHARE);
+        } else {
+            sendGTMNavigationEvent(AppEventTracking.EventLabel.REFERRAL);
+        }
     }
 }

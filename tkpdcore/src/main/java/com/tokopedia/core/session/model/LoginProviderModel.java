@@ -19,6 +19,7 @@ public class LoginProviderModel implements Parcelable {
      * url : https://accounts-alpha.tokopedia.com/fb-login
      * image : https://ecs1.tokopedia.net/img/icon/facebook_icon.png
      * color : #3A589B
+     * imageResource : apk resources, 0 if bean is from server
      */
 
     @SerializedName("providers")
@@ -62,6 +63,8 @@ public class LoginProviderModel implements Parcelable {
         @Expose
         private String color;
 
+        private int imageResource;
+
         public String getId() {
             return id;
         }
@@ -100,6 +103,14 @@ public class LoginProviderModel implements Parcelable {
 
         public void setColor(String color) {
             this.color = color;
+        }
+
+        public void setImageResource(int imageResource) {
+            this.imageResource = imageResource;
+        }
+
+        public int getImageResource() {
+            return imageResource;
         }
     }
 

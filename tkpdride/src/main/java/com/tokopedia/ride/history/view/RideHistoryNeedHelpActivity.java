@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWebViewClient.WebViewCallback {
+    public class RideHistoryNeedHelpActivity extends BaseActivity implements BaseWebViewClient.WebViewCallback {
     private static final String EXTRA_REQUEST_ID = "EXTRA_REQUEST_ID";
 
     private RideHistoryViewModel rideHistory;

@@ -16,6 +16,7 @@ import java.util.List;
 public class Filter implements Parcelable {
 
     public static final String TEMPLATE_NAME_LOCATION = "template_location";
+    public static final String TEMPLATE_NAME_OTHER = "template_other";
     
     private static final String TEMPLATE_NAME_SEPARATOR = "template_separator";
     private static final String TEMPLATE_NAME_RATING = "template_rating";
@@ -73,9 +74,14 @@ public class Filter implements Parcelable {
         return TEMPLATE_NAME_BRAND.equals(templateName);
     }
 
+    public boolean isOtherFilter() {
+        return TEMPLATE_NAME_OTHER.equals(templateName);
+    }
+
     public boolean isExpandableFilter() {
         return isCategoryFilter() || isColorFilter() || isRatingFilter()
-                || isSizeFilter() || isBrandFilter() || options.size() > 1;
+                || isSizeFilter() || isBrandFilter() || isLocationFilter()
+                || isOtherFilter() || options.size() > 1;
     }
 
     /**

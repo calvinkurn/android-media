@@ -3,7 +3,7 @@ package com.tokopedia.core.var;
 import com.tokopedia.core.R;
 
 
-public class TkpdState {
+public class TkpdState extends com.tokopedia.abstraction.constant.TkpdState {
 
     public static class ResCenterSolution {
         public static final int SOLUTION_REFUND = 1;
@@ -169,46 +169,53 @@ public class TkpdState {
         public static final int TICKET_VIEW_NOT_REPLYABLE_WITH_OPTION = 4;
     }
 
-    public class DrawerPosition{
-		public static final int NO_ACCESS = 0;
-		public static final int INBOX_MESSAGE = 1;
-		public static final int INBOX_REVIEW = 2;
-		public static final int INBOX_TALK = 3;
-		public static final int INBOX_TICKET = 4;
-		public static final int INDEX_HOME = 5;
-		public static final int LOGIN = 6;
-		public static final int MANAGE_PEOPLE = 7;
+    public class DrawerPosition {
+        public static final int NO_ACCESS = 0;
+        public static final int INBOX_MESSAGE = 1;
+        public static final int INBOX_REVIEW = 2;
+        public static final int INBOX_TALK = 3;
+        public static final int INBOX_TICKET = 4;
+        public static final int INDEX_HOME = 5;
+        public static final int LOGIN = 6;
+        public static final int MANAGE_PEOPLE = 7;
         public static final int MANAGE_PRODUCT = 8;
         public static final int ADD_PRODUCT = 1001;
         public static final int MANAGE_PAYMENT_AND_TOPUP = 55;
         public static final int MANAGE_TRANSACTION_DIGITAL = 56;
         public static final int MANAGE_PRICE_PRODUCT_DIGITAL = 57;
         public static final int DRAFT_PRODUCT = 22;
-		public static final int MANAGE_SHOP = 9;
-		public static final int PEOPLE = 10;
-		public static final int PEOPLE_DEPOSIT = 11;
-		public static final int PEOPLE_TRANSACTION = 12;
-		public static final int SHOP_TRANSACTION = 13;
-		public static final int CREATE_SHOP = 14;
-		public static final int SHOP_INFO = 15;
-		public static final int GENERAL_SETTING = 16;
-		public static final int RESOLUTION_CENTER = 18;
+        public static final int MANAGE_SHOP = 9;
+        public static final int PEOPLE = 10;
+        public static final int PEOPLE_DEPOSIT = 11;
+        public static final int PEOPLE_TRANSACTION = 12;
+        public static final int SHOP_TRANSACTION = 13;
+        public static final int CREATE_SHOP = 14;
+        public static final int SHOP_INFO = 15;
+        public static final int GENERAL_SETTING = 16;
+        public static final int RESOLUTION_CENTER = 18;
+        public static final int SELLER_INFO = 193;
 		public static final int REGISTER = 19;
-		public static final int DEVELOPER_OPTIONS = 20;
-		public static final int MANAGE_ETALASE = 21;
+        public static final int DEVELOPER_OPTIONS = 20;
+        public static final int MANAGE_ETALASE = 21;
         public static final int PEOPLE_PAYMENT_STATUS = 201;
         public static final int PEOPLE_ORDER_STATUS = 202;
-		public static final int PEOPLE_CONFIRM_SHIPPING = 203;
-		public static final int PEOPLE_TRANSACTION_LIST = 204;
+        public static final int PEOPLE_CONFIRM_SHIPPING = 203;
+        public static final int PEOPLE_TRANSACTION_LIST = 204;
         public static final int PEOPLE_TRANSACTION_CANCELED = 205;
+        public static final int PEOPLE_SHOPPING_LIST = 206;
+        public static final int PEOPLE_DIGITAL_TRANSACTION_LIST = 207;
+        public static final int PEOPLE_FLIGHT_TRANSACTION_LIST = 208;
+        public static final int PEOPLE_TRAIN_TRANSACTION_LIST = 209;
+        public static final int PEOPLE_DEALS_TRANSACTION_LIST = 210;
+        public static final int PEOPLE_EVENTS_TRANSACTION_LIST = 211;
 
-		public static final int SHOP_NEW_ORDER = 301;
-		public static final int SHOP_CONFIRM_SHIPPING = 302;
-		public static final int SHOP_SHIPPING_STATUS = 303;
-		public static final int SHOP_TRANSACTION_LIST = 304;
-		public static final int SHOP = 300;
+        public static final int SHOP_NEW_ORDER = 301;
+        public static final int SHOP_CONFIRM_SHIPPING = 302;
+        public static final int SHOP_SHIPPING_STATUS = 303;
+        public static final int SHOP_TRANSACTION_LIST = 304;
+        public static final int SHOP = 300;
 
-		public static final int INBOX = 31;
+        public static final int INBOX = 31;
         public static final int WISHLIST = 32;
         public static final int SECURITY_QUESTION = 33;
         public static final int REGISTER_NEXT = 34;
@@ -233,11 +240,18 @@ public class TkpdState {
         public static final int GOLD_MERCHANT = 50;
         public static final int HELP = 51;
         public static final int SHOP_OPPORTUNITY_LIST = 52;
-
         public static final int CATEGORY_NAVIGATION = 54;
+        public static final int RESOLUTION_CENTER_BUYER = 55;
+        public static final int RESOLUTION_CENTER_SELLER = 56;
+
         public static final int FEATURED_PRODUCT = 99;
 
+        public static final int POS_TRANSACTION_HISTORY = 401;
+        public static final int POS_OUTLET = 402;
+        public static final int POS_PRODUCT_MANAGEMENET = 403;
+
         public static final int APPSHARE = 58;
+
     }
 
     public class Application {
@@ -278,6 +292,9 @@ public class TkpdState {
         public static final String TYPE_IMAGE = "image/jpeg";
         public static final String TYPE_IMAGE_2 = "image/*";
         public static final String TYPE_TEXT = "text/plain";
+        public static final String Gmail = "com.google.android.gm";
+        public static final String Sms = "com.google.android.apps.messaging";
+
         /**
          * Format for twitter : "http://www.twitter.com/intent/tweet?url=YOURURL&text=YOURTEXT"
          */
@@ -308,12 +325,6 @@ public class TkpdState {
         public static final int APPEAL = 5;
         public static final int FINISH = 6;
 
-    }
-
-    public class UpdateState {
-        public static final int NO_UPDATE = 0;
-        public static final int MUST_UPDATE = 1;
-        public static final int OPTIONAL_UPDATE = 2;
     }
 
     public class TrackerState {
@@ -388,6 +399,14 @@ public class TkpdState {
         public static final int GCM_TOPADS_TOPUP_SUCCESS = 1101;
         public static final int GCM_RIDEHAILING = 1200;
 
+        //SELLER INFO
+        public static final int GCM_SELLER_INFO = 1300;
+
+        //GROUP CHAT
+        public static final int GCM_GROUP_CHAT = 1400;
+        public static final int GCM_GROUP_CHAT_POINTS = 1401;
+        public static final int GCM_GROUP_CHAT_LOYALTY = 1402;
+        public static final int GCM_GROUP_CHAT_COUPON = 1403;
     }
 
     public class RecyclerView {
@@ -412,10 +431,6 @@ public class TkpdState {
 
         // hotlist view type
         public static final int VIEW_STANDARD = 9;
-
-        // instoped view type
-        public static final int VIEW_INSTOPED = 11;
-
 
         public static final int VIEW_FIRST_TIME_USER = 123;
         public static final int VIEW_EMPTY = 0;
@@ -465,7 +480,9 @@ public class TkpdState {
     }
 
     public class SHIPPING_ID {
+        public static final String WAHANA = "6";
         public static final String GOJEK = "10";
+        public static final String ALFAMART = "22";
     }
 
     public class Gender {

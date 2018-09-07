@@ -14,6 +14,7 @@ public class FavoriteShopViewModel implements Visitable<FavoriteTypeFactory> {
     private String shopName;
     private String shopLocation;
     private boolean isFavoriteShop;
+    private String badgeUrl;
 
     @Override
     public int type(FavoriteTypeFactory favoriteTypeFactory) {
@@ -58,5 +59,13 @@ public class FavoriteShopViewModel implements Visitable<FavoriteTypeFactory> {
 
     public void setFavoriteShop(boolean favoriteShop) {
         isFavoriteShop = favoriteShop;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public void setBadgeUrl(String badgeUrl) {
+        this.badgeUrl = badgeUrl;
     }
 }

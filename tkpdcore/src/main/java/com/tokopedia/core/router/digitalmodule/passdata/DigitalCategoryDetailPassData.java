@@ -8,16 +8,30 @@ import android.os.Parcelable;
  */
 public class DigitalCategoryDetailPassData implements Parcelable {
     public static final String PARAM_CATEGORY_ID = "category_id";
+    public static final String PARAM_OPERATOR_ID = "operator_id";
+    public static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_CLIENT_NUMBER = "client_number";
+
     private String categoryId;
+    private String operatorId;
+    private String productId;
+    private String clientNumber;
     private String url;
     private String appLinks;
     private String categoryName;
+    private String additionalETollBalance;
+    private String additionalETollLastUpdatedDate;
 
     private DigitalCategoryDetailPassData(Builder builder) {
         setCategoryId(builder.categoryId);
+        setOperatorId(builder.operatorId);
+        setProductId(builder.productId);
+        setClientNumber(builder.clientNumber);
         setUrl(builder.url);
         setAppLinks(builder.appLinks);
         setCategoryName(builder.categoryName);
+        setAdditionalETollBalance(builder.additionalETollLastBalance);
+        setAdditionalETollLastUpdatedDate(builder.additionalETollLastUpdatedDate);
     }
 
     public String getCategoryId() {
@@ -26,6 +40,30 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public void setCategoryId(String categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getOperatorId() {
+        return operatorId;
+    }
+
+    public void setOperatorId(String operatorId) {
+        this.operatorId = operatorId;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    public String getClientNumber() {
+        return clientNumber;
+    }
+
+    public void setClientNumber(String clientNumber) {
+        this.clientNumber = clientNumber;
     }
 
     public String getUrl() {
@@ -52,6 +90,21 @@ public class DigitalCategoryDetailPassData implements Parcelable {
         this.categoryName = categoryName;
     }
 
+    public String getAdditionalETollBalance() {
+        return additionalETollBalance;
+    }
+
+    public void setAdditionalETollBalance(String additionalETollBalance) {
+        this.additionalETollBalance = additionalETollBalance;
+    }
+
+    public String getAdditionalETollLastUpdatedDate() {
+        return additionalETollLastUpdatedDate;
+    }
+
+    public void setAdditionalETollLastUpdatedDate(String additionalETollLastUpdatedDate) {
+        this.additionalETollLastUpdatedDate = additionalETollLastUpdatedDate;
+    }
 
     @Override
     public int describeContents() {
@@ -61,19 +114,26 @@ public class DigitalCategoryDetailPassData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.categoryId);
+        dest.writeString(this.operatorId);
+        dest.writeString(this.productId);
+        dest.writeString(this.clientNumber);
         dest.writeString(this.url);
         dest.writeString(this.appLinks);
         dest.writeString(this.categoryName);
-    }
-
-    public DigitalCategoryDetailPassData() {
+        dest.writeString(this.additionalETollBalance);
+        dest.writeString(this.additionalETollLastUpdatedDate);
     }
 
     protected DigitalCategoryDetailPassData(Parcel in) {
         this.categoryId = in.readString();
+        this.operatorId = in.readString();
+        this.productId = in.readString();
+        this.clientNumber = in.readString();
         this.url = in.readString();
         this.appLinks = in.readString();
         this.categoryName = in.readString();
+        this.additionalETollBalance = in.readString();
+        this.additionalETollLastUpdatedDate = in.readString();
     }
 
     public static final Creator<DigitalCategoryDetailPassData> CREATOR =
@@ -92,15 +152,35 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
     public static final class Builder {
         private String categoryId;
+        private String operatorId;
+        private String productId;
+        private String clientNumber;
         private String url;
         private String appLinks;
         private String categoryName;
+        private String additionalETollLastBalance;
+        private String additionalETollLastUpdatedDate;
 
         public Builder() {
         }
 
         public Builder categoryId(String val) {
             categoryId = val;
+            return this;
+        }
+
+        public Builder operatorId(String val) {
+            operatorId = val;
+            return this;
+        }
+
+        public Builder productId(String val) {
+            productId = val;
+            return this;
+        }
+
+        public Builder clientNumber(String val) {
+            clientNumber = val;
             return this;
         }
 
@@ -116,6 +196,16 @@ public class DigitalCategoryDetailPassData implements Parcelable {
 
         public Builder categoryName(String val) {
             categoryName = val;
+            return this;
+        }
+
+        public Builder additionalETollLastBalance(String val) {
+            additionalETollLastBalance = val;
+            return this;
+        }
+
+        public Builder additionalETollLastUpdatedDate(String val) {
+            additionalETollLastUpdatedDate = val;
             return this;
         }
 

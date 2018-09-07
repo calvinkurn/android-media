@@ -17,6 +17,9 @@ public class Shop implements Parcelable {
     @SerializedName("token")
     @Expose
     private String token;
+    @SerializedName("token_pickup")
+    @Expose
+    private String tokenPickup;
     @SerializedName("ut")
     @Expose
     private Integer ut;
@@ -56,6 +59,7 @@ public class Shop implements Parcelable {
 
     protected Shop(Parcel in) {
         token = in.readString();
+        tokenPickup = in.readString();
         ut = in.readInt();
         availShippingCode = in.readString();
         originId = in.readInt();
@@ -82,6 +86,14 @@ public class Shop implements Parcelable {
      */
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public String getTokenPickup() {
+        return tokenPickup;
+    }
+
+    public void setTokenPickup(String tokenPickup) {
+        this.tokenPickup = tokenPickup;
     }
 
     /**
@@ -260,6 +272,7 @@ public class Shop implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(token);
+        parcel.writeString(tokenPickup);
         parcel.writeInt(ut);
         parcel.writeString(availShippingCode);
         parcel.writeInt(originId);

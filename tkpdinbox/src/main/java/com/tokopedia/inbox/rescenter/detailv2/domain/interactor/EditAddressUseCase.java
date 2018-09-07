@@ -19,6 +19,7 @@ public class EditAddressUseCase extends UseCase<ResolutionActionDomainData> {
 
     public static final String PARAM_ADDRESS_ID = "address_id";
     public static final String PARAM_RESOLUTION_ID = "resolution_id";
+    public static final String PARAM_CONVERSATION_ID = "conversation_id";
     public static final String PARAM_OLD_DATA = "old_data";
 
     private final ResCenterRepository repository;
@@ -32,7 +33,15 @@ public class EditAddressUseCase extends UseCase<ResolutionActionDomainData> {
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return repository.editAddress(requestParams.getParameters());
+        return repository.editAddressV2(requestParams);
     }
 
+    public static RequestParams getEditAddressParam(String addressId, String oldAddressId, String conversationId, String resolutionId) {
+        RequestParams params = RequestParams.create();
+        params.putString(EditAddressUseCase.PARAM_ADDRESS_ID, addressId);
+        params.putString(EditAddressUseCase.PARAM_RESOLUTION_ID, resolutionId);
+        params.putString(EditAddressUseCase.PARAM_CONVERSATION_ID, conversationId);
+        params.putString(EditAddressUseCase.PARAM_OLD_DATA, oldAddressId + "-" + conversationId );
+        return params;
+    }
 }

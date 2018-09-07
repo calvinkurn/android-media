@@ -6,6 +6,7 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 /**
+ * use {@link CurrencyFormatUtil} for flexibility of currency (can use other than IDR, USD, etc)
  * modified by m.normansyah & steven.f
  * changed "," to "." for rupiah
  */
@@ -42,10 +43,6 @@ public final class CurrencyFormatHelper {
 		}
 	}
 
-	/**
-	 * see setToRupiahCheckPrefix to check prefix in edit text
-	 */
-	@Deprecated
 	public static void SetToRupiah(EditText et){
 		try {
 			if(et.length()>0 && !LockTextWatcher){
@@ -154,6 +151,12 @@ public final class CurrencyFormatHelper {
 		return count;
 	}
 
+	/**
+	 * Use StringUtils instead
+	 * @param string
+	 * @return
+	 */
+	@Deprecated
 	public static String RemoveNonNumeric(String string){
 		String numeric;
 		numeric = string.replace(",", "");
@@ -241,4 +244,11 @@ public final class CurrencyFormatHelper {
         rupiah = rupiah.replace(" ", "");
         return Integer.parseInt(rupiah);
     }
+
+	public static long convertRupiahToLong(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		return Long.parseLong(rupiah);
+	}
 }

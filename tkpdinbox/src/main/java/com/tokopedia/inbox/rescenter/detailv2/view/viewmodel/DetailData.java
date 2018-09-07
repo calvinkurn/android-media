@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class DetailData implements Parcelable {
     private String awbNumber;
     private String complaintDate;
+    private String complaintDateTimestamp;
     private String invoice;
     private String shopID;
     private String shopName;
@@ -22,6 +23,19 @@ public class DetailData implements Parcelable {
     private boolean received;
     private boolean cancel;
     private boolean finish;
+    private int resolutionStatus;
+    private boolean canAskHelp;
+
+    public DetailData() {
+    }
+
+    public boolean isCanAskHelp() {
+        return canAskHelp;
+    }
+
+    public void setCanAskHelp(boolean canAskHelp) {
+        this.canAskHelp = canAskHelp;
+    }
 
     public String getAwbNumber() {
         return awbNumber;
@@ -38,7 +52,6 @@ public class DetailData implements Parcelable {
     public void setComplaintDate(String complaintDate) {
         this.complaintDate = complaintDate;
     }
-
 
     public String getInvoice() {
         return invoice;
@@ -64,6 +77,14 @@ public class DetailData implements Parcelable {
         this.responseDeadline = responseDeadline;
     }
 
+    public String getComplaintDateTimestamp() {
+        return complaintDateTimestamp;
+    }
+
+    public void setComplaintDateTimestamp(String complaintDateTimestamp) {
+        this.complaintDateTimestamp = complaintDateTimestamp;
+    }
+
     public boolean isDeadlineVisibility() {
         return deadlineVisibility;
     }
@@ -80,20 +101,20 @@ public class DetailData implements Parcelable {
         this.buyerID = buyerID;
     }
 
-    public void setBuyerName(String buyerName) {
-        this.buyerName = buyerName;
-    }
-
     public String getBuyerName() {
         return buyerName;
     }
 
-    public void setShopID(String shopID) {
-        this.shopID = shopID;
+    public void setBuyerName(String buyerName) {
+        this.buyerName = buyerName;
     }
 
     public String getShopID() {
         return shopID;
+    }
+
+    public void setShopID(String shopID) {
+        this.shopID = shopID;
     }
 
     public String getInvoiceUrl() {
@@ -120,23 +141,28 @@ public class DetailData implements Parcelable {
         this.received = received;
     }
 
-    public DetailData() {
+    public boolean isCancel() {
+        return cancel;
     }
 
     public void setCancel(boolean cancel) {
         this.cancel = cancel;
     }
 
-    public boolean isCancel() {
-        return cancel;
+    public boolean isFinish() {
+        return finish;
     }
 
     public void setFinish(boolean finish) {
         this.finish = finish;
     }
 
-    public boolean isFinish() {
-        return finish;
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
     }
 
     @Override
@@ -148,6 +174,7 @@ public class DetailData implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.awbNumber);
         dest.writeString(this.complaintDate);
+        dest.writeString(this.complaintDateTimestamp);
         dest.writeString(this.invoice);
         dest.writeString(this.shopID);
         dest.writeString(this.shopName);
@@ -160,11 +187,14 @@ public class DetailData implements Parcelable {
         dest.writeByte(this.received ? (byte) 1 : (byte) 0);
         dest.writeByte(this.cancel ? (byte) 1 : (byte) 0);
         dest.writeByte(this.finish ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.resolutionStatus);
+        dest.writeByte(this.canAskHelp ? (byte) 1 : (byte) 0);
     }
 
     protected DetailData(Parcel in) {
         this.awbNumber = in.readString();
         this.complaintDate = in.readString();
+        this.complaintDateTimestamp = in.readString();
         this.invoice = in.readString();
         this.shopID = in.readString();
         this.shopName = in.readString();
@@ -177,6 +207,8 @@ public class DetailData implements Parcelable {
         this.received = in.readByte() != 0;
         this.cancel = in.readByte() != 0;
         this.finish = in.readByte() != 0;
+        this.resolutionStatus = in.readInt();
+        this.canAskHelp = in.readByte() != 0;
     }
 
     public static final Creator<DetailData> CREATOR = new Creator<DetailData>() {

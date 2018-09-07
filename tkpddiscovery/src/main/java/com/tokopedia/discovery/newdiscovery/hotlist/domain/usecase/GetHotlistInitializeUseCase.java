@@ -57,6 +57,7 @@ public class GetHotlistInitializeUseCase extends UseCase<HotlistModel> {
         requestParams.putString(BrowseApi.IMAGE_SIZE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SIZE);
         requestParams.putString(BrowseApi.IMAGE_SQUARE, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_IMAGE_SQUARE);
         requestParams.putString(BrowseApi.ROWS, BrowseApi.DEFAULT_VALUE_OF_PARAMETER_ROWS);
+        requestParams.putString(BrowseApi.START, String.valueOf(hotlistParameter.getStartRow()));
         if(queryModel!=null) {
             requestParams.putString(BrowseApi.OB, queryModel.getOrderBy());
             requestParams.putString(BrowseApi.Q, queryModel.getQueryKey());
@@ -111,6 +112,7 @@ public class GetHotlistInitializeUseCase extends UseCase<HotlistModel> {
                     new Func2<HotlistModel, SearchResultModel, HotlistModel>() {
                         @Override
                         public HotlistModel call(HotlistModel hotlistModel, SearchResultModel searchResultModel) {
+                            hotlistModel.setTotalDataText(searchResultModel.getTotalDataText());
                             hotlistModel.setTotalData(searchResultModel.getTotalData());
                             hotlistModel.setProductList(searchResultModel.getProductList());
                             hotlistModel.setShareURL(searchResultModel.getShareUrl());

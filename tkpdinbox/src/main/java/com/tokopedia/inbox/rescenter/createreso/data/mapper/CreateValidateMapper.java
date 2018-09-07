@@ -20,9 +20,6 @@ public class CreateValidateMapper implements Func1<Response<TkpdResponse>, Creat
     }
 
     private CreateValidateDomain mappingResponse(Response<TkpdResponse> response) {
-        CreateValidateResponse createValidateResponse = response.body().convertDataObj(
-                CreateValidateResponse.class);
-        CreateValidateDomain model = new CreateValidateDomain(createValidateResponse.getCacheKey());
         if (response.isSuccessful()) {
             if (response.body().isNullData()) {
                 if (response.body().getErrorMessageJoined() != null || !response.body().getErrorMessageJoined().isEmpty()) {
@@ -30,12 +27,12 @@ public class CreateValidateMapper implements Func1<Response<TkpdResponse>, Creat
                 } else {
                     throw new ErrorMessageException("");
                 }
-            } else {
-                model.setSuccess(true);
             }
         } else {
             throw new RuntimeException(String.valueOf(response.code()));
         }
-        return model;
+        CreateValidateResponse createValidateResponse = response.body().convertDataObj(
+                CreateValidateResponse.class);
+        return  new CreateValidateDomain(createValidateResponse.getCacheKey());
     }
 }

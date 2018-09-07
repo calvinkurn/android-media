@@ -28,6 +28,12 @@ public class CancelResolutionUseCase extends UseCase<ResolutionActionDomainData>
 
     @Override
     public Observable<ResolutionActionDomainData> createObservable(RequestParams requestParams) {
-        return resCenterRepository.cancelResolution(requestParams.getParameters());
+        return resCenterRepository.cancelResolutionV2(requestParams);
+    }
+
+    public static RequestParams getParams(String resolutionId) {
+        RequestParams params = RequestParams.create();
+        params.putString(PARAM_RESOLUTION_ID, resolutionId);
+        return params;
     }
 }

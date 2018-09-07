@@ -11,6 +11,7 @@ import android.provider.Telephony;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.telephony.SmsMessage;
 import android.text.Html;
 import android.text.Spanned;
@@ -19,8 +20,11 @@ import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.app.MainApplication;
 
 import java.io.File;
@@ -76,7 +80,7 @@ public class MethodChecker {
     }
 
     public static Uri getUri(Context context, File outputMediaFile) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(context,
                     context.getApplicationContext().getPackageName() + ".provider", outputMediaFile);
         } else {
@@ -85,6 +89,9 @@ public class MethodChecker {
     }
 
     public static Spanned fromHtml(String text) {
+        if (text == null) {
+            text = "";
+        }
         Spanned result;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             result = Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
@@ -119,7 +126,7 @@ public class MethodChecker {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)
             return context.getResources().getDrawable(resId, context.getApplicationContext().getTheme());
         else
-            return context.getResources().getDrawable(resId);
+            return AppCompatResources.getDrawable(context, resId);
     }
 
     public static boolean isTimezoneNotAutomatic() {
@@ -143,6 +150,7 @@ public class MethodChecker {
             smsIntent.putExtra(Intent.EXTRA_TEXT, shareText);
             if (defaultSmsPackageName != null) {
                 smsIntent.setPackage(defaultSmsPackageName);
+
             }
 
         } else {
@@ -151,5 +159,17 @@ public class MethodChecker {
             smsIntent.putExtra("sms_body", shareText);
         }
         return smsIntent;
+    }
+
+    public static void loadImageFitCenter(ImageView imageView, String url) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ImageHandler.loadImageFitCenter(imageView.getContext(), imageView, url);
+        } else {
+            Glide.with(imageView.getContext())
+                    .load(url)
+                    .fitCenter()
+                    .into(imageView);
+        }
     }
 }

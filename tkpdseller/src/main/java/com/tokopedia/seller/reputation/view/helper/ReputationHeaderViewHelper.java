@@ -28,9 +28,6 @@ public class ReputationHeaderViewHelper extends GMStatHeaderViewHelper {
 
     @Override
     protected void setImageIcon() {
-        Drawable setDateNext = AppCompatDrawableManager.get().getDrawable(itemView.getContext()
-                , R.drawable.ic_arrow_right);
-        calendarArrowIcon.setImageDrawable(setDateNext);
         calendarIcon.setImageResource(R.mipmap.ic_icon_calendar_02);
     }
 

@@ -1,10 +1,13 @@
 package com.tokopedia.tkpdpdp;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.customView.WrapContentViewPager;
 import com.tokopedia.core.product.model.etalase.MonthsInstallmentItem;
@@ -14,6 +17,10 @@ import com.tokopedia.tkpdpdp.adapter.ViewPagerAdapter;
 import com.tokopedia.tkpdpdp.fragment.InstallmentMonthsFragment;
 
 import java.util.ArrayList;
+
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
+import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
+import static com.tokopedia.core.var.TkpdCache.PRODUCT_DETAIL;
 
 public class InstallmentActivity extends TActivity {
 
@@ -25,14 +32,21 @@ public class InstallmentActivity extends TActivity {
     private TabLayout tabs;
     private WrapContentViewPager viewPager;
     private TextView topBarTitle;
+    private LocalCacheHandler localCacheHandler;
 
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss3 = new ArrayList<>();
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss6 = new ArrayList<>();
     ArrayList<MonthsInstallmentItem> monthsInstallmentItemss12 = new ArrayList<>();
 
     @Override
+    protected void forceRotation() {
+
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        localCacheHandler = new LocalCacheHandler(InstallmentActivity.this, PRODUCT_DETAIL);
         setContentView(R.layout.activity_installment);
         hideToolbar();
         initView();
@@ -40,7 +54,23 @@ public class InstallmentActivity extends TActivity {
         setupViewPager();
         setupTopbar();
         tabs.setupWithViewPager(viewPager);
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setUpByConfiguration(newConfig);
+    }
+
+    private void setUpByConfiguration(Configuration configuration) {
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (!localCacheHandler.getBoolean(STATE_ORIENTATION_CHANGED).booleanValue()) {
+                String productId = getIntent().getParcelableExtra(EXTRA_PRODUCT_ID);
+                UnifyTracking.eventPDPOrientationChanged(productId);
+                localCacheHandler.putBoolean(STATE_ORIENTATION_CHANGED,Boolean.TRUE);
+                localCacheHandler.applyEditor();
+            }
+        }
     }
 
     private void initView() {
@@ -55,6 +85,7 @@ public class InstallmentActivity extends TActivity {
                         InstallmentActivity.this.overridePendingTransition(0,com.tokopedia.core.R.anim.push_down);
                     }
                 });
+        setUpByConfiguration(getResources().getConfiguration());
     }
 
     private void setupViewPager() {

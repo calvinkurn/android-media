@@ -1,24 +1,29 @@
 package com.tokopedia.otp.phoneverification.view.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
-import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.core.util.CustomPhoneNumberUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumberView;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.di.DaggerSessionComponent;
+import com.tokopedia.otp.phoneverification.view.listener.ChangePhoneNumber;
 import com.tokopedia.otp.phoneverification.view.presenter.ChangePhoneNumberPresenter;
-import com.tokopedia.otp.phoneverification.view.presenter.ChangePhoneNumberPresenterImpl;
 import com.tokopedia.session.R;
+import com.tokopedia.util.CustomPhoneNumberUtil;
+
+import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -26,74 +31,59 @@ import static android.app.Activity.RESULT_OK;
  * Created by nisie on 2/24/17.
  */
 
-public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhoneNumberPresenter>
-        implements ChangePhoneNumberView {
+public class ChangePhoneNumberFragment extends BaseDaggerFragment
+        implements ChangePhoneNumber.View {
 
     public static final int ACTION_CHANGE_PHONE_NUMBER = 111;
     public static final String EXTRA_PHONE_NUMBER = "EXTRA_PHONE_NUMBER";
-
-    EditText phoneNumberEditText;
-    TextView changePhoneNumberButton;
-    TkpdProgressDialog progressDialog;
-    SessionHandler sessionHandler;
 
     public static ChangePhoneNumberFragment createInstance() {
         return new ChangePhoneNumberFragment();
     }
 
+    EditText phoneNumberEditText;
+    TextView changePhoneNumberButton;
+    TkpdProgressDialog progressDialog;
+
+    @Inject
+    ChangePhoneNumberPresenter presenter;
+
     @Override
-    protected boolean isRetainInstance() {
-        return false;
+    protected String getScreenName() {
+        return AppScreen.SCREEN_CHANGE_PHONE_NUMBER;
     }
 
     @Override
-    protected void onFirstTimeLaunched() {
-        if (getActivity().getIntent().getExtras() != null)
-            phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_PHONE_NUMBER, ""));
+    protected void initInjector() {
+        AppComponent appComponent = getComponent(AppComponent.class);
+
+        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+                DaggerSessionComponent.builder()
+                        .appComponent(appComponent)
+                        .build();
+
+
+        daggerSessionComponent.inject(this);
     }
 
+    @Nullable
     @Override
-    public void onSaveState(Bundle state) {
-
-    }
-
-    @Override
-    public void onRestoreState(Bundle savedState) {
-
-    }
-
-    @Override
-    protected boolean getOptionsMenuEnable() {
-        return false;
-    }
-
-    @Override
-    protected void initialPresenter() {
-        presenter = new ChangePhoneNumberPresenterImpl(this);
-    }
-
-    @Override
-    protected void initialListener(Activity activity) {
-
-    }
-
-    @Override
-    protected void setupArguments(Bundle arguments) {
-
-    }
-
-    @Override
-    protected int getFragmentLayout() {
-        return R.layout.fragment_change_phone_number;
-    }
-
-    @Override
-    protected void initView(View view) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_change_phone_number, container, false);
         phoneNumberEditText = (EditText) view.findViewById(R.id.phone_number);
         changePhoneNumberButton = (TextView) view.findViewById(R.id.change_phone_number_button);
-
         phoneNumberEditText.addTextChangedListener(watcher(phoneNumberEditText));
+        setViewListener();
+        presenter.attachView(this);
+        return view;
+    }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity().getIntent().getExtras() != null) {
+            phoneNumberEditText.setText(getActivity().getIntent().getExtras().getString(EXTRA_PHONE_NUMBER, ""));
+        }
     }
 
     private TextWatcher watcher(final EditText editText) {
@@ -121,12 +111,11 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
         };
     }
 
-    @Override
-    protected void setViewListener() {
+    private void setViewListener() {
         changePhoneNumberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(phoneNumberEditText!=null && !phoneNumberEditText.getText().toString().isEmpty()) {
+                if (phoneNumberEditText != null && !phoneNumberEditText.getText().toString().isEmpty()) {
                     KeyboardHandler.DropKeyboard(getActivity(), phoneNumberEditText);
                     showLoading();
                     presenter.changePhoneNumber(phoneNumberEditText.getText().toString().replace("-", ""));
@@ -138,27 +127,18 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
     }
 
     private void showLoading() {
-        if(progressDialog == null && getActivity()!= null)
+        if (progressDialog == null && getActivity() != null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-
-        if(progressDialog != null)
+        }
+        if (progressDialog != null) {
             progressDialog.showDialog();
+        }
     }
 
-    @Override
-    protected void initialVar() {
-        sessionHandler = new SessionHandler(getActivity());
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
 
     @Override
     public void onSuccessChangePhoneNumber() {
         finishLoading();
-        sessionHandler.setPhoneNumber(phoneNumberEditText.getText().toString());
         Intent intent = getActivity().getIntent();
         intent.putExtra(EXTRA_PHONE_NUMBER,
                 phoneNumberEditText.getText().toString());
@@ -167,8 +147,9 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
     }
 
     private void finishLoading() {
-        if(progressDialog!= null)
-        progressDialog.dismiss();
+        if (progressDialog != null) {
+            progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -185,6 +166,6 @@ public class ChangePhoneNumberFragment extends BasePresenterFragment<ChangePhone
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.unsubscribeObservable();
+        presenter.detachView();
     }
 }

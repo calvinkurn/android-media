@@ -24,6 +24,15 @@ public class ProductViewModel implements Parcelable {
     private int totalData;
     private SearchParameter searchParameter;
     private boolean forceSearch;
+    private boolean imageSearch;
+
+    public boolean isImageSearch() {
+        return imageSearch;
+    }
+
+    public void setImageSearch(boolean imageSearch) {
+        this.imageSearch = imageSearch;
+    }
 
     public ProductViewModel() {
     }
@@ -126,6 +135,7 @@ public class ProductViewModel implements Parcelable {
         dest.writeInt(this.totalData);
         dest.writeParcelable(this.searchParameter, flags);
         dest.writeByte(this.forceSearch ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.imageSearch ? (byte) 1 : (byte) 0);
     }
 
     protected ProductViewModel(Parcel in) {
@@ -139,6 +149,7 @@ public class ProductViewModel implements Parcelable {
         this.totalData = in.readInt();
         this.searchParameter = in.readParcelable(SearchParameter.class.getClassLoader());
         this.forceSearch = in.readByte() != 0;
+        this.imageSearch = in.readByte() != 0;
     }
 
     public static final Creator<ProductViewModel> CREATOR = new Creator<ProductViewModel>() {

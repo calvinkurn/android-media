@@ -11,10 +11,15 @@ import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
 import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.core.gcm.model.NotificationPass;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
+
+import rx.Observable;
 
 /**
  * Created by sebastianuskh on 12/8/16.
@@ -22,20 +27,11 @@ import com.tokopedia.core.util.SessionHandler;
  * all the router will moved to the each module's router
  */
 public interface TkpdCoreRouter {
-
-    void startInstopedActivity(Context context);
-
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
+    String EXTRAS = "extras";
 
     void goToManageProduct(Context context);
 
     void goToDraftProductList(Context context);
-
-    void goToManageEtalase(Context context);
 
     void clearEtalaseCache();
 
@@ -49,13 +45,29 @@ public interface TkpdCoreRouter {
 
     void actionAppLink(Context context, String linkUrl);
 
+    /**
+     * deprecated
+     *
+     * @param activity activity context
+     * @param linkUrl  applinkScheme
+     * @see #actionApplinkFromActivity(Activity, String)
+     */
+    @Deprecated
     void actionApplink(Activity activity, String linkUrl);
+
+    void actionApplinkFromActivity(Activity activity, String linkUrl);
 
     void actionApplink(Activity activity, String linkUrl, String extra);
 
     void actionOpenGeneralWebView(Activity activity, String mobileUrl);
 
+    Fragment getShopReputationFragment(String shopId, String shopDomain);
+
     Intent getHomeIntent(Context context);
+
+    Intent getOnBoardingActivityIntent(Context context);
+
+    Intent getPhoneVerificationActivityIntent(Context context);
 
     Class<?> getHomeClass(Context context) throws ClassNotFoundException;
 
@@ -67,11 +79,7 @@ public interface TkpdCoreRouter {
 
     void onLogout(AppComponent appComponent);
 
-    void goToProfileCompletion(Context context);
-
     void goToCreateMerchantRedirect(Context context);
-
-    void goToRegister(Context context);
 
     Intent getLoginIntent(Context context);
 
@@ -97,4 +105,90 @@ public interface TkpdCoreRouter {
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
+    Intent getIntentCreateShop(Context context);
+
+    Intent getSplashScreenIntent(Context context);
+
+    Class getDeepLinkClass();
+
+    Intent getIntentManageShop(Context context);
+
+    android.app.Fragment getFragmentShopSettings();
+
+    android.app.Fragment getFragmentSellingNewOrder();
+
+    Class getSellingActivityClass();
+
+    Intent getActivitySellingTransactionNewOrder(Context context);
+
+    Intent getActivitySellingTransactionConfirmShipping(Context context);
+
+    Intent getActivitySellingTransactionShippingStatus(Context context);
+
+    Intent getActivitySellingTransactionList(Context context);
+
+    Intent getActivitySellingTransactionOpportunity(Context context, String query);
+
+    Intent getHomeHotlistIntent(Context context);
+
+    NotificationPass setNotificationPass(Context mContext, NotificationPass mNotificationPass,
+                                         Bundle data, String notifTitle);
+
+    Intent getInboxReputationIntent(Context context);
+
+    Intent getResolutionCenterIntent(Context context);
+
+    Intent getResolutionCenterIntentBuyer(Context context);
+
+    Intent getResolutionCenterIntentSeller(Context context);
+
+    String applink(Activity activity, String deeplink);
+
+    Intent getKolFollowingPageIntent(Context context, int userId);
+
+    Intent getChangePhoneNumberIntent(Context context, String email, String phoneNumber);
+
+    Intent getPhoneVerificationProfileIntent(Context context);
+
+    Intent getPhoneVerificationActivationIntent(Context context);
+
+    Intent getSellerHomeIntent(Activity activity);
+
+    Intent getLoginGoogleIntent(Context context);
+
+    Intent getLoginFacebookIntent(Context context);
+
+    Intent getLoginWebviewIntent(Context context, String name, String url);
+
+    Intent getShopPageIntent(Context context, String shopId);
+
+    Intent getShopPageIntentByDomain(Context context, String domain);
+
+    Intent getShoProductListIntent(Context context, String shopId, String keyword, String etalaseId);
+
+    Observable<TokoCashData> getTokoCashBalance();
+
+    Intent getAddEmailIntent(Context context);
+
+    Intent getAddPasswordIntent(Context context);
+
+    Intent getChangeNameIntent(Context context);
+
+    Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getGroupChatIntent(Context context, String channelUrl);
+
+    Intent getInboxChannelsIntent(Context context);
+
+    Intent getInboxMessageIntent(Context context);
+
+    void sendTrackingGroupChatLeftNavigation();
+
+    String getDesktopLinkGroupChat();
+
+    Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
+
+    String getStringRemoteConfig(String key);
+
+    void setStringRemoteConfigLocal(String key, String value);
 }

@@ -1,18 +1,24 @@
 package com.tkpd.library.utils;
 
-import android.util.Log;
 import android.widget.EditText;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
+import java.util.Currency;
 import java.util.Locale;
 
 /**
+ * User {@link com.tokopedia.design.utils.CurrencyFormatHelper} or {@link com.tokopedia.design.utils.CurrencyFormatUtil}
  * modified by m.normansyah & steven.f
  * changed "," to "." for rupiah
  */
+@Deprecated
 public final class CurrencyFormatHelper {
 	private static final NumberFormat RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US);
-	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));;
+	private static final NumberFormat DollarFormat = NumberFormat.getCurrencyInstance(new Locale("en", "US"));
 	// this flag intend to block textwatcher to be called recursively
 	private static boolean LockTextWatcher = false;
 
@@ -46,7 +52,6 @@ public final class CurrencyFormatHelper {
 	/**
 	 * see setToRupiahCheckPrefix to check prefix in edit text
 	 */
-	@Deprecated
 	public static void SetToRupiah(EditText et){
 		try {
 			if(et.length()>0 && !LockTextWatcher){
@@ -237,9 +242,45 @@ public final class CurrencyFormatHelper {
 	}
 
     public static int convertRupiahToInt(String rupiah) {
-        rupiah = rupiah.replace("Rp", "");
-        rupiah = rupiah.replace(".", "");
-        rupiah = rupiah.replace(" ", "");
-        return Integer.parseInt(rupiah);
+		try {
+        	rupiah = rupiah.replace("Rp", "");
+        	rupiah = rupiah.replace(".", "");
+        	rupiah = rupiah.replace(" ", "");
+			return Integer.parseInt(rupiah);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
     }
+
+	public static double convertRupiahToDouble(String rupiah) {
+		rupiah = rupiah.replace("Rp", "");
+		rupiah = rupiah.replace(".", "");
+		rupiah = rupiah.replace(" ", "");
+		rupiah = rupiah.replace(",", ".");
+		return Double.parseDouble(rupiah);
+	}
+
+    public static String toRupiah(long money) {
+		try{
+			String inRupiah = getRupiahFormat().format(money).replace(",", ".");
+			return inRupiah;
+		} catch(NumberFormatException e) {
+			e.printStackTrace();
+			return "Exception raised";
+		}
+	}
+
+	public static NumberFormat getRupiahFormat() {
+		DecimalFormat formatter = (DecimalFormat) DecimalFormat.getCurrencyInstance();
+		DecimalFormatSymbols rupiahFormat = new DecimalFormatSymbols();
+
+		rupiahFormat.setCurrencySymbol("Rp ");
+		rupiahFormat.setGroupingSeparator('.');
+		formatter.setDecimalFormatSymbols(rupiahFormat);
+		formatter.setMaximumFractionDigits(0);
+		formatter.setGroupingUsed(true);
+
+		return formatter;
+	}
 }

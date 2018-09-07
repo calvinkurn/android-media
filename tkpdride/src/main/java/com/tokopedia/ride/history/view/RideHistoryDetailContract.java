@@ -65,11 +65,17 @@ public interface RideHistoryDetailContract {
         void showProgressDialog();
 
         void hideProgressLoading();
+
+        void openScroogePage(String url, String postData);
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void initialize();
 
+        void actionGetSingleHistory();
+
         void actionSendRating();
+
+        void payPendingFare();
     }
 }

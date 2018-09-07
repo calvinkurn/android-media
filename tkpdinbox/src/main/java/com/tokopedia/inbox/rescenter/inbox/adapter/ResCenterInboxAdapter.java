@@ -66,12 +66,12 @@ public class ResCenterInboxAdapter extends ResCenterExtendedAdapter {
     }
 
     @Override
-    protected void setListener(InboxViewHolder holder, final String resolutionID) {
+    protected void setListener(InboxViewHolder holder, final String resolutionID, final String shopName, final String username) {
         holder.mainView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 UnifyTracking.eventResolutionDetail();
-                presenter.setActionOnItemListClickListener(view.getContext(), resolutionID);
+                presenter.setActionOnItemListClickListener(view.getContext(), resolutionID, shopName, username);
             }
         });
     }

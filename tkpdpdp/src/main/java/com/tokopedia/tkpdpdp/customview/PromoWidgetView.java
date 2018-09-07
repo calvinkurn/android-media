@@ -17,6 +17,7 @@ import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttribute
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 
 /**
  * Created by alifa on 9/13/17.
@@ -81,12 +82,19 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
                 ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(data.getCode(), data.getCode());
                 clipboard.setPrimaryClip(clip);
+                ProductPageTracking.eventClickCopyWidgetPromo(getContext(), data.getCode());
                 listener.onPromoWidgetCopied();
             }
         });
         textPromoTitle.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                ProductPageTracking.eventClickWidgetPromo(
+                        getContext(),
+                        data.getShortDesc(),
+                        data.getCustomPromoId(),
+                        data.getCode()
+                );
                 Intent intent = new Intent(context, BannerWebView.class);
                 intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
                 intent.putExtra(BannerWebView.EXTRA_URL, data.getTargetUrl());

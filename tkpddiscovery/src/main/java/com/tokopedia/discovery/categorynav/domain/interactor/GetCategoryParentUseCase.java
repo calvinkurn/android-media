@@ -4,11 +4,8 @@ import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.domain.UseCase;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.core.category.domain.CategoryRepository;
 import com.tokopedia.discovery.categorynav.domain.CategoryNavigationRepository;
 import com.tokopedia.discovery.categorynav.domain.model.CategoryNavDomainModel;
-import com.tokopedia.discovery.intermediary.domain.IntermediaryRepository;
-import com.tokopedia.discovery.intermediary.domain.model.IntermediaryCategoryDomainModel;
 
 import rx.Observable;
 

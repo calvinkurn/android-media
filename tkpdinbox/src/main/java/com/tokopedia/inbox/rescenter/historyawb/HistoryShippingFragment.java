@@ -14,6 +14,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.base.BaseDaggerFragment;
 import com.tokopedia.inbox.rescenter.detailv2.di.component.ResolutionDetailComponent;
+import com.tokopedia.inbox.rescenter.detailv2.view.activity.TrackShippingActivity;
 import com.tokopedia.inbox.rescenter.historyawb.di.module.HistoryAwbModule;
 import com.tokopedia.inbox.rescenter.detailv2.view.customdialog.TrackShippingDialog;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingDialogViewModel;
@@ -37,6 +38,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     implements HistoryShippingFragmentView {
 
     private static final String EXTRA_PARAM_RESOLUTION_ID = "resolution_id";
+    private static final String EXTRA_PARAM_RESOLUTION_STATUS = "resolution_status";
     private static final String EXTRA_PARAM_VIEW_DATA = "extra_view_data";
     private static final String EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB = "extra_allow_input_shipping";
     private static final int REQUEST_EDIT_SHIPPING = 12345;
@@ -46,6 +48,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     private HistoryShippingAdapter adapter;
     private String resolutionID;
     private ArrayList<HistoryAwbViewItem> viewData;
+    private int resolutionStatus;
     private TkpdProgressDialog normalLoading;
     private boolean allowInputNewShippingAwb;
 
@@ -138,8 +141,18 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void setResolutionStatus(int resolutionStatus) {
+        this.resolutionStatus = resolutionStatus;
+    }
+
+    @Override
+    public int getResolutionStatus() {
+        return resolutionStatus;
+    }
+
+    @Override
     public void renderData() {
-        adapter.setArraylist(getViewData());
+        adapter.setArraylist(getViewData(), getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 
@@ -148,6 +161,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
         state.putString(EXTRA_PARAM_RESOLUTION_ID, getResolutionID());
         state.putBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB, isAllowInputNewShippingAwb());
         state.putParcelableArrayList(EXTRA_PARAM_VIEW_DATA, getViewData());
+        state.putInt(EXTRA_PARAM_RESOLUTION_STATUS, getResolutionStatus());
     }
 
     @Override
@@ -155,6 +169,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
         setResolutionID(savedState.getString(EXTRA_PARAM_RESOLUTION_ID));
         setAllowInputNewShippingAwb(savedState.getBoolean(EXTRA_PARAM_ALLOW_INPUT_SHIPPING_AWB));
         setViewData(savedState.<HistoryAwbViewItem>getParcelableArrayList(EXTRA_PARAM_VIEW_DATA));
+        setResolutionStatus(savedState.getInt(EXTRA_PARAM_RESOLUTION_STATUS));
     }
 
     @Override
@@ -199,6 +214,7 @@ public class HistoryShippingFragment extends BaseDaggerFragment
                         InputShippingActivity.createNewPageIntent(context, getResolutionID()),
                         REQUEST_INPUT_SHIPPING
                 );
+                getBottomSheetActivityTransition();
             }
         });
     }
@@ -238,11 +254,17 @@ public class HistoryShippingFragment extends BaseDaggerFragment
                 ),
                 REQUEST_EDIT_SHIPPING
         );
+        getBottomSheetActivityTransition();
     }
 
     @Override
     public void onActionTrackClick(String shipmentID, String shippingRefNumber) {
-        presenter.doActionTrack(shippingRefNumber, shipmentID);
+        startActivity(TrackShippingActivity.newInstance(
+                getActivity(),
+                shipmentID,
+                shippingRefNumber)
+        );
+        getBottomSheetActivityTransition();
     }
 
     @Override
@@ -295,35 +317,8 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void doOnTrackingTimeOut() {
-        showLoadingDialog(false);
-        showTimeOutMessage();
-    }
-
-    @Override
-    public void doOnTrackingSuccess(TrackingDialogViewModel model) {
-        showLoadingDialog(false);
-        TrackShippingDialog.Builder(getActivity())
-                .initView()
-                .initValue(model)
-                .show();
-    }
-
-    @Override
-    public void doOnTrackingFailed() {
-        showLoadingDialog(false);
-        showSnackBar(null);
-    }
-
-    @Override
-    public void doOnTrackingError(String messageError) {
-        showLoadingDialog(false);
-        showSnackBar(messageError);
-    }
-
-    @Override
     public void resetList() {
-        adapter.setArraylist(new ArrayList<HistoryAwbViewItem>());
+        adapter.setArraylist(new ArrayList<HistoryAwbViewItem>(), getResolutionStatus());
         adapter.notifyDataSetChanged();
     }
 
@@ -331,5 +326,9 @@ public class HistoryShippingFragment extends BaseDaggerFragment
     public void onDestroyView() {
         super.onDestroyView();
         presenter.setOnDestroyView();
+    }
+
+    public void getBottomSheetActivityTransition() {
+        getActivity().overridePendingTransition(R.anim.pull_up, R.anim.push_down);
     }
 }

@@ -31,23 +31,19 @@ public interface HistoryShippingFragmentView {
 
     List<HistoryAwbViewItem> getViewData();
 
+    void setResolutionStatus(int resolutionStatus);
+
+    int getResolutionStatus();
+
     void renderData();
 
     void setViewData(ArrayList<HistoryAwbViewItem> viewData);
-
-    void doOnTrackingError(String messageError);
-
-    void doOnTrackingSuccess(TrackingDialogViewModel model);
-
-    void doOnTrackingFailed();
 
     void showLoadingDialog(boolean show);
 
     void showSnackBar(String messageError);
 
     void showTimeOutMessage();
-
-    void doOnTrackingTimeOut();
 
     void resetList();
 }

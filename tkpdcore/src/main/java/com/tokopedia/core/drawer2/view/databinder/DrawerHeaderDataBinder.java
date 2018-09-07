@@ -1,7 +1,9 @@
 package com.tokopedia.core.drawer2.view.databinder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,8 @@ import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
+import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerData;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerDeposit;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerTokoCash;
@@ -25,8 +29,6 @@ import com.tokopedia.core.util.SessionHandler;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.tokopedia.core.drawer2.data.source.CloudDepositSource.DRAWER_CACHE_DEPOSIT;
 
 /**
  * Created by nisie on 1/11/17.
@@ -46,6 +48,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         void onWalletBalanceClicked(String redirectUrlBalance, String appLinkBalance);
 
         void onWalletActionButtonClicked(String redirectUrlActionButton, String appLinkActionButton);
+
+        void onTokoPointActionClicked(String mainPageUrl, String title);
     }
 
     public interface RetryTokoCashListener {
@@ -114,6 +118,16 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         View drawerHeader;
 
 
+        @BindView(R2.id.tokopoint_container)
+        View tokoPointContainer;
+        @BindView(R2.id.iv_tokopoint_badge)
+        ImageView ivTokoPointBadge;
+        @BindView(R2.id.tv_tokopoint_action)
+        TextView tvTokoPointAction;
+        @BindView(R2.id.tv_tokopoint_count)
+        TextView tvTokoPointCount;
+
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -149,7 +163,8 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
     private DrawerData createDataFromCache(LocalCacheHandler drawerCache) {
         DrawerData data = new DrawerData();
         DrawerDeposit deposit = new DrawerDeposit();
-        deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
+        deposit.setDeposit("");
+        //deposit.setDeposit(drawerCache.getString(DRAWER_CACHE_DEPOSIT, ""));
 
         data.setDrawerDeposit(deposit);
         return data;
@@ -225,8 +240,34 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
         setDeposit(holder);
         setTopPoints(holder);
         setTopCash(holder);
-
+        setTokoPoint(holder);
         setListener(holder);
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setTokoPoint(ViewHolder holder) {
+        final String TITLE_HEADER_WEBSITE = "TokoPoints";
+        if (data.getTokoPointDrawerData() != null && data.getTokoPointDrawerData().getOffFlag() == 0) {
+            holder.tokoPointContainer.setVisibility(View.VISIBLE);
+            final String title = data.getTokoPointDrawerData().getMainPageTitle();
+            holder.tvTokoPointAction.setText(TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : "TokoPoints");
+            ImageHandler.loadImageThumbs(context,
+                    holder.ivTokoPointBadge,
+                    data.getTokoPointDrawerData().getUserTier().getTierImageUrl());
+            holder.tvTokoPointCount.setText(data.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            holder.tvTokoPointAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UnifyTracking.eventUserClickedPoints();
+                    listener.onTokoPointActionClicked(
+                            data.getTokoPointDrawerData().getMainPageUrl(),
+                            TextUtils.isEmpty(title) ? TITLE_HEADER_WEBSITE : title
+                    );
+                }
+            });
+        } else {
+            holder.tokoPointContainer.setVisibility(View.GONE);
+        }
     }
 
 
@@ -235,6 +276,7 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
             @Override
             public void onClick(View v) {
                 listener.onGoToDeposit();
+
             }
         });
         holder.topPointsLayout.setOnClickListener(new View.OnClickListener() {
@@ -254,15 +296,20 @@ public class DrawerHeaderDataBinder extends DataBinder<DrawerHeaderDataBinder.Vi
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkBalance()
                         );
+                        AnalyticsEventTrackingHelper.homepageTokocashClick(data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlBalance());
+
                     } else {
                         listener.onWalletActionButtonClicked(
                                 data.getDrawerTokoCash().getDrawerWalletAction().getRedirectUrlActionButton(),
                                 data.getDrawerTokoCash().getDrawerWalletAction().getAppLinkActionButton()
                         );
+                        AnalyticsEventTrackingHelper.hamburgerTokocashActivateClick();
+
                     }
                 } else {
                     tokoCashListener.onRetryTokoCash();
                 }
+
             }
         });
         holder.name.setOnClickListener(new View.OnClickListener() {

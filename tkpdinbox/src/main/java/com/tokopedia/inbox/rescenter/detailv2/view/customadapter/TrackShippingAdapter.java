@@ -9,7 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.tokopedia.core.R;
-import com.tokopedia.inbox.rescenter.detail.model.detailresponsedata.ResCenterTrackShipping;
 import com.tokopedia.inbox.rescenter.detailv2.view.viewmodel.TrackingHistoryDialogViewModel;
 
 import java.util.List;
@@ -23,10 +22,10 @@ public class TrackShippingAdapter extends BaseAdapter {
     private Activity context;
     private LayoutInflater inflater;
 
-    public TrackShippingAdapter(Activity context, List<TrackingHistoryDialogViewModel> historyList){
+    public TrackShippingAdapter(Activity context, List<TrackingHistoryDialogViewModel> historyList) {
         this.context = context;
         this.historyList = historyList;
-        this.inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
@@ -44,29 +43,29 @@ public class TrackShippingAdapter extends BaseAdapter {
         return position;
     }
 
-    public class Holder{
-        TextView Status;
-        TextView City;
-        TextView Time;
-    }
-
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         Holder holder;
-        if(convertView==null){
+        if (convertView == null) {
             holder = new Holder();
-            convertView = inflater.inflate(R.layout.listview_track_result,null);
+            convertView = inflater.inflate(R.layout.listview_track_result, null);
             holder.Status = (TextView) convertView.findViewById(R.id.status);
             holder.City = (TextView) convertView.findViewById(R.id.city);
             holder.Time = (TextView) convertView.findViewById(R.id.time);
             convertView.setTag(holder);
-        }else
-            holder = (Holder)convertView.getTag();
+        } else
+            holder = (Holder) convertView.getTag();
 
         holder.Status.setText(historyList.get(position).getStatus());
         holder.City.setText(historyList.get(position).getCity());
         holder.Time.setText(historyList.get(position).getDate());
         return convertView;
+    }
+
+    public class Holder {
+        TextView Status;
+        TextView City;
+        TextView Time;
     }
 
 }

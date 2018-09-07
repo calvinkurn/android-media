@@ -6,10 +6,13 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,14 +23,27 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.analytics.UnifyTracking;
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.discovery.model.Option;
+import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.DeepLinkChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.model.SuggestionModel;
 import com.tokopedia.discovery.newdiscovery.search.model.OfficialStoreBannerModel;
+import com.tokopedia.topads.sdk.base.Config;
+import com.tokopedia.topads.sdk.base.Endpoint;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
+import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
+import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by errysuprayogi on 11/7/17.
@@ -37,57 +53,56 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_header_layout;
-    private LinearLayout osBannerContainer;
+    public static final String DEFAULT_ITEM_VALUE = "1";
     private LinearLayout suggestionContainer;
+    private RecyclerView quickFilterListView;
+    private TopAdsBannerView adsBannerView;
     private Context context;
     public static final String KEYWORD = "keyword";
     public static final String ETALASE_NAME = "etalase_name";
     private ItemClickListener clickListener;
+    private QuickFilterAdapter quickFilterAdapter;
 
-    public HeaderViewHolder(View itemView, ItemClickListener clickListener) {
+    public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
         context = itemView.getContext();
         this.clickListener = clickListener;
-        osBannerContainer = (LinearLayout) itemView.findViewById(R.id.official_store_banner_container);
         suggestionContainer = (LinearLayout) itemView.findViewById(R.id.suggestion_container);
+        adsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.ads_banner);
+        quickFilterListView = (RecyclerView) itemView.findViewById(R.id.quickFilterListView);
+        initTopAds(topAdsConfig);
+        initQuickFilterRecyclerView();
+    }
+
+    private void initTopAds(Config topAdsConfig) {
+        TopAdsParams newParam = new TopAdsParams();
+        newParam.getParam().putAll(topAdsConfig.getTopAdsParams().getParam());
+        newParam.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        newParam.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH);
+        Config newConfig = new Config.Builder()
+                .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
+                .setUserId(SessionHandler.getLoginID(context))
+                .setEndpoint(Endpoint.CPM)
+                .topAdsParams(newParam)
+                .build();
+        adsBannerView.setConfig(newConfig);
+        adsBannerView.loadTopAds();
+        adsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
+            @Override
+            public void onBannerAdsClicked(String applink) {
+                clickListener.onBannerAdsClicked(applink);
+            }
+        });
+    }
+
+    private void initQuickFilterRecyclerView() {
+        quickFilterAdapter = new QuickFilterAdapter(clickListener);
+        quickFilterListView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        quickFilterListView.setAdapter(quickFilterAdapter);
     }
 
     @Override
     public void bind(final HeaderViewModel element) {
-        if (element.getOfficialStoreBannerModel() != null &&
-                !element.getOfficialStoreBannerModel().getBannerUrl().isEmpty()) {
-            UnifyTracking.eventImpressionOsBanner(element.getOfficialStoreBannerModel().getBannerUrl()
-                    + " - " + element.getOfficialStoreBannerModel().getKeyword());
-            Glide.with(context).load(element.getOfficialStoreBannerModel().getBannerUrl())
-                    .asBitmap()
-                    .fitCenter()
-                    .dontAnimate()
-                    .into(new SimpleTarget<Bitmap>() {
-                        @Override
-                        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                            if (resource.getHeight() != 1 && resource.getWidth() != 1) {
-                                ImageView imageView = new ImageView(context);
-                                imageView.setAdjustViewBounds(true);
-                                imageView.setImageBitmap(resource);
-                                osBannerContainer.removeAllViews();
-                                osBannerContainer.addView(imageView);
-                                imageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        goToUrl(element.getOfficialStoreBannerModel().getShopUrl());
-
-                                        // GTM Tracker
-                                        UnifyTracking.eventClickOsBanner(
-                                                element.getOfficialStoreBannerModel().getBannerUrl()
-                                                        + " - "
-                                                        + element.getOfficialStoreBannerModel().getKeyword()
-                                        );
-                                    }
-                                });
-                            }
-                        }
-                    });
-        }
 
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
@@ -114,7 +129,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
             }
             suggestionContainer.addView(suggestionView);
         }
-
+        quickFilterAdapter.setOptionList(element.getQuickFilterList());
     }
 
     private void goToUrl(String url) {
@@ -156,4 +171,61 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
         }
     }
 
+    private static class QuickFilterAdapter extends RecyclerView.Adapter<QuickFilterItemViewHolder> {
+
+        private List<Option> optionList = new ArrayList<>();
+        private ItemClickListener clickListener;
+
+        public QuickFilterAdapter(ItemClickListener clickListener) {
+            this.clickListener = clickListener;
+        }
+
+        public void setOptionList(List<Option> optionList) {
+            this.optionList.clear();
+            this.optionList.addAll(optionList);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public QuickFilterItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.quick_filter_item, parent, false);
+            return new QuickFilterItemViewHolder(view, clickListener);
+        }
+
+        @Override
+        public void onBindViewHolder(QuickFilterItemViewHolder holder, int position) {
+            holder.bind(optionList.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return optionList.size();
+        }
+    }
+
+    private static class QuickFilterItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView quickFilterText;
+        private final ItemClickListener clickListener;
+
+        public QuickFilterItemViewHolder(View itemView, ItemClickListener clickListener) {
+            super(itemView);
+            quickFilterText = itemView.findViewById(R.id.quick_filter_text);
+            this.clickListener = clickListener;
+        }
+
+        public void bind(final Option option) {
+            quickFilterText.setText(option.getName());
+            if (Boolean.parseBoolean(option.getInputState())) {
+                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_selected);
+            } else {
+                quickFilterText.setBackgroundResource(R.drawable.quick_filter_item_background_neutral);
+            }
+            quickFilterText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickListener.onQuickFilterSelected(option);
+                }
+            });
+        }
+    }
 }

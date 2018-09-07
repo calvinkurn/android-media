@@ -22,6 +22,15 @@ public class AlbumCollection implements LoaderManager.LoaderCallbacks<Cursor> {
     private LoaderManager loaderManager;
     private WeakReference<Context> context;
     private int mCurrentSelection;
+    private int galleryType;
+
+    public AlbumCollection() {
+        galleryType = GalleryType.ofAll();
+    }
+
+    public void setGalleryType(int galleryType) {
+        this.galleryType = galleryType;
+    }
 
     public interface AlbumCallbacks {
         void onAlbumLoad(Cursor cursor);
@@ -40,7 +49,7 @@ public class AlbumCollection implements LoaderManager.LoaderCallbacks<Cursor> {
         if (context == null) {
             return null;
         }
-        return new AlbumLoader(context);
+        return AlbumLoader.createInstance(context, galleryType);
     }
 
     @Override

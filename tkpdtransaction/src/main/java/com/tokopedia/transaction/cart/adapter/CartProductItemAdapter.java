@@ -245,15 +245,18 @@ class CartProductItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cartProductAction.onProductCartItemClicked(
-                        ProductPass.Builder.aProductPass()
-                                .setProductId(cartProduct.getProductId())
-                                .setProductImage(cartProduct.getProductPic())
-                                .setProductPrice(cartProduct.getProductPriceIdr())
-                                .setProductName(cartProduct.getProductName())
-                                .setProductUri(cartProduct.getProductUrl())
-                                .build()
-                );
+                if(cartProduct.getProductHideEdit() != null
+                        && cartProduct.getProductHideEdit() != 1) {
+                    cartProductAction.onProductCartItemClicked(
+                            ProductPass.Builder.aProductPass()
+                                    .setProductId(cartProduct.getProductId())
+                                    .setProductImage(cartProduct.getProductPic())
+                                    .setProductPrice(cartProduct.getProductPriceIdr())
+                                    .setProductName(cartProduct.getProductName())
+                                    .setProductUri(cartProduct.getProductUrl())
+                                    .build()
+                    );
+                }
             }
         };
     }

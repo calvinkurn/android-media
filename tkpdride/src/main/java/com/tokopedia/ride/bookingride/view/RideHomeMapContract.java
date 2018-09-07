@@ -3,13 +3,15 @@ package com.tokopedia.ride.bookingride.view;
 import android.app.Activity;
 import android.content.Context;
 
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.ride.bookingride.domain.model.NearbyRides;
 import com.tokopedia.ride.bookingride.view.viewmodel.PlacePassViewModel;
+import com.tokopedia.ride.common.place.data.entity.NearbyRoads;
 import com.tokopedia.ride.common.place.domain.model.OverviewPolyline;
-import com.tokopedia.ride.common.ride.domain.model.RideAddress;
+import com.tokopedia.ride.common.ride.domain.model.Location;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,13 +42,17 @@ public interface RideHomeMapContract {
 
         void moveMapToLocation(double latitude, double longitude);
 
-        void renderDefaultPickupLocation(double latitude, double longitude, String sourceAddress);
+        void renderDefaultPickupLocation(double latitude, double longitude, String title, String sourceAddress);
 
         void onMapDragStarted();
 
         void onMapDragStopped();
 
         void renderTripPolyline(List<OverviewPolyline> overviewPolylines);
+
+        void renderNearbyCabs(NearbyRoads nearbyRoads);
+
+        void onErrorRenderNearbyCabs();
 
         void setSourceLocation(PlacePassViewModel location);
 
@@ -63,6 +69,8 @@ public interface RideHomeMapContract {
         void setDestinationAndProcessList(PlacePassViewModel address);
 
         PlacePassViewModel getSource();
+
+        void renderNearbyRides(NearbyRides nearbyRides);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -74,6 +82,8 @@ public interface RideHomeMapContract {
 
         void getOverviewPolyline(double sourceLat, double sourceLng,
                                  double destinationLat, double destinationLng);
+
+        void getNearbyRoadsData(ArrayList<Location> locationArrayList);
 
         void actionMyLocation();
 

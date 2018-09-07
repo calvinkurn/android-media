@@ -16,15 +16,7 @@
         <item>Des</item>
     </string-array>
 
-    <!-- Product =============================================================================== -->
-    <string-array name="product_currency_entries">
-        <item>Rp</item>
-        <item>US$</item>
-    </string-array>
-    <string-array name="product_currency_values">
-        <item>@string/product_currency_value_idr</item>
-        <item>@string/product_currency_value_usd</item>
-    </string-array>
+
 
     <string-array name="product_weight_entries">
         <item>Gram</item>
@@ -36,11 +28,13 @@
     </string-array>
 
     <string-array name="product_stock_status_entries">
-        <item>Stok Tersedia</item>
+        <item>Selalu Tersedia</item>
+        <item>Stok Terbatas</item>
         <item>Stok Kosong</item>
     </string-array>
     <string-array name="product_stock_status_values">
         <item>@string/product_stock_available_value</item>
+        <item>@string/product_stock_limited_value</item>
         <item>@string/product_stock_not_available_value</item>
     </string-array>
 

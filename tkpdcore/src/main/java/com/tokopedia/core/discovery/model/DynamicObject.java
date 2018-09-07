@@ -88,12 +88,6 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
 
     }
 
-    public void addChild(List<DynamicObject> childs, int increment) {
-        mChildren.addAll(childs);
-        for (DynamicObject c : childs) {
-            c.setIndentation(getIndentation() + increment);
-        }
-    }
 
     public int getIndentation() {
         return mIndentation;
@@ -104,13 +98,5 @@ public class DynamicObject implements MultiLevelExpIndListAdapter.ExpIndData {
     }
 
 
-    public static DynamicObject createOptionForAll(CategoryDB model) {
-        DynamicObject object = new DynamicObject();
-        object.mParentText = "Semua " + model.getNameCategory();
 
-        object.depId = String.valueOf(model.getDepartmentId());
-        object.mChildren = new ArrayList<>();
-        object.initKey(model.getParentId(), String.valueOf(model.getDepartmentId()));
-        return object;
-    }
 }

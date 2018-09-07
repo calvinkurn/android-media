@@ -1,6 +1,10 @@
 package com.tokopedia.core.network.retrofit.interceptors;
 
+import android.text.TextUtils;
+
+import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.util.SessionHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -21,7 +25,8 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
     private final boolean isUsingHMAC;
     private final boolean isUsingBothAuthorization;
 
-    public AccountsInterceptor(String key, boolean isUsingHMAC, boolean isUsingBothAuthorization) {
+    public AccountsInterceptor(String key, boolean isUsingHMAC,
+                               boolean isUsingBothAuthorization) {
         this.authKey = key;
         this.isUsingHMAC = isUsingHMAC;
         this.isUsingBothAuthorization = isUsingBothAuthorization;
@@ -45,7 +50,7 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
                 generateParamBodyString(originRequest),
                 originRequest.method(),
                 CONTENT_TYPE,
-                authKey,
+                getToken(),
                 DATE_FORMAT);
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
         generateHeader(authHeaders, originRequest, newRequest);
@@ -61,8 +66,20 @@ public class AccountsInterceptor extends TkpdAuthInterceptor {
 
     private void generateAuthRequest(Request originRequest, Request.Builder newRequest)
             throws IOException {
-        Map<String, String> authHeaders = AuthUtil.generateHeadersAccount(authKey);
+        Map<String, String> authHeaders = AuthUtil.generateHeadersAccount(getToken());
         authHeaders.put(X_TKPD_PATH, originRequest.url().uri().getPath());
         generateHeader(authHeaders, originRequest, newRequest);
     }
+
+
+    protected String getToken() {
+        SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
+        if (!TextUtils.isEmpty(sessionHandler
+                .getAccessToken(MainApplication.getAppContext())))
+            return sessionHandler.getTokenType(MainApplication.getAppContext()) + " " +
+                    sessionHandler.getAccessToken(MainApplication.getAppContext());
+        else
+            return authKey;
+    }
+
 }

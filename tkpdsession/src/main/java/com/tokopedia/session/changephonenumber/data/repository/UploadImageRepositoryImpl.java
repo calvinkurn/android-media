@@ -1,12 +1,11 @@
 package com.tokopedia.session.changephonenumber.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.changephonenumber.data.SubmitImageModel;
-import com.tokopedia.session.changephonenumber.data.ValidateImageModel;
-import com.tokopedia.session.changephonenumber.data.UploadHostModel;
-import com.tokopedia.session.changephonenumber.data.UploadImageModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.SubmitImageModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.ValidateImageModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.UploadHostModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.UploadImageModel;
 import com.tokopedia.session.changephonenumber.data.factory.UploadImageSourceFactory;
-import com.tokopedia.session.changephonenumber.domain.UploadImageRepository;
 
 import java.util.Map;
 

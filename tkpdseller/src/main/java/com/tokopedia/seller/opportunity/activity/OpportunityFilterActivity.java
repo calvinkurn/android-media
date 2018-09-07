@@ -49,8 +49,6 @@ public class OpportunityFilterActivity extends BasePresenterActivity
     }
 
     public static final String CACHE_OPPORTUNITY_FILTER = "CACHE_OPPORTUNITY_FILTER";
-    public static final String PARAM_FILTER_VIEW_MODEL = "PARAM_FILTER_VIEW_MODEL";
-    public static final String PARAM_SELECTED_FILTER = "PARAM_SELECTED_FILTER";
 
     View saveButton;
     View resetButton;
@@ -71,17 +69,13 @@ public class OpportunityFilterActivity extends BasePresenterActivity
         cacheManager = new GlobalCacheManager();
         trackingEventLabel = "";
 
-        if (savedInstanceState != null) {
-            listFilter = savedInstanceState.getParcelableArrayList(PARAM_FILTER_VIEW_MODEL);
-            listPass = savedInstanceState.getParcelableArrayList(PARAM_SELECTED_FILTER);
-        } else {
-            OpportunityFilterPassModel opportunityFilterPassModel =
-                    cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
-                            OpportunityFilterPassModel.class);
+        OpportunityFilterPassModel opportunityFilterPassModel =
+                cacheManager.getConvertObjData(OpportunityFilterActivity.CACHE_OPPORTUNITY_FILTER,
+                        OpportunityFilterPassModel.class);
 
-            listFilter = opportunityFilterPassModel.getListFilter();
-            listPass = new ArrayList<>();
-        }
+        listFilter = opportunityFilterPassModel.getListFilter();
+        listPass = new ArrayList<>();
+
         super.onCreate(savedInstanceState);
 
     }
@@ -292,9 +286,7 @@ public class OpportunityFilterActivity extends BasePresenterActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(PARAM_FILTER_VIEW_MODEL, listFilter);
-        outState.putParcelableArrayList(PARAM_SELECTED_FILTER, listPass);
-        super.onSaveInstanceState(outState);
+
     }
 
     private void updateFilterTitleFragment() {

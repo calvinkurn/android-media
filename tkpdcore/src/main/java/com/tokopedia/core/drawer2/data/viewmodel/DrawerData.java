@@ -10,6 +10,7 @@ public class DrawerData {
     private DrawerTokoCash drawerTokoCash;
     private DrawerTopPoints drawerTopPoints;
     private DrawerDeposit drawerDeposit;
+    private TokoPointDrawerData tokoPointDrawerData;
     private int profileCompletion;
 
     public DrawerData() {
@@ -71,5 +72,13 @@ public class DrawerData {
 
     public void setProfileCompletion(int completion) {
         this.profileCompletion = completion;
+    }
+
+    public TokoPointDrawerData getTokoPointDrawerData() {
+        return tokoPointDrawerData;
+    }
+
+    public void setTokoPointDrawerData(TokoPointDrawerData tokoPointDrawerData) {
+        this.tokoPointDrawerData = tokoPointDrawerData;
     }
 }

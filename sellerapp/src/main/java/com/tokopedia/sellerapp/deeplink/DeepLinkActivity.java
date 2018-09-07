@@ -58,6 +58,13 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
     }
 
     @Override
+    public void hideActionBar() {
+        if (getSupportActionBar()!=null) {
+            getSupportActionBar().hide();
+        }
+    }
+
+    @Override
     protected void setupURIPass(Uri data) {
         uriData = data;
     }
@@ -125,14 +132,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
 
     private void initDeepLink() {
         if (uriData != null || getIntent().getBooleanExtra(EXTRA_STATE_APP_WEB_VIEW, false)) {
-            presenter.checkUriLogin(uriData);
-            if (presenter.isLandingPageWebView(uriData)) {
-                CommonUtils.dumper("GAv4 Escape HADES webview");
-                presenter.processDeepLinkAction(uriData);
-            } else {
-                CommonUtils.dumper("GAv4 Escape HADES non webview");
-                presenter.processDeepLinkAction(uriData);
-            }
+            presenter.processDeepLinkAction(uriData);
         }
     }
 

@@ -1,10 +1,8 @@
 package com.tokopedia.session.changephonenumber.data.repository;
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.session.changephonenumber.data.CheckStatusModel;
+import com.tokopedia.session.changephonenumber.domain.model.changephonenumberrequest.CheckStatusModel;
 import com.tokopedia.session.changephonenumber.data.factory.KtpSourceFactory;
-import com.tokopedia.session.changephonenumber.data.factory.UploadImageSourceFactory;
-import com.tokopedia.session.changephonenumber.domain.KtpRepository;
 
 import rx.Observable;
 

@@ -1,23 +1,23 @@
 package com.tokopedia.sellerapp.dashboard.view.activity;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.core.appupdate.ApplicationUpdate;
+import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.FCMCacheManager;
-import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
-import com.tokopedia.core.router.RemoteConfigRouter;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.dashboard.view.fragment.DashboardFragment;
-import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
-import com.tokopedia.sellerapp.remoteconfig.RemoteConfigFetcher;
+import com.tokopedia.sellerapp.fcm.appupdate.FirebaseRemoteAppUpdate;
 
 //import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 //import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -31,9 +31,8 @@ public class DashboardActivity extends DrawerPresenterActivity
 
     public static final String TAG = DashboardActivity.class.getSimpleName();
 
-    public static Intent createInstance(Activity activity) {
-        Intent intent = new Intent(activity, DashboardActivity.class);
-        return intent;
+    public static Intent createInstance(Context context) {
+        return new Intent(context, DashboardActivity.class);
     }
 
     @Override
@@ -45,8 +44,29 @@ public class DashboardActivity extends DrawerPresenterActivity
                     .replace(R.id.container, DashboardFragment.newInstance(), TAG)
                     .commit();
         }
+        checkAppUpdate();
+    }
 
-        new RemoteConfigFetcher(this).fetch(null);
+    private void checkAppUpdate() {
+        ApplicationUpdate appUpdate = new FirebaseRemoteAppUpdate(this);
+        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+            @Override
+            public void onNeedUpdate(final DetailUpdate detail) {
+                if (!isFinishing()) {
+                    new AppUpdateDialogBuilder(DashboardActivity.this, detail).getAlertDialog().show();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onNotNeedUpdate() {
+
+            }
+        });
     }
 
     @Override

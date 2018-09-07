@@ -9,9 +9,13 @@ import android.os.Parcelable;
 
 public class AddressReturData implements Parcelable {
     private String addressReturDate;
+    private String addressReturDateTimestamp;
     private String addressText;
     private String addressID;
     private String conversationID;
+
+    public AddressReturData() {
+    }
 
     public String getAddressReturDate() {
         return addressReturDate;
@@ -21,15 +25,20 @@ public class AddressReturData implements Parcelable {
         this.addressReturDate = addressReturDate;
     }
 
+    public String getAddressReturDateTimestamp() {
+        return addressReturDateTimestamp;
+    }
+
+    public void setAddressReturDateTimestamp(String addressReturDateTimestamp) {
+        this.addressReturDateTimestamp = addressReturDateTimestamp;
+    }
+
     public String getAddressText() {
         return addressText;
     }
 
     public void setAddressText(String addressText) {
         this.addressText = addressText;
-    }
-
-    public AddressReturData() {
     }
 
     public String getAddressID() {
@@ -56,6 +65,7 @@ public class AddressReturData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.addressReturDate);
+        dest.writeString(this.addressReturDateTimestamp);
         dest.writeString(this.addressText);
         dest.writeString(this.addressID);
         dest.writeString(this.conversationID);
@@ -63,6 +73,7 @@ public class AddressReturData implements Parcelable {
 
     protected AddressReturData(Parcel in) {
         this.addressReturDate = in.readString();
+        this.addressReturDateTimestamp = in.readString();
         this.addressText = in.readString();
         this.addressID = in.readString();
         this.conversationID = in.readString();

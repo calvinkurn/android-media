@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.manage.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.base.view.adapter.ItemIdType;
+import com.tokopedia.product.manage.item.common.util.ItemIdType;
 import com.tokopedia.seller.product.manage.constant.SortProductOption;
 
 /**
@@ -24,9 +24,14 @@ public class ProductManageSortModel implements ItemIdType, Parcelable {
         return TYPE;
     }
 
-    @Override
     @SortProductOption
     public String getId() {
+        return sortId;
+    }
+
+    @Override
+    @SortProductOption
+    public String getItemId() {
         return sortId;
     }
 

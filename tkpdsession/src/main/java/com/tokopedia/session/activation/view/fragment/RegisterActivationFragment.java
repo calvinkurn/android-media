@@ -3,6 +3,7 @@ package com.tokopedia.session.activation.view.fragment;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
@@ -12,26 +13,32 @@ import android.text.SpannableString;
 import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tkpd.library.ui.widget.PinEntryEditText;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.app.BasePresenterFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.session.R;
+import com.tokopedia.session.activation.view.activity.ActivationActivity;
 import com.tokopedia.session.activation.view.activity.ChangeEmailActivity;
 import com.tokopedia.session.activation.view.di.RegisterActivationDependencyInjector;
 import com.tokopedia.session.activation.view.presenter.RegisterActivationPresenter;
 import com.tokopedia.session.activation.view.viewListener.RegisterActivationView;
 import com.tokopedia.session.activation.view.viewmodel.LoginTokenViewModel;
+import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.RegisterConstant;
-import com.tokopedia.session.session.activity.Login;
+
+import javax.inject.Inject;
 
 /**
  * Created by nisie on 1/31/17.
@@ -40,22 +47,24 @@ import com.tokopedia.session.session.activity.Login;
 public class RegisterActivationFragment extends BasePresenterFragment<RegisterActivationPresenter>
         implements RegisterConstant, RegisterActivationView {
 
-    private static final String ARGS_EMAIL = "ARGS_EMAIL";
-    private static final String ARGS_PASSWORD = "ARGS_PASSWORD";
+    private static final int REQUEST_AUTO_LOGIN = 101;
+    private TextView activationText;
+    private PinEntryEditText verifyCode;
+    private TextView activateButton;
+    private TextView footer;
+    private TkpdProgressDialog progressDialog;
+    private TextView errorOtp;
+    private ImageView errorImage;
 
-    TextView activationText;
-    EditText verifyCode;
-    TextView activateButton;
-    TextView footer;
-    TkpdProgressDialog progressDialog;
+    private String email;
+    private String password;
 
-    String email;
+    @Inject
+    SessionHandler sessionHandler;
 
-    public static RegisterActivationFragment createInstance(String email) {
+    public static RegisterActivationFragment createInstance(Bundle args) {
         RegisterActivationFragment fragment = new RegisterActivationFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ARGS_EMAIL, email);
-        fragment.setArguments(bundle);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -72,10 +81,17 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (savedInstanceState != null)
-            email = savedInstanceState.getString(ARGS_EMAIL, "");
-        else if (getArguments().getString(ARGS_EMAIL) != null)
-            email = getArguments().getString(ARGS_EMAIL, "");
+        if (savedInstanceState != null) {
+            email = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
+        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL) != null) {
+            email = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, "");
+        }
+
+        if (savedInstanceState != null) {
+            password = savedInstanceState.getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        } else if (getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW) != null) {
+            password = getArguments().getString(ActivationActivity.INTENT_EXTRA_PARAM_PW, "");
+        }
     }
 
     @Override
@@ -86,6 +102,16 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     public void onRestoreState(Bundle savedState) {
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (sessionHandler != null &&
+                sessionHandler.isV4Login()) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -116,13 +142,15 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
     @Override
     protected void initView(View view) {
         activationText = (TextView) view.findViewById(R.id.activation_text);
-        verifyCode = (EditText) view.findViewById(R.id.input_verify_code);
+        verifyCode = (PinEntryEditText) view.findViewById(R.id.input_verify_code);
         activateButton = (TextView) view.findViewById(R.id.verify_button);
         footer = (TextView) view.findViewById(R.id.footer);
-
+        errorImage = (ImageView) view.findViewById(R.id.error_image);
+        errorOtp = (TextView) view.findViewById(R.id.error_otp);
+        activateButton.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         setActivateText();
 
-        Spannable spannable = new SpannableString(getString(R.string.activation_resend_email));
+        Spannable spannable = new SpannableString(getString(R.string.activation_resend_email_2));
 
         spannable.setSpan(new ClickableSpan() {
                               @Override
@@ -136,17 +164,28 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                                           com.tokopedia.core.R.color.tkpd_main_green));
                               }
                           }
-                , getString(R.string.activation_resend_email).indexOf("Kirim")
+                , getString(R.string.activation_resend_email_2).indexOf("Kirim")
                 , getString(
-                        R.string.activation_resend_email).length()
+                        R.string.activation_resend_email_2).length()
                 , 0);
 
         footer.setText(spannable, TextView.BufferType.SPANNABLE);
+
+
     }
 
     private void setActivateText() {
-        String activateText = getString(R.string.activation_header_text) + " <br><b>" + getEmail() + "</b>";
-        activationText.setText(MethodChecker.fromHtml(activateText));
+        activationText.setText(getString(R.string.activation_header_text_2));
+        activationText.append(" ");
+        activationText.append(getColoredString(getEmail(), getActivity().getResources().getColor(R.color.black_70)));
+        verifyCode.requestFocus();
+        KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
+    }
+
+    public final Spannable getColoredString(CharSequence text, int color) {
+        Spannable spannable = new SpannableString(text);
+        spannable.setSpan(new ForegroundColorSpan(color), 0, spannable.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 
     @Override
@@ -180,13 +219,13 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 if (s.length() == 5) {
                     activateButton.setEnabled(true);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.green_button_rounded));
                     activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.white));
                 } else {
                     activateButton.setEnabled(false);
                     MethodChecker.setBackground(activateButton,
-                            MethodChecker.getDrawable(getActivity(), R.drawable.cards_grey));
-                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.grey_500));
+                            MethodChecker.getDrawable(getActivity(), R.drawable.grey_button_rounded));
+                    activateButton.setTextColor(MethodChecker.getColor(getActivity(), R.color.black_12));
                 }
             }
         });
@@ -201,6 +240,19 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 return false;
             }
         });
+        errorImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                verifyCode.setText("");
+                removeErrorOtp();
+            }
+        });
+    }
+
+    private void removeErrorOtp() {
+        verifyCode.setError(false);
+        errorOtp.setVisibility(View.INVISIBLE);
+        errorImage.setVisibility(View.GONE);
     }
 
     private void showChangeEmailDialog() {
@@ -242,25 +294,29 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null)
+        if (progressDialog == null && getActivity() != null) {
             progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
+        }
 
-        if (progressDialog != null)
+        if (progressDialog != null) {
             progressDialog.showDialog();
+        }
     }
 
     @Override
     public void onErrorResendActivation(String errorMessage) {
         finishLoadingProgress();
-        if (errorMessage.equals(""))
+        if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        else
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
     }
 
     @Override
     public void onSuccessResendActivation(String statusMessage) {
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
+        removeErrorOtp();
         finishLoadingProgress();
         SnackbarManager.make(getActivity(), statusMessage,
                 Snackbar.LENGTH_INDEFINITE).setAction(getString(R.string.title_ok),
@@ -284,33 +340,36 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
 
     @Override
     public void onErrorActivateWithUnicode(String errorMessage) {
+        verifyCode.setError(true);
         KeyboardHandler.DropKeyboard(getActivity(), verifyCode);
         finishLoadingProgress();
-        if (errorMessage.equals(""))
+        if (errorMessage.equals("")) {
             NetworkErrorHelper.showSnackbar(getActivity());
-        else
+        } else {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+        }
+
+        errorImage.setVisibility(View.VISIBLE);
+        errorOtp.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onSuccessActivateWithUnicode(LoginTokenViewModel loginTokenViewModel) {
-        finishLoadingProgress();
-        goToAutomaticLogin(loginTokenViewModel);
-    }
-
-    private void goToAutomaticLogin(LoginTokenViewModel loginTokenViewModel) {
-        getActivity().finish();
-
-        startActivity(Login.getAutomaticLoginFromActivationIntent(
+        Intent autoLoginIntent = LoginActivity.getAutomaticLogin(
                 getActivity(),
-                loginTokenViewModel)
+                email,
+                password);
+        startActivityForResult(
+                autoLoginIntent,
+                REQUEST_AUTO_LOGIN
         );
     }
 
     @Override
     public void finishLoadingProgress() {
-        if (progressDialog != null)
+        if (progressDialog != null) {
             progressDialog.dismiss();
+        }
     }
 
     @Override
@@ -327,13 +386,21 @@ public class RegisterActivationFragment extends BasePresenterFragment<RegisterAc
                 && data.getExtras() != null) {
             email = data.getExtras().getString(ChangeEmailFragment.EXTRA_EMAIL, "");
             setActivateText();
+        } else if (requestCode == REQUEST_AUTO_LOGIN
+                && resultCode == Activity.RESULT_OK) {
+            finishLoadingProgress();
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        } else if (requestCode == REQUEST_AUTO_LOGIN) {
+            finishLoadingProgress();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putString(ARGS_EMAIL, email);
+        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_EMAIL, email);
+        outState.putString(ActivationActivity.INTENT_EXTRA_PARAM_PW, password);
         super.onSaveInstanceState(outState);
     }
 }

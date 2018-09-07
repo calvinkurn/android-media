@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.core.R;
-import com.tokopedia.core.R2;
+
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.seller.selling.model.orderShipping.OrderProduct;
 import com.tokopedia.seller.selling.orderReject.fragment.EditPriceDialog;

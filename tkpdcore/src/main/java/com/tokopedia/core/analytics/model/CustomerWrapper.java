@@ -36,6 +36,7 @@ public class CustomerWrapper extends BaseAnalyticsModel {
     private String lastTransactionDate;
     private String totalActiveProduct;
     private String shopScore;
+    private String gender;
 
     private Map<String, String> mAttr;
 
@@ -71,6 +72,7 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         lastTransactionDate     = builder.lastTransactionDate;
         totalActiveProduct      = builder.totalActiveProduct;
         shopScore               = builder.shopScore;
+        gender                  = builder.gender;
     }
 
     public String getShopScore() {
@@ -324,6 +326,14 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         mAttr = attr;
     }
 
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
     @Override
     public String toString() {
         return "CustomerWrapper{" +
@@ -384,6 +394,7 @@ public class CustomerWrapper extends BaseAnalyticsModel {
         private String lastTransactionDate;
         private String totalActiveProduct;
         private String shopScore;
+        private String gender;
 
         private Map<String, String> mAttr;
 
@@ -546,6 +557,11 @@ public class CustomerWrapper extends BaseAnalyticsModel {
 
         public CustomerWrapper.Builder setAttr(Map<String, String> attr) {
             mAttr = attr;
+            return this;
+        }
+
+        public CustomerWrapper.Builder setGender(String gender) {
+            this.gender = gender;
             return this;
         }
 

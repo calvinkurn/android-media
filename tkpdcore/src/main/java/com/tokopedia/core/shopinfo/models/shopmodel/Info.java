@@ -160,6 +160,10 @@ public class Info {
         return shopIsGold == SHOP_GOLD_MERCHANT_VALUE;
     }
 
+    public boolean isShopOfficialStore() {
+        return shopIsOfficial == SHOP_OFFICIAL_VALUE;
+    }
+
     public boolean isShopIsGoldBadge() {
         return shopIsGoldBadge;
     }
@@ -247,6 +251,13 @@ public class Info {
     public boolean isFreeReturns(){
         if(StringUtils.isNotBlank(shopIsFreeReturns) && Double.parseDouble(
                 StringUtils.omitPunctuationAndDoubleSpace( shopIsFreeReturns)) > 0){
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOfficialStore(){
+        if(shopIsOfficial > 0){
             return true;
         }
         return false;

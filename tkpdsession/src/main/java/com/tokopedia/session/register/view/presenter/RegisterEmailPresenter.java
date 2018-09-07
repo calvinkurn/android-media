@@ -11,4 +11,7 @@ public interface RegisterEmailPresenter {
     void unsubscribeObservable();
 
     void startAction(RegisterEmailViewModel viewModel);
+
+    boolean isCanRegister();
+
 }

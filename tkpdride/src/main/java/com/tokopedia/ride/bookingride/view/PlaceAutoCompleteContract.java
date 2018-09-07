@@ -28,6 +28,8 @@ public interface PlaceAutoCompleteContract {
 
         void showAutoDetectLocationButton();
 
+        boolean isShowNearbyPlaces();
+
         void hideAutoDetectLocationButton();
 
         void showHomeLocationButton();
@@ -106,5 +108,7 @@ public interface PlaceAutoCompleteContract {
         void onPlaceSelected(PlaceAutoCompeleteViewModel addressId);
 
         void handleEnableLocationDialogResult(int resultCode);
+
+        void showNearbyPlaces();
     }
 }

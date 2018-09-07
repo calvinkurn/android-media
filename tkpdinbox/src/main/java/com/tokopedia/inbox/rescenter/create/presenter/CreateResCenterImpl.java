@@ -28,6 +28,12 @@ public class CreateResCenterImpl implements CreateResCenterPresenter {
                 CreateResolutionCenterFragment.class.getSimpleName());
     }
 
+    @Override
+    public void initRecomplaintFragment(@NonNull Context context, String orderId, String resolutionId) {
+        listener.inflateFragment(CreateResolutionCenterFragment.newRecomplaintInstance(orderId, resolutionId),
+                CreateResolutionCenterFragment.class.getSimpleName());
+    }
+
     private ActionParameterPassData generatePassData(Bundle bundleData, Uri uriData) {
         ActionParameterPassData passData = new ActionParameterPassData();
         if (bundleData != null) {

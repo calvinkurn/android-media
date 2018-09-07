@@ -1,8 +1,10 @@
 package com.tokopedia.ride.history.view;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import com.tokopedia.ride.history.di.DaggerRideHistoryComponent;
 import com.tokopedia.ride.history.di.RideHistoryComponent;
 import com.tokopedia.ride.history.domain.GetSingleRideHistoryUseCase;
 import com.tokopedia.ride.history.view.viewmodel.RideHistoryViewModel;
+import com.tokopedia.ride.scrooge.ScroogePGUtil;
 
 import javax.inject.Inject;
 
@@ -48,6 +51,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.tokopedia.core.network.retrofit.utils.AuthUtil.md5;
+import static com.tokopedia.ride.scrooge.ScroogePGUtil.REQUEST_CODE_OPEN_SCROOGE_PAGE;
 
 public class RideHistoryDetailFragment extends BaseFragment implements RideHistoryDetailContract.View {
     private OnFragmentInteractionListener mListener;
@@ -106,6 +110,18 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     ProgressBar progressBar;
     @BindView(R2.id.rb_rating_result)
     RatingBar ratingResult;
+    @BindView(R2.id.tv_label_pending_fare)
+    TextView pendingFareLabelTextView;
+    @BindView(R2.id.tv_pending_fare)
+    TextView pendingFareValueTextView;
+    @BindView(R2.id.fare_sep)
+    View seperator;
+    @BindView(R2.id.tv_trip_id)
+    TextView tripIdTextView;
+    @BindView(R2.id.label_total_charged)
+    TextView amountChargedLabel;
+    @BindView(R2.id.btn_pay_pending_fare)
+    TextView btnPendingFare;
 
     ProgressDialog mProgressDialog;
 
@@ -223,8 +239,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @Override
     public void renderHistory(RideHistoryViewModel rideHistoryViewModel) {
-        System.out.println("Vishal renderHistory " + rideHistory.getStartAddress());
-
+        tripIdTextView.setText(getString(R.string.prefx_trip_id) + " " + rideHistory.getRequestId());
         requestTimeTextView.setText(RideUtils.convertTime(rideHistory.getRequestTime()));
         rideStatusTextView.setText(rideHistory.getDisplayStatus());
         driverCarTextView.setText(rideHistory.getDriverCarDisplay());
@@ -241,6 +256,7 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         tokocashChargedTexView.setText(rideHistory.getTokoCashCharged());
         rideFareTextView.setText(rideHistory.getTotalFare());
         totalFareValueTextView.setText(rideHistory.getTotalFare());
+        amountChargedLabel.setText(rideHistory.getPaymentMethod() + " " + getString(R.string.label_charged));
 
         if (rideHistory.getStatus().equalsIgnoreCase(RideStatus.COMPLETED)) {
             paymentDetailsLayout.setVisibility(View.VISIBLE);
@@ -259,6 +275,19 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
         } else {
             discountValueTextView.setVisibility(View.GONE);
             discountLabelTextView.setVisibility(View.GONE);
+        }
+
+        if (rideHistory.getPendingAmount() > 0) {
+            pendingFareValueTextView.setText(rideHistory.getPendingAmountDisplayFormat());
+            pendingFareValueTextView.setVisibility(View.VISIBLE);
+            pendingFareLabelTextView.setVisibility(View.VISIBLE);
+            seperator.setVisibility(View.VISIBLE);
+            btnPendingFare.setVisibility(View.VISIBLE);
+        } else {
+            pendingFareValueTextView.setVisibility(View.GONE);
+            pendingFareLabelTextView.setVisibility(View.GONE);
+            seperator.setVisibility(View.GONE);
+            btnPendingFare.setVisibility(View.GONE);
         }
 
 
@@ -430,13 +459,18 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
 
     @OnClick(R2.id.layout_need_help)
     public void actionNeedHelpClicked() {
-        RideGATracking.eventClickHelpTrip(getScreenName(),rideHistory.getRequestTime(),rideHistory.getTotalFare(),rideHistory.getStatus());//17
+        RideGATracking.eventClickHelpTrip(getScreenName(), rideHistory.getRequestTime(), rideHistory.getTotalFare(), rideHistory.getStatus());//17
         startActivity(RideHistoryNeedHelpActivity.getCallingIntent(getActivity(), rideHistory));
     }
 
     @OnClick(R2.id.rate_confirmation)
     public void actionRateConfirmClicked() {
         mPresenter.actionSendRating();
+    }
+
+    @OnClick(R2.id.btn_pay_pending_fare)
+    public void actionPayPendingFareClicked() {
+        mPresenter.payPendingFare();
     }
 
     @Override
@@ -456,5 +490,24 @@ public class RideHistoryDetailFragment extends BaseFragment implements RideHisto
     public void hideProgressLoading() {
         if (mProgressDialog == null) return;
         mProgressDialog.hide();
+    }
+
+    @Override
+    public void openScroogePage(String url, String postData) {
+        if (getActivity() != null) {
+            ScroogePGUtil.openScroogePage(this, url, true, postData, getString(R.string.title_pay_pending_fare));
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (getActivity() != null && requestCode == REQUEST_CODE_OPEN_SCROOGE_PAGE) {
+            if (resultCode == ScroogePGUtil.RESULT_CODE_SUCCESS) {
+                btnPendingFare.setVisibility(View.GONE);
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
+        }
     }
 }
