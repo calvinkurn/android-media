@@ -54,6 +54,7 @@ public class Utils {
     public static final String STATUS_DECLINED = "Declined";
     public static final String STATUS_WAITING = "Waiting";
     public static boolean FROMNOCACHE;
+    private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
 
     synchronized public static Utils getSingletonInstance() {
