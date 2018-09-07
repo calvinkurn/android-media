@@ -255,7 +255,7 @@ public class ReferralPresenter extends BaseDaggerPresenter<ReferralView> impleme
 
                 if (tokoCashData != null
                         && tokoCashData.getAction() != null) {
-                    if (tokoCashData.getLink() == TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                    if (tokoCashData.getLink()) {
                         getReferralVoucherCode();
                     } else {
 

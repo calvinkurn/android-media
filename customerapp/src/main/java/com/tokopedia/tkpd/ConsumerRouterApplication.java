@@ -223,6 +223,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
+import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -1735,6 +1736,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Observable<TokoCashData> getTokoCashBalance() {
         return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
                 .processGetBalance();
+    }
+
+    @Override
+    public Observable<WalletModel> getTokoCashAccountBalance() {
+        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+                .getTokoCashAccountBalance();
     }
 
     @Override
