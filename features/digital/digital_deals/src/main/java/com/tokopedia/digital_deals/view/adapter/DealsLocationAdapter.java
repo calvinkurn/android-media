@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.digital_deals.R;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.digital_deals.view.model.Location;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdapter.ViewHolder> {
 
@@ -20,11 +23,13 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     private Context context;
     private List<Location> locations;
     private ActionListener actionListener;
+    private boolean isPopular;
+    DealsAnalytics dealsAnalytics;
 
     public DealsLocationAdapter(List<Location> locations, ActionListener actionListener) {
         this.locations = new ArrayList<>();
         this.locations = locations;
-        this.actionListener=actionListener;
+        this.actionListener = actionListener;
     }
 
     public void updateAdapter(List<Location> locations) {
@@ -35,6 +40,7 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         this.context = viewGroup.getContext();
+        dealsAnalytics=new DealsAnalytics(context.getApplicationContext());
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.location_item, viewGroup, false));
     }
 
@@ -47,6 +53,10 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
     @Override
     public int getItemCount() {
         return (locations == null) ? 0 : locations.size();
+    }
+
+    public void setIsPopular(boolean isPopular) {
+        this.isPopular = isPopular;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -78,11 +88,20 @@ public class DealsLocationAdapter extends RecyclerView.Adapter<DealsLocationAdap
 
         @Override
         public void onClick(View v) {
-            Location location=Utils.getSingletonInstance().getLocation(context);
+            if (isPopular)
+                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_ON_POPULAR_LOCATION,
+                        String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
+            else {
+                dealsAnalytics.sendEventDealsDigitalClick(String.format(DealsAnalytics.EVENT_CLICK_ON_LOCATION
+                        , locations.get(getIndex()).getName()),
+                        String.format("%s - %s", locations.get(getIndex()).getName(), getIndex()));
+            }
+            Location location = Utils.getSingletonInstance().getLocation(context);
             Utils.getSingletonInstance().updateLocation(context, locations.get(getIndex()));
-            actionListener.onLocationItemSelected(location!=null);
+            actionListener.onLocationItemSelected(location != null);
         }
     }
+
     public interface ActionListener {
         void onLocationItemSelected(boolean locationUpdated);
     }

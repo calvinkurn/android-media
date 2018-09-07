@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.domain.usecase.GetPeopleAddressUseCase;
-import com.tokopedia.checkout.view.adapter.ShipmentAddressListAdapter;
 import com.tokopedia.checkout.view.di.scope.CartAddressChoiceScope;
-import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoiceFragment;
-import com.tokopedia.checkout.view.view.addressoptions.CartAddressChoicePresenter;
+import com.tokopedia.checkout.view.feature.addressoptions.ShipmentAddressListAdapter;
+import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoiceFragment;
+import com.tokopedia.checkout.view.feature.addressoptions.CartAddressChoicePresenter;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 

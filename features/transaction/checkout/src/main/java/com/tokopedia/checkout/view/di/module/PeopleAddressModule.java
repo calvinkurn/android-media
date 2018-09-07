@@ -3,7 +3,7 @@ package com.tokopedia.checkout.view.di.module;
 import com.tokopedia.checkout.data.mapper.AddressModelMapper;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepository;
 import com.tokopedia.checkout.data.repository.PeopleAddressRepositoryImpl;
-import com.tokopedia.checkout.view.utils.PagingHandler;
+import com.tokopedia.checkout.view.common.utils.PagingHandler;
 import com.tokopedia.core.network.apiservices.user.PeopleService;
 
 import dagger.Module;

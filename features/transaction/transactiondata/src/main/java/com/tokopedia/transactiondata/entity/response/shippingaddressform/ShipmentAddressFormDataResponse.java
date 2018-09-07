@@ -35,6 +35,9 @@ public class ShipmentAddressFormDataResponse {
     @SerializedName("donation")
     @Expose
     private Donation donation;
+    @SerializedName("is_robinhood")
+    @Expose
+    private int isRobinhood;
 
     public List<String> getErrors() {
         return errors;
@@ -66,5 +69,9 @@ public class ShipmentAddressFormDataResponse {
 
     public Donation getDonation() {
         return donation;
+    }
+
+    public int getIsRobinhood() {
+        return isRobinhood;
     }
 }

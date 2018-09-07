@@ -69,7 +69,7 @@
         <activity android:name=".bcaoneklik.BcaOneClickEditActivity" />
         <activity
             android:name=".bcaoneklik.activity.ListPaymentTypeActivity"
-            android:label="@string/label_payment_setting" />
+            android:label="@string/tkpdtransaction_label_payment_setting" />
 
         <activity
             android:name=".bcaoneklik.activity.CreditCardDetailActivity"

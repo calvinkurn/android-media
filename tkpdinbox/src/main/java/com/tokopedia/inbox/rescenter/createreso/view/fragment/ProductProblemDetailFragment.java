@@ -30,7 +30,7 @@ import com.tokopedia.design.text.TkpdTextInputLayout;
 import com.tokopedia.inbox.R;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.ProductProblemDetailFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.ProductProblemDetailFragmentPresenter;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.ProductProblemViewModel;
 import com.tokopedia.inbox.rescenter.utils.TimeTickerUtil;
 
@@ -48,7 +48,7 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
     public static final int FREE_RETURN = 3;
 
     ProductProblemViewModel productProblemViewModel;
-    ProblemResult problemResult;
+    ComplaintResult complaintResult;
 
     ImageView ivProductImage, btnInfo, btnPlus, btnMinus;
     TextView tvProductName, tvProductPrice, tvQty, tvStatus;
@@ -65,11 +65,11 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
     ProductProblemDetailFragmentPresenter presenter;
     Dialog dialog;
 
-    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ProblemResult problemResult) {
+    public static ProductProblemDetailFragment newInstance(ProductProblemViewModel productProblemViewModel, ComplaintResult complaintResult) {
         ProductProblemDetailFragment fragment = new ProductProblemDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(PRODUCT_PROBLEM_DATA, productProblemViewModel);
-        bundle.putParcelable(PROBLEM_RESULT_DATA, problemResult);
+        bundle.putParcelable(PROBLEM_RESULT_DATA, complaintResult);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -115,24 +115,20 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
 
     private void setupArguments(Bundle arguments) {
         productProblemViewModel = arguments.getParcelable(PRODUCT_PROBLEM_DATA);
-        problemResult = arguments.getParcelable(PROBLEM_RESULT_DATA);
+        complaintResult = arguments.getParcelable(PROBLEM_RESULT_DATA);
 
     }
 
     private void initView() {
-//        setupUI(view);
-
         stvProblem.setHint(getActivity().getResources().getString(R.string.string_choose_problem));
         tilComplainReason.setHint(getActivity().getResources().getString(R.string.string_complain_reason));
-
         buttonDisabled(btnSaveAndChooseOther);
         buttonDisabled(btnSave);
-        if (problemResult != null) {
+        if (complaintResult != null) {
             buttonBottomSelected(btnSaveAndChooseOther);
             buttonCanSelected(btnSave);
         }
-
-        presenter.populateData(productProblemViewModel, problemResult);
+        presenter.populateData(productProblemViewModel, complaintResult);
 
     }
 
@@ -358,9 +354,10 @@ public class ProductProblemDetailFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void saveData(ProblemResult problemResult, int resultStepCode) {
+    public void saveData(ComplaintResult complaintResult, int resultStepCode) {
         Intent output = new Intent();
-        output.putExtra(RESULT_DATA, problemResult);
+        complaintResult.problem.amount = 0;
+        output.putExtra(RESULT_DATA, complaintResult);
         output.putExtra(RESULT_STEP_CODE, resultStepCode);
         getActivity().setResult(Activity.RESULT_OK, output);
         getActivity().finish();

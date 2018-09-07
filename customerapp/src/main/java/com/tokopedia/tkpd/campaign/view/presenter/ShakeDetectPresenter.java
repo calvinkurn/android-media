@@ -6,6 +6,7 @@ import android.os.Vibrator;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -152,7 +153,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         getView().showMessage(s.getMessage());
                         return;
                     }
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+                    ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
                         getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                         return;
