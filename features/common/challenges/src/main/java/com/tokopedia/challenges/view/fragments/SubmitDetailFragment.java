@@ -35,6 +35,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
+import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.adapter.TouchImageAdapter;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -74,6 +75,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private TextView btnSubmit;
     private View llShare;
 
+    public interface ImageListener {
+        void openImage(ArrayList<String> urls);
+    }
+
+    private ImageListener listener;
 
     @Inject
     SubmitDetailPresenter presenter;
@@ -97,6 +103,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        listener = (SubmitDetailActivity) activity;
+        super.onAttach(activity);
     }
 
     @Nullable
@@ -266,11 +278,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             challengeImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ImageViewerFragment fragemnt = ImageViewerFragment.newInstance(0, imageUrls);
-                    FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-                    transaction.add(R.id.image_viewer, fragemnt);
-                    transaction.addToBackStack("ImageViewer");
-                    transaction.commit();
+                    listener.openImage(imageUrls);
                 }
             });
         }
@@ -471,7 +479,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete && submissionResult != null) {
-            showDeleteDialog(submissionResult.getId(), submissionResult.getCollection().getId());
+            presenter.deleteSubmittedPost(submissionResult.getId(), submissionResult.getCollection().getId());
         }
         return true;
     }
