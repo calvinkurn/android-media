@@ -16,6 +16,7 @@ import android.webkit.URLUtil;
 import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.Awards;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -274,6 +275,10 @@ public class Utils {
         }
 
         return ssb.build();
+    }
+
+    public static boolean checkIsPastChallenge(String challengeTime) {
+        return (System.currentTimeMillis() > Utils.convertUTCToMillis(challengeTime));
     }
 
     public static boolean isImage(String videoUrl) {

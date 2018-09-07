@@ -68,6 +68,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
             Intent intent = new Intent(context, SubmitDetailActivity.class);
             intent.putExtra("submissionsResult", submissionsResult);
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
             context.startActivity(intent);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
                     ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,

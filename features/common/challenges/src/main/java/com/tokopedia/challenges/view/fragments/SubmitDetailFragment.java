@@ -323,21 +323,21 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     public void setParticipateTitle(String participateTitle) {
         if (isPastChallenge) {
-            this.participateTitle.setVisibility(View.GONE);
-            this.participateTextView.setVisibility(View.GONE);
             hideShareAndLikeButtons();
         } else {
-            this.participateTitle.setText(participateTitle);
-            // String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
-            Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
-            intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
-            // this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
-            this.participateTitle.setOnClickListener(view -> {
-                navigateToActivity(intent);
-            });
             showShareAndLikeButtons();
         }
+
+        this.participateTitle.setText(participateTitle);
+        // String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
+        Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
+        intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
+        // this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
+        this.participateTitle.setOnClickListener(view -> {
+            navigateToActivity(intent);
+        });
     }
+
 
     @Override
     public void updateLikeCount(boolean liked) {
@@ -454,6 +454,16 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         }
     }
 
+    @Override
+    public void setlikeInvisiblity() {
+        likeBtn.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setResubmitInvisible() {
+        btnSubmit.setVisibility(View.GONE);
+    }
+
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (presenter.getParticipatedStatus(submissionResult)) {
@@ -482,6 +492,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void hideShareAndLikeButtons() {
         btnShare.setVisibility(View.GONE);
         likeBtn.setVisibility(View.GONE);
+        setResubmitInvisible();
     }
 
     private void showShareAndLikeButtons() {

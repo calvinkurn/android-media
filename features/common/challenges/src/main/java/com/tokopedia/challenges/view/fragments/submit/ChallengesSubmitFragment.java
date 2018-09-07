@@ -2,15 +2,18 @@ package com.tokopedia.challenges.view.fragments.submit;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatEditText;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
 import android.widget.ImageView;
@@ -33,6 +36,8 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerEditorBuilder;
+import com.tokopedia.imagepicker.picker.main.builder.ImageRatioTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.io.File;
@@ -48,6 +53,10 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_BRIGHTNESS;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CONTRAST;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_CROP;
+import static com.tokopedia.imagepicker.picker.main.builder.ImageEditActionTypeDef.ACTION_ROTATE;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder.DEFAULT_MIN_RESOLUTION;
 import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef.TYPE_CAMERA;
@@ -270,7 +279,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void selectImageVideo() {
-        ChallengesSubmitFragmentPermissionsDispatcher.actionVideoImagePickerWithCheck(ChallengesSubmitFragment.this);
+        showVideoImageChooseDialog();
     }
 
     @Override
@@ -309,8 +318,12 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         if (imagePickerBuilder == null) {
             imagePickerBuilder = new ImagePickerBuilder(getString(R.string.choose_image),
                     new int[]{TYPE_GALLERY, TYPE_CAMERA}, GalleryType.IMAGE_ONLY, DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    DEFAULT_MIN_RESOLUTION, null, true,
-                    null, null);
+                    DEFAULT_MIN_RESOLUTION, ImageRatioTypeDef.RATIO_1_1, true,
+                    new ImagePickerEditorBuilder(
+                            new int[]{ACTION_BRIGHTNESS, ACTION_CONTRAST, ACTION_CROP, ACTION_ROTATE},
+                            false,
+                            null)
+                    , null);
         }
         return imagePickerBuilder;
     }
@@ -400,6 +413,26 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void setChooseImageText(String text) {
         txtChooseImageTitle.setText(text);
+    }
+
+    private void showVideoImageChooseDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getContext().getResources().getString(R.string.dialog_upload_option));
+        builder.setPositiveButton(getContext().getResources().getString(R.string.title_video), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                selectVideo();
+            }
+        }).setNegativeButton(getContext().getResources().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                showImagePickerDialog();
+            }
+        });
+
+        Dialog dialog = builder.create();
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.show();
     }
 
     @Override

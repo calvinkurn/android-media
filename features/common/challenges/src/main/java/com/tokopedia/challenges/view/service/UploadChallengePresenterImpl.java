@@ -42,6 +42,7 @@ public class UploadChallengePresenterImpl implements IUploadChallengeServiceCont
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+                uploadChallengeService.onProgressFail();
             }
 
             @Override

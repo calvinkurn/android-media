@@ -7,15 +7,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
 import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
-import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
