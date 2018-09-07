@@ -114,10 +114,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
             @Override
             public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
-                if (showCaseObject.getTitle().equalsIgnoreCase(label) && showCaseObject.getText().equalsIgnoreCase(text)) {
-                    shippingDurationAdapterListener.onDurationShipmentRecommendationShowCaseClosed();
-                }
-                return true;
+                return false;
             }
         });
 
