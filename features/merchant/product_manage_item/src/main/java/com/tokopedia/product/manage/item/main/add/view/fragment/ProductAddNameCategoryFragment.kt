@@ -72,7 +72,7 @@ class ProductAddNameCategoryFragment : BaseProductEditCategoryFragment(), Produc
     }
 
     override fun onNameChanged(productName: ProductName) {
-        categoryCatalogSection.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
+        categoryCatalogSection?.visibility = if (productName.name.isNotEmpty()) View.VISIBLE else View.GONE
         if(!flagReset){
             this.productName = productName
             presenter.onProductNameChange(productName.name)
