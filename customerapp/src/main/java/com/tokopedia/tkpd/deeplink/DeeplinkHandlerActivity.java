@@ -94,6 +94,8 @@ import com.tokopedia.train.applink.TrainApplinkModule;
 import com.tokopedia.train.applink.TrainApplinkModuleLoader;
 import com.tokopedia.transaction.applink.TransactionApplinkModule;
 import com.tokopedia.transaction.applink.TransactionApplinkModuleLoader;
+import com.tokopedia.mybills.MybillsApplinkModule;
+import com.tokopedia.mybills.MybillsApplinkModuleLoader;
 
 import org.json.JSONObject;
 
@@ -138,7 +140,8 @@ import io.branch.referral.BranchError;
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
-        SettingBankApplinkModule.class
+        SettingBankApplinkModule.class,
+        MybillsApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -184,7 +187,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
-                new SettingBankApplinkModuleLoader()
+                new SettingBankApplinkModuleLoader(),
+                new MybillsApplinkModuleLoader()
             );
         }
 

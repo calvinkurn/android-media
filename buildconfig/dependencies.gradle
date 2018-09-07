@@ -73,6 +73,7 @@ ext {
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
     tkpdPaymentManagementSystem = '2.22'
+    tkpdMybills = '2.22'
     tkpdTokopointVersion = '2.22'
     tkpdDealsVersion = '2.22'
     tkpdOmsVersion = '2.22'
@@ -291,7 +292,8 @@ ext {
             productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            mybills               : "com.tokopedia.mybills:mybills:${tkpdMybills}"
     ]
 
     tkpdLibDependencies = [
@@ -373,7 +375,8 @@ ext {
             productDraftDatabase  : ":features:merchant:product_draft_database",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
-            updateinactivephone   : ":features:user:updateinactivephone"
+            updateinactivephone   : ":features:user:updateinactivephone",
+            mybills               : ":features:digital:mybills"
     ]
 
     libraries = [

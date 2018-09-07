@@ -18,17 +18,15 @@ public interface ReactConst {
     String CODE_PUSH_DEPLOYMENT_KEY = "mZj7iHeXLW9NvlYFf7vANLKYJ7jub85766e2-9e25-4371-8aa3-080b8952449b";
 
     interface Screen {
-        String HOTLIST = "HotList";
         String OFFICIAL_STORE = "official-store";
         String PROMO = "promo-page";
         String PROMO_TERMS = "promo-terms";
         String SUB_PROMO = "sub-promo";
         String THANK_YOU_PAGE = "thankyou-page";
         String DISCOVERY_PAGE = "discovery-page";
-        String EXPLORE_PAGE = "explore-page";
-        String CONTENT_DETAIL = "content-detail";
         String BRANDLIST_PAGE = "brandlist-page";
         String HOW_TO_PAY = "how-to-pay";
+        String MYBILLS = "mybills";
     }
 
     interface EventEmitter{

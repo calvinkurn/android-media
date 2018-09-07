@@ -88,6 +88,7 @@ public interface ApplinkConst {
     String PROFILE = "tokopedia://people/{user_id}";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
+    String MYBILLS = "tokopedia://mybills";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";

@@ -1,4 +1,4 @@
-package com.tokopedia.pms.howtopay;
+package com.tokopedia.mybills;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,22 +11,27 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 /**
- * Created by yogieputra on 10/07/18.
+ * Created by yogieputra on 07/09/18.
  */
 
-public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
+public class ReactNativeMybillsActivity extends BaseSimpleActivity {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
     public static final String IS_DEEP_LINK_FLAG = "is_deep_link_flag";
     public static final String ANDROID_INTENT_EXTRA_REFERRER = "android.intent.extra.REFERRER";
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
-    @DeepLink(ApplinkConst.HOWTOPAY)
-    public static Intent getHowToPayApplinkCallingIntent(Context context, Bundle bundle){
-        return ReactNativeHowToPayActivity.createApplinkCallingIntent(context, ReactConst.Screen.HOW_TO_PAY, "Cara Pembayaran", bundle);
+    @Override
+    protected Fragment getNewFragment() {
+        return ReactNativeMybillsFragment.createInstance(getReactNativeProps());
+    }
+
+    @DeepLink(ApplinkConst.MYBILLS)
+    public static Intent getMybillsApplinkCallingIntent(Context context, Bundle bundle){
+        return ReactNativeMybillsActivity.createApplinkCallingIntent(context, ReactConst.Screen.MYBILLS, "Tokopedia MyBills", bundle);
     }
 
     public static Intent createApplinkCallingIntent(Context context, String reactScreenName, String pageTitle, Bundle bundle){
-        Intent intent = new Intent(context, ReactNativeHowToPayActivity.class);
+        Intent intent = new Intent(context, ReactNativeMybillsActivity.class);
         bundle.putString(ReactConst.KEY_SCREEN, reactScreenName);
         bundle.putString(EXTRA_TITLE, pageTitle);
         intent.putExtras(bundle);
@@ -34,17 +39,11 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
         return intent;
     }
 
-    @Override
-    protected Fragment getNewFragment() {
-        return ReactNativeHowToPayFragment.createInstance(getReactNativeProps());
-    }
-
-    protected Bundle getReactNativeProps() {
+    protected Bundle getReactNativeProps(){
         Bundle bundle = getIntent().getExtras();
         Bundle newBundle = new Bundle();
 
-        // clear bundle from deeplinks default value
-        for (String key : bundle.keySet()) {
+        for (String key : bundle.keySet()){
             if (!key.equalsIgnoreCase(IS_DEEP_LINK_FLAG) &&
                     !key.equalsIgnoreCase(ANDROID_INTENT_EXTRA_REFERRER) &&
                     !key.equalsIgnoreCase(DEEP_LINK_URI)) {
@@ -53,4 +52,5 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
         }
         return newBundle;
     }
+
 }
