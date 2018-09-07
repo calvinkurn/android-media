@@ -63,7 +63,9 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     true,
                     true,
                     ArrayList(),
-                    data.comment_raw_message
+                    data.comment_raw_message,
+                    data.comment_is_owner == 1
+
             ))
         }
 
@@ -78,7 +80,8 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk_read_status == IS_READ,
                         pojo.talk_follow_status == IS_FOLLOWED,
                         ArrayList(),
-                        pojo.talk_raw_message
+                        pojo.talk_raw_message,
+                        pojo.talk_own == 1
 
                 ),
                 listTalk)

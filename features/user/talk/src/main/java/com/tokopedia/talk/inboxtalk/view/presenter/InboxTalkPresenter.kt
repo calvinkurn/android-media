@@ -50,7 +50,7 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
                     if (page == 1 && talkViewModel.listTalk.isEmpty()) {
                         view.onEmptyTalk()
                     } else if (!talkViewModel.listTalk.isEmpty()) {
-                        view.onSuccessGetInboxTalk(talkViewModel.listTalk)
+                        view.onSuccessGetInboxTalk(talkViewModel)
                     }
 
                     if (talkViewModel.hasNextPage) {

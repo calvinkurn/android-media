@@ -18,7 +18,8 @@ data class ProductTalkItemViewModel(
         var isRead : Boolean = false,
         var isFollowed : Boolean = false,
         var productAttachment : ArrayList<TalkProductAttachmentViewModel>,
-        var rawMessage: String = "") :
+        var rawMessage: String = "",
+        var isOwner : Boolean = false) :
         Visitable<ProductTalkChildThreadTypeFactory> {
 
     override fun type(typeFactory: ProductTalkChildThreadTypeFactory): Int {

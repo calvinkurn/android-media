@@ -24,9 +24,11 @@ import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
+import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
@@ -40,11 +42,13 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
 
-    val REQUEST_REPORT_TALK: Int = 101
-    val POS_FILTER_ALL: Int = 0
-    val POS_FILTER_UNREAD: Int = 1
-    val FILTER_ALL: String = "all"
-    val FILTER_UNREAD: String = "unread"
+    private val REQUEST_REPORT_TALK: Int = 101
+    private val REQUEST_GO_TO_DETAIL: Int = 102
+
+    private val POS_FILTER_ALL: Int = 0
+    private val POS_FILTER_UNREAD: Int = 1
+    private val FILTER_ALL: String = "all"
+    private val FILTER_UNREAD: String = "unread"
 
     private lateinit var alertDialog: Dialog
     private lateinit var adapter: InboxTalkAdapter
@@ -147,8 +151,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             POS_FILTER_UNREAD -> filter = FILTER_UNREAD
         }
 
-
-        //TODO NISIE: SET MENU ICON TO CHECKED
+        for (itemMenu in filterMenu.itemMenuList) {
+            itemMenu.iconEnd = 0
+        }
+        filterMenu.getItemMenu(pos).iconEnd = R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, nav)
         filterMenu.dismiss()
     }
@@ -250,11 +256,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.hideLoading()
     }
 
-    override fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>) {
+    override fun onSuccessGetInboxTalk(talkViewModel: InboxTalkViewModel) {
         adapter.hideEmpty()
-        adapter.addList(list)
+        adapter.addList(talkViewModel.listTalk)
 
-        if(activity is )
+        if (activity is GetUnreadNotificationListener) {
+            (activity as GetUnreadNotificationListener).onGetNotification(talkViewModel
+                    .unreadNotification, nav)
+        }
     }
 
     override fun onErrorGetInboxTalk(errorMessage: String) {
@@ -287,6 +296,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
             onSuccessReportTalk()
+        }else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK){
+            //TODO UPDATE NOTIFICATION READ
+            data?.run {
+//                val talkThread : ProductTalkItemViewModel = data.getParcelableExtra<ProductTalkItemViewModel>()
+            }
+
         }
     }
 

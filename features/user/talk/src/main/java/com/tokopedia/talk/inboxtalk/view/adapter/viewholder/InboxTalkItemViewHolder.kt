@@ -55,6 +55,7 @@ class InboxTalkItemViewHolder(val v: View,
     private val yesReportButton: TextView = itemView.reportYes
     private val noReportButton: TextView = itemView.reportNo
     private val rawMessage: TextView = itemView.rawMessage
+    private val separatorReport: View = itemView.separatorReport
 
 
     private lateinit var adapter: CommentTalkAdapter
@@ -96,10 +97,18 @@ class InboxTalkItemViewHolder(val v: View,
         talkContent.visibility = View.GONE
 
         reportedMessage.text = element.talkThread.headThread.comment
-        rawMessage.text = element.talkThread.headThread.rawMessage
 
-        yesReportButton.setOnClickListener{listener.onYesReportTalkItemClick()}
-        noReportButton.setOnClickListener{listener.onNoShowTalkItemClick(adapterPosition)}
+        if (element.talkThread.headThread.isOwner) {
+            rawMessage.visibility = View.VISIBLE
+            separatorReport.visibility = View.VISIBLE
+            rawMessage.text = element.talkThread.headThread.rawMessage
+        } else {
+            rawMessage.visibility = View.GONE
+            separatorReport.visibility = View.GONE
+        }
+
+        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
+        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
 
     }
 

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 
 /**
  * @author by nisie on 8/29/18.
@@ -15,7 +16,7 @@ interface InboxTalkContract {
         fun getContext(): Context?
         fun showLoading()
         fun hideLoading()
-        fun onSuccessGetInboxTalk(list: ArrayList<Visitable<*>>)
+        fun onSuccessGetInboxTalk(list: InboxTalkViewModel)
         fun onErrorGetInboxTalk(errorMessage: String)
         fun onEmptyTalk()
         fun hideRefreshLoad()

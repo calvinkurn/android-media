@@ -49,7 +49,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         return InboxTalkViewModel("",
                 listTalk,
                 pojo.paging.has_next,
-                pojo.paging.page_id)
+                pojo.paging.page_id,
+                pojo.is_unread)
     }
 
     private fun mapListThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
@@ -65,7 +66,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                     true,
                     true,
                     mapProductAttachment(data),
-                    data.comment_raw_message
+                    data.comment_raw_message,
+                    data.comment_is_owner == 1
             ))
         }
 
@@ -79,7 +81,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         pojo.talk_read_status == IS_READ,
                         pojo.talk_follow_status == IS_FOLLOWED,
                         ArrayList(),
-                        pojo.talk_raw_message
+                        pojo.talk_raw_message,
+                        pojo.talk_own == 1
                 ),
                 listTalk
         )
