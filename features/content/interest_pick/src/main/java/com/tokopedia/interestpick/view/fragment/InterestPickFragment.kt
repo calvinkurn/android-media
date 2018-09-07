@@ -7,6 +7,7 @@ import com.tokopedia.interestpick.di.DaggerInterestPickComponent
 /**
  * @author by milhamj on 03/09/18.
  */
+
 class InterestPickFragment : BaseDaggerFragment() {
 
     companion object {
