@@ -54,6 +54,8 @@ public interface CouponCatalogContract {
         void refreshCatalog(CatalogStatusItem data);
 
         void onPreValidateError(String title, String message);
+
+        void gotoSendGiftPage(int id, String title, String pointStr);
     }
 
     interface Presenter extends CustomerPresenter<View> {

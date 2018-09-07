@@ -27,6 +27,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
@@ -506,5 +507,14 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+    }
+
+    @Override
+    public void gotoSendGiftPage(int id, String title, String pointStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
+        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }

@@ -41,5 +41,15 @@
     <string name="tp_label_min_exchange">Minimal transaksi:</string>
     <string name="tp_label_refresh_repeat">Refresh Ulang</string>
     <string name="tp_label_send">Kirim</string>
+    <string name="tp_label_email">Email Penerima</string>
+    <string name="tp_label_notes">Tulis Pesan (Opsional)</string>
+    <string name="tp_label_send_coupon_as_gift">Kirim Kupon sebagai Hadiah</string>
+    <string name="tp_label_for">Untuk :</string>
+    <string name="tp_label_message">Pesan :</string>
+    <string name="tp_label_send_now">Kirim Sekarang</string>
+    <string name="tp_send_gift_success_title">Kupon Berhasil Terkirim</string>
+    <string name="tp_send_gift_success_message">Hore, hadiah Kupon yang kamu kirim sudah sampai di penerima!</string>
+    <string name="tp_send_gift_failed_title">Kupon Gagal Dikirim</string>
+    <string name="tp_send_gift_failed_message">Oops, ada yang tidak beres. Coba ulangi beberapa saat lagi.</string>
 
 </resources>

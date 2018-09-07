@@ -169,7 +169,7 @@
             android:background="@drawable/bg_button_white_stroke_gray"
             android:padding="6dp"
             android:src="@drawable/ic_tp_gift"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/button_continue"
             app:layout_constraintEnd_toStartOf="@+id/button_continue"
             app:layout_constraintTop_toTopOf="@+id/button_continue" />

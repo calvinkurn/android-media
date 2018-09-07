@@ -168,7 +168,7 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
         if (item.getIsGift() == 1) {
             holder.btnSendGift.setVisibility(View.VISIBLE);
-            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getIsGift()));
+            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getTitle(), item.getPointsStr()));
         } else {
             holder.btnSendGift.setVisibility(View.GONE);
             holder.btnSendGift.setOnClickListener(null);

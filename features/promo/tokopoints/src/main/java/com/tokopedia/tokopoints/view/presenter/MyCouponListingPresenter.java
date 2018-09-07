@@ -128,6 +128,6 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     }
 
     @Override
-    public void startSendGift(int id, int isGift) {
+    public void startSendGift(int id, String title, String pointStr) {
     }
 }

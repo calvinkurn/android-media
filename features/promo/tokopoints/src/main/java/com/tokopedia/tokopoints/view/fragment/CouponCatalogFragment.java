@@ -30,6 +30,7 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CouponCatalogInfoPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.CouponCatalogContract;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
@@ -632,7 +633,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (data.getIsGift() == 1) {
             btnAction1.setVisibility(View.VISIBLE);
             btnAction1.setText(R.string.tp_label_send);
-            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getIsGift()));
+            btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
         }
 
         btnAction2.setOnClickListener(v -> {
@@ -802,5 +803,14 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         TabUtil.wrapTabIndicatorToTitle(tabs,
                 (int) getResources().getDimension(R.dimen.tp_margin_medium),
                 (int) getResources().getDimension(R.dimen.tp_margin_regular));
+    }
+
+    @Override
+    public void gotoSendGiftPage(int id, String title, String pointStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
+        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }

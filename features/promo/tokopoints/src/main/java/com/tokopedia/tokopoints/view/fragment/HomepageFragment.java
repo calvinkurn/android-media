@@ -32,6 +32,7 @@ import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.activity.CatalogListingActivity;
 import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.HomepagePagerAdapter;
 import com.tokopedia.tokopoints.view.adapter.TickerPagerAdapter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
@@ -646,5 +647,14 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
 
     public void showStartPurchaseBottomSheet(String title) {
         mStartPurchaseBottomSheet.show(getChildFragmentManager(), title);
+    }
+
+    @Override
+    public void gotoSendGiftPage(int id, String title, String pointStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
+        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }

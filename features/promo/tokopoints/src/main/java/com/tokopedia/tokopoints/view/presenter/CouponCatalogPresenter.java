@@ -365,10 +365,10 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
     }
 
     @Override
-    public void startSendGift(int id, int isGift) {
+    public void startSendGift(int id, String title, String pointStr) {
         Map<String, Object> variables = new HashMap<>();
         variables.put(CommonConstant.GraphqlVariableKeys.CATALOG_ID, id);
-        variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, isGift);
+        variables.put(CommonConstant.GraphqlVariableKeys.IS_GIFT, 1);
 
         GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
                 R.raw.tp_gql_pre_validate_redeem),
@@ -393,13 +393,13 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                 if (data != null
                         && data.getPreValidateRedeem() != null
                         && data.getPreValidateRedeem().getIsValid() == 1) {
-                    //TODO navigate to send gift screen
+                    getView().gotoSendGiftPage(id, title, pointStr);
                 } else {
                     //show error
                     List<GraphqlError> errors = response.getError(PreValidateRedeemBase.class);
 
-                    String errorTitle = "Kupon Gagal Dikirim";
-                    String errorMessage = "Oops, ada yang tidak beres. Coba ulangi beberapa saat lagi.";
+                    String errorTitle = getView().getAppContext().getString(R.string.tp_send_gift_failed_title);
+                    String errorMessage = getView().getAppContext().getString(R.string.tp_send_gift_failed_message);
 
                     if (errors != null && errors.size() > 0) {
                         String[] mesList = errors.get(0).getMessage().split("|");
@@ -411,7 +411,7 @@ public class CouponCatalogPresenter extends BaseDaggerPresenter<CouponCatalogCon
                         }
                     }
 
-                    getView().onPreValidateError(errorTitle,errorMessage);
+                    getView().onPreValidateError(errorTitle, errorMessage);
                 }
             }
         });

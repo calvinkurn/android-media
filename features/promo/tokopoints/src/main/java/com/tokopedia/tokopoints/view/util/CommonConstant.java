@@ -22,6 +22,9 @@ public interface CommonConstant {
     String EXTRA_COUPON_COUNT = "extra_coupon_count";
     String EXTRA_COUPON_CODE = "coupon_code";
     String EXTRA_CATALOG_CODE = "catalog_code";
+    String EXTRA_COUPON_ID = "extra_coupon_id";
+    String EXTRA_COUPON_TITLE = "extra_coupon_title";
+    String EXTRA_COUPON_POINT = "extra_coupon_point";
     int MAX_COUPON_RE_FETCH_COUNT = 3;
     int COUPON_RE_FETCH_DELAY_S = 5;
 
@@ -47,6 +50,8 @@ public interface CommonConstant {
         String SLUG = "slug";
         String CATALOG_IDS = "catalogIDs";
         String CODE = "code";
+        String GIFT_EMAIL = "gift_email";
+        String NOTES = "notes";
     }
 
     interface TickerMapKeys {

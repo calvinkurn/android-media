@@ -50,6 +50,8 @@ public interface CatalogListItemContract {
         void showRedeemFullError(CatalogsValueEntity item, String title, String desc);
 
         void onPreValidateError(String title, String message);
+
+        void gotoSendGiftPage(int id, String title, String pointStr);
     }
 
     interface Presenter extends CustomerPresenter<View> {

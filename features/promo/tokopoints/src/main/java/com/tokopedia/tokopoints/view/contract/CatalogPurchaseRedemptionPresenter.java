@@ -13,5 +13,5 @@ public interface CatalogPurchaseRedemptionPresenter {
 
     void showRedeemCouponDialog(String cta, String code, String title);
 
-    void startSendGift(int id, int isGift);
+    void startSendGift(int id, String title, String pointsStr);
 }
