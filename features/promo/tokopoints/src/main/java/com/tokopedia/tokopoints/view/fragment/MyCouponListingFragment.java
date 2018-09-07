@@ -37,6 +37,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     private static final int CONTAINER_LOADER = 0;
     private static final int CONTAINER_DATA = 1;
     private static final int CONTAINER_ERROR = 2;
+    private static final int CONTAINER_EMPTY = 3;
     private ViewFlipper mContainerMain;
     private RecyclerView mRecyclerView;
     private CouponListAdapter mAdapter;
@@ -158,7 +159,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void emptyCoupons() {
-        hideLoader();
+        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
         if (getView() == null) {
             return;
         }
