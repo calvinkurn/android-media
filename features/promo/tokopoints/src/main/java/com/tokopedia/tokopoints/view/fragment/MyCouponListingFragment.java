@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,20 +10,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
+import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.adapter.CouponListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
-import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -155,6 +151,15 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
     @Override
     public void onErrorCoupons(String errorMessage) {
 
+    }
+
+    @Override
+    public void emptyCoupons() {
+        NetworkErrorHelper.showEmptyState(getContext(), mContainerMain,
+                getString(R.string.tp_default_empty_coupons_title),
+                getString(R.string.tp_default_empty_coupons_subtitle),
+                "",
+                R.drawable.ic_tp_image_big, null);
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
