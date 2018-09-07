@@ -94,4 +94,16 @@
         tools:itemCount="3"
         tools:listitem="@layout/talk_product_attachment"
         />
+
+    <include
+        android:id="@+id/layout_reported"
+        layout="@layout/reported_talk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/menu"
+        app:layout_constraintStart_toEndOf="@+id/prof_pict"
+        app:layout_constraintTop_toBottomOf="@+id/identity"/>
 </android.support.constraint.ConstraintLayout>

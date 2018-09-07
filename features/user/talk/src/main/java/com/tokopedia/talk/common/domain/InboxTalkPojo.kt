@@ -54,6 +54,9 @@ data class InboxTalkItemPojo(
         @SerializedName("talk_product_status")
         val talk_product_status: Int = 0,
         @Expose
+        @SerializedName("talk_raw_message")
+        val talk_raw_message: String = "",
+        @Expose
         @SerializedName("talk_read_status")
         val talk_read_status: Int = 0,
         @Expose

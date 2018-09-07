@@ -17,6 +17,7 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.inbox_talk_item.view.*
 import kotlinx.android.synthetic.main.inbox_talk_item_product_header.view.*
+import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 import kotlinx.android.synthetic.main.thread_talk.view.*
 
@@ -26,14 +27,15 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
 
 class InboxTalkItemViewHolder(val v: View,
                               val listener: TalkItemListener,
-                              private val talkCommentListener: CommentTalkViewHolder
-                              .TalkCommentItemListener,
+                              private val talkCommentListener: CommentTalkViewHolder.TalkCommentItemListener,
                               private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
         fun onReplyTalkButtonClick(allowReply: Boolean)
         fun onMenuButtonClicked(menu: TalkState)
+        fun onYesReportTalkItemClick()
+        fun onNoShowTalkItemClick(adapterPosition: Int)
     }
 
     private val productName: TextView = itemView.productName
@@ -48,6 +50,13 @@ class InboxTalkItemViewHolder(val v: View,
     private val replyButton: TextView = itemView.replyButton
     private val separatorChild: View = itemView.separatorChild
 
+    private val reportedLayout: View = itemView.layout_reported
+    private val reportedMessage: TextView = itemView.reportedMessage
+    private val yesReportButton: TextView = itemView.reportYes
+    private val noReportButton: TextView = itemView.reportNo
+    private val rawMessage: TextView = itemView.rawMessage
+
+
     private lateinit var adapter: CommentTalkAdapter
 
     companion object {
@@ -57,40 +66,77 @@ class InboxTalkItemViewHolder(val v: View,
     override fun bind(element: InboxTalkItemViewModel?) {
         element?.run {
 
-            if (!element.talkThread.listChild.isEmpty()) {
-                val typeFactoryImpl = CommentTalkTypeFactoryImpl(talkCommentListener, talkProductAttachmentItemClickListener)
-                adapter = CommentTalkAdapter(typeFactoryImpl, element.talkThread.listChild)
-                listComment.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
-                        .VERTICAL, false)
-                listComment.adapter = adapter
-                listComment.visibility = View.VISIBLE
-                separatorChild.visibility = View.VISIBLE
+            setReadNotification(element)
+            setProductHeader(element)
+            setupMenuButton(element.talkThread.headThread.menu)
+            setProfileHeader(element)
+            setCommentList(element)
+
+            if (element.talkThread.headThread.menu.isReported) {
+                setupReportedMessage(element)
             } else {
-                listComment.visibility = View.GONE
-                separatorChild.visibility = View.GONE
+                setupNormalTalk(element)
             }
-
-            productName.text = MethodChecker.fromHtml(element.productHeader.productName)
-            ImageHandler.LoadImage(productAvatar, element.productHeader.productAvatar)
-
-            ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.talkThread
-                    .headThread.avatar)
-            profileName.text = element.talkThread.headThread.name
-            talkContent.text = element.talkThread.headThread.comment
-            timestamp.text = element.talkThread.headThread.timestamp
 
             replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(element.talkThread
                         .headThread.menu.allowReply)
             }
-
-            if (element.talkThread.headThread.isRead) notification.visibility = View.GONE
-            else notification.visibility = View.VISIBLE
-
-            setupMenuButton(element.talkThread.headThread.menu)
-
         }
 
+    }
+
+    private fun setReadNotification(element: InboxTalkItemViewModel) {
+        if (element.talkThread.headThread.isRead) notification.visibility = View.GONE
+        else notification.visibility = View.VISIBLE
+    }
+
+    private fun setupReportedMessage(element: InboxTalkItemViewModel) {
+        reportedLayout.visibility = View.VISIBLE
+        talkContent.visibility = View.GONE
+
+        reportedMessage.text = element.talkThread.headThread.comment
+        rawMessage.text = element.talkThread.headThread.rawMessage
+
+        yesReportButton.setOnClickListener{listener.onYesReportTalkItemClick()}
+        noReportButton.setOnClickListener{listener.onNoShowTalkItemClick(adapterPosition)}
+
+    }
+
+    private fun setupNormalTalk(element: InboxTalkItemViewModel) {
+        reportedLayout.visibility = View.GONE
+
+        talkContent.visibility = View.VISIBLE
+        talkContent.text = element.talkThread.headThread.comment
+
+    }
+
+    private fun setProfileHeader(element: InboxTalkItemViewModel) {
+        ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.talkThread
+                .headThread.avatar)
+        profileName.text = element.talkThread.headThread.name
+
+        timestamp.text = element.talkThread.headThread.timestamp
+    }
+
+    private fun setProductHeader(element: InboxTalkItemViewModel) {
+        productName.text = MethodChecker.fromHtml(element.productHeader.productName)
+        ImageHandler.LoadImage(productAvatar, element.productHeader.productAvatar)
+    }
+
+    private fun setCommentList(element: InboxTalkItemViewModel) {
+        if (!element.talkThread.listChild.isEmpty()) {
+            val typeFactoryImpl = CommentTalkTypeFactoryImpl(talkCommentListener, talkProductAttachmentItemClickListener)
+            adapter = CommentTalkAdapter(typeFactoryImpl, element.talkThread.listChild)
+            listComment.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
+                    .VERTICAL, false)
+            listComment.adapter = adapter
+            listComment.visibility = View.VISIBLE
+            separatorChild.visibility = View.VISIBLE
+        } else {
+            listComment.visibility = View.GONE
+            separatorChild.visibility = View.GONE
+        }
     }
 
     private fun setupMenuButton(menu: TalkState) {

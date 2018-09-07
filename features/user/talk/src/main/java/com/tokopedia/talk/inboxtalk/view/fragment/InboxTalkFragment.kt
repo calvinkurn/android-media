@@ -56,7 +56,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     @Inject
     lateinit var presenter: InboxTalkPresenter
 
-
     companion object {
         fun newInstance(nav: String) = InboxTalkFragment(nav)
     }
@@ -169,7 +168,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setTitle(getString(R.string.unfollow_talk_dialog_title))
         alertDialog.setDesc(getString(R.string.unfollow_talk_dialog_desc))
         alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_follow_talk))
+        alertDialog.setBtnOk(getString(R.string.button_unfollow_talk))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
@@ -190,7 +189,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setTitle(getString(R.string.follow_talk_dialog_title))
         alertDialog.setDesc(getString(R.string.follow_talk_dialog_desc))
         alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_unfollow_talk))
+        alertDialog.setBtnOk(getString(R.string.button_follow_talk))
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
@@ -388,6 +387,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         progressBar.visibility = View.GONE
         talk_rv.visibility = View.VISIBLE
         swipeToRefresh.isEnabled = true
+    }
+
+    override fun onNoShowTalkItemClick(adapterPosition: Int) {
+        adapter.showReportedTalk(adapterPosition)
+    }
+
+    override fun onYesReportTalkItemClick() {
+        goToReportTalk()
     }
 
     private fun goToDetailTalk() {

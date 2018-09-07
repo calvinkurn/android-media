@@ -40,7 +40,12 @@
     <string name="menu_report_talk">Laporkan Diskusi</string>
     <string name="menu_report_comment">Laporkan Komentar</string>
     <string name="menu_delete_comment">Hapus Komentar</string>
-    <string name="empty_talk_title">Belum ada diskusi untuk produk ini</string>
+    <string name="empty_product_talk_title">Belum ada diskusi untuk produk ini</string>
     <string name="empty_bank_subtitle">Jadilah yang pertama bertanya dengan penjual atau pengguna lain</string>
+    <string name="empty_inbox_talk_title">Belum ada diskusi</string>
+    <string name="reported_talk_seller_message">Diskusi ini mengandung konten yang tidak relevan. Waspadai tautan yang dicantumkan dan hati-hati dalam membagikan informasi pribadi Anda.</string>
+    <string name="report_this_talk">Laporkan diskusi ini?</string>
+    <string name="yes_report">Ya, laporkan</string>
+    <string name="no_show_talk">Tidak, tampilkan diskusi</string>
 
 </resources>

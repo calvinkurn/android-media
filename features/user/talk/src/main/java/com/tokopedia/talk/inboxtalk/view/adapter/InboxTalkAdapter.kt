@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 
 /**
  * @author by nisie on 8/29/18.
@@ -39,6 +40,13 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         return if (index == itemCount - 1) {
             visitables[index] is LoadingMoreModel
         } else false
+    }
+
+    fun showReportedTalk(adapterPosition: Int) {
+        if (this.visitables[adapterPosition] is ProductTalkItemViewModel) {
+            (this.visitables[adapterPosition] as ProductTalkItemViewModel).menu.isReported = false
+            notifyItemChanged(adapterPosition)
+        }
     }
 
 }

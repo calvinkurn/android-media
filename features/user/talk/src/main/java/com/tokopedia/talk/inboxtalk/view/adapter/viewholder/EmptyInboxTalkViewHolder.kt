@@ -24,7 +24,7 @@ class EmptyInboxTalkViewHolder(val v: View) :
 
 
     override fun bind(element: EmptyInboxTalkViewModel?) {
-        ImageHandler.LoadImage(emptyIcon, TalkUrl.Companion.IMAGE_EMPTY_TALK)
+        ImageHandler.LoadImage(emptyIcon, TalkUrl.IMAGE_EMPTY_TALK)
     }
 
 }

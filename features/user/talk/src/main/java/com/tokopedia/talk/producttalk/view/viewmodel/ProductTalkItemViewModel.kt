@@ -17,7 +17,8 @@ data class ProductTalkItemViewModel(
         var menu: TalkState,
         var isRead : Boolean = false,
         var isFollowed : Boolean = false,
-        var productAttachment : ArrayList<TalkProductAttachmentViewModel>) :
+        var productAttachment : ArrayList<TalkProductAttachmentViewModel>,
+        var rawMessage: String = "") :
         Visitable<ProductTalkChildThreadTypeFactory> {
 
     override fun type(typeFactory: ProductTalkChildThreadTypeFactory): Int {
@@ -27,12 +28,12 @@ data class ProductTalkItemViewModel(
 }
 
 data class TalkState(
-        val allowReport: Boolean = false,
-        val allowDelete: Boolean = false,
-        val allowFollow: Boolean = false,
-        val allowUnmasked: Boolean = false,
-        val allowReply: Boolean = false,
-        val isReported: Boolean = false,
-        val isMasked: Boolean = false,
-        val allowUnfollow : Boolean = false
+        var allowReport: Boolean = false,
+        var allowDelete: Boolean = false,
+        var allowFollow: Boolean = false,
+        var allowUnmasked: Boolean = false,
+        var allowReply: Boolean = false,
+        var isReported: Boolean = false,
+        var isMasked: Boolean = false,
+        var allowUnfollow : Boolean = false
 )
