@@ -117,9 +117,8 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
+        switch (requestCode) {
             case REQUEST_CODE_LOGIN:
-                //TODO : check user logged in
                 presenter.onLoginResultReceived();
                 break;
         }

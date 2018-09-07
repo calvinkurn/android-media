@@ -17,6 +17,8 @@ public class MitraParentHomepagePresenter extends BaseDaggerPresenter<MitraParen
 
     @Override
     public void onHomepageMenuClicked() {
+        getView().showToolbarLogo();
+        getView().hideToolbarTitle();
         getView().inflateHomepageFragment();
         getView().setHomepageMenuSelected();
     }
@@ -24,6 +26,8 @@ public class MitraParentHomepagePresenter extends BaseDaggerPresenter<MitraParen
     @Override
     public void onAccountMenuClicked() {
         if (userSession.isLoggedIn()) {
+            getView().hideToolbarLogo();
+            getView().setToolbarTitle(R.string.mitra_account_toolbar_title);
             getView().inflateAccountFragment();
             getView().setAccountMenuSelected();
         } else {
@@ -43,7 +47,15 @@ public class MitraParentHomepagePresenter extends BaseDaggerPresenter<MitraParen
 
     @Override
     public void onHelpMenuClicked() {
+        getView().showToolbarLogo();
+        getView().hideToolbarTitle();
         getView().inflateHelpFragment();
         getView().setHelpMenuSelected();
+    }
+
+    @Override
+    public void onViewCreated() {
+        getView().hideToolbarTitle();
+        getView().showToolbarLogo();
     }
 }

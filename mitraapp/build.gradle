@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 def getDpiId(String density) {
 
@@ -252,6 +253,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.location
 
+    compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     //next iteration it would be defined in dependecies.gradle please FU Core Team
     testImplementation "org.robolectric:robolectric:3.8"
     testImplementation "org.robolectric:multidex:3.4.2"

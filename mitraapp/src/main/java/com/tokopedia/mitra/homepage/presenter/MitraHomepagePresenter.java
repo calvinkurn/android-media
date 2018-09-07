@@ -29,7 +29,6 @@ public class MitraHomepagePresenter extends BaseDaggerPresenter<MitraHomepageCon
     public void onLoginResultReceived() {
         if (userSession.isLoggedIn()) {
             getView().hideLoginContainer();
-            //TODO : FETCH STATUS AGENT
         } else {
             getView().showMessageInRedSnackBar(R.string.mitra_homepage_login_failed_error_message);
         }

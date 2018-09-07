@@ -1,5 +1,7 @@
 package com.tokopedia.mitra.account.contract;
 
+import android.support.annotation.StringRes;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 
@@ -12,7 +14,17 @@ public interface MitraAccountContract {
 
         void showLogoutConfirmationDialog();
 
-        void navigateToLogin();
+        void navigateToHomepage();
+
+        void showLogoutLoading();
+
+        void hideAccountPage();
+
+        void hideLogoutLoading();
+
+        void showAccountPage();
+
+        void showLogoutErrorMessage(@StringRes int resId);
     }
 
     interface Presenter extends CustomerPresenter<View> {

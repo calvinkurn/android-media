@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -28,6 +31,8 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
     private static final int REQUEST_CODE_LOGIN_THEN_ACCOUNT = 1001;
 
     private BottomNavigation homeNavigation;
+    private AppCompatTextView parentToolbarTitle;
+    private AppCompatImageView parentToolbarLogo;
 
     @Inject
     MitraParentHomepagePresenter presenter;
@@ -48,8 +53,11 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
         initInjector();
         setupToolbar();
         homeNavigation = findViewById(R.id.mitra_bottom_nav);
+        parentToolbarLogo = findViewById(R.id.parent_toolbar_logo);
+        parentToolbarTitle = findViewById(R.id.parent_toolbar_title);
         homeNavigation.setOnNavigationItemSelectedListener(this);
         presenter.attachView(this);
+        presenter.onViewCreated();
     }
 
     private void initInjector() {
@@ -125,6 +133,27 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
     @Override
     public void setHelpMenuSelected() {
         setSelectedNavigationMenu(R.id.menu_mitra_help);
+    }
+
+    @Override
+    public void hideToolbarLogo() {
+        parentToolbarLogo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setToolbarTitle(int resId) {
+        parentToolbarTitle.setVisibility(View.VISIBLE);
+        parentToolbarTitle.setText(resId);
+    }
+
+    @Override
+    public void showToolbarLogo() {
+        parentToolbarLogo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideToolbarTitle() {
+        parentToolbarTitle.setVisibility(View.GONE);
     }
 
     private void setSelectedNavigationMenu(int itemId) {

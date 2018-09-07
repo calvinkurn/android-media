@@ -23,6 +23,14 @@ public interface MitraParentHomepageContract {
         void inflateHelpFragment();
 
         void setHelpMenuSelected();
+
+        void hideToolbarLogo();
+
+        void setToolbarTitle(@StringRes int resId);
+
+        void showToolbarLogo();
+
+        void hideToolbarTitle();
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -34,5 +42,7 @@ public interface MitraParentHomepageContract {
         void onLoginFromAccountResultReceived();
 
         void onHelpMenuClicked();
+
+        void onViewCreated();
     }
 }
