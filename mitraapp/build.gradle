@@ -68,6 +68,12 @@ buildscript {
 }
 
 android {
+    testOptions {
+        unitTests {
+            returnDefaultValues = true
+            includeAndroidResources = true
+        }
+    }
     project.ext {
         defaultVersionCode = 1000404;
         defaultVersionName = "1.0.4";
@@ -213,16 +219,19 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
+    implementation project(rootProject.ext.libraries.design)
+    implementation project(rootProject.ext.libraries.userSession)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.imageuploader)
-    implementation project(rootProject.ext.features.session)
 
+    implementation project(rootProject.ext.features.session)
     implementation project(rootProject.ext.features.commonDigital)
+    implementation project(rootProject.ext.features.logout)
 
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.supportLibDependencies.design
-
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.networkDependencies.retrofit
@@ -230,6 +239,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.adapterRxJava
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
+    implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
     // this is for graphql usecase
@@ -241,5 +251,22 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.location
-}
 
+    //next iteration it would be defined in dependecies.gradle please FU Core Team
+    testImplementation "org.robolectric:robolectric:3.8"
+    testImplementation "org.robolectric:multidex:3.4.2"
+    // https://mvnrepository.com/artifact/org.robolectric/shadows-framework
+    testImplementation group: 'org.robolectric', name: 'shadows-framework', version: '3.8'
+//    testImplementation group: 'org.robolectric', name: 'shadows-support-v4', version: '3.4-rc2'
+
+
+    testAnnotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+    testImplementation rootProject.ext.miscDependencies.dagger
+
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+
+
+    //next iteration should remove this after session revamped
+    implementation project(rootProject.ext.features.core)
+}

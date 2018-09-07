@@ -27,6 +27,7 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.district_recommendation.domain.model.Address;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
@@ -422,7 +423,11 @@ public class FragmentEditShipping extends Fragment implements EditShippingViewLi
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (isAdded() && getActivity() != null) {
-            getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            if(GlobalConfig.isCustomerApp()) {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn_black, menu);
+            } else {
+                getActivity().getMenuInflater().inflate(R.menu.save_btn, menu);
+            }
             MenuItem item = menu.findItem(R.id.action_send);
             item.setTitle(getString(R.string.title_action_save_shipping));
         }

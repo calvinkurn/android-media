@@ -16,6 +16,7 @@ import com.tokopedia.digital_deals.view.contractor.AllBrandsContract;
 import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Page;
 import com.tokopedia.digital_deals.view.model.response.AllBrandsResponse;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -28,11 +29,10 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
-;
-
 public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.View>
         implements AllBrandsContract.Presenter {
 
+    private DealsAnalytics dealAnalytics;
     private boolean isLoading;
     private boolean isLastPage;
     public final static String TAG = "url";
@@ -46,9 +46,10 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
 
     @Inject
-    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase) {
+    public AllBrandsPresenter(GetAllBrandsUseCase getAllBrandsUseCase, GetNextBrandPageUseCase getNextBrandPageUseCase, DealsAnalytics dealsAnalytics) {
         this.getAllBrandsUseCase = getAllBrandsUseCase;
         this.getNextAllBrandPageUseCase = getNextBrandPageUseCase;
+        this.dealAnalytics = dealsAnalytics;
     }
 
     @Override
@@ -183,12 +184,12 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
         List<Brand> brandModels = new ArrayList<>();
         if (brands != null) {
             for (Brand brand : brands) {
-                if (brand.getTitle().trim().toLowerCase().contains(searchText.trim().toLowerCase())) {
+                if (!TextUtils.isEmpty(brand.getTitle()) && brand.getTitle().trim().toLowerCase().contains(searchText.trim().toLowerCase())) {
                     brandModels.add(brand);
                 }
             }
         }
-        getView().renderBrandList(brandModels, SEARCH_SUBMITTED);
+        getView().renderBrandList(brandModels, SEARCH_SUBMITTED, true);
     }
 
     @Override
@@ -213,4 +214,11 @@ public class AllBrandsPresenter extends BaseDaggerPresenter<AllBrandsContract.Vi
 
     }
 
+    public void sendEventClick(String action, String label) {
+        dealAnalytics.sendEventDealsDigitalClick(action, label);
+    }
+
+    public void sendEventView(String action, String label) {
+        dealAnalytics.sendEventDealsDigitalView(action, label);
+    }
 }

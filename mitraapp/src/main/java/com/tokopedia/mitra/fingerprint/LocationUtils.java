@@ -18,6 +18,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.mitra.MitraApplication;
 
 /**
  * Created by Rizky on 31/08/18.

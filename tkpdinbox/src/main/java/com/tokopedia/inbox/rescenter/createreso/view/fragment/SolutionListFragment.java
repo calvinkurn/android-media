@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,14 +32,21 @@ import com.tokopedia.inbox.rescenter.createreso.view.adapter.SolutionListAdapter
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListAdapterListener;
 import com.tokopedia.inbox.rescenter.createreso.view.listener.SolutionListFragmentListener;
 import com.tokopedia.inbox.rescenter.createreso.view.presenter.SolutionListFragmentPresenter;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemOrderResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.EditAppealSolutionModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.FreeReturnViewModel;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionComplaintModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionResponseViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.solution.SolutionViewModel;
 import com.tokopedia.inbox.rescenter.di.DaggerResolutionComponent;
 import com.tokopedia.inbox.rescenter.utils.CurrencyFormatter;
 import com.tokopedia.inbox.util.analytics.InboxAnalytics;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,12 +66,13 @@ public class SolutionListFragment extends BaseDaggerFragment
     ResultViewModel resultViewModel;
     EditAppealSolutionModel editAppealSolutionModel;
     FreeReturnViewModel freeReturnViewModel;
+    SolutionResponseViewModel solutionResponseViewModel;
 
 
     RecyclerView rvSolution;
     SolutionListAdapter adapter;
-    LinearLayout llFreeReturn, llSolution;
-    TextView tvFreeReturn;
+    LinearLayout llFreeReturn, llSolution, llCurrentSolution;
+    TextView tvFreeReturn, tvCurrentSolution;
     ProgressBar progressBar;
 
     boolean isEditAppeal;
@@ -105,11 +114,14 @@ public class SolutionListFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_solution_list, container, false);
         rvSolution = (RecyclerView) view.findViewById(R.id.rv_solution);
+        llCurrentSolution = (LinearLayout) view.findViewById(R.id.ll_current_solution);
+        tvCurrentSolution = (TextView) view.findViewById(R.id.tv_current_solution);
         llFreeReturn = (LinearLayout) view.findViewById(R.id.ll_free_return);
         tvFreeReturn = (TextView) view.findViewById(R.id.tv_free_return);
         llSolution = (LinearLayout) view.findViewById(R.id.solution_layout);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
         llFreeReturn.setVisibility(View.GONE);
+        llCurrentSolution.setVisibility(View.GONE);
         presenter.attachView(this);
         return view;
     }
@@ -161,21 +173,76 @@ public class SolutionListFragment extends BaseDaggerFragment
     }
 
     @Override
+    public boolean showCheckOnItem(int solutionId) {
+        return solutionId == (resultViewModel != null ? resultViewModel.solution : solutionResponseViewModel.getCurrentSolution().getId());
+    }
+
+    @Override
     public void showSuccessGetSolution(SolutionResponseViewModel solutionResponseViewModel) {
         hideLoading();
+        if (solutionResponseViewModel.getCurrentSolution() != null) {
+            llCurrentSolution.setVisibility(View.VISIBLE);
+            if (solutionResponseViewModel.getCurrentSolution().getAmount() != null) {
+                tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage()
+                        .replace(
+                                getActivity().getResources().getString(R.string.string_return_value),
+                                solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()));
+            } else {
+                tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage());
+            }
+        }
+        if (isEditAppeal) {
+            editAppealSolutionModel.name = solutionResponseViewModel.getCurrentSolution().getName();
+            editAppealSolutionModel.solutionName = solutionResponseViewModel.getCurrentSolution().getMessage();
+            editAppealSolutionModel.complaints =
+                    convertComplaintResults(solutionResponseViewModel.getComplaints());
+        }
         llSolution.setVisibility(View.VISIBLE);
+        this.solutionResponseViewModel = solutionResponseViewModel;
         presenter.updateLocalData(solutionResponseViewModel);
         populateDataToView(solutionResponseViewModel);
     }
 
+    private List<ComplaintResult> convertComplaintResults(List<SolutionComplaintModel> dataList) {
+        List<ComplaintResult> resultList = new ArrayList<>();
+        for (SolutionComplaintModel data : dataList) {
+            ComplaintResult complaintResult = new ComplaintResult();
+            ProblemResult problemResult = new ProblemResult();
+            ProblemOrderResult orderResult = new ProblemOrderResult();
+            if (data.getOrder() != null) {
+                orderResult.detail.id = data.getOrder().getDetail().getId();
+                problemResult.id = data.getOrder().getDetail().getId();
+            }
+            problemResult.name = data.getProblem().getName();
+            problemResult.type = data.getProblem().getType();
+            problemResult.trouble = data.getProblem().getTrouble();
+            problemResult.quantity = data.getProblem().getQty();
+            problemResult.amount = data.getProblem().getAmount().getInteger();
+            problemResult.remark = data.getProblem().getRemark();
+
+            complaintResult.problem = problemResult;
+            complaintResult.order = orderResult;
+            resultList.add(complaintResult);
+        }
+        return resultList;
+    }
+
     @Override
     public void moveToSolutionDetail(SolutionViewModel solutionViewModel) {
-        Intent intent = new Intent(getActivity(), SolutionDetailActivity.class);
-        intent.putExtra(SOLUTION_DATA, solutionViewModel);
+        Intent intent;
+        solutionResponseViewModel.setSelectedSolution(solutionViewModel);
         if (resultViewModel != null) {
-            intent.putExtra(RESULT_VIEW_MODEL_DATA, resultViewModel);
+            intent = SolutionDetailActivity.getCreateInstance(
+                    getActivity(),
+                    resultViewModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         } else {
-            intent.putExtra(EDIT_APPEAL_MODEL_DATA, editAppealSolutionModel);
+            intent = SolutionDetailActivity.getEditInstance(
+                    getActivity(),
+                    editAppealSolutionModel,
+                    solutionViewModel,
+                    solutionResponseViewModel);
         }
         startActivityForResult(intent, REQUEST_SOLUTION);
     }
@@ -263,13 +330,19 @@ public class SolutionListFragment extends BaseDaggerFragment
         dialog.setContentView(R.layout.layout_edit_solution);
         TextView tvTitle = (TextView) dialog.findViewById(R.id.tv_title);
         TextView tvMessage = (TextView) dialog.findViewById(R.id.tv_message);
+        TextView tvMessage2 = (TextView) dialog.findViewById(R.id.tv_message_2);
         TextView tvSolution = (TextView) dialog.findViewById(R.id.tv_solution);
         ImageView ivClose = (ImageView) dialog.findViewById(R.id.iv_close);
         Button btnBack = (Button) dialog.findViewById(R.id.btn_back);
         Button btnEditSolution = (Button) dialog.findViewById(R.id.btn_edit_solution);
-
-        updateSolutionString(solutionViewModel, tvSolution);
-
+        if (solutionResponseViewModel.getMessage() != null) {
+            tvMessage2.setVisibility(View.VISIBLE);
+            tvSolution.setVisibility(View.GONE);
+            tvMessage.setVisibility(View.GONE);
+            tvMessage2.setText(updateSolutionString(solutionViewModel));
+        } else {
+            tvSolution.setText(updateSolutionString(solutionViewModel));
+        }
         if (editAppealSolutionModel.isEdit) {
             tvTitle.setText(getActivity().getString(R.string.string_edit_title));
             tvMessage.setText(getActivity().getString(R.string.string_edit_message));
@@ -278,37 +351,36 @@ public class SolutionListFragment extends BaseDaggerFragment
             tvMessage.setText(getActivity().getString(R.string.string_appeal_message));
         }
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-        ivClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
+        btnBack.setOnClickListener(view -> dialog.dismiss());
+        ivClose.setOnClickListener(view -> dialog.dismiss());
 
-        btnEditSolution.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showLoading();
-                presenter.submitEditAppeal(solutionViewModel);
-                dialog.dismiss();
-            }
+        btnEditSolution.setOnClickListener(view -> {
+            showLoading();
+            presenter.submitEditAppeal(solutionViewModel);
+            dialog.dismiss();
         });
 
         dialog.show();
     }
 
-    public void updateSolutionString(SolutionViewModel solutionViewModel, TextView textView) {
-        textView.setText(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
-                solutionViewModel.getSolutionName().replace(
-                        getActivity().getResources().getString(R.string.string_return_value),
-                        CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
-                solutionViewModel.getName());
+    public Spanned updateSolutionString(SolutionViewModel solutionViewModel) {
+        Spanned text;
+        if (solutionResponseViewModel.getMessage() == null) {
+            text = MethodChecker.fromHtml(solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+                    solutionViewModel.getSolutionName().replace(
+                            getActivity().getResources().getString(R.string.string_return_value),
+                            CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
+                    solutionViewModel.getName());
+        } else {
+            text = MethodChecker.fromHtml(solutionResponseViewModel.getMessage().getMessage().replace(
+                    getActivity().getResources().getString(R.string.string_solution_message),
+                    solutionViewModel.getAmount() != null && solutionViewModel.getSolutionName() != null ?
+                            solutionViewModel.getSolutionName().replace(
+                                    getActivity().getResources().getString(R.string.string_return_value),
+                                    CurrencyFormatter.formatDotRupiah(solutionViewModel.getAmount().getIdr())) :
+                            solutionViewModel.getName()));
+        }
+        return text;
     }
 
     @Override

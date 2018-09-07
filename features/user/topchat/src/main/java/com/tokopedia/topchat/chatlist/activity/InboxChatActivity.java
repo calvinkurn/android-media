@@ -2,8 +2,6 @@ package com.tokopedia.topchat.chatlist.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,8 +9,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,11 +16,10 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
-import com.tokopedia.core.customView.TextDrawable;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.NotificationReceivedListener;
@@ -35,21 +30,20 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
-import com.tokopedia.topchat.common.InboxMessageConstant;
-import com.tokopedia.topchat.common.TopChatRouter;
-import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 import com.tokopedia.topchat.chatlist.adapter.IndicatorAdapter;
-import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.chatlist.fragment.InboxChatFragment;
 import com.tokopedia.topchat.chatlist.viewmodel.IndicatorItem;
+import com.tokopedia.topchat.chatroom.view.listener.ChatNotifInterface;
+import com.tokopedia.topchat.common.InboxMessageConstant;
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
+import com.tokopedia.topchat.common.util.SpaceItemDecoration;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
 
-public class InboxChatActivity extends DrawerPresenterActivity
+public class InboxChatActivity extends BaseTemporaryDrawerActivity
         implements InboxMessageConstant, NotificationReceivedListener, HasComponent,
         ChatNotifInterface, IndicatorAdapter.OnIndicatorClickListener {
 
@@ -93,6 +87,16 @@ public class InboxChatActivity extends DrawerPresenterActivity
         taskStackBuilder.addNextIntent(homeIntent);
         taskStackBuilder.addNextIntent(channelListIntent);
         return taskStackBuilder;
+    }
+
+    public static Intent getCallingIntent(Context context) {
+        return new Intent(context, InboxChatActivity.class);
+    }
+
+    public static Intent getChannelCallingIntent(Context context) {
+        Intent intent = new Intent(context, InboxChatActivity.class);
+        intent.putExtra(ACTIVE_INDICATOR_POSITION, POSITION_GROUP_CHAT);
+        return intent;
     }
 
     @Override
@@ -225,18 +229,17 @@ public class InboxChatActivity extends DrawerPresenterActivity
     public void onSuccessGetTopChatNotification(int notifUnreads) {
 
         if (notifUnreads > 0) {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(String.format(getString(R.string.chat_title), notifUnreads));
+            setTitleToolbar(String.format(getString(R.string.chat_title), notifUnreads));
         } else {
-            TextView titleTextView = (TextView) toolbar.findViewById(R.id.actionbar_title);
-            titleTextView.setText(getString(R.string.chat_title_without_notif));
+            setTitleToolbar(getString(R.string.chat_title_without_notif));
         }
 
         indicatorAdapter.setNotification(POSITION_TOP_CHAT, notifUnreads);
     }
 
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, InboxChatActivity.class);
+    private void setTitleToolbar(String titleToolbar) {
+        TextView titleTextView = toolbar.findViewById(R.id.actionbar_title);
+        titleTextView.setText(titleToolbar);
     }
 
     @Override
@@ -295,12 +298,6 @@ public class InboxChatActivity extends DrawerPresenterActivity
         }
         fragmentTransaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         fragmentTransaction.commit();
-    }
-
-    public static Intent getChannelCallingIntent(Context context) {
-        Intent intent = new Intent(context, InboxChatActivity.class);
-        intent.putExtra(ACTIVE_INDICATOR_POSITION, POSITION_GROUP_CHAT);
-        return intent;
     }
 
     public void hideIndicators() {

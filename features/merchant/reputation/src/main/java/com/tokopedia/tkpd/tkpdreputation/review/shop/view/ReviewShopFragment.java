@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -242,7 +241,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onErrorPostLikeDislike(Throwable e) {
+    public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 

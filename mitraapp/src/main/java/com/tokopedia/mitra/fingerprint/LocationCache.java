@@ -4,7 +4,7 @@ import android.content.Context;
 import android.location.Location;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.mitra.MitraApplication;
 
 /**
  * Created by Rizky on 31/08/18.
