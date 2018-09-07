@@ -40,6 +40,8 @@ public class UserSession {
     private static final String REFRESH_TOKEN_KEY = "REFRESH_TOKEN_KEY";
     private static final String KEY_IV = "tokopedia1234567";
     private static final String TOKEN_TYPE = "TOKEN_TYPE";
+    private static final String IS_FIRST_TIME_USER = "IS_FIRST_TIME";
+    private static final String IS_FIRST_TIME_USER_NEW_ONBOARDING = "IS_FIRST_TIME_NEW_ONBOARDING";
 
     private Context context;
 
@@ -259,6 +261,38 @@ public class UserSession {
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(ACCESS_TOKEN, accessToken);
         editor.putString(TOKEN_TYPE, tokenType);
+        editor.apply();
+    }
+
+    public static boolean isFirstTimeUser(Context context) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
+    }
+
+    public static boolean setFirstTimeUser(Context context, boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER, isFirstTime).commit();
+    }
+
+    public static boolean setFirstTimeUserNewOnboard(Context context, boolean isFirstTime) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        return sharedPreferences.edit().putBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, isFirstTime).commit();
+    }
+
+    public void logoutSession() {
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putString(LOGIN_ID, null);
+        editor.putString(FULL_NAME, null);
+        editor.putString(SHOP_ID, null);
+        editor.putString(SHOP_NAME, null);
+        editor.putBoolean(IS_LOGIN, false);
+        editor.putBoolean(IS_MSISDN_VERIFIED, false);
+        editor.putString(PHONE_NUMBER, null);
+        editor.putString(REFRESH_TOKEN, null);
+        editor.putString(TOKEN_TYPE, null);
+        editor.putString(ACCESS_TOKEN, null);
+        editor.putString(PROFILE_PICTURE, null);
         editor.apply();
     }
 }

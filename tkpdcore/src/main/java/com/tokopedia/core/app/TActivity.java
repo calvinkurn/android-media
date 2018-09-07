@@ -15,6 +15,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.router.discovery.BrowseProductRouter;
 import com.tokopedia.core.router.transactionmodule.TransactionCartRouter;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
 
 /**
@@ -109,8 +110,6 @@ public abstract class TActivity extends BaseActivity {
         return true;
     }
 
-
-
     public void inflateView(int layoutId) {
         if (parentView != null) getLayoutInflater().inflate(layoutId, parentView);
     }
@@ -119,7 +118,7 @@ public abstract class TActivity extends BaseActivity {
         getSupportActionBar().hide();
     }
 
-    private void setLightToolbarStyle() {
+    protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);
@@ -140,7 +139,8 @@ public abstract class TActivity extends BaseActivity {
                 .WebViewToolbarSubtitleText);
     }
 
+    // for global nav purpose
     protected boolean isLightToolbarThemes() {
-        return false;
+        return GlobalConfig.isCustomerApp();
     }
 }

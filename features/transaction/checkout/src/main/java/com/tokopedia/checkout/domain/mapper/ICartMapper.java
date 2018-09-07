@@ -7,6 +7,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
 import com.tokopedia.transactiondata.entity.response.deletecart.DeleteCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.resetcart.ResetCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataResponse;
@@ -18,6 +19,8 @@ import com.tokopedia.transactiondata.entity.response.updatecart.UpdateCartDataRe
 public interface ICartMapper {
 
     CartListData convertToCartItemDataList(Context context, CartDataListResponse cartDataListResponse);
+
+    CartListData convertToCartItemDataList(Context context, CartMultipleAddressDataListResponse cartDataListResponse);
 
     DeleteCartData convertToDeleteCartData(DeleteCartDataResponse deleteCartDataResponse);
 

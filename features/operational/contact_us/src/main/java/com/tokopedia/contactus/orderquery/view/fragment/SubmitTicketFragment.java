@@ -1,12 +1,8 @@
 package com.tokopedia.contactus.orderquery.view.fragment;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,8 +18,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +29,7 @@ import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.R2;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.contactus.orderquery.data.ImageUpload;
 import com.tokopedia.contactus.orderquery.data.SubmitTicketInvoiceData;
 import com.tokopedia.contactus.orderquery.di.DaggerOrderQueryComponent;
@@ -43,17 +37,13 @@ import com.tokopedia.contactus.orderquery.di.OrderQueryComponent;
 import com.tokopedia.contactus.orderquery.view.adapter.ImageUploadAdapter;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketContract;
 import com.tokopedia.contactus.orderquery.view.presenter.SubmitTicketPresenter;
-import com.tokopedia.core.GalleryBrowser;
-import com.tokopedia.core.ImageGallery;
 import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.RequestPermissionUtil;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder;
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -62,9 +52,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/**
- * Created by sandeepgoyal on 16/04/18.
- */
 public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTicketContract.View, ImageUploadAdapter.OnSelectImageClick {
 
     private static final int REQUEST_CODE_IMAGE = 1001;
@@ -106,7 +93,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         return fragment;
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.layout_invoice_form, container, false);
@@ -117,12 +104,12 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
         imageUploadAdapter = new ImageUploadAdapter(getContext(),this);
         rvSelectedImages.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rvSelectedImages.setAdapter(imageUploadAdapter);
-        edtQuery.addTextChangedListener(watcher(edtQuery));
+        edtQuery.addTextChangedListener(watcher());
         return view;
 
     }
 
-    private TextWatcher watcher(final EditText editText) {
+    private TextWatcher watcher() {
         return new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -253,21 +240,15 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void setSnackBarErrorMessage(String hello) {
         final Snackbar snackbar = Snackbar.make(constraint_layout, hello, Snackbar.LENGTH_INDEFINITE);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-        TextView textView = (TextView) layout.findViewById(android.support.design.R.id.snackbar_text);
+        TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
         textView.setVisibility(View.INVISIBLE);
 
-// Inflate our custom view
         LayoutInflater inflater = LayoutInflater.from(getContext());
-        View snackView = inflater.inflate(R.layout.snackbar_error_layout, null);
+        View snackView = inflater.inflate(R.layout.snackbar_error_layout, layout);
         TextView tv = snackView.findViewById(R.id.tv_msg);
         tv.setText(hello);
         TextView okbtn = snackView.findViewById(R.id.snack_ok);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackbar.dismiss();
-            }
-        });
+        okbtn.setOnClickListener(view -> snackbar.dismiss());
         layout.addView(snackView, 0);
         layout.setPadding(0, 0, 0, 0);
         snackbar.show();
@@ -336,8 +317,7 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public void onOkClick() {
         ContactUsTracking.eventOkClick();
         submitSuccess.setVisibility(View.GONE);
-        Intent intent = new Intent(getActivity(), InboxTicketActivity.class);
-        getActivity().startActivity(new Intent(getActivity(), InboxTicketActivity.class));
+        getActivity().startActivity(new Intent(getActivity(), InboxListActivity.class));
         LocalBroadcastManager manager = LocalBroadcastManager.getInstance(getActivity());
         manager.sendBroadcast(new Intent(ContactUsModuleRouter.ACTION_CLOSE_ACTIVITY));
     }
@@ -350,23 +330,15 @@ public class SubmitTicketFragment extends BaseDaggerFragment implements SubmitTi
     public boolean onBackPressed() {
         if (imageUploadAdapter.getItemCount() > 1) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setTitle(getString(R.string.title_dialog_wrong_scan));
+            builder.setTitle(getString(R.string.inbox_title_dialog_wrong_scan));
             builder.setMessage("Pesan Anda akan hilang jika menutup halaman ini, Anda yakin?");
-            builder.setNegativeButton(getString(R.string.batal),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int i) {
-                            dialog.dismiss();
-                            //presenter.onRetryClick();
-                        }
+            builder.setNegativeButton(getString(R.string.inbox_cancel),
+                    (dialog, i) -> {
+                        dialog.dismiss();
+                        //presenter.onRetryClick();
                     });
-            builder.setPositiveButton(getString(R.string.keular),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            getActivity().finish();
-                        }
-                    }).create().show();
+            builder.setPositiveButton(getString(R.string.inbox_exit),
+                    (dialogInterface, i) -> getActivity().finish()).create().show();
             return true;
         } else {
             return false;

@@ -230,7 +230,7 @@ public class ManagePaymentOptionsPresenter extends BaseDaggerPresenter<ManagePay
             @Override
             public void onNext(TokoCashData tokoCashData) {
                 if (tokoCashData != null
-                        && tokoCashData.getLink() == 1) {
+                        && tokoCashData.getLink()) {
                     CommonUtils.dumper("ManagePaymentOptionsPresenter :: tokocash balance == " + tokoCashData.getBalance());
 
                     tokoCashBalance = tokoCashData.getBalance();

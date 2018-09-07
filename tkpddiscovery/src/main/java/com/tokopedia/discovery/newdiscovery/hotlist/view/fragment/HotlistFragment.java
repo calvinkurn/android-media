@@ -29,6 +29,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.product.model.share.ShareData;
@@ -56,6 +57,7 @@ import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistHeaderView
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentContract;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.presenter.HotlistFragmentPresenter;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -87,7 +89,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.WIHSLI
  * Created by hangnadi on 10/6/17.
  */
 
-public class HotlistFragment extends SearchSectionFragment
+public class HotlistFragment extends BrowseSectionFragment
         implements
         HotlistFragmentContract.View,
         RefreshHandler.OnRefreshHandlerListener, SearchSectionGeneralAdapter.OnItemChangeView,
@@ -792,8 +794,13 @@ public class HotlistFragment extends SearchSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 

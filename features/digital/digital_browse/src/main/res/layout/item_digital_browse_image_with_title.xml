@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_8">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/iv_product"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        tools:src="@drawable/status_no_result" />
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_product"
+        style="@style/TextView.Micro"
+        android:layout_width="@dimen/dp_72"
+        android:layout_height="wrap_content"
+        android:ellipsize="none"
+        android:gravity="center"
+        android:maxLines="2"
+        android:scrollHorizontally="false"
+        android:singleLine="false"
+        tools:text="Fashion wanita" />
+
+
+</LinearLayout>

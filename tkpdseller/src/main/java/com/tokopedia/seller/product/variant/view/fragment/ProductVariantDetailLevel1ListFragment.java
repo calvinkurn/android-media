@@ -12,12 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.product.manage.item.main.base.data.model.VariantPictureViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.common.widget.VerticalLabelView;
-import com.tokopedia.seller.product.edit.constant.CurrencyTypeDef;
-import com.tokopedia.seller.product.edit.view.model.edit.VariantPictureViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantcombination.ProductVariantCombinationViewModel;
-import com.tokopedia.seller.product.variant.data.model.variantbyprd.variantoption.ProductVariantOptionChild;
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef;
 import com.tokopedia.seller.product.variant.view.adapter.ProductVariantDetailLevel1ListAdapter;
 import com.tokopedia.seller.product.variant.view.widget.VariantImageView;
 

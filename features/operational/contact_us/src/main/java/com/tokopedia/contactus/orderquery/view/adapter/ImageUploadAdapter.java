@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.contactus.R;
@@ -32,21 +33,14 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     private static final int VIEW_UPLOAD_BUTTON = 100;
     private int maxPicUpload = 5;
 
-    public ArrayList<ImageUpload> getImageUpload() {
-        ArrayList<ImageUpload> imageList = new ArrayList<>();
-        for(int i =0 ;i< imageUpload.size()-1;i++) {
-            imageList.add(imageUpload.get(i));
-        }
-        return imageList;
-    }
-
-    ArrayList<ImageUpload> imageUpload = new ArrayList<>();
+    private ArrayList<ImageUpload> imageUpload;
 
     private Context context;
 
     public ImageUploadAdapter(Context context, OnSelectImageClick onSelectImageClick) {
         this.context = context;
         this.onSelectImageClick = onSelectImageClick;
+        imageUpload = new ArrayList<>();
         imageUpload.add(new ImageUpload());
     }
 
@@ -58,35 +52,40 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
 
     @Override
     public void onBindViewHolder(ImageViewHolder holder, int position) {
-        ImageUpload image = imageUpload.get(position);
-        if (getItemViewType(position) != VIEW_UPLOAD_BUTTON) {
-            image.setImgSrc(-1);
-        } else {
-            image.setImgSrc(R.drawable.ic_upload);
-        }
-        holder.setImage(image);
+        holder.setImage(imageUpload.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (imageUpload.size() >= maxPicUpload) {
-            return maxPicUpload;
-        }
         return imageUpload.size();
     }
 
     public void addImage(ImageUpload image) {
-        imageUpload.add(imageUpload.size()-1, image);
-        notifyDataSetChanged();
+        if (imageUpload.size() < maxPicUpload) {
+            image.setImgSrc(-1);
+            imageUpload.add(imageUpload.size() - 1, image);
+            notifyDataSetChanged();
+        } else if (imageUpload.size() == maxPicUpload && imageUpload.get(maxPicUpload - 1).getImgSrc() != -1) {
+            imageUpload.remove(imageUpload.size() - 1);
+            image.setImgSrc(-1);
+            imageUpload.add(image);
+            notifyDataSetChanged();
+            Toast.makeText(context, R.string.max_image_warning, Toast.LENGTH_SHORT).show();
+        }
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        if (position == imageUpload.size() - 1) {
-            return VIEW_UPLOAD_BUTTON;
-        } else {
-            return super.getItemViewType(position);
+    public ArrayList<ImageUpload> getImageUpload() {
+        ArrayList<ImageUpload> imageList = new ArrayList<>();
+        for (ImageUpload image : imageUpload) {
+            if (image.getImgSrc() == -1)
+                imageList.add(image);
         }
+        return imageList;
+    }
+
+    public void clearAll() {
+        imageUpload.clear();
+        imageUpload.add(new ImageUpload());
     }
 
     class ImageViewHolder extends RecyclerView.ViewHolder {
@@ -116,13 +115,21 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
                 });
             } else {
                 ImageHandler.loadImageFromFile(context, selectedImage, new File(image.getFileLoc()));
+                selectedImage.setOnClickListener(null);
                 deleteImage.setVisibility(View.VISIBLE);
             }
         }
 
         @OnClick(R2.id.delete_image)
         public void onViewClicked() {
-            imageUpload.remove(image);
+            if (imageUpload.size() == maxPicUpload) {
+                ImageUpload lastImg = imageUpload.get(getAdapterPosition());
+                if (lastImg.getImgSrc() == -1) {
+                    lastImg.setImgSrc(R.drawable.ic_upload);
+                }
+            } else {
+                imageUpload.remove(image);
+            }
             notifyDataSetChanged();
         }
 

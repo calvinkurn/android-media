@@ -27,6 +27,10 @@ import com.tokopedia.core.var.TkpdState;
 
 import java.util.ArrayList;
 
+/**
+ * Moved to AccountSettingActivity
+ */
+@Deprecated
 public class ManagePeople extends TkpdActivity {
 
     private static int REQUEST_ADD_PASSWORD = 1234;
@@ -170,10 +174,9 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
                                     .getChangePasswordIntent(getActivity());
                             startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
-
                         } else {
                             intentToAddPassword();
                         }
@@ -219,7 +222,7 @@ public class ManagePeople extends TkpdActivity {
                         break;
                     case 5:
                         if (sessionHandler.isHasPassword()) {
-                            intent = ((TkpdCoreRouter) getActivity().getApplication())
+                            intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
                                     .getChangePasswordIntent(getActivity());
                             startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                         } else {
