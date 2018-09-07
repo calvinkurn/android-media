@@ -223,6 +223,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
+import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -1738,6 +1739,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<WalletModel> getTokoCashAccountBalance() {
+        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+                .getTokoCashAccountBalance();
+    }
+
+    @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
@@ -2623,11 +2630,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getManagePasswordIntent(Context context) {
-        return new Intent(context, ManagePasswordActivity.class);
-    }
-
-    @Override
     public Intent getManageAddressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
     }
@@ -2667,11 +2669,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageShopProduct(Context context) {
         goToManageProduct(context);
-    }
-
-    @Override
-    public void goToManageBankAccount(Context context) {
-        context.startActivity(new Intent(context, ManagePeopleBankActivity.class));
     }
 
     @Override

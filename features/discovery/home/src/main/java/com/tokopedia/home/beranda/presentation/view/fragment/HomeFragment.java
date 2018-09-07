@@ -387,7 +387,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
-        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this, this);
+        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getChildFragmentManager(), this, this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -623,12 +623,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onRefresh();
-                        }
-                    });
+                    messageSnackbar =  NetworkErrorHelper.createSnackbarWithAction(
+                            root, getString(com.tokopedia.core.R.string.msg_network_error),
+                            () -> onRefresh()
+                    );
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
