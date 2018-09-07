@@ -108,6 +108,10 @@ searchProduct(params: $params) {
             total_data
             val_max
             val_min
+            key_min
+            key_max
+            metric
+            is_popular
             hex_color
             child {
               key
