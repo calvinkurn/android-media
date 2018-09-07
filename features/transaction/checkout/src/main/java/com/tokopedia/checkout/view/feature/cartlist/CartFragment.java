@@ -152,7 +152,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public void onDetach() {
+    public void onStop() {
         if (getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
             Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
             service.putParcelableArrayListExtra(
@@ -160,7 +160,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             );
             getActivity().startService(service);
         }
-        super.onDetach();
+        super.onStop();
     }
 
     @Override
