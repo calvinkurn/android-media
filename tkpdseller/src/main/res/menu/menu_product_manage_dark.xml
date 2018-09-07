@@ -11,11 +11,13 @@
             <item
                 android:id="@+id/label_view_add_image"
                 app:showAsAction="never"
-                android:title="@string/add_product_text_description"/>
+                android:title="@string/add_product_text_description"
+                android:background="@android:color/transparent"/>
             <item
                 android:id="@+id/label_view_import_from_instagram"
                 app:showAsAction="never"
-                android:title="@string/import_from_instagram_to_draft"/>
+                android:title="@string/import_from_instagram_to_draft"
+                android:background="@android:color/transparent"/>
         </menu>
     </item>
 
