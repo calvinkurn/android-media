@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -14,7 +15,8 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <android.support.design.widget.CollapsingToolbarLayout
                 android:id="@+id/collapsing_toolbar"
@@ -31,20 +33,17 @@
                 <RelativeLayout
                     android:id="@+id/fl_header"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="@dimen/dp_200">
 
                     <ImageView
                         android:id="@+id/image_challenge"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:adjustViewBounds="true"
-                        android:background="@drawable/placeholder_image_bg"
-                        android:maxHeight="@dimen/dp_200"
-                        android:scaleType="fitCenter" />
+                        android:layout_height="@dimen/dp_200"
+                        android:scaleType="centerCrop" />
 
                     <ImageView
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="@dimen/dp_200"
                         android:layout_alignBottom="@+id/image_challenge"
                         android:layout_alignTop="@+id/image_challenge"
                         android:background="@drawable/background_blur_header" />
@@ -190,10 +189,11 @@
                         </RelativeLayout>
 
 
-                        <android.support.constraint.ConstraintLayout
+                        <LinearLayout
                             android:id="@+id/cl_about"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             app:layout_constraintTop_toBottomOf="@+id/cl_expiry">
 
                             <View
@@ -222,7 +222,7 @@
                             <TextView
                                 android:id="@+id/short_description"
                                 style="@style/TextView.Small.Black40"
-                                android:layout_width="0dp"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/dp_16"
                                 android:layout_marginRight="@dimen/dp_16"
@@ -256,13 +256,14 @@
                                 android:text="@string/see_more"
                                 app:layout_constraintLeft_toLeftOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/markdownView" />
-                        </android.support.constraint.ConstraintLayout>
+                        </LinearLayout>
 
 
-                        <android.support.constraint.ConstraintLayout
+                        <LinearLayout
                             android:id="@+id/cl_video_player"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             app:layout_constraintTop_toBottomOf="@+id/cl_about">
 
                             <View
@@ -297,12 +298,13 @@
                                 android:padding="@dimen/dp_8"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_video" />
 
-                        </android.support.constraint.ConstraintLayout>
+                        </LinearLayout>
 
-                        <android.support.constraint.ConstraintLayout
+                        <LinearLayout
                             android:id="@+id/cl_awards"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             app:layout_constraintTop_toBottomOf="@+id/cl_video_player">
 
                             <View
@@ -339,12 +341,13 @@
                                 app:layoutManager="android.support.v7.widget.LinearLayoutManager"
                                 app:layout_constraintTop_toBottomOf="@+id/tv_awards"
                                 tools:listitem="@layout/challenges_award_item" />
-                        </android.support.constraint.ConstraintLayout>
+                        </LinearLayout>
 
-                        <android.support.constraint.ConstraintLayout
+                        <LinearLayout
                             android:id="@+id/cl_winners"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:visibility="gone"
                             app:layout_constraintTop_toBottomOf="@+id/cl_awards">
 
@@ -382,12 +385,13 @@
                                 android:paddingLeft="@dimen/dp_8"
                                 android:paddingRight="@dimen/dp_8"
                                 app:layout_constraintTop_toBottomOf="@id/tv_winners" />
-                        </android.support.constraint.ConstraintLayout>
+                        </LinearLayout>
 
-                        <android.support.constraint.ConstraintLayout
+                        <LinearLayout
                             android:id="@+id/cl_submissions"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:orientation="vertical"
                             android:visibility="gone"
                             app:layout_constraintTop_toBottomOf="@+id/cl_winners">
 
@@ -399,10 +403,7 @@
                                 android:layout_marginLeft="@dimen/dp_16"
                                 android:layout_marginRight="@dimen/dp_16"
                                 android:layout_marginTop="@dimen/dp_16"
-                                android:background="@color/grey_200"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
+                                android:background="@color/grey_200" />
 
                             <TextView
                                 android:id="@+id/tv_submissions"
@@ -411,21 +412,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="@dimen/dp_16"
                                 android:layout_marginTop="@dimen/dp_16"
-                                android:text="@string/recent_submissions"
-                                app:layout_constraintLeft_toLeftOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                                android:text="@string/recent_submissions" />
 
-                            <TextView
-                                android:id="@+id/tv_see_all"
-                                style="@style/TextView.Micro.Green"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/dp_16"
-                                android:layout_marginRight="@dimen/dp_16"
-                                android:text="@string/see_all"
-                                app:layout_constraintBottom_toBottomOf="@+id/tv_submissions"
-                                app:layout_constraintRight_toRightOf="parent"
-                                app:layout_constraintTop_toTopOf="@+id/tv_submissions" />
 
                             <android.support.v7.widget.RecyclerView
                                 android:id="@+id/rv_submissions"
@@ -434,9 +422,18 @@
                                 android:layout_marginTop="@dimen/dp_8"
                                 android:clipToPadding="false"
                                 android:paddingLeft="@dimen/dp_8"
-                                android:paddingRight="@dimen/dp_8"
-                                app:layout_constraintTop_toBottomOf="@id/tv_submissions" />
-                        </android.support.constraint.ConstraintLayout>
+                                android:paddingRight="@dimen/dp_8" />
+
+                            <TextView
+                                android:id="@+id/tv_see_all"
+                                style="@style/TextView.Micro.Green"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="@dimen/dp_5"
+                                android:paddingLeft="@dimen/dp_16"
+                                android:paddingRight="@dimen/dp_16"
+                                android:text="@string/see_all" />
+                        </LinearLayout>
 
 
                         <View
@@ -519,10 +516,8 @@
                             android:textColor="@color/tkpd_main_green"
                             android:textSize="@dimen/sp_12"
                             android:visibility="gone"
-                            app:layout_constraintBottom_toTopOf="@+id/bottom_margin_view"
                             app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/divider6" />
-
 
                     </android.support.constraint.ConstraintLayout>
                 </android.support.v4.widget.NestedScrollView>
@@ -573,4 +568,4 @@
             android:layout_gravity="center" />
     </FrameLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

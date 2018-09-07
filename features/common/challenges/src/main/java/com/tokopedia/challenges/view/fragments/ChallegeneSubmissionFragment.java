@@ -98,7 +98,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private View progressBar;
     private View flHeader;
     private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
-    private CoordinatorLayout mainContent;
+    private View mainContent;
     private ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
@@ -234,7 +234,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
 
         mPresenter.loadCountdownView(challengeResult, isWinnerList);
-
+        appBarLayout.scrollTo(0,0);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
                 @Override

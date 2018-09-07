@@ -208,8 +208,8 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
                 Utils.FROMNOCACHE = true;
                 ChallengesCacheHandler.resetCache();
-                String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
-                RouteManager.route(getView().getActivity(), applink);
+//                String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
+//                RouteManager.route(getView().getActivity(), applink);
                 getView().getActivity().finish();
 
             }
