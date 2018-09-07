@@ -46,7 +46,6 @@ public class CustomSwitchPreference extends SwitchPreference {
 
             aSwitch.setThumbDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
                     R.drawable.bg_switch_thumb_selector));
-            aSwitch.setSwitchMinWidth((int) holder.itemView.getResources().getDimension(R.dimen.dp_40));
         }
     }
 
