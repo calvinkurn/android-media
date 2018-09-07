@@ -333,12 +333,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             productProperties.setVisibility(View.GONE);
         }
 
-        itemView.setOnClickListener(v -> {
-            if (!data.getCartItemData().isError()) {
-                cbSelectItem.setChecked(!data.isSelected());
-            }
-        });
-
         btnDelete.setOnClickListener(view -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                 actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition(), parentPosition);
