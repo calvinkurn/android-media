@@ -1,10 +1,10 @@
 package com.tokopedia.datepicker.range.view.adapter;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.content.Context;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.datepicker.range.R;
 
 import java.util.List;
@@ -14,10 +14,12 @@ import java.util.List;
  */
 public class DatePickerTabPagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragmentList;
+    private Context context;
 
 
-    public DatePickerTabPagerAdapter(FragmentManager fm, List<Fragment> fragmentList) {
+    public DatePickerTabPagerAdapter(Context context, FragmentManager fm, List<Fragment> fragmentList) {
         super(fm);
+        this.context = context;
         this.fragmentList = fragmentList;
     }
 
@@ -35,11 +37,11 @@ public class DatePickerTabPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case 0:
-                return MainApplication.getAppContext().getString(R.string.label_date_period);
+                return context.getString(R.string.label_date_period);
             case 1:
-                return MainApplication.getAppContext().getString(R.string.label_date_custom);
+                return context.getString(R.string.label_date_custom);
             default:
-                return MainApplication.getAppContext().getString(R.string.label_date_period);
+                return context.getString(R.string.label_date_period);
         }
     }
 

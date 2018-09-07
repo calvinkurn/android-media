@@ -3,6 +3,7 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 
 dependencies {
 
+    implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.design)
     implementation rootProject.ext.miscDependencies.multiDex

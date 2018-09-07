@@ -44,7 +44,7 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
-        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder.Listener {
+        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GMStatisticMarketInsightViewHolder.Listener {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -56,7 +56,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticProductViewHolder gmStatisticProductViewHolder;
     private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
-    private com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
+    private GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
 

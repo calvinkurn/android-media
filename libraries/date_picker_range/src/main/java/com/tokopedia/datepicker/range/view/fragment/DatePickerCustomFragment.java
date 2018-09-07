@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdFragment;
 import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.utils.DatePickerUtils;
@@ -21,7 +22,7 @@ import java.util.Calendar;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerCustomFragment extends TkpdFragment {
+public class DatePickerCustomFragment extends TkpdBaseV4Fragment {
 
     private DatePickerLabelView startDatePickerLabelView;
     private DatePickerLabelView endDatePickerLabelView;

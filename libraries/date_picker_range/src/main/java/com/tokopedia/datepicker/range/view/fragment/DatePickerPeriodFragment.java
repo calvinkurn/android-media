@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.tokopedia.core.app.TkpdFragment;
+import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.datepicker.range.R;
 import com.tokopedia.datepicker.range.view.adapter.DatePickerPeriodAdapter;
 import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by Nathaniel on 1/16/2017.
  */
 
-public class DatePickerPeriodFragment extends TkpdFragment implements DatePickerPeriodAdapter.Callback {
+public class DatePickerPeriodFragment extends TkpdBaseV4Fragment implements DatePickerPeriodAdapter.Callback {
 
     public static DatePickerPeriodFragment newInstance(int selectionPeriod, ArrayList<PeriodRangeModel> periodRangeModelList) {
         DatePickerPeriodFragment fragment = new DatePickerPeriodFragment();

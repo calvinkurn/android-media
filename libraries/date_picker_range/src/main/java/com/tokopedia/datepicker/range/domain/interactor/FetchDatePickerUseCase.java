@@ -1,13 +1,9 @@
 package com.tokopedia.datepicker.range.domain.interactor;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.datepicker.range.domain.DatePickerRepository;
 import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
-import com.tokopedia.datepicker.range.domain.DatePickerRepository;
-import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import javax.inject.Inject;
 
@@ -21,9 +17,8 @@ public class FetchDatePickerUseCase extends UseCase<DatePickerDomainModel> {
     private DatePickerRepository datePickerRepository;
 
     @Inject
-    public FetchDatePickerUseCase(ThreadExecutor threadExecutor, PostExecutionThread postExecutionThread,
-                                  DatePickerRepository datePickerRepository) {
-        super(threadExecutor, postExecutionThread);
+    public FetchDatePickerUseCase(DatePickerRepository datePickerRepository) {
+        super();
         this.datePickerRepository = datePickerRepository;
     }
 

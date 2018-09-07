@@ -5,8 +5,6 @@ import com.tokopedia.datepicker.range.domain.interactor.FetchDatePickerUseCase;
 import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
 import com.tokopedia.datepicker.range.domain.model.DatePickerDomainModel;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
-import com.tokopedia.datepicker.range.domain.interactor.SaveDatePickerUseCase;
-import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 import rx.Subscriber;
 

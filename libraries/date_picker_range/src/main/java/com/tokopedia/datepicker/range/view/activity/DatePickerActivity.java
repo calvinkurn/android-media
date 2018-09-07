@@ -1,7 +1,7 @@
 package com.tokopedia.datepicker.range.view.activity;
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
 import android.text.TextUtils;
 
@@ -65,7 +65,7 @@ public class DatePickerActivity extends BaseTabActivity {
         List<Fragment> fragmentList = new ArrayList<>();
         fragmentList.add(getDatePickerPeriodFragment());
         fragmentList.add(getDatePickerCustomFragment());
-        return new DatePickerTabPagerAdapter(getFragmentManager(), fragmentList);
+        return new DatePickerTabPagerAdapter(this, getSupportFragmentManager(), fragmentList);
     }
 
     protected DatePickerPeriodFragment getDatePickerPeriodFragment() {

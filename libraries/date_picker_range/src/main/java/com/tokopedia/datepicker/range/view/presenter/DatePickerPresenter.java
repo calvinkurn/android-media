@@ -1,7 +1,6 @@
 package com.tokopedia.datepicker.range.view.presenter;
 
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.datepicker.range.model.DatePickerViewModel;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 
 /**
