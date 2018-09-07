@@ -1,18 +1,17 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.drawer2.data.pojo.profile.ProfileModel;
 import com.tokopedia.core.drawer2.domain.interactor.ProfileUseCase;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.events.data.entity.response.Form;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
@@ -25,13 +24,18 @@ import com.tokopedia.events.domain.model.request.cart.EntityPassengerItem;
 import com.tokopedia.events.domain.model.request.cart.MetaData;
 import com.tokopedia.events.domain.model.request.cart.OtherChargesItem;
 import com.tokopedia.events.domain.model.request.cart.TaxPerQuantityItem;
-import com.tokopedia.events.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.events.domain.postusecase.VerifyCartUseCase;
 import com.tokopedia.events.view.activity.ReviewTicketActivity;
 import com.tokopedia.events.view.contractor.SeatSelectionContract;
 import com.tokopedia.events.view.utils.EventsGAConst;
+import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.events.view.viewmodel.EventsDetailsViewModel;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
+import com.tokopedia.oms.data.entity.response.verifyresponse.VerifyMyCartResponse;
+import com.tokopedia.oms.domain.postusecase.PostVerifyCartUseCase;
+import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +55,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private static String EXTRA_PACKAGEVIEWMODEL = "packageviewmodel";
     public static String EXTRA_SEATSELECTEDMODEL = "selectedseatviewmodel";
 
+    private EventsDetailsViewModel eventsDetailsViewModel;
     private SeatLayoutViewModel seatLayoutViewModel;
+    private VerifyCartUseCase verifyCartUseCase;
     private PostVerifyCartUseCase postVerifyCartUseCase;
     private PackageViewModel selectedpkgViewModel;
     private ProfileUseCase profileUseCase;
@@ -60,13 +66,14 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     private String email;
     private String number;
     private SelectedSeatViewModel mSelectedSeatViewModel;
-    private int quantity;
+    private FirebaseRemoteConfigImpl remoteConfig;
 
 
     @Inject
-    public SeatSelectionPresenter(PostVerifyCartUseCase postVerifyCartUseCase, ProfileUseCase profileCase) {
-        this.postVerifyCartUseCase = postVerifyCartUseCase;
+    public SeatSelectionPresenter(VerifyCartUseCase verifyCartUseCase, ProfileUseCase profileCase, PostVerifyCartUseCase postVerifyCartUseCase) {
+        this.verifyCartUseCase = verifyCartUseCase;
         this.profileUseCase = profileCase;
+        this.postVerifyCartUseCase = postVerifyCartUseCase;
     }
 
     public void getProfile() {
@@ -76,7 +83,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
                     getLoginIntent(getView().getActivity());
             getView().navigateToActivityRequest(intent, 1099);
         } else {
-            profileUseCase.execute(RequestParams.EMPTY, new Subscriber<ProfileModel>() {
+            profileUseCase.execute(com.tokopedia.core.base.domain.RequestParams.EMPTY, new Subscriber<ProfileModel>() {
                 @Override
                 public void onCompleted() {
 
@@ -84,7 +91,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
 
                 @Override
                 public void onError(Throwable throwable) {
-                    Log.d("ProfileUseCase", "ON ERROR");
                     throwable.printStackTrace();
                     NetworkErrorHelper.showEmptyState(getView().getActivity(),
                             getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
@@ -119,8 +125,10 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     @Override
     public void attachView(SeatSelectionContract.SeatSelectionView view) {
         super.attachView(view);
-        selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_PACKAGEVIEWMODEL);
-        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(EventBookTicketPresenter.EXTRA_SEATLAYOUTVIEWMODEL);
+        remoteConfig = new FirebaseRemoteConfigImpl(view.getActivity());
+        eventsDetailsViewModel = getView().getActivity().getIntent().getParcelableExtra("event_detail");
+        selectedpkgViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_PACKAGEVIEWMODEL);
+        seatLayoutViewModel = getView().getActivity().getIntent().getParcelableExtra(Utils.Constants.EXTRA_SEATLAYOUTVIEWMODEL);
         getView().setEventTitle(getView().getActivity().getIntent().getStringExtra("EventTitle"));
     }
 
@@ -152,12 +160,6 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         return EventsGAConst.EVENTS_SEAT_SELECTIONPAGE;
     }
 
-    public void setTicketPrice(int numOfTickets) {
-        quantity = numOfTickets;
-        getView().setTicketPrice(numOfTickets);
-
-    }
-
     public void setSelectedSeatText(List<String> selectedSeatList, List<String> rowIds, List<String> actualSeatNo) {
         getView().initializeSeatLayoutModel(selectedSeatList, rowIds, actualSeatNo);
     }
@@ -171,43 +173,74 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         this.mSelectedSeatViewModel = selectedSeatViewModel;
         RequestParams params = RequestParams.create();
         params.putObject("checkoutdata", convertPackageToCartItem(selectedpkgViewModel));
-        params.putBoolean("ispromocodecase", true);
-        postVerifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
-            @Override
-            public void onCompleted() {
-                Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
-                mSelectedSeatViewModel.setQuantity(quantity);
-                selectedpkgViewModel.setSelectedQuantity(quantity);
-                reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
-                reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
-                getView().navigateToActivityRequest(reviewTicketIntent, 100);
+        params.putBoolean("ispromocodecase", false);
+        if (isEventOmsEnabled()) {
+            postVerifyCartUseCase.execute(params, new Subscriber<VerifyMyCartResponse>() {
+                @Override
+                public void onCompleted() {
 
-            }
+                }
 
-            @Override
-            public void onError(Throwable throwable) {
-                Log.d("Naveen", " On Error" + throwable.getMessage());
-                getView().hideProgressBar();
-                NetworkErrorHelper.showEmptyState(getView().getActivity(),
-                        getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
-                            @Override
-                            public void onRetryClicked() {
-                                verifySeatSelection(mSelectedSeatViewModel);
-                            }
-                        });
-            }
+                @Override
+                public void onError(Throwable throwable) {
+                    throwable.printStackTrace();
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
 
-            @Override
-            public void onNext(VerifyCartResponse verifyCartResponse) {
-                Log.d("Naveen", "on Next" + verifyCartResponse.getStatus().getMessage().getMessage());
-            }
-        });
+                @Override
+                public void onNext(VerifyMyCartResponse verifyCartResponse) {
+
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    reviewTicketIntent.putExtra("event_detail", eventsDetailsViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, 100);
+                    getView().hideProgressBar();
+
+
+                }
+            });
+        } else {
+            verifyCartUseCase.execute(params, new Subscriber<VerifyCartResponse>() {
+                @Override
+                public void onCompleted() {
+                    Intent reviewTicketIntent = new Intent(getView().getActivity(), ReviewTicketActivity.class);
+                    reviewTicketIntent.putExtra(EXTRA_PACKAGEVIEWMODEL, selectedpkgViewModel);
+                    reviewTicketIntent.putExtra(EXTRA_SEATSELECTEDMODEL, mSelectedSeatViewModel);
+                    getView().navigateToActivityRequest(reviewTicketIntent, Utils.Constants.REVIEW_REQUEST);
+
+                }
+
+                @Override
+                public void onError(Throwable throwable) {
+                    getView().hideProgressBar();
+                    NetworkErrorHelper.showEmptyState(getView().getActivity(),
+                            getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {
+                                @Override
+                                public void onRetryClicked() {
+                                    verifySeatSelection(mSelectedSeatViewModel);
+                                }
+                            });
+                }
+
+                @Override
+                public void onNext(VerifyCartResponse verifyCartResponse) {
+                }
+            });
+        }
     }
 
 
     private JsonObject convertPackageToCartItem(PackageViewModel packageViewModel) {
         Configuration config = new Configuration();
-        config.setPrice(packageViewModel.getSalesPrice() * quantity);
+        config.setPrice(packageViewModel.getSalesPrice() * packageViewModel.getSelectedQuantity());
         com.tokopedia.events.domain.model.request.cart.SubConfig sub = new com.tokopedia.events.domain.model.request.cart.SubConfig();
         sub.setName(profileModel.getProfileData().getUserInfo().getUserName());
         config.setSubConfig(sub);
@@ -223,7 +256,7 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         packageItem.setSeatPhysicalRowId(mSelectedSeatViewModel.getPhysicalRowIds());
         packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
         packageItem.setDescription("");
-        packageItem.setQuantity(quantity);
+        packageItem.setQuantity(mSelectedSeatViewModel.getQuantity());
         packageItem.setPricePerSeat(mSelectedSeatViewModel.getPrice());
         packageItem.setSeatId(mSelectedSeatViewModel.getSeatIds());
         packageItem.setSeatRowId(mSelectedSeatViewModel.getSeatRowIds());
@@ -284,8 +317,14 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
         CartItem cartItem = new CartItem();
         cartItem.setMetaData(meta);
         cartItem.setConfiguration(config);
-        cartItem.setQuantity(packageViewModel.getSelectedQuantity());
-        cartItem.setProductId(packageViewModel.getProductId());
+
+        if (isEventOmsEnabled()) {
+            cartItem.setQuantity(1);
+            cartItem.setProductId(packageViewModel.getDigitalProductID());
+        } else {
+            cartItem.setProductId(packageViewModel.getProductId());
+            cartItem.setQuantity(packageViewModel.getSelectedQuantity());
+        }
 
 
         cartItems.add(cartItem);
@@ -301,4 +340,9 @@ public class SeatSelectionPresenter extends BaseDaggerPresenter<SeatSelectionCon
     public String getTicketCategory() {
         return selectedpkgViewModel.getTitle();
     }
+
+    private boolean isEventOmsEnabled() {
+        return remoteConfig.getBoolean(Utils.Constants.EVENT_OMS, false);
+    }
+
 }

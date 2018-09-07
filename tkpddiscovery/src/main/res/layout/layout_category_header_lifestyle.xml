@@ -31,7 +31,7 @@
                 android:layout_weight="4"
                 android:maxLines="2"
                 android:textColor="@color/white"
-                android:textSize="@dimen/sp_24"
+                android:textSize="@dimen/sp_20"
                 android:layout_marginLeft="@dimen/dp_15"
                 />
 

@@ -11,12 +11,13 @@ import com.google.gson.JsonObject;
 
 public class ProblemMessageResult implements Parcelable {
     public String remark;
+    private static final String PARAM_REMARK = "remark";
 
     public JsonObject writeToJson() {
         JsonObject object = new JsonObject();
         try {
             if (!remark.equals("")) {
-                object.addProperty("remark", remark);
+                object.addProperty(PARAM_REMARK, remark);
             }
         } catch (Exception e) {
             e.printStackTrace();

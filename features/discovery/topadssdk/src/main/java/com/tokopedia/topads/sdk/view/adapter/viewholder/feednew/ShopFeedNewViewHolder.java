@@ -79,7 +79,7 @@ public class ShopFeedNewViewHolder extends AbstractViewHolder<ShopFeedNewViewMod
 
         itemView.setOnClickListener(onShopItemClicked());
         header.setOnClickListener(onShopItemClicked());
-        favoriteText.setOnClickListener(onAddFavorite());
+        favoriteButton.setOnClickListener(onAddFavorite());
     }
 
     public View.OnClickListener onShopItemClicked() {

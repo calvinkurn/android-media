@@ -85,7 +85,7 @@ public class HomeMapper implements Func1<Response<GraphqlResponse<HomeData>>, Li
                                         channel.getEnhanceImpressionSprintSaleCarouselHomePage(position)
                                 );
                             } else if (channel.getLayout().equals(DynamicHomeChannel.Channels.LAYOUT_6_IMAGE)) {
-                                channel.setPromoName(String.format("/ - p%s - lego banner", String.valueOf(position)));
+                                channel.setPromoName(String.format("/ - p%s - lego banner - %s", String.valueOf(position), channel.getHeader().getName()));
                                 channel.setHomeAttribution(String.format("%s - legoBanner - $1 - $2", String.valueOf(position)));
                                 HomePageTracking.eventEnhancedImpressionDynamicChannelHomePage(
                                         channel.getEnhanceImpressionLegoBannerHomePage(position)

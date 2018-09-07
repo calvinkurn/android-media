@@ -46,6 +46,7 @@ import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -72,13 +73,13 @@ public class DataModule {
 
     @Provides
     @CartChuckApiInterceptorQualifier
-    ChuckInterceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+    Interceptor provideChuckInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
         return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutChuckInterceptor();
     }
 
     @Provides
     @CartFingerPrintApiInterceptorQualifier
-    FingerprintInterceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
+    Interceptor fingerprintInterceptor(ICheckoutModuleRouter cartCheckoutModuleRouter) {
         return cartCheckoutModuleRouter.checkoutModuleRouterGetCartCheckoutFingerPrintInterceptor();
     }
 
@@ -113,8 +114,8 @@ public class DataModule {
     OkHttpClient provideCartApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                             @CartApiInterceptorQualifier CartApiInterceptor cartApiInterceptor,
                                             @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                            @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                            @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                            @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                            @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -135,8 +136,8 @@ public class DataModule {
     OkHttpClient provideKeroRatesApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                                  @CartKeroRatesApiInterceptorQualifier TkpdAuthInterceptor keroRatesInterceptor,
                                                  @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                                 @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                                 @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                                 @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                                 @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
@@ -156,8 +157,8 @@ public class DataModule {
     OkHttpClient provideTxActApiOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
                                              @CartTxActApiInterceptorQualifier TkpdAuthInterceptor txActInterceptor,
                                              @CartQualifier OkHttpRetryPolicy okHttpRetryPolicy,
-                                             @CartFingerPrintApiInterceptorQualifier FingerprintInterceptor fingerprintInterceptor,
-                                             @CartChuckApiInterceptorQualifier ChuckInterceptor chuckInterceptor) {
+                                             @CartFingerPrintApiInterceptorQualifier Interceptor fingerprintInterceptor,
+                                             @CartChuckApiInterceptorQualifier Interceptor chuckInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .readTimeout(okHttpRetryPolicy.readTimeout, TimeUnit.SECONDS)
