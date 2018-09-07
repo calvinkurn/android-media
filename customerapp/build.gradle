@@ -313,6 +313,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.datePickerRange)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick
     implementation project(rootProject.ext.features.shopCommon)

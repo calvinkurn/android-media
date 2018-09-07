@@ -26,9 +26,4 @@ public class DatePickerTokoCashActivity extends DatePickerActivity {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_new_action_back_grey);
         getSupportActionBar().show();
     }
-
-    @Override
-    protected void setToolbarColorWhite() {
-        super.setToolbarColorWhite();
-    }
 }
