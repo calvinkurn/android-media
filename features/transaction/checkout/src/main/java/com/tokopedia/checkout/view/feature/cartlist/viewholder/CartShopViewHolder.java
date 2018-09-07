@@ -100,7 +100,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
-        cbSelectShop.setChecked(cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected());
+        cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
     }
 
