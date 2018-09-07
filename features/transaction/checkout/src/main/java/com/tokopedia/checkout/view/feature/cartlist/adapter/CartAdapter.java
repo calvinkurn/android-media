@@ -171,6 +171,24 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return cartItemDataList;
     }
 
+    public List<CartItemData> getAllCartItemData() {
+        List<CartItemData> cartItemDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            cartItemDataList.add(cartItemHolderData.getCartItemData());
+                        }
+                    }
+                }
+            }
+        }
+
+        return cartItemDataList;
+    }
+
     public void setAllShopSelected(boolean selected) {
         if (cartDataList != null) {
             for (int i = 0; i < cartDataList.size(); i++) {

@@ -181,7 +181,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList) {
+    public void processDeleteAndRefreshCart(List<CartItemData> removedCartItems,
+                                            boolean addWishList, boolean removeAllItem) {
         view.showProgressLoading();
         List<Integer> ids = new ArrayList<>();
         for (CartItemData cartItemData : removedCartItems) {
@@ -222,7 +223,7 @@ public class CartListPresenter implements ICartListPresenter {
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .unsubscribeOn(Schedulers.io())
-                        .subscribe(getSubscriberDeleteAndRefreshCart())
+                        .subscribe(getSubscriberDeleteAndRefreshCart(removeAllItem))
         );
     }
 
@@ -559,7 +560,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart() {
+    private Subscriber<DeleteAndRefreshCartListData> getSubscriberDeleteAndRefreshCart(boolean removeAllItem) {
         return new Subscriber<DeleteAndRefreshCartListData>() {
             @Override
             public void onCompleted() {
@@ -571,25 +572,32 @@ public class CartListPresenter implements ICartListPresenter {
                 view.hideProgressLoading();
                 e.printStackTrace();
                 handleErrorCartList(e);
+                if (removeAllItem) {
+                    processInitialGetCartData();
+                }
             }
 
             @Override
             public void onNext(DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
                 view.hideProgressLoading();
                 view.renderLoadGetCartDataFinish();
-                if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
-                        && deleteAndRefreshCartListData.getCartListData() != null) {
-                    if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                        processInitialGetCartData();
+                if (!removeAllItem) {
+                    if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
+                            && deleteAndRefreshCartListData.getCartListData() != null) {
+                        if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
+                            processInitialGetCartData();
+                        } else {
+                            CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
+                            view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
+                            view.onDeleteCartDataSuccess();
+                        }
                     } else {
-                        CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
-                        view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
-                        view.onDeleteCartDataSuccess();
+                        view.renderErrorActionDeleteCartData(
+                                deleteAndRefreshCartListData.getDeleteCartData().getMessage()
+                        );
                     }
                 } else {
-                    view.renderErrorActionDeleteCartData(
-                            deleteAndRefreshCartListData.getDeleteCartData().getMessage()
-                    );
+                    processInitialGetCartData();
                 }
             }
         };
