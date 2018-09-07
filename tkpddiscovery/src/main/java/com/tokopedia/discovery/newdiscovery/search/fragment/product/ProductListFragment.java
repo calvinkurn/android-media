@@ -139,6 +139,7 @@ public class ProductListFragment extends SearchSectionFragment
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
         renderDynamicFilter(productViewModel.getDynamicFilterModel());
+        onGetGuidedSearchComplete(productViewModel.getGuidedSearchViewModel());
     }
 
     private void loadDataFromArguments() {
@@ -149,6 +150,7 @@ public class ProductListFragment extends SearchSectionFragment
                 setSearchParameter(productViewModel.getSearchParameter());
             setForceSearch(productViewModel.isForceSearch());
             renderDynamicFilter(productViewModel.getDynamicFilterModel());
+            onGetGuidedSearchComplete(productViewModel.getGuidedSearchViewModel());
         }
     }
 
@@ -450,23 +452,6 @@ public class ProductListFragment extends SearchSectionFragment
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
         getQuickFilter();
-        getGuidedSearch();
-    }
-
-    @Override
-    public void getGuidedSearch() {
-        if (cachedGuidedSearch != null) {
-            onGetGuidedSearchComplete(cachedGuidedSearch);
-            return;
-        }
-
-        String query = productViewModel.getQuery();
-        if (!TextUtils.isEmpty(productViewModel.getSuggestionModel().getSuggestionCurrentKeyword())) {
-            query = productViewModel.getSuggestionModel().getSuggestionCurrentKeyword();
-        }
-        if (!TextUtils.isEmpty(query)) {
-            presenter.loadGuidedSearch(query);
-        }
     }
 
     @Override

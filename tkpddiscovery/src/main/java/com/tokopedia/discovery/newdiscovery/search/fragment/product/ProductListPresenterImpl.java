@@ -235,7 +235,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                     public void onCompleted() {
                         //getView().getDynamicFilter();
                         getView().getQuickFilter();
-                        getView().getGuidedSearch();
                         getView().hideRefreshLayout();
                     }
 
@@ -274,31 +273,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                             }
                             getView().storeTotalData(productViewModel.getTotalData());
                             getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
+                            getView().onGetGuidedSearchComplete(productViewModel.getGuidedSearchViewModel());
                         }
                     }
                 });
-    }
-
-    @Override
-    public void loadGuidedSearch(String keyword) {
-        com.tokopedia.usecase.RequestParams requestParams = com.tokopedia.usecase.RequestParams.create();
-        requestParams.putString(GetSearchGuideUseCase.PARAM_QUERY, keyword);
-        getSearchGuideUseCase.execute(requestParams, new Subscriber<GuidedSearchViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(GuidedSearchViewModel guidedSearchViewModel) {
-                getView().onGetGuidedSearchComplete(guidedSearchViewModel);
-            }
-        });
     }
 
     @Override

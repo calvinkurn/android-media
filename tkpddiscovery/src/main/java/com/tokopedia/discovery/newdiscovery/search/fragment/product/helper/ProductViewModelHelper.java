@@ -3,12 +3,14 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product.helper;
 import com.google.gson.Gson;
 import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.model.BadgeModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.LabelModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.ProductModel;
 import com.tokopedia.discovery.newdiscovery.domain.model.SearchResultModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.BadgeItem;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.LabelItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -58,9 +60,31 @@ public class ProductViewModelHelper {
         if (gqlResponse.getDynamicFilterModel() != null) {
             productViewModel.setDynamicFilterModel(gqlResponse.getDynamicFilterModel());
         }
+        if (gqlResponse.getGuidedSearchResponse() != null) {
+            productViewModel.setGuidedSearchViewModel(convertToGuidedSearchViewModel(gqlResponse.getGuidedSearchResponse()));
+        }
         return productViewModel;
     }
 
+    private static GuidedSearchViewModel convertToGuidedSearchViewModel(GuidedSearchResponse guidedSearchResponse) {
+        GuidedSearchViewModel model = new GuidedSearchViewModel();
+        List<GuidedSearchViewModel.Item> itemList = new ArrayList<>();
+
+        if (guidedSearchResponse.getData() != null) {
+            for (GuidedSearchResponse.GuidedSearchItem item : guidedSearchResponse.getData()) {
+                itemList.add(mappingGuidedSearchItem(item));
+            }
+        }
+        model.setItemList(itemList);
+        return model;
+    }
+
+    private static GuidedSearchViewModel.Item mappingGuidedSearchItem(GuidedSearchResponse.GuidedSearchItem networkItem) {
+        GuidedSearchViewModel.Item viewModelItem = new GuidedSearchViewModel.Item();
+        viewModelItem.setKeyword(networkItem.getKeyword());
+        viewModelItem.setUrl(networkItem.getUrl());
+        return viewModelItem;
+    }
 
     public static ProductViewModel convertToProductViewModel(SearchResultModel searchResultModel) {
         ProductViewModel productViewModel = new ProductViewModel();

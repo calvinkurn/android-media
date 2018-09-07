@@ -139,6 +139,13 @@ searchProduct(params: $params) {
         }
      }
   }
+  ace_guide(q: $query) {
+      data {
+        applink
+        keyword
+        url
+      }
+  }
   productAds: displayAdsV3(displayParams: $params) {
         status {
           error_code
