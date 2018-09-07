@@ -16,7 +16,7 @@ interface InboxTalkContract {
         fun getContext(): Context?
         fun showLoading()
         fun hideLoading()
-        fun onSuccessGetInboxTalk(list: InboxTalkViewModel)
+        fun onSuccessGetInboxTalk(talkViewModel: InboxTalkViewModel)
         fun onErrorGetInboxTalk(errorMessage: String)
         fun onEmptyTalk()
         fun hideRefreshLoad()
@@ -25,11 +25,17 @@ interface InboxTalkContract {
         fun showLoadingFilter()
         fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
         fun hideLoadingFilter()
+        fun onSuccessDeleteTalk()
+        fun onSuccessDeleteCommentTalk()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun refreshTalk(filter: String, nav: String)
         fun getInboxTalk(filter: String, nav: String)
         fun getInboxTalkWithFilter(filter: String, nav: String)
+        fun deleteTalk()
+        fun deleteCommentTalk()
+        fun unfollowTalk()
+        fun followTalk()
     }
 }

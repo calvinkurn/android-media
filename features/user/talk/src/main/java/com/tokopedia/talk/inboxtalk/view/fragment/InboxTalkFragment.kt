@@ -42,6 +42,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
 
+
     private val REQUEST_REPORT_TALK: Int = 101
     private val REQUEST_GO_TO_DETAIL: Int = 102
 
@@ -105,9 +106,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
                 }
             }
 
-            override fun onScrollStateChanged(recyclerView: RecyclerView?, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
         })
         swipeToRefresh.setOnRefreshListener { onRefreshData() }
         icon_filter.setButton1OnClickListener(showFilterDialog())
@@ -129,7 +127,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     private fun showFilterDialog(): View.OnClickListener {
-        return View.OnClickListener {
+        return View.OnClickListener { _ ->
             context?.run {
                 val menuItem = arrayOf(resources.getString(R.string.filter_all_talk),
                         resources.getString(R.string.filter_not_read))
@@ -137,7 +135,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
                 bottomMenu.setItemMenuList(menuItem)
                 bottomMenu.setActionText(getString(R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-                bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+                bottomMenu.setOnItemMenuClickListener { _, pos ->
                     onFilterClicked(pos, bottomMenu)
                 }
                 bottomMenu.show()
@@ -178,10 +176,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
+        alertDialog.setOnOkClickListener {
+            presenter.unfollowTalk()
             alertDialog.dismiss()
-        })
+        }
 
         alertDialog.show()
     }
@@ -199,10 +197,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
+        alertDialog.setOnOkClickListener {
+            presenter.followTalk()
             alertDialog.dismiss()
-        })
+        }
 
         alertDialog.show()
     }
@@ -219,10 +217,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
+        alertDialog.setOnOkClickListener {
+            presenter.deleteTalk()
             alertDialog.dismiss()
-        })
+        }
 
         alertDialog.show()
     }
@@ -240,10 +238,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.setOnCancelClickListener {
             alertDialog.dismiss()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
+        alertDialog.setOnOkClickListener {
+            presenter.deleteCommentTalk()
             alertDialog.dismiss()
-        })
+        }
 
         alertDialog.show()
     }
@@ -272,9 +270,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
                 presenter.getInboxTalk(filter, nav)
             }
         } else {
-            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage, NetworkErrorHelper.RetryClickedListener {
+            NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                 presenter.getInboxTalk(filter, nav)
-            })
+            }
         }
     }
 
@@ -332,7 +330,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             bottomMenu.itemMenuList = listMenu
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onMenuItemClicked(itemMenus, bottomMenu)
             }
             bottomMenu.show()
@@ -352,16 +350,20 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     override fun onCommentMenuButtonClicked(menu: TalkState) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
-            if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_report_comment)))
-            if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_delete_comment)))
+            if (menu.allowReport) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_report_comment)))
+            }
+            if (menu.allowDelete) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_delete_comment)))
+            }
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onCommentMenuItemClicked(itemMenus, bottomMenu)
             }
             bottomMenu.show()
@@ -418,6 +420,13 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     }
 
+    override fun onSuccessDeleteTalk() {
+        //TODO DELETE TALK
+    }
+
+    override fun onSuccessDeleteCommentTalk() {
+        //TODO DELETE COMMENT TALK
+    }
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

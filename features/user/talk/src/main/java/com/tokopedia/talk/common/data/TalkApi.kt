@@ -24,4 +24,25 @@ interface TalkApi {
     @POST(TalkUrl.PATH_DELETE_TALK)
     fun deleteTalk(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_DELETE_COMMENT_TALK)
+    fun deleteCommentTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_FOLLOW_TALK)
+    fun followTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_MARK_TALK_NOT_FRAUD)
+    fun markTalkNotFraud(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_REPORT_TALK)
+    fun reportTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
 }

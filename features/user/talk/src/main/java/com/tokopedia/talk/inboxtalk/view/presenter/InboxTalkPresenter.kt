@@ -3,7 +3,9 @@ package com.tokopedia.talk.inboxtalk.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.talk.common.di.TalkScope
+import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
+import com.tokopedia.talk.common.domain.usecase.DeleteTalkUseCase
+import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.inboxtalk.domain.GetInboxTalkUseCase
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
@@ -13,8 +15,9 @@ import javax.inject.Inject
 /**
  * @author by nisie on 8/29/18.
  */
-class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
-                                             GetInboxTalkUseCase)
+class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: GetInboxTalkUseCase,
+                                             private val deleteTalkUseCase: DeleteTalkUseCase,
+                                             private val deleteCommentTalkUseCase: DeleteCommentTalkUseCase)
     : BaseDaggerPresenter<InboxTalkContract.View>(),
         InboxTalkContract.Presenter {
 
@@ -167,7 +170,6 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
         }
     }
 
-
     private fun onErrorTalk(e: Throwable) {
         view.showFilter()
         isRequesting = false
@@ -179,9 +181,62 @@ class InboxTalkPresenter @Inject constructor(@TalkScope val getInboxTalkUseCase:
         }
     }
 
+    override fun deleteTalk() {
+        if (!isRequesting) {
+
+            deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
+                    "",
+                    ""
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideRefreshLoad()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    if (talkViewModel.isSuccess) {
+                        view.onSuccessDeleteTalk()
+                    }
+                }
+            })
+        }
+    }
+
+    override fun deleteCommentTalk() {
+        if (!isRequesting) {
+
+            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
+                    "",
+                    "",
+                    ""
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideRefreshLoad()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    if (talkViewModel.isSuccess) {
+                        view.onSuccessDeleteCommentTalk()
+                    }
+                }
+            })
+        }
+    }
+
     override fun detachView() {
         super.detachView()
         getInboxTalkUseCase.unsubscribe()
+        deleteTalkUseCase.unsubscribe()
+        deleteCommentTalkUseCase.unsubscribe()
     }
 
 }
