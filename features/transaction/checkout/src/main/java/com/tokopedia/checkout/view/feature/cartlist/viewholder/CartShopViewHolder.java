@@ -32,7 +32,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout llWarningAndError;
     private FrameLayout flShopItemContainer;
     private LinearLayout llShopContainer;
-    private RelativeLayout rlShopHeader;
     private CheckBox cbSelectShop;
     private TextView tvShopName;
     private ImageView imgShopBadge;
@@ -60,7 +59,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
         llShopContainer = itemView.findViewById(R.id.ll_shop_container);
-        rlShopHeader = itemView.findViewById(R.id.rl_shop_header);
         cbSelectShop = itemView.findViewById(R.id.cb_select_shop);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
@@ -104,7 +102,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
-        rlShopHeader.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {
