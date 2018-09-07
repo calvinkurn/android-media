@@ -107,7 +107,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
                 getString(R.string.title_account_setting), getString(R.string.subtitle_account_setting)));
         if (userSession.hasShop()) {
             settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_SHOP_ID,
-                    getString(R.string.account_home_title_shop_setting), getString(R.string.account_home_subtitle_shop_setting)));
+                    getString(R.string.account_home_title_shop_setting), getString(R.string.subtitle_shop_setting)));
         }
 
         WalletModel walletModel = walletPref.retrieveWallet();

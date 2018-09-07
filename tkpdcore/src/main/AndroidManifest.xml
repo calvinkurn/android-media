@@ -267,6 +267,7 @@
         <activity
             android:name=".home.BannerWebView"
             android:label="@string/title_activity_deep_link"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".home.TopPicksWebView"
