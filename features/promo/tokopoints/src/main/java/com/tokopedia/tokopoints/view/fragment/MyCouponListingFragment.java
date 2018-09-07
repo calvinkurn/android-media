@@ -167,9 +167,8 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
         ((TextView) getView().findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
         ((TextView) getView().findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
-        TextView button = getView().findViewById(R.id.button_continue);
-        button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(v -> {
+        getView().findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
+        getView().findViewById(R.id.button_continue).setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0);
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
