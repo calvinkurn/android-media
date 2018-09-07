@@ -159,7 +159,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void emptyCoupons() {
-        mContainerMain.setDisplayedChild(CONTAINER_ERROR);
+        mContainerMain.setDisplayedChild(CONTAINER_EMPTY);
         if (getView() == null) {
             return;
         }
