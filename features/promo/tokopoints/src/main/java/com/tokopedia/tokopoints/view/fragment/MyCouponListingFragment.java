@@ -155,6 +155,7 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
 
     @Override
     public void emptyCoupons() {
+        hideLoader();
         NetworkErrorHelper.showEmptyState(getContext(), mContainerMain,
                 getString(R.string.tp_default_empty_coupons_title),
                 getString(R.string.tp_default_empty_coupons_subtitle),
