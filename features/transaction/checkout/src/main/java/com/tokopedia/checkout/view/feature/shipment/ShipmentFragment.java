@@ -607,8 +607,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderEditAddressSuccess(String latitude, String longitude) {
-        shipmentAdapter.updateShipmentDestinationPinpoint(Double.parseDouble(latitude),
-                Double.parseDouble(longitude));
+        shipmentAdapter.updateShipmentDestinationPinpoint(latitude, longitude);
         int position = shipmentAdapter.getLastChooseCourierItemPosition();
 
         ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
@@ -1249,9 +1248,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentSelectionStateData.setPosition(cartItemPosition);
         shipmentSelectionStateData.setCourierItemData(courierItemData);
         shipmentSelectionStateDataHashSet.add(shipmentSelectionStateData);
-        if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
-                recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude() == 0)) {
+        if (courierItemData.isUsePinPoint()
+                && (recipientAddressModel.getLatitude() == null ||
+                recipientAddressModel.getLatitude().equalsIgnoreCase("0")
+                || recipientAddressModel.getLongitude() == null ||
+                recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
             setPinpoint(cartItemPosition);
         } else {
             shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
@@ -1354,9 +1355,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             // If there's no recommendation, user choose courier manually
             onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, cartItemPosition);
         } else {
-            if (recommendedCourier.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
-                    recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
-                    recipientAddressModel.getLongitude() == 0)) {
+            if (recommendedCourier.isUsePinPoint()
+                    && (recipientAddressModel.getLatitude() == null ||
+                    recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
+                    recipientAddressModel.getLongitude() == null ||
+                    recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
                 setPinpoint(cartItemPosition);
             } else {
                 sendAnalyticsOnViewPreselectedCourierShipmentRecommendation(recommendedCourier.getName());
@@ -1380,8 +1383,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartItemPosition) {
         sendAnalyticsOnClickSelectedCourierShipmentRecommendation(courierItemData.getName());
         if (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
-                recipientAddressModel.getLatitude() == 0 || recipientAddressModel.getLongitude() == null ||
-                recipientAddressModel.getLongitude() == 0)) {
+                recipientAddressModel.getLatitude().equalsIgnoreCase("0") ||
+                recipientAddressModel.getLongitude() == null ||
+                recipientAddressModel.getLongitude().equalsIgnoreCase("0"))) {
             setPinpoint(cartItemPosition);
         } else {
             shipmentAdapter.setSelectedCourier(cartItemPosition, courierItemData);
