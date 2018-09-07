@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
+import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
@@ -25,6 +27,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -40,6 +43,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
     private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
+    private final GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
     private final UserSession userSession;
@@ -49,12 +53,14 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     public ShopProductLimitedListPresenter(GetShopProductListWithAttributeUseCase productListWithAttributeUseCase,
                                            GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase,
                                            GetShopEtalaseUseCase getShopEtalaseUseCase,
+                                           GetShopEtalaseByShopUseCase getShopEtalaseByShopUseCase,
                                            AddWishListUseCase addWishListUseCase,
                                            RemoveWishListUseCase removeWishListUseCase,
                                            UserSession userSession) {
         this.getShopProductFeaturedWithAttributeUseCase = getShopProductFeaturedWithAttributeUseCase;
         this.productListWithAttributeUseCase = productListWithAttributeUseCase;
         this.getShopEtalaseUseCase = getShopEtalaseUseCase;
+        this.getShopEtalaseByShopUseCase = getShopEtalaseByShopUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
         this.userSession = userSession;
@@ -130,6 +136,30 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                 }
             });
         }
+    }
+
+    public void getShopEtalaseListByShop(String shopId, boolean isOwner) {
+            RequestParams params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isOwner);
+            getShopEtalaseByShopUseCase.execute(params, new Subscriber<ArrayList<ShopEtalaseModel>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    if (isViewAttached()) {
+                        getView().onErrorGetEtalaseListByShop(e);
+                    }
+                }
+
+                @Override
+                public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
+                    if (isViewAttached()) {
+                        getView().onSuccessGetEtalaseListByShop(shopEtalaseModels);
+                    }
+                }
+            });
     }
 
     private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){

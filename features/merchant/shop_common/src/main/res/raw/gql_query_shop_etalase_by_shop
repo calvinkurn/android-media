@@ -1,0 +1,16 @@
+query shopShowcasesByShopID($shopID:String!, $hideNoCount:Boolean!, $hideShowcaseGroup:Boolean!, $isOwner:Boolean!) {
+  shopShowcasesByShopID(shopId:$shopID, hideNoCount:$hideNoCount, hideShowcaseGroup:$hideShowcaseGroup, isOwner:$isOwner) {
+      result {
+          id
+          name
+          count
+          type
+          highlighted
+          alias
+          useAce
+      }
+      error {
+          message
+      }
+  }
+}

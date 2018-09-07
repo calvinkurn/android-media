@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -35,6 +37,7 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -58,6 +61,7 @@ import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,7 +79,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
-    private static final int REQUEST_CODE_ETALASE = 200;
+    private static final int REQUEST_CODE_ETALASE = 205;
 
     private static final int REQUEST_CODE_SORT = 300;
     private static final int LIST_SPAN_COUNT = 1;
@@ -217,6 +221,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         shopProductAdapter.clearProductList();
 
         showLoading();
+        //TODO if etalase is exist, continue to load highlight and product, else load etalase list first
+        //TODO load etalase first then load product list and highlight list
+        String shopId = shopInfo.getInfo().getShopId();
+        //TODO owner check
+        shopProductLimitedListPresenter.getShopEtalaseListByShop(shopId, false);
+        //TODO load etalase first then load product list and highlight list
+        //TODO remove below load data, only load if etalase is retrieved prviously
         loadData(getDefaultInitialPage());
     }
 
@@ -510,6 +521,18 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
+    public void onSuccessGetEtalaseListByShop(ArrayList<ShopEtalaseModel> shopEtalaseModelList) {
+        //TODO
+        Log.i("Test", "Test");
+    }
+
+    @Override
+    public void onErrorGetEtalaseListByShop(Throwable e) {
+        //TODO
+        Log.i("Test", "Test");
+    }
+
+    @Override
     public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
         //default select first index as selected.
         if (TextUtils.isEmpty(selectedEtalaseId) && shopEtalaseViewModelList != null && shopEtalaseViewModelList.size() > 0) {
@@ -634,7 +657,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
-                if (resultCode == Activity.RESULT_OK && shopProductLimitedListPresenter != null && shopInfo != null) {
+                if (resultCode == Activity.RESULT_OK && shopProductLimitedListPresenter != null && shopInfo != null
+                        && data!=null) {
                     String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
 
@@ -666,7 +690,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 }
                 break;
             case REQUEST_CODE_SORT:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == Activity.RESULT_OK && data!=null) {
                     String sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
                     startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
                             "", selectedEtalaseId, "", sortName));
