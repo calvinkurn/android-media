@@ -25,6 +25,8 @@ public interface MyCouponListingContract {
 
         void populateCoupons(List<CouponValueEntity> coupons);
 
+        void emptyCoupons();
+
         void onErrorCoupons(String errorMessage);
 
         Context getActivityContext();
