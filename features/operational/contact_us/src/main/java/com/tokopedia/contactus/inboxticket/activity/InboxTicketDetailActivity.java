@@ -36,16 +36,6 @@ public class InboxTicketDetailActivity extends BasePresenterActivity<InboxTicket
 
     InboxTicketResultReceiver mReceiver;
 
-    @DeepLink(ApplinkConst.TICKET_DETAIL)
-    public static TaskStackBuilder getCallingIntent(Context context, Bundle bundle) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent parentIntent = new Intent(context, InboxTicketActivity.class);
-        String ticketId = bundle.getString(PARAM_TICKET_ID, "");
-        taskStackBuilder.addNextIntent(parentIntent);
-        taskStackBuilder.addNextIntent(getIntent(context, ticketId));
-        return taskStackBuilder;
-    }
-
     public static Intent getIntent(Context context, String ticketId) {
         Intent intent = new Intent(context, InboxTicketDetailActivity.class);
         intent.putExtra(PARAM_TICKET_ID, ticketId);
