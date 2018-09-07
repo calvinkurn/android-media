@@ -8,6 +8,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Brand implements Parcelable {
 
+
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -46,6 +50,7 @@ public class Brand implements Parcelable {
     };
 
     protected Brand(Parcel in) {
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
@@ -56,6 +61,14 @@ public class Brand implements Parcelable {
     }
 
     public Brand() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -115,6 +128,7 @@ public class Brand implements Parcelable {
     }
 
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(id);
         dest.writeValue(title);
         dest.writeValue(description);
         dest.writeValue(url);

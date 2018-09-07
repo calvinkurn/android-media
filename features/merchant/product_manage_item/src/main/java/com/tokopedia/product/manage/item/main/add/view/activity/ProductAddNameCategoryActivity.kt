@@ -235,8 +235,8 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
     }
 
     object DeeplinkIntent{
-        @JvmStatic
         @DeepLink(Constants.Applinks.PRODUCT_ADD)
+        @JvmStatic
         fun getCallingApplinkAddProductMainAppIntent(context: Context, extras: Bundle): Intent {
             var intent: Intent? = null
             if (SessionHandler.isUserHasShop(context)) {
@@ -254,8 +254,8 @@ open class ProductAddNameCategoryActivity : BaseSimpleActivity(), HasComponent<P
                     .putExtras(extras)
         }
 
-        @JvmStatic
         @DeepLink(Constants.Applinks.SellerApp.PRODUCT_ADD)
+        @JvmStatic
         fun getCallingApplinkIntent(context: Context, extras: Bundle): Intent {
             if (GlobalConfig.isSellerApp()) {
                 val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()

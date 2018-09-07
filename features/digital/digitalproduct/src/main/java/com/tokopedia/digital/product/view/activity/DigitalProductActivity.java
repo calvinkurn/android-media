@@ -181,4 +181,12 @@ public class DigitalProductActivity extends BasePresenterActivity
     protected boolean isLightToolbarThemes() {
         return true;
     }
+
+    @Override
+    protected int getContentId() {
+        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
+            return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
+        }
+        return super.getContentId();
+    }
 }

@@ -24,6 +24,8 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
     private static final String PARAM_CACHE_KEY = "cacheKey";
     private static final String PARAM_PICTURES = "pictures";
     private static final String PARAM_VIDEOS = "videos";
+    private static final String PARAM_ATTACHMENT = "attachment";
+    private static final String PARAM_OBJECTS = "objects";
     public static final String PARAM_JSON = "param_json";
     private static final String RESOLUTION_ID = "resolutionID";
 
@@ -53,14 +55,23 @@ public class CreateSubmitUseCase extends UseCase<CreateSubmitDomain> {
                 imageArrayList.add(uploadDomain.getPicObj());
             }
         }
-        submitObject.add(PARAM_PICTURES, imageArrayList);
-        submitObject.add(PARAM_VIDEOS, videoArrayList);
+        JsonObject attachmentObject = new JsonObject();
+        JsonObject picObject = new JsonObject();
+        JsonObject videoObject = new JsonObject();
+        picObject.add(PARAM_OBJECTS, imageArrayList);
+        videoObject.add(PARAM_OBJECTS, videoArrayList);
+        attachmentObject.add(PARAM_PICTURES, picObject);
+        attachmentObject.add(PARAM_VIDEOS, videoObject);
+        submitObject.add(PARAM_ATTACHMENT, attachmentObject);
         if (!TextUtils.isEmpty(createResoRequestDomain.getResolutionId())) {
             submitObject.addProperty(RESOLUTION_ID, Integer.valueOf(createResoRequestDomain.getResolutionId()));
         }
         RequestParams params = RequestParams.create();
         params.putString(ORDER_ID, createResoRequestDomain.getOrderId());
         params.putObject(PARAM_JSON, submitObject);
+        if (!TextUtils.isEmpty(createResoRequestDomain.getResolutionId())) {
+            params.putString(RESOLUTION_ID, createResoRequestDomain.getResolutionId());
+        }
         return params;
     }
 }
