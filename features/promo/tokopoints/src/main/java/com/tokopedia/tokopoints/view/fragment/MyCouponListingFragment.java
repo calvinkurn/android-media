@@ -166,14 +166,15 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
         ((TextView) getView().findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
         ((TextView) getView().findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
-        Button button = getView().findViewById(R.id.button_continue);
+        TextView button = getView().findViewById(R.id.button_continue);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0);
             startActivity(CatalogListingActivity.getCallingIntent(getActivityContext(), bundle));
         });
-        getView().findViewById(R.id.text_empty_action).setVisibility(View.GONE);
+        getView().findViewById(R.id.text_empty_action).setOnClickListener(v ->
+                ((TokopointRouter) getAppContext()).openTokoPoint(getContext(), CommonConstant.WebLink.INFO));
     }
 
     public void showRedeemCouponDialog(String cta, String code, String title) {
