@@ -140,10 +140,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         private LinearLayout tapActionLayout;
         private LinearLayout actionLayout;
         private View clCard;
+        private View llValid;
+        private View llTanggalEvent;
+        private TextView tvEventDate;
         private TextView tvRightTypeofEvents;
         private TextView tvRightAddress;
         private TextView tvRightCategoryTicket;
         private TextView tvRightNumberOfBooking;
+        private TextView tvValidTill;
         private int index;
 
         public ItemViewHolder(View itemView, int itemType) {
@@ -156,10 +160,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 cityName = itemView.findViewById(R.id.tv_redeem_locations);
             }
             if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
+                tvValidTill = itemView.findViewById(R.id.tv_valid_till);
                 validDate = itemView.findViewById(R.id.tv_valid_till_date);
                 tapActionLayout = itemView.findViewById(R.id.tapAction);
                 actionLayout = itemView.findViewById(R.id.actionButton);
                 clCard = itemView.findViewById(R.id.cl_card);
+                llValid = itemView.findViewById(R.id.ll_valid);
                 itemView.findViewById(R.id.divider1).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
 
             }
@@ -168,12 +174,14 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 tvRightAddress = itemView.findViewById(R.id.right_text2);
                 tvRightCategoryTicket = itemView.findViewById(R.id.right_text3);
                 tvRightNumberOfBooking = itemView.findViewById(R.id.right_text4);
+                llTanggalEvent = itemView.findViewById(R.id.ll_tanggal_event);
+                tvEventDate = itemView.findViewById(R.id.tv_start_date);
             }
             progressBar = itemView.findViewById(R.id.prog_bar);
 
         }
 
-        public void bindData(final Items item, int itemType) {
+        void bindData(final Items item, int itemType) {
 
             MetaDataInfo metaDataInfo = null;
 
@@ -197,8 +205,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
                 }
                 if (itemType == ITEM_DEALS || itemType == ITEM_EVENTS) {
-                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate()))
-                        validDate.setText(" " + metaDataInfo.getEndDate());
+                    if (!TextUtils.isEmpty(metaDataInfo.getEndDate())) {
+                        validDate.setText(" ".concat(metaDataInfo.getEndDate()));
+                        llValid.setVisibility(View.VISIBLE);
+                    } else {
+                        llValid.setVisibility(View.GONE);
+                    }
                 }
 
                 EntityAddress entityAddress = metaDataInfo.getEntityAddress();
@@ -237,7 +249,12 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     } else {
                         tvRightNumberOfBooking.setText(String.valueOf(item.getQuantity()));
                     }
-
+                    if (!TextUtils.isEmpty(metaDataInfo.getStartDate())) {
+                        tvEventDate.setText(" ".concat(metaDataInfo.getStartDate()));
+                        llTanggalEvent.setVisibility(View.VISIBLE);
+                    } else {
+                        llTanggalEvent.setVisibility(View.GONE);
+                    }
                 }
 
             }
@@ -326,7 +343,7 @@ public class ItemsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             tapActionTextView.setLayoutParams(params);
             tapActionTextView.setTextColor(Color.WHITE);
             tapActionTextView.setGravity(Gravity.CENTER_HORIZONTAL);
-            tapActionTextView.setText(actionButton.getLabel().toUpperCase());
+            tapActionTextView.setText(actionButton.getLabel());
             GradientDrawable shape = new GradientDrawable();
             shape.setShape(GradientDrawable.RECTANGLE);
             if (!actionButton.getActionColor().getBackground().equals("")) {

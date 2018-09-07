@@ -4,9 +4,12 @@
     package="com.tokopedia.core"
     android:installLocation="preferExternal">
 
+    <!--<uses-sdk-->
+        <!--android:minSdkVersion="16"-->
+        <!--android:targetSdkVersion="25"-->
+        <!--tools:overrideLibrary="com.readystatesoftware.chuck" />-->
+
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="25"
         tools:overrideLibrary="com.readystatesoftware.chuck" />
 
     <permission
@@ -381,6 +384,8 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
+        <receiver android:name=".share.ShareBroadcastReceiver"/>
 
         <!-- ======================================================= -->
         <!-- SERVICES REGISTRY -->

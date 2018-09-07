@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.domain.model.feed;
 
-import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
-
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -18,7 +16,7 @@ public class FeedDomain {
     private final boolean hasNext;
 
     @Nullable
-    private List<RecentViewProductDomain> recentProduct;
+    private String title;
 
     @Nullable
     private WhitelistDomain whitelist;
@@ -30,26 +28,21 @@ public class FeedDomain {
     }
 
     @Nullable
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(@Nullable String title) {
+        this.title = title;
+    }
+
+    @Nullable
     public List<DataFeedDomain> getListFeed() {
         return listFeed;
     }
 
     public boolean isHasNext() {
         return hasNext;
-    }
-
-//    @Nullable
-//    public List<DataInspirationDomain> getListInspiration() {
-//        return listInspiration;
-//    }
-
-    public void setRecentProduct(@Nullable List<RecentViewProductDomain> recentProduct) {
-        this.recentProduct = recentProduct;
-    }
-
-    @Nullable
-    public List<RecentViewProductDomain> getRecentProduct() {
-        return recentProduct;
     }
 
     @Nullable

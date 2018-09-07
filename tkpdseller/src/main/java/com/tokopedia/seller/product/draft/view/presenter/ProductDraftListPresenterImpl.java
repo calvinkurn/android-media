@@ -1,18 +1,11 @@
 package com.tokopedia.seller.product.draft.view.presenter;
 
-import android.content.Context;
-import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-
 import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.product.manage.item.main.draft.data.model.ProductDraftViewModel;
+import com.tokopedia.product.manage.item.main.draft.domain.DeleteSingleDraftProductUseCase;
+import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase;
-import com.tokopedia.seller.product.draft.domain.interactor.DeleteSingleDraftProductUseCase;
 import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductUseCase;
-import com.tokopedia.seller.product.edit.domain.model.UploadProductInputDomainModel;
-import com.tokopedia.seller.product.draft.domain.interactor.UpdateUploadingDraftProductUseCase;
-import com.tokopedia.seller.product.draft.view.mapper.ProductDraftListMapper;
-import com.tokopedia.seller.product.draft.view.model.ProductDraftViewModel;
-import com.tokopedia.seller.product.edit.view.model.edit.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

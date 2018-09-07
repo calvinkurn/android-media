@@ -3,7 +3,7 @@ package com.tokopedia.seller.product.picker.view.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.seller.base.view.adapter.ItemPickerType;
+import com.tokopedia.product.manage.item.common.util.ItemPickerType;
 
 /**
  * Created by zulfikarrahman on 9/7/17.
