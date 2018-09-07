@@ -24,8 +24,6 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.Produc
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategoryHeaderModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.CategorySectionItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
-import com.tokopedia.discovery.newdiscovery.search.SearchNavigationListener;
-import com.tokopedia.discovery.newdiscovery.search.fragment.catalog.CatalogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +31,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View, SearchNavigationListener {
+public class CategoryActivity extends DiscoveryActivity implements CategoryContract.View {
 
     private static final String EXTRA_CATEGORY_HEADER_VIEW_MODEL = "CATEGORY_HADES_MODEL";
     private static final String EXTRA_TRACKER_ATTRIBUTION = "EXTRA_TRACKER_ATTRIBUTION";
@@ -51,7 +49,7 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     private FrameLayout container;
 
     private ProductFragment productFragment;
-    private CatalogFragment catalogFragment;
+    private CategoryCatalogFragment catalogFragment;
 
     @Inject
     CategoryPresenter categoryPresenter;
@@ -239,8 +237,8 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
         categoryComponent.inject(this);
     }
 
-    private CatalogFragment getCatalogFragment(String departmentId) {
-        return CatalogFragment.createInstanceByCategoryID(departmentId);
+    private CategoryCatalogFragment getCatalogFragment(String departmentId) {
+        return CategoryCatalogFragment.createInstanceByCategoryID(departmentId);
     }
 
     private Fragment getProductFragment(ProductViewModel productViewModel) {
@@ -277,15 +275,5 @@ public class CategoryActivity extends DiscoveryActivity implements CategoryContr
     protected void onDestroy() {
         super.onDestroy();
         categoryPresenter.detachView();
-    }
-
-    @Override
-    public void setupSearchNavigation(ClickListener clickListener, boolean isSortEnabled) {
-
-    }
-
-    @Override
-    public void refreshMenuItemGridIcon(int titleResId, int iconResId) {
-
     }
 }
