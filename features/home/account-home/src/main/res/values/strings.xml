@@ -16,7 +16,7 @@
     <string name="title_privacy_setting">Kebijakan Privasi</string>
     <string name="title_help_center_setting">Pusat Bantuan</string>
     <string name="subtitle_account_setting">Data Diri, Alamat, dan Keamanan Akun</string>
-    <string name="subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
+    <string name="account_home_subtitle_shop_setting">Lokasi, Etalase, Pengiriman, dan lainnya</string>
     <string name="subtitle_tkpd_pay_setting">Kartu Kredit, dan Metode lainnya</string>
     <string name="subtitle_notification_setting">Aplikasi, Chat, Diskusi, dan lainnya</string>
     <string name="account_home_label_logout">Keluar dari Tokopedia</string>
