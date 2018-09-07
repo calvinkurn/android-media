@@ -52,6 +52,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
     private final Context context;
     private final CartItemAdapter.ActionListener actionListener;
@@ -85,6 +86,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvRemark;
     private TextView tvLabelFormRemark;
     private ImageView imgWishlist;
+    private TextView tvEllipsize;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -126,6 +128,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvRemark = itemView.findViewById(R.id.tv_remark);
         this.tvLabelFormRemark = itemView.findViewById(R.id.tv_label_form_remark);
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
+        this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -396,6 +399,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 this.etRemark.setSelection(etRemark.length());
                 this.tvLabelRemarkOption.setVisibility(View.GONE);
                 this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+                this.tvEllipsize.setVisibility(View.GONE);
             } else {
                 // Has notes from pdp
                 this.tvLabelFormRemark.setVisibility(View.GONE);
@@ -405,6 +409,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
                 this.tvNoteCharCounter.setVisibility(View.GONE);
                 this.tvLabelRemarkOption.setText(tvLabelRemarkOption.getContext().getString(R.string.label_button_change_note));
+                if (data.getCartItemData().getUpdatedData().getRemark().length() >= MAX_SHOWING_NOTES_CHAR) {
+                    this.tvEllipsize.setVisibility(View.VISIBLE);
+                } else {
+                    this.tvEllipsize.setVisibility(View.GONE);
+                }
             }
         } else {
             // No notes at all
@@ -415,6 +424,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             this.tvLabelRemarkOption.setText(tvLabelRemarkOption.getContext().getString(R.string.label_button_add_note));
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
             this.etRemark.setText("");
+            this.tvEllipsize.setVisibility(View.GONE);
         }
 
         this.etRemark.setFilters(new InputFilter[]{
