@@ -23,4 +23,5 @@
     <string name="mitra_account_logout_confirm_button_label">Keluar</string>
     <string name="mitra_account_logout_failed">Permintaan keluar tidak berhasil</string>
     <string name="mitra_account_toolbar_title">Akun Saya</string>
+    <string name="mitra_homepage_category_not_available">Produk tidak didukung</string>
 </resources>

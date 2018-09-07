@@ -3,6 +3,7 @@ package com.tokopedia.mitra;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.multidex.MultiDex;
 
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -15,8 +16,13 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.applink.ApplinkDelegate;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkUnsupported;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.mitra.applink.MitraAppApplinkModuleLoader;
 import com.tokopedia.mitra.fingerprint.FingerprintModelGenerator;
 import com.tokopedia.mitra.fingerprint.LocationUtils;
 import com.tokopedia.mitra.homepage.activity.MitraParentHomepageActivity;
@@ -33,10 +39,11 @@ import okhttp3.Response;
 /**
  * Created by Rizky on 30/08/18.
  */
-public class MitraApplication extends MainApplication implements NetworkRouter, AbstractionRouter, SessionRouter {
+public class MitraApplication extends MainApplication implements NetworkRouter, AbstractionRouter, SessionRouter, ApplinkRouter {
 
     private static MitraApplication instance;
     private LocationUtils locationUtils;
+    private TkpdApplinkDelegate applinkDelegate;
 
     @Override
     public void onCreate() {
@@ -51,11 +58,11 @@ public class MitraApplication extends MainApplication implements NetworkRouter, 
 
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
+        applinkDelegate = new TkpdApplinkDelegate(new MitraAppApplinkModuleLoader());
     }
 
     @Override
-    protected void attachBaseContext(Context base)
-    {
+    protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         MultiDex.install(MitraApplication.this);
     }
@@ -65,7 +72,7 @@ public class MitraApplication extends MainApplication implements NetworkRouter, 
     }
 
     protected void initDbFlow() {
-        if(BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             FlowLog.setMinimumLoggingLevel(FlowLog.Level.V);
         }
         FlowManager.init(new FlowConfig.Builder(this)
@@ -235,6 +242,41 @@ public class MitraApplication extends MainApplication implements NetworkRouter, 
 
     @Override
     public Intent getWithdrawIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public void goToApplinkActivity(Context context, String applink) {
+
+    }
+
+    @Override
+    public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public Intent getApplinkIntent(Context context, String applink) {
+        try {
+            return applinkDelegate.getIntent((Activity) context, applink);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        return applinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
+    public ApplinkUnsupported getApplinkUnsupported(Activity activity) {
+        return null;
+    }
+
+    @Override
+    public ApplinkDelegate applinkDelegate() {
         return null;
     }
 }

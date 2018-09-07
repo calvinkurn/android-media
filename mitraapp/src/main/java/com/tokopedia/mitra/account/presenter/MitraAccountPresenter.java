@@ -62,13 +62,13 @@ public class MitraAccountPresenter extends BaseDaggerPresenter<MitraAccountContr
 
                             @Override
                             public void onNext(LogoutDomain logoutDomain) {
-                                getView().showAccountPage();
-                                getView().hideLogoutLoading();
                                 if (logoutDomain.is_success()) {
                                     getView().navigateToHomepage();
                                 } else {
                                     getView().showLogoutErrorMessage(R.string.mitra_account_logout_failed);
                                 }
+                                getView().showAccountPage();
+                                getView().hideLogoutLoading();
                             }
                         });
     }

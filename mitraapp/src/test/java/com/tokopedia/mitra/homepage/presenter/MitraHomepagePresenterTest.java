@@ -33,7 +33,7 @@ public class MitraHomepagePresenterTest {
         RxJavaTestPlugins.setImmediateScheduler();
         RxAndroidTestPlugins.setImmediateScheduler();
         MockitoAnnotations.initMocks(this);
-        presenter = new MitraHomepagePresenter(userSession);
+        presenter = new MitraHomepagePresenter(applinkRouter, userSession, mitraHomepageCategoriesUseCase);
         presenter.attachView(view);
     }
 

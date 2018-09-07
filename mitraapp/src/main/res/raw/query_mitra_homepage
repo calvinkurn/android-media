@@ -1,0 +1,17 @@
+{
+  dynamicHomeIcon {
+    categoryGroup{
+      id
+      title
+      categoryRows{
+        id
+        name
+        url
+        imageUrl
+        categoryId
+        appLinks
+        categoryLabel
+      }
+    }
+  }
+}

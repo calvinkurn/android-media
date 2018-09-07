@@ -11,11 +11,15 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.account.fragment.MitraAccountFragment;
+import com.tokopedia.mitra.applink.MitraApplinkUrl;
 import com.tokopedia.mitra.common.MitraComponentInstance;
 import com.tokopedia.mitra.homepage.contract.MitraParentHomepageContract;
 import com.tokopedia.mitra.homepage.di.DaggerMitraHomepageComponent;
@@ -33,6 +37,11 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
     private BottomNavigation homeNavigation;
     private AppCompatTextView parentToolbarTitle;
     private AppCompatImageView parentToolbarLogo;
+
+    @DeepLink(MitraApplinkUrl.HOMEPAGE)
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        return new Intent(context, MitraParentHomepageActivity.class);
+    }
 
     @Inject
     MitraParentHomepagePresenter presenter;
