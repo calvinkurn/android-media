@@ -6,6 +6,6 @@ import dagger.Component
 
 @DetailCreditCardScope
 @Component(modules = arrayOf(DetailCreditCardModule::class), dependencies = arrayOf(BaseAppComponent::class))
-interface SettingListPaymentComponent{
+interface DetailCreditCardComponent{
     fun inject(settingListPaymentFragment : SettingListPaymentFragment)
 }

@@ -7,7 +7,7 @@ import dagger.Provides
 @Module
 class SettingListPaymentModule {
 
-    @SettingListPaymentScope
+    @DetailCreditCardScope
     @Provides
     fun providePresenter() : SettingListPaymentPresenter{
         return SettingListPaymentPresenter()

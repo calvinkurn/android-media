@@ -1,4 +1,4 @@
-creditCard {
+query creditCard() {
       error
       cards {
         token_id

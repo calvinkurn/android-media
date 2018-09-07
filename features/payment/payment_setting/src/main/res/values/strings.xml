@@ -5,4 +5,6 @@
     <string name="payment_label_button_add_card">Tambah Kartu</string>
     <string name="payment_label_add_card_list">+ Tambah Kartu</string>
     <string name="payment_title_list_card">Pengaturan Kartu Kredit</string>
+    <string name="payment_label_delete_card">Hapus Kartu</string>
+    <string name="payment_label_month_year">month/year</string>
 </resources>

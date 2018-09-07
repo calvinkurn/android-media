@@ -305,6 +305,12 @@ public class NetworkErrorHelper {
         dialog.create().show();
     }
 
+    public static SnackbarRetry createSnackbarRedWithAction(Activity activity, String message, final RetryClickedListener listener) {
+        return new SnackbarRetry(SnackbarManager.makeRed(activity,
+                message,
+                Snackbar.LENGTH_INDEFINITE), listener);
+    }
+
     public interface RetryClickedListener {
         void onRetryClicked();
     }

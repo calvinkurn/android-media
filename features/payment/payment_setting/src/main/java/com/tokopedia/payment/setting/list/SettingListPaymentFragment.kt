@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
-import com.tokopedia.payment.setting.list.di.SettingListPaymentModule
+import com.tokopedia.payment.setting.list.di.DetailCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
@@ -81,7 +81,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun initInjector() {
         DaggerSettingListPaymentComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(SettingListPaymentModule())
+                .settingListPaymentModule(DetailCreditCardModule())
                 .build()
                 .inject(this)
         settingListPaymentPresenter.attachView(this)
