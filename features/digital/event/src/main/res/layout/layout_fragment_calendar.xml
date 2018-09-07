@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_rektang_waktu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_18"
+        android:text="@string/rentang_waktu"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_jan_mar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/ellipse_white_grey_br"
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="Jan - Mar"
+        android:textColor="@color/black_56"
+        app:layout_constraintEnd_toStartOf="@+id/tv_apr_jun"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rektang_waktu" />
+
+    <TextView
+        android:id="@+id/tv_apr_jun"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/ellipse_white_grey_br"
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="Apr - Jun"
+        android:textColor="@color/black_56"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_jan_mar"
+        app:layout_constraintTop_toBottomOf="@+id/tv_rektang_waktu" />
+
+    <TextView
+        android:id="@+id/tv_jul_sep"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/ellipse_white_grey_br"
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="Jul - Sep"
+        android:textColor="@color/black_56"
+        app:layout_constraintEnd_toStartOf="@+id/tv_oct_dec"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_jan_mar" />
+
+    <TextView
+        android:id="@+id/tv_oct_dec"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/ellipse_white_grey_br"
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="Oct - Dec"
+        android:textColor="@color/black_56"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tv_jul_sep"
+        app:layout_constraintTop_toBottomOf="@+id/tv_apr_jun" />
+
+    <TextView
+        android:id="@+id/tv_everyday"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/ellipse_white_grey_br"
+        android:gravity="center"
+        android:padding="@dimen/dp_16"
+        android:text="@string/everyday"
+        android:textColor="@color/black_56"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_oct_dec" />
+
+    <View
+        android:id="@+id/divider2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_22"
+        android:background="@color/grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_everyday" />
+
+</android.support.constraint.ConstraintLayout>

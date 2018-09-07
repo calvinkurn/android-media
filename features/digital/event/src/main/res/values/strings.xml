@@ -89,6 +89,10 @@
     <string name="biaya_layanan">Biaya Layanan</string>
     <string name="total_diskon">Total Diskon</string>
     <string name="discount">- Rp %1$d</string>
+    <string name="kategory">Kategory</string>
+    <string name="kalender_event">Kalender Event</string>
+    <string name="rentang_waktu">Rentang Waktu</string>
+    <string name="everyday">Tersedia Setiap Hari</string>
 
 
     <!-- need to changed -->
