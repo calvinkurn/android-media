@@ -130,9 +130,10 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         mContainerMain = view.findViewById(R.id.container);
         mRecyclerView = view.findViewById(R.id.recycler_view_coupons);
 
-        ((ImageView) getView().findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
-        ((TextView) getView().findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
-        ((TextView) getView().findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
+        ((ImageView) view.findViewById(R.id.img_error)).setImageResource(R.drawable.ic_tp_empty_pages);
+        ((TextView) view.findViewById(R.id.text_title_error)).setText(getString(R.string.tp_default_empty_coupons_title));
+        ((TextView) view.findViewById(R.id.text_label_error)).setText(getString(R.string.tp_default_empty_coupons_subtitle));
+        view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
     }
 
     private void initListener() {
@@ -141,7 +142,6 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         }
 
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
-        getView().findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
         getView().findViewById(R.id.button_continue).setOnClickListener(view12 -> {
             Bundle bundle = new Bundle();
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0);
