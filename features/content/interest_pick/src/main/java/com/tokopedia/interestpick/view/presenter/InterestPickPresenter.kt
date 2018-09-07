@@ -1,8 +1,11 @@
 package com.tokopedia.interestpick.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interestpick.domain.usecase.GetInterestUseCase
+import com.tokopedia.interestpick.view.GetInterestSubscriber
 import com.tokopedia.interestpick.view.listener.InterestPickContract
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -17,9 +20,6 @@ class InterestPickPresenter @Inject constructor(val getInterestUseCase: GetInter
     }
 
     override fun fetchData() {
-        getInterestUseCase.execute(
-                null,
-                null
-        )
+        getInterestUseCase.execute(GetInterestSubscriber(view))
     }
 }
