@@ -390,8 +390,9 @@ public class CartListPresenter implements ICartListPresenter {
         if (totalPrice > 0) {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
-        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString);
         view.updateCashback(totalCashback);
+        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size();
+        view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem);
 
     }
 
@@ -652,7 +653,7 @@ public class CartListPresenter implements ICartListPresenter {
 
     private int getChecklistCondition() {
         int checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES;
-        List<CartShopHolderData> cartShopHolderDataList = view.getAllCartDataList();
+        List<CartShopHolderData> cartShopHolderDataList = view.getAllShopDataList();
         for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
             if (cartShopHolderData.isPartialSelected() || !cartShopHolderData.isAllSelected()) {
                 checklistCondition = ITEM_CHECKED_PARTIAL_SHOP;

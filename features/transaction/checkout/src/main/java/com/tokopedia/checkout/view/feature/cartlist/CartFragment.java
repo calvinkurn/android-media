@@ -536,7 +536,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onCartItemTickerErrorActionClicked(CartItemTickerErrorHolderData data, int position) {
-        List<CartShopHolderData> cartShopHolderDataList = getAllCartDataList();
+        List<CartShopHolderData> cartShopHolderDataList = getAllShopDataList();
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
         final boolean deleteAllCartData = toBeDeletedCartItem.size() == allCartItemDataList.size();
@@ -1123,17 +1123,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
-    public List<CartShopHolderData> getAllCartDataList() {
+    public List<CartItemData> getAllCartDataList() {
+        return cartAdapter.getAllCartItemData();
+    }
+
+    @Override
+    public List<CartShopHolderData> getAllShopDataList() {
         return cartAdapter.getAllShopGroupDataList();
     }
 
     @Override
-    public void renderDetailInfoSubTotal(String qty, String subtotalPrice) {
-        if (subtotalPrice.equals("-")) {
-            cbSelectAll.setChecked(false);
-        } else {
-            cbSelectAll.setChecked(true);
-        }
+    public void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllCartItem) {
+        cbSelectAll.setChecked(selectAllCartItem);
         tvTotalPrice.setText(subtotalPrice);
         btnToShipment.setText(String.format(getString(R.string.cart_item_button_checkout_count_format), qty));
     }
