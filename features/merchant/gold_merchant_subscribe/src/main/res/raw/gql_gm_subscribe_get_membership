@@ -1,0 +1,15 @@
+query getMembershipData {
+    goldGetSubscription {
+        data {
+            shop_id
+            expired_date
+            auto_withdrawal_date
+            auto_extend
+            subscription {
+                subscription_type
+                name notes days_limit
+            }
+        }
+        error_message
+    }
+}

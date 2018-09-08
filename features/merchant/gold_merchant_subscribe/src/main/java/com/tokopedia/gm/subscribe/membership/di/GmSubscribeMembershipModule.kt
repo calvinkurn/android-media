@@ -1,0 +1,23 @@
+package com.tokopedia.gm.subscribe.membership.di
+
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gm.subscribe.membership.domain.GetGmSubscribeMembershipUsecase
+import com.tokopedia.graphql.domain.GraphqlUseCase
+import dagger.Module
+import dagger.Provides
+
+@Module
+@GmSubscribeMembershipScope
+class GmSubscribeMembershipModule {
+
+    @GmSubscribeMembershipScope
+    @Provides
+    fun provideGraphqlUseCase() = GraphqlUseCase()
+
+    @GmSubscribeMembershipScope
+    @Provides
+    fun provideGetRateEstimationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): GetGmSubscribeMembershipUsecase {
+        return GetGmSubscribeMembershipUsecase(context, graphqlUseCase)
+    }
+}

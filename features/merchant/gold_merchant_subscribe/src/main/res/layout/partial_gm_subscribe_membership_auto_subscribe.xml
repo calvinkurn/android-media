@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginTop="@dimen/dp_16"
+    android:layout_marginBottom="@dimen/dp_8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dp_16">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Small"
+                android:text="@string/gm_auto_extend"/>
+
+            <Switch
+                android:id="@+id/swAutoExtend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Switch"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutAutoExtend"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tokopedia.design.label.LabelView
+                android:id="@+id/labelExtendPacket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:lv_title="@string/gm_auto_extend"
+                app:lv_title_text_size="14sp"
+                app:lv_content_text_size="14sp"
+                app:lv_content_color="@color/tkpd_main_green"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_8"
+                android:focusable="true"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingStart="@dimen/dp_16"
+                android:paddingTop="@dimen/dp_16"
+                android:paddingBottom="@dimen/dp_16"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_half"
+                android:background="@drawable/divider"
+                android:layout_marginLeft="@dimen/dp_16"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:text="@string/gmsubscribe_membership_auto_extend_expired_date"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Micro.BlackDisabled"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginBottom="@dimen/dp_16"
+                android:text="@string/gmsubscribe_membership_auto_extend_expired_date"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</android.support.v7.widget.CardView>

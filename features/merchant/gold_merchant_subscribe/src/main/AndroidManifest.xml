@@ -17,6 +17,12 @@
             android:name=".view.activity.GmCheckoutActivity"
             android:label="@string/gmsubscribe_checkout_title"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".membership.view.activity.GmMembershipActivity"
+            android:label="@string/gm_membership_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

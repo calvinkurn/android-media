@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">GoldMerchantSubscribe</string>
     <string name="gm_home_title">Gold Merchant</string>
+    <string name="gm_membership_title">Keanggotaan</string>
+    <string name="gm_extend_membership">Perpanjang Keanggotaan</string>
+    <string name="gm_auto_extend">Perpanjang Otomatis</string>
     <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
     <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>
+
+    <string name="gmsubscribe_membership_auto_extend_expired_date">Keanggotaan Gold Merchant Anda akan otomatis diperpanjang  pada 6 Mei 2020</string>
 
     <string name="gmsubscribe_feature_gold_badge">Gold Badge</string>
     <string name="gmsubscribe_feature_gold_badge_desc">Dapatkan Gold Badge dengan performa toko min. 75 poin, toko Anda akan terlihat semakin terpercaya.</string>
