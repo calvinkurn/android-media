@@ -131,6 +131,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setCategory(data.getProduct().getCategory());
                 cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
+                cartItemDataOrigin.setOriginalQty(data.getProduct().getProductQuantity());
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
                 cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
                 cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);

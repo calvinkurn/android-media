@@ -162,7 +162,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onStop() {
-        if (getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+        boolean hasChanges = false;
+        for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
+            if (cartItemData.getUpdatedData().getQuantity() != cartItemData.getOriginData().getOriginalQty() ||
+                    !cartItemData.getUpdatedData().getRemark().equals(cartItemData.getOriginData().getOriginalRemark())) {
+                hasChanges = true;
+                break;
+            }
+        }
+
+        if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
+            for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
+                cartItemData.getOriginData().setOriginalQty(cartItemData.getUpdatedData().getQuantity());
+                cartItemData.getOriginData().setOriginalRemark(cartItemData.getUpdatedData().getRemark());
+            }
+
             Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
             service.putParcelableArrayListExtra(
                     UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
@@ -170,13 +184,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             getActivity().startService(service);
         }
         super.onStop();
-    }
-
-    @Override
-    public void onDestroy() {
-        cartAdapter.unsubscribeSubscription();
-        dPresenter.detachView();
-        super.onDestroy();
     }
 
     @Override
@@ -283,7 +290,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             toolbar = toolbarRemoveView();
         }
         appbar.addView(toolbar);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(appbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(appbar);
         setVisibilityRemoveButton(false);
     }
 
@@ -1111,8 +1118,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            cartAdapter.resetData();
-            dPresenter.processInitialGetCartData();
+            if (dPresenter.getCartListData() == null) {
+                dPresenter.processInitialGetCartData();
+            }
         }
     }
 
