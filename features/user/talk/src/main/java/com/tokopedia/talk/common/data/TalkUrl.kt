@@ -3,11 +3,20 @@ package com.tokopedia.talk.common.data
 /**
  * @author by nisie on 9/3/18.
  */
-class TalkUrl{
+class TalkUrl {
     companion object {
 
         var BASE_URL: String = "https://inbox.tokopedia.com/"
         const val PATH_GET_INBOX_TALK: String = "talk/v2/inbox"
+        const val PATH_GET_PRODUCT_TALK: String = "talk/v2/read"
+        const val PATH_DELETE_TALK: String = "talk/v2/delete"
+        const val PATH_DELETE_COMMENT_TALK: String = "/talk/v2/comment/delete"
+        const val PATH_FOLLOW_TALK: String = "talk/v2/follow"
+        const val PATH_REPORT_TALK: String = "talk/v2/report"
 
+        const val PATH_MARK_TALK_NOT_FRAUD: String = "talk/v2/mark/notfraud"
+
+        val IMAGE_EMPTY_TALK: String? = "https://ecs7.tokopedia.net/img/android/others/page_1.png"
+        //TODO CHANGE EMPTY TALK
     }
 }

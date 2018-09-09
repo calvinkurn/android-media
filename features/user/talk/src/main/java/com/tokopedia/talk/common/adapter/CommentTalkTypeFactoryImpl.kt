@@ -3,19 +3,21 @@ package com.tokopedia.talk.common.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.LoadProductTalkViewModel
-import com.tokopedia.talk.ProductTalkItemViewModel
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 
 /**
  * @author by nisie on 9/5/18.
  */
-class CommentTalkTypeFactoryImpl() :
+class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTalkViewHolder
+.TalkCommentItemListener,
+                                 private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         BaseAdapterTypeFactory(),
         ProductTalkChildThreadTypeFactory {
 
-    override fun type(loadMoreModel: LoadProductTalkViewModel): Int {
+    override fun type(loadMoreModel: LoadProductTalkThreadViewModel): Int {
         return LoadMoreCommentTalkViewHolder.LAYOUT
     }
 
@@ -26,7 +28,7 @@ class CommentTalkTypeFactoryImpl() :
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             LoadMoreCommentTalkViewHolder.LAYOUT -> LoadMoreCommentTalkViewHolder(view)
-            CommentTalkViewHolder.LAYOUT -> CommentTalkViewHolder(view)
+            CommentTalkViewHolder.LAYOUT -> CommentTalkViewHolder(view, talkCommentItemListener, talkProductAttachmentItemClickListener)
             else -> super.createViewHolder(view, viewType)
         }
     }

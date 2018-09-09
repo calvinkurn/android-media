@@ -54,6 +54,9 @@ data class InboxTalkItemPojo(
         @SerializedName("talk_product_status")
         val talk_product_status: Int = 0,
         @Expose
+        @SerializedName("talk_raw_message")
+        val talk_raw_message: String = "",
+        @Expose
         @SerializedName("talk_read_status")
         val talk_read_status: Int = 0,
         @Expose
@@ -109,7 +112,7 @@ data class TalkCommentItem(
         val comment_message: String = "",
         @Expose
         @SerializedName("comment_products")
-        val listComment: List<CommentProduct> = ArrayList(),
+        val listProduct: List<CommentProduct> = ArrayList(),
         @Expose
         @SerializedName("comment_raw_message")
         val comment_raw_message: String = "",
@@ -145,7 +148,7 @@ data class TalkCommentItem(
 data class CommentProduct(
         @Expose
         @SerializedName("product_id")
-        val product_id: String = "",
+        val product_id: Int = 0,
         @Expose
         @SerializedName("product_image")
         val product_image: String = "",

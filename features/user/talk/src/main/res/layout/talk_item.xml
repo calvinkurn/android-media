@@ -1,85 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="@dimen/dp_16"
-        android:background="@color/white">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16">
 
     <ImageView
-            android:id="@+id/prof_pict"
-            android:layout_width="@dimen/dp_40"
-            android:layout_height="@dimen/dp_40"
-            android:background="@drawable/circle_red"
-            app:layout_constraintLeft_toLeftOf="parent"/>
+        android:id="@+id/prof_pict"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintLeft_toLeftOf="parent"/>
 
     <LinearLayout
-            android:id="@+id/identity"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="@dimen/dp_10"
-            app:layout_constraintTop_toTopOf="@+id/prof_pict"
-            app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
-            app:layout_constraintLeft_toRightOf="@+id/prof_pict">
-        <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_13"
-                android:fontFamily="sans-serif"
-                android:textStyle="bold"
-                android:textColor="@color/black_70"
-                app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
-                app:layout_constraintBottom_toTopOf="@+id/timestamp"
-                app:layout_constraintLeft_toRightOf="@+id/prof_pict"
-                app:layout_constraintTop_toTopOf="@+id/menu"
-                tools:text="Lord Atep"/>
+        android:id="@+id/identity"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
+        app:layout_constraintLeft_toRightOf="@+id/prof_pict"
+        app:layout_constraintTop_toTopOf="@+id/prof_pict">
 
         <TextView
-                android:id="@+id/timestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/sp_11"
-                android:fontFamily="sans-serif"
-                android:textStyle="normal"
-                android:textColor="@color/black_38"
-                app:layout_constraintLeft_toRightOf="@id/prof_pict"
-                app:layout_constraintBottom_toBottomOf="@id/prof_pict"
-                app:layout_constraintTop_toBottomOf="@id/username"
-                tools:text="15 Sep pukul 15.30"/>
+            android:id="@+id/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/black_70"
+            android:textSize="@dimen/sp_13"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
+            app:layout_constraintBottom_toTopOf="@+id/timestamp"
+            app:layout_constraintLeft_toRightOf="@+id/prof_pict"
+            app:layout_constraintTop_toTopOf="@+id/menu"
+            tools:text="Lord Atep"/>
+
+        <TextView
+            android:id="@+id/timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/sp_11"
+            android:textStyle="normal"
+            app:layout_constraintBottom_toBottomOf="@id/prof_pict"
+            app:layout_constraintLeft_toRightOf="@id/prof_pict"
+            app:layout_constraintTop_toBottomOf="@id/username"
+            tools:text="15 Sep pukul 15.30"/>
 
     </LinearLayout>
 
     <ImageView
-            android:id="@+id/menu"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"
-            android:layout_alignParentRight="true"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@id/prof_pict"
-            app:layout_constraintBottom_toBottomOf="@id/prof_pict"/>
+        android:id="@+id/menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        app:layout_constraintBottom_toBottomOf="@id/prof_pict"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/prof_pict"
+        app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"/>
 
     <TextView
-            android:id="@+id/talk_content"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:maxLines="5"
-            android:textColor="@color/black_54"
-            android:lineSpacingExtra="@dimen/sp_5"
-            android:textSize="@dimen/sp_14"
-            android:fontFamily="sans-serif"
-            android:textStyle="normal"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginLeft="@dimen/dp_10"
-            tools:text="Hai gan ini kalau saya pesen akan dirakitin sama agannya, apa ngga? Kalau ngga, saya bisa sewa biaya rakit ga ya? Saya ga ngerti, rakit lego aja berantakan."
-            app:layout_constraintStart_toEndOf="@+id/prof_pict"
-            app:layout_constraintTop_toBottomOf="@+id/identity"
-            app:layout_constraintEnd_toStartOf="@id/menu"
+        android:id="@+id/talk_content"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="@dimen/sp_5"
+        android:maxLines="5"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        app:layout_constraintEnd_toStartOf="@id/menu"
+        app:layout_constraintStart_toEndOf="@+id/prof_pict"
+        app:layout_constraintTop_toBottomOf="@+id/identity"
+        tools:text="Hai gan ini kalau saya pesen akan dirakitin sama agannya, apa ngga? Kalau ngga, saya bisa sewa biaya rakit ga ya? Saya ga ngerti, rakit lego aja berantakan."
 
-    />
+        />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/productAttachment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        app:layout_constraintLeft_toLeftOf="@+id/talk_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/talk_content"
+        tools:itemCount="3"
+        tools:listitem="@layout/talk_product_attachment"
+        />
+
+    <include
+        android:id="@+id/layout_reported"
+        layout="@layout/reported_talk"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@id/menu"
+        app:layout_constraintStart_toEndOf="@+id/prof_pict"
+        app:layout_constraintTop_toBottomOf="@+id/identity"/>
 </android.support.constraint.ConstraintLayout>

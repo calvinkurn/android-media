@@ -2,6 +2,7 @@ package com.tokopedia.attachproduct.di;
 
 import android.content.Context;
 
+import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
@@ -20,16 +21,12 @@ import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
-import com.tokopedia.network.utils.AuthUtil;
-
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
 
 import dagger.Module;
 import dagger.Provides;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;

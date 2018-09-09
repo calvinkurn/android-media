@@ -2,9 +2,9 @@ package com.tokopedia.talk.common.data
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.talk.common.domain.InboxTalkPojo
+import com.tokopedia.talk.common.domain.pojo.BaseActionTalkPojo
 import retrofit2.Response
-import retrofit2.http.GET
-import retrofit2.http.QueryMap
+import retrofit2.http.*
 import rx.Observable
 
 /**
@@ -15,4 +15,34 @@ interface TalkApi {
     @GET(TalkUrl.PATH_GET_INBOX_TALK)
     fun getInboxTalk(@QueryMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<InboxTalkPojo>>>
+
+    @GET(TalkUrl.PATH_GET_PRODUCT_TALK)
+    fun getProductTalk(@QueryMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<InboxTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_DELETE_TALK)
+    fun deleteTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_DELETE_COMMENT_TALK)
+    fun deleteCommentTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_FOLLOW_TALK)
+    fun followTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_MARK_TALK_NOT_FRAUD)
+    fun markTalkNotFraud(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_REPORT_TALK)
+    fun reportTalk(@FieldMap params: HashMap<String, Any>):
+            Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
 }

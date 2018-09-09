@@ -1,54 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_card_attach_product"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_8">
+
     <com.tokopedia.core.customwidget.SquareImageView
         android:id="@+id/attach_product_chat_image"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:adjustViewBounds="true"
-        android:layout_marginLeft="10dp"
-        android:gravity="center"
         android:layout_centerVertical="true"
-        android:src="@drawable/ic_loading_toped" />
+        android:adjustViewBounds="true"
+        android:gravity="center"
+        android:src="@drawable/ic_loading_toped"/>
+
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/attach_product_chat_image"
-        android:layout_toEndOf="@id/attach_product_chat_image"
-        android:layout_marginLeft="14dp"
-        android:layout_marginStart="14dp"
-        android:layout_marginRight="12dp"
-        android:layout_marginEnd="12dp"
         android:layout_centerVertical="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginStart="14dp"
+        android:layout_toEndOf="@id/attach_product_chat_image"
+        android:layout_toRightOf="@id/attach_product_chat_image"
         android:maxWidth="172dp"
         >
+
         <TextView
             android:id="@+id/attach_product_chat_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="14sp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
-            android:textColor="@color/black_70"
             android:lineSpacingExtra="4sp"
             android:maxLines="2"
             android:maxWidth="172dp"
-            android:text="Nama Produk" />
+            android:textColor="@color/black_70"
+            android:textSize="14sp"
+            android:textStyle="normal"
+            tools:text="Nama Produk"/>
+
         <TextView
             android:id="@+id/attach_product_chat_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/orange_red"
-            android:text="@string/price_per_product"
-            android:textSize="14sp"
             android:layout_below="@id/attach_product_chat_name"
             android:fontFamily="sans-serif-medium"
-            android:textStyle="normal"
             android:lineSpacingExtra="6sp"
+            android:textColor="@color/orange_red"
+            android:textSize="14sp"
+            android:textStyle="normal"
             tools:text="Rp 2.099.000"
             />
     </RelativeLayout>

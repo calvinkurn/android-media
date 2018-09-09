@@ -1,16 +1,20 @@
-package com.tokopedia.talk
+package com.tokopedia.talk.producttalk.domain.usecase
 
+import com.tokopedia.talk.common.data.TalkApi
+import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 6/8/18.
  */
-class GetProductTalkUseCase(val api: ProductTalkApi,
-                            val mapper: ProductTalkListMapper) : UseCase<ProductTalkListViewModel>() {
+class GetProductTalkUseCase @Inject constructor(val api: TalkApi,
+                                               val mapper: ProductTalkListMapper) : UseCase<ProductTalkViewModel>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<ProductTalkListViewModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<ProductTalkViewModel> {
 
         return api.getProductTalk(requestParams.parameters).map(mapper)
     }
@@ -19,14 +23,21 @@ class GetProductTalkUseCase(val api: ProductTalkApi,
 
         private val PARAM_PAGE: String = "page"
         private val PARAM_USER_ID: String = "user_id"
+        private val PARAM_PRODUCT_ID: String = "product_id"
+        private val PARAM_TYPE: String = "type"
+        private val PARAM_COMMENT_ENABLED: String = "with_comment"
 
         fun getParam(
                 userId: String,
-                page: Int): RequestParams {
+                page: Int,
+                productId: String): RequestParams {
             val requestParams: RequestParams = RequestParams.create()
 
             requestParams.putInt(PARAM_PAGE, page)
             requestParams.putString(PARAM_USER_ID, userId)
+            requestParams.putString(PARAM_PRODUCT_ID, productId)
+            requestParams.putString(PARAM_TYPE, "p")
+            requestParams.putInt(PARAM_COMMENT_ENABLED, 0)
 
             return requestParams
         }

@@ -3,15 +3,17 @@ package com.tokopedia.talk.inboxtalk.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.talk.ProductTalkItemViewModel
-import com.tokopedia.talk.TalkState
-import com.tokopedia.talk.TalkThreadViewModel
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.common.domain.CommentProduct
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.ProductHeader
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import retrofit2.Response
 import rx.functions.Func1
 import javax.inject.Inject
@@ -47,7 +49,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         return InboxTalkViewModel("",
                 listTalk,
                 pojo.paging.has_next,
-                pojo.paging.page_id)
+                pojo.paging.page_id,
+                pojo.is_unread)
     }
 
     private fun mapListThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
@@ -61,7 +64,10 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
-                    true
+                    true,
+                    mapProductAttachment(data),
+                    data.comment_raw_message,
+                    data.comment_is_owner == 1
             ))
         }
 
@@ -73,10 +79,27 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
-                        pojo.talk_follow_status == IS_FOLLOWED
+                        pojo.talk_follow_status == IS_FOLLOWED,
+                        ArrayList(),
+                        pojo.talk_raw_message,
+                        pojo.talk_own == 1
                 ),
                 listTalk
         )
+    }
+
+    private fun mapProductAttachment(pojo: TalkCommentItem):
+            ArrayList<TalkProductAttachmentViewModel> {
+        val listProduct = ArrayList<TalkProductAttachmentViewModel>()
+        for (data: CommentProduct in pojo.listProduct) {
+            listProduct.add(TalkProductAttachmentViewModel(
+                    data.product_name,
+                    data.product_id,
+                    data.product_image,
+                    data.product_price
+            ))
+        }
+        return listProduct
     }
 
     private fun mapHeaderTalkState(pojo: InboxTalkItemPojo): TalkState {
