@@ -269,7 +269,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         alertDialog.show()
     }
 
-    override fun onCommentMenuButtonClicked(menu: TalkState) {
+    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String) {
         //TODO STEVENFe
     }
 

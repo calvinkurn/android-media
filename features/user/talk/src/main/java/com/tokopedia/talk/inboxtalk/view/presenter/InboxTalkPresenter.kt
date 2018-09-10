@@ -17,7 +17,8 @@ import javax.inject.Inject
  */
 class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: GetInboxTalkUseCase,
                                              private val deleteTalkUseCase: DeleteTalkUseCase,
-                                             private val deleteCommentTalkUseCase: DeleteCommentTalkUseCase)
+                                             private val deleteCommentTalkUseCase:
+                                             DeleteCommentTalkUseCase)
     : BaseDaggerPresenter<InboxTalkContract.View>(),
         InboxTalkContract.Presenter {
 
@@ -206,13 +207,13 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         }
     }
 
-    override fun deleteCommentTalk() {
+    override fun deleteCommentTalk(shopId: String, talkId: String, commentId: String) {
         if (!isRequesting) {
 
             deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
-                    "",
-                    "",
-                    ""
+                    shopId,
+                    talkId,
+                    commentId
             ), object : Subscriber<BaseActionTalkViewModel>() {
                 override fun onCompleted() {
 
@@ -225,7 +226,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
                     if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteCommentTalk()
+                        view.onSuccessDeleteCommentTalk(talkId, commentId)
                     }
                 }
             })
@@ -251,7 +252,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
                     if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteCommentTalk()
+                        view.onSuccessDeleteCommentTalk(talkId, commentId)
                     }
                 }
             })

@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -117,7 +116,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
             }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
+            override fun onTabUnselected(tab: TabLayout.Tab) {
                 setTabUnSelected(tab)
             }
 
@@ -127,7 +126,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         })
     }
 
-    private fun setTabUnSelected(tab: TabLayout.Tab?) {
+    private fun setTabUnSelected(tab: TabLayout.Tab) {
         tab.customView?.run {
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
@@ -147,16 +146,25 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         val view: View = LayoutInflater.from(this).inflate(R.layout.custom_tab_inbox_talk, null)
 
         val title: TextView = view.findViewById(R.id.title)
-        val notif: TextView = view.findViewById(R.id.notification)
+        val notification: TextView = view.findViewById(R.id.notification)
 
         title.text = titleText
-        notif.text = "0"
+        notification.text = "0"
         return view
     }
 
-    override fun onGetNotification(notification: Int, nav: String) {
+    override fun onGetNotification(notifCount: Int, nav: String) {
         if (tabLayout.visibility == View.VISIBLE) {
-            //TODO SET NOTIFICATION
+            tabLayout.getTabAt(inboxTalkPagerAdapter.getFragmentPosition(nav))?.customView?.run {
+                val notification: TextView = this.findViewById(R.id.notification)
+
+                if (notifCount > 0) {
+                    notification.visibility = View.VISIBLE
+                    notification.text = notifCount.toString()
+                } else {
+                    notification.visibility = View.GONE
+                }
+            }
         }
     }
 }

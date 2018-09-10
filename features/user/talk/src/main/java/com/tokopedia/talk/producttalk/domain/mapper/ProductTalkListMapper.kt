@@ -46,7 +46,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
         }
         return ProductTalkViewModel("",
                 listThread,
-true,//                pojo.paging.has_next,
+                true,//                pojo.paging.has_next,
                 pojo.paging.page_id)
     }
 
@@ -66,7 +66,10 @@ true,//                pojo.paging.has_next,
                     true,
                     ArrayList(),
                     data.comment_raw_message,
-                    data.comment_is_owner == 1
+                    data.comment_is_owner == 1,
+                    data.comment_shop_id,
+                    data.comment_talk_id,
+                    data.comment_id
 
             ))
         }
@@ -83,7 +86,10 @@ true,//                pojo.paging.has_next,
                         pojo.talk_follow_status == IS_FOLLOWED,
                         ArrayList(),
                         pojo.talk_raw_message,
-                        pojo.talk_own == 1
+                        pojo.talk_own == 1,
+                        pojo.talk_shop_id,
+                        pojo.talk_id,
+                        ""
 
                 ),
                 listCommentTalk)

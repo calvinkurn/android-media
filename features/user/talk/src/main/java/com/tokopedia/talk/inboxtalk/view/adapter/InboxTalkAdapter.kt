@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 /**
  * @author by nisie on 8/29/18.
@@ -51,12 +52,27 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
 
     fun deleteTalkByTalkId(talkId: String) {
         for (talk in visitables) {
-            if (talk is ProductTalkItemViewModel && talk.talkId.equals(talkId)) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 this.visitables.remove(talk)
                 notifyItemRemoved(position)
             }
         }
+    }
+
+    fun deleteComment(talkId: String, commentId: String) {
+        for (talk in visitables) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        talk.listChild.remove(comment)
+                    }
+                }
+                notifyItemChanged(position)
+            }
+        }
+
     }
 
 }
