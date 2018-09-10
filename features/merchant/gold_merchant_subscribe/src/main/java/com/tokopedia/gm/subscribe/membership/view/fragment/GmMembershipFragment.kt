@@ -21,12 +21,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
     @Inject
     lateinit var presenter: GmMembershipPresenterImpl
 
-    private var subscriptionTypeSelected = 0
-
-    private val FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
-    private val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
-    private val SELECT_AUTO_SUBSCRIBE_PRODUCT = 200
-    private val CHANGE_AUTO_SUBSCRIBE_PRODUCT = 300
+    private var subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
 
     private val tvSave : TextView by lazy { activity?.findViewById(R.id.tvSave) as TextView}
 
@@ -59,6 +54,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
         swAutoExtend.setOnCheckedChangeListener { _, bool ->
             showAutoExtendLayout(bool)
+            if(!bool) subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
         }
 
         labelExtendPacket.setOnClickListener {
@@ -118,5 +114,12 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
     companion object {
         fun newInstance() = GmMembershipFragment()
+        private const val DEFAULT_SUBSCRIPTION_TYPE = 0
+        private const val FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+        private const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
+
+        private const val SELECT_AUTO_SUBSCRIBE_PRODUCT = 200
+        private const val CHANGE_AUTO_SUBSCRIBE_PRODUCT = 300
+
     }
 }
