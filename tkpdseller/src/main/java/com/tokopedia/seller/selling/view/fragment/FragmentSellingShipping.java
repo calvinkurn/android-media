@@ -34,6 +34,7 @@ import com.bignerdranch.android.multiselector.MultiSelector;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -148,7 +149,11 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             FragmentSellingShipping.this.actionMode = actionMode;
             hideFab();
             actionMode.setTitle("1");
-            getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
+            if(GlobalConfig.isCustomerApp()) {
+                getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi_dark, menu);
+            } else {
+                getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
+            }
             refresh.setPullEnabled(false);
             return true;
         }
