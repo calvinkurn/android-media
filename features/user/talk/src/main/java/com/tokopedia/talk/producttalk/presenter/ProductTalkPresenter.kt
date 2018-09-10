@@ -57,7 +57,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
                         view.onSuccessGetTalks(viewModel.listThread)
                     }
                     if (viewModel.hasNextPage) {
-                        view.setLoading()
+                        view.setCanLoad()
                         page += 1
                         pageId = viewModel.page_id
                     }

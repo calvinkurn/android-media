@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -13,12 +12,13 @@
         android:id="@+id/prof_pict"
         android:layout_width="@dimen/dp_40"
         android:layout_height="@dimen/dp_40"
-        app:layout_constraintLeft_toLeftOf="parent"/>
+        app:layout_constraintLeft_toLeftOf="parent" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/identity"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
+
         android:layout_marginLeft="@dimen/dp_10"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
@@ -33,26 +33,37 @@
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_13"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
-            app:layout_constraintBottom_toTopOf="@+id/timestamp"
-            app:layout_constraintLeft_toRightOf="@+id/prof_pict"
-            app:layout_constraintTop_toTopOf="@+id/menu"
-            tools:text="Lord Atep"/>
+            tools:text="Lord Atep" />
 
         <TextView
             android:id="@+id/timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
-            android:textColor="@color/black_38"
             android:textSize="@dimen/sp_11"
+            android:fontFamily="sans-serif"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="@id/prof_pict"
-            app:layout_constraintLeft_toRightOf="@id/prof_pict"
+            android:textColor="@color/black_38"
+            android:layout_below="@id/username"
             app:layout_constraintTop_toBottomOf="@id/username"
-            tools:text="15 Sep pukul 15.30"/>
+            tools:text="15 Sep pukul 15.30" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/seller_label"
+            style="@style/TextView.Micro.Green"
+            android:background="@drawable/talk_seller_label"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/dp_2"
+            android:paddingLeft="@dimen/dp_5"
+            android:paddingRight="@dimen/dp_5"
+            android:paddingTop="@dimen/dp_2"
+            android:text="Penjual"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_toRightOf="@id/username"
+            android:layout_alignTop="@id/username"
+            android:layout_alignBottom="@id/username"
+            android:textSize="@dimen/sp_11" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@+id/menu"
@@ -62,7 +73,7 @@
         app:layout_constraintBottom_toBottomOf="@id/prof_pict"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/prof_pict"
-        app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black"/>
+        app:srcCompat="@drawable/ic_toolbar_overflow_level_two_black" />
 
     <TextView
         android:id="@+id/talk_content"
@@ -79,9 +90,7 @@
         app:layout_constraintEnd_toStartOf="@id/menu"
         app:layout_constraintStart_toEndOf="@+id/prof_pict"
         app:layout_constraintTop_toBottomOf="@+id/identity"
-        tools:text="Hai gan ini kalau saya pesen akan dirakitin sama agannya, apa ngga? Kalau ngga, saya bisa sewa biaya rakit ga ya? Saya ga ngerti, rakit lego aja berantakan."
-
-        />
+        tools:text="Hai gan ini kalau saya pesen akan dirakitin sama agannya, apa ngga? Kalau ngga, saya bisa sewa biaya rakit ga ya? Saya ga ngerti, rakit lego aja berantakan." />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/productAttachment"
@@ -92,8 +101,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/talk_content"
         tools:itemCount="3"
-        tools:listitem="@layout/talk_product_attachment"
-        />
+        tools:listitem="@layout/talk_product_attachment" />
 
     <include
         android:id="@+id/layout_reported"
@@ -105,5 +113,5 @@
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@id/menu"
         app:layout_constraintStart_toEndOf="@+id/prof_pict"
-        app:layout_constraintTop_toBottomOf="@+id/identity"/>
+        app:layout_constraintTop_toBottomOf="@+id/identity" />
 </android.support.constraint.ConstraintLayout>
