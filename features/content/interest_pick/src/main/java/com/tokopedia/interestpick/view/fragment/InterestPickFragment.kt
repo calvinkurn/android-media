@@ -94,6 +94,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         }
         adapter.setList(selectedList)
         titleTextView.text = getString(R.string.interest_enjoy)
+        subtitleTextView.visibility = View.VISIBLE
     }
 
     override fun onErrorUpdateInterest(message: String) {
