@@ -1,5 +1,5 @@
 package com.tokopedia.gm.subscribe.membership.data.model
 
-data class Response(
+data class ResponseGetSubscription(
         var goldGetSubscription: GoldGetSubscription = GoldGetSubscription()
 )

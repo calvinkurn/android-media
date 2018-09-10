@@ -28,7 +28,9 @@ class GmMembershipActivity : BaseSimpleActivity(), HasComponent<GmSubscribeMembe
         super.onBackPressed()
     }
 
-    override fun getLayoutRes(): Int = R.layout.activity_gm_subscribe_membership
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_gm_subscribe_membership
+    }
 
     override fun getNewFragment() = GmMembershipFragment.newInstance()
 }

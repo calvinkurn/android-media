@@ -4,6 +4,6 @@ interface GmMembershipPresenter {
 
     fun getMembershipData()
 
-    fun setMembershipData()
+    fun setMembershipData(subscriptionType: Int)
 
 }

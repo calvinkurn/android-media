@@ -54,8 +54,8 @@
                 android:focusable="true"
                 android:paddingEnd="@dimen/dp_8"
                 android:paddingStart="@dimen/dp_16"
-                android:paddingTop="@dimen/dp_16"
-                android:paddingBottom="@dimen/dp_16"/>
+                android:paddingTop="@dimen/dp_24"
+                android:paddingBottom="@dimen/dp_24"/>
 
             <View
                 android:layout_width="match_parent"
@@ -64,23 +64,32 @@
                 android:layout_marginLeft="@dimen/dp_16"/>
 
             <TextView
+                android:id="@+id/tvAutoExtendDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/gmsubscribe_membership_auto_extend_expired_date"/>
+                android:text="@string/gmsubscribe_membership_auto_extend_date"/>
 
             <TextView
+                android:id="@+id/tvWitdhrawalInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/TextView.Micro.BlackDisabled"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_16" />
+            <TextView
+                android:id="@+id/tvInfoAutoExtend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/TextView.Micro.Green"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
                 android:layout_marginBottom="@dimen/dp_16"
-                android:text="@string/gmsubscribe_membership_auto_extend_expired_date"/>
+                android:text="@string/gm_learn_more"/>
 
         </LinearLayout>
 

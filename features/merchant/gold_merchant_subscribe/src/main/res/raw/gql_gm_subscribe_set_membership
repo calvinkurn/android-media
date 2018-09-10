@@ -1,0 +1,7 @@
+query setMembershipData($subscription_type:Int!) {
+    goldSetSubscription(subscription_type:$subscription_type) {
+       data
+       status
+       error_message
+    }
+}

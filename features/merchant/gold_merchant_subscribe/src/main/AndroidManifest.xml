@@ -22,7 +22,6 @@
             android:label="@string/gm_membership_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
-
     </application>
 
 </manifest>
