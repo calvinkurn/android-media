@@ -14,15 +14,23 @@ interface InterestPickContract {
 
         fun showLoading()
 
+        fun showProgress()
+
         fun hideLoading()
 
         fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
                                  title: String)
 
         fun onErrorGetInterest(message: String)
+
+        fun onSuccessUpdateInterest()
+
+        fun onErrorUpdateInterest(message: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
+
+        fun updateInterest(interestIds: Array<Int>)
     }
 }

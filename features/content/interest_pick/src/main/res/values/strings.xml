@@ -3,4 +3,6 @@
     <string name="interest_title">Pilih Inspirasi Kamu</string>
     <string name="interest_what_do_you_like">Kamu Suka Apa?</string>
     <string name="interest_save">Simpan</string>
+    <string name="interest_try_again">Coba Lagi</string>
+    <string name="interest_enjoy">Nikmati rekomendasi feed yang sesuai dengan kesukaanmu</string>
 </resources>

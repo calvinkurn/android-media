@@ -1,9 +1,11 @@
 package com.tokopedia.interestpick.view.adapter
 
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.interestpick.R
@@ -48,8 +50,42 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
+    fun getList() = list
+
     fun setList(list: ArrayList<InterestPickItemViewModel>) {
-        this.list = list
-        notifyDataSetChanged()
+        val diffResult = DiffUtil.calculateDiff(Callback(this.list, list))
+        diffResult.dispatchUpdatesTo(this)
+
+        this.list.clear()
+        this.list.addAll(list)
+    }
+
+    internal class Callback(private val oldList: List<InterestPickItemViewModel>,
+                            private val newList: List<InterestPickItemViewModel>)
+        : DiffUtil.Callback() {
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return oldItem.categoryId == newItem.categoryId
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldItem = oldList[oldItemPosition]
+            val newItem = newList[newItemPosition]
+
+            return oldItem.isSelected == newItem.isSelected
+                    && oldItem.categoryName.equals(newItem.categoryName)
+                    && oldItem.image.equals(newItem.image)
+        }
     }
 }

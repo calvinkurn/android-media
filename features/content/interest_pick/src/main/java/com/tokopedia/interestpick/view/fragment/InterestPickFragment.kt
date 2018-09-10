@@ -1,6 +1,7 @@
 package com.tokopedia.interestpick.view.fragment
 
 import android.content.Context
+import android.net.Network
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
 import com.tokopedia.interestpick.view.adapter.InterestPickAdapter
@@ -44,7 +46,8 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_interest_pick, container, false)
     }
 
@@ -60,9 +63,14 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         loadingView.visibility = View.VISIBLE
     }
 
+    override fun showProgress() {
+        progressBar.visibility = View.VISIBLE
+    }
+
     override fun hideLoading() {
         mainView.visibility = View.VISIBLE
         loadingView.visibility = View.GONE
+        progressBar.visibility = View.GONE
     }
 
     override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
@@ -77,11 +85,36 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         })
     }
 
+    override fun onSuccessUpdateInterest() {
+        val selectedList = ArrayList<InterestPickItemViewModel>()
+        for (item in adapter.getList()) {
+            if (item.isSelected) {
+                selectedList.add(item)
+            }
+        }
+        adapter.setList(selectedList)
+        titleTextView.text = getString(R.string.interest_enjoy)
+    }
+
+    override fun onErrorUpdateInterest(message: String) {
+        NetworkErrorHelper.showRedSnackbar(view, message)
+    }
+
     private fun initView() {
         adapter = InterestPickAdapter(this)
         interestList.adapter = adapter
         saveInterest.setOnClickListener {
-
+            updateInterest()
         }
+    }
+
+    private fun updateInterest() {
+        val selectedIds = ArrayList<Int>()
+        for (item in adapter.getList()) {
+            if (item.isSelected) {
+                selectedIds.add(item.categoryId)
+            }
+        }
+        presenter.updateInterest(selectedIds.toArray() as Array<Int>)
     }
 }
