@@ -71,7 +71,10 @@ import rx.schedulers.Schedulers;
  * <p>
  * <p>
  * migrate retrofit 2 by Angga.Prasetiyo
+ *
+ * use ShopSettings Module
  */
+@Deprecated
 public class ShopEditService extends IntentService implements ShopEditServiceConstant {
 
     public static final String GENERATE_HOST = "GENERATE HOST ";

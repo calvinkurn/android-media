@@ -99,6 +99,10 @@ public class SnackbarManager {
         return make(view, text, duration, R.color.red_500, R.color.black, R.color.red_50, R.drawable.bg_red_snackbar);
     }
 
+    /**
+     * use ToasterError instead
+     */
+    @Deprecated
     public static Snackbar makeRed(
             Activity activity,
             String text,

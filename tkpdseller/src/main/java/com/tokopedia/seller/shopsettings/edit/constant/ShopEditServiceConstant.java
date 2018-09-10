@@ -2,7 +2,9 @@ package com.tokopedia.seller.shopsettings.edit.constant;
 
 /**
  * Created by Toped18 on 5/24/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public interface ShopEditServiceConstant {
     // common
     String TYPE = "type";

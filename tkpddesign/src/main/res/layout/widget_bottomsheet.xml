@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:background="@null"
-            app:srcCompat="@drawable/ic_close_default"/>O
+            app:srcCompat="@drawable/ic_close_default"/>
 
         <TextView
             android:id="@+id/tv_title"
