@@ -23,5 +23,6 @@ class AuthenticateCreditCardAdapter(authenticateCCAdapterFactory: AuthenticateCC
                 return typeAuth.stateWhenSelected
             }
         }
+        return 0
     }
 }

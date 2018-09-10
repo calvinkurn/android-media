@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.authenticate.di.DaggerAuthenticateCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.authenticate.model.CheckWhiteListStatus
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
@@ -50,9 +51,6 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         val authenticateCreditCardAdapter = AuthenticateCreditCardAdapter(adapterTypeFactory)
         authenticateCreditCardAdapter.setOnAdapterInteractionListener(this)
         return authenticateCreditCardAdapter
-
-    }
-    override fun getAdapter(): BaseListAdapter<TypeAuthenticateCreditCard, AuthenticateCCAdapterFactory> {
 
     }
 
