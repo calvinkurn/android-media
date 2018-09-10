@@ -109,6 +109,19 @@
             app:layout_constraintStart_toEndOf="@+id/text_point_value"
             app:layout_constraintTop_toTopOf="@+id/text_point_value" />
 
+        <TextView
+            android:id="@+id/text_time_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/tp_margin_small"
+            android:layout_marginStart="@dimen/tp_margin_small"
+            android:layout_marginTop="@dimen/tp_margin_medium"
+            android:text="@string/tp_label_valid_for"
+            android:textColor="@color/black_38"
+            android:textSize="@dimen/tp_text_size_xsmall"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/text_point_value"
+            app:layout_constraintStart_toEndOf="@+id/img_time" />
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/img_time"
@@ -121,20 +134,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_time_label"
             app:srcCompat="@drawable/ic_tp_time" />
-
-        <TextView
-            android:id="@+id/text_time_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tp_margin_small"
-            android:layout_marginStart="@dimen/tp_margin_small"
-            android:layout_marginTop="@dimen/tp_padding_medium"
-            android:text="@string/tp_label_valid_for"
-            android:textColor="@color/black_38"
-            android:textSize="@dimen/tp_text_size_xsmall"
-            android:visibility="gone"
-            app:layout_constraintBottom_toTopOf="@+id/text_point_value"
-            app:layout_constraintStart_toEndOf="@+id/img_time" />
 
         <TextView
             android:id="@+id/text_time_value"
@@ -152,8 +151,8 @@
             android:id="@+id/text_disabled_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/tp_margin_regular"
-            android:layout_marginStart="@dimen/tp_margin_regular"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_10"
             android:layout_marginTop="@dimen/tp_margin_xsmall"
             android:textColor="@color/red_error"
             android:textSize="@dimen/tp_text_size_small"
