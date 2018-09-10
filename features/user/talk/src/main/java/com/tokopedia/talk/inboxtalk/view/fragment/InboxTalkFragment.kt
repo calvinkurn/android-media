@@ -121,6 +121,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
         filterMenuList = ArrayList()
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk)))
+        filterMenuList[0].iconEnd = R.drawable.ic_check
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read)))
 
     }
@@ -423,8 +424,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     }
 
-    override fun onSuccessDeleteTalk() {
-        //TODO DELETE TALK
+    override fun onSuccessDeleteTalk(talkId: String) {
+        adapter.deleteTalkByTalkId(talkId)
     }
 
     override fun onSuccessDeleteCommentTalk() {

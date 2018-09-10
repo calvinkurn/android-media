@@ -37,8 +37,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     @Inject
     lateinit var userSession: UserSession
 
-    lateinit var titles: Array<String>
-
+    private lateinit var titles: Array<String>
 
     companion object {
 
@@ -108,22 +107,32 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         for (i: Int in 0 until tabLayout.tabCount) {
             tabLayout.getTabAt(i)?.customView = getTabCustomView(titles[i])
         }
+        tabLayout.getTabAt(0)?.run {
+            setTabSelected(this)
+        }
+
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
-                Log.d("NISNIS", "tab reselected " + tab?.position.toString())
 
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
-                Log.d("NISNIS", "tab unselected " + tab?.position.toString())
+                setTabUnSelected(tab)
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-
                 setTabSelected(tab)
             }
         })
+    }
+
+    private fun setTabUnSelected(tab: TabLayout.Tab?) {
+        tab.customView?.run {
+            val view: View = this
+            val title: TextView = view.findViewById(R.id.title)
+            title.setTextColor(MethodChecker.getColor(this.context, R.color.black_38))
+        }
     }
 
     private fun setTabSelected(tab: TabLayout.Tab) {

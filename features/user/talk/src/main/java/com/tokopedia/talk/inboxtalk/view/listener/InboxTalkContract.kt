@@ -25,7 +25,7 @@ interface InboxTalkContract {
         fun showLoadingFilter()
         fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
         fun hideLoadingFilter()
-        fun onSuccessDeleteTalk()
+        fun onSuccessDeleteTalk(talkId: String)
         fun onSuccessDeleteCommentTalk()
     }
 

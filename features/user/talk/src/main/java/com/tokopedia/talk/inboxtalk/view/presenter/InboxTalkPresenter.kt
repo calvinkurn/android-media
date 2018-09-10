@@ -199,7 +199,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
                     if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteTalk()
+                        view.onSuccessDeleteTalk(talkId)
                     }
                 }
             })

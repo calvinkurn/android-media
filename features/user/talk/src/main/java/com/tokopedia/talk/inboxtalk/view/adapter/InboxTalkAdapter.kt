@@ -49,4 +49,14 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
+    fun deleteTalkByTalkId(talkId: String) {
+        for (talk in visitables) {
+            if (talk is ProductTalkItemViewModel && talk.talkId.equals(talkId)) {
+                val position = this.visitables.indexOf(talk)
+                this.visitables.remove(talk)
+                notifyItemRemoved(position)
+            }
+        }
+    }
+
 }
