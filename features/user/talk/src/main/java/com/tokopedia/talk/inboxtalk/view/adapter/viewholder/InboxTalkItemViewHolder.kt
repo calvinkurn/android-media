@@ -50,12 +50,12 @@ class InboxTalkItemViewHolder(val v: View,
     private val replyButton: TextView = itemView.replyButton
     private val separatorChild: View = itemView.separatorChild
 
-    private val reportedLayout: View = itemView.findViewById(R.id.layout_reported)
-    private val reportedMessage: TextView = itemView.reportedMessage
-    private val yesReportButton: TextView = itemView.reportYes
-    private val noReportButton: TextView = itemView.reportNo
-    private val rawMessage: TextView = itemView.rawMessage
-    private val separatorReport: View = itemView.separatorReport
+//    private val reportedLayout: View = itemView.findViewById(R.id.layout_reported)
+//    private val reportedMessage: TextView = itemView.reportedMessage
+//    private val yesReportButton: TextView = itemView.reportYes
+//    private val noReportButton: TextView = itemView.reportNo
+//    private val rawMessage: TextView = itemView.rawMessage
+//    private val separatorReport: View = itemView.separatorReport
 
 
     private lateinit var adapter: CommentTalkAdapter
@@ -93,27 +93,27 @@ class InboxTalkItemViewHolder(val v: View,
     }
 
     private fun setupReportedMessage(element: InboxTalkItemViewModel) {
-        reportedLayout.visibility = View.VISIBLE
-        talkContent.visibility = View.GONE
-
-        reportedMessage.text = element.talkThread.headThread.comment
-
-        if (element.talkThread.headThread.isOwner) {
-            rawMessage.visibility = View.VISIBLE
-            separatorReport.visibility = View.VISIBLE
-            rawMessage.text = element.talkThread.headThread.rawMessage
-        } else {
-            rawMessage.visibility = View.GONE
-            separatorReport.visibility = View.GONE
-        }
-
-        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
-        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
+//        reportedLayout.visibility = View.VISIBLE
+//        talkContent.visibility = View.GONE
+//
+//        reportedMessage.text = element.talkThread.headThread.comment
+//
+//        if (element.talkThread.headThread.isOwner) {
+//            rawMessage.visibility = View.VISIBLE
+//            separatorReport.visibility = View.VISIBLE
+//            rawMessage.text = element.talkThread.headThread.rawMessage
+//        } else {
+//            rawMessage.visibility = View.GONE
+//            separatorReport.visibility = View.GONE
+//        }
+//
+//        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
+//        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
 
     }
 
     private fun setupNormalTalk(element: InboxTalkItemViewModel) {
-        reportedLayout.visibility = View.GONE
+//        reportedLayout.visibility = View.GONE
 
         talkContent.visibility = View.VISIBLE
         talkContent.text = element.talkThread.headThread.comment
