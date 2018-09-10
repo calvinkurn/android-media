@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -103,7 +104,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         viewPager.adapter = inboxTalkPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
-        for (i: Int in 0 until tabLayout.tabCount - 1) {
+        for (i: Int in 0 until tabLayout.tabCount) {
             tabLayout.getTabAt(i)?.customView = getTabCustomView(titles[i])
         }
 
@@ -113,7 +114,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-
+                Log.d("NISNIS", "tab Selected")
             }
         })
     }

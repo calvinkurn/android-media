@@ -50,7 +50,7 @@ class InboxTalkItemViewHolder(val v: View,
     private val replyButton: TextView = itemView.replyButton
     private val separatorChild: View = itemView.separatorChild
 
-    private val reportedLayout: View = itemView.layout_reported
+    private val reportedLayout: View = itemView.findViewById(R.id.layout_reported)
     private val reportedMessage: TextView = itemView.reportedMessage
     private val yesReportButton: TextView = itemView.reportYes
     private val noReportButton: TextView = itemView.reportNo
