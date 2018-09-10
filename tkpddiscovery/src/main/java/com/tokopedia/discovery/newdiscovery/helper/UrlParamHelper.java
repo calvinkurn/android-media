@@ -13,7 +13,7 @@ public class UrlParamHelper {
         }
         List<String> paramList = new ArrayList<>();
         for (Map.Entry<String, String> entry : paramMap.entrySet()) {
-            paramList.add(entry.getKey() + "=" + entry.getValue());
+            paramList.add(entry.getKey() + "=" + entry.getValue().replace(" ", "+"));
         }
         return TextUtils.join("&", paramList);
     }
