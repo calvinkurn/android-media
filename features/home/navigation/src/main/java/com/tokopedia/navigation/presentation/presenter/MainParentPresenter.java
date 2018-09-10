@@ -58,4 +58,8 @@ public class MainParentPresenter {
     public void setIsRecurringApplink(Boolean isReccuringApplink) {
         this.isReccuringApplink = isReccuringApplink;
     }
+
+    public boolean isUserLogin(){
+        return mainParentView.isUserLogin();
+    }
 }
