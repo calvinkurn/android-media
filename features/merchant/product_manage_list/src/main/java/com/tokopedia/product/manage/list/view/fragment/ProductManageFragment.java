@@ -421,6 +421,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void onPullToRefresh() {
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
         goldMerchant = null;
         ((ProductManageListAdapter) adapter).setFeaturedProduct(null);
         super.onPullToRefresh();
