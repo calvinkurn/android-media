@@ -46,31 +46,25 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private Result challengeItem;
     private boolean isChallenge;
 
-
-    private static ShareBottomSheet newInstance(Result challengeItem) {
+    private static ShareBottomSheet newInstance(Object item) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("challengeItem", challengeItem);
-        bundle.putBoolean("is_challenge", true);
+        if (item instanceof Result) {
+            bundle.putParcelable("challengeItem", (Result) item);
+            bundle.putBoolean("is_challenge", true);
+
+        } else if (item instanceof SubmissionResult) {
+            bundle.putParcelable("submissionItem", (SubmissionResult) item);
+            bundle.putBoolean("is_challenge", false);
+
+        }
         fragment.setArguments(bundle);
         return fragment;
     }
 
-    private static ShareBottomSheet newInstance(SubmissionResult submissionItem) {
-        ShareBottomSheet fragment = new ShareBottomSheet();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("submissionItem", submissionItem);
-        bundle.putBoolean("is_challenge", false);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
 
-    public static void showChallengeShare(FragmentManager fragmentManager, Result challengeItem) {
-        newInstance(challengeItem).show(fragmentManager, "");
-    }
-
-    public static void showSubmissionShare(FragmentManager fragmentManager, SubmissionResult submissionItem) {
-        newInstance(submissionItem).show(fragmentManager, "");
+    public static void show(FragmentManager fragmentManager, Object item) {
+        newInstance(item).show(fragmentManager, "");
     }
 
 
@@ -97,9 +91,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public void initView(View view) {
         challengesComponent = ((BaseActivity) getActivity()).getComponent();
         challengesComponent.inject(this);
-
         presenter.attachView(this);
-
         mRecyclerView = view.findViewById(R.id.recyclerview);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -125,9 +117,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private Intent getIntent(String contains) {
         final Intent mIntent = new Intent(Intent.ACTION_SEND);
         mIntent.setType(TYPE);
-
         String title = "";
-
         mIntent.putExtra(Intent.EXTRA_TITLE, title);
         mIntent.putExtra(Intent.EXTRA_SUBJECT, title);
         mIntent.putExtra(Intent.EXTRA_TEXT, contains);

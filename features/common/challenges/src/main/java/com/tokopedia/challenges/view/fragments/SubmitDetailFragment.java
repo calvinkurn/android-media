@@ -1,7 +1,6 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
@@ -10,7 +9,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -31,13 +29,11 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
-import com.tokopedia.challenges.view.adapter.TouchImageAdapter;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
@@ -47,8 +43,6 @@ import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.design.component.ToasterError;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -90,7 +84,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private View progressBarLayout;
     private boolean fromSubmission;
     private TextView tvWinnerNumber;
-    private View progressBar;
     private Menu mMenu;
     private ScrollView scrollView;
     @Inject
@@ -145,7 +138,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
-        progressBar = view.findViewById(R.id.progress_bar);
+        //progressBar = view.findViewById(R.id.progress_bar);
 
         scrollView = view.findViewById(R.id.submit_detail_scrollview);
 
@@ -170,7 +163,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 ////                    mediaUrl = submissionResult.getSharing().getAssets().getVideo();
 ////                    isVideo = true;
 ////                }
-                ShareBottomSheet.showSubmissionShare(getActivity().getSupportFragmentManager(), submissionResult);
+                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult);
 //                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(),
 //                        submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(),
 //                        submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS,
@@ -212,8 +205,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
-            String mediaUrl;
-            boolean isVideo;
+//            String mediaUrl;
+//            boolean isVideo;
 //            if (TextUtils.isEmpty(submissionResult.getSharing().getAssets().getVideo())) {
 //                mediaUrl = submissionResult.getThumbnailUrl();
 //                isVideo = false;
@@ -224,7 +217,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 //            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(),
 //                    submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(),
 //                    Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false,mediaUrl,submissionResult.getCollection().getHashTag(),isVideo);
-            ShareBottomSheet.showSubmissionShare((getActivity()).getSupportFragmentManager(), submissionResult);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
                     ChallengesAnalytics.EVENT_ACTION_SHARE,
@@ -295,7 +288,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
 
     public void setApprovedView(String approveText, String statusMessage) {
-        if ("Encoding".equalsIgnoreCase(approveText)) {
+        if (Utils.STATUS_ENCODING.equalsIgnoreCase(approveText)) {
             approveText = Utils.STATUS_WAITING;
             statusMessage = "status is pending";
         }
@@ -334,11 +327,17 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         } else {
             showShareAndLikeButtons();
         }
-        this.participateTitle.setText(participateTitle);
-        String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
-        this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
 
+        this.participateTitle.setText(participateTitle);
+        // String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
+        Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
+        intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
+        // this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
+        this.participateTitle.setOnClickListener(view -> {
+            navigateToActivity(intent);
+        });
     }
+
 
     @Override
     public void updateLikeCount(boolean liked) {
@@ -393,12 +392,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+       // progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
+       // progressBar.setVisibility(View.VISIBLE);
+        progressBarLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -498,5 +498,27 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void showShareAndLikeButtons() {
         btnShare.setVisibility(View.VISIBLE);
         likeBtn.setVisibility(View.VISIBLE);
+    }
+
+    private void showDeleteDialog(String submissionId, String ChallengeId) {
+        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle("Are you sure!");
+        dialog.setBtnOk("Ok");
+        dialog.setBtnCancel("Cancel");
+        dialog.show();
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                presenter.deleteSubmittedPost(submissionId, ChallengeId);
+                dialog.dismiss();
+            }
+        });
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
     }
 }

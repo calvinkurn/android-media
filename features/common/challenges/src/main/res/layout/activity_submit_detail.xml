@@ -17,9 +17,9 @@
 
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/submit_detail_scrollview"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/submit_detail_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/card_share"
@@ -79,9 +79,9 @@
                     <com.tokopedia.challenges.view.customview.CustomVideoPlayer
                         android:id="@+id/img_challenge"
                         android:layout_width="match_parent"
-                        android:background="@color/video_background"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/dp_30" />
+                        android:layout_marginBottom="@dimen/dp_30"
+                        android:background="@color/video_background" />
 
                     <TextView
                         android:id="@+id/tv_winner_number"
@@ -193,7 +193,7 @@
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_8"
                     android:paddingTop="@dimen/dp_16"
-                    android:visibility="visible"
+                    android:visibility="gone"
                     app:layout_constraintTop_toBottomOf="@+id/points_img">
 
                     <ImageView
@@ -212,17 +212,17 @@
                         android:text="@string/approval_wait" />
                 </LinearLayout>
 
-            <TextView
-                android:id="@+id/detail_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_16"
-                android:text="@string/description"
-                android:textColor="#000000"
-                android:textSize="@dimen/sp_16"
-                app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
+                <TextView
+                    android:id="@+id/detail_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginRight="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
+                    android:text="@string/description"
+                    android:textColor="#000000"
+                    android:textSize="@dimen/sp_16"
+                    app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
 
                 <TextView
                     android:id="@+id/detail_content"
@@ -331,16 +331,7 @@
                 android:layout_gravity="center" />
         </FrameLayout>
 
-        <LinearLayout
-            android:id="@+id/progress_bar_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white"
-            android:elevation="@dimen/dp_18"
-            android:orientation="vertical"
-            android:visibility="gone">
+        <include layout="@layout/details_loader" />
 
-            <include layout="@layout/details_loader" />
-        </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

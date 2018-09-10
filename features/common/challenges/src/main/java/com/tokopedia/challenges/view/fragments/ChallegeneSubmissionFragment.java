@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -98,7 +97,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private View progressBar;
     private View flHeader;
     private SubmissionItemAdapter submissionItemAdapter, winnerItemAdapter;
-    private CoordinatorLayout mainContent;
+    private View mainContent;
     private ConstraintLayout baseMainContent;
     private Result challengeResult;
     private AwardAdapter awardAdapter;
@@ -371,6 +370,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 countDownView.start(timerProgressBar);
             } catch (MessageErrorException e) {
                 e.printStackTrace();
+                countDownView.stop();
             }
             timerView.setVisibility(View.VISIBLE);
             tvParticipated.setVisibility(View.GONE);
@@ -517,7 +517,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 isVideo = true;
             }
             // ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true, mediaUrl, challengeResult.getHashTag(), isVideo);
-            ShareBottomSheet.showChallengeShare((getActivity()).getSupportFragmentManager(), challengeResult);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult);
         }
     }
 
@@ -571,6 +571,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onDestroyView() {
         mPresenter.onDestroy();
+        if (countDownView != null) {
+            countDownView.stop();
+        }
         super.onDestroyView();
     }
 

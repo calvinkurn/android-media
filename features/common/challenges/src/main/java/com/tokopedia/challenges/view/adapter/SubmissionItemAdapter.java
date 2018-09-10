@@ -17,7 +17,6 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
@@ -209,17 +208,19 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bindData(final SubmissionResult productItem) {
             submissionTitle.setText(productItem.getTitle());
+
             ImageHandler.loadImage(context, submissionImage, Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
 
-            if (productItem.getMe() != null)
+            if (productItem.getMe() != null) {
                 setLikes(productItem.getMe().isLiked());
-            if (productItem.getPoints() > 0) {
-                tvBuzzPoints.setVisibility(View.VISIBLE);
-                tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
-            } else {
-                itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
-                tvBuzzPoints.setVisibility(View.GONE);
             }
+            // if (productItem.getPoints() > 0) {
+            // tvBuzzPoints.setVisibility(View.VISIBLE);
+            tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
+//            } else {
+//                itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
+//                tvBuzzPoints.setVisibility(View.GONE);
+//            }
             if (isWinner) {
                 tvWinnerNumber.setVisibility(View.VISIBLE);
                 tvWinnerNumber.setText(String.valueOf(getIndex() + 1));
@@ -258,8 +259,8 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                     mediaUrl = categoryItems.get(getIndex()).getSharing().getAssets().getVideo();
                     isVideo = true;
                 }
-                ShareBottomSheet.showSubmissionShare(((AppCompatActivity) getActivity()).getSupportFragmentManager(),categoryItems.get(getIndex()));
-               // ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false, mediaUrl, categoryItems.get(getIndex()).getCollection().getHashTag(), isVideo);
+                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()));
+                // ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), categoryItems.get(getIndex()).getTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgUrl(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgTitle(), categoryItems.get(getIndex()).getSharing().getMetaTags().getOgImage(), categoryItems.get(getIndex()).getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, categoryItems.get(getIndex()).getId()), false, mediaUrl, categoryItems.get(getIndex()).getCollection().getHashTag(), isVideo);
                 if (categoryItems.get(getIndex()).getCollection() != null) {
                     analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                             ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,

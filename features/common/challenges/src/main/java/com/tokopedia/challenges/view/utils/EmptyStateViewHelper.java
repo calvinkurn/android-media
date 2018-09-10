@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.tokopedia.challenges.R;
 
 public class EmptyStateViewHelper {
@@ -24,6 +25,9 @@ public class EmptyStateViewHelper {
                                       @Nullable final EmptyStateViewHelper.RetryClickedListener listener) {
         try {
 
+            if (rootview == null) {
+                return;
+            }
             LayoutInflater inflater = LayoutInflater.from(context);
             LinearLayout.LayoutParams params
                     = new LinearLayout.LayoutParams(
@@ -66,7 +70,7 @@ public class EmptyStateViewHelper {
 
     public static void hideEmptyState(final View rootview) {
         try {
-            if(rootview.findViewById(R.id.empty_view)!=null){
+            if (rootview != null && rootview.findViewById(R.id.empty_view) != null) {
                 rootview.findViewById(R.id.empty_view).setVisibility(View.GONE);
             }
 

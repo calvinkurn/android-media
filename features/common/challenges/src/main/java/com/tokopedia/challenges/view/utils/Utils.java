@@ -53,6 +53,7 @@ public class Utils {
     public static final String STATUS_PARTICIPATED = "Participated";
     public static final String STATUS_DECLINED = "Declined";
     public static final String STATUS_WAITING = "Waiting";
+    public static final String STATUS_ENCODING = "Encoding";
     public static boolean FROMNOCACHE;
     private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
@@ -228,6 +229,10 @@ public class Utils {
             tvStatus.setText(context.getResources().getString(R.string.completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
+        }else if (Utils.STATUS_ENCODING.equalsIgnoreCase(status)) {
+            tvStatus.setText(context.getResources().getString(R.string.pending));
+            tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
+            tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
         }
     }
 
