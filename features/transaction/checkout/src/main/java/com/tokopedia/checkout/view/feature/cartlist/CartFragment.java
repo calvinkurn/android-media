@@ -373,6 +373,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             dPresenter.getCartListData().setAllSelected(checked);
             cbSelectAll.setChecked(checked);
             cartAdapter.setAllShopSelected(checked);
+            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
             cartAdapter.notifyDataSetChanged();
             dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         };
@@ -382,7 +383,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private View.OnClickListener getOnClickButtonToShipmentListener(String message) {
         return view -> {
             if (message == null) {
-                dPresenter.processToUpdateCartData();
+                dPresenter.processToUpdateCartData(getSelectedCartDataList());
                 sendAnalyticsOnButtonCheckoutClicked();
             } else {
                 showToastMessageRed(message);
@@ -491,6 +492,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onShopItemCheckChanged(int itemPosition, boolean checked) {
+        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         cartAdapter.setShopSelected(itemPosition, checked);
         cartAdapter.notifyDataSetChanged();
@@ -650,6 +652,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public boolean onCartItemCheckChanged(int position, int parentPosition, boolean checked) {
+        dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         dPresenter.setHasPerformChecklistChange();
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cartAdapter.checkForShipmentForm();
@@ -802,6 +805,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             );
         }
 
+        cartAdapter.setCheckedItemState(dPresenter.getCheckedCartItemState());
         cartAdapter.addDataList(cartListData.getShopGroupDataList());
         dPresenter.reCalculateSubTotal(cartAdapter.getAllShopGroupDataList());
         cbSelectAll.setChecked(cartListData.isAllSelected());
@@ -1131,10 +1135,19 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
+
         if (!hidden) {
             if (dPresenter.getCartListData() == null) {
                 dPresenter.processInitialGetCartData(true);
+            } else {
+                if (dPresenter.dataHasChanged()) {
+                    dPresenter.processToUpdateAndReloadCartData();
+                } else {
+                    dPresenter.processInitialGetCartData(false);
+                }
             }
+        } else {
+            dPresenter.setCheckedCartItemState(cartAdapter.getAllCartItemHolderData());
         }
     }
 

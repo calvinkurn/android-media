@@ -94,6 +94,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
+    private Map<Integer, Boolean> lastCheckedItem = new HashMap<>();
 
     @Inject
     public CartListPresenter(ICartListView cartListView,
@@ -160,7 +161,7 @@ public class CartListPresenter implements ICartListPresenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(getSubscriberInitialCartListData())
+                .subscribe(getSubscriberInitialCartListData(initialLoad))
         );
     }
 
@@ -236,9 +237,8 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processToUpdateCartData() {
+    public void processToUpdateCartData(List<CartItemData> cartItemDataList) {
         view.showProgressLoading();
-        List<CartItemData> cartItemDataList = view.getSelectedCartDataList();
         List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
         for (CartItemData data : cartItemDataList) {
             updateCartRequestList.add(new UpdateCartRequest.Builder()
@@ -526,7 +526,7 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @NonNull
-    private Subscriber<CartListData> getSubscriberInitialCartListData() {
+    private Subscriber<CartListData> getSubscriberInitialCartListData(boolean initialLoad) {
         return new Subscriber<CartListData>() {
             @Override
             public void onCompleted() {
@@ -982,6 +982,22 @@ public class CartListPresenter implements ICartListPresenter {
             }
         }
         return hasChanges;
+    }
+
+    @Override
+    public void setCheckedCartItemState(List<CartItemHolderData> cartItemHolderDataList) {
+        if (lastCheckedItem != null) {
+            lastCheckedItem.clear();
+
+            for (CartItemHolderData cartItemHolderData : cartItemHolderDataList) {
+                lastCheckedItem.put(cartItemHolderData.getCartItemData().getOriginData().getCartId(), cartItemHolderData.isSelected());
+            }
+        }
+    }
+
+    @Override
+    public Map<Integer, Boolean> getCheckedCartItemState() {
+        return lastCheckedItem;
     }
 
 }

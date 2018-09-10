@@ -19,6 +19,9 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
+import java.util.List;
+import java.util.Map;
+
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -74,7 +77,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
     }
 
-    public void bindData(CartShopHolderData cartShopHolderData) {
+    public void bindData(CartShopHolderData cartShopHolderData, Map<Integer, Boolean> checkedItemState) {
         if (cartShopHolderData.getShopGroupData().isError() || cartShopHolderData.getShopGroupData().isWarning()) {
             llWarningAndError.setVisibility(View.VISIBLE);
         } else {

@@ -26,6 +26,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -42,6 +43,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
     private RecyclerView.RecycledViewPool viewPool;
+    private Map<Integer, Boolean> checkedItemState;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -51,6 +53,10 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.cartItemActionListener = cartItemActionListener;
         compositeSubscription = new CompositeSubscription();
         viewPool = new RecyclerView.RecycledViewPool();
+    }
+
+    public void setCheckedItemState(Map<Integer, Boolean> checkedItemState) {
+        this.checkedItemState = checkedItemState;
     }
 
     @Override
@@ -102,7 +108,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (getItemViewType(position) == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             final CartShopViewHolder holderView = (CartShopViewHolder) holder;
             final CartShopHolderData data = (CartShopHolderData) cartDataList.get(position);
-            holderView.bindData(data);
+            holderView.bindData(data, checkedItemState);
         } else if (getItemViewType(position) == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             final CartPromoSuggestionViewHolder holderView = (CartPromoSuggestionViewHolder) holder;
             final CartPromoSuggestion data = (CartPromoSuggestion) cartDataList.get(position);
@@ -183,6 +189,22 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                         for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
                             cartItemDataList.add(cartItemHolderData.getCartItemData());
                         }
+                    }
+                }
+            }
+        }
+
+        return cartItemDataList;
+    }
+
+    public List<CartItemHolderData> getAllCartItemHolderData() {
+        List<CartItemHolderData> cartItemDataList = new ArrayList<>();
+        if (cartDataList != null) {
+            for (Object data : cartDataList) {
+                if (data instanceof CartShopHolderData) {
+                    CartShopHolderData cartShopHolderData = (CartShopHolderData) data;
+                    if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
+                        cartItemDataList.addAll(cartShopHolderData.getShopGroupData().getCartItemDataList());
                     }
                 }
             }

@@ -12,6 +12,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.subscriptions.CompositeSubscription;
 
