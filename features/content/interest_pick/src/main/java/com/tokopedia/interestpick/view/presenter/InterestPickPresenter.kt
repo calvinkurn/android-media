@@ -18,6 +18,7 @@ class InterestPickPresenter @Inject constructor(val getInterestUseCase: GetInter
     }
 
     override fun fetchData() {
+        view.showLoading()
         getInterestUseCase.execute(GetInterestSubscriber(view))
     }
 }

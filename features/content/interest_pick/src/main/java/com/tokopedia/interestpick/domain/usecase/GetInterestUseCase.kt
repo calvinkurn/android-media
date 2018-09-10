@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.FeedInterestUser
+import com.tokopedia.interestpick.data.pojo.InterestPickData
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -21,7 +22,7 @@ class GetInterestUseCase @Inject constructor(@ApplicationContext val context: Co
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_get_interest)
-        val graphqlRequest = GraphqlRequest(query, FeedInterestUser::class.java)
+        val graphqlRequest = GraphqlRequest(query, InterestPickData::class.java)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

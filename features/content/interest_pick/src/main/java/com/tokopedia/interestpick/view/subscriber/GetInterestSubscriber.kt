@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interestpick.data.pojo.FeedInterestUser
+import com.tokopedia.interestpick.data.pojo.InterestPickData
 import com.tokopedia.interestpick.data.pojo.InterestsItem
 import com.tokopedia.interestpick.view.listener.InterestPickContract
 import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
@@ -30,7 +31,8 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
     override fun onNext(graphqlResponse: GraphqlResponse?) {
         view.hideLoading()
         graphqlResponse?.let {
-            val feedInterestUser: FeedInterestUser = it.getData(FeedInterestUser::class.java)
+            val interestpickData: InterestPickData = it.getData(InterestPickData::class.java)
+            val feedInterestUser: FeedInterestUser = interestpickData.feedInterestUser
 
             if (!TextUtils.isEmpty(feedInterestUser.error)) {
                 view.onErrorGetInterest(feedInterestUser.error)
