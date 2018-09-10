@@ -57,6 +57,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private lateinit var viewModel: InboxTalkViewModel
     private lateinit var filter: String
     private lateinit var bottomMenu: Menus
+    private lateinit var filterMenuList : ArrayList<Menus.ItemMenus>
 
     @Inject
     lateinit var presenter: InboxTalkPresenter
@@ -118,6 +119,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
         filter = "all"
         presenter.getInboxTalk(filter, nav)
+
+        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk)))
+        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read)))
+
     }
 
     private fun onRefreshData() {
@@ -129,10 +134,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private fun showFilterDialog(): View.OnClickListener {
         return View.OnClickListener { _ ->
             context?.run {
-                val menuItem = arrayOf(resources.getString(R.string.filter_all_talk),
-                        resources.getString(R.string.filter_not_read))
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-                bottomMenu.setItemMenuList(menuItem)
+                bottomMenu.itemMenuList = filterMenuList
                 bottomMenu.setActionText(getString(R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { _, pos ->
@@ -149,10 +152,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             POS_FILTER_UNREAD -> filter = FILTER_UNREAD
         }
 
-        for (itemMenu in filterMenu.itemMenuList) {
+        for (itemMenu in filterMenuList) {
             itemMenu.iconEnd = 0
         }
-        filterMenu.getItemMenu(pos).iconEnd = R.drawable.ic_check
+        filterMenuList[pos].iconEnd = R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, nav)
         filterMenu.dismiss()
     }
