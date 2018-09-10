@@ -19,6 +19,7 @@ import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.changepassword.data.ChangePasswordUrl;
@@ -271,26 +272,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
-
-    @Override
-    public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
-    }
-
 }
