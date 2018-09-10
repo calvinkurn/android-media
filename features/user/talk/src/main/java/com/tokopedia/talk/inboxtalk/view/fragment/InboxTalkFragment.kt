@@ -433,6 +433,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.deleteComment(talkId, commentId)
     }
 
+    override fun onSuccessUnfollowTalk() {
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

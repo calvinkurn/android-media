@@ -27,6 +27,7 @@ interface InboxTalkContract {
         fun hideLoadingFilter()
         fun onSuccessDeleteTalk(talkId: String)
         fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
+        fun onSuccessUnfollowTalk()
     }
 
     interface Presenter : CustomerPresenter<View> {
