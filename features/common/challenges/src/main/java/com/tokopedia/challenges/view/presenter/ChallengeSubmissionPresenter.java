@@ -258,12 +258,12 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
 
             @Override
             public void onNext(Map<Type, RestResponse> restResponse) {
-
+                getView().hideProgressBar();
                 RestResponse res1 = restResponse.get(SubmissionResponse.class);
                 SubmissionResponse mainDataObject = res1.getData();
 
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
-                    getView().hideProgressBar();
+
                     Intent detailsIntent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
                     detailsIntent.putExtra("submissionsResult", mainDataObject.getSubmissionResults().get(0));
                     getView().navigateToActivity(detailsIntent);

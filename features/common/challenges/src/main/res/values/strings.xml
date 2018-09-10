@@ -28,13 +28,13 @@
     <string name="text_due_date">Berakhir pada %s</string>
     <string name="text_ended_date">berakhir dalam %s</string>
     <string name="most_recent">Terbaru</string>
-    <string name="buzz_points">Buzz Point Terbanyak</string>
+    <string name="buzz_points">Score Terbanyak</string>
     <string name="see_all">Lihat Semua</string>
     <string name="submit_photo">Daftarkan Foto</string>
     <string name="participate_in">Berpartisipasi dalam Challenge:</string>
     <string name="challenge_title">Challenge Title</string>
     <string name="approval_wait">menunggu persetujuan</string>
-    <string name="buzz_point_request">Bagikan dan bantu konten ini mendapatkan Buzz Point!</string>
+    <string name="buzz_point_request">Bagikan dan bantu konten ini mendapatkan Score!</string>
     <string name="show_more">Show More</string>
 
     <string name="title_video">Video</string>

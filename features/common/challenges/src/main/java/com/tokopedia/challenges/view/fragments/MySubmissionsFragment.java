@@ -2,6 +2,8 @@ package com.tokopedia.challenges.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,6 +38,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     private View progressBar;
     private Boolean isFirst = true;
     private LinearLayoutManager layoutManager;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -62,9 +65,25 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         recyclerView.setLayoutManager(layoutManager);
         listAdpater = new MySubmissionsListAdapter(getActivity(), null, this);
         recyclerView.setAdapter(listAdpater);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         //recyclerView.addOnScrollListener(rvOnScrollListener);
         recyclerView.setVisibility(View.VISIBLE);
         mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code here
+                // To keep animation for 4 seconds
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop animation (This will be after 3 seconds)
+                        swipeRefreshLayout.setRefreshing(false);
+                        mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
+                    }
+                }, 4000); // Delay in millis
+            }
+        });
         if (isFirst) {
             isFirst = false;
         }
@@ -82,31 +101,23 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     public void setSubmissionsDataToUI(List<SubmissionResult> resultList) {
+
         if (resultList != null) {
+            recyclerView.setVisibility(View.VISIBLE);
             listAdpater.addAll(resultList);
         }
     }
 
     @Override
     public void showErrorNetwork(String errorMessage) {
-//        EmptyStateViewHelper.showEmptyState(
-//                getActivity(), getView(),
-//                "Oops!",
-//                "You have not participate in any challenges.\n" +
-//                        "Click this button to see active challenges.",
-//                "Show Challenges", R.drawable.ic_offline2,
-//                getChallengesRetryListener()
-//        );
-    }
-
-
-    private EmptyStateViewHelper.RetryClickedListener getChallengesRetryListener() {
-        return new EmptyStateViewHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-
-            }
-        };
+        EmptyStateViewHelper.showEmptyState(
+                getActivity(), getView(),
+                "Oops!",
+                "You have not participate in any challenges.\n" +
+                        "Click this button to see active challenges.",
+                "Coba Lagi", R.drawable.ic_offline2,
+                getMySubmissionsRetryListener()
+        );
     }
 
 
@@ -119,7 +130,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
                 "Oops!",
                 "There are no challenges available.\n" +
                         "Please check again later.",
-                "Show challenges", R.drawable.empty_mysubmission_active,
+                "Coba Lagi", R.drawable.empty_mysubmission_active,
                 getMySubmissionsRetryListener()
         );
     }
@@ -183,7 +194,10 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     private EmptyStateViewHelper.RetryClickedListener getMySubmissionsRetryListener() {
         return () -> {
-            getActivity().onBackPressed();
+            EmptyStateViewHelper.hideEmptyState(getView());
+            showProgressBarView();
+            mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
+            //getActivity().onBackPressed();
         };
     }
 
