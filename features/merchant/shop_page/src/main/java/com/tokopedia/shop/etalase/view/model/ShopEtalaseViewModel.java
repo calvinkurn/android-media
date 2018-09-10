@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.view.adapter.ShopEtalaseAdapterTypeFactory;
@@ -20,13 +21,18 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
     private String etalaseName;
     private long etalaseCount;
     private String etalaseBadge;
+    private @ShopEtalaseTypeDef int type;
+    private boolean highlight;
 
     private boolean isSelected;
 
-    public ShopEtalaseViewModel(String id, String name, boolean isUseAce) {
+    public ShopEtalaseViewModel(String id, String name, boolean isUseAce, @ShopEtalaseTypeDef int type,
+                                boolean isHighlight) {
         setEtalaseId(id);
         setEtalaseName(name);
         setUseAce(isUseAce);
+        setType(type);
+        setHighlight(isHighlight);
     }
 
     public ShopEtalaseViewModel(EtalaseModel etalaseModel) {
@@ -35,6 +41,8 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
         setEtalaseName(etalaseModel.getEtalaseName());
         setEtalaseCount(etalaseModel.getEtalaseNumProduct());
         setUseAce(etalaseModel.getUseAce() == USE_ACE);
+        setType(ShopEtalaseTypeDef.ETALASE_CUSTOM);
+        setHighlight(false);
     }
 
     public ShopEtalaseViewModel(ShopEtalaseModel shopEtalaseModel) {
@@ -43,8 +51,29 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
         setEtalaseName(shopEtalaseModel.getName());
         setEtalaseCount(shopEtalaseModel.getCount());
         setUseAce(shopEtalaseModel.getUseAce());
+        setType(shopEtalaseModel.getType());
+        setHighlight(shopEtalaseModel.getHighlighted());
     }
 
+    public void setType(@ShopEtalaseTypeDef int type) {
+        this.type = type;
+    }
+
+    public void setHighlight(boolean highlight) {
+        this.highlight = highlight;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public boolean isHighlight() {
+        return highlight;
+    }
+
+    public boolean isCustomType(){
+        return type == ShopEtalaseTypeDef.ETALASE_CUSTOM;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -111,6 +140,8 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
         dest.writeString(this.etalaseName);
         dest.writeLong(this.etalaseCount);
         dest.writeString(this.etalaseBadge);
+        dest.writeInt(this.type);
+        dest.writeByte(this.highlight ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isSelected ? (byte) 1 : (byte) 0);
     }
 
@@ -120,6 +151,8 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
         this.etalaseName = in.readString();
         this.etalaseCount = in.readLong();
         this.etalaseBadge = in.readString();
+        this.type = in.readInt();
+        this.highlight = in.readByte() != 0;
         this.isSelected = in.readByte() != 0;
     }
 

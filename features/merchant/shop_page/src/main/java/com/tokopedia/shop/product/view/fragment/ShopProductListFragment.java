@@ -34,6 +34,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -98,6 +99,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     private String attribution;
 
     private ArrayList<ShopEtalaseViewModel> selectedEtalaseList;
+    private List<ShopEtalaseViewModel> shopEtalaseViewModelList;
 
     private RecyclerView recyclerView;
     private BottomActionView bottomActionView;
@@ -366,12 +368,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     private void loadShopPageList(ShopInfo shopInfo, int page) {
-        List<ShopEtalaseViewModel> shopEtalaseViewModels = getShopEtalaseViewModelList();
-        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
+        if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
             shopProductListPresenter.getShopEtalase(shopId, shopId.equals(userSession.getShopId()));
         } else {
             // continue to load ProductData
-            boolean isUseAce = isUseAce(shopEtalaseViewModels, selectedEtalaseId);
+            boolean isUseAce = isUseAce(shopEtalaseViewModelList, selectedEtalaseId);
             loadShopPageList(shopInfo, page, isUseAce);
         }
     }
@@ -573,7 +574,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         // if etalase id is not on the list, add it
         boolean isAddedToCurrentEtalaseList = addEtalaseFromListMore(etalaseId, etalaseName, useAce);
         if (isAddedToCurrentEtalaseList) {
-            selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName, useAce));
+            selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName, useAce,
+                    ShopEtalaseTypeDef.ETALASE_CUSTOM, false));
             if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
                 selectedEtalaseList.remove(selectedEtalaseList.size() - 1);
             }
@@ -587,7 +589,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         // add the etalase by permutation
         // 1 2 3 4 5; after add 6 will be 1 6 2 3 4
         List<ShopEtalaseViewModel> shopEtalaseViewModelList = etalaseChipAdapter.getEtalaseViewModelList();
-        ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName, useAce);
+        ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName, useAce,
+                ShopEtalaseTypeDef.ETALASE_CUSTOM, false);
         // index no 0 will always be "All Etalase", so, add from index 1.
         int indexToAdd = shopEtalaseViewModelList.size() > 1 ? 1 : 0;
         shopEtalaseViewModelList.add(indexToAdd, shopEtalaseViewModelToAdd);
@@ -618,21 +621,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public ArrayList<ShopEtalaseViewModel> getSelectedEtalaseViewModelList() {
-        return selectedEtalaseList;
-    }
-
-    @Override
-    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
-        return etalaseChipAdapter.getEtalaseViewModelList();
-    }
-
-    @Override
-    public String getSelectedEtalaseName() {
-        return selectedEtalaseName;
-    }
-
-    @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeature) {
         if (shopInfo != null) {
             //isFromFeature is always false anyway.
@@ -660,6 +648,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessGetEtalaseList(@NonNull List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        this.shopEtalaseViewModelList = shopEtalaseViewModelList;
         boolean isUseAce = true;
 
         if (shopEtalaseViewModelList.size() == 0) {

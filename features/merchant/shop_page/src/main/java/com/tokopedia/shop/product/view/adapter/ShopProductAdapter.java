@@ -15,6 +15,7 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
@@ -27,6 +28,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_HIGHLIGHT_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_TITLE_POSITION;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_FEATURED_POSITION;
@@ -44,6 +46,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     private ShopProductFeaturedViewModel shopProductFeaturedViewModel;
     private ShopProductEtalaseListViewModel shopProductEtalaseListViewModel;
     private ShopProductEtalaseTitleViewModel shopProductEtalaseTitleViewModel;
+    private ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel;
 
     private ShopProductAdapterTypeFactory shopProductAdapterTypeFactory;
     private OnStickySingleHeaderListener onStickySingleHeaderViewListener;
@@ -58,10 +61,12 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
+        shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null, null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
         visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
+        visitables.add(shopProductEtalaseHighlightViewModel);
         visitables.add(shopProductEtalaseListViewModel);
         visitables.add(shopProductEtalaseTitleViewModel);
 
@@ -105,6 +110,19 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             this.shopProductEtalaseListViewModel = shopProductEtalaseListViewModel;
         }
         setVisitable(DEFAULT_ETALASE_POSITION, this.shopProductEtalaseListViewModel);
+    }
+
+    public void setShopProductEtalaseHighlightViewModel(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
+        if (shopProductEtalaseHighlightViewModel == null) {
+            this.shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel();
+        } else {
+            this.shopProductEtalaseHighlightViewModel = shopProductEtalaseHighlightViewModel;
+        }
+        setVisitable(DEFAULT_ETALASE_HIGHLIGHT_POSITION, this.shopProductEtalaseHighlightViewModel);
+    }
+
+    public ShopProductEtalaseHighlightViewModel getShopProductEtalaseHighlightViewModel() {
+        return shopProductEtalaseHighlightViewModel;
     }
 
     public void setShopEtalaseTitle(String etalaseName) {
@@ -180,15 +198,20 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     @Override
     public void clearAllElements() {
-        clearDataExceptProduct();
+        clearTopData();
+        clearEtalaseHighlightData();
         clearProductList();
     }
 
-    public void clearDataExceptProduct() {
+    public void clearTopData() {
         setShopProductPromoViewModel(null);
         setShopProductFeaturedViewModel(null);
         setShopEtalase(null);
         setShopEtalaseTitle(null);
+    }
+
+    public void clearEtalaseHighlightData() {
+        setShopProductEtalaseHighlightViewModel(null);
     }
 
     public List<ShopProductViewModel> getShopProductViewModelList() {

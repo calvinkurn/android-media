@@ -35,7 +35,6 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopPr
 
     public ShopProductCarouselViewHolder(View itemView, int deviceWidth,
                                          ShopProductClickedNewListener shopProductClickedNewListener,
-                                         List<ShopProductViewModel> shopProductViewModelList,
                                          boolean isVerticalLayout, String titleString) {
         super(itemView);
         this.isVerticalLayout = isVerticalLayout;

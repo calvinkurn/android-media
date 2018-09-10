@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseHighlightViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseTitleViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
@@ -20,6 +21,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.model.HideViewModel;
+import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
@@ -76,6 +78,14 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return HideViewHolder.LAYOUT;
         } else {
             return ShopProductPromoViewHolder.LAYOUT;
+        }
+    }
+
+    public int type(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
+        if (shopProductEtalaseHighlightViewModel.getShopProductViewModelListList().size() == 0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            return ShopProductEtalaseHighlightViewHolder.LAYOUT;
         }
     }
 
@@ -157,9 +167,10 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return new ShopProductPromoViewHolder(parent, promoViewHolderListener);
         } else if (type == ShopProductCarouselViewHolder.LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
-                    shopProductAdapter.getShopProductFeaturedViewModel().getShopProductFeaturedViewModelList(),
                     isFeaturedDataSizeSmall(),
                     parent.getContext().getString(R.string.shop_page_label_featured_product));
+        } if (type == ShopProductEtalaseHighlightViewHolder.LAYOUT) {
+            return new ShopProductEtalaseHighlightViewHolder(parent, deviceWidth);
         } else if (type == ShopProductViewHolder.GRID_LAYOUT ||
                 type == ShopProductViewHolder.LIST_LAYOUT) {
             return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, isFeaturedOnly, type);

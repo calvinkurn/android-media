@@ -20,13 +20,13 @@ public interface ShopProductListView extends BaseListViewListener<BaseShopProduc
 
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 
+    void onSuccessGetEtalaseHighlight(@NonNull List<List<ShopProductViewModel>> list);
+
+    void onErrorGetEtalaseHighlight(Throwable e);
+
     void onErrorGetProductFeature(Throwable e);
 
     void onSuccessGetProductFeature(@NonNull List<ShopProductViewModel> list);
-
-    void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList);
-
-    void onErrorGetEtalaseList(Throwable e);
 
     void onSuccessGetEtalaseListByShop(ArrayList<ShopEtalaseViewModel> shopEtalaseModelList);
 

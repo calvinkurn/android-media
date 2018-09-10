@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.response.PagingList;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
@@ -89,10 +90,51 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                                              int itemPerPage,
                                              String etalaseId,
                                              boolean isUseAce) {
+        getProductListWithAttributes(generateShopProductRequestModel(shopId, isShopClosed,
+                isOfficialStore, page, itemPerPage, etalaseId, isUseAce));
+    }
+
+    private ShopProductRequestModel generateShopProductRequestModel(String shopId, boolean isShopClosed,
+                                                                    boolean isOfficialStore, int page,
+                                                                    int itemPerPage,
+                                                                    String etalaseId,
+                                                                    boolean isUseAce){
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, isUseAce, itemPerPage);
         shopProductRequestModel.setEtalaseId(etalaseId);
-        getProductListWithAttributes(shopProductRequestModel);
+        return shopProductRequestModel;
+    }
+
+    public void getProductListHighlight(String shopId, boolean isShopClosed,
+                                        boolean isOfficialStore,
+                                        List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        List<RequestParams> requestParamList = new ArrayList<>();
+        for (ShopEtalaseViewModel shopEtalaseViewModel: shopEtalaseViewModelList) {
+            ShopProductRequestModel shopProductRequestModel = generateShopProductRequestModel(shopId, isShopClosed,
+                    isOfficialStore, 1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                    shopEtalaseViewModel.getEtalaseId(), shopEtalaseViewModel.isUseAce());
+            requestParamList.add(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel));
+        }
+        productListWithAttributeUseCase.executeList(requestParamList, new Subscriber<List<List<ShopProductViewModel>>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetEtalaseHighlight(e);
+                }
+            }
+
+            @Override
+            public void onNext(List<List<ShopProductViewModel>> lists) {
+                if (isViewAttached()) {
+                    getView().onSuccessGetEtalaseHighlight(lists);
+                }
+            }
+        });
     }
 
     public void getShopEtalaseListByShop(String shopId, boolean isOwner) {

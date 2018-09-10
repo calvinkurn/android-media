@@ -25,12 +25,5 @@ public interface ShopProductDedicatedListView extends BaseListViewListener<BaseS
 
     void onErrorGetShopInfo(Throwable e);
 
-    ArrayList<ShopEtalaseViewModel> getSelectedEtalaseViewModelList();
-
-    List<ShopEtalaseViewModel> getShopEtalaseViewModelList();
-
-    String getSelectedEtalaseName();
-
-
 }
 
