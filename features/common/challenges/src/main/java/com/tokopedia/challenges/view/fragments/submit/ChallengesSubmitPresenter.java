@@ -26,6 +26,7 @@ import com.tokopedia.imagepicker.common.util.ImageUtils;
 
 import java.io.File;
 import java.lang.reflect.Type;
+import java.net.UnknownHostException;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -103,9 +104,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
+                if (e instanceof UnknownHostException) {
+                    getView().setSnackBarErrorMessage("No Intenet Connection");
+                }else {
+                    getView().setSnackBarErrorMessage("Image Uploaded Failed");
+                }
                 getView().hideProgress();
                 e.printStackTrace();
-                getView().setSnackBarErrorMessage("Image Uploaded Failed");
+
             }
 
             @Override
@@ -211,6 +217,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
             @Override
             public void onError(Throwable e) {
+
                 getView().hideProgress();
                 e.printStackTrace();
             }

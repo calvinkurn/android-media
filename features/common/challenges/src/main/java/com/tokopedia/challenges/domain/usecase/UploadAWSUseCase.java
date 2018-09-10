@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import okhttp3.Interceptor;
 import retrofit2.Response;
 import rx.Observable;
+import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
 
@@ -35,16 +36,18 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
 
     private final Context context;
     private final Interceptor interceptor;
+    private final PostDeleteSubmissionUseCase postDeleteSubmissionUseCase;
     private String filePath;
     private String challengeId;
     private RestApi mApi;
     private UploadFingerprints uploadFingerprints;
 
     @Inject
-    public UploadAWSUseCase(IndiAuthInterceptor interceptor,@ApplicationContext Context context) {
+    public UploadAWSUseCase(IndiAuthInterceptor interceptor,@ApplicationContext Context context,PostDeleteSubmissionUseCase postDeleteSubmissionUseCase) {
         super(interceptor, context);
         this.context = context;
         this.interceptor = interceptor;
+        this.postDeleteSubmissionUseCase = postDeleteSubmissionUseCase;
     }
 
 
@@ -67,8 +70,15 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return createObservableGetNextPart(uploadFingerprints);
+        return createObservableGetNextPart(uploadFingerprints).onErrorResumeNext(new Func1<Throwable, Observable<Map<Type, RestResponse>>>() {
+            @Override
+            public Observable<Map<Type, RestResponse>> call(Throwable throwable) {
+                postDeleteSubmissionUseCase.setRequestParams(uploadFingerprints.getNewPostId());
+                return postDeleteSubmissionUseCase.createObservable(requestParams);
+            }
+        });
     }
+
 
     public Observable<Map<Type, RestResponse>> createObservableUploadAWS(UploadFingerprints fingerprints) {
         if(fingerprints.getPartsCompleted() != fingerprints.getTotalParts()) {
