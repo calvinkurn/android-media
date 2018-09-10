@@ -33,7 +33,7 @@ interface InboxTalkContract {
         fun refreshTalk(filter: String, nav: String)
         fun getInboxTalk(filter: String, nav: String)
         fun getInboxTalkWithFilter(filter: String, nav: String)
-        fun deleteTalk()
+        fun deleteTalk(shopId: String, talkId: String)
         fun deleteCommentTalk()
         fun unfollowTalk()
         fun followTalk()

@@ -181,12 +181,12 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         }
     }
 
-    override fun deleteTalk() {
+    override fun deleteTalk(shopId: String, talkId: String) {
         if (!isRequesting) {
 
             deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
-                    "",
-                    ""
+                    shopId,
+                    talkId
             ), object : Subscriber<BaseActionTalkViewModel>() {
                 override fun onCompleted() {
 

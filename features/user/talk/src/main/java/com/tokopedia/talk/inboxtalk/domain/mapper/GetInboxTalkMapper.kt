@@ -82,7 +82,9 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         pojo.talk_follow_status == IS_FOLLOWED,
                         ArrayList(),
                         pojo.talk_raw_message,
-                        pojo.talk_own == 1
+                        pojo.talk_own == 1,
+                        pojo.talk_shop_id,
+                        pojo.talk_id
                 ),
                 listTalk
         )

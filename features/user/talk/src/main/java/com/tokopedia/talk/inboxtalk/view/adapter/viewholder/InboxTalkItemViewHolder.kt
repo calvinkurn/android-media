@@ -33,7 +33,7 @@ class InboxTalkItemViewHolder(val v: View,
 
     interface TalkItemListener {
         fun onReplyTalkButtonClick(allowReply: Boolean)
-        fun onMenuButtonClicked(menu: TalkState)
+        fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String)
         fun onYesReportTalkItemClick()
         fun onNoShowTalkItemClick(adapterPosition: Int)
     }
@@ -50,12 +50,12 @@ class InboxTalkItemViewHolder(val v: View,
     private val replyButton: TextView = itemView.replyButton
     private val separatorChild: View = itemView.separatorChild
 
-//    private val reportedLayout: View = itemView.findViewById(R.id.layout_reported)
-//    private val reportedMessage: TextView = itemView.reportedMessage
-//    private val yesReportButton: TextView = itemView.reportYes
-//    private val noReportButton: TextView = itemView.reportNo
-//    private val rawMessage: TextView = itemView.rawMessage
-//    private val separatorReport: View = itemView.separatorReport
+    private val reportedLayout: View = itemView.layout_reported
+    private val reportedMessage: TextView = itemView.reportedMessage
+    private val yesReportButton: TextView = itemView.reportYes
+    private val noReportButton: TextView = itemView.reportNo
+    private val rawMessage: TextView = itemView.rawMessage
+    private val separatorReport: View = itemView.separatorReport
 
 
     private lateinit var adapter: CommentTalkAdapter
@@ -69,7 +69,7 @@ class InboxTalkItemViewHolder(val v: View,
 
             setReadNotification(element)
             setProductHeader(element)
-            setupMenuButton(element.talkThread.headThread.menu)
+            setupMenuButton(element)
             setProfileHeader(element)
             setCommentList(element)
 
@@ -93,27 +93,27 @@ class InboxTalkItemViewHolder(val v: View,
     }
 
     private fun setupReportedMessage(element: InboxTalkItemViewModel) {
-//        reportedLayout.visibility = View.VISIBLE
-//        talkContent.visibility = View.GONE
-//
-//        reportedMessage.text = element.talkThread.headThread.comment
-//
-//        if (element.talkThread.headThread.isOwner) {
-//            rawMessage.visibility = View.VISIBLE
-//            separatorReport.visibility = View.VISIBLE
-//            rawMessage.text = element.talkThread.headThread.rawMessage
-//        } else {
-//            rawMessage.visibility = View.GONE
-//            separatorReport.visibility = View.GONE
-//        }
-//
-//        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
-//        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
+        reportedLayout.visibility = View.VISIBLE
+        talkContent.visibility = View.GONE
+
+        reportedMessage.text = element.talkThread.headThread.comment
+
+        if (element.talkThread.headThread.isOwner) {
+            rawMessage.visibility = View.VISIBLE
+            separatorReport.visibility = View.VISIBLE
+            rawMessage.text = element.talkThread.headThread.rawMessage
+        } else {
+            rawMessage.visibility = View.GONE
+            separatorReport.visibility = View.GONE
+        }
+
+        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
+        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
 
     }
 
     private fun setupNormalTalk(element: InboxTalkItemViewModel) {
-//        reportedLayout.visibility = View.GONE
+        reportedLayout.visibility = View.GONE
 
         talkContent.visibility = View.VISIBLE
         talkContent.text = element.talkThread.headThread.comment
@@ -148,14 +148,18 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setupMenuButton(menu: TalkState) {
+    private fun setupMenuButton(element: InboxTalkItemViewModel) {
+        val menu : TalkState = element.talkThread.headThread.menu
+
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
         } else {
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu) }
+        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
+                element.talkThread.headThread.shopId,
+                element.talkThread.headThread.talkId) }
     }
 
 }
