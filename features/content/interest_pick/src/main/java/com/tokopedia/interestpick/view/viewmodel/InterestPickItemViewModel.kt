@@ -8,5 +8,5 @@ data class InterestPickItemViewModel (
         val categoryId: Int = 0,
         val categoryName: String = "",
         val image: String = "",
-        val isSelected: Boolean = false
+        var isSelected: Boolean = false
 )

@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.interestpick.R
+import com.tokopedia.interestpick.R.id.backgroundView
+import com.tokopedia.interestpick.R.id.category
 import com.tokopedia.interestpick.view.listener.InterestPickContract
 import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import kotlinx.android.synthetic.main.item_interest_pick.view.*
@@ -27,26 +29,24 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], listener)
+        val colorId = if (list[position].isSelected)
+            R.color.interest_background_active else
+            R.color.interest_background_inactive
+        holder.itemView.backgroundView.setBackgroundColor(
+                MethodChecker.getColor(holder.itemView.context, colorId)
+        )
+        holder.itemView.category.text = list[position].categoryName
+        ImageHandler.LoadImage(holder.itemView.image, list[position].image)
+
+        holder.itemView.backgroundView.setOnClickListener {
+            list[position].isSelected = !list[position].isSelected
+            notifyItemChanged(position)
+        }
     }
 
     override fun getItemCount() = list.size
 
-    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        fun bind(viewModel: InterestPickItemViewModel,
-                 listener: InterestPickContract.View) = with(itemView) {
-            val colorId = if (viewModel.isSelected)
-                R.color.interest_background_active else
-                R.color.interest_background_inactive
-            backgroundView.setBackgroundColor(MethodChecker.getColor(itemView.context, colorId))
-            category.text = viewModel.categoryName
-            ImageHandler.LoadImage(image, viewModel.image)
-
-            backgroundView.setOnClickListener {
-
-            }
-        }
-    }
+    class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 
     fun setList(list: ArrayList<InterestPickItemViewModel>) {
         this.list = list

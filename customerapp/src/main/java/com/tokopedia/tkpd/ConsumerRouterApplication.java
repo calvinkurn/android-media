@@ -198,6 +198,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
+import com.tokopedia.interestpick.view.activity.InterestPickActivity;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -1071,7 +1072,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getManagePeopleIntent(Context context) {
-        return new Intent(context, AccountSettingActivity.class);
+        //TODO milhamj restore this
+        return InterestPickActivity.Companion.createIntent(context);
+//        return new Intent(context, AccountSettingActivity.class);
     }
 
     @Override
