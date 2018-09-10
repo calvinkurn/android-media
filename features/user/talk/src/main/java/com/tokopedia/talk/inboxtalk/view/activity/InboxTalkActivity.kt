@@ -5,7 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -14,8 +16,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
@@ -101,6 +103,10 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         viewPager.adapter = inboxTalkPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
+        for (i: Int in 0 until tabLayout.tabCount - 1) {
+            tabLayout.getTabAt(i)?.customView = getTabCustomView(titles[i])
+        }
+
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
@@ -112,9 +118,20 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         })
     }
 
-    override fun onGetNotification(notification: Int, nav : String) {
+    private fun getTabCustomView(titleText: String): View {
+        val view: View = LayoutInflater.from(this).inflate(R.layout.custom_tab_inbox_talk, null)
+
+        val title: TextView = view.findViewById(R.id.title)
+        val notif: TextView = view.findViewById(R.id.notification)
+
+        title.text = titleText
+        notif.text = "0"
+        return view
+    }
+
+    override fun onGetNotification(notification: Int, nav: String) {
         if (tabLayout.visibility == View.VISIBLE) {
-        //TODO SET NOTIFICATION
+            //TODO SET NOTIFICATION
         }
     }
 }

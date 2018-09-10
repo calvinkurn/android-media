@@ -232,6 +232,36 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         }
     }
 
+    override fun unfollowTalk() {
+        if (!isRequesting) {
+
+            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
+                    "",
+                    "",
+                    ""
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideRefreshLoad()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    if (talkViewModel.isSuccess) {
+                        view.onSuccessDeleteCommentTalk()
+                    }
+                }
+            })
+        }
+    }
+
+    override fun followTalk() {
+
+    }
+
     override fun detachView() {
         super.detachView()
         getInboxTalkUseCase.unsubscribe()
