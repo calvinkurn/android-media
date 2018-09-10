@@ -14,7 +14,6 @@ import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.di.AddCreditCardModule
 import com.tokopedia.payment.setting.add.di.DaggerAddCreditCardComponent
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.add.model.Data
 import javax.inject.Inject
 
