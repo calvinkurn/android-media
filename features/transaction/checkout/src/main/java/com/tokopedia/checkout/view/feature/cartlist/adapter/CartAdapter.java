@@ -41,6 +41,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Object> cartDataList;
     private ShipmentSellerCashbackModel shipmentSellerCashbackModel;
     private CompositeSubscription compositeSubscription;
+    private RecyclerView.RecycledViewPool viewPool;
 
     @Inject
     public CartAdapter(CartAdapter.ActionListener cartActionListener,
@@ -49,6 +50,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.cartActionListener = cartActionListener;
         this.cartItemActionListener = cartItemActionListener;
         compositeSubscription = new CompositeSubscription();
+        viewPool = new RecyclerView.RecycledViewPool();
     }
 
     @Override
@@ -74,7 +76,7 @@ public class CartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == CartShopViewHolder.TYPE_VIEW_ITEM_SHOP) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartShopViewHolder.TYPE_VIEW_ITEM_SHOP, parent, false);
-            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription);
+            return new CartShopViewHolder(view, cartActionListener, cartItemActionListener, compositeSubscription, viewPool);
         } else if (viewType == CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION) {
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(CartPromoSuggestionViewHolder.TYPE_VIEW_PROMO_SUGGESTION, parent, false);

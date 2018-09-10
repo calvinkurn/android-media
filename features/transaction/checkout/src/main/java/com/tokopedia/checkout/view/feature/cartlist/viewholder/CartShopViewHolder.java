@@ -47,14 +47,17 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
+    private RecyclerView.RecycledViewPool viewPool;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
-                              CompositeSubscription compositeSubscription) {
+                              CompositeSubscription compositeSubscription,
+                              RecyclerView.RecycledViewPool viewPool) {
         super(itemView);
         this.cartAdapterListener = cartAdapterListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
         this.compositeSubscription = compositeSubscription;
+        this.viewPool = viewPool;
 
         llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
@@ -95,7 +98,10 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, compositeSubscription, getAdapterPosition());
         cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
-        rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rvCartItem.getContext());
+        rvCartItem.setLayoutManager(linearLayoutManager);
+//        rvCartItem.setRecycledViewPool(viewPool);
+//        linearLayoutManager.setInitialPrefetchItemCount(1);
         rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 

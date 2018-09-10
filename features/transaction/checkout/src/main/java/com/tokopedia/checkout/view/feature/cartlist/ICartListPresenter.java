@@ -18,13 +18,15 @@ public interface ICartListPresenter {
 
     void detachView();
 
-    void processInitialGetCartData();
+    void processInitialGetCartData(boolean initialLoad);
 
     void processDeleteCart(CartItemData cartItemData, boolean addWishList);
 
     void processDeleteAndRefreshCart(List<CartItemData> removedCartItems, boolean addWishList, boolean isLastItem);
 
     void processToUpdateCartData();
+
+    void processToUpdateAndReloadCartData();
 
     void reCalculateSubTotal(List<CartShopHolderData> dataList);
 
@@ -47,5 +49,7 @@ public interface ICartListPresenter {
     ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData);
 
     void setHasPerformChecklistChange();
+
+    boolean dataHasChanged();
 
 }

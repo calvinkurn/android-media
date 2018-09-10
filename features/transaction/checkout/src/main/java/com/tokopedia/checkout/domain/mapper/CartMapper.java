@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
@@ -436,5 +437,17 @@ public class CartMapper implements ICartMapper {
         ResetCartData resetCartData = new ResetCartData();
         resetCartData.setSuccess(resetCartDataResponse.getSuccess() == 1);
         return resetCartData;
+    }
+
+    @Override
+    public UpdateAndRefreshCartListData convertToUpdateAndRefreshCartData(UpdateCartDataResponse updateCartDataResponse) {
+        UpdateCartData updateCartData = new UpdateCartData.Builder()
+                .goTo(updateCartDataResponse.get_goto())
+                .message(updateCartDataResponse.getError())
+                .success(updateCartDataResponse.isStatus())
+                .build();
+        UpdateAndRefreshCartListData updateAndRefreshCartListData = new UpdateAndRefreshCartListData();
+        updateAndRefreshCartListData.setUpdateCartData(updateCartData);
+        return null;
     }
 }

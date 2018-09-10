@@ -160,7 +160,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 };
             }
         }).debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<QuantityWrapper>() {
                     @Override
@@ -190,7 +190,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 };
             }
         }).debounce(TEXTWATCHER_NOTE_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Editable>() {
                     @Override

@@ -161,22 +161,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     @Override
+    public void onDestroy() {
+        cartAdapter.unsubscribeSubscription();
+        super.onDestroy();
+    }
+
+    @Override
     public void onStop() {
-        boolean hasChanges = false;
-        for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
-            if (cartItemData.getUpdatedData().getQuantity() != cartItemData.getOriginData().getOriginalQty() ||
-                    !cartItemData.getUpdatedData().getRemark().equals(cartItemData.getOriginData().getOriginalRemark())) {
-                hasChanges = true;
-                break;
-            }
-        }
+        boolean hasChanges = dPresenter.dataHasChanged();
 
         if (hasChanges && getActivity() != null && getSelectedCartDataList() != null && getSelectedCartDataList().size() > 0) {
-            for (CartItemData cartItemData : cartAdapter.getAllCartItemData()) {
-                cartItemData.getOriginData().setOriginalQty(cartItemData.getUpdatedData().getQuantity());
-                cartItemData.getOriginData().setOriginalRemark(cartItemData.getUpdatedData().getRemark());
-            }
-
             Intent service = new Intent(getActivity(), UpdateCartIntentService.class);
             service.putParcelableArrayListExtra(
                     UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, new ArrayList<>(getSelectedCartDataList())
@@ -278,6 +272,21 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         cartRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         cartRecyclerView.setAdapter(cartAdapter);
         cartRecyclerView.addItemDecoration(cartItemDecoration);
+        cartRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (recyclerView.canScrollVertically(-1)) {
+                    disableSwipeRefresh();
+                } else {
+                    enableSwipeRefresh();
+                }
+            }
+        });
         ((SimpleItemAnimator) cartRecyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
     }
 
@@ -691,6 +700,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void hideProgressLoading() {
         progressDialogNormal.dismiss();
+        if (refreshHandler.isRefreshing()) {
+            refreshHandler.finishRefresh();
+        }
     }
 
     @Override
@@ -801,6 +813,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void showErrorLayout(String message) {
         if (getActivity() != null) {
+            enableSwipeRefresh();
             mIsMenuVisible = false;
             getActivity().invalidateOptionsMenu();
             refreshHandler.finishRefresh();
@@ -810,10 +823,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                     () -> {
                         llNetworkErrorView.setVisibility(View.GONE);
                         rlContent.setVisibility(View.VISIBLE);
-                        refreshHandler.setPullEnabled(true);
                         refreshHandler.setRefreshing(true);
                         cartAdapter.resetData();
-                        dPresenter.processInitialGetCartData();
+                        dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
                     });
         }
     }
@@ -853,7 +865,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private void showSnackbarRetry(String message) {
         NetworkErrorHelper.createSnackbarWithAction(getActivity(), message, ()
-                -> dPresenter.processInitialGetCartData()).showRetrySnackbar();
+                -> dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null))
+                .showRetrySnackbar();
     }
 
     @Override
@@ -1046,6 +1059,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderEmptyCartData(CartListData cartListData) {
+        enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
         refreshHandler.finishRefresh();
         mIsMenuVisible = false;
@@ -1119,7 +1133,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
         if (!hidden) {
             if (dPresenter.getCartListData() == null) {
-                dPresenter.processInitialGetCartData();
+                dPresenter.processInitialGetCartData(true);
             }
         }
     }
@@ -1260,15 +1274,20 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void onRefresh(View view) {
-        cartAdapter.resetData();
-        showMainContainer();
-        dPresenter.processInitialGetCartData();
-        String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
-        if (!TextUtils.isEmpty(promo)) {
-            dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
+        if (dPresenter.dataHasChanged()) {
+            showMainContainer();
+            dPresenter.processToUpdateAndReloadCartData();
+        } else {
+            if (dPresenter.getCartListData() != null && dPresenter.getCartListData().getShopGroupDataList().size() > 0) {
+                showMainContainer();
+            }
+            dPresenter.processInitialGetCartData(dPresenter.getCartListData() == null);
+            String promo = checkoutModuleRouter.checkoutModuleRouterGetAutoApplyCouponBranchUtil();
+            if (!TextUtils.isEmpty(promo)) {
+                dPresenter.processCheckPromoCodeFromSuggestedPromo(promo, true);
+            }
         }
     }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1292,10 +1311,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
-        if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
-            dPresenter.processResetAndRefreshCartData();
-        } else if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
+//        if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
+//                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
+//            dPresenter.processResetAndRefreshCartData();
+//        } else
+        if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
             NetworkErrorHelper.showSnackbar(
                     getActivity(),
                     getString(R.string.alert_payment_canceled_or_failed_transaction_module)

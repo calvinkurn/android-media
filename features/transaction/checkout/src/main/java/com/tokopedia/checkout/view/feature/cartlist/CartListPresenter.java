@@ -6,11 +6,13 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.DeleteAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.ResetAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -20,6 +22,7 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
@@ -88,6 +91,7 @@ public class CartListPresenter implements ICartListPresenter {
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final AddWishListUseCase addWishListUseCase;
     private final RemoveWishListUseCase removeWishListUseCase;
+    private final UpdateAndReloadCartUseCase updateAndReloadCartUseCase;
     private CartListData cartListData;
     private boolean hasPerformChecklistChange;
 
@@ -103,7 +107,8 @@ public class CartListPresenter implements ICartListPresenter {
                              CartApiRequestParamGenerator cartApiRequestParamGenerator,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              AddWishListUseCase addWishListUseCase,
-                             RemoveWishListUseCase removeWishListUseCase) {
+                             RemoveWishListUseCase removeWishListUseCase,
+                             UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
         this.view = cartListView;
         this.getCartListUseCase = getCartListUseCase;
         this.compositeSubscription = compositeSubscription;
@@ -116,6 +121,7 @@ public class CartListPresenter implements ICartListPresenter {
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.addWishListUseCase = addWishListUseCase;
         this.removeWishListUseCase = removeWishListUseCase;
+        this.updateAndReloadCartUseCase = updateAndReloadCartUseCase;
     }
 
     @Override
@@ -140,8 +146,10 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public void processInitialGetCartData() {
-        view.renderLoadGetCartData();
+    public void processInitialGetCartData(boolean initialLoad) {
+        if (initialLoad) {
+            view.renderLoadGetCartData();
+        }
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(
@@ -227,7 +235,6 @@ public class CartListPresenter implements ICartListPresenter {
         );
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void processToUpdateCartData() {
         view.showProgressLoading();
@@ -254,6 +261,64 @@ public class CartListPresenter implements ICartListPresenter {
                         .unsubscribeOn(Schedulers.io())
                         .subscribe(getSubscriberToShipmentSingleAddress(cartItemDataList))
         );
+    }
+
+    @Override
+    public void processToUpdateAndReloadCartData() {
+        List<CartItemData> cartItemDataList = view.getAllCartDataList();
+        List<UpdateCartRequest> updateCartRequestList = new ArrayList<>();
+        for (CartItemData data : cartItemDataList) {
+            updateCartRequestList.add(new UpdateCartRequest.Builder()
+                    .cartId(data.getOriginData().getCartId())
+                    .notes(data.getUpdatedData().getRemark())
+                    .quantity(data.getUpdatedData().getQuantity())
+                    .build());
+        }
+        TKPDMapParam<String, String> paramUpdate = new TKPDMapParam<>();
+        paramUpdate.put(UpdateAndReloadCartUseCase.PARAM_CARTS, new Gson().toJson(updateCartRequestList));
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_UPDATE_CART,
+                view.getGeneratedAuthParamNetwork(paramUpdate));
+        requestParams.putObject(
+                UpdateAndReloadCartUseCase.PARAM_REQUEST_AUTH_MAP_STRING_GET_CART,
+                view.getGeneratedAuthParamNetwork(cartApiRequestParamGenerator.generateParamMapGetCartList(null))
+        );
+
+        compositeSubscription.add(
+                updateAndReloadCartUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .unsubscribeOn(Schedulers.io())
+                        .subscribe(new Subscriber<UpdateAndRefreshCartListData>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                view.hideProgressLoading();
+                                String message = ErrorHandler.getErrorMessage(view.getActivity(), e);
+                                view.showToastMessageRed(message);
+                            }
+
+                            @Override
+                            public void onNext(UpdateAndRefreshCartListData updateAndRefreshCartListData) {
+                                view.hideProgressLoading();
+                                if (updateAndRefreshCartListData.getCartListData() != null) {
+                                    CartListPresenter.this.cartListData = updateAndRefreshCartListData.getCartListData();
+                                    view.renderLoadGetCartDataFinish();
+                                    if (cartListData.getShopGroupDataList().isEmpty()) {
+                                        view.renderEmptyCartData(cartListData);
+                                    } else {
+                                        view.renderInitialGetCartListDataSuccess(cartListData);
+                                    }
+                                }
+                            }
+                        })
+        );
+
     }
 
     @Override
@@ -481,7 +546,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
-                    view.disableSwipeRefresh();
+//                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
             }
@@ -575,7 +640,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (!removeAllItem) {
                     handleErrorCartList(e);
                 } else {
-                    processInitialGetCartData();
+                    processInitialGetCartData(cartListData == null);
                 }
             }
 
@@ -587,7 +652,7 @@ public class CartListPresenter implements ICartListPresenter {
                     if (deleteAndRefreshCartListData.getDeleteCartData().isSuccess()
                             && deleteAndRefreshCartListData.getCartListData() != null) {
                         if (deleteAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
-                            processInitialGetCartData();
+                            processInitialGetCartData(cartListData == null);
                         } else {
                             CartListPresenter.this.cartListData = deleteAndRefreshCartListData.getCartListData();
                             view.renderInitialGetCartListDataSuccess(deleteAndRefreshCartListData.getCartListData());
@@ -599,7 +664,7 @@ public class CartListPresenter implements ICartListPresenter {
                         );
                     }
                 } else {
-                    processInitialGetCartData();
+                    processInitialGetCartData(cartListData == null);
                 }
             }
         };
@@ -636,7 +701,7 @@ public class CartListPresenter implements ICartListPresenter {
                 } else {
                     view.showToastMessageRed(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
-                processInitialGetCartData();
+                processInitialGetCartData(cartListData == null);
             }
 
             @Override
@@ -704,7 +769,7 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
-                    view.disableSwipeRefresh();
+//                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
@@ -899,4 +964,24 @@ public class CartListPresenter implements ICartListPresenter {
     public void setHasPerformChecklistChange() {
         hasPerformChecklistChange = true;
     }
+
+    @Override
+    public boolean dataHasChanged() {
+        boolean hasChanges = false;
+        for (CartItemData cartItemData : view.getAllCartDataList()) {
+            if (cartItemData.getUpdatedData().getQuantity() != cartItemData.getOriginData().getOriginalQty() ||
+                    !cartItemData.getUpdatedData().getRemark().equals(cartItemData.getOriginData().getOriginalRemark())) {
+                hasChanges = true;
+                break;
+            }
+        }
+        if (hasChanges) {
+            for (CartItemData cartItemData : view.getAllCartDataList()) {
+                cartItemData.getOriginData().setOriginalQty(cartItemData.getUpdatedData().getQuantity());
+                cartItemData.getOriginData().setOriginalRemark(cartItemData.getUpdatedData().getRemark());
+            }
+        }
+        return hasChanges;
+    }
+
 }

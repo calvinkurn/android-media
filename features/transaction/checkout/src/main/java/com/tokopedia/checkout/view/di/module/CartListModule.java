@@ -8,6 +8,7 @@ import com.tokopedia.checkout.domain.usecase.DeleteCartGetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.DeleteCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.ResetCartGetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateAndReloadCartUseCase;
 import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
@@ -72,12 +73,13 @@ public class CartListModule {
                                                  CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                  CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                  AddWishListUseCase addWishListUseCase,
-                                                 RemoveWishListUseCase removeWishListUseCase) {
+                                                 RemoveWishListUseCase removeWishListUseCase,
+                                                 UpdateAndReloadCartUseCase updateAndReloadCartUseCase) {
         return new CartListPresenter(
                 cartListView, getCartListUseCase, deleteCartUseCase, deleteCartGetCartListUseCase,
                 updateCartUseCase, resetCartGetCartListUseCase, checkPromoCodeCartListUseCase,
                 compositeSubscription, cartApiRequestParamGenerator, cancelAutoApplyCouponUseCase,
-                addWishListUseCase, removeWishListUseCase
+                addWishListUseCase, removeWishListUseCase, updateAndReloadCartUseCase
         );
     }
 
