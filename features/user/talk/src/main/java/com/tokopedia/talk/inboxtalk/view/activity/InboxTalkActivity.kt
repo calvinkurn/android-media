@@ -13,6 +13,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.DaggerTalkComponent
@@ -109,14 +110,28 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         }
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+                Log.d("NISNIS", "tab reselected " + tab?.position.toString())
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab?) {
+                Log.d("NISNIS", "tab unselected " + tab?.position.toString())
+            }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-                Log.d("NISNIS", "tab Selected")
+
+                setTabSelected(tab)
             }
         })
+    }
+
+    private fun setTabSelected(tab: TabLayout.Tab) {
+        tab.customView?.run {
+            val view: View = this
+            val title: TextView = view.findViewById(R.id.title)
+            title.setTextColor(MethodChecker.getColor(this.context, R.color.medium_green))
+        }
     }
 
     private fun getTabCustomView(titleText: String): View {
