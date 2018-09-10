@@ -5,7 +5,7 @@ package com.tokopedia.interestpick.view.viewmodel
  */
 
 data class InterestPickItemViewModel (
-        val categoryId: String = "",
+        val categoryId: Int = 0,
         val categoryName: String = "",
         val image: String = "",
         val isSelected: Boolean = false

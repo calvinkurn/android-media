@@ -1,11 +1,9 @@
 package com.tokopedia.interestpick.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interestpick.domain.usecase.GetInterestUseCase
-import com.tokopedia.interestpick.view.GetInterestSubscriber
+import com.tokopedia.interestpick.view.subscriber.GetInterestSubscriber
 import com.tokopedia.interestpick.view.listener.InterestPickContract
-import rx.Subscriber
 import javax.inject.Inject
 
 /**

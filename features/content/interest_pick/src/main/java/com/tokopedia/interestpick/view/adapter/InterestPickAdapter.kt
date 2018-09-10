@@ -15,10 +15,10 @@ import kotlinx.android.synthetic.main.item_interest_pick.view.*
  * @author by milhamj on 07/09/18.
  */
 
-class InterestPickAdapter(val listener: (InterestPickContract.View) -> Unit)
+class InterestPickAdapter(val listener: InterestPickContract.View)
     : RecyclerView.Adapter<InterestPickAdapter.ViewHolder>() {
 
-    val list: ArrayList<InterestPickItemViewModel> = ArrayList()
+    private var list: ArrayList<InterestPickItemViewModel> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         LayoutInflater.from(parent.context).inflate(R.layout.item_interest_pick, parent, false).let {
@@ -34,7 +34,7 @@ class InterestPickAdapter(val listener: (InterestPickContract.View) -> Unit)
 
     class ViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         fun bind(viewModel: InterestPickItemViewModel,
-                 listener: (InterestPickContract.View) -> Unit) = with(itemView) {
+                 listener: InterestPickContract.View) = with(itemView) {
             val colorId = if (viewModel.isSelected)
                 R.color.interest_background_active else
                 R.color.interest_background_inactive
@@ -48,4 +48,8 @@ class InterestPickAdapter(val listener: (InterestPickContract.View) -> Unit)
         }
     }
 
+    fun setList(list: ArrayList<InterestPickItemViewModel>) {
+        this.list = list
+        notifyDataSetChanged()
+    }
 }

@@ -1,5 +1,5 @@
 {
-  feed_interest_user(lang:"en"){
+  feed_interest_user(){
     header{
       image_url
       title
