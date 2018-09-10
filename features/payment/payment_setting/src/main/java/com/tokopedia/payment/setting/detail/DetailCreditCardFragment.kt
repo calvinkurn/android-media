@@ -60,7 +60,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
             val creditCardDialog = DeleteCreditCardDialogPayment.newInstance(
                     settingListPaymentModel?.tokenId ?: "",
                     settingListPaymentModel?.maskedNumber ?: "")
-            creditCardDialog.setListener(this)
+            creditCardDialog.setListener(this@DetailCreditCardFragment)
             creditCardDialog.show(this,
                     "")
         }
