@@ -6,6 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
@@ -45,16 +46,17 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
         }
         return ProductTalkViewModel("",
                 listThread,
-                pojo.paging.has_next,
+true,//                pojo.paging.has_next,
                 pojo.paging.page_id)
     }
 
     private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
+        val listCommentTalk = ArrayList<Visitable<*>>()
+        listCommentTalk.add(LoadMoreCommentTalkViewModel(3))
         //TODO NISIE CHECK PRODUCT ATTACHMENT
-        val listTalk = ArrayList<Visitable<*>>()
         for (data: TalkCommentItem in pojo.list) {
-            listTalk.add(ProductTalkItemViewModel(
+            listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
                     data.comment_create_time_fmt,
@@ -84,7 +86,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk_own == 1
 
                 ),
-                listTalk)
+                listCommentTalk)
     }
 
 
