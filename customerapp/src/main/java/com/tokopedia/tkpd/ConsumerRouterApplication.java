@@ -2633,11 +2633,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getManagePasswordIntent(Context context) {
-        return new Intent(context, ManagePasswordActivity.class);
-    }
-
-    @Override
     public Intent getManageAddressIntent(Context context) {
         return new Intent(context, ManagePeopleAddressActivity.class);
     }
@@ -2677,11 +2672,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageShopProduct(Context context) {
         goToManageProduct(context);
-    }
-
-    @Override
-    public void goToManageBankAccount(Context context) {
-        context.startActivity(new Intent(context, ManagePeopleBankActivity.class));
     }
 
     @Override
