@@ -9,6 +9,8 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.discovery.R;
@@ -31,6 +33,7 @@ import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -216,6 +219,12 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         variables.put("query", searchParameter.getQueryKey());
         variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
         variables.put("source", searchParameter.getSource());
+
+        TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
+        headlineParams.put(TopAdsParams.KEY_EP, DiscoveryPresenter.HEADLINE);
+        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, DiscoveryPresenter.TEMPLATE_VALUE);
+        headlineParams.put(TopAdsParams.KEY_ITEM, DiscoveryPresenter.ITEM_VALUE);
+        variables.put("headline_params", UrlParamHelper.generateUrlParamString(headlineParams));
 
         GraphqlRequest graphqlRequest = new
                 GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
