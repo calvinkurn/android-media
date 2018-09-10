@@ -3,7 +3,6 @@ package com.tokopedia.payment.setting.add
 import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
-import android.os.Message
 import android.view.View
 import android.webkit.WebView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -14,7 +13,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.add.di.DaggerAddCreditCardComponent
-import com.tokopedia.payment.setting.add.di.AddCreditCardModule
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.add.model.Data
 import javax.inject.Inject
 
@@ -80,7 +79,7 @@ class AddCreditCardFragment : BaseWebViewFragment(), AddCreditCardContract.View 
     override fun initInjector() {
         DaggerAddCreditCardComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .detailCreditCardModule(AddCreditCardModule())
+                .detailCreditCardModule(AuthenticateCreditCardModule())
                 .build()
                 .inject(this)
         addCreditCardPresenter.attachView(this)

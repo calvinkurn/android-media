@@ -21,5 +21,11 @@
             android:label="@string/payment_label_button_add_card"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".authenticate.AuthenticateCreditCardActivity"
+            android:label="@string/payment_label_credit_card_verification"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
     </application>
 </manifest>

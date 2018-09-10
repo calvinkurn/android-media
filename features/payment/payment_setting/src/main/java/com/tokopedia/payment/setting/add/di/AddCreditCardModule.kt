@@ -6,25 +6,26 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.payment.setting.add.AddCreditCardPresenter
 import com.tokopedia.payment.setting.add.domain.AddCreditCardUseCase
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCCScope
 import dagger.Module
 import dagger.Provides
 
 @Module
 class AddCreditCardModule {
 
-    @AddCreditCardScope
+    @AuthenticateCCScope
     @Provides
     fun providePresenter(addCreditCardUseCase: AddCreditCardUseCase) : AddCreditCardPresenter{
         return AddCreditCardPresenter(addCreditCardUseCase)
     }
 
-    @AddCreditCardScope
+    @AuthenticateCCScope
     @Provides
     fun productAddCreditCardUseCase() : AddCreditCardUseCase{
         return AddCreditCardUseCase()
     }
 
-    @AddCreditCardScope
+    @AuthenticateCCScope
     @Provides
     fun provideUserSession(@ApplicationContext context: Context) : UserSession{
         return (context as AbstractionRouter).session

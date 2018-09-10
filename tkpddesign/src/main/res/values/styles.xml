@@ -59,6 +59,10 @@
         <item name="android:textColor">@color/font_black_primary_70</item>
     </style>
 
+    <style name="RadioButton.Big" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/selector_radiobutton_big</item>
+    </style>
+
     <style name="Button" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.di.DaggerSettingListPaymentComponent
-import com.tokopedia.payment.setting.add.di.AddCreditCardModule
+import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListAddCardModel
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
@@ -19,6 +19,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.add.AddCreditCardActivity
+import com.tokopedia.payment.setting.authenticate.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.DetailCreditCardActivity
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 
@@ -49,7 +50,9 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             getRecyclerView(view).addItemDecoration(dividerItemDecoration)
         }
         view.authenticateCreditCard.setOnClickListener{
-
+            activity?.run {
+                this@SettingListPaymentFragment.startActivityForResult(AuthenticateCreditCardActivity.createIntent(this), REQUEST_CODE_AUTH_CREDIT_CARD)
+            }
         }
         updateViewCounter(adapter.dataSize)
     }
@@ -106,7 +109,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun initInjector() {
         DaggerSettingListPaymentComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(AddCreditCardModule())
+                .settingListPaymentModule(AuthenticateCreditCardModule())
                 .build()
                 .inject(this)
         settingListPaymentPresenter.attachView(this)
@@ -124,6 +127,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     companion object {
         val REQUEST_CODE_DETAIL_CREDIT_CARD = 4213
         val REQUEST_CODE_ADD_CREDIT_CARD = 4273
+        val REQUEST_CODE_AUTH_CREDIT_CARD = 4275
 
         fun createInstance() : SettingListPaymentFragment{
             return SettingListPaymentFragment()

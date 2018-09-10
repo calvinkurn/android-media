@@ -1,0 +1,13 @@
+mutation checkWhiteListStatus($updateStatus : Boolean!, $authValue : Int!) {
+   checkWhiteListStatus(updateStatus: $updateStatus, authValue: $authValue) {
+      status_code
+      message
+      data {
+        token_id
+        masked_number
+        expiry_month
+        expiry_year
+        card_type
+      }
+   }
+}
