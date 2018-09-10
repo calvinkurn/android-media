@@ -37,6 +37,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
             authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(), resources)
         }
         progressDialog.setMessage(getString(R.string.title_loading))
+        updateVisibilityButtonUse()
     }
 
     override fun getAdapterTypeFactory(): AuthenticateCCAdapterFactory {
@@ -82,6 +83,24 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         }else{
             showSnackbarError(checkWhiteListStatus?.message)
         }
+    }
+
+    override fun renderList(list: MutableList<TypeAuthenticateCreditCard>) {
+        super.renderList(list)
+        updateVisibilityButtonUse()
+    }
+
+    private fun updateVisibilityButtonUse() {
+        if(adapter?.data?.size?:0 > 0){
+            buttonUse.visibility = View.VISIBLE
+        }else{
+            buttonUse.visibility = View.GONE
+        }
+    }
+
+    override fun showGetListError(throwable: Throwable?) {
+        super.showGetListError(throwable)
+        updateVisibilityButtonUse()
     }
 
     override fun showProgressLoading() {
