@@ -50,7 +50,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVar()
         initView()
         presenter.attachView(this)
         presenter.fetchData()
@@ -66,8 +65,10 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         loadingView.visibility = View.GONE
     }
 
-    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>) {
+    override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
+                                      title: String) {
         adapter.setList(interestList)
+        titleTextView.text = title
     }
 
     override fun onErrorGetInterest(message: String) {
@@ -77,11 +78,10 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     private fun initView() {
-
-    }
-
-    private fun initVar() {
         adapter = InterestPickAdapter(this)
         interestList.adapter = adapter
+        saveInterest.setOnClickListener {
+
+        }
     }
 }

@@ -4,7 +4,9 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.data.pojo.FeedInterestUser
+import com.tokopedia.interestpick.data.pojo.Header
 import com.tokopedia.interestpick.data.pojo.InterestPickData
 import com.tokopedia.interestpick.data.pojo.InterestsItem
 import com.tokopedia.interestpick.view.listener.InterestPickContract
@@ -40,7 +42,8 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
             }
 
             view.onSuccessGetInterest(
-                    convertToInterestList(feedInterestUser.interests)
+                    convertToInterestList(feedInterestUser.interests),
+                    getTitle(feedInterestUser.header)
             )
         }
     }
@@ -59,5 +62,13 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
             )
         }
         return interestList
+    }
+
+    private fun getTitle(header: Header) : String {
+        return if (!TextUtils.isEmpty(header.title)) {
+            header.title
+        } else {
+            view.getContext()!!.getString(R.string.interest_what_do_you_like)
+        }
     }
 }

@@ -16,7 +16,8 @@ interface InterestPickContract {
 
         fun hideLoading()
 
-        fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>)
+        fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
+                                 title: String)
 
         fun onErrorGetInterest(message: String)
     }

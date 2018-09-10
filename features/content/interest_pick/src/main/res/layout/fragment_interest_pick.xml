@@ -19,6 +19,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/titleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/dp_24"
@@ -45,6 +46,7 @@
                 tools:listitem="@layout/item_interest_pick" />
 
             <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/saveInterest"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
