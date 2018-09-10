@@ -16,8 +16,8 @@
     <string name="courier_page_title">Kurir</string>
     <string name="wholesale_page_title">Harga Grosir</string>
     <string name="installment_page_title">Cicilan</string>
-    <string name="fave">Favoritkan</string>
-    <string name="favorited">Favorit</string>
+    <string name="fave">Follow</string>
+    <string name="favorited">Following</string>
     <string name="title_installment">\"Bunga 0% mulai dari ...\"</string>
     <string name="title_grosir">Mulai dari Rp</string>
     <string name="title_installment_pdp">Bunga % mulai dari Rp</string>
@@ -60,4 +60,18 @@
     <string name="exp_dialog_ok">Balik ke Beranda</string>
     <string name="exp_dialog_cancel">Tutup</string>
     <string name="flash_sale_title">Flash Sale</string>
+    <string name="rate_est_dest_pdp_detail">ke %1$s</string>
+    <string name="rate_est_detail_dest_fmt">Kota Asal : %1$s</string>
+    <string name="shipping_receiver_text">%1$s (%2$s)</string>
+    <string name="shipping_receiver_text_empty">%1$s</string>
+    <string name="address_has_not_pin_point">Belum Pinpoint</string>
+    <string name="shipping_cost_descr_1">Ongkos kirim akhir akan dihitung di halaman checkout</string>
+    <string name="shipping_cost_descr_2">Durasi dihitung sejak barang diserahkan ke kurir</string>
+    <string name="label_rates_estimation_detail">Estimasi Ongkir</string>
+    <string name="service_title_format">%1$s (%2$s)</string>
+    <string name="service_title_format_empty">%1$s</string>
+    <string name="rate_est_detail_weight_fmt">Berat : %1$s %2$s</string>
+    <string name="rates_est_min">Ongkos Kirim %1$s</string>
+    <string name="title_activity_product_modal">Detail Produk</string>
+    <string name="pdp_label_cart_count_max">99+</string>
 </resources>

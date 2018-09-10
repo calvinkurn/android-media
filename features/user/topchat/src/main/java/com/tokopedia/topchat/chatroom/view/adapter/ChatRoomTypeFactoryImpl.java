@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSelectionViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.AttachedInvoiceSentViewHolder;
+import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot
+        .ChatActionListBubbleViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatbot.QuickReplyViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ChatRatingViewHolder;
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.chatroom.ImageAnnouncementViewHolder;
@@ -21,6 +23,7 @@ import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.listener.ChatRoomContract;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TimeMachineChatModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.TypingChatModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.chatactionbubble.ChatActionSelectionBubbleViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.fallback.FallbackAttachmentViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement.ImageAnnouncementViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.imageannouncement
@@ -107,6 +110,11 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
     }
 
     @Override
+    public int type(ChatActionSelectionBubbleViewModel chatActionSelectionBubbleViewModel) {
+        return ChatActionListBubbleViewHolder.LAYOUT;
+    }
+
+    @Override
     public AbstractViewHolder createViewHolder(View view, int type) {
 
         AbstractViewHolder viewHolder;
@@ -135,6 +143,8 @@ public class ChatRoomTypeFactoryImpl extends BaseAdapterTypeFactory implements C
             viewHolder = new ImageAnnouncementViewHolder(view, viewListener);
         else if (type == ImageDualAnnouncementViewHolder.LAYOUT)
             viewHolder = new ImageDualAnnouncementViewHolder(view,viewListener);
+        else if (type == ChatActionListBubbleViewHolder.LAYOUT)
+            viewHolder = new ChatActionListBubbleViewHolder(view,viewListener);
         else
             return super.createViewHolder(view, type);
 

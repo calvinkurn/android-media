@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.util.Linkify;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -17,8 +16,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.tkpdpdp.customview.DescriptionTextView;
 import com.tokopedia.tkpdpdp.customview.ProductVideoHorizontalScroll;
 import com.tokopedia.tkpdpdp.customview.YoutubeThumbnailViewHolder;
-
-import butterknife.ButterKnife;
 
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_PRODUCT_ID;
 import static com.tokopedia.core.var.TkpdCache.Key.STATE_ORIENTATION_CHANGED;
@@ -53,7 +50,6 @@ public class DescriptionActivity extends TActivity implements View.OnClickListen
         setContentView(R.layout.activity_description);
         initView();
         hideToolbar();
-        ButterKnife.bind(this);
         showData();
         setupTopbar();
     }

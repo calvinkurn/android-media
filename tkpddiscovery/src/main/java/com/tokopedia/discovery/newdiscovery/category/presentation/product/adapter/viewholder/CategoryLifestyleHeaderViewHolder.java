@@ -30,7 +30,7 @@ import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
-import com.tokopedia.topads.sdk.view.TopAdsBannerView;
+import com.tokopedia.topads.sdk.widget.TopAdsBannerView;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -132,7 +132,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     }
 
     private void renderChildCategory(CategoryHeaderModel model) {
-        if (isRootCategory(model) || !isHasChild(model)) {
+        if (!isHasChild(model)) {
             layoutChildCategory.setVisibility(View.GONE);
         } else {
             trackImpression(model);
@@ -146,6 +146,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             adapter.notifyDataSetChanged();
             listChildCategory.setHasFixedSize(true);
             listChildCategory.setLayoutManager(generateLayoutManager(model.getChildCategoryModelList().size()));
+            listChildCategory.addItemDecoration(new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8)));
             listChildCategory.setAdapter(adapter);
         }
     }
@@ -166,7 +167,11 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         if (size == 3) {
             return new GridLayoutManager(context, 3);
         } else {
-            return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            if (size < 8) {
+                return new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+            } else {
+                return new GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false);
+            }
         }
     }
 

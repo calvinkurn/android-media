@@ -27,12 +27,15 @@ import com.tokopedia.digital_deals.view.model.PackageViewModel;
 import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.presenter.SelectQuantityPresenter;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-;
+import javax.inject.Inject;
 
 public class SelectDealQuantityFragment extends BaseDaggerFragment implements SelectQuantityContract.View, View.OnClickListener {
 
@@ -57,11 +60,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
 
     @Inject
     public SelectQuantityPresenter mPresenter;
+    @Inject
+    DealsAnalytics dealsAnalytics;
+
     private PackageViewModel packageViewModel;
     private DealsDetailsResponse dealDetails;
     private DealFragmentCallbacks fragmentCallbacks;
-
-
     private static final int LOGIN_REQUEST_CODE = 1099;
 
     public static Fragment createInstance() {
@@ -181,8 +185,12 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
             packageViewModel.setSelectedQuantity(CURRENT_QUANTITY);
             packageViewModel.setDigitalCategoryID(dealDetails.getCatalog().getDigitalCategoryId());
             packageViewModel.setDigitalProductID(dealDetails.getCatalog().getDigitalProductId());
-
             mPresenter.verifyCart(packageViewModel);
+            if(dealDetails.getBrand()!=null){
+                dealsAnalytics.sendEcommerceQuantity(dealDetails.getId(), CURRENT_QUANTITY, dealDetails.getSalesPrice(),
+                        dealDetails.getDisplayName(), dealDetails.getBrand().getTitle());
+            }
+
         }
     }
 
@@ -204,6 +212,9 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
     @Override
     public void renderFromDetails(DealsDetailsResponse dealDetail) {
 
+        if (dealDetail == null)
+            return;
+
         ImageHandler.loadImage(getContext(), ivBrand, dealDetails.getImageWeb(), R.color.grey_1100, R.color.grey_1100);
         if (dealDetails.getBrand() != null) {
             tvBrandName.setText(dealDetails.getBrand().getTitle());
@@ -212,11 +223,11 @@ public class SelectDealQuantityFragment extends BaseDaggerFragment implements Se
         tvDealDetails.setText(dealDetails.getDisplayName());
 
         tvQuantity.setText(String.format(getContext().getResources().getString(R.string.quantity_of_deals), CURRENT_QUANTITY));
-        if(dealDetails.getMrp()!=0){
+        if (dealDetails.getMrp() != 0 && dealDetail.getMrp() != dealDetail.getSalesPrice()) {
             tvMrp.setVisibility(View.VISIBLE);
             tvMrp.setText(Utils.convertToCurrencyString(dealDetails.getMrp()));
             tvMrp.setPaintFlags(tvMrp.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        }else{
+        } else {
             tvMrp.setVisibility(View.GONE);
         }
         tvSalesPrice.setText(Utils.convertToCurrencyString(dealDetails.getSalesPrice()));

@@ -29,6 +29,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
     @Override
     public void getAllOrderData(Context context, String orderCategory, final int typeRequest, int page, int orderId) {
+        if (getView().getAppContext() == null)
+            return;
         getView().showProcessGetData(orderCategory);
         Map<String, Object> variables = new HashMap<>();
         variables.put("orderCategory", orderCategory);
@@ -50,7 +52,7 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onError(Throwable e) {
-                CommonUtils.dumper("error ="+e.toString());
+                CommonUtils.dumper("error =" + e.toString());
                 getView().removeProgressBarView();
                 getView().unregisterScrollListener();
                 getView().showErrorNetwork(
@@ -59,6 +61,8 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             @Override
             public void onNext(GraphqlResponse response) {
+                if (getView() == null || getView().getAppContext() == null)
+                    return;
                 getView().removeProgressBarView();
                 if (response != null) {
                     Data data = response.getData(Data.class);
@@ -76,5 +80,9 @@ public class OrderListPresenterImpl extends BaseDaggerPresenter<OrderListContrac
 
             }
         });
+    }
+
+    public void onDestroy() {
+        getOrderListUseCase.unsubscribe();
     }
 }

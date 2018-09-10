@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.session.R;
 
 /**
@@ -27,6 +28,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     private ImageView background;
     private TextView btnContinue;
     private TextView btnProfileCompletion;
+    private RegisterAnalytics analytics;
 
     public static WelcomePageFragment newInstance() {
         return new WelcomePageFragment();
@@ -45,6 +47,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(getActivity());
         initView();
         initViewListener();
     }
@@ -58,6 +61,7 @@ public class WelcomePageFragment extends BaseDaggerFragment {
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                analytics.eventContinueFromWelcomePage();
                 getActivity().finish();
             }
         });
@@ -65,6 +69,8 @@ public class WelcomePageFragment extends BaseDaggerFragment {
         btnProfileCompletion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                analytics.eventClickProfileCompletionFromWelcomePage();
+
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();
             }

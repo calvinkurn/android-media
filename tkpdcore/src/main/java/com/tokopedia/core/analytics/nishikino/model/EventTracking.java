@@ -28,6 +28,19 @@ public class EventTracking {
         this.eventTracking.put("eventLabel", label);
     }
 
+    public EventTracking(String screenName, String event, String category, String action,
+                         String label) {
+        Log.d("GAv4", String.format("EventTracking: screenName=%s | event=%s | category=%s " +
+                        "| action=%s | label=%s | userId=%s",
+                screenName, event, category, action, label,
+                SessionHandler.getLoginID(MainApplication.getAppContext())));
+        this.eventTracking.put("screenName", screenName);
+        this.eventTracking.put("event", event);
+        this.eventTracking.put("eventCategory", category);
+        this.eventTracking.put("eventAction", action);
+        this.eventTracking.put("eventLabel", label);
+    }
+
     public void setEvent(String event) {
 
         eventTracking.put("event", event);

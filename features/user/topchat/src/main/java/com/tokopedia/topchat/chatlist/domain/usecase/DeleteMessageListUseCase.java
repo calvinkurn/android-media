@@ -60,4 +60,14 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel>{
         requestParams.putObject("json", object);
         return requestParams;
     }
+
+    public static RequestParams generateParam(String messageId){
+        RequestParams requestParams = RequestParams.create();
+        JsonObject object = new JsonObject();
+        JsonArray array = new JsonArray();
+        array.add(Integer.valueOf(messageId));
+        object.add("list_msg_id",array);
+        requestParams.putObject("json", object);
+        return requestParams;
+    }
 }
