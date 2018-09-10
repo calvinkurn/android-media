@@ -12,5 +12,7 @@ public enum RequestType {
 
     DELETE, /* Represent HTTP Delete */
 
-    POST_MULTIPART /* Represent Multipart request and invoke via HTTP Post */
+    POST_MULTIPART, /* Represent Multipart request and invoke via HTTP Post */
+
+    PUT_MULTIPART /* Represent Multipart request and invoke via HTTP Put */
 }

@@ -66,7 +66,19 @@ public class RestCloudDataStore implements RestDataStore {
             case DELETE:
                 return delete(request);
             case POST_MULTIPART:
-                return postMultipart(request);
+                if (request.getBody() instanceof MultipartBody.Part) {
+                    return postMultipart(request);
+                } else {
+                    return postPartMap(request);
+
+                }
+            case PUT_MULTIPART:
+                if (request.getBody() instanceof MultipartBody.Part) {
+                    return putMultipart(request);
+                } else {
+                    return putPartMap(request);
+
+                }
             default:
                 return doGet(request);
         }
@@ -174,6 +186,25 @@ public class RestCloudDataStore implements RestDataStore {
                 .map(response -> processData(request, response));
     }
 
+    private Observable<RestResponseIntermediate> postPartMap(RestRequest request) {
+        return mApi.postMultipart(request.getUrl(), (Map<String, RequestBody>) request.getBody(), request.getQueryParams(), request.getHeaders())
+                .map(response -> processData(request, response));
+    }
+
+    private Observable<RestResponseIntermediate> putMultipart(RestRequest request) {
+        File file = new File(String.valueOf(request.getBody()));
+        RequestBody reqFile = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part multipartBody = MultipartBody.Part.createFormData("upload", file.getName(), reqFile);
+
+        return mApi.putMultipart(request.getUrl(), multipartBody, request.getQueryParams(), request.getHeaders())
+                .map(response -> processData(request, response));
+    }
+
+    private Observable<RestResponseIntermediate> putPartMap(RestRequest request) {
+        return mApi.putMultipart(request.getUrl(), (Map<String, RequestBody>) request.getBody(), request.getQueryParams(), request.getHeaders())
+                .map(response -> processData(request, response));
+    }
+
     /**
      * Helper method to Dump the data into cache
      *
@@ -196,7 +227,7 @@ public class RestCloudDataStore implements RestDataStore {
                             responseString,
                             request.getCacheStrategy().getExpiryTime());
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             //Just a defencive check in order to avoid any collision between success response.
             e.printStackTrace();
         }
@@ -235,13 +266,15 @@ public class RestCloudDataStore implements RestDataStore {
         UserSession userSession = new UserSession(context.getApplicationContext());
         FlowManager.initModule(CommonNetworkGeneratedDatabaseHolder.class);
         TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
-        okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
-        for (Interceptor interceptor : interceptors) {
-            if (interceptor == null) {
-                continue;
-            }
+        if(interceptors != null) {
+            okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
+            for (Interceptor interceptor : interceptors) {
+                if (interceptor == null) {
+                    continue;
+                }
 
-            okkHttpBuilder.addInterceptor(interceptor);
+                okkHttpBuilder.addInterceptor(interceptor);
+            }
         }
 
         return new Retrofit.Builder()

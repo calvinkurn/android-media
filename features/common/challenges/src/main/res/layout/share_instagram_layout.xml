@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/img_share"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:background="@drawable/placeholder_image_bg"
+        android:maxHeight="@dimen/dp_200"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/TextView.Title.FontMedium.BlackPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="left"
+        android:text="Bagikan ke Instagram"
+        android:textStyle="bold"
+
+        app:layout_constraintTop_toBottomOf="@+id/img_share"
+        app:layout_constraintWidth_default="wrap" />
+
+    <TextView
+        android:id="@+id/tv_desc"
+        style="@style/TextView.Title.FontMedium.BlackPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="left"
+        android:paddingLeft="@dimen/dp_8"
+        android:text="Silakan unggah konten ke Instagram dengan cara manual."
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintWidth_default="wrap" />
+
+    <TextView
+        android:id="@+id/tv_desc2"
+        style="@style/TextView.Title.FontMedium.BlackPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:gravity="left"
+        android:paddingLeft="@dimen/dp_8"
+        android:text="Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan."
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc"
+        app:layout_constraintWidth_default="wrap" />
+
+
+    <TextView
+        android:id="@+id/btn_copy"
+        style="@style/TextView.Micro.FontMedium.Black40"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/bg_button_green"
+        android:gravity="center"
+        android:padding="@dimen/dp_8"
+        android:text="ok"
+        android:textColor="@color/white"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_desc2" />
+
+    <TextView
+        android:id="@+id/btn_cancel"
+        style="@style/TextView.Micro.FontMedium.Black40"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/rounded_rectangle_grey_border"
+        android:gravity="center"
+        android:padding="@dimen/dp_8"
+        android:text="Unduh Konten"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_copy" />
+</android.support.constraint.ConstraintLayout>

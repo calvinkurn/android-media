@@ -235,6 +235,10 @@ android {
     flavorDimensions "tier"
 
     productFlavors {
+        staging {
+            dimension "tier"
+        }
+
         live {
             dimension "tier"
         }
@@ -445,6 +449,8 @@ dependencies {
     androidTestImplementation rootProject.ext.supportLibDependencies.cardViewV7
 
     implementation project(rootProject.ext.libraries.analytics)
+    implementation project(rootProject.ext.features.challenges)
+
 }
 
 

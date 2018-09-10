@@ -1,0 +1,83 @@
+<resources>
+    <string name="description">Deskripsi</string>
+    <string name="image_title">Judul</string>
+    <string name="submit">Daftarkan</string>
+    <string name="cancel">Batal</string>
+    <string name="choose_image_title">Pilih konten (foto atau video)</string>
+    <string name="choose_image_title_photo">Pilih konten foto</string>
+    <string name="choose_image_title_video">Pilih konten video</string>
+
+    <string name="error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
+    <string name="error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
+    <string name="error_msg_wrong_title_size">Judul harus berkisar 1 sampai 50 karakter</string>
+    <string name="error_msg_title_blank">Isi judul post</string>
+    <string name="error_msg_desc_blank">Isi deskripsi post</string>
+    <string name="error_msg_wrong_descirption_size">Deskripsi harus berkisar 1 sampai 300 karakter</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="see_less">sembunyikan</string>
+    <string name="see_more">Lihat lebih</string>
+    <string name="append_0">0%d</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="submissions">Submissions</string>
+    <string name="title_activity_login">Masuk</string>
+    <string name="text_due_date">Berakhir pada %s</string>
+    <string name="text_ended_date">berakhir dalam %s</string>
+    <string name="most_recent">Terbaru</string>
+    <string name="buzz_points">Buzz Point Terbanyak</string>
+    <string name="see_all">Lihat Semua</string>
+    <string name="submit_photo">Daftarkan Foto</string>
+    <string name="participate_in">Berpartisipasi dalam Challenge:</string>
+    <string name="challenge_title">Challenge Title</string>
+    <string name="approval_wait">menunggu persetujuan</string>
+    <string name="buzz_point_request">Bagikan dan bantu konten ini mendapatkan Buzz Point!</string>
+    <string name="show_more">Show More</string>
+
+    <string name="title_video">Video</string>
+    <string name="title_image">Gambar</string>
+    <string name="detail_title_text">Description</string>
+    <string name="detail_content_text">Its\' time to GO SNAP! We are looking for some beautiful snapshot from our Orange County community in this month.</string>
+
+    <string name="video">Video</string>
+    <string name="awards">Hadiah</string>
+    <string name="recent_submissions">Peserta Tantangan</string>
+    <string name="challenege_winners">Pemenang</string>
+    <string name="generate_buzz_points">Bagaimana cara meningkatkan Score?</string>
+    <string name="terms_conditions"><![CDATA[Lihat Syarat & Ketentuan]]></string>
+    <string name="title_tokopedia_challenges">Tokopedia Challenge</string>
+    <string name="challenges">Tantangan</string>
+    <string name="my_submissions">Saya Ikuti</string>
+    <string name="active_challenges">Sedang Berlangsung</string>
+    <string name="text_remaining_days">Berakhir %d hari lagi</string>
+    <string name="text_remaining_hours">Berakhir %d jam lagi</string>
+    <string name="text_remaining_minutes">Berakhir %d menit lagi</string>
+
+    <string name="completed">Telah Berakhir</string>
+    <string name="participated">Saya Ikuti</string>
+    <string name="approved">Disetujui</string>
+    <string name="rejected">Ditolak</string>
+    <string name="pending">Menunggu</string>
+
+    <string name="title_all_submissions">Peserta Tantangan</string>
+    <string name="post_detail">Rincian Pos</string>
+    <string name="join_the_challenge">Ikut Tantangan</string>
+    <string name="share_submission">Bagikan</string>
+    <string name="view_post_text">Lihat Konten Saya</string>
+    <string name="submit_video_photo_text">Daftarkan Foto atau Video</string>
+    <string name="submit_video">Daftarkan Video</string>
+    <string name="submit_photo_video">Daftarkan Foto atau Video</string>
+    <string name="copy_to_clipboard_bhahasa">link telah disalin</string>
+    <string name="post_deleted_msg">unggahan telah dihapus</string>
+    <string name="submitted_success">Konten Anda diterima!</string>
+    <string name="submit_fail">Challenge Submission is failed</string>
+    <string name="other">Lainnya</string>
+    <string name="error_msg_select_image">Please Select Image</string>
+    <string name="error_msg_select_video">Please Select Video</string>
+    <string name="error_msg_select_image_video">Please Select Image or Video</string>
+
+
+</resources>
