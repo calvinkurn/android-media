@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.data.repository;
 
 import com.tokopedia.feedplus.data.factory.FeedFactory;
-import com.tokopedia.feedplus.domain.model.CheckFeedDomain;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.usecase.RequestParams;
@@ -40,11 +39,6 @@ public class FeedRepositoryImpl implements FeedRepository {
     @Override
     public Observable<List<RecentViewProductDomain>> getRecentViewProduct(RequestParams requestParams) {
         return feedFactory.createCloudRecentViewedProductSource().getRecentProduct(requestParams);
-    }
-
-    @Override
-    public Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters) {
-        return feedFactory.createCloudCheckNewFeedDataSource().checkNewFeed(parameters);
     }
 
 }

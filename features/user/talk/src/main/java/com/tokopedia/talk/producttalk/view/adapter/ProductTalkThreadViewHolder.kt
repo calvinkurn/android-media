@@ -10,12 +10,16 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
+import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import kotlinx.android.synthetic.main.talk_item.view.*
 
 class ProductTalkThreadViewHolder(val v: View,
-                                    val listener: TalkItemListener) :
+                                  val listener: TalkItemListener,
+                                  private val commentTalkListener: CommentTalkViewHolder.TalkCommentItemListener,
+                                  private val talkProductAttachmentListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<TalkThreadViewModel>(v) {
 
 
@@ -28,12 +32,12 @@ class ProductTalkThreadViewHolder(val v: View,
         val LAYOUT = R.layout.product_talk_item
     }
 
-    val thread:View = itemView.findViewById(R.id.thread_head)
+    val thread: View = itemView.findViewById(R.id.thread_head)
     val avatar: ImageView = thread.findViewById(R.id.prof_pict)
-    val userName : TextView = thread.findViewById(R.id.username)
-    val timestamp : TextView = thread.findViewById(R.id.timestamp)
-    val menu : View = thread.findViewById(R.id.menu)
-    val content : TextView = thread.findViewById(R.id.talk_content)
+    val userName: TextView = thread.findViewById(R.id.username)
+    val timestamp: TextView = thread.findViewById(R.id.timestamp)
+    val menu: View = thread.findViewById(R.id.menu)
+    val content: TextView = thread.findViewById(R.id.talk_content)
     val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.list_child)
     val replyButton: View = itemView.findViewById(R.id.replyButton)
     val menuButton: ImageView = itemView.menu
@@ -44,7 +48,7 @@ class ProductTalkThreadViewHolder(val v: View,
         element?.run {
 
             if (!element.listChild.isEmpty()) {
-                val typeFactoryImpl = CommentTalkTypeFactoryImpl()
+                val typeFactoryImpl = CommentTalkTypeFactoryImpl(commentTalkListener, talkProductAttachmentListener)
                 adapter = CommentTalkAdapter(typeFactoryImpl, element.listChild)
                 commentRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
                         .VERTICAL, false)
@@ -75,7 +79,7 @@ class ProductTalkThreadViewHolder(val v: View,
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener{listener.onMenuButtonClicked(menu)}
+        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu) }
     }
 
 }

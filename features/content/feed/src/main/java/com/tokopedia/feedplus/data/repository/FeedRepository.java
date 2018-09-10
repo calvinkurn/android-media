@@ -24,6 +24,4 @@ public interface FeedRepository {
 
     Observable<List<RecentViewProductDomain>> getRecentViewProduct(RequestParams requestParams);
 
-    Observable<CheckFeedDomain> checkNewFeed(RequestParams parameters);
-
 }

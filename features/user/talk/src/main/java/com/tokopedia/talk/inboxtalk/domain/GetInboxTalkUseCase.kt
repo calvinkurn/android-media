@@ -43,9 +43,6 @@ class GetInboxTalkUseCase @Inject constructor(val api: TalkApi,
             requestParams.putInt(PARAM_PER_PAGE, DEFAULT_PER_PAGE)
             requestParams.putInt(PARAM_PAGE_ID, page_id)
             requestParams.putInt(PARAM_WITH_COMMENT, TOTAL_COMMENT)
-
-            requestParams.putString("loadtest", "2590134-346801")
-
             return requestParams
         }
     }

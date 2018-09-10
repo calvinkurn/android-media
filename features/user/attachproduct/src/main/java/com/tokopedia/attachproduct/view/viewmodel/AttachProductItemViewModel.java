@@ -11,12 +11,12 @@ import com.tokopedia.attachproduct.view.adapter.AttachProductListAdapterTypeFact
  */
 
 public class AttachProductItemViewModel implements Parcelable, Visitable<AttachProductListAdapterTypeFactory>  {
-    private String productUrl;
-    private String productName;
-    private int productId;
-    private String productImageFull;
-    private String productImage;
-    private String productPrice;
+    protected String productUrl;
+    protected String productName;
+    protected int productId;
+    protected String productImageFull;
+    protected String productImage;
+    protected String productPrice;
 
     public AttachProductItemViewModel(String productUrl, String productName, int productId, String productImageFull, String productImage, String productPrice) {
         this.productUrl = productUrl;

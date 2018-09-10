@@ -9,5 +9,6 @@ data class InboxTalkViewModel(
         var screen: String = "",
         var listTalk: ArrayList<Visitable<*>> = ArrayList(),
         var hasNextPage: Boolean = false,
-        var page_id: Int = 0
+        var page_id: Int = 0,
+        var unreadNotification : Int = 0
 )

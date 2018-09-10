@@ -18,14 +18,14 @@ import javax.inject.Inject
 /**
  * @author by Steven.
  */
-class ProductTalkListMapper @Inject constructor(): Func1<Response<DataResponse<InboxTalkPojo>>,
+class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<InboxTalkPojo>>,
         ProductTalkViewModel> {
 
     private val IS_READ = 2
     private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
-         if (response.body()!= null ){
+        if (response.body() != null) {
 //                (response.body().header!= null &&
 //                        response.body().header!= null &&
 //                response.body().header.messages.isEmpty() ||
@@ -54,6 +54,7 @@ true,//                pojo.paging.has_next,
 
         val listCommentTalk = ArrayList<Visitable<*>>()
         listCommentTalk.add(LoadMoreCommentTalkViewModel(3))
+        //TODO NISIE CHECK PRODUCT ATTACHMENT
         for (data: TalkCommentItem in pojo.list) {
             listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
@@ -62,10 +63,15 @@ true,//                pojo.paging.has_next,
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
-                    true
+                    true,
+                    ArrayList(),
+                    data.comment_raw_message,
+                    data.comment_is_owner == 1
+
             ))
         }
 
+        //TODO NISIE CHECK PRODUCT ATTACHMENT
         return TalkThreadViewModel(
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
@@ -74,7 +80,11 @@ true,//                pojo.paging.has_next,
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
-                        pojo.talk_follow_status == IS_FOLLOWED
+                        pojo.talk_follow_status == IS_FOLLOWED,
+                        ArrayList(),
+                        pojo.talk_raw_message,
+                        pojo.talk_own == 1
+
                 ),
                 listCommentTalk)
     }

@@ -14,6 +14,9 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
@@ -31,8 +34,13 @@ import javax.inject.Inject
  * @author by Steven
  */
 
-class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, ProductTalkThreadViewHolder.TalkItemListener
-                            , LoadProductTalkThreadViewHolder.LoadTalkListener{
+class ProductTalkFragment : BaseDaggerFragment(),
+        ProductTalkContract.View,
+        ProductTalkThreadViewHolder.TalkItemListener,
+        LoadProductTalkThreadViewHolder.LoadTalkListener,
+        CommentTalkViewHolder.TalkCommentItemListener,
+        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
+
     override fun getContext(): Context? {
         return activity
     }
@@ -77,6 +85,7 @@ class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, Prod
         }
 
     }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.product_talk, container, false)
     }
@@ -93,7 +102,7 @@ class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, Prod
     }
 
     private fun setUpView(view: View) {
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -113,11 +122,11 @@ class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, Prod
     }
 
     override fun showRefresh() {
-        swiper.isRefreshing= true
+        swiper.isRefreshing = true
     }
 
     override fun hideRefresh() {
-        swiper.isRefreshing= false
+        swiper.isRefreshing = false
     }
 
     override fun showLoadingFull() {
@@ -258,6 +267,14 @@ class ProductTalkFragment : BaseDaggerFragment(), ProductTalkContract.View, Prod
         })
 
         alertDialog.show()
+    }
+
+    override fun onCommentMenuButtonClicked(menu: TalkState) {
+        //TODO STEVENFe
+    }
+
+    override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
+       // TODO STEVEN
     }
 
     override fun onDestroyView() {

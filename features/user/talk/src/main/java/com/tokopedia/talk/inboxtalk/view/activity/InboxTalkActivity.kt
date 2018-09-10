@@ -16,6 +16,7 @@ import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
+import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
 import javax.inject.Inject
@@ -24,7 +25,8 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
+class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
+        GetUnreadNotificationListener {
 
     private lateinit var inboxTalkPagerAdapter: InboxTalkPagerAdapter
 
@@ -32,6 +34,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     lateinit var userSession: UserSession
 
     lateinit var titles: Array<String>
+
 
     companion object {
 
@@ -107,6 +110,11 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
             }
         })
+    }
 
+    override fun onGetNotification(notification: Int, nav : String) {
+        if (tabLayout.visibility == View.VISIBLE) {
+        //TODO SET NOTIFICATION
+        }
     }
 }
