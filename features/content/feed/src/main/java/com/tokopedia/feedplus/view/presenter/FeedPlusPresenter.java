@@ -175,9 +175,13 @@ public class FeedPlusPresenter
                             MethodChecker.fromHtml(promotedShopViewModel.getShop()
                                     .getName()));
                     if (promotedShopViewModel.isFavorit()) {
-                        stringBuilder.append(" dihapus dari toko favorit");
+                        stringBuilder.append(
+                                viewListener.getString(R.string.shop_success_follow)
+                        );
                     } else {
-                        stringBuilder.append(" berhasil difavoritkan");
+                        stringBuilder.append(
+                                viewListener.getString(R.string.shop_success_unfollow)
+                        );
                     }
                 } else {
                     stringBuilder.append(viewListener.getString(R.string.msg_network_error));
