@@ -109,8 +109,6 @@ public class ProductListFragment extends SearchSectionFragment
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
 
-    private GuidedSearchViewModel cachedGuidedSearch;
-
     public static ProductListFragment newInstance(ProductViewModel productViewModel) {
         Bundle args = new Bundle();
         args.putParcelable(ARG_VIEW_MODEL, productViewModel);
@@ -139,7 +137,6 @@ public class ProductListFragment extends SearchSectionFragment
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
         renderDynamicFilter(productViewModel.getDynamicFilterModel());
-        onGetGuidedSearchComplete(productViewModel.getGuidedSearchViewModel());
     }
 
     private void loadDataFromArguments() {
@@ -150,7 +147,6 @@ public class ProductListFragment extends SearchSectionFragment
                 setSearchParameter(productViewModel.getSearchParameter());
             setForceSearch(productViewModel.isForceSearch());
             renderDynamicFilter(productViewModel.getDynamicFilterModel());
-            onGetGuidedSearchComplete(productViewModel.getGuidedSearchViewModel());
         }
     }
 
@@ -240,6 +236,9 @@ public class ProductListFragment extends SearchSectionFragment
         List<Visitable> list = new ArrayList<>();
         HeaderViewModel headerViewModel = new HeaderViewModel();
         headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
+        if (productViewModel.getGuidedSearchViewModel() != null) {
+            headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
+        }
         if (quickFilterOptions != null && !quickFilterOptions.isEmpty()) {
             headerViewModel.setQuickFilterList(quickFilterOptions);
         }
@@ -763,12 +762,6 @@ public class ProductListFragment extends SearchSectionFragment
         if (recyclerView != null) {
             recyclerView.smoothScrollToPosition(0);
         }
-    }
-
-    @Override
-    public void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel) {
-        cachedGuidedSearch = guidedSearchViewModel;
-        adapter.updateGuidedSearch(cachedGuidedSearch);
     }
 
     @Override

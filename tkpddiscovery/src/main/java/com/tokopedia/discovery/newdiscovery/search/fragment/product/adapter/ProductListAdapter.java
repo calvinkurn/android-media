@@ -253,13 +253,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public void updateGuidedSearch(GuidedSearchViewModel guidedSearch) {
-        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
-            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setGuidedSearch(guidedSearch);
-            notifyItemChanged(ADAPTER_POSITION_HEADER);
-        }
-    }
-
     @Override
     public int getIconTypeRecyclerView() {
         switch (getTypeFactory().getRecyclerViewItem()) {

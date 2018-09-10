@@ -50,8 +50,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void backToTop();
 
-    void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
-
     void getQuickFilter();
 
     void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
