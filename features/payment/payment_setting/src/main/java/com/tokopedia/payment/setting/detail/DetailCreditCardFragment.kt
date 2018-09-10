@@ -17,10 +17,7 @@ import com.tokopedia.payment.setting.detail.di.DaggerDetailCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
 import com.tokopedia.payment.setting.detail.di.DetailCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
-import com.tokopedia.payment.setting.util.PaymentSettingRouter
-import com.tokopedia.payment.setting.util.getBackgroundAssets
-import com.tokopedia.payment.setting.util.getExpiredDate
-import com.tokopedia.payment.setting.util.getSpacedTextPayment
+import com.tokopedia.payment.setting.util.*
 import kotlinx.android.synthetic.main.fragment_credit_card_detail.*
 import kotlinx.android.synthetic.main.fragment_credit_card_detail.view.*
 import javax.inject.Inject
@@ -50,7 +47,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
 
         progressDialog.setMessage(getString(R.string.title_loading))
         settingListPaymentModel?.run {
-            ImageHandler.LoadImage(view.imageCCLarge, this.getBackgroundAssets(paymentSettingRouter, activity))
+            ImageHandler.LoadImage(view.imageCCLarge, this.getBackgroundAssetsLarge(paymentSettingRouter, activity))
             creditCardNumber.setText(this.maskedNumber?.getSpacedTextPayment())
             creditCardExpiryText.setText(this.getExpiredDate())
             ImageHandler.LoadImage(creditCardLogo, this.cardType)
@@ -63,6 +60,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
             val creditCardDialog = DeleteCreditCardDialogPayment.newInstance(
                     settingListPaymentModel?.tokenId ?: "",
                     settingListPaymentModel?.maskedNumber ?: "")
+            creditCardDialog.setListener(this)
             creditCardDialog.show(this,
                     "")
         }

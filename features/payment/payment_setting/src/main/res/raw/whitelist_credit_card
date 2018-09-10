@@ -3,11 +3,8 @@ mutation checkWhiteListStatus($updateStatus : Boolean!, $authValue : Int!) {
       status_code
       message
       data {
-        token_id
-        masked_number
-        expiry_month
-        expiry_year
-        card_type
+        state
+        user_email
       }
    }
 }

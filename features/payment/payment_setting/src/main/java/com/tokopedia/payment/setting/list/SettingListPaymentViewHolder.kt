@@ -15,9 +15,6 @@ class SettingListPaymentViewHolder(itemView : View?, val paymentSettingRouter: P
 
     override fun bind(element: SettingListPaymentModel?) {
         ImageHandler.LoadImage(itemView.imageCCBackground, element?.getBackgroundAssets(paymentSettingRouter, itemView.context))
-        itemView.imageCCBackground.setOnClickListener{
-            //todo implement credit card detail
-        }
 
         itemView.cardNumber.setText(element?.maskedNumber?.getMaskedNumberSubStringPayment())
         ImageHandler.LoadImage(itemView.cardImage, element?.cardType)

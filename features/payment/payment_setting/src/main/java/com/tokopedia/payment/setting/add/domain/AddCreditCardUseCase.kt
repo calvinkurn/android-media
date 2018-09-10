@@ -13,6 +13,7 @@ class AddCreditCardUseCase : RestRequestUseCase() {
         val tempRequest = ArrayList<RestRequest>()
 
         val restRequest1 = RestRequest.Builder(PAYMENT_SETTING_URL, ResponseGetIFrameCreditCard::class.java)
+                .setBody(HashMap<String, Any>())
                 .setRequestType(RequestType.POST)
                 .build()
         tempRequest.add(restRequest1)

@@ -17,21 +17,7 @@ import com.tokopedia.payment.setting.R
 
 class DeleteCreditCardDialogPayment : DialogFragment() {
 
-    private var mDeleteCreditCardDialogListener: DeleteCreditCardDialogListener? = null
-
-    // Override the Fragment.onAttach() method to instantiate the NoticeDialogListener
-    override fun onAttach(activity: Activity) {
-        super.onAttach(activity)
-        // Verify that the host activity implements the callback interface
-        try {
-            // Instantiate the NoticeDialogListener so we can send events to the host
-            mDeleteCreditCardDialogListener = activity as DeleteCreditCardDialogListener
-        } catch (e: ClassCastException) {
-            // The activity doesn't implement the interface, throw exception
-            throw ClassCastException(activity.toString() + " must implement NoticeDialogListener")
-        }
-
-    }
+    private var deleteCreditCardDialogListener: DeleteCreditCardDialogListener? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
         activity?.run {
@@ -39,7 +25,7 @@ class DeleteCreditCardDialogPayment : DialogFragment() {
                     .setTitle(R.string.payment_title_delete_credit_card)
                     .setMessage(R.string.payment_label_forever_delete_credit_card)
                     .setPositiveButton(R.string.payment_label_yes, DialogInterface.OnClickListener {
-                        dialog, whichButton -> mDeleteCreditCardDialogListener?.onConfirmDelete(arguments?.getString(TOKEN_ID))
+                        dialog, whichButton -> deleteCreditCardDialogListener?.onConfirmDelete(arguments?.getString(TOKEN_ID))
                     })
                     .setNegativeButton(R.string.payment_label_no, DialogInterface.OnClickListener { dialog, which -> })
                     .create()
@@ -47,9 +33,8 @@ class DeleteCreditCardDialogPayment : DialogFragment() {
         return super.onCreateDialog(savedInstanceState)
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        mDeleteCreditCardDialogListener = context as DeleteCreditCardDialogListener
+    fun setListener(deleteCreditCardDialogListener: DeleteCreditCardDialogListener){
+        this.deleteCreditCardDialogListener = deleteCreditCardDialogListener
     }
 
     interface DeleteCreditCardDialogListener {

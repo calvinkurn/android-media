@@ -14,9 +14,22 @@ val VISA_SMALL = "bg_visa_small"
 val MASTERCARD_SMALL = "bg_mastercard_small"
 val JCB_SMALL = "bg_jcb_small"
 val EXPIRED_SMALL = "bg_expired_small"
+val VISA_LARGE = "bg_visa_large"
+val MASTERCARD_LARGE = "bg_mastercard_large"
+val JCB_LARGE = "bg_jcb_large"
+val EXPIRED_LARGE = "bg_expired_large"
 
 fun SettingListPaymentModel.getBackgroundAssets(paymentSettingRouter : PaymentSettingRouter?,
                                                         context : Context?): String {
+    val resourceUrl = paymentSettingRouter?.getResourceUrlAssetPayment()
+    val assetName = getBackgroundResource()
+    val density = DisplayMetricUtils.getScreenDensity(context)
+
+    return String.format(resourceUrl + FORMAT_URL_IMAGE, assetName, density, assetName)
+}
+
+fun SettingListPaymentModel.getBackgroundAssetsLarge(paymentSettingRouter : PaymentSettingRouter?,
+                                                context : Context?): String {
     val resourceUrl = paymentSettingRouter?.getResourceUrlAssetPayment()
     val assetName = getBackgroundResource()
     val density = DisplayMetricUtils.getScreenDensity(context)
@@ -30,6 +43,15 @@ fun SettingListPaymentModel.getBackgroundResource(): String {
         MASTERCARD -> return MASTERCARD_SMALL
         JCB -> return JCB_SMALL
         else -> return EXPIRED_SMALL
+    }
+}
+
+fun SettingListPaymentModel.getBackgroundResourceLarge(): String {
+    when (this.cardType?.toLowerCase()) {
+        VISA -> return VISA_LARGE
+        MASTERCARD -> return MASTERCARD_LARGE
+        JCB -> return JCB_LARGE
+        else -> return EXPIRED_LARGE
     }
 }
 

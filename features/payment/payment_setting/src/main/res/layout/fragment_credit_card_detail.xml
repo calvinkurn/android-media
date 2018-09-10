@@ -7,15 +7,12 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    android:paddingEnd="@dimen/dp_45"
-    android:paddingLeft="@dimen/dp_45"
-    android:paddingStart="@dimen/dp_45">
+    android:padding="@dimen/dp_45">
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/layoutCC"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_45"
-        android:layout_marginTop="@dimen/dp_45">
+        android:layout_height="190dp">
 
         <ImageView
             android:id="@+id/imageCCLarge"
@@ -55,7 +52,7 @@
             <TextView
                 style="@style/TextView.Micro.WhitePrimary"
                 android:id="@+id/creditCardExpiryText"
-                android:layout_above="@id/creditCardExpiryLabel"
+                android:layout_above="@+id/creditCardExpiryLabel"
                 android:gravity="start"
                 android:text="@string/payment_label_month_year"/>
 
@@ -73,8 +70,9 @@
     </android.support.constraint.ConstraintLayout>
 
     <Button
+        android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/buttonDeleteCC"
-        style="@style/Button.Submit.White.Border"
+        style="@style/Button.Submit.White.Border.Full"
         android:text="@string/payment_label_delete_card"/>
 
 </LinearLayout>
