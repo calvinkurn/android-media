@@ -25,10 +25,4 @@ class AddCreditCardModule {
         return AddCreditCardUseCase()
     }
 
-    @AuthenticateCCScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context) : UserSession{
-        return (context as AbstractionRouter).session
-    }
-
 }
