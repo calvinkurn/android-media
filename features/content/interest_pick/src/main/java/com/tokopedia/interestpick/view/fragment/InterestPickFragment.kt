@@ -71,7 +71,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     override fun onErrorGetInterest(message: String) {
-        NetworkErrorHelper.showEmptyState(context, view, {
+        NetworkErrorHelper.showEmptyState(context, mainView, {
             presenter.fetchData()
         })
     }
