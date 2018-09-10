@@ -9,10 +9,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase;
 import com.tokopedia.shop.common.util.PagingListUtils;
-import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
-import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
 import com.tokopedia.shop.etalase.domain.interactor.GetShopEtalaseUseCase;
-import com.tokopedia.shop.etalase.domain.model.ShopEtalaseRequestModel;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductFeaturedWithAttributeUseCase;
 import com.tokopedia.shop.product.domain.interactor.GetShopProductListWithAttributeUseCase;
@@ -91,51 +88,11 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                                              boolean isOfficialStore, int page,
                                              int itemPerPage,
                                              String etalaseId,
-                                             final int etalaseLimit) {
+                                             boolean isUseAce) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
-                isOfficialStore, page, true, itemPerPage);
-
+                isOfficialStore, page, isUseAce, itemPerPage);
         shopProductRequestModel.setEtalaseId(etalaseId);
-
-        List<ShopEtalaseViewModel> shopEtalaseViewModelList = getView().getShopEtalaseViewModelList();
-        if (shopEtalaseViewModelList.size() > 0) {
-            if (!TextUtils.isEmpty(etalaseId)) {
-                boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
-                shopProductRequestModel.setUseAce(isUseAce);
-            }
-            getProductListWithAttributes(shopProductRequestModel);
-        } else {
-            ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(
-                    shopId, userSession.getUserId(), userSession.getDeviceId());
-            RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
-            getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
-                @Override
-                public void onCompleted() {
-
-                }
-
-                @Override
-                public void onError(Throwable throwable) {
-                    if (isViewAttached()) {
-                        getView().onErrorGetEtalaseList(throwable);
-                    }
-                }
-
-                @Override
-                public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
-                    if (isViewAttached()) {
-                        List<ShopEtalaseViewModel> shopEtalaseViewModelList =
-                                ShopProductMapper.mergeEtalaseList(pagingListOther, null, etalaseLimit);
-                        getView().onSuccessGetEtalaseList(shopEtalaseViewModelList);
-                        if (!TextUtils.isEmpty(etalaseId)) {
-                            boolean isUseAce = isUseAce(shopEtalaseViewModelList, etalaseId);
-                            shopProductRequestModel.setUseAce(isUseAce);
-                        }
-                        getProductListWithAttributes(shopProductRequestModel);
-                    }
-                }
-            });
-        }
+        getProductListWithAttributes(shopProductRequestModel);
     }
 
     public void getShopEtalaseListByShop(String shopId, boolean isOwner) {
@@ -156,21 +113,11 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                 @Override
                 public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
                     if (isViewAttached()) {
-                        getView().onSuccessGetEtalaseListByShop(shopEtalaseModels);
+                        ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelList =ShopProductMapper.map(shopEtalaseModels);
+                        getView().onSuccessGetEtalaseListByShop(shopEtalaseViewModelList);
                     }
                 }
             });
-    }
-
-    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
-        if (etalaseViewModelList!= null) {
-            for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
-                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
-                    return shopEtalaseViewModel.isUseAce();
-                }
-            }
-        }
-        return true;
     }
 
     private void getProductListWithAttributes(ShopProductRequestModel shopProductRequestModel) {
@@ -255,33 +202,6 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
         }
         removeWishListUseCase.createObservable(productId, userSession.getUserId(), wishListActionListener);
 
-    }
-
-    public void getShopEtalase(String shopId, final int limit) {
-        ShopEtalaseRequestModel shopEtalaseRequestModel = new ShopEtalaseRequestModel(
-                shopId, userSession.getUserId(), userSession.getDeviceId());
-        RequestParams params = GetShopEtalaseUseCase.createParams(shopEtalaseRequestModel);
-        getShopEtalaseUseCase.execute(params, new Subscriber<PagingListOther<EtalaseModel>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                if (isViewAttached()) {
-                    getView().onErrorGetEtalaseList(throwable);
-                }
-            }
-
-            @Override
-            public void onNext(PagingListOther<EtalaseModel> pagingListOther) {
-                if (isViewAttached()) {
-                    getView().onSuccessGetEtalaseList(
-                            ShopProductMapper.mergeEtalaseList(pagingListOther, null, limit));
-                }
-            }
-        });
     }
 
     @Override

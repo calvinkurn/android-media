@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -37,7 +38,6 @@ import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -67,6 +67,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.tokopedia.shop.common.constant.ShopPageConstant.DEFAULT_ETALASE_POSITION;
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW;
 
 /**
  * Created by nathan on 2/15/18.
@@ -94,6 +95,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     ShopProductLimitedListPresenter shopProductLimitedListPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
+    @Inject
+    UserSession userSession;
 
     private ProgressDialog progressDialog;
     private String urlNeedTobBeProceed;
@@ -219,16 +222,21 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         bottomActionView.hide(false);
         shopProductAdapter.clearAllNonDataElement();
         shopProductAdapter.clearProductList();
+        //TODO load highlight list
+        //shopProductAdapter.clearHighlightList();
 
         showLoading();
-        //TODO if etalase is exist, continue to load highlight and product, else load etalase list first
-        //TODO load etalase first then load product list and highlight list
         String shopId = shopInfo.getInfo().getShopId();
-        //TODO owner check
-        shopProductLimitedListPresenter.getShopEtalaseListByShop(shopId, false);
-        //TODO load etalase first then load product list and highlight list
-        //TODO remove below load data, only load if etalase is retrieved prviously
-        loadData(getDefaultInitialPage());
+        List<ShopEtalaseViewModel> shopEtalaseViewModelList = getShopEtalaseViewModelList();
+        if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
+            //load etalase list first
+            shopProductLimitedListPresenter.getShopEtalaseListByShop(shopId,
+                    shopId.equals(userSession.getShopId()));
+        } else {
+            loadData(getDefaultInitialPage());
+            //TODO load highlight list
+        }
+
     }
 
     protected void loadTopData() {
@@ -257,15 +265,34 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void loadData(int page) {
         if (shopInfo != null) {
-            shopProductLimitedListPresenter.getProductListWithAttributes(
-                    shopInfo.getInfo().getShopId(),
-                    !shopInfo.getInfo().isOpen(),
-                    TextApiUtils.isValueTrue(shopInfo.getInfo().getShopIsOfficial()),
-                    page,
-                    ShopPageConstant.DEFAULT_PER_PAGE,
-                    selectedEtalaseId,
-                    ShopPageConstant.ETALASE_TO_SHOW);
+            List<ShopEtalaseViewModel> etalaseViewModels = getShopEtalaseViewModelList();
+            boolean isUseAce = true;
+            if (etalaseViewModels.size() > 0) {
+                if (!TextUtils.isEmpty(selectedEtalaseId)) {
+                    isUseAce = isUseAce(etalaseViewModels, selectedEtalaseId);
+                }
+                shopProductLimitedListPresenter.getProductListWithAttributes(
+                        shopInfo.getInfo().getShopId(),
+                        !shopInfo.getInfo().isOpen(),
+                        shopInfo.getInfo().isShopOfficial(),
+                        page,
+                        ShopPageConstant.DEFAULT_PER_PAGE,
+                        selectedEtalaseId,
+                        isUseAce);
+            }
+
         }
+    }
+
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
+        if (etalaseViewModelList!= null) {
+            for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
+                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                    return shopEtalaseViewModel.isUseAce();
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -316,7 +343,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         };
     }
 
-    @Override
     public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
         return shopProductAdapter.getShopProductEtalaseListViewModel().getEtalaseModelList();
     }
@@ -403,15 +429,19 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         // no op
     }
 
-
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
+        onErrorAddToWishList(new MessageErrorException(errorMessage));
+    }
+
+    @Override
+    public void onErrorAddToWishList(Throwable e) {
         if (!shopProductLimitedListPresenter.isLogin()) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
@@ -427,11 +457,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onSuccessRemoveWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, false);
-    }
-
-    @Override
-    public void onErrorAddToWishList(Throwable e) {
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
     @Override
@@ -521,15 +546,32 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onSuccessGetEtalaseListByShop(ArrayList<ShopEtalaseModel> shopEtalaseModelList) {
-        //TODO
-        Log.i("Test", "Test");
+    public void onSuccessGetEtalaseListByShop(ArrayList<ShopEtalaseViewModel> shopEtalaseModelList) {
+        //default select first index as selected.
+        if (TextUtils.isEmpty(selectedEtalaseId) && shopEtalaseModelList != null && shopEtalaseModelList.size() > 0) {
+            selectedEtalaseId = shopEtalaseModelList.get(0).getEtalaseId();
+            selectedEtalaseName = shopEtalaseModelList.get(0).getEtalaseName();
+        }
+        // update the adapter
+        List<ShopEtalaseViewModel> shopEtalaseModelListToShow;
+        if (shopEtalaseModelList!= null && shopEtalaseModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
+            shopEtalaseModelListToShow = shopEtalaseModelList.subList(0, ETALASE_TO_SHOW);
+        } else {
+            shopEtalaseModelListToShow = shopEtalaseModelList;
+        }
+        shopProductAdapter.setShopEtalase(new ShopProductEtalaseListViewModel(shopEtalaseModelListToShow, selectedEtalaseId));
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+
+        loadData(getDefaultInitialPage());
+        //TODO load highlight list
     }
 
     @Override
     public void onErrorGetEtalaseListByShop(Throwable e) {
-        //TODO
-        Log.i("Test", "Test");
+        shopProductAdapter.setShopEtalase(null);
+        shopProductAdapter.setShopEtalaseTitle(null);
+        //TODO adapter, set highlight list to null
+        showGetListError(e);
     }
 
     @Override

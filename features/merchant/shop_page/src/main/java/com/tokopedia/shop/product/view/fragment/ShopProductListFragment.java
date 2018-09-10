@@ -25,7 +25,8 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener;
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
@@ -42,11 +43,11 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.view.adapter.EtalaseChipAdapter;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
@@ -60,6 +61,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW;
 
 public class ShopProductListFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductDedicatedListView, WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
@@ -84,6 +87,8 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     ShopProductListPresenter shopProductListPresenter;
     @Inject
     ShopPageTracking shopPageTracking;
+    @Inject
+    UserSession userSession;
 
     private ShopModuleRouter shopModuleRouter;
 
@@ -361,12 +366,35 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     private void loadShopPageList(ShopInfo shopInfo, int page) {
+        List<ShopEtalaseViewModel> shopEtalaseViewModels = getShopEtalaseViewModelList();
+        if (shopEtalaseViewModels == null || shopEtalaseViewModels.size() == 0) {
+            shopProductListPresenter.getShopEtalase(shopId, shopId.equals(userSession.getShopId()));
+        } else {
+            // continue to load ProductData
+            boolean isUseAce = isUseAce(shopEtalaseViewModels, selectedEtalaseId);
+            loadShopPageList(shopInfo, page, isUseAce);
+        }
+    }
+
+    private void loadShopPageList(ShopInfo shopInfo, int page, boolean isUseAce) {
         shopProductListPresenter.getShopPageList(shopInfo,
                 keyword,
                 selectedEtalaseId,
                 0,
                 page,
-                Integer.valueOf(sortValue));
+                Integer.valueOf(sortValue),
+                isUseAce);
+    }
+
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId) {
+        if (etalaseViewModelList != null) {
+            for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
+                if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
+                    return shopEtalaseViewModel.isUseAce();
+                }
+            }
+        }
+        return true;
     }
 
     @Override
@@ -491,16 +519,6 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onErrorAddWishList(String errorMessage, String productId) {
-        if (!shopProductListPresenter.isLogin()) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
-    }
-
-    @Override
     public void onSuccessAddWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, true);
     }
@@ -516,7 +534,17 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        onErrorAddToWishList(new MessageErrorException(errorMessage));
+    }
+
+    @Override
     public void onErrorAddToWishList(Throwable e) {
+        if (!shopProductListPresenter.isLogin()) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
@@ -622,29 +650,76 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onErrorGetEtalaseList(Throwable e) {
+        // etalase load is error
         etalaseChipAdapter.setEtalaseViewModelList(null);
         hideEtalaseList();
         shopProductAdapter.setShopEtalaseTitle(null);
+        // assume use ace is true, to continue load product.
+        loadShopPageList(shopInfo, getDefaultInitialPage(), true);
     }
 
     @Override
-    public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList,
-                                        String etalaseId, String etalaseName, boolean isUseAce) {
-        //default select first index as selected.
-        if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
+    public void onSuccessGetEtalaseList(@NonNull List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+        boolean isUseAce = true;
+
+        if (shopEtalaseViewModelList.size() == 0) {
             selectedEtalaseId = null;
             selectedEtalaseName = null;
-        } else if (TextUtils.isEmpty(selectedEtalaseId)) {
-            selectedEtalaseId = shopEtalaseViewModelList.get(0).getEtalaseId();
-            selectedEtalaseName = shopEtalaseViewModelList.get(0).getEtalaseName();
         } else {
-            selectedEtalaseId = etalaseId;
-            selectedEtalaseName = etalaseName;
+            // id might come from deeplink
+            if (!TextUtils.isEmpty(selectedEtalaseId)) {
+                for (ShopEtalaseViewModel etalaseModel : shopEtalaseViewModelList) {
+                    if (selectedEtalaseId.equalsIgnoreCase(etalaseModel.getEtalaseId())) {
+                        selectedEtalaseName = etalaseModel.getEtalaseName();
+                        isUseAce = etalaseModel.isUseAce();
+                        break;
+                    }
+                }
+                // etalase name still empty, then we check the selectedEtalaseId with name.
+                if (TextUtils.isEmpty(selectedEtalaseName)) {
+                    String cleanedSelectedEtalaseId = cleanString(selectedEtalaseId);
+                    for (ShopEtalaseViewModel etalaseModel : shopEtalaseViewModelList) {
+                        String cleanedEtalaseName = cleanString(etalaseModel.getEtalaseName());
+                        if (cleanedSelectedEtalaseId.equalsIgnoreCase(cleanedEtalaseName)) {
+                            selectedEtalaseId = etalaseModel.getEtalaseId();
+                            selectedEtalaseName = etalaseModel.getEtalaseName();
+                            isUseAce = etalaseModel.isUseAce();
+                            break;
+                        }
+                    }
+                    // name is empty means etalase is deleted, so no need to add to chip, and make it to all etalase.
+                    if (TextUtils.isEmpty(selectedEtalaseName)) {
+                        selectedEtalaseId = "";
+                    }
+                }
+            }
+
+            // if id not exist, set default to index 0
+            if (TextUtils.isEmpty(selectedEtalaseId)) {
+                selectedEtalaseId = shopEtalaseViewModelList.get(0).getEtalaseId();
+                selectedEtalaseName = shopEtalaseViewModelList.get(0).getEtalaseName();
+                isUseAce = shopEtalaseViewModelList.get(0).isUseAce();
+            }
+        }
+
+        /// limit etalase to show in chip
+        List<ShopEtalaseViewModel> shopEtalaseModelListToShow;
+        if (shopEtalaseViewModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
+            shopEtalaseModelListToShow = shopEtalaseViewModelList.subList(0, ETALASE_TO_SHOW);
+        } else {
+            shopEtalaseModelListToShow = shopEtalaseViewModelList;
         }
         // update the adapter
-        bindEtalaseChipData(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
+        bindEtalaseChipData(new ShopProductEtalaseListViewModel(shopEtalaseModelListToShow, selectedEtalaseId));
         addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, isUseAce);
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+
+        // continue to load ProductData
+        loadShopPageList(shopInfo, getDefaultInitialPage(), isUseAce);
+    }
+
+    private String cleanString(String text) {
+        return text.replaceAll("[\\W_]", "");
     }
 
     @Override

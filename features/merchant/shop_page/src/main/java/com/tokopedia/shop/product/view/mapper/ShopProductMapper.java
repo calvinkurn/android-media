@@ -1,7 +1,7 @@
 package com.tokopedia.shop.product.view.mapper;
 
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
+import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel;
 import com.tokopedia.shop.common.util.WishListUtils;
 import com.tokopedia.shop.etalase.data.source.cloud.model.EtalaseModel;
 import com.tokopedia.shop.etalase.data.source.cloud.model.PagingListOther;
@@ -115,6 +115,18 @@ public class ShopProductMapper {
         }
         return shopEtalaseViewModels;
 
+    }
+
+    public static ArrayList<ShopEtalaseViewModel> map(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
+        if (shopEtalaseModels.size() == 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<ShopEtalaseViewModel> shopEtalaseViewModels = new ArrayList<>();
+        // loop to convert to view model, only get until limit.
+        for (ShopEtalaseModel etalaseModel : shopEtalaseModels) {
+            shopEtalaseViewModels.add(new ShopEtalaseViewModel(etalaseModel));
+        }
+        return shopEtalaseViewModels;
     }
 
 }
