@@ -150,7 +150,7 @@ public class FragmentSellingShipping extends BaseFragment<Shipping> implements S
             hideFab();
             actionMode.setTitle("1");
             if(GlobalConfig.isCustomerApp()) {
-                getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi_dark, menu);
+                getActivity().getMenuInflater().inflate(com.tokopedia.seller.R.menu.shipping_confirm_multi_dark, menu);
             } else {
                 getActivity().getMenuInflater().inflate(R.menu.shipping_confirm_multi, menu);
             }
