@@ -21,6 +21,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.add.AddCreditCardActivity
 import com.tokopedia.payment.setting.authenticate.AuthenticateCreditCardActivity
 import com.tokopedia.payment.setting.detail.DetailCreditCardActivity
+import com.tokopedia.payment.setting.list.di.SettingListPaymentModule
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 
 
@@ -109,7 +110,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun initInjector() {
         DaggerSettingListPaymentComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .settingListPaymentModule(AuthenticateCreditCardModule())
+                .settingListPaymentModule(SettingListPaymentModule())
                 .build()
                 .inject(this)
         settingListPaymentPresenter.attachView(this)

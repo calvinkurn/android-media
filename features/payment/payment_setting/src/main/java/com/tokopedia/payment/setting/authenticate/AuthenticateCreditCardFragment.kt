@@ -63,7 +63,7 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
     override fun initInjector() {
         DaggerAuthenticateCreditCardComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .detailCreditCardModule(AuthenticateCreditCardModule())
+                .authenticateCreditCardModule(AuthenticateCreditCardModule())
                 .build()
                 .inject(this)
         authenticateCCPresenter.attachView(this)

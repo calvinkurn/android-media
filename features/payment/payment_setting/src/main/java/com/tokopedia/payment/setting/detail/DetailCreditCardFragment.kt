@@ -15,6 +15,7 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.detail.di.DaggerDetailCreditCardComponent
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCreditCardModule
+import com.tokopedia.payment.setting.detail.di.DetailCreditCardModule
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import com.tokopedia.payment.setting.util.getBackgroundAssets
@@ -104,7 +105,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
     override fun initInjector() {
         DaggerDetailCreditCardComponent.builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .detailCreditCardModule(AuthenticateCreditCardModule())
+                .detailCreditCardModule(DetailCreditCardModule())
                 .build()
                 .inject(this)
         detailCreditCardPresenter.attachView(this)
