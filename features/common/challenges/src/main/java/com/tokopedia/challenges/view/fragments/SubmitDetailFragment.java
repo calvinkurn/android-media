@@ -154,21 +154,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             submissionId = submissionResult.getId();
             presenter.setDataInFields(submissionResult);
             if (fromSubmission) {
-                String mediaUrl;
-                boolean isVideo;
-//                if (TextUtils.isEmpty(submissionResult.getSharing().getAssets().getVideo())) {
-////                    mediaUrl = submissionResult.getThumbnailUrl();
-////                    isVideo = false;
-////                } else {
-////                    mediaUrl = submissionResult.getSharing().getAssets().getVideo();
-////                    isVideo = true;
-////                }
                 ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult);
-//                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(),
-//                        submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(),
-//                        submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS,
-//                                submissionResult.getId()), false, mediaUrl, submissionResult.getCollection().getHashTag(), isVideo);
-
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -205,18 +191,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
-//            String mediaUrl;
-//            boolean isVideo;
-//            if (TextUtils.isEmpty(submissionResult.getSharing().getAssets().getVideo())) {
-//                mediaUrl = submissionResult.getThumbnailUrl();
-//                isVideo = false;
-//            } else {
-//                mediaUrl = submissionResult.getSharing().getAssets().getVideo();
-//                isVideo = true;
-//            }
-//            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(),
-//                    submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(),
-//                    Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false,mediaUrl,submissionResult.getCollection().getHashTag(),isVideo);
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult);
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
                     ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
@@ -392,12 +366,12 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-       // progressBar.setVisibility(View.GONE);
+        // progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressBar() {
-       // progressBar.setVisibility(View.VISIBLE);
+        // progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 

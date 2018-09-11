@@ -148,10 +148,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }
+                getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
             }else if(intent.getAction() == ACTION_UPLOAD_FAIL){
                 getView().setSnackBarErrorMessage("Submission Fails!");
-                getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
-            }
+             }
             deinit();
         }
     };

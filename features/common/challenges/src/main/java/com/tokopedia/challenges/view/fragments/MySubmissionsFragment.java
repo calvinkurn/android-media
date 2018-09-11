@@ -105,6 +105,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         if (resultList != null) {
             recyclerView.setVisibility(View.VISIBLE);
             listAdpater.addAll(resultList);
+            EmptyStateViewHelper.hideEmptyState(getView());
         }
     }
 

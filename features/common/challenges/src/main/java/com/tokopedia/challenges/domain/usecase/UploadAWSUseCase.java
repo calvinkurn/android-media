@@ -70,13 +70,7 @@ public class UploadAWSUseCase extends RestRequestSupportInterceptorUseCase  {
 
     @Override
     public Observable<Map<Type, RestResponse>> createObservable(RequestParams requestParams) {
-        return createObservableGetNextPart(uploadFingerprints).onErrorResumeNext(new Func1<Throwable, Observable<Map<Type, RestResponse>>>() {
-            @Override
-            public Observable<Map<Type, RestResponse>> call(Throwable throwable) {
-                postDeleteSubmissionUseCase.setRequestParams(uploadFingerprints.getNewPostId());
-                return postDeleteSubmissionUseCase.createObservable(requestParams);
-            }
-        });
+        return createObservableGetNextPart(uploadFingerprints);
     }
 
 
