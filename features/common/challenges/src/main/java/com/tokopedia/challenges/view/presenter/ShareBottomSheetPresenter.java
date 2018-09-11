@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
@@ -32,7 +33,6 @@ import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.share.ShareInstagramBottomSheet;
-import com.tokopedia.challenges.view.utils.DownloadUtilityHelper;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -195,10 +195,10 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     private void createInstagramIntent(String title, String contains, File media, boolean isVideo) {
         ShareInstagramBottomSheet shareInstagramBottomSheet = new ShareInstagramBottomSheet();
 
-        if(getView().getChallengeItem() !=null){
-            shareInstagramBottomSheet.setData(getView().getChallengeItem(),title,contains,media,isVideo);
-        }else  if(getView().getSubmissionItem() !=null) {
-            shareInstagramBottomSheet.setData(getView().getSubmissionItem(),title,contains,media,isVideo);
+        if (getView().getChallengeItem() != null) {
+            shareInstagramBottomSheet.setData(getView().getChallengeItem(), title, contains, media, isVideo);
+        } else if (getView().getSubmissionItem() != null) {
+            shareInstagramBottomSheet.setData(getView().getSubmissionItem(), title, contains, media, isVideo);
         }
 
 
@@ -291,94 +291,33 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             isVideo = false;
 
         } else {
-            if (getView().getSubmissionItem().getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
+            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), "Challenge Submission");
+            String videoPath = localCacheHandler.getString(getView().getSubmissionItem().getId());
+            if (!TextUtils.isEmpty(videoPath)) {
+                File file = new File(videoPath);
+                if (file.exists()) {
+                    if (Utils.isImage(videoPath)) {
+                        isVideo = false;
+                    } else {
+                        isVideo = true;
+                    }
+                    createInstagramIntent(title, shareContents, file, isVideo);
+                    return;
+                }
+            } else if (getView().getSubmissionItem().getMedia().get(0).getMediaType().equalsIgnoreCase("Image")) {
                 mediaUrl = getView().getSubmissionItem().getMedia().get(0).getImageUrl();
             } else if (getView().getSubmissionItem().getMedia() != null && getView().getSubmissionItem().getMedia().get(0).getVideo() != null && getView().getSubmissionItem().getMedia().get(0).getVideo().getSources() != null) {
                 mediaUrl = getView().getSubmissionItem().getMedia().get(0).getVideo().getSources().get(1).getSource();
                 isVideo = true;
             }
         }
+
         if (mediaUrl != null) {
             this.title = title;
             this.shareContents = shareContents;
             this.mediaUrl = mediaUrl;
             this.isVideo = isVideo;
             convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
-//            Uri uri = Uri.parse(mediaUrl);
-//            DownloadUtilityHelper.DownloadData(uri, getView().getActivity(), isVideo);
-//
-//            IntentFilter filter = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-//            getView().getActivity().registerReceiver(downloadReceiver, filter);
         }
-    }
-
-
-    private BroadcastReceiver downloadReceiver = new BroadcastReceiver() {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-
-            //check if the broadcast message is for our enqueued download
-            long referenceId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            Toast toast = Toast.makeText(getView().getActivity(),
-                    "Image Download Complete", Toast.LENGTH_LONG);
-            toast.setGravity(Gravity.TOP, 25, 400);
-            toast.show();
-          //  convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
-
-//            if(referenceId == Image_DownloadId) {
-//
-//                Toast toast = Toast.makeText(MainActivity.this,
-//                        "Image Download Complete", Toast.LENGTH_LONG);
-//                toast.setGravity(Gravity.TOP, 25, 400);
-//                toast.show();
-//            }
-//            else if(referenceId == Music_DownloadId) {
-//
-//                Toast toast = Toast.makeText(MainActivity.this,
-//                        "Music Download Complete", Toast.LENGTH_LONG);
-//                toast.setGravity(Gravity.TOP, 25, 400);
-//                toast.show();
-//            }
-
-        }
-    };
-
-    private void DownloadStatus(Cursor cursor, long DownloadId) {
-
-        //column for download  status
-        int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
-        int status = cursor.getInt(columnIndex);
-        //column for reason code if the download failed or paused
-        int columnReason = cursor.getColumnIndex(DownloadManager.COLUMN_REASON);
-        int reason = cursor.getInt(columnReason);
-        //get the download filename
-        int filenameIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME);
-        String filename = cursor.getString(filenameIndex);
-
-        String statusText = "";
-        String reasonText = "";
-
-        switch (status) {
-            case DownloadManager.STATUS_FAILED:
-                statusText = "STATUS_FAILED";
-
-                break;
-            case DownloadManager.STATUS_PAUSED:
-
-                break;
-            case DownloadManager.STATUS_PENDING:
-                statusText = "STATUS_PENDING";
-                break;
-            case DownloadManager.STATUS_RUNNING:
-                statusText = "STATUS_RUNNING";
-                break;
-            case DownloadManager.STATUS_SUCCESSFUL:
-                statusText = "STATUS_SUCCESSFUL";
-                reasonText = "Filename:\n" + filename;
-                break;
-        }
-
-
     }
 }

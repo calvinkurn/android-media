@@ -42,9 +42,9 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
         boolean setLiked = requestParams.getBoolean(IS_LIKED, false);
         String url;
 
-        if (setLiked)
+        if (setLiked) {
             url = ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.SUBMISSIONS_LIKE, requestParams.getString(Utils.QUERY_PARAM_SUBMISSION_ID, ""));
-        else {
+        } else {
             url = ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.SUBMISSIONS_UNLIKE, requestParams.getString(Utils.QUERY_PARAM_SUBMISSION_ID, ""));
 
         }
@@ -54,6 +54,10 @@ public class PostSubmissionLikeUseCase extends RestRequestSupportInterceptorUseC
                 .setBody("")
                 .build();
         tempRequest.add(restRequest1);
+
+        ChallengesCacheHandler.addManipulatedMap(requestParams.getString(Utils.QUERY_PARAM_SUBMISSION_ID, ""),
+                setLiked ? ChallengesCacheHandler.Manupulated.LIKE.ordinal() :
+                        ChallengesCacheHandler.Manupulated.UNLIKE.ordinal());
 
         return tempRequest;
     }

@@ -2,11 +2,8 @@ package com.tokopedia.challenges.view.service;
 
 import android.util.Log;
 
-import com.tokopedia.challenges.domain.usecase.PostDeleteSubmissionUseCase;
 import com.tokopedia.challenges.domain.usecase.UploadAWSUseCase;
 import com.tokopedia.common.network.data.model.RestResponse;
-import com.tokopedia.usecase.RequestParams;
-
 import java.lang.reflect.Type;
 import java.util.Map;
 

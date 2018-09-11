@@ -4,9 +4,7 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.applink.RouteManager;
 import com.tokopedia.challenges.R;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
@@ -207,6 +205,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
                 Utils.FROMNOCACHE = true;
+                ChallengesCacheHandler.addManipulatedMap(submissionId, ChallengesCacheHandler.Manupulated.DELETE.ordinal());
                 ChallengesCacheHandler.resetCache();
 //                String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
 //                RouteManager.route(getView().getActivity(), applink);
