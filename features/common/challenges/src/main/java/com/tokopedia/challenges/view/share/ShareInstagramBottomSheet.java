@@ -9,6 +9,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +19,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.challenges.BuildConfig;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
+import com.tokopedia.challenges.view.utils.Utils;
+import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.design.component.BottomSheets;
 
 import java.io.File;
@@ -56,7 +60,15 @@ public class ShareInstagramBottomSheet extends BottomSheets {
 
     @Override
     public void initView(View view) {
-        TextView desc = view.findViewById(R.id.tv_desc);
+        ImageView imgShare = view.findViewById(R.id.img_share);
+        if (challengeItem != null) {
+            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(challengeItem.getThumbnailUrl()), R.color.grey_1100);
+            hastag = challengeItem.getHashTag();
+        } else if (submissionResult != null) {
+            ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()), R.color.grey_1100);
+            hastag = submissionResult.getCollection().getHashTag();
+
+        }
 
         TextView btnCopy = view.findViewById(R.id.btn_copy);
         btnCopy.setText("Salin " + hastag);
@@ -77,7 +89,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         return "";
     }
 
-    public void setData(Object item) {
+    private void setData(Object item) {
         if (item instanceof Result) {
             this.challengeItem = (Result) item;
         } else if (item instanceof SubmissionResult) {
@@ -85,39 +97,39 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         }
     }
 
-    public void setData(String title, String contains, File media, boolean isVideo, String hastag) {
+    public void setData(Object item, String title, String contains, File media, boolean isVideo) {
         this.title = title;
         this.contains = contains;
         this.media = media;
         this.isVideo = isVideo;
-        this.hastag = hastag;
+        setData(item);
     }
 
     private void createInstagramIntent() {
-        String type = "image/*";
-        //String filename = "/myVideo.mp4";
-        //mediaPath = Environment.getExternalStorageDirectory() + filename;
+        try {
+            String type = "image/*";
+            //mediaPath = Environment.getExternalStorageDirectory() + filename;
 
-        // Create the new Intent using the 'Send' action.
-        if (isVideo) {
-            type = "video/*";
+            if (isVideo) {
+                type = "video/*";
+            }
+            Intent share = new Intent(Intent.ACTION_SEND);
+
+            share.setType(type);
+
+            Uri uri = FileProvider.getUriForFile(getActivity(),
+                    getActivity().getApplicationContext().getPackageName() + ".provider",
+                    media);
+
+            share.putExtra(Intent.EXTRA_STREAM, uri);
+            share.putExtra(Intent.EXTRA_TITLE, title);
+            share.putExtra(Intent.EXTRA_SUBJECT, title);
+            share.putExtra(Intent.EXTRA_TEXT, contains);
+            share.setPackage(PACKAGENAME_INSTAGRAM);
+            getActivity().startActivity(Intent.createChooser(share, "Share"));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        Intent share = new Intent(Intent.ACTION_SEND);
-
-        // Set the MIME type
-        share.setType(type);
-
-        // Create the URI from the media
-        // File media = new File(mediaPath);
-        Uri uri = Uri.fromFile(media);
-
-        // Add the URI to the Intent.
-        share.putExtra(Intent.EXTRA_STREAM, uri);
-        share.putExtra(Intent.EXTRA_TITLE, title);
-        share.putExtra(Intent.EXTRA_SUBJECT, title);
-        share.putExtra(Intent.EXTRA_TEXT, contains);
-        share.setPackage(PACKAGENAME_INSTAGRAM);
-        getActivity().startActivity(Intent.createChooser(share, "Share"));
     }
 
     private void copyToClipboard(String contents) {

@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.tokopedia.challenges">
 
     <application>
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.tokopedia.tkpd.provider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                tools:replace="android:resource"
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity
             android:name=".view.activity.ChallengesSubmitActivity"
             android:screenOrientation="portrait"
@@ -14,8 +27,8 @@
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.ChallengeDetailActivity"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
         <activity
             android:name=".view.activity.SubmitDetailActivity"
@@ -29,6 +42,7 @@
             android:name=".view.activity.FullScreenLandscapeActivity"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <service android:name=".view.service.UploadChallengeService" />
 
     </application>

@@ -2,6 +2,8 @@ package com.tokopedia.challenges.view.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,6 +48,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private boolean pastChallenge;
     private boolean isFirst = true;
     private boolean isFirstPastChallengeItem;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
 
     @Override
@@ -67,6 +70,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         tvActiveChallenges = view.findViewById(R.id.tv_active_challenges);
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
         progressBar = view.findViewById(R.id.progress_bar_layout);
+        swipeRefreshLayout = view.findViewById(R.id.swipe_container);
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -90,12 +94,30 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             pastChallenge = true;
         });
 
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code here
+                // To keep animation for 4 seconds
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        // Stop animation (This will be after 3 seconds)
+                        swipeRefreshLayout.setRefreshing(false);
+                        getChallenges();
+                    }
+                }, 4000); // Delay in millis
+            }
+        });
+
+
         challengeHomePresenter.getOpenChallenges();
         if (isFirst) {
             isFirst = false;
         }
         return view;
     }
+
 
     @Override
     protected String getScreenName() {
@@ -139,11 +161,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
          * Fetch data without cache
          */
         if (ChallengesCacheHandler.OPEN_CHALLENGES_LIST_CACHE) {
-            if (pastChallenge) {
-                challengeHomePresenter.getPastChallenges();
-            } else {
-                challengeHomePresenter.getOpenChallenges();
-            }
+            getChallenges();
         }
 
     }
@@ -169,7 +187,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                 "There are no challenges available.\n" +
                         "Please check again later.",
                 null, R.drawable.empty_challenge_active,
-                null
+                getChallengesRetryClickedListener()
         );
 
     }
@@ -192,11 +210,20 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     }
 
 
+    private EmptyStateViewHelper.RetryClickedListener getChallengesRetryClickedListener() {
+        return new EmptyStateViewHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                getChallenges();
+            }
+        };
+    }
+
     private NetworkErrorHelper.RetryClickedListener getChallengesRetryListener() {
         return new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-
+                getChallenges();
             }
         };
     }
@@ -209,5 +236,13 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public List<Result> getPastChallenges() {
         return pastChallenges;
+    }
+
+    private void getChallenges() {
+        if (pastChallenge) {
+            challengeHomePresenter.getPastChallenges();
+        } else {
+            challengeHomePresenter.getOpenChallenges();
+        }
     }
 }

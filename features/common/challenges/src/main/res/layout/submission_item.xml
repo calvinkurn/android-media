@@ -28,11 +28,11 @@
             style="@style/TextView.Small.White"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
-            android:visibility="gone"
             android:layout_marginRight="@dimen/dp_16"
-            android:gravity="center_horizontal"
             android:background="@drawable/ic_winner_badge"
+            android:gravity="center_horizontal"
             android:textSize="@dimen/sp_10"
+            android:visibility="gone"
             app:layout_constraintRight_toRightOf="@+id/iv_challenge"
             app:layout_constraintTop_toTopOf="@id/iv_challenge" />
 
@@ -86,6 +86,15 @@
             android:paddingTop="@dimen/dp_8"
             app:layout_constraintLeft_toRightOf="@+id/iv_share"
             app:layout_constraintTop_toBottomOf="@+id/divider"
+            app:layout_constraintTop_toTopOf="@+id/iv_share" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scrore: "
+            android:paddingRight="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_share"
+            app:layout_constraintRight_toLeftOf="@+id/iv_buzz_points"
             app:layout_constraintTop_toTopOf="@+id/iv_share" />
 
         <ImageView

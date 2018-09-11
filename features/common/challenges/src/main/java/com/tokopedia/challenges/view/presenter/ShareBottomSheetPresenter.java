@@ -193,15 +193,15 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     }
 
     private void createInstagramIntent(String title, String contains, File media, boolean isVideo) {
-        String hastag="";
-        if(getView().getChallengeItem() !=null){
-            hastag= getView().getChallengeItem().getHashTag();
-        }else  if(getView().getSubmissionItem() !=null) {
-            hastag= getView().getSubmissionItem().getCollection().getHashTag();
-        }
         ShareInstagramBottomSheet shareInstagramBottomSheet = new ShareInstagramBottomSheet();
 
-        shareInstagramBottomSheet.setData(title, contains, media, isVideo,hastag);
+        if(getView().getChallengeItem() !=null){
+            shareInstagramBottomSheet.setData(getView().getChallengeItem(),title,contains,media,isVideo);
+        }else  if(getView().getSubmissionItem() !=null) {
+            shareInstagramBottomSheet.setData(getView().getSubmissionItem(),title,contains,media,isVideo);
+        }
+
+
         shareInstagramBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), ShareInstagramBottomSheet.class.getCanonicalName());
 //        String type = "image/*";
 //        //String filename = "/myVideo.mp4";

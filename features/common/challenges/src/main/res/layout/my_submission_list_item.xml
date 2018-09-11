@@ -28,18 +28,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_winner_number"
-            style="@style/TextView.Small.White"
-            android:layout_width="@dimen/dp_35"
-            android:layout_height="@dimen/dp_35"
-            android:layout_marginRight="@dimen/dp_16"
-            android:background="@drawable/ic_winner_badge"
-            android:gravity="center_horizontal"
-            android:visibility="gone"
-            app:layout_constraintRight_toRightOf="@+id/img_challenge"
-            app:layout_constraintTop_toTopOf="@id/img_challenge" />
-
-        <TextView
             android:id="@+id/tv_title"
             style="@style/TextView.Title.FontMedium.BlackPrimary"
             android:layout_width="0dp"
@@ -105,7 +93,14 @@
             app:layout_constraintBottom_toBottomOf="@+id/img_share"
             app:layout_constraintLeft_toRightOf="@+id/img_share"
             app:layout_constraintTop_toTopOf="@+id/img_share" />
-
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Scrore: "
+            android:paddingRight="@dimen/dp_2"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_points"
+            app:layout_constraintRight_toLeftOf="@+id/tv_points"
+            app:layout_constraintTop_toTopOf="@+id/tv_points" />
         <TextView
             android:id="@+id/tv_points"
             style="@style/TextView.Micro.FontMedium.Black40"
@@ -113,6 +108,8 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_8"
+            android:drawableLeft="@drawable/ic_buzz_points"
+            android:drawablePadding="@dimen/dp_5"
             android:gravity="center"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider"
