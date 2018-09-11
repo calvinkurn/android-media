@@ -116,6 +116,6 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
                 selectedIds.add(item.categoryId)
             }
         }
-        presenter.updateInterest(selectedIds.toArray() as Array<Int>)
+        presenter.updateInterest(selectedIds.toTypedArray())
     }
 }

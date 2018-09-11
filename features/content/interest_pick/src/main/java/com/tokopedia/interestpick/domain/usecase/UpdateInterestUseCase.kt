@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.interestpick.R
-import com.tokopedia.interestpick.data.pojo.InterestPickData
+import com.tokopedia.interestpick.data.pojo.UpdateInterestData
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class UpdateInterestUseCase @Inject constructor(@ApplicationContext val context:
                                              val graphqlUseCase: GraphqlUseCase) {
     fun execute(variables: HashMap<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_update_interest)
-        val graphqlRequest = GraphqlRequest(query, InterestPickData::class.java, variables)
+        val graphqlRequest = GraphqlRequest(query, UpdateInterestData::class.java, variables)
 
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

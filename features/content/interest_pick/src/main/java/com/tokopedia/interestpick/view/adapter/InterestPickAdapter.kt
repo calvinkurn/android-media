@@ -41,8 +41,8 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
         ImageHandler.LoadImage(holder.itemView.image, list[position].image)
 
         holder.itemView.backgroundView.setOnClickListener {
-            list[position].isSelected = !list[position].isSelected
-            notifyItemChanged(position)
+            list[holder.adapterPosition].isSelected = !list[holder.adapterPosition].isSelected
+            notifyItemChanged(holder.adapterPosition)
         }
     }
 

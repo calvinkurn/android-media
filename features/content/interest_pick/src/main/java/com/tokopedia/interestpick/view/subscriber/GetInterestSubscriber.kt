@@ -5,9 +5,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interestpick.R
-import com.tokopedia.interestpick.data.pojo.FeedInterestUser
+import com.tokopedia.interestpick.data.pojo.GetInterestData
 import com.tokopedia.interestpick.data.pojo.Header
-import com.tokopedia.interestpick.data.pojo.InterestPickData
 import com.tokopedia.interestpick.data.pojo.InterestsItem
 import com.tokopedia.interestpick.view.listener.InterestPickContract
 import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
@@ -33,17 +32,17 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
     override fun onNext(graphqlResponse: GraphqlResponse?) {
         view.hideLoading()
         graphqlResponse?.let {
-            val interestpickData: InterestPickData = it.getData(InterestPickData::class.java)
-            val feedInterestUser: FeedInterestUser = interestpickData.feedInterestUser
-
-            if (!TextUtils.isEmpty(feedInterestUser.error)) {
-                view.onErrorGetInterest(feedInterestUser.error)
+            val getInterestData: GetInterestData = it.getData(GetInterestData::class.java)
+            getInterestData.feedInterestUser
+        }?.let {
+            if (!TextUtils.isEmpty(it.error)) {
+                view.onErrorGetInterest(it.error)
                 return
             }
 
             view.onSuccessGetInterest(
-                    convertToInterestList(feedInterestUser.interests),
-                    getTitle(feedInterestUser.header)
+                    convertToInterestList(it.interests),
+                    getTitle(it.header)
             )
         }
     }
@@ -64,7 +63,7 @@ class GetInterestSubscriber(val view: InterestPickContract.View)
         return interestList
     }
 
-    private fun getTitle(header: Header) : String {
+    private fun getTitle(header: Header): String {
         return if (!TextUtils.isEmpty(header.title)) {
             header.title
         } else {
