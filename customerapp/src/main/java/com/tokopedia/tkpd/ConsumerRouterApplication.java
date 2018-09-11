@@ -149,6 +149,7 @@ import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
@@ -452,7 +453,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         WithdrawRouter,
         ProductEditModuleRouter,
         EventModuleRouter,
-        TravelCalendarRouter {
+        TravelCalendarRouter,
+        ScanQrCodeRouter {
 
     private  static final String EXTRA = "extra";
 

@@ -23,6 +23,7 @@ import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
 import com.tokopedia.events.view.activity.EventsHomeActivity;
+import com.tokopedia.events.view.activity.ScanQRCodeActivity;
 import com.tokopedia.events.view.contractor.EventsContract;
 import com.tokopedia.events.view.contractor.EventsContract.AdapterCallbacks;
 import com.tokopedia.events.view.utils.EventsGAConst;
@@ -149,6 +150,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
             getView().navigateToActivityRequest(searchIntent,
                     EventsHomeActivity.REQUEST_CODE_EVENTSEARCHACTIVITY);
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_SEARCH, "");
+            return true;
+        } else if (id == R.id.action_scan_qr_code) {
+            Intent intent = new Intent(getView().getActivity(), ScanQRCodeActivity.class);
+            getView().navigateToActivityRequest(intent, 100);
+
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);

@@ -153,9 +153,15 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
 
     @Override
     protected void findResult(BarcodeResult barcodeResult) {
-        decoratedBarcodeView.pause();
-        hideAnimation();
-        presenter.onBarCodeScanComplete(barcodeResult.getText());
+        if (getIntent().getStringExtra("eventScanTicket").equalsIgnoreCase("fromEvent")) {
+            Intent intent = new Intent();
+            intent.putExtra("scanResult", barcodeResult.getText());
+            setResult(100, intent);
+        } else {
+            decoratedBarcodeView.pause();
+            hideAnimation();
+            presenter.onBarCodeScanComplete(barcodeResult.getText());
+        }
     }
 
     @Override

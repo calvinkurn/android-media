@@ -52,6 +52,7 @@
     <string name="search">Search</string>
     <string name="fav">Favorit</string>
     <string name="daftar_transaksi">Daftar Transaksi</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="bantuan">Bantuan</string>
     <string name="promo">Promo</string>
     <string name="nomor_kursi">Nomor Kursi:</string>
