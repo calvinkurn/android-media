@@ -15,6 +15,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.attachment.Attach
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -100,24 +101,30 @@ public class CreateResoWithAttachmentUseCase extends UseCase<CreateSubmitDomain>
 
     private Func1<CreateResoRequestDomain, Observable<List<UploadDomain>>>
     getObservableUploadAttachment(final List<AttachmentViewModel> attachmentList) {
-        return createResoRequestDomain -> Observable.from(attachmentList)
-                .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
-                    if (attachmentViewModel.isImage()) {
-                        return uploadUseCase.createObservable(
-                                UploadImageUseCase.getParam(
-                                        createResoRequestDomain,
-                                        attachmentViewModel.getAttachmentId(),
-                                        attachmentViewModel.getFileLoc()
-                                ));
-                    } else {
-                        return uploadVideoUseCase.createObservable(
-                                UploadImageUseCase.getParam(
-                                        createResoRequestDomain,
-                                        attachmentViewModel.getAttachmentId(),
-                                        attachmentViewModel.getFileLoc()
-                                ));
-                    }
-                }).toList();
+        return createResoRequestDomain -> {
+            if (attachmentList != null && attachmentList.size() !=0) {
+                return Observable.from(attachmentList)
+                        .flatMap((Func1<AttachmentViewModel, Observable<UploadDomain>>) attachmentViewModel -> {
+                            if (attachmentViewModel.isImage()) {
+                                return uploadUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
+                            } else {
+                                return uploadVideoUseCase.createObservable(
+                                        UploadImageUseCase.getParam(
+                                                createResoRequestDomain,
+                                                attachmentViewModel.getAttachmentId(),
+                                                attachmentViewModel.getFileLoc()
+                                        ));
+                            }
+                        }).toList();
+            } else {
+                return Observable.just(new ArrayList<>());
+            }
+        };
     }
 
     private Func1<List<UploadDomain>, Observable<CreateResoRequestDomain>>

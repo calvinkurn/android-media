@@ -22,10 +22,10 @@
         style="@style/TextView.Micro.Black40"
         android:layout_marginBottom="@dimen/dp_32"
         android:maxLines="2"
-        android:text="@string/location_changed_to"/>
+        tools:text="@string/location_changed_to"/>
 
     <TextView
-        android:id="@+id/tv_location_ame"
+        android:id="@+id/tv_location_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/tv_msg"

@@ -165,10 +165,17 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     private void initVar() {
         if (getArguments() != null) {
-            postId = Integer.valueOf(getArguments().getString(
-                    KolPostDetailActivity.PARAM_POST_ID,
-                    KolPostDetailActivity.DEFAULT_POST_ID)
-            );
+            try {
+                postId = Integer.valueOf(getArguments().getString(
+                        KolPostDetailActivity.PARAM_POST_ID,
+                        KolPostDetailActivity.DEFAULT_POST_ID)
+                );
+            } catch (NumberFormatException e) {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+                postId = 0;
+            }
         }
     }
 
@@ -250,22 +257,38 @@ public class KolPostDetailFragment extends BaseDaggerFragment
 
     @Override
     public void onFollowKolClicked(int rowNumber, int id) {
-        presenter.followKol(id, rowNumber);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.followKol(id, rowNumber);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnlikeKolClicked(int adapterPosition, int id) {
-        presenter.unlikeKol(id, adapterPosition, this);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unlikeKol(id, adapterPosition, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
