@@ -6,13 +6,20 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.SessionRouter;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.account.fragment.MitraAccountFragment;
+import com.tokopedia.mitra.applink.MitraApplinkUrl;
 import com.tokopedia.mitra.common.MitraComponentInstance;
 import com.tokopedia.mitra.homepage.contract.MitraParentHomepageContract;
 import com.tokopedia.mitra.homepage.di.DaggerMitraHomepageComponent;
@@ -28,6 +35,13 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
     private static final int REQUEST_CODE_LOGIN_THEN_ACCOUNT = 1001;
 
     private BottomNavigation homeNavigation;
+    private AppCompatTextView parentToolbarTitle;
+    private AppCompatImageView parentToolbarLogo;
+
+    @DeepLink(MitraApplinkUrl.HOMEPAGE)
+    public static Intent getCallingApplinkIntent(Context context, Bundle bundle) {
+        return new Intent(context, MitraParentHomepageActivity.class);
+    }
 
     @Inject
     MitraParentHomepagePresenter presenter;
@@ -48,8 +62,11 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
         initInjector();
         setupToolbar();
         homeNavigation = findViewById(R.id.mitra_bottom_nav);
+        parentToolbarLogo = findViewById(R.id.parent_toolbar_logo);
+        parentToolbarTitle = findViewById(R.id.parent_toolbar_title);
         homeNavigation.setOnNavigationItemSelectedListener(this);
         presenter.attachView(this);
+        presenter.onViewCreated();
     }
 
     private void initInjector() {
@@ -125,6 +142,27 @@ public class MitraParentHomepageActivity extends BaseSimpleActivity implements M
     @Override
     public void setHelpMenuSelected() {
         setSelectedNavigationMenu(R.id.menu_mitra_help);
+    }
+
+    @Override
+    public void hideToolbarLogo() {
+        parentToolbarLogo.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setToolbarTitle(int resId) {
+        parentToolbarTitle.setVisibility(View.VISIBLE);
+        parentToolbarTitle.setText(resId);
+    }
+
+    @Override
+    public void showToolbarLogo() {
+        parentToolbarLogo.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideToolbarTitle() {
+        parentToolbarTitle.setVisibility(View.GONE);
     }
 
     private void setSelectedNavigationMenu(int itemId) {

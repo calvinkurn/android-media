@@ -8,23 +8,29 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.common.MitraBaseFragment;
 import com.tokopedia.mitra.common.MitraComponentInstance;
-import com.tokopedia.mitra.common.di.MitraComponent;
+import com.tokopedia.mitra.homepage.adapter.HomepageCategoriesAdapter;
+import com.tokopedia.mitra.homepage.adapter.HomepageCategoriesAdapterTypeFactory;
+import com.tokopedia.mitra.homepage.adapter.HomepageCategoriesTypeFactory;
+import com.tokopedia.mitra.homepage.adapter.HomepageCategoryClickListener;
 import com.tokopedia.mitra.homepage.contract.MitraHomepageContract;
 import com.tokopedia.mitra.homepage.di.DaggerMitraHomepageComponent;
 import com.tokopedia.mitra.homepage.di.MitraHomepageComponent;
+import com.tokopedia.mitra.homepage.domain.model.CategoryRow;
 import com.tokopedia.mitra.homepage.presenter.MitraHomepagePresenter;
-import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.login.loginphonenumber.view.activity.LoginPhoneNumberActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -36,9 +42,11 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
     private static final int REQUEST_CODE_LOGIN = 1001;
     LinearLayout loginLayout;
     AppCompatButton loginBtn;
+    RecyclerView categoriesRecyclerView;
 
     @Inject
     MitraHomepagePresenter presenter;
+    private HomepageCategoriesAdapter adapter;
 
     public MitraHomepageFragment() {
         // Required empty public constructor
@@ -52,6 +60,7 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
         View view = inflater.inflate(R.layout.fragment_mitra_homepage, container, false);
         loginLayout = view.findViewById(R.id.layout_login);
         loginBtn = view.findViewById(R.id.btn_login);
+        categoriesRecyclerView = view.findViewById(R.id.rv_categories);
         return view;
     }
 
@@ -106,7 +115,7 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
 
     @Override
     public void showMessageInRedSnackBar(int resId) {
-        SnackbarManager.makeRed(getView(), getString(resId), Snackbar.LENGTH_SHORT);
+        SnackbarManager.makeRed(getView(), getString(resId), Snackbar.LENGTH_SHORT).show();
     }
 
     @Override
@@ -115,11 +124,33 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
     }
 
     @Override
+    public void renderCategories(List<CategoryRow> categoryRows) {
+        HomepageCategoriesTypeFactory adapterTypeFactory = new HomepageCategoriesAdapterTypeFactory(new HomepageCategoryClickListener() {
+            @Override
+            public void actionClick(CategoryRow categoryRow) {
+                presenter.onApplinkReceive(categoryRow.getApplinks());
+            }
+        });
+        adapter = new HomepageCategoriesAdapter(adapterTypeFactory);
+        GridLayoutManager layoutManager
+                = new GridLayoutManager(getActivity(), 3);
+        categoriesRecyclerView.setLayoutManager(layoutManager);
+        categoriesRecyclerView.setHasFixedSize(true);
+        categoriesRecyclerView.setNestedScrollingEnabled(false);
+        categoriesRecyclerView.setAdapter(adapter);
+        adapter.addElement(categoryRows);
+    }
+
+    @Override
+    public void navigateToNextPage(Intent applinkIntent) {
+        startActivity(applinkIntent);
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (resultCode) {
+        switch (requestCode) {
             case REQUEST_CODE_LOGIN:
-                //TODO : check user logged in
                 presenter.onLoginResultReceived();
                 break;
         }

@@ -10,8 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.account.contract.MitraAccountContract;
@@ -21,6 +23,7 @@ import com.tokopedia.mitra.account.presenter.MitraAccountPresenter;
 import com.tokopedia.mitra.common.MitraComponentInstance;
 import com.tokopedia.mitra.common.di.DaggerMitraComponent;
 import com.tokopedia.mitra.common.di.MitraComponent;
+import com.tokopedia.mitra.homepage.activity.MitraParentHomepageActivity;
 
 import javax.inject.Inject;
 
@@ -32,6 +35,8 @@ public class MitraAccountFragment extends BaseDaggerFragment implements MitraAcc
     private AppCompatTextView nameTextView;
     private AppCompatTextView phoneNumberTextView;
     private LinearLayout logoutLayout;
+    private LinearLayout accountLayout;
+    private ProgressBar progressBar;
 
     @Inject
     MitraAccountPresenter presenter;
@@ -49,6 +54,8 @@ public class MitraAccountFragment extends BaseDaggerFragment implements MitraAcc
         nameTextView = view.findViewById(R.id.tv_name);
         phoneNumberTextView = view.findViewById(R.id.tv_phone_number);
         logoutLayout = view.findViewById(R.id.logout_layout);
+        accountLayout = view.findViewById(R.id.account_layout);
+        progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
 
@@ -107,6 +114,7 @@ public class MitraAccountFragment extends BaseDaggerFragment implements MitraAcc
             @Override
             public void onClick(View view) {
                 presenter.onLogoutConfirmed();
+                dialog.dismiss();
             }
         });
 
@@ -120,7 +128,33 @@ public class MitraAccountFragment extends BaseDaggerFragment implements MitraAcc
     }
 
     @Override
-    public void navigateToLogin() {
+    public void navigateToHomepage() {
+        startActivity(MitraParentHomepageActivity.getCallingIntent(getActivity()));
+        getActivity().finish();
+    }
 
+    @Override
+    public void showLogoutLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideAccountPage() {
+        accountLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideLogoutLoading() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showAccountPage() {
+        accountLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void showLogoutErrorMessage(int resId) {
+        NetworkErrorHelper.showRedCloseSnackbar(getActivity(), getString(resId));
     }
 }

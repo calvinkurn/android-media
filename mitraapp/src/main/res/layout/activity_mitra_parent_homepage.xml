@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/main_view"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -27,11 +28,23 @@
             android:gravity="center_horizontal"
             android:orientation="horizontal">
 
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/parent_toolbar_title"
+                style="@style/TextView.Title.Bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:foregroundGravity="center_horizontal"
+                android:visibility="gone"
+                tools:text="Akun Saya"/>
+
             <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/parent_toolbar_logo"
                 android:layout_width="132dp"
                 android:layout_height="34dp"
                 android:foregroundGravity="center_horizontal"
-                app:srcCompat="@drawable/ic_mitra_tokopedia_logo" />
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_mitra_tokopedia_logo"/>
         </LinearLayout>
 
 
@@ -42,12 +55,12 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <com.tokopedia.design.component.BottomNavigation
         android:id="@+id/mitra_bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:menu="@menu/menu_mitra_homepage" />
+        app:menu="@menu/menu_mitra_homepage"/>
 
 </LinearLayout>

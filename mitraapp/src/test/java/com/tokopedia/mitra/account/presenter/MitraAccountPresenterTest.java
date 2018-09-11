@@ -3,10 +3,12 @@ package com.tokopedia.mitra.account.presenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.logout.domain.model.LogoutDomain;
 import com.tokopedia.logout.domain.usecase.LogoutUseCase;
+import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.RxAndroidTestPlugins;
 import com.tokopedia.mitra.RxJavaTestPlugins;
 import com.tokopedia.mitra.account.contract.MitraAccountContract;
-import com.tokopedia.usecase.RequestParams;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,12 +18,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Observable;
+import rx.Observable;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -87,8 +89,20 @@ public class MitraAccountPresenterTest {
     }
 
     @Test
-    public void onLogoutConfirmed() {
+    public void onLogoutConfirmed_initialCall_showLoading() {
+        LogoutDomain logoutDomain = new LogoutDomain(false);
+        when(logoutUseCase.createObservable(anyObject())).thenReturn(
+                rx.Observable.just(logoutDomain)
+        );
+        presenter.onLogoutConfirmed();
 
+        verify(view).showLogoutLoading();
+        verify(view).hideAccountPage();
+    }
+
+    @Test
+    public void onLogoutConfirmed_isSuccessFalse_showFailedErrorMessage() {
+        //when
         LogoutDomain logoutDomain = new LogoutDomain(false);
         when(logoutUseCase.createObservable(anyObject())).thenReturn(
                 rx.Observable.just(logoutDomain)
@@ -98,7 +112,45 @@ public class MitraAccountPresenterTest {
         presenter.onLogoutConfirmed();
 
         //then
-        //HIT LOGOUT
-        verify(view, times(0)).navigateToLogin();
+        verify(view).hideLogoutLoading();
+        verify(view).showAccountPage();
+        verify(view).showLogoutErrorMessage(R.string.mitra_account_logout_failed);
+        verifyNoMoreInteractions();
+
+    }
+
+    @Test
+    public void onLogoutConfirmed_isSuccessTrue_navigateToHomepage() {
+        //when
+        LogoutDomain logoutDomain = new LogoutDomain(true);
+        when(logoutUseCase.createObservable(anyObject())).thenReturn(
+                rx.Observable.just(logoutDomain)
+        );
+
+        //when
+        presenter.onLogoutConfirmed();
+
+        //then
+        verify(view).hideLogoutLoading();
+        verify(view).showAccountPage();
+        verify(view).navigateToHomepage();
+
+    }
+
+    @Test
+    public void onLogoutConfirmed_otherError_showFailedErrorMessage() {
+        //when
+        when(logoutUseCase.createObservable(anyObject())).thenReturn(
+                Observable.error(new RuntimeException())
+        );
+
+        //when
+        presenter.onLogoutConfirmed();
+
+        //then
+        verify(view).hideLogoutLoading();
+        verify(view).showAccountPage();
+        verify(view).showLogoutErrorMessage(R.string.mitra_account_logout_failed);
+
     }
 }

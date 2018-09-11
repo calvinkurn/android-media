@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.mitra.account.fragment.MitraAccountFragment;
 
 import dagger.Component;
@@ -27,4 +28,6 @@ public interface MitraComponent {
     Context getContext();
 
     UserSession userSession();
+
+    ApplinkRouter applinkRouter();
 }
