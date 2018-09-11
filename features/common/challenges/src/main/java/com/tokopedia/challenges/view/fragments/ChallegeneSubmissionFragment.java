@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -107,7 +108,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private ChallengesFragmentCallbacks fragmentCallbacks;
     private String tncText;
     private String buzzPointText;
-    private TextView tvHowBuzzPointsText;
+    private LinearLayout tvHowBuzzPointsText;
     private String challengeId;
     private Boolean isPastChallenge;
     private FloatingActionButton btnShare;
@@ -463,7 +464,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            tvHowBuzzPointsText.setText(Utils.generateText(getActivity(), buzzPointText));
+            Utils.generateText(tvHowBuzzPointsText,buzzPointText);
         }
     }
 

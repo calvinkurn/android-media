@@ -208,6 +208,13 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bindData(final SubmissionResult productItem) {
             submissionTitle.setText(productItem.getTitle());
+            if(Utils.checkIsPastChallenge(productItem.getCollection().getEndDate())) {
+                ivFavourite.setVisibility(View.GONE);
+                ivShareVia.setVisibility(View.GONE);
+            }else {
+                ivFavourite.setVisibility(View.VISIBLE);
+                ivShareVia.setVisibility(View.VISIBLE);
+            }
 
             ImageHandler.loadImage(context, submissionImage, Utils.getImageUrlForSubmission(productItem.getThumbnailUrl()), R.color.grey_1100, R.color.grey_1100);
 

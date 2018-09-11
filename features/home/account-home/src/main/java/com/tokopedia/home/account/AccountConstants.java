@@ -60,6 +60,7 @@ public class AccountConstants {
         public static final String TOKOPOINTS = "tokopoints";
         public static final String MY_COUPON = "kupon saya";
         public static final String PEMBELI = "pembeli";
+        public static final String CLICK_CHALLENGE = "challenge";
         public static final String PENJUAL = "penjual";
         public static final String USER = "user";
         public static final String SETTING = "setting";

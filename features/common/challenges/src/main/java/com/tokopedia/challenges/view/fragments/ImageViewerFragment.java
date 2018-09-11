@@ -74,12 +74,12 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
 
             @Override
             public void OnStateZoom() {
-                vpImageViewer.SetAllowPageSwitching(false);
+                vpImageViewer.setAllowPageSwitching(false);
             }
 
             @Override
             public void OnStateDefault() {
-                vpImageViewer.SetAllowPageSwitching(true);
+                vpImageViewer.setAllowPageSwitching(true);
             }
         });
         Log.d(TAG, "onCreateView");

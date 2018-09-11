@@ -13,9 +13,11 @@ import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.webkit.URLUtil;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
+import com.tokopedia.challenges.view.customview.BulletTextView;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.Awards;
 import com.tokopedia.core.gcm.Constants;
@@ -264,17 +266,15 @@ public class Utils {
         textView.setMovementMethod(LinkMovementMethod.getInstance());
 
         textView.setText(spannableString, TextView.BufferType.SPANNABLE);
+
     }
 
-    public static SpannableStringBuilder generateText(@NonNull Context context, @NonNull String text) {
-        SimpleSpanBuilder ssb = new SimpleSpanBuilder();
-
-        for (String each : text.split("~")) {
-            ssb.appendWithSpace("\u25CF", new ForegroundColorSpan(Color.GREEN));
-            ssb.appendWithLineBreak(each);
+    public static void generateText(LinearLayout layout, @NonNull String text) {
+        for (String each : text.replaceFirst("~","").split("~")) {
+            BulletTextView bulletTextView = new BulletTextView(layout.getContext());
+            bulletTextView.setBuzzPoint(each);
+            layout.addView(bulletTextView);
         }
-
-        return ssb.build();
     }
 
     public static boolean checkIsPastChallenge(String challengeTime) {
