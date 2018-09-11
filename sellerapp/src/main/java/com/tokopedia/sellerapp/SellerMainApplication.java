@@ -280,19 +280,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         return deepLinkDelegate.supportsUri(appLink);
     }
 
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
-    }
-
 }
