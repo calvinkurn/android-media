@@ -1,5 +1,5 @@
-mutation UpdateInterest($interestID: [Int]) {
-  feed_interest_user_update(interestID:$interestID){
+mutation FeedInterestUserUpdate($interestID: [Int!]!) {
+  feed_interest_user_update(interestID: $interestID) {
     success
     error
   }
