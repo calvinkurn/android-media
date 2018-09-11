@@ -75,30 +75,6 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     @BindView(R2.id.topup_button)
     TextView topupButton;
 
-    /*@BindView(R2.id.sp_title)
-    TextView spTitle;
-
-    @BindView(R2.id.sp_status)
-    TextView spStatus;
-
-    @BindView(R2.id.sp_not_enabled)
-    TextView spNotEnabled;
-
-    @BindView(R2.id.sp_kyc_status)
-    LinearLayout spKYCStatusLayout;
-
-    @BindView(R2.id.sp_kyc_status_desc)
-    TextView spKYCStatusDesc;
-
-    @BindView(R2.id.sp_details_list)
-    RecyclerView detailListRecyclerView;
-
-    @BindView(R2.id.sp_action_list)
-    RecyclerView actionListRecyclerView;
-
-    @BindView(R2.id.sp_list_separator)
-    View spListSeparator;*/
-
 
     DatePickerUtil datePicker;
     DepositAdapter adapter;
