@@ -33,6 +33,8 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
         void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId);
 
+        void onProductSelected(Product item);
+
     }
 
     public MitraDigitalCategoryView(Context context) {
@@ -95,8 +97,10 @@ public class MitraDigitalCategoryView extends LinearLayout {
                                 new DigitalWidgetView<>(getContext());
                         digitalWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
                             @Override
-                            public void onItemSelected(Object itemId) {
-
+                            public void onItemSelected(Object item) {
+                                if (item instanceof Product) {
+                                    actionListener.onProductSelected((Product) item);
+                                }
                             }
 
                             @Override

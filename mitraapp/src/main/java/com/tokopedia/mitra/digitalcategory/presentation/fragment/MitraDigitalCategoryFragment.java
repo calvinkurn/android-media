@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,12 @@ import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
 import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.activity.MitraDigitalChooserActivity;
+import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalBuyView;
 import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalCategoryView;
 import com.tokopedia.mitra.digitalcategory.presentation.model.DigitalCategoryModel;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalCategoryContract;
@@ -31,12 +34,34 @@ import javax.inject.Inject;
  */
 public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements MitraDigitalCategoryContract.View {
 
+    private static final String ARG_CATEGORY_ID = "ARG_CATEGORY_ID";
+
     private MitraDigitalCategoryView mitraDigitalCategoryView;
+    private MitraDigitalBuyView mitraDigitalBuyView;
 
     private DigitalCategoryModel digitalCategoryModel;
 
+    private int categoryId;
+
     @Inject
     MitraDigitalCategoryPresenter presenter;
+
+    public static Fragment newInstance(int categoryId) {
+        Fragment fragment = new MitraDigitalCategoryFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(ARG_CATEGORY_ID, categoryId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            categoryId = getArguments().getInt(ARG_CATEGORY_ID);
+        }
+    }
 
     @Nullable
     @Override
@@ -44,6 +69,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
         View rootview = inflater.inflate(R.layout.fragment_agent_digital_category, container, false);
 
         mitraDigitalCategoryView = rootview.findViewById(R.id.view_category);
+        mitraDigitalBuyView = rootview.findViewById(R.id.view_buy);
 
         return rootview;
     }
@@ -54,7 +80,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 
         presenter.attachView(this);
 
-        presenter.getCategory(5);
+        presenter.getCategory(categoryId);
     }
 
     @Override
@@ -90,9 +116,14 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 } else if (inputFieldModel.getName().equals("product_id")) {
                     String titleChooser = inputFieldModel.getText();
                     Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser(getActivity(),
-                            digitalCategoryModel.getId(), "", titleChooser);
+                            digitalCategoryModel.getId(), selectedItemId, titleChooser);
                     startActivityForResult(intent, 1001);
                 }
+            }
+
+            @Override
+            public void onProductSelected(Product product) {
+                mitraDigitalBuyView.setVisibility(View.VISIBLE);
             }
         });
         mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(), defaultId);

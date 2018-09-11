@@ -1,6 +1,7 @@
 package com.tokopedia.mitra.digitalcategory.presentation.adapter;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,16 @@ public class WidgetItemAdapter<T> extends RecyclerView.Adapter<WidgetItemAdapter
     private List<T> items;
     private String defaultId;
 
-    public WidgetItemAdapter(List<T> items, String defaultId) {
+    private ActionListener actionListener;
+
+    public interface ActionListener {
+
+        void onItemSelected(Product product);
+
+    }
+
+    public WidgetItemAdapter(ActionListener actionListener, List<T> items, String defaultId) {
+        this.actionListener = actionListener;
         this.items = items;
         this.defaultId = defaultId;
     }
@@ -45,23 +55,30 @@ public class WidgetItemAdapter<T> extends RecyclerView.Adapter<WidgetItemAdapter
 
     class WidgetItemViewHolder<F> extends RecyclerView.ViewHolder {
 
+        private CardView cardView;
         private TextView textProductName;
         private TextView textProductPrice;
+
+        private Product product;
 
         WidgetItemViewHolder(View itemView) {
             super(itemView);
 
+            cardView = itemView.findViewById(R.id.card_view);
             textProductName = itemView.findViewById(R.id.text_product_name);
             textProductPrice = itemView.findViewById(R.id.text_product_price);
+
+            itemView.setOnClickListener(view -> actionListener.onItemSelected(product));
         }
 
         void bind(F f, String defaultId) {
+            this.product = (Product) f;
             textProductName.setText(((Product) f).getDesc());
             textProductPrice.setText(((Product) f).getPrice());
             if (((Product) f).getProductId().equals(defaultId)) {
-                itemView.setBackgroundColor(itemView.getResources().getColor(R.color.green_50));
+                cardView.setCardBackgroundColor(itemView.getResources().getColor(com.tokopedia.design.R.color.green_50));
             } else {
-                itemView.setBackgroundColor(itemView.getResources().getColor(R.color.white));
+                cardView.setCardBackgroundColor(itemView.getResources().getColor(R.color.white));
             }
         }
 

@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.digitalcategory.presentation.adapter.WidgetItemAdapter;
 
@@ -84,8 +85,10 @@ public class DigitalWidgetView<T> extends FrameLayout {
             showDropdown(items, inputFieldModel, defaultId);
         } else if (inputFieldModel.getType().equals("list")) {
             showList(items, defaultId);
-        } if (inputFieldModel.getType().equals("radio")) {
+        } else if (inputFieldModel.getType().equals("radio")) {
             showRadio(items, inputFieldModel, defaultId);
+        } else if (inputFieldModel.getType().equals("select_list")) {
+            showList(items, defaultId);
         }
     }
 
@@ -93,7 +96,12 @@ public class DigitalWidgetView<T> extends FrameLayout {
         recyclerview.setVisibility(VISIBLE);
         recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        WidgetItemAdapter widgetItemAdapter = new WidgetItemAdapter(items, defaultId);
+        WidgetItemAdapter widgetItemAdapter = new WidgetItemAdapter(new WidgetItemAdapter.ActionListener() {
+            @Override
+            public void onItemSelected(Product product) {
+                actionListener.onItemSelected(product);
+            }
+        }, items, defaultId);
         recyclerview.setAdapter(widgetItemAdapter);
 
         widgetItemAdapter.notifyDataSetChanged();
