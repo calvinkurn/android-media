@@ -21,7 +21,7 @@ public class UploadImageService extends AuthService<UploadImageApi> {
 
     @Override
     protected String getBaseUrl() {
-        return "https://up-staging.tokopedia.net/upload/attachment/";
+        return "https://ws.tokopedia.com/";
     }
 
     @Override

@@ -19,6 +19,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.ID;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.RESOLUTION;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.SERVER_ID;
@@ -40,7 +41,7 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
     public Observable<UploadImageModel> createObservable(com.tokopedia.core.base.domain.RequestParams requestParams) {
         String url = UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE + "upload/attachment";
 
-        return uploadImageRepository.uploadImage(url,
+        return uploadImageRepository.uploadImage(requestParams.getString(IMAGE_UPLOAD_URL, url),
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
         );
