@@ -56,6 +56,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
     private final TextView titleHeader;
     private final TextView totalProduct;
     private final TopAdsBannerView topAdsBannerView;
+    private final SubCategoryLifestyleItemDecoration itemDecoration;
 
     public CategoryLifestyleHeaderViewHolder(View itemView,
                                              RevampCategoryAdapter.CategoryListener listener) {
@@ -68,6 +69,7 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
         this.layoutChildCategory = itemView.findViewById(R.id.view_child_category);
         this.listChildCategory = itemView.findViewById(R.id.recyclerview_child_category);
         this.topAdsBannerView = (TopAdsBannerView) itemView.findViewById(R.id.topAdsBannerView);
+        this.itemDecoration = new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
         this.categoryListener = listener;
     }
 
@@ -146,7 +148,8 @@ public class CategoryLifestyleHeaderViewHolder extends AbstractViewHolder<Catego
             adapter.notifyDataSetChanged();
             listChildCategory.setHasFixedSize(true);
             listChildCategory.setLayoutManager(generateLayoutManager(model.getChildCategoryModelList().size()));
-            listChildCategory.addItemDecoration(new SubCategoryLifestyleItemDecoration(itemView.getResources().getDimensionPixelSize(R.dimen.dp_8)));
+            listChildCategory.removeItemDecoration(itemDecoration);
+            listChildCategory.addItemDecoration(itemDecoration);
             listChildCategory.setAdapter(adapter);
         }
     }

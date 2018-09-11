@@ -74,11 +74,15 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         super.onViewCreated(view, savedInstanceState);
         adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(this::getData);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         if (getContext() != null) {
             GraphqlClient.init(getContext());
             getData();
-            swipeRefreshLayout.setOnRefreshListener(this::getData);
         }
     }
 

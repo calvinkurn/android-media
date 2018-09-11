@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -178,6 +179,10 @@ public class MainParentActivity extends AppCompatActivity implements
         FrameLayout container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
 
         titles = titles();
         fragmentList = fragments();
@@ -241,9 +246,7 @@ public class MainParentActivity extends AppCompatActivity implements
         presenter.setView(this);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment;
+    private int getPositionFragmentByMenu(MenuItem item) {
         int i = item.getItemId();
         int position = 0;
         if (i == R.id.menu_home) {
@@ -257,14 +260,19 @@ public class MainParentActivity extends AppCompatActivity implements
         } else if (i == R.id.menu_account) {
             position = ACCOUNT_MENU;
         }
+        return position;
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!isUserLogin())
                 return false;
 
-        fragment = fragmentList.get(position);
+        Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
@@ -293,7 +301,6 @@ public class MainParentActivity extends AppCompatActivity implements
                     ft.hide(frag); // hide all fragment
                 }
             }
-            scrollToTop(currentFrag); // enable feature scroll to top for home & feed
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
@@ -301,7 +308,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
@@ -384,16 +391,13 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -598,7 +602,7 @@ public class MainParentActivity extends AppCompatActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
-    public static class UserSession{
+    public static class UserSession {
         public static boolean isFirstTimeUser(Context context) {
             return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
         }
