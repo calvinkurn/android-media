@@ -458,7 +458,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete && submissionResult != null) {
-            presenter.deleteSubmittedPost(submissionResult.getId(), submissionResult.getCollection().getId());
+            showDeleteDialog(submissionResult.getId(), submissionResult.getCollection().getId());
         }
         return true;
     }
@@ -471,7 +471,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void showShareAndLikeButtons() {
         btnShare.setVisibility(View.VISIBLE);
-        likeBtn.setVisibility(View.VISIBLE);
     }
 
     private void showDeleteDialog(String submissionId, String ChallengeId) {
