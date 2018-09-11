@@ -115,6 +115,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     private fun updateInterest() {
         val selectedIds = ArrayList<Int>()
         for (item in adapter.getList()) {
+            adapter.setItemUnClickable(item)
             if (item.isSelected) {
                 selectedIds.add(item.categoryId)
             }

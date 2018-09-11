@@ -37,9 +37,14 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
         holder.itemView.category.text = list[position].categoryName
         ImageHandler.LoadImage(holder.itemView.image, list[position].image)
 
-        holder.itemView.backgroundView.setOnClickListener {
-            list[holder.adapterPosition].isSelected = !list[holder.adapterPosition].isSelected
-            notifyItemChanged(holder.adapterPosition)
+        holder.itemView.backgroundView.isClickable = list[position].selectable
+        if (list[position].selectable) {
+            holder.itemView.backgroundView.setOnClickListener {
+                list[holder.adapterPosition].isSelected = !list[holder.adapterPosition].isSelected
+                notifyItemChanged(holder.adapterPosition)
+            }
+        } else {
+            holder.itemView.backgroundView.setOnClickListener(null)
         }
     }
 
@@ -48,6 +53,12 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
     override fun onViewRecycled(holder: ViewHolder) {
         super.onViewRecycled(holder)
         ImageHandler.clearImage(holder.itemView.image)
+    }
+
+    fun setItemUnClickable(item: InterestPickItemViewModel) {
+        val index = list.indexOf(item)
+        item.selectable = false
+        notifyItemChanged(index)
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
