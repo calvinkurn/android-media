@@ -13,17 +13,52 @@ import javax.annotation.Nullable;
 public class EditSolutionResponseDomain {
 
     @Nullable
+    private CurrentSolutionDomain currentSolution;
+
+    @Nullable
     private List<EditSolutionDomain> solutions = new ArrayList<>();
 
     @Nullable
     private FreeReturnDomain freeReturn;
 
     @Nullable
+    private List<SolutionComplaintDomain> complaints = new ArrayList<>();
+
+    @Nullable
+    private SolutionMessageDomain message;
+
+    @Nullable
     private boolean isSuccess;
 
-    public EditSolutionResponseDomain(@Nullable List<EditSolutionDomain> solutions, @Nullable FreeReturnDomain freeReturn) {
+
+    public EditSolutionResponseDomain(CurrentSolutionDomain currentSolution,
+                                      List<EditSolutionDomain> solutions,
+                                      FreeReturnDomain freeReturn,
+                                      List<SolutionComplaintDomain> complaints,
+                                      SolutionMessageDomain message) {
+        this.currentSolution = currentSolution;
         this.solutions = solutions;
         this.freeReturn = freeReturn;
+        this.complaints = complaints;
+        this.message = message;
+    }
+
+    @Nullable
+    public CurrentSolutionDomain getCurrentSolution() {
+        return currentSolution;
+    }
+
+    public void setCurrentSolution(@Nullable CurrentSolutionDomain currentSolution) {
+        this.currentSolution = currentSolution;
+    }
+
+    @Nullable
+    public List<SolutionComplaintDomain> getComplaints() {
+        return complaints;
+    }
+
+    public void setComplaints(@Nullable List<SolutionComplaintDomain> complaints) {
+        this.complaints = complaints;
     }
 
     @Nullable
@@ -51,5 +86,14 @@ public class EditSolutionResponseDomain {
 
     public void setFreeReturn(@Nullable FreeReturnDomain freeReturn) {
         this.freeReturn = freeReturn;
+    }
+
+    @Nullable
+    public SolutionMessageDomain getMessage() {
+        return message;
+    }
+
+    public void setMessage(@Nullable SolutionMessageDomain message) {
+        this.message = message;
     }
 }

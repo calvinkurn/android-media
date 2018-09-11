@@ -68,6 +68,10 @@
 
     <color name="pinkish_grey">#bdbdbd</color>
     <color name="widget_card_with_action_separator">#cfcfcf</color>
+    <color name="black_24">#2e000000</color>
+    <color name="black_26">#42000000</color>
+    <color name="black_56">#8f000000</color>
+    <color name="greyish_bg">#ededed</color>
 
     <color name="shadow_color_1">#00CCCCCC</color>
     <color name="shadow_color_2">#10CCCCCC</color>

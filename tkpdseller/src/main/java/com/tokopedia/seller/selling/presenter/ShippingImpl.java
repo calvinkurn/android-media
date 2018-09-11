@@ -31,6 +31,7 @@ import com.tokopedia.seller.selling.model.ModelParamSelling;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingData;
 import com.tokopedia.seller.selling.model.orderShipping.OrderShippingList;
 import com.tokopedia.core.util.ValidationTextUtil;
+import com.tokopedia.seller.selling.view.listener.SellingTransaction;
 
 import org.parceler.Parcel;
 import org.parceler.Parcels;
@@ -421,7 +422,7 @@ public class ShippingImpl extends Shipping {
                 modelParamSellings.add(modelParamSelling);
             }
             bundle.putParcelable(SellingService.MODEL_PARAM_SELLING_KEY, Parcels.wrap(modelParamSellings));
-            ((ActivitySellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
+            ((SellingTransaction) context).SellingAction(SellingService.CONFIRM_MULTI_SHIPPING, bundle);
             view.clearMultiSelector();
         }
     }

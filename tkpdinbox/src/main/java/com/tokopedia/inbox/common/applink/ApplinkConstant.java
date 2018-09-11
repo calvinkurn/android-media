@@ -9,4 +9,6 @@ public class ApplinkConstant {
     public static final String TOPCHAT = "tokopedia://topchat/";
     public static final String GROUPCHAT_LIST = "tokopedia://groupchat";
 
+    public static final String RESCENTER_BUYER = "tokopedia://resolution/list/buyer";
+    public static final String RESCENTER_SELLER = "tokopedia://resolution/list/seller";
 }

@@ -22,13 +22,14 @@ public class BalanceTokoCash implements Parcelable {
     private long rawHoldBalance;
     private String applinks;
     private String redirectUrl;
-    private int link;
+    private boolean link;
     private long rawThreshold;
     private String threshold;
     private List<String> abTags;
 
     public BalanceTokoCash() {
     }
+
 
     protected BalanceTokoCash(Parcel in) {
         titleText = in.readString();
@@ -41,10 +42,33 @@ public class BalanceTokoCash implements Parcelable {
         rawHoldBalance = in.readLong();
         applinks = in.readString();
         redirectUrl = in.readString();
-        link = in.readInt();
+        link = in.readByte() != 0;
         rawThreshold = in.readLong();
         threshold = in.readString();
         abTags = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(titleText);
+        dest.writeParcelable(actionBalance, flags);
+        dest.writeString(balance);
+        dest.writeLong(rawBalance);
+        dest.writeString(totalBalance);
+        dest.writeLong(rawTotalBalance);
+        dest.writeString(holdBalance);
+        dest.writeLong(rawHoldBalance);
+        dest.writeString(applinks);
+        dest.writeString(redirectUrl);
+        dest.writeByte((byte) (link ? 1 : 0));
+        dest.writeLong(rawThreshold);
+        dest.writeString(threshold);
+        dest.writeStringList(abTags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<BalanceTokoCash> CREATOR = new Creator<BalanceTokoCash>() {
@@ -58,29 +82,6 @@ public class BalanceTokoCash implements Parcelable {
             return new BalanceTokoCash[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(titleText);
-        parcel.writeParcelable(actionBalance, i);
-        parcel.writeString(balance);
-        parcel.writeLong(rawBalance);
-        parcel.writeString(totalBalance);
-        parcel.writeLong(rawTotalBalance);
-        parcel.writeString(holdBalance);
-        parcel.writeLong(rawHoldBalance);
-        parcel.writeString(applinks);
-        parcel.writeString(redirectUrl);
-        parcel.writeInt(link);
-        parcel.writeLong(rawThreshold);
-        parcel.writeString(threshold);
-        parcel.writeStringList(abTags);
-    }
 
     public String getTitleText() {
         return titleText;
@@ -162,11 +163,11 @@ public class BalanceTokoCash implements Parcelable {
         this.redirectUrl = redirectUrl;
     }
 
-    public int getLink() {
+    public boolean getLink() {
         return link;
     }
 
-    public void setLink(int link) {
+    public void setLink(boolean link) {
         this.link = link;
     }
 
