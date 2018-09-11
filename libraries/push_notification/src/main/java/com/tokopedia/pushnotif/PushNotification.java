@@ -42,8 +42,6 @@ public class PushNotification {
                 notifyChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else if (notificationId == Constant.NotificationId.GROUPCHAT) {
                 notifyGroupChat(context, applinkNotificationModel, notificationId, notificationManagerCompat);
-            } else if (notificationId == Constant.NotificationId.CHALLENGES) {
-                notifyChallenges(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             } else {
                 notifyGeneral(context, applinkNotificationModel, notificationId, notificationManagerCompat);
             }
