@@ -53,7 +53,7 @@ public class CouponValueEntity {
     private int promoId;
 
     @Expose
-    @SerializedName(value = "subTitle", alternate = {"sub_title"})
+    @SerializedName(value = "subTitle", alternate = {"sub_title", "subtitle"})
     private String subTitle;
 
     @Expose

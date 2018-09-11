@@ -117,7 +117,7 @@
         android:layout_weight="1"
         android:background="@drawable/bg_button_green"
         android:gravity="center"
-        android:text="Kirim Sekarang"
+        android:text="@string/tp_label_send_now"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/tp_text_size_small"

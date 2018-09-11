@@ -11,10 +11,12 @@ import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.contract.HomepageContract;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.model.PreValidateRedeemBase;
 import com.tokopedia.tokopoints.view.model.RedeemCouponBaseEntity;
 import com.tokopedia.tokopoints.view.model.TokenDetailOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
+import com.tokopedia.tokopoints.view.model.TokoPointEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
@@ -335,6 +337,37 @@ public class HomepagePresenter extends BaseDaggerPresenter<HomepageContract.View
                     }
 
                     getView().onPreValidateError(errorTitle, errorMessage);
+                }
+            }
+        });
+    }
+
+
+    @Override
+    public void getPopupNotification() {
+        GraphqlRequest request = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getAppContext().getResources(),
+                R.raw.tp_gql_popup_notification),
+                TokoPointDetailEntity.class);
+        mStartSendGift.clearRequest();
+        mStartSendGift.addRequest(request);
+        mStartSendGift.execute(new Subscriber<GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                //NA
+            }
+
+            @Override
+            public void onNext(GraphqlResponse response) {
+                TokoPointDetailEntity data = response.getData(TokoPointDetailEntity.class);
+                if (data != null
+                        && data.getTokoPoints() != null
+                        && data.getTokoPoints().getPopupNotif() != null) {
+                    getView().showPopupNotification(data.getTokoPoints().getPopupNotif());
                 }
             }
         });

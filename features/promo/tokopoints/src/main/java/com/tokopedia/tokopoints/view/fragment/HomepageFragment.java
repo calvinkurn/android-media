@@ -40,6 +40,7 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.model.LobDetails;
 import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
+import com.tokopedia.tokopoints.view.model.PopupNotification;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TokoPointPromosEntity;
 import com.tokopedia.tokopoints.view.model.TokoPointStatusPointsEntity;
@@ -91,6 +92,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         mPresenter.attachView(this);
         initListener();
         mPresenter.getTokoPointDetail();
+        mPresenter.getPopupNotification();
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(getAppContext(), CommonConstant.PREF_TOKOPOINTS);
         if (!localCacheHandler.getBoolean(CommonConstant.PREF_KEY_ON_BOARDED)) {
             showOnBoardingTooltip(getString(R.string.tp_label_know_tokopoints), getString(R.string.tp_message_tokopoints_on_boarding));
@@ -656,5 +658,16 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
         startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+    }
+
+    @Override
+    public void showPopupNotification(PopupNotification data) {
+        if (data.getTitle() == null || data.getTitle().trim().isEmpty()) {
+            return;
+        }
+
+        PopupNotificationBottomSheet popupNotificationBottomSheet = new PopupNotificationBottomSheet();
+        popupNotificationBottomSheet.setData(data);
+        popupNotificationBottomSheet.show(getChildFragmentManager(), data.getTitle());
     }
 }
