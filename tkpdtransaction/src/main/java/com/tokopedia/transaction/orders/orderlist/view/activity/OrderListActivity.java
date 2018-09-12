@@ -12,6 +12,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.util.GlobalConfig;
@@ -26,6 +27,7 @@ import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
@@ -139,6 +141,10 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
+        UserSession userSession = new UserSession(getActivity());
+        if (userSession != null && !userSession.isLoggedIn()) {
+            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
+        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);

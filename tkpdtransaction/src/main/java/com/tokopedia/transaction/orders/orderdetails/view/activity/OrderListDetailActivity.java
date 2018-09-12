@@ -10,6 +10,8 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.applink.TransactionAppLink;
@@ -18,6 +20,7 @@ import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OmsDetailFragment;
 import com.tokopedia.transaction.orders.orderdetails.view.fragment.OrderListDetailFragment;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * Created by baghira on 09/05/18.
@@ -60,6 +63,10 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected void onCreate(Bundle arg) {
+        UserSession userSession = new UserSession(this);
+        if (userSession != null && !userSession.isLoggedIn()) {
+            RouteManager.route(this, ApplinkConst.LOGIN);
+        }
         if (getIntent().getExtras() != null) {
             orderId = getIntent().getStringExtra(ORDER_ID);
             Uri uri = getIntent().getData();

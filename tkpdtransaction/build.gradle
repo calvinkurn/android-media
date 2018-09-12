@@ -73,6 +73,7 @@ dependencies {
 
     implementation(group: 'com.bca.widget', name: 'oneclick', version: '1.0', ext: 'aar')
     implementation project(path: ':libraries:applink')
+    compile project(path: ':libraries:user_session')
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
 }
