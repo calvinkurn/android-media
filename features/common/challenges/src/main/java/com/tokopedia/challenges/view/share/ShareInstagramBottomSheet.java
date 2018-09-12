@@ -70,15 +70,14 @@ public class ShareInstagramBottomSheet extends BottomSheets {
 
         }
 
+        TextView btnCancel = view.findViewById(R.id.btn_cancel);
         TextView btnCopy = view.findViewById(R.id.btn_copy);
         btnCopy.setText("Salin " + hastag);
-        btnCopy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                copyToClipboard(hastag);
-                createInstagramIntent();
-            }
+        btnCopy.setOnClickListener(v -> {
+            copyToClipboard(hastag);
+            createInstagramIntent();
         });
+        btnCancel.setOnClickListener(v -> dismiss());
         //desc.setText(mLobDetails.getDescription());
 
 
