@@ -20,7 +20,7 @@ import java.util.List;
  */
 
 public class OrderHistoryAdapter extends RecyclerView
-        .Adapter<OrderHistoryAdapter.OrderHistoryViewHolder>{
+        .Adapter<OrderHistoryAdapter.OrderHistoryViewHolder> {
 
     private List<OrderHistoryListData> historyListDatas;
 
@@ -51,18 +51,20 @@ public class OrderHistoryAdapter extends RecyclerView
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
         holder.dot.setColorFilter(Color.parseColor(historyListDatas.get(position).getColor()));
-        if(position == historyListDatas.size() - 1) {
-            holder.dotTrail.setVisibility(View.GONE);
-        } else {
-            holder.dotTrail.setVisibility(View.VISIBLE);
-            holder.dotTrail.setBackgroundColor(
-                    Color.parseColor(historyListDatas.get(position).getColor())
-            );
+        if (position == historyListDatas.size() - 1) {
+            holder.dotTrailBot.setVisibility(View.GONE);
+        } else if (position == 0){
+            holder.dotTraiTop.setVisibility(View.GONE);
+        } else{
+//            holder.dotTrail.setVisibility(View.VISIBLE);
+//            holder.dotTrailBot.setBackgroundColor(
+//                    Color.parseColor(historyListDatas.get(position).getColor())
+//            );
         }
     }
 
     private void setTitleColor(OrderHistoryViewHolder holder, int position) {
-        if(position == 0) {
+        if (position == 0) {
             holder.orderHistoryTitle.setTextColor((Color.parseColor(
                     historyListDatas.get(position).getColor()
             )));
@@ -87,7 +89,9 @@ public class OrderHistoryAdapter extends RecyclerView
 
         private ImageView dot;
 
-        private View dotTrail;
+        private View dotTrailBot;
+
+        private View dotTraiTop;
 
         private TextView orderHistoryComment;
 
@@ -104,7 +108,9 @@ public class OrderHistoryAdapter extends RecyclerView
 
             dot = itemView.findViewById(R.id.dot_image);
 
-            dotTrail = itemView.findViewById(R.id.dot_trail);
+            dotTraiTop = itemView.findViewById(R.id.dot_trail_top);
+
+            dotTrailBot = itemView.findViewById(R.id.dot_trail_bottom);
 
             orderHistoryComment = itemView.findViewById(R.id.history_comment);
 
