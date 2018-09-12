@@ -14,7 +14,7 @@ import com.tokopedia.feedplus.domain.usecase.FavoriteShopUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFeedsUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsUseCase;
-import com.tokopedia.feedplus.domain.usecase.GetWhitelistUseCase;
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolSubscriber;
 import com.tokopedia.feedplus.view.subscriber.FollowUnfollowKolRecommendationSubscriber;

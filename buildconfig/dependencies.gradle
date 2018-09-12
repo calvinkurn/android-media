@@ -55,6 +55,7 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdKolCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
@@ -260,6 +261,7 @@ ext {
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
             explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
@@ -309,6 +311,7 @@ ext {
             nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             kol                   : ":features:content:kol",
+            kolCommon             : ":features:content:kol_common",
             explore               : ":features:content:explore",
             interestPick          : ":features:content:interest_pick",
             digitalproduct        : ":features:digital:digitalproduct",
