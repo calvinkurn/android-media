@@ -184,7 +184,11 @@ public class SearchInputView extends BaseCustomView {
         requestLayout();
     }
 
-
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+        searchTextView.setText(searchText);
+    }
+  
     public ImageView getSearchImageView() {
         return searchImageView;
     }

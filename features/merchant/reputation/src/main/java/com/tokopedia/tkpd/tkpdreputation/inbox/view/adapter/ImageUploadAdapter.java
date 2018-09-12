@@ -66,7 +66,7 @@ public class ImageUploadAdapter extends RecyclerView.Adapter<ImageUploadAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         return new ViewHolder(LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.listview_image_upload, viewGroup, false));
+                .inflate(R.layout.listview_image_upload_review, viewGroup, false));
     }
 
     @Override
