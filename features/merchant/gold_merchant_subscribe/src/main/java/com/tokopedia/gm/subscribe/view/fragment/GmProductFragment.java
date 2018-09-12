@@ -42,7 +42,7 @@ public abstract class GmProductFragment
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
     public static final String SELECTED_PRODUCT_NAME = "SELECTED_PRODUCT_NAME";
     public static final String SELECTED_PRODUCT_PRICE = "SELECTED_PRODUCT_PRICE";
-    private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
+    public static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
     public RecyclerView recyclerView;
 
     public Button buttonSelectProduct;
@@ -68,7 +68,7 @@ public abstract class GmProductFragment
         return fragment;
     }
 
-    void confirmSelection() {
+    public void confirmSelection() {
         if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
             UnifyTracking.eventClickSubscribeGoldMerchant(adapter.getProductSelection());
             listener.finishProductSelection(currentSelectedProductId, returnType);

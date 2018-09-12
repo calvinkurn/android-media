@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.membership.view.adapter.GmMembershipProductAdapter
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_NAME
@@ -54,10 +56,6 @@ class GmMembershipProductFragment : GmProductFragment(){
         adapter.clearDatas()
     }
 
-    override fun setVisibilitySelectButton(isView: Boolean) {
-        buttonSelectProduct.visibility = View.GONE
-    }
-
     override fun getTitle(): String {
         return getString(R.string.gmsubscribe_extend_product_selector)
     }
@@ -69,13 +67,22 @@ class GmMembershipProductFragment : GmProductFragment(){
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
             android.R.id.home -> {
-                setReturn()
+                activity.finish()
             }
         }
         return true
     }
 
-    fun setReturn(){
+    override fun confirmSelection() {
+        if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
+            UnifyTracking.eventClickSubscribeGoldMerchant(adapter.productSelection)
+            setReturn()
+        } else {
+            NetworkErrorHelper.showSnackbar(activity, getString(R.string.gm_subscribe_no_product_selected))
+        }
+    }
+
+    private fun setReturn(){
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_SUBSCRIPTION_TYPE, currentSelectedProductId)
         resultIntent.putExtra(EXTRA_SUBSCRIPTION_NAME, currentSelectedProductName)
@@ -86,10 +93,11 @@ class GmMembershipProductFragment : GmProductFragment(){
 
     companion object {
         @JvmStatic
-        fun newInstance(defaultSelected : Int) : GmMembershipProductFragment {
+        fun newInstance(defaultSelected : Int, buttonString : String) : GmMembershipProductFragment {
             val fragment = GmMembershipProductFragment()
             val args = Bundle()
             args.putInt(DEFAULT_SELECTED_PRODUCT, defaultSelected)
+            args.putString(STRING_BUTTON_SELECT, buttonString)
             fragment.arguments = args
             return fragment
 

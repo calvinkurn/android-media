@@ -6,8 +6,9 @@
 
     <Button
         android:id="@+id/button_select_product"
-        style="@style/Button.Submit.Orange"
-        android:layout_alignParentBottom="true" />
+        style="@style/Button.Submit.Green"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/dp_16"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview_package_chooser"
