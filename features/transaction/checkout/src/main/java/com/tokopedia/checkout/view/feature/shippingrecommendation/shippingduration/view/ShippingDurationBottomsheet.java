@@ -22,7 +22,6 @@ import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingdurati
 import com.tokopedia.design.component.BottomSheets;
 import com.tokopedia.logisticdata.data.constant.CourierConstant;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorData;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +120,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     protected void onCloseButtonClick() {
+        shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
         dismiss();
     }
 
@@ -183,7 +183,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
-                                          int cartPosition) {
+                                          int cartPosition, String serviceName) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
         for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
@@ -203,7 +203,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         }
         shippingDurationBottomsheetListener.onShippingDurationChoosen(
                 shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, flagNeedToSetPinpoint);
+                presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
         dismiss();
     }
 
@@ -223,5 +223,10 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 shippingDurationAdapter.notifyItemChanged(0);
             }
         }
+    }
+
+    @Override
+    public void onDurationShipmentRecommendationShowCaseClosed() {
+        shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
     }
 }

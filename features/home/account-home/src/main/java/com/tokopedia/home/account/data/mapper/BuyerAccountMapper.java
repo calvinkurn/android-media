@@ -34,7 +34,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  * @author by alvinatin on 10/08/18.
  */
 
-public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel>{
+public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
     private Context context;
 
     @Inject
@@ -43,8 +43,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
     }
 
     @Override
-    public BuyerViewModel call(GraphqlResponse graphqlResponse) {
-        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+    public BuyerViewModel call(AccountModel accountModel) {
         return getBuyerModel(context, accountModel);
     }
 
@@ -62,12 +61,13 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
+        tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
         if (!accountModel.getWallet().isLinked()){
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
-            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }

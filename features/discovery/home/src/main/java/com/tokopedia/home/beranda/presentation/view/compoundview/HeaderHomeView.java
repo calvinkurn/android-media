@@ -132,32 +132,33 @@ public class HeaderHomeView extends BaseCustomView {
         } else {
             tokopointProgressBarLayout.setVisibility(GONE);
             tokopointActionContainer.setVisibility(VISIBLE);
-            tvActionTokopoint.setVisibility(GONE);tvTitleTokoPoint.setVisibility(VISIBLE);
-        tvBalanceTokoPoint.setVisibility(VISIBLE);
-        //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
-        tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
-        tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
-        tokoPointHolder.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (headerViewModel.getTokoPointDrawerData() != null) {UnifyTracking.eventUserProfileTokopoints();
-                listener.actionTokoPointClicked(
-                        headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
-                        TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
-                                ? TITLE_HEADER_WEBSITE
-                                : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
-                );
-            }
+            tvActionTokopoint.setVisibility(GONE);
+            tvTitleTokoPoint.setVisibility(VISIBLE);
+            tvBalanceTokoPoint.setVisibility(VISIBLE);
+            //tvTitleTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getTierNameDesc());
+            tvTitleTokoPoint.setText(TITLE_HEADER_WEBSITE);
+            tvBalanceTokoPoint.setText(headerViewModel.getTokoPointDrawerData().getUserTier().getRewardPointsStr());
+            tokoPointHolder.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (headerViewModel.getTokoPointDrawerData() != null) {
+                        UnifyTracking.eventUserProfileTokopoints();
+                        listener.actionTokoPointClicked(
+                                headerViewModel.getTokoPointDrawerData().getMainPageUrl(),
+                                TextUtils.isEmpty(headerViewModel.getTokoPointDrawerData().getMainPageTitle())
+                                        ? TITLE_HEADER_WEBSITE
+                                        : headerViewModel.getTokoPointDrawerData().getMainPageTitle()
+                        );
+                    }
+                }
+            });
         }
-    });
-    }
 
     }
 
 
     private void renderVisibilityTitleOnlyTokoCash(boolean isVisibleButtonAction) {
-        if (headerViewModel.getHomeHeaderWalletActionData().getTypeAction() ==
-                HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
+        if (!headerViewModel.getHomeHeaderWalletActionData().isLinked()) {
             if (headerViewModel.getCashBackData() != null &&
                     headerViewModel.getCashBackData().getAmount() == 0) {
                 tvTitleTokocash.setVisibility(VISIBLE);
@@ -208,16 +209,16 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashActionContainer.setVisibility(VISIBLE);
             tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
             tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
-            if (homeHeaderWalletAction.getTypeAction()
-                    == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
-                tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+            tvActionTokocash.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
+            tokoCashHolder.setOnClickListener(getOnClickTokocashBalance(homeHeaderWalletAction));
+
+            if (homeHeaderWalletAction.isLinked()) {
                 tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
                 tvBalanceTokocash.setVisibility(VISIBLE);
                 tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
                 tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
                 tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
 
-                tvActionTokocash.setText(getContext().getString(R.string.top_up_button));
                 tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
                 tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
                 imageInfoBtn.setVisibility(GONE);
@@ -227,10 +228,10 @@ public class HeaderHomeView extends BaseCustomView {
                 tvBalanceTokocash.setVisibility(GONE);
                 tvActionTokocash.setVisibility(VISIBLE);
                 tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-                tokoCashHolder.setOnClickListener(getOnClickTokocashActionButton(homeHeaderWalletAction));
                 if (headerViewModel.isPendingTokocashChecked()
                         && headerViewModel.getCashBackData() != null) {
                     if (headerViewModel.getCashBackData().getAmount() > 0) {
+                        tvActionTokocash.setVisibility(GONE);
                         tvBalanceTokocash.setVisibility(VISIBLE);
                         tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                         tvBalanceTokocash.setTextColor(
@@ -291,9 +292,10 @@ public class HeaderHomeView extends BaseCustomView {
             @Override
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkActionButton().contains("webview") &&
-                        homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_ACTIVATION) {
+                        !homeHeaderWalletAction.isLinked()) {
                     UnifyTracking.eventTokoCashActivateClick();
                 }
+
                 listener.actionAppLinkWalletHeader(
                         homeHeaderWalletAction.getRedirectUrlActionButton(),
                         homeHeaderWalletAction.getAppLinkActionButton()
@@ -309,14 +311,14 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View v) {
                 if (!homeHeaderWalletAction.getAppLinkBalance().equals("") &&
                         !homeHeaderWalletAction.getAppLinkBalance().contains("webview") &&
-                        homeHeaderWalletAction.getTypeAction() == HomeHeaderWalletAction.TYPE_ACTION_TOP_UP) {
+                        homeHeaderWalletAction.isLinked()) {
                     UnifyTracking.eventTokoCashCheckSaldoClick();
-
-                    listener.actionAppLinkWalletHeader(
-                            homeHeaderWalletAction.getRedirectUrlBalance(),
-                            homeHeaderWalletAction.getAppLinkBalance()
-                    );
                 }
+
+                listener.actionAppLinkWalletHeader(
+                        homeHeaderWalletAction.getRedirectUrlBalance(),
+                        homeHeaderWalletAction.getAppLinkBalance()
+                );
             }
         };
     }

@@ -52,7 +52,6 @@ public class AccountConstants {
     }
 
     public static class Analytics {
-        public static final String CLICK_NAVIGATION_MENU = "clickNavigationMenu";
         public static final String CLICK_HOME_PAGE = "clickHomePage";
         public static final String AKUN_SAYA = "akun saya";
         public static final String CLICK = "click";
