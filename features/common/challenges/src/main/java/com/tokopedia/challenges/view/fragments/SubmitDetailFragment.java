@@ -213,10 +213,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         });
     }
 
-    public void showStatusInfo(String statusMessage) {
-        statusView.setVisibility(View.VISIBLE);
-        if (!TextUtils.isEmpty(statusMessage))
-            statusText.setText(statusMessage);
+    @Override
+    public void showStatusInfo(String statusMessage, boolean show) {
+        if (show) {
+            statusView.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(statusMessage))
+                statusText.setText(statusMessage);
+        }
     }
 
     @Override
@@ -269,14 +272,15 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
             likeBtn.setVisibility(View.VISIBLE);
+            showStatusInfo(null, false);
         } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if (Utils.STATUS_WAITING.equalsIgnoreCase(approveText)) {
-            showStatusInfo(statusMessage);
+            showStatusInfo(statusMessage, true);
         } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
-            showStatusInfo(statusMessage);
+            showStatusInfo(statusMessage, true);
         }
     }
 

@@ -51,8 +51,7 @@
                 android:paddingLeft="@dimen/dp_10"
                 android:paddingRight="@dimen/dp_10"
                 android:paddingTop="@dimen/dp_4"
-                app:layout_constraintLeft_toRightOf="@+id/cv_img_challenge"
-                tools:text="jdajsdkjsa" />
+                app:layout_constraintLeft_toRightOf="@+id/cv_img_challenge" />
 
             <TextView
                 android:id="@+id/tv_title"

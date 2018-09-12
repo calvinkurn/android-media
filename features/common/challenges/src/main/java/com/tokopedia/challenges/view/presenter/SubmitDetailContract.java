@@ -9,7 +9,7 @@ import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
-    public interface Presenter extends CustomerPresenter<View> {
+     interface Presenter extends CustomerPresenter<View> {
         void setDataInFields(SubmissionResult model);
 
         void likeBtnClick(SubmissionResult result);
@@ -17,8 +17,9 @@ public interface SubmitDetailContract {
         boolean getParticipatedStatus(SubmissionResult challengeResult);
     }
 
-    public interface View extends CustomerView {
-        void showStatusInfo(String message);
+     interface View extends CustomerView {
+
+        void showStatusInfo(String statusMessage, boolean show);
 
         void setProfilePic(String text);
 
