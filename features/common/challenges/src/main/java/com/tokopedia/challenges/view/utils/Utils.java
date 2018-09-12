@@ -70,14 +70,14 @@ public class Utils {
     }
 
     public static String convertUTCToString(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", new Locale("in", "ID", ""));
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date d = null;
         String formattedTime = null;
         try {
             d = sdf.parse(time);
-            SimpleDateFormat sdf2 = new SimpleDateFormat("d MMMM yyyy", new Locale("in", "ID", ""));
-            sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+            SimpleDateFormat sdf2 = new SimpleDateFormat("d MMM yyyy");
+            //sdf2.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
             formattedTime = sdf2.format(d);
 
         } catch (ParseException e) {
@@ -87,8 +87,8 @@ public class Utils {
     }
 
     public static long convertUTCToMillis(String time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", new Locale("in", "ID", ""));
-        sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date d = null;
         try {
             d = sdf.parse(time);
