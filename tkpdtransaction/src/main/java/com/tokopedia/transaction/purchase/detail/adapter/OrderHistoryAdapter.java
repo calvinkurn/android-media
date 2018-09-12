@@ -51,15 +51,23 @@ public class OrderHistoryAdapter extends RecyclerView
                 .setText(Html.fromHtml(historyListDatas.get(position).getOrderHistoryTitle()));
         holder.orderHistoryTime.setText(historyListDatas.get(position).getOrderHistoryTime());
         holder.dot.setColorFilter(Color.parseColor(historyListDatas.get(position).getColor()));
-        if (position == historyListDatas.size() - 1) {
-            holder.dotTrailBot.setVisibility(View.GONE);
-        } else if (position == 0){
+        if (position == 0) {
             holder.dotTraiTop.setVisibility(View.GONE);
-        } else{
-//            holder.dotTrail.setVisibility(View.VISIBLE);
-//            holder.dotTrailBot.setBackgroundColor(
-//                    Color.parseColor(historyListDatas.get(position).getColor())
-//            );
+            holder.dotTrailBot.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position).getColor())
+            );
+        } else if (position == historyListDatas.size() - 1) {
+            holder.dotTrailBot.setVisibility(View.GONE);
+            holder.dotTraiTop.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position - 1).getColor())
+            );
+        } else {
+            holder.dotTrailBot.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position).getColor())
+            );
+            holder.dotTraiTop.setBackgroundColor(
+                    Color.parseColor(historyListDatas.get(position - 1).getColor())
+            );
         }
     }
 
