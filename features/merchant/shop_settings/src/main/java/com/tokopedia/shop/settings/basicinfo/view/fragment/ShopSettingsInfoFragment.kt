@@ -353,7 +353,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToAboutGM() {
-        (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
+        (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {
