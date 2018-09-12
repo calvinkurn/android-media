@@ -143,8 +143,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         @Override
         public void onReceive(final Context context, final Intent intent) {
             if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
-                getView().setSnackBarErrorMessage("Konten Anda diterima!");
                 getView().hideProgress();
+                getView().setSnackBarErrorMessage("Konten Anda diterima!");
                 if (!TextUtils.isEmpty(postId)) {
                     getSubmissionDetail();
                 }

@@ -464,7 +464,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     private void hideShareAndLikeButtons() {
-        btnShare.setVisibility(View.GONE);
+        llShare.setVisibility(View.GONE);
         likeBtn.setVisibility(View.GONE);
         setResubmitInvisible();
     }
