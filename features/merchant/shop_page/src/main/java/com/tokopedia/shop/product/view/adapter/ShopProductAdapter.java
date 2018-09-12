@@ -198,16 +198,24 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
 
     @Override
     public void clearAllElements() {
-        clearTopData();
+        clearPromoData();
+        clearFeaturedData();
         clearEtalaseHighlightData();
+        clearEtalaseData();
         clearProductList();
     }
 
-    public void clearTopData() {
+    public void clearPromoData() {
+        setShopProductPromoViewModel(null);
+    }
+
+    public void clearFeaturedData() {
+        setShopProductFeaturedViewModel(null);
+    }
+
+    public void clearEtalaseData() {
         setShopProductPromoViewModel(null);
         setShopProductFeaturedViewModel(null);
-        setShopEtalase(null);
-        setShopEtalaseTitle(null);
     }
 
     public void clearEtalaseHighlightData() {

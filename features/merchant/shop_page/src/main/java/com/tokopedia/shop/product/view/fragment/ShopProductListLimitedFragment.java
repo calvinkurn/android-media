@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.shop.R;
@@ -36,19 +37,18 @@ import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
 import com.tokopedia.shop.product.di.module.ShopProductModule;
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
-import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
+import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
+import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
@@ -62,7 +62,6 @@ import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -217,16 +216,18 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     protected void loadInitialData() {
         shopProductAdapter.clearAllNonDataElement();
         loadTopData();
-        reloadProductData();
+        reloadProductData(true);
     }
 
     // load product list first time
-    private void reloadProductData() {
+    private void reloadProductData(boolean needLoadEtalaseHighlight) {
         isLoadingInitialData = true;
         bottomActionView.hide(false);
         shopProductAdapter.clearAllNonDataElement();
         shopProductAdapter.clearProductList();
-        shopProductAdapter.setShopProductEtalaseHighlightViewModel(null);
+        if (needLoadEtalaseHighlight) {
+            shopProductAdapter.setShopProductEtalaseHighlightViewModel(null);
+        }
 
         showLoading();
         String shopId = shopInfo.getInfo().getShopId();
@@ -237,14 +238,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         } else {
             loadData(getDefaultInitialPage());
 
-            loadEtalaseHighLight();
+            if (needLoadEtalaseHighlight) {
+                loadEtalaseHighLight();
+            }
         }
-
     }
 
     protected void loadTopData() {
         if (shopInfo != null) {
-            shopProductAdapter.clearTopData();
+            shopProductAdapter.clearPromoData();
+            shopProductAdapter.clearFeaturedData();
 
             shopProductLimitedListPresenter.loadProductPromoModel(getOfficialWebViewUrl(shopInfo));
 
@@ -655,7 +658,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         gridLayoutManager.scrollToPositionWithOffset(DEFAULT_ETALASE_POSITION, 0);
 
         // no need ro rearraged, just notify the adapter to reload product list by etalase id
-        reloadProductData();
+        reloadProductData(false);
     }
 
     @Override
@@ -767,7 +770,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public void onResume() {
         super.onResume();
         if (needReloadData) {
-            reloadProductData();
+            reloadProductData(false);
             needReloadData = false;
         }
     }
