@@ -11,7 +11,7 @@ class AuthenticateCCViewHolder(val onAdapterInteractionListener: BaseListAdapter
     : AbstractViewHolder<TypeAuthenticateCreditCard>(view) {
 
     override fun bind(element: TypeAuthenticateCreditCard?) {
-        itemView.radioSelectedAuth.isSelected = element?.isSelected ?: false
+        itemView.radioSelectedAuth.isChecked =  element?.isSelected ?: false
         itemView.descriptionAuthType.text = element?.description
         itemView.titleAuthenticate.text = element?.title
         itemView.radioSelectedAuth.setOnClickListener { onAdapterInteractionListener.onItemClicked(element)}

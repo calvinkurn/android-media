@@ -5,7 +5,7 @@ import com.tokopedia.payment.setting.add.AddCreditCardFragment
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCCScope
 import dagger.Component
 
-@AuthenticateCCScope
+@AddCreditCardScope
 @Component(modules = arrayOf(AddCreditCardModule::class), dependencies = arrayOf(BaseAppComponent::class))
 interface AddCreditCardComponent{
     fun inject(addCreditCardFragment: AddCreditCardFragment)

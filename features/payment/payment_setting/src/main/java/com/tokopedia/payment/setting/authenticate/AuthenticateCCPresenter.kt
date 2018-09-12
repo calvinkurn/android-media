@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.payment.setting.R
+import com.tokopedia.payment.setting.authenticate.model.Data
 import com.tokopedia.payment.setting.authenticate.model.Datum
 import com.tokopedia.payment.setting.authenticate.model.ResponseCheckWhitelist
 import com.tokopedia.payment.setting.authenticate.model.TypeAuthenticateCreditCard
@@ -22,7 +23,7 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDag
         variables.put(UPDATE_STATUS, true)
         variables.put(AUTH_VALUE, authValue)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.whitelist_credit_card), ResponseCheckWhitelist::class.java, variables)
+                R.raw.whitelist_credit_card), Data::class.java, variables)
         whiteListCCUseCase.clearRequest()
         whiteListCCUseCase.addRequest(graphqlRequest)
         whiteListCCUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -39,8 +40,8 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDag
 
             override fun onNext(objects: GraphqlResponse) {
                 view.hideProgressLoading()
-                val whiteListCC = objects.getData<ResponseCheckWhitelist>(ResponseCheckWhitelist::class.java)
-                view.onResultUpdateWhiteList(whiteListCC.data?.checkWhiteListStatus)
+                val whiteListCC = objects.getData<Data>(Data::class.java)
+                view.onResultUpdateWhiteList(whiteListCC?.checkWhiteListStatus)
             }
         })
     }
@@ -48,8 +49,9 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDag
     override fun checkWhiteList(resources : Resources) {
         val variables = HashMap<String, Any?>()
         variables.put(UPDATE_STATUS, false)
+        variables.put(AUTH_VALUE, 0)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
-                R.raw.whitelist_credit_card), ResponseCheckWhitelist::class.java, variables)
+                R.raw.whitelist_credit_card), Data::class.java, variables)
         whiteListCCUseCase.clearRequest()
         whiteListCCUseCase.addRequest(graphqlRequest)
         whiteListCCUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
@@ -64,8 +66,8 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDag
             }
 
             override fun onNext(objects: GraphqlResponse) {
-                val whiteListCC = objects.getData<ResponseCheckWhitelist>(ResponseCheckWhitelist::class.java)
-                view.renderList(generateDataListAuth(whiteListCC.data?.checkWhiteListStatus?.data))
+                val whiteListCC = objects.getData<Data>(Data::class.java)
+                view.renderList(generateDataListAuth(whiteListCC?.checkWhiteListStatus?.data))
             }
         })
     }
@@ -102,7 +104,7 @@ class AuthenticateCCPresenter(val whiteListCCUseCase : GraphqlUseCase) : BaseDag
 
     companion object {
         val UPDATE_STATUS = "updateStatus"
-        val AUTH_VALUE = "atuhValue"
+        val AUTH_VALUE = "authValue"
 
         val SINGLE_AUTH_VALUE = 1
         val DOUBLE_AUTH_VALUE = 0

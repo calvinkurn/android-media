@@ -36,6 +36,7 @@
                 android:layout_alignParentRight="true" />
 
             <TextView
+                android:layout_toLeftOf="@+id/radioSelectedAuth"
                 android:id="@+id/descriptionAuthType"
                 style="@style/TextView.Micro.BlackSecondary"
                 android:layout_below="@+id/titleAuthenticate"
