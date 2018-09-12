@@ -14,14 +14,12 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.SellerModuleRouter;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
-import com.tokopedia.seller.product.manage.view.fragment.ProductManageFragment;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.manage.view.fragment.ProductManageSellerFragment;
 
 /**
  * Created by zulfikarrahman on 9/25/17.
  */
-@DeepLink(ApplinkConst.PRODUCT_MANAGE)
 public class ProductManageActivity extends BaseTemporaryDrawerActivity implements HasComponent<ProductComponent> {
 
     public static final String TAG = ProductManageActivity.class.getSimpleName();

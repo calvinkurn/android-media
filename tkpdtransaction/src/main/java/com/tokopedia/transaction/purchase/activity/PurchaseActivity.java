@@ -23,7 +23,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.R2;
-import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.purchase.adapter.PurchaseTabAdapter;
 import com.tokopedia.transaction.purchase.dialog.CancelTransactionDialog;
 import com.tokopedia.transaction.purchase.fragment.TxListFragment;
@@ -38,11 +37,8 @@ import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRou
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_ALL_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_CONFIRMED;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVERED;
-import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_DELIVER_ORDER;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_PROCESSED;
 import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SHIPPED;
-import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_STATUS_ORDER;
-import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.TAB_POSITION_PURCHASE_VERIFICATION;
 
 /**
  * @author by anggaprasetiyo on 8/26/16.
@@ -63,6 +59,10 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     private String stateTxFilterID;
 
     private PurchaseTabAdapter adapter;
+
+    public static Intent newInstance(Context context) {
+        return new Intent(context, PurchaseActivity.class);
+    }
 
     @DeepLink(ApplinkConst.ORDER_LIST)
     public static Intent getIntent(Context context, Bundle extras) {
@@ -167,7 +167,7 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     protected int getLayoutId() {
         if (GlobalConfig.isSellerApp())
             return R.layout.activity_purchase_tx_module;
-        return 0;
+        return super.getLayoutId();
     }
 
     @Override
@@ -187,10 +187,10 @@ public class PurchaseActivity extends BaseTemporaryDrawerActivity implements
     @Override
     protected void initVar() {
         tabContents = new ArrayList<>();
-        tabContents.add(TAB_POSITION_PURCHASE_CONFIRMED, getString(R.string.label_tx_confirmed));
-        tabContents.add(TAB_POSITION_PURCHASE_PROCESSED, getString(R.string.label_tx_processed));
-        tabContents.add(TAB_POSITION_PURCHASE_SHIPPED, getString(R.string.label_tx_shipped));
-        tabContents.add(TAB_POSITION_PURCHASE_DELIVERED, getString(R.string.label_tx_delivered));
+        tabContents.add(TAB_POSITION_PURCHASE_CONFIRMED, getString(R.string.tkpdtransaction_label_tx_confirmed));
+        tabContents.add(TAB_POSITION_PURCHASE_PROCESSED, getString(R.string.tkpdtransaction_label_tx_processed));
+        tabContents.add(TAB_POSITION_PURCHASE_SHIPPED, getString(R.string.tkpdtransaction_label_tx_shipped));
+        tabContents.add(TAB_POSITION_PURCHASE_DELIVERED, getString(R.string.tkpdtransaction_label_tx_delivered));
         tabContents.add(TAB_POSITION_PURCHASE_ALL_ORDER,
                 getString(R.string.title_tab_purchase_transactions));
     }

@@ -25,19 +25,20 @@
 /features/merchant/shop_page/                           @tokopedia/minion-stuart
 /features/top_ads/top_ads_management/                   @tokopedia/minion-stuart
 /features/top_ads/top_ads_management_common/            @tokopedia/minion-stuart
+/libraries/product_draft_database/                      @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
-/features/transaction/checkout                  @tokopedia/minion_bob
-/features/transaction/transactionanalytics      @tokopedia/minion_bob
-/features/transaction/transactiondata           @tokopedia/minion_bob
-/features/logistic/district_recommendation      @tokopedia/minion_bob
-/features/logistic/logisticdata                 @tokopedia/minion_bob
-/features/logistic/logisticuploadawb            @tokopedia/minion_bob
-/features/logistic/tracking                     @tokopedia/minion_bob
+/features/transaction/checkout/                 @tokopedia/minion-bob
+/features/transaction/transactionanalytics/     @tokopedia/minion-bob
+/features/transaction/transactiondata/          @tokopedia/minion-bob
+/features/logistic/district_recommendation/     @tokopedia/minion-bob
+/features/logistic/logisticdata/                @tokopedia/minion-bob
+/features/logistic/logisticuploadawb/           @tokopedia/minion-bob
+/features/logistic/tracking/                    @tokopedia/minion-bob
 
 /features/user/topchat/                 @tokopedia/minion-kevin
 /features/user/groupchat/               @tokopedia/minion-kevin
@@ -47,9 +48,11 @@
 /features/user/settingbank/             @tokopedia/minion-kevin
 /features/user/changepassword/          @tokopedia/minion-kevin
 /features/user/logout/                  @tokopedia/minion-kevin
+/features/user/bankdb/                  @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
+/features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
 /libraries/bottom_sheet_builder/        @tokopedia/minion-stuart

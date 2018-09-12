@@ -42,11 +42,6 @@ public class GlobalNavModule {
     }
 
     @Provides
-    GraphqlUseCase provideGraphqlUseCase() {
-        return new GraphqlUseCase();
-    }
-
-    @Provides
     GetDrawerNotificationUseCase provideGetDrawerNotificationUseCase(GraphqlUseCase graphqlUseCase, CartListener cartListener) {
         return new GetDrawerNotificationUseCase(graphqlUseCase, new NotificationMapper(), cartListener);
     }

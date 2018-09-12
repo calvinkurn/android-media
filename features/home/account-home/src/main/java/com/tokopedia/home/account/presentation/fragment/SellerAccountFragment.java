@@ -148,6 +148,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     @Override
+    public void showErroNoConnection() {
+        showError(getString(R.string.error_no_internet_connection));
+    }
+
+    @Override
     public void onScrollToTop() {
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);

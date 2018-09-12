@@ -25,7 +25,7 @@ import com.tokopedia.inbox.rescenter.createreso.view.listener.CreateResolutionCe
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.CreateResoWithoutAttachmentSubscriber;
 import com.tokopedia.inbox.rescenter.createreso.view.subscriber.LoadProductSubscriber;
-import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ProblemResult;
+import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ComplaintResult;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.ResultViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.AmountViewModel;
 import com.tokopedia.inbox.rescenter.createreso.view.viewmodel.productproblem.OrderDetailViewModel;
@@ -113,13 +113,10 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
 
     @Override
     public void chooseProductProblemClicked() {
-        ArrayList<ProblemResult> problemResults = new ArrayList<>();
-        for (ProblemResult problemResult : resultViewModel.problem) {
-            problemResults.add(problemResult);
-        }
+        ArrayList<ComplaintResult> complaintResults = new ArrayList<>(resultViewModel.complaints);
         mainView.transitionToChooseProductAndProblemPage(mappingDomainToViewModel(
                 productProblemResponseDomain),
-                problemResults);
+                complaintResults);
     }
 
     @Override
@@ -134,9 +131,9 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
     }
 
     @Override
-    public void addResultFromStep1(ArrayList<ProblemResult> problemResultList) {
+    public void addResultFromStep1(ArrayList<ComplaintResult> complaintResults) {
         resultViewModel = new ResultViewModel();
-        resultViewModel.problem = problemResultList;
+        resultViewModel.complaints = complaintResults;
         resultViewModel.orderId = orderId;
         if (resolutionId != null) {
             resultViewModel.resolutionId = resolutionId;
@@ -211,9 +208,7 @@ public class CreateResolutionCenterPresenter extends BaseDaggerPresenter<CreateR
                 }
             }
         }
-        ProductProblemListViewModel productProblemListViewModel =
-                new ProductProblemListViewModel(modelList);
-        return productProblemListViewModel;
+        return new ProductProblemListViewModel(modelList);
     }
 
     private ProblemViewModel mappingProblemViewModel(ProblemDomain problemDomain) {

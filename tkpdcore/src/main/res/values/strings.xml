@@ -238,7 +238,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_add_product">TAMBAH PRODUK</string>
     <string name="title_add_product_lowercase">Tambah Produk</string>
     <string name="prompt_search">Cari</string>
-    <string name="title_message">Pesan</string>
+    <string name="title_message">Chat</string>
     <string name="shipping_status">Status Pengiriman</string>
     <string name="shipping_confirm">Konfirmasi Pengiriman</string>
     <string name="new_order">Order Baru</string>
@@ -541,13 +541,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related Manage People -->
     <string name="error_phone_too_short">Nomor mobile terlalu pendek, minimum 6 karakter</string>
     <string name="title_null">null</string>
-    <string name="title_newsletter">Newsletter</string>
-    <string name="title_newsletter_desc">Setiap promosi, tips dan trik, update informasi tentang Tokopedia</string>
-    <string name="title_message_from_admin">Pesan Pribadi dari Admin</string>
-    <string name="title_review_desc">Setiap Ulasan dan Komentar</string>
-    <string name="title_talk_desc">Setiap Diskusi Produk dan Komentar</string>
-    <string name="title_message_desc">Setiap Pesan Pribadi</string>
-    <string name="title_message_from_admin_desc">Setiap Pesan Pribadi yang saya terima dari Admin</string>
+    <string name="title_newsletter">Buletin Tokopedia</string>
+    <string name="title_newsletter_desc">Setiap promo, tips &amp; trik, informasi terbaru seputar Tokopedia</string>
+    <string name="title_message_from_admin">Chat Tokopedia Administrator</string>
+    <string name="title_review_desc">Setiap ulasan dan komentar yang saya terima</string>
+    <string name="title_talk_desc">Setiap pertanyaan dan komentar diskusi yang saya terima</string>
+    <string name="title_message_desc">Setiap chat yang saya terima</string>
+    <string name="title_message_from_admin_desc">Setiap chat dari Tokopedia Administrator yang saya terima</string>
     <string name="title_show_mobile">Tampilkan Mobile</string>
     <string name="title_show_birth">Tampilkan Tanggal Lahir</string>
     <string name="title_show_messenger">Tampilkan Messenger</string>
@@ -595,7 +595,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
-    <!-- Strings related Manage People -->
+ <!-- Strings related Manage People -->
 
 
     <!-- Strings related to browse category -->
@@ -926,8 +926,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_track">Track</string>
     <string name="title_status">Status</string>
     <string name="item_all_stats">Semua Status</string>
-    <string name="item_on_shipping">Dalam Pengiriman</string>
-    <string name="item_delivered">Transaksi Terkirim</string>
+    <string name="item_on_shipping">Sedang Dikirim</string>
+    <string name="item_delivered">Sampai Tujuan</string>
     <string name="item_finished">Transaksi Selesai</string>
     <string name="item_cancel">Transaksi Dibatalkan</string>
     <string name="title_city">Kota</string>
@@ -1151,6 +1151,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
 
     <string name="title_activity_settings_notification">Atur nada dan getar</string>
     <string name="title_change_ring">Atur nada dan getar</string>
+    <string name="notification_setting_text">Setiap notifikasi yang Anda aktifkan, akan Anda terima melalui email.</string>
     <string name="title_select_agency_error">Kurir harus dipilih</string>
     <string name="title_index_prod_shop">Feed</string>
     <string name="title_index_hot_list">Hot List</string>
@@ -2220,5 +2221,7 @@ di Tokopedia Sekarang!</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
+    <string name="label_tokocard">TokoCard</string>
+    <string name="react_native_developer_mode">React Native Developer Mode</string>
 
 </resources>

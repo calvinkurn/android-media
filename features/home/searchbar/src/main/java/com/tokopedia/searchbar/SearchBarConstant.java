@@ -7,6 +7,8 @@ public class SearchBarConstant {
 
     public static final String CLICK_TOP_NAV = "clickTopNav";
 
+    public static final String CLICK_WISHLIST = "clickWishlist";
+
     public static final String TOP_NAV = "top nav";
 
     public static final String CLICK = "click";

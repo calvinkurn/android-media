@@ -13,6 +13,9 @@ public class ResolutionResponse<T> {
     private T data;
 
     @SerializedName("message_error")
+    private List<String> error_messages = new ArrayList<>();
+
+    @SerializedName("messageError")
     private List<String> errorMessages = new ArrayList<>();
 
     public T getData() {
@@ -32,6 +35,16 @@ public class ResolutionResponse<T> {
                 if (i != errorMessages.size() - 1
                         && !errorMessages.get(i).equals("")
                         && !errorMessages.get(i + 1).equals("")) {
+                    stringBuilder.append("\n");
+                }
+            }
+        } else {
+            for (int i = 0, statusMessagesSize = error_messages.size(); i < statusMessagesSize; i++) {
+                String string = error_messages.get(i);
+                stringBuilder.append(string);
+                if (i != error_messages.size() - 1
+                        && !error_messages.get(i).equals("")
+                        && !error_messages.get(i + 1).equals("")) {
                     stringBuilder.append("\n");
                 }
             }

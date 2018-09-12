@@ -22,6 +22,7 @@ public interface ApplinkConst {
     String SHOP = "tokopedia://shop/{shop_id}";
     String SHOP_ETALASE = "tokopedia://shop/{shop_id}/etalase/{etalase_id}";
     String SHOP_TALK = "tokopedia://shop/{shop_id}/talk";
+    String SHOP_ETALASE_WITH_KEYWORD_AND_SORT = "tokopedia://shop/{shop_id}/etalase/{etalase_id}/?search={search}&sort={sort}";
     String SHOP_REVIEW = "tokopedia://shop/{shop_id}/review";
     String SHOP_NOTE = "tokopedia://shop/{shop_id}/note";
     String SHOP_INFO = "tokopedia://shop/{shop_id}/info";
@@ -132,6 +133,8 @@ public interface ApplinkConst {
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String SETTING_ACCOUNT = "tokopedia://setting/account";
+    String SETTING_PASSWORD = "tokopedia://setting/password";
+    String SETTING_PROFILE = "tokopedia://setting/profile";
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -149,6 +152,9 @@ public interface ApplinkConst {
     String DEPOSIT = "tokopedia://saldo";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
+
+    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+    String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

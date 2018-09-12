@@ -32,6 +32,7 @@ import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topchat.R;
@@ -45,7 +46,10 @@ import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatViewModel;
 import com.tokopedia.topchat.chatlist.viewmodel.InboxChatViewModel;
 import com.tokopedia.topchat.chatroom.data.ChatWebSocketConstant;
 import com.tokopedia.topchat.chatroom.domain.pojo.reply.WebSocketResponse;
+import com.tokopedia.topchat.chatroom.domain.pojo.replyaction.Chat;
+import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.chatroom.view.activity.TimeMachineActivity;
+import com.tokopedia.topchat.chatroom.view.fragment.ChatRoomFragment;
 import com.tokopedia.topchat.chatroom.view.presenter.WebSocketInterface;
 import com.tokopedia.topchat.chatroom.view.viewmodel.BaseChatViewModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.ReplyParcelableModel;
@@ -123,7 +127,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     private Drawable getDetailMenuItem() {
         TextDrawable drawable = new TextDrawable(getContext());
         drawable.setText(getResources().getString(R.string.option_organize));
-        drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        if (GlobalConfig.isSellerApp()) {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        } else {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+        }
         drawable.setTextSize(16.0f);
         return drawable;
     }
@@ -539,6 +547,10 @@ public class InboxChatFragment extends BaseDaggerFragment
                 ReplyParcelableModel model = bundle.getParcelable(PARCEL);
                 adapter.moveToTop(model.getMessageId(), model.getMsg(), null, false);
             }
+        } else if(requestCode == InboxMessageConstant.OPEN_DETAIL_MESSAGE &&
+                  resultCode == ChatRoomFragment.CHAT_DELETED_RESULT_CODE &&
+                  data != null && data.hasExtra(ChatRoomActivity.PARAM_MESSAGE_ID) ) {
+            presenter.refreshData();
         }
 
         presenter.createWebSocket();

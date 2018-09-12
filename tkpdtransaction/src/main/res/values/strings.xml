@@ -25,7 +25,7 @@
     <string name="weight_place_holder">(WEIGHT)</string>
     <string name="item_place_holder"># item</string>
 
-    <string name="label_payment_setting">Pengaturan Pembayaran</string>
+    <string name="tkpdtransaction_label_payment_setting">Kartu Kredit</string>
     <string name="label_error_reason_must_fill">Alasan harus diisi</string>
     <string name="shipment_no_courier_available">Agen kurir tidak tersedia</string>
     <string name="courier_not_available">Alamat tidak didukung agen pengirim.</string>
@@ -78,6 +78,7 @@
     <string name="label_transaction_bank_account_destination">Rekening Tujuan</string>
     <string name="label_transaction_bank_account_source">Rekening Anda</string>
     <string name="label_transaction_date_transaction">Tanggal Transaksi</string>
+    <string name="label_event_date">Tanggal Event</string>
     <string name="label_transaction_date_purchase">Tanggal Pembelian :</string>
     <string name="label_purchase_of">Pembelian Oleh : </string>
     <string name="label_seller_shop">Penjual: </string>
@@ -274,12 +275,12 @@
     <string name="help_text">disini</string>
     <string name="contact_us_text">Untuk bantuan silakan klik disini</string>
     <string name="contact_us_applink">https://www.tokopedia.com/bantuan/</string>
-    <string name="type_of_ticket_events">Jenis Ticket Events</string>
+    <string name="type_of_ticket_events">Nama Event</string>
     <string name="address">Alamat</string>
-    <string name="category_ticket">Kategori Ticket</string>
-    <string name="number_of_bookings">Jumlah Booking</string>
-    <string name="label_tx_confirmed">Menunggu Konfirmasi</string>
-    <string name="label_tx_processed">Pesanan Diproses</string>
-    <string name="label_tx_shipped">Sedang Dikirim</string>
-    <string name="label_tx_delivered">Sampai Tujuan</string>
+    <string name="category_ticket">Kategori Tiket</string>
+    <string name="number_of_bookings">Jumlah Tiket</string>
+    <string name="tkpdtransaction_label_tx_confirmed">Menunggu Konfirmasi</string>
+    <string name="tkpdtransaction_label_tx_processed">Pesanan Diproses</string>
+    <string name="tkpdtransaction_label_tx_shipped">Sedang Dikirim</string>
+    <string name="tkpdtransaction_label_tx_delivered">Sampai Tujuan</string>
 </resources>

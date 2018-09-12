@@ -25,7 +25,7 @@ import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
@@ -199,6 +199,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         if (currentFragment != null && currentFragment instanceof CustomerView) {
             ((BaseAccountView) currentFragment).showError(message);
         }
+    }
+
+    @Override
+    public void showErroNoConnection() {
+        showError(getString(R.string.error_no_internet_connection));
     }
 
     @Override

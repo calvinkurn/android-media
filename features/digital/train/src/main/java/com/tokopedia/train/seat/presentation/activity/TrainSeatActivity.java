@@ -61,4 +61,10 @@ public class TrainSeatActivity extends TrainBaseActivity implements HasComponent
     public void setToolbar(String subtitle) {
         updateTitle(getString(R.string.train_seat_toolbar_title), subtitle);
     }
+
+    @Override
+    public int getToolbarHeight() {
+        return getResources().getDimensionPixelSize(R.dimen.dp_85);
+    }
 }
+

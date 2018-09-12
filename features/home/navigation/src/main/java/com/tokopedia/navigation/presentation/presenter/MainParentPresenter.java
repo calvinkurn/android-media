@@ -19,6 +19,8 @@ public class MainParentPresenter {
 
     private final GetDrawerNotificationUseCase getNotificationUseCase;
 
+    private boolean isReccuringApplink = false;
+
     public MainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
         this.getNotificationUseCase = getNotificationUseCase;
     }
@@ -43,5 +45,17 @@ public class MainParentPresenter {
     public void onDestroy() {
         this.getNotificationUseCase.unsubscribe();
         this.mainParentView = null;
+    }
+
+    public boolean isFirstTimeUser() {
+        return mainParentView.isFirstTimeUser();
+    }
+
+    public Boolean isRecurringApplink() {
+        return isReccuringApplink;
+    }
+
+    public void setIsRecurringApplink(Boolean isReccuringApplink) {
+        this.isReccuringApplink = isReccuringApplink;
     }
 }

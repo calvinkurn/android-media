@@ -1,9 +1,7 @@
 package com.tokopedia.checkout.view.di.component;
 
-import com.tokopedia.checkout.view.di.module.CartListModule;
 import com.tokopedia.checkout.view.di.module.TestCartListModule;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
-import com.tokopedia.checkout.view.view.cartlist.CartFragment;
 
 import dagger.Component;
 

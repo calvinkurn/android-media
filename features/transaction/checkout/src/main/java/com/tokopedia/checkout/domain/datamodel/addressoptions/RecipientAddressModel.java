@@ -3,7 +3,7 @@ package com.tokopedia.checkout.domain.datamodel.addressoptions;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.tokopedia.checkout.view.view.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.transaction.common.data.pickuppoint.Store;
 
 /**
@@ -24,8 +24,8 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private String recipientPhoneNumber;
     private String destinationDistrictId;
     private String destinationDistrictName;
-    private Double latitude;
-    private Double longitude;
+    private String latitude;
+    private String longitude;
     private String cityId;
     private String provinceId;
 
@@ -35,91 +35,10 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
     private Store store;
 
     private boolean selected;
+    private boolean stateExtraPaddingTop;
 
     public RecipientAddressModel() {
     }
-
-    protected RecipientAddressModel(Parcel in) {
-        id = in.readString();
-        addressStatus = in.readInt();
-        addressName = in.readString();
-        provinceName = in.readString();
-        postalCode = in.readString();
-        cityName = in.readString();
-        street = in.readString();
-        countryName = in.readString();
-        recipientName = in.readString();
-        recipientPhoneNumber = in.readString();
-        destinationDistrictId = in.readString();
-        destinationDistrictName = in.readString();
-        cityId = in.readString();
-        provinceId = in.readString();
-        if (in.readByte() == 0) {
-            latitude = null;
-        } else {
-            latitude = in.readDouble();
-        }
-        if (in.readByte() == 0) {
-            longitude = null;
-        } else {
-            longitude = in.readDouble();
-        }
-        tokenPickup = in.readString();
-        unixTime = in.readString();
-        store = in.readParcelable(Store.class.getClassLoader());
-        selected = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeInt(addressStatus);
-        dest.writeString(addressName);
-        dest.writeString(provinceName);
-        dest.writeString(postalCode);
-        dest.writeString(cityName);
-        dest.writeString(street);
-        dest.writeString(countryName);
-        dest.writeString(recipientName);
-        dest.writeString(recipientPhoneNumber);
-        dest.writeString(destinationDistrictId);
-        dest.writeString(destinationDistrictName);
-        dest.writeString(cityId);
-        dest.writeString(provinceId);
-        if (latitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(latitude);
-        }
-        if (longitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(longitude);
-        }
-        dest.writeString(tokenPickup);
-        dest.writeString(unixTime);
-        dest.writeParcelable(store, flags);
-        dest.writeByte((byte) (selected ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
-        @Override
-        public RecipientAddressModel createFromParcel(Parcel in) {
-            return new RecipientAddressModel(in);
-        }
-
-        @Override
-        public RecipientAddressModel[] newArray(int size) {
-            return new RecipientAddressModel[size];
-        }
-    };
 
     public String getId() {
         return id;
@@ -249,19 +168,19 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         this.selected = selected;
     }
 
-    public Double getLatitude() {
+    public String getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(Double latitude) {
+    public void setLatitude(String latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    public String getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(Double longitude) {
+    public void setLongitude(String longitude) {
         this.longitude = longitude;
     }
 
@@ -279,6 +198,14 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
 
     public void setProvinceId(String provinceId) {
         this.provinceId = provinceId;
+    }
+
+    public boolean isStateExtraPaddingTop() {
+        return stateExtraPaddingTop;
+    }
+
+    public void setStateExtraPaddingTop(boolean stateExtraPaddingTop) {
+        this.stateExtraPaddingTop = stateExtraPaddingTop;
     }
 
     @Override
@@ -334,4 +261,69 @@ public class RecipientAddressModel implements Parcelable, ShipmentData {
         return result;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeInt(this.addressStatus);
+        dest.writeString(this.addressName);
+        dest.writeString(this.provinceName);
+        dest.writeString(this.postalCode);
+        dest.writeString(this.cityName);
+        dest.writeString(this.street);
+        dest.writeString(this.countryName);
+        dest.writeString(this.recipientName);
+        dest.writeString(this.recipientPhoneNumber);
+        dest.writeString(this.destinationDistrictId);
+        dest.writeString(this.destinationDistrictName);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
+        dest.writeString(this.cityId);
+        dest.writeString(this.provinceId);
+        dest.writeString(this.tokenPickup);
+        dest.writeString(this.unixTime);
+        dest.writeParcelable(this.store, flags);
+        dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.stateExtraPaddingTop ? (byte) 1 : (byte) 0);
+    }
+
+    protected RecipientAddressModel(Parcel in) {
+        this.id = in.readString();
+        this.addressStatus = in.readInt();
+        this.addressName = in.readString();
+        this.provinceName = in.readString();
+        this.postalCode = in.readString();
+        this.cityName = in.readString();
+        this.street = in.readString();
+        this.countryName = in.readString();
+        this.recipientName = in.readString();
+        this.recipientPhoneNumber = in.readString();
+        this.destinationDistrictId = in.readString();
+        this.destinationDistrictName = in.readString();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
+        this.cityId = in.readString();
+        this.provinceId = in.readString();
+        this.tokenPickup = in.readString();
+        this.unixTime = in.readString();
+        this.store = in.readParcelable(Store.class.getClassLoader());
+        this.selected = in.readByte() != 0;
+        this.stateExtraPaddingTop = in.readByte() != 0;
+    }
+
+    public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {
+        @Override
+        public RecipientAddressModel createFromParcel(Parcel source) {
+            return new RecipientAddressModel(source);
+        }
+
+        @Override
+        public RecipientAddressModel[] newArray(int size) {
+            return new RecipientAddressModel[size];
+        }
+    };
 }

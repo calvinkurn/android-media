@@ -261,10 +261,13 @@ dependencies {
     implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.settingbank)
     implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productDraftDatabase)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.digitalproduct)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.withdraw)
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
 

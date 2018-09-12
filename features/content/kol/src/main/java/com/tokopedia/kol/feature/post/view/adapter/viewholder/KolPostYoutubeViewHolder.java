@@ -1,8 +1,11 @@
 package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -15,6 +18,7 @@ import com.project.youtubeutils.common.YoutubeInitializer;
 import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.analytics.KolEnhancedTracking;
 import com.tokopedia.kol.analytics.KolEventTracking;
@@ -45,6 +49,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
 
     private final KolPostListener.View.ViewHolder viewListener;
     private final AnalyticTracker analyticTracker;
+    private final Context context;
     private BaseKolView baseKolView;
     private ImageView ivPlay;
     private ProgressBar loadingBar;
@@ -66,6 +71,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         this.viewListener = viewListener;
         this.type = type;
         analyticTracker = viewListener.getAbstractionRouter().getAnalyticTracker();
+        context = itemView.getContext();
         topShadow = itemView.findViewById(R.id.top_shadow);
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content_youtube);
@@ -81,14 +87,12 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
     @Override
     public void bind(KolPostYoutubeViewModel element) {
         ivPlay.setVisibility(GONE);
-        baseKolView.bind(element);
         destroyReleaseProcess();
         if (type == Type.PROFILE && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
         } else {
             topShadow.setVisibility(View.GONE);
         }
-        baseKolView.setViewListener(this, element);
         try {
             thumbnailView.initialize(YoutubePlayerConstant.GOOGLE_API_KEY,
                     YoutubeInitializer.videoThumbnailInitializer(element.getYoutubeLink(), new YoutubeInitializer.OnVideoThumbnailInitialListener() {
@@ -121,7 +125,11 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             tooltip.setText(element.getTagsCaption());
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltipClickArea.setOnClickListener(v -> tooltipAreaClicked(element));
+            element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
+
+        baseKolView.bind(element);
+        baseKolView.setViewListener(this, element);
     }
 
     @Override
@@ -256,11 +264,18 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
             );
             viewListener.getContext().startActivity(intent);
 
-            doEnhancedTracking(element);
+            doClickPlayTracking(element);
         };
     }
 
-    private void doEnhancedTracking(KolPostYoutubeViewModel element) {
+    private void doClickPlayTracking(KolPostYoutubeViewModel element) {
+        analyticTracker.sendEventTracking(
+                KolEventTracking.Event.EVENT_CLICK_FEED,
+                KolEventTracking.Category.CONTENT_FEED,
+                KolEventTracking.Action.CLICK_YOUTUBE_VIDEO,
+                String.valueOf(element.getKolId())
+        );
+
         List<KolEnhancedTracking.Promotion> promotionList = new ArrayList<>();
 
         promotionList.add(new KolEnhancedTracking.Promotion(
@@ -289,4 +304,19 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         if (youTubeThumbnailLoader != null) youTubeThumbnailLoader.release();
     }
 
+    private ClickableSpan getUrlClickableSpan(KolPostYoutubeViewModel element) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                tooltipAreaClicked(element);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+                ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+            }
+        };
+    }
 }

@@ -70,6 +70,9 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         shopCard.setShopImageUrl(accountModel.getShopInfo().getInfo().getShopAvatar());
         shopCard.setBalance(accountModel.getDeposit().getDepositFmt());
         shopCard.setGoldMerchant(accountModel.getShopInfo().getOwner().getGoldMerchant());
+        if(accountModel.getReputationShops() != null && accountModel.getReputationShops().size() > 0) {
+            shopCard.setReputationImageUrl(accountModel.getReputationShops().get(0).getBadgeHd());
+        }
         items.add(shopCard);
 
         MenuGridViewModel menuGrid = new MenuGridViewModel();
@@ -187,6 +190,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         menuList.setSectionTrack(context.getString(R.string.title_menu_other_features));
         items.add(menuList);
 
+//        will be implemented on next sprint
 //        InfoCardViewModel infoCardViewModel = new InfoCardViewModel();
 //        infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
 //        infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));

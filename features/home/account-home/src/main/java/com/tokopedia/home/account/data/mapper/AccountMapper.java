@@ -74,18 +74,18 @@ private static final String NO_SHOP = "-1";
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setVoucher(context.getString(R.string.label_tokopoint_see_voucher));
+        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         if (!accountModel.getWallet().isLinked()){
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
-            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
@@ -251,26 +251,6 @@ private static final String NO_SHOP = "-1";
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
-
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
-//
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
 
         InfoCardViewModel infoCard = new InfoCardViewModel();
         infoCard.setIconRes(R.drawable.ic_tokocash_big);

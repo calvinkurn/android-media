@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.activities.session.modules;
 
 
-
 import com.tokopedia.di.SessionModule;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
 

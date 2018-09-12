@@ -13,18 +13,10 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
     private String name;
     private String imageUrl;
     private String tokopoint;
-    private String coupons;
+    private int coupons;
     private int progress;
 
     public BuyerCardViewModel() {
-    }
-
-    protected BuyerCardViewModel(Parcel in) {
-        this.name = in.readString();
-        this.imageUrl = in.readString();
-        this.tokopoint = in.readString();
-        this.coupons = in.readString();
-        this.progress = in.readInt();
     }
 
     @Override
@@ -64,11 +56,11 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         this.tokopoint = tokopoint;
     }
 
-    public String getVoucher() {
+    public int getCoupons() {
         return coupons;
     }
 
-    public void setVoucher(String coupons) {
+    public void setCoupons(int coupons) {
         this.coupons = coupons;
     }
 
@@ -85,6 +77,25 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
         return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.userId);
+        dest.writeString(this.name);
+        dest.writeString(this.imageUrl);
+        dest.writeString(this.tokopoint);
+        dest.writeInt(this.coupons);
+        dest.writeInt(this.progress);
+    }
+
+    protected BuyerCardViewModel(Parcel in) {
+        this.userId = in.readString();
+        this.name = in.readString();
+        this.imageUrl = in.readString();
+        this.tokopoint = in.readString();
+        this.coupons = in.readInt();
+        this.progress = in.readInt();
+    }
+
     public static final Creator<BuyerCardViewModel> CREATOR = new Creator<BuyerCardViewModel>() {
         @Override
         public BuyerCardViewModel createFromParcel(Parcel source) {
@@ -96,13 +107,4 @@ public class BuyerCardViewModel implements ParcelableViewModel<AccountTypeFactor
             return new BuyerCardViewModel[size];
         }
     };
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.tokopoint);
-        dest.writeString(this.coupons);
-        dest.writeInt(this.progress);
-    }
 }

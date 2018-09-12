@@ -14,6 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_16"
+        android:lineSpacingExtra="@dimen/dp_6"
         android:textSize="@dimen/sp_16"
         android:textColor="@color/font_black_primary_70"
         tools:text="Title Goes Here"/>

@@ -221,16 +221,18 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    if (cursor.isClosed()) {
-                        return;
+                    if(isAdded()){
+                        if (cursor.isClosed()) {
+                            return;
+                        }
+                        if (selectedAlbumPosition > 0) {
+                            cursor.moveToPosition(selectedAlbumPosition);
+                        } else {
+                            cursor.moveToFirst();
+                        }
+                        AlbumItem albumItem = AlbumItem.valueOf(cursor);
+                        onAlbumLoaded(albumItem);
                     }
-                    if (selectedAlbumPosition > 0) {
-                        cursor.moveToPosition(selectedAlbumPosition);
-                    } else {
-                        cursor.moveToFirst();
-                    }
-                    AlbumItem albumItem = AlbumItem.valueOf(cursor);
-                    onAlbumLoaded(albumItem);
                 }
             });
         }

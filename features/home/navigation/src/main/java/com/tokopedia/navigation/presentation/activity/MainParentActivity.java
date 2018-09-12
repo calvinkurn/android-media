@@ -11,8 +11,10 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -22,10 +24,10 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.activity.BaseAppCompatActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -34,7 +36,6 @@ import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
@@ -45,7 +46,6 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
-import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
@@ -70,7 +70,7 @@ import javax.inject.Inject;
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends BaseAppCompatActivity implements
+public class MainParentActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener, CartNotifyListener {
 
@@ -85,9 +85,10 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
     private static final int EXIT_DELAY_MILLIS = 2000;
+    private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
 
     @Inject
-    UserSession userSession;
+    com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
     @Inject
     MainParentPresenter presenter;
     @Inject
@@ -117,6 +118,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         return intent;
     }
 
+    public static Intent getApplinkFeedIntent(Context context) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        return intent;
+    }
+
     public static Intent start(Context context) {
         return new Intent(context, MainParentActivity.class)
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -125,26 +132,57 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (com.tokopedia.user.session.UserSession.isFirstTimeUser(MainParentActivity.this)) {
+        initInjector();
+        presenter.setView(this);
+        if(savedInstanceState != null) {
+            presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
+        }
+        createView(savedInstanceState);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (presenter.isFirstTimeUser()) {
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
-            this.finish();
-            return;
+            finish();
         }
+    }
 
-        createView(savedInstanceState);
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        saveInstanceState(outState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        saveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    public boolean isFirstTimeUser(){
+        return UserSession.isFirstTimeUser(MainParentActivity.this);
     }
 
     private void createView(Bundle savedInstanceState) {
         GraphqlClient.init(this);
-        this.initInjector();
-        presenter.setView(this);
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
         FrameLayout container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
 
         titles = titles();
         fragmentList = fragments();
@@ -152,8 +190,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         if (isFirstTime()) {
             globalNavAnalytics.trackFirstTime(this);
         }
-
-//        cacheHandler = new AnalyticsCacheHandler();
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdate();
@@ -210,9 +246,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         presenter.setView(this);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment;
+    private int getPositionFragmentByMenu(MenuItem item) {
         int i = item.getItemId();
         int position = 0;
         if (i == R.id.menu_home) {
@@ -226,14 +260,19 @@ public class MainParentActivity extends BaseAppCompatActivity implements
         } else if (i == R.id.menu_account) {
             position = ACCOUNT_MENU;
         }
+        return position;
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!isUserLogin())
                 return false;
 
-        fragment = fragmentList.get(position);
+        Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
@@ -262,7 +301,6 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     ft.hide(frag); // hide all fragment
                 }
             }
-            scrollToTop(currentFrag); // enable feature scroll to top for home & feed
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
@@ -270,7 +308,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
@@ -282,7 +320,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(UserSession userSession) {
+    public void setUserSession(com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
         this.userSession = userSession;
     }
 
@@ -353,16 +391,13 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -405,6 +440,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     public void onNotifyCart() {
         if (presenter != null)
             this.presenter.getNotificationData();
+    }
+
+    private void saveInstanceState(Bundle outState) {
+        if(getIntent() != null) {
+            outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
+        }
     }
 
     /**
@@ -497,7 +538,7 @@ public class MainParentActivity extends BaseAppCompatActivity implements
     }
 
     private void checkIsHaveApplinkComeFromDeeplink(Intent intent) {
-        if (!TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
+        if (!presenter.isRecurringApplink() && !TextUtils.isEmpty(intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK))) {
             String applink = intent.getStringExtra(ApplinkRouter.EXTRA_APPLINK);
 
             if (intent.getStringExtra(MO_ENGAGE_COUPON_CODE) != null &&
@@ -524,10 +565,12 @@ public class MainParentActivity extends BaseAppCompatActivity implements
                     if (newIntent.getExtras() != null)
                         applinkIntent.putExtras(newIntent.getExtras());
                 }
-                ((ApplinkRouter) getApplicationContext()).dispatchFrom(this, applinkIntent);
+                ((ApplinkRouter) getApplicationContext()).applinkDelegate().dispatchFrom(this, applinkIntent);
             } catch (ActivityNotFoundException ex) {
                 ex.printStackTrace();
             }
+
+            presenter.setIsRecurringApplink(true);
         }
     }
 
@@ -557,5 +600,21 @@ public class MainParentActivity extends BaseAppCompatActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
+    }
+
+    public static class UserSession {
+        public static boolean isFirstTimeUser(Context context) {
+            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
+        }
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public MainParentPresenter getPresenter() {
+        return presenter;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setPresenter(MainParentPresenter presenter) {
+        this.presenter = presenter;
     }
 }
