@@ -1,10 +1,7 @@
 package com.tokopedia.gm.subscribe.membership.view.activity
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.DEFAULT_SUBSCRIPTION_TYPE
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_TYPE
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipProductFragment

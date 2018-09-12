@@ -41,6 +41,7 @@ public abstract class GmProductFragment
     public static final String RETURN_TYPE = "RETURN_TYPE";
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
     public static final String SELECTED_PRODUCT_NAME = "SELECTED_PRODUCT_NAME";
+    public static final String SELECTED_PRODUCT_PRICE = "SELECTED_PRODUCT_PRICE";
     private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
     public RecyclerView recyclerView;
 
@@ -50,6 +51,7 @@ public abstract class GmProductFragment
     public int returnType;
     public Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
     public String currentSelectedProductName;
+    public String currentSelectedProductPrice;
     private GmProductAdapter adapter;
     public GmProductFragmentListener listener;
     private GmSubscribeComponent component;
@@ -96,12 +98,14 @@ public abstract class GmProductFragment
     public void onSaveState(Bundle bundle) {
         bundle.putInt(SELECTED_PRODUCT, currentSelectedProductId);
         bundle.putString(SELECTED_PRODUCT_NAME, currentSelectedProductName);
+        bundle.putString(SELECTED_PRODUCT_PRICE, currentSelectedProductPrice);
     }
 
     @Override
     public void onRestoreState(Bundle bundle) {
         currentSelectedProductId = bundle.getInt(SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
         currentSelectedProductName = bundle.getString(SELECTED_PRODUCT_NAME);
+        currentSelectedProductPrice = bundle.getString(SELECTED_PRODUCT_PRICE);
     }
 
     @Override
@@ -135,7 +139,6 @@ public abstract class GmProductFragment
         returnType = bundle.getInt(RETURN_TYPE);
         if (currentSelectedProductId == UNDEFINED_DEFAULT_SELECTED) {
             currentSelectedProductId = bundle.getInt(DEFAULT_SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
-            currentSelectedProductName = bundle.getString(SELECTED_PRODUCT_NAME);
         }
     }
 
@@ -229,6 +232,11 @@ public abstract class GmProductFragment
     @Override
     public void selectedProductName(String selectedProductName) {
         currentSelectedProductName = selectedProductName;
+    }
+
+    @Override
+    public void selectedProductPrice(String selectedProductPrice) {
+        currentSelectedProductPrice = selectedProductPrice;
     }
 
     @Override

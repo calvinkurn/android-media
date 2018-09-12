@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.core.util.DateFormatUtils
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.membership.data.model.MembershipData
@@ -15,9 +17,7 @@ import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subsc
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
-import com.tokopedia.gm.subscribe.view.fragment.GmProductFragment.SELECTED_PRODUCT
 
 
 class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
@@ -102,24 +102,16 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         tvWitdhrawalInfo.text = MethodChecker.fromHtml(getString(R.string.gmsubscribe_auto_extend_withdrawal, withdrawalDate))
     }
 
-    override fun onErrorGetGmSubscribeMembershipData(error: String) {
-
+    override fun onErrorGetGmSubscribeMembershipData(throwable: Throwable) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(context, throwable))
     }
 
     override fun onSuccessSetGmSubscribeMembershipData() {
         activity?.finish()
     }
 
-    override fun onErrorSetGmSubscribeMembershipData(error: String) {
-
-    }
-
-    override fun showProgressDialog() {
-
-    }
-
-    override fun dismissProgressDialog() {
-
+    override fun onErrorSetGmSubscribeMembershipData(throwable: Throwable) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, ErrorHandler.getErrorMessage(context, throwable))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -128,9 +120,15 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
                 data?.getIntExtra(EXTRA_SUBSCRIPTION_TYPE, 0)?.run {
                     subscriptionTypeSelected = this
                 }
+                var packageName = ""
                 data?.getStringExtra(EXTRA_SUBSCRIPTION_NAME)?.run {
-                    labelExtendPacket.setContent(this)
+                    packageName += this
                 }
+                data?.getStringExtra(EXTRA_SUBSCRIPTION_PRICE)?.run {
+                    packageName = packageName + " " + this
+                }
+                if(packageName.isNotEmpty())
+                    labelExtendPacket.setContent(packageName)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -146,6 +144,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
         const val EXTRA_SUBSCRIPTION_TYPE = "EXTRA_SUBSCRIPTION_TYPE"
         const val EXTRA_SUBSCRIPTION_NAME = "EXTRA_SUBSCRIPTION_NAME"
+        const val EXTRA_SUBSCRIPTION_PRICE = "EXTRA_SUBSCRIPTION_PRICE"
 
     }
 }

@@ -63,6 +63,9 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
                 listener.selectedProductName(
                         data.get(position).getName()
                 );
+                listener.selectedProductPrice(
+                        data.get(position).getPrice()
+                );
                 updatePackageName(position);
                 GmProductAdapter.this.notifyDataSetChanged();
             }

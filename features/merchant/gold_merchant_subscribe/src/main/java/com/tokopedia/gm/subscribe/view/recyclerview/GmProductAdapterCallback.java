@@ -10,5 +10,7 @@ public interface GmProductAdapterCallback {
 
     void selectedProductName(String gmProductViewModel);
 
+    void selectedProductPrice(String gmProductViewModel);
+
     Integer getSelectedProductId();
 }

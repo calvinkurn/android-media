@@ -23,11 +23,9 @@ constructor(private val getGmSubscribeMembershipUsecase: GetGmSubscribeMembershi
                 object : Subscriber<MembershipData>() {
                     override fun onCompleted() {}
                     override fun onError(throwable: Throwable) {
-                        throwable.printStackTrace()
-                        view.dismissProgressDialog()
+                        view.onErrorGetGmSubscribeMembershipData(throwable)
                     }
                     override fun onNext(membershipData: MembershipData) {
-                        view.dismissProgressDialog()
                         view.onSuccessGetGmSubscribeMembershipData(membershipData)
                     }
                 })
@@ -38,11 +36,9 @@ constructor(private val getGmSubscribeMembershipUsecase: GetGmSubscribeMembershi
                 object : Subscriber<String>() {
                     override fun onCompleted() {}
                     override fun onError(throwable: Throwable) {
-                        throwable.printStackTrace()
-                        view.dismissProgressDialog()
+                        view.onErrorSetGmSubscribeMembershipData(throwable)
                     }
                     override fun onNext(string: String) {
-                        view.dismissProgressDialog()
                         view.onSuccessSetGmSubscribeMembershipData()
                     }
                 })

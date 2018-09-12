@@ -9,6 +9,7 @@ import android.view.View
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.membership.view.adapter.GmMembershipProductAdapter
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_NAME
+import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_PRICE
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_TYPE
 import com.tokopedia.gm.subscribe.view.fragment.GmProductFragment
 import com.tokopedia.gm.subscribe.view.viewmodel.GmProductViewModel
@@ -78,6 +79,7 @@ class GmMembershipProductFragment : GmProductFragment(){
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_SUBSCRIPTION_TYPE, currentSelectedProductId)
         resultIntent.putExtra(EXTRA_SUBSCRIPTION_NAME, currentSelectedProductName)
+        resultIntent.putExtra(EXTRA_SUBSCRIPTION_PRICE, currentSelectedProductPrice)
         activity.setResult(Activity.RESULT_OK, resultIntent)
         activity.finish()
     }

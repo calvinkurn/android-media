@@ -5,15 +5,11 @@ import com.tokopedia.gm.subscribe.membership.data.model.MembershipData
 
 interface GmMembershipView : CustomerView {
 
-    fun showProgressDialog()
-
-    fun dismissProgressDialog()
-
     fun onSuccessGetGmSubscribeMembershipData(membershipData : MembershipData)
 
-    fun onErrorGetGmSubscribeMembershipData(error : String)
+    fun onErrorGetGmSubscribeMembershipData(throwable: Throwable)
 
     fun onSuccessSetGmSubscribeMembershipData()
 
-    fun onErrorSetGmSubscribeMembershipData(error : String)
+    fun onErrorSetGmSubscribeMembershipData(throwable: Throwable)
 }
