@@ -8,5 +8,7 @@ public interface GmProductAdapterCallback {
 
     void selectedProductId(Integer gmProductViewModel);
 
+    void selectedProductName(String gmProductViewModel);
+
     Integer getSelectedProductId();
 }

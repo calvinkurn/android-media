@@ -1,5 +1,7 @@
 package com.tokopedia.gm.subscribe.membership.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -13,7 +15,9 @@ import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subsc
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.gm.subscribe.view.activity.GmProductActivity
+import com.tokopedia.gm.subscribe.domain.product.model.GmProductDomainModel
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
+import com.tokopedia.gm.subscribe.view.fragment.GmProductFragment.SELECTED_PRODUCT
 
 
 class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
@@ -31,7 +35,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
     }
 
     override fun getScreenName(): String {
-        return "test"
+        return getString(R.string.gm_membership_title)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,16 +61,22 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
             if(!bool) subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
         }
 
-        labelExtendPacket.setOnClickListener {
-            context?.run {
-                val intent = GmProductActivity.selectAutoProductFirstTime(this)
-                startActivityForResult(intent, SELECT_AUTO_SUBSCRIBE_PRODUCT)
-            }
-        }
+        btnExtend.setOnClickListener { goToProductPage() }
+
+        labelExtendPacket.setOnClickListener { goToProductPage() }
+
         tvInfoAutoExtend.setOnClickListener {  }
 
         showAutoExtendLayout(false)
         getMembershipData()
+    }
+
+    private fun goToProductPage(){
+        context?.run {
+            val intent = GmMembershipProductActivity.createIntent(this)
+            intent.putExtra(EXTRA_SUBSCRIPTION_TYPE, subscriptionTypeSelected)
+            startActivityForResult(intent, EXTRA_MEMBERSHIP_PACKAGE)
+        }
     }
 
     private fun getMembershipData(){
@@ -112,14 +122,30 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == EXTRA_MEMBERSHIP_PACKAGE) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.getIntExtra(EXTRA_SUBSCRIPTION_TYPE, 0)?.run {
+                    subscriptionTypeSelected = this
+                }
+                data?.getStringExtra(EXTRA_SUBSCRIPTION_NAME)?.run {
+                    labelExtendPacket.setContent(this)
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
     companion object {
         fun newInstance() = GmMembershipFragment()
-        private const val DEFAULT_SUBSCRIPTION_TYPE = 0
+        const val DEFAULT_SUBSCRIPTION_TYPE = 0
         private const val FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         private const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
 
-        private const val SELECT_AUTO_SUBSCRIBE_PRODUCT = 200
-        private const val CHANGE_AUTO_SUBSCRIBE_PRODUCT = 300
+        private const val EXTRA_MEMBERSHIP_PACKAGE = 200
+
+        const val EXTRA_SUBSCRIPTION_TYPE = "EXTRA_SUBSCRIPTION_TYPE"
+        const val EXTRA_SUBSCRIPTION_NAME = "EXTRA_SUBSCRIPTION_NAME"
 
     }
 }

@@ -1,6 +1,8 @@
 package com.tokopedia.gm.subscribe.membership.domain
 
 import android.content.Context
+import android.text.TextUtils
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.membership.data.model.ResponseSetSubscription
@@ -16,8 +18,21 @@ class SetGmSubscribeMembershipUsecase(private val context: Context, private val 
         val graphqlRequest = GraphqlRequest(query, ResponseSetSubscription::class.java, requestParams.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
-        return graphqlUseCase.createObservable(RequestParams.EMPTY).map {
-            graphqlResponse -> graphqlResponse.getData<ResponseSetSubscription>(ResponseSetSubscription::class.java).goldSetSubscription.data
+        return graphqlUseCase.createObservable(RequestParams.EMPTY).flatMap {
+            graphqlResponse ->
+                val data = graphqlResponse.getData<ResponseSetSubscription>(ResponseSetSubscription::class.java)
+                val graphqlErrorList = graphqlResponse.getError(ResponseSetSubscription::class.java)
+                if (graphqlErrorList != null && graphqlErrorList.size > 0) {
+                    val graphqlError = graphqlErrorList[0]
+                    val errorMessage = graphqlError.message
+                    if (TextUtils.isEmpty(errorMessage)) {
+                        Observable.just(data.goldSetSubscription.data)
+                    } else {
+                        Observable.error(MessageErrorException(errorMessage))
+                    }
+                } else {
+                    Observable.just(data.goldSetSubscription.data)
+                }
         }
     }
 

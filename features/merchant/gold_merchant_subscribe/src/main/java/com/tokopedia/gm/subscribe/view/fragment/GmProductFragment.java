@@ -40,16 +40,18 @@ public abstract class GmProductFragment
     public static final int UNDEFINED_DEFAULT_SELECTED = -1;
     public static final String RETURN_TYPE = "RETURN_TYPE";
     public static final String SELECTED_PRODUCT = "SELECTED_PRODUCT";
+    public static final String SELECTED_PRODUCT_NAME = "SELECTED_PRODUCT_NAME";
     private static final String STRING_BUTTON_SELECT = "STRING_BUTTON_SELECT";
-    RecyclerView recyclerView;
+    public RecyclerView recyclerView;
 
-    Button buttonSelectProduct;
+    public Button buttonSelectProduct;
     private CompositeSubscription subscriber;
     private String stringButton;
-    private int returnType;
-    private Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
+    public int returnType;
+    public Integer currentSelectedProductId = UNDEFINED_DEFAULT_SELECTED;
+    public String currentSelectedProductName;
     private GmProductAdapter adapter;
-    private GmProductFragmentListener listener;
+    public GmProductFragmentListener listener;
     private GmSubscribeComponent component;
 
     public static GmProductFragment createFragment(GmProductFragment fragment,
@@ -93,11 +95,13 @@ public abstract class GmProductFragment
     @Override
     public void onSaveState(Bundle bundle) {
         bundle.putInt(SELECTED_PRODUCT, currentSelectedProductId);
+        bundle.putString(SELECTED_PRODUCT_NAME, currentSelectedProductName);
     }
 
     @Override
     public void onRestoreState(Bundle bundle) {
         currentSelectedProductId = bundle.getInt(SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
+        currentSelectedProductName = bundle.getString(SELECTED_PRODUCT_NAME);
     }
 
     @Override
@@ -131,6 +135,7 @@ public abstract class GmProductFragment
         returnType = bundle.getInt(RETURN_TYPE);
         if (currentSelectedProductId == UNDEFINED_DEFAULT_SELECTED) {
             currentSelectedProductId = bundle.getInt(DEFAULT_SELECTED_PRODUCT, UNDEFINED_DEFAULT_SELECTED);
+            currentSelectedProductName = bundle.getString(SELECTED_PRODUCT_NAME);
         }
     }
 
@@ -194,7 +199,7 @@ public abstract class GmProductFragment
         adapter.addItem(gmProductDomainModels);
     }
 
-    private int findBestDeal(List<GmProductViewModel> gmProductDomainModels) {
+    public int findBestDeal(List<GmProductViewModel> gmProductDomainModels) {
         int selected = 0;
         for (int i = 0; i < gmProductDomainModels.size(); i++) {
             if (gmProductDomainModels.get(i).isBestDeal()) {
@@ -219,6 +224,11 @@ public abstract class GmProductFragment
     @Override
     public void selectedProductId(Integer selectedProductId) {
         currentSelectedProductId = selectedProductId;
+    }
+
+    @Override
+    public void selectedProductName(String selectedProductName) {
+        currentSelectedProductName = selectedProductName;
     }
 
     @Override
