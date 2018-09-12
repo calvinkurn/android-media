@@ -47,7 +47,7 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
 
     @Override
     public void bind(final CatalogViewModel element) {
-        ImageHandler.loadImageThumbs(context, catalogImage, element.getImage());
+        setCatalogImage(element);
         catalogSeller.setText(element.getProductCounter() + " " + context.getString(R.string.title_total_prods));
         catalogTitle.setText(MethodChecker.fromHtml(element.getName()));
         catalogPrice.setText(element.getPrice());
@@ -57,5 +57,9 @@ public class GridCatalogViewHolder extends AbstractViewHolder<CatalogViewModel> 
                 listener.setOnCatalogClicked(element.getID(), element.getName());
             }
         });
+    }
+
+    public void setCatalogImage(CatalogViewModel catalog) {
+        ImageHandler.loadImageThumbs(context, catalogImage, catalog.getImage());
     }
 }

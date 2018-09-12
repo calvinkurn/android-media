@@ -26,6 +26,9 @@ import com.tokopedia.analytics.LoginPhoneNumberAnalytics;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.di.component.AppComponent;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.di.DaggerSessionComponent;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.tokocashotp.view.activity.VerificationActivity;
@@ -39,6 +42,7 @@ import com.tokopedia.session.login.loginphonenumber.view.activity.NotConnectedTo
 import com.tokopedia.session.login.loginphonenumber.view.presenter.LoginPhoneNumberPresenter;
 import com.tokopedia.session.login.loginphonenumber.view.viewlistener.LoginPhoneNumber;
 import com.tokopedia.session.login.loginphonenumber.view.viewmodel.ChooseTokoCashAccountViewModel;
+import com.tokopedia.updateinactivephone.activity.ChangeInactivePhoneActivity;
 
 import java.util.ArrayList;
 
@@ -162,11 +166,22 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                Intent intent = ChangeInactivePhoneNumberWebView.
-                        getIntentWithTitle(
-                                getContext(),
-                                SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                getString(R.string.title_change_inactive_phone_number));
+
+                Intent intent;
+
+                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+                if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_ENABLE_UPDATE_INACTIVE_PHONE,
+                        true)) {
+                    intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
+
+                } else {
+                    intent = ChangeInactivePhoneNumberWebView.
+                            getIntentWithTitle(
+                                    getContext(),
+                                    SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
+                                    getString(R.string.title_change_inactive_phone_number));
+                }
+
                 startActivity(intent);
             }
 
@@ -259,7 +274,7 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
                 && resultCode == Activity.RESULT_OK) {
 
             ChooseTokoCashAccountViewModel chooseTokoCashAccountViewModel = getChooseAccountData(data);
-            if(chooseTokoCashAccountViewModel!= null
+            if (chooseTokoCashAccountViewModel != null
                     && chooseTokoCashAccountViewModel.getListAccount().size() == 1) {
                 getActivity().setResult(Activity.RESULT_OK);
                 getActivity().finish();

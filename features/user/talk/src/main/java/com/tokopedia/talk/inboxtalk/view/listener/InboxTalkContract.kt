@@ -22,12 +22,15 @@ interface InboxTalkContract {
         fun hideRefreshLoad()
         fun hideFilter()
         fun showFilter()
-        fun showLoadingFilter()
+        fun showLoadingAction()
         fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
-        fun hideLoadingFilter()
+        fun hideLoadingAction()
         fun onSuccessDeleteTalk(talkId: String)
         fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
-        fun onSuccessUnfollowTalk()
+        fun onSuccessUnfollowTalk(talkId: String)
+        fun onSuccessFollowTalk(talkId: String)
+        fun onSuccessMarkTalkNotFraud(talkId: String)
+        fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -36,7 +39,9 @@ interface InboxTalkContract {
         fun getInboxTalkWithFilter(filter: String, nav: String)
         fun deleteTalk(shopId: String, talkId: String)
         fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
-        fun unfollowTalk()
-        fun followTalk()
+        fun unfollowTalk(talkId: String)
+        fun followTalk(talkId: String)
+        fun markTalkNotFraud(talkId: String)
+        fun markCommentNotFraud(talkId: String, commentId: String)
     }
 }

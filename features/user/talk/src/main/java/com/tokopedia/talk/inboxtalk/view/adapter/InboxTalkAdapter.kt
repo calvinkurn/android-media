@@ -3,9 +3,12 @@ package com.tokopedia.talk.inboxtalk.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.EmptyInboxTalkViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 
 /**
  * @author by nisie on 8/29/18.
@@ -43,16 +46,9 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         } else false
     }
 
-    fun showReportedTalk(adapterPosition: Int) {
-        if (this.visitables[adapterPosition] is ProductTalkItemViewModel) {
-            (this.visitables[adapterPosition] as ProductTalkItemViewModel).menu.isReported = false
-            notifyItemChanged(adapterPosition)
-        }
-    }
-
     fun deleteTalkByTalkId(talkId: String) {
         for (talk in visitables) {
-            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 this.visitables.remove(talk)
                 notifyItemRemoved(position)
@@ -62,11 +58,11 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
 
     fun deleteComment(talkId: String, commentId: String) {
         for (talk in visitables) {
-            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                for (comment in talk.listChild) {
+                for (comment in talk.talkThread.listChild) {
                     if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
-                        talk.listChild.remove(comment)
+                        talk.talkThread.listChild.remove(comment)
                     }
                 }
                 notifyItemChanged(position)
@@ -75,4 +71,53 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
 
     }
 
+    override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewRecycled(holder)
+
+        when (holder) {
+            is EmptyInboxTalkViewHolder -> holder.onViewRecycled()
+            is InboxTalkItemViewHolder -> holder.onViewRecycled()
+        }
+
+    }
+
+    fun setStatusFollow(talkId: Any, isFollowing: Boolean) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+
+                talk.talkThread.headThread.menu.allowUnfollow = isFollowing
+                talk.talkThread.headThread.menu.allowFollow = !isFollowing
+
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+
+    fun showReportedTalk(talkId: String) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                talk.talkThread.headThread.menu.isMasked = false
+                talk.talkThread.headThread.comment = talk.talkThread.headThread.rawMessage
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    fun showReportedCommentTalk(talkId: String, commentId: String) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.talkThread.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        comment.menu.isMasked = false
+                        comment.comment = comment.rawMessage
+                    }
+                }
+                notifyItemChanged(position)
+            }
+        }
+    }
 }

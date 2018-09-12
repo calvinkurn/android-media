@@ -295,6 +295,16 @@ public class PosLoginFragment extends BaseLoginFragment implements PosLogin.View
     }
 
     @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+
+    }
+
+    @Override
+    public boolean isFromRegister() {
+        return false;
+    }
+
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_SMART_LOCK
                 && resultCode == Activity.RESULT_OK

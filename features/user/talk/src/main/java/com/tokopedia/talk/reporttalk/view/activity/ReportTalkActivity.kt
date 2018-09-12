@@ -21,17 +21,31 @@ class ReportTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        return ReportTalkFragment.newInstance()
+        return ReportTalkFragment.newInstance(bundle)
     }
 
     companion object {
-        open fun createIntent(context: Context): Intent {
-            return Intent(context, ReportTalkActivity::class.java)
+        public const val EXTRA_TALK_ID: String = "talkId"
+        public const val EXTRA_SHOP_ID: String = "shopId"
+        public const val EXTRA_PRODUCT_ID: String = "productId"
+
+
+        open fun createIntent(context: Context,
+                              talkId: String,
+                              shopId: String,
+                              productId: String): Intent {
+            val intent = Intent(context, ReportTalkActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString(EXTRA_TALK_ID, talkId)
+            bundle.putString(EXTRA_SHOP_ID, shopId)
+            bundle.putString(EXTRA_PRODUCT_ID, productId)
+            intent.putExtras(bundle)
+            return intent
         }
     }
 
     override fun getComponent(): TalkComponent {
-       return  DaggerTalkComponent.builder().baseAppComponent(
+        return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 

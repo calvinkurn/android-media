@@ -161,14 +161,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         filterMenu.dismiss()
     }
 
-    private fun goToReportTalk() {
+    private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this)
+            val intent = ReportTalkActivity.createIntent(this, talkId, shopId, productId)
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
 
-    private fun showUnfollowTalkDialog() {
+    private fun showUnfollowTalkDialog(talkId: String) {
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -181,7 +181,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.unfollowTalk()
+            presenter.unfollowTalk(talkId)
             alertDialog.dismiss()
         }
 
@@ -189,7 +189,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
 
-    private fun showFollowTalkDialog() {
+    private fun showFollowTalkDialog(talkId: String) {
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -202,7 +202,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.followTalk()
+            presenter.followTalk(talkId)
             alertDialog.dismiss()
         }
 
@@ -318,7 +318,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         else showErrorReplyTalk()
     }
 
-    override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String) {
+    override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
@@ -335,23 +335,23 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId)
+                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
             }
             bottomMenu.show()
         }
     }
 
-    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String) {
+    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(shopId, talkId)
-            getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
-            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
-            getString(R.string.menu_report_talk) -> goToReportTalk()
+            getString(R.string.menu_follow_talk) -> showFollowTalkDialog(talkId)
+            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(talkId)
+            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId)
         }
         bottomMenu.dismiss()
     }
 
-    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String) {
+    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowReport) {
@@ -368,15 +368,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId)
+                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
             }
             bottomMenu.show()
         }
     }
 
-    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String) {
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk()
+            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId)
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -401,24 +401,41 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         icon_filter.visibility = View.VISIBLE
     }
 
-    override fun showLoadingFilter() {
+    override fun showLoadingAction() {
         progressBar.visibility = View.VISIBLE
         talk_rv.visibility = View.GONE
         swipeToRefresh.isEnabled = false
     }
 
-    override fun hideLoadingFilter() {
+    override fun hideLoadingAction() {
         progressBar.visibility = View.GONE
         talk_rv.visibility = View.VISIBLE
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onNoShowTalkItemClick(adapterPosition: Int) {
-        adapter.showReportedTalk(adapterPosition)
+    override fun onNoShowTalkItemClick(talkId: String) {
+        presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onYesReportTalkItemClick() {
-        goToReportTalk()
+    override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
+        goToReportTalk(talkId, shopId, productId)
+    }
+
+    override fun onSuccessMarkTalkNotFraud(talkId: String) {
+        adapter.showReportedTalk(talkId)
+    }
+
+    override fun onNoShowTalkCommentClick(talkId: String, commentId: String) {
+        presenter.markCommentNotFraud(talkId, commentId)
+
+    }
+
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
+        goToReportTalk(talkId, shopId, productId)
+    }
+
+    override fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String) {
+        adapter.showReportedCommentTalk(talkId, commentId)
     }
 
     private fun goToDetailTalk() {
@@ -433,8 +450,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.deleteComment(talkId, commentId)
     }
 
-    override fun onSuccessUnfollowTalk() {
+    override fun onSuccessUnfollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, false)
+    }
 
+    override fun onSuccessFollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, true)
     }
 
     override fun onDestroy() {

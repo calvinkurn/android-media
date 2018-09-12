@@ -11,6 +11,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
+import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 
 /**
@@ -22,7 +23,9 @@ class CommentTalkViewHolder(val v: View,
         AbstractViewHolder<ProductTalkItemViewModel>(v) {
 
     interface TalkCommentItemListener {
-        fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String)
+        fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
+        fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String)
+        fun onNoShowTalkCommentClick(talkId: String, commentId: String)
     }
 
     private val profileAvatar: ImageView = itemView.prof_pict
@@ -34,6 +37,13 @@ class CommentTalkViewHolder(val v: View,
 
     private lateinit var adapter: TalkProductAttachmentAdapter
 
+    private val reportedLayout: View = itemView.layout_reported
+    private val reportedMessage: TextView = itemView.reportedMessage
+    private val yesReportButton: TextView = itemView.reportYes
+    private val noReportButton: TextView = itemView.reportNo
+    private val rawMessage: TextView = itemView.rawMessage
+    private val separatorReport: View = itemView.separatorReport
+
     companion object {
         val LAYOUT = R.layout.talk_item
     }
@@ -42,25 +52,67 @@ class CommentTalkViewHolder(val v: View,
     override fun bind(element: ProductTalkItemViewModel?) {
         element?.run {
 
-            if (!element.productAttachment.isEmpty()) {
-
-                adapter = TalkProductAttachmentAdapter(productListener, element.productAttachment)
-                listProduct.layoutManager = LinearLayoutManager(itemView.context,
-                        LinearLayoutManager
-                                .VERTICAL, false)
-                listProduct.adapter = adapter
-                listProduct.visibility = View.VISIBLE
-            }
-
-            ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.avatar)
-            profileName.text = element.name
-            talkContent.text = element.comment
-            datetime.text = element.timestamp
-
+            setupProductAttachment(element)
             setupMenuButton(element)
+            setProfileHeader(element)
+
+            if (element.menu.isMasked) {
+                setupMaskedMessage(element)
+            } else {
+                setupNormalTalk(element)
+            }
+            talkContent.text = element.comment
+
 
         }
 
+    }
+
+    private fun setupNormalTalk(element: ProductTalkItemViewModel) {
+        reportedLayout.visibility = View.GONE
+
+        talkContent.visibility = View.VISIBLE
+        talkContent.text = element.comment
+    }
+
+    private fun setupMaskedMessage(element: ProductTalkItemViewModel) {
+        reportedLayout.visibility = View.VISIBLE
+        talkContent.visibility = View.GONE
+
+        reportedMessage.text = element.comment
+
+        if (element.isOwner) {
+            rawMessage.visibility = View.VISIBLE
+            separatorReport.visibility = View.VISIBLE
+            rawMessage.text = element.rawMessage
+        } else {
+            rawMessage.visibility = View.GONE
+            separatorReport.visibility = View.GONE
+        }
+
+        yesReportButton.setOnClickListener { listener.onYesReportTalkCommentClick(
+                element.talkId, element.shopId, element.productId
+        ) }
+        noReportButton.setOnClickListener { listener.onNoShowTalkCommentClick(element.talkId,
+                element.commentId) }
+    }
+
+    private fun setProfileHeader(element: ProductTalkItemViewModel) {
+        ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.avatar)
+        profileName.text = element.name
+        datetime.text = element.timestamp
+    }
+
+    private fun setupProductAttachment(element: ProductTalkItemViewModel) {
+        if (!element.productAttachment.isEmpty()) {
+
+            adapter = TalkProductAttachmentAdapter(productListener, element.productAttachment)
+            listProduct.layoutManager = LinearLayoutManager(itemView.context,
+                    LinearLayoutManager
+                            .VERTICAL, false)
+            listProduct.adapter = adapter
+            listProduct.visibility = View.VISIBLE
+        }
     }
 
     private fun setupMenuButton(element: ProductTalkItemViewModel) {
@@ -75,7 +127,12 @@ class CommentTalkViewHolder(val v: View,
         menuButton.setOnClickListener { listener.onCommentMenuButtonClicked(menu,
                 element.shopId,
                 element.talkId,
-                element.commentId) }
+                element.commentId,
+                element.productId) }
+    }
+
+    fun onViewRecycled() {
+        ImageHandler.clearImage(profileAvatar)
     }
 
 }

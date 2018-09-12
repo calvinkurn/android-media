@@ -28,7 +28,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
@@ -438,7 +438,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getChangePasswordIntent(Context context) {
+    public Intent getTalkIntent(Context context) {
         return null;
     }
 

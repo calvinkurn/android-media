@@ -49,6 +49,7 @@ import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulat
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
@@ -646,6 +647,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     }
 
+    @Override
+    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
+
+    }
+
     private void initView(View view) {
         pictureView = view.findViewById(R.id.view_picture);
         headerInfoView = view.findViewById(R.id.view_header);
@@ -688,5 +694,10 @@ public class ProductDetailFragment extends BaseDaggerFragment
             imageSources.add(productImage.getImageSrc());
         }
         return imageSources;
+    }
+
+    @Override
+    public void moveToEstimationDetail() {
+
     }
 }

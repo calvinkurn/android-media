@@ -27,12 +27,12 @@ import java.util.List;
  * Created by henrypriyono on 10/11/17.
  */
 
-public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
+public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem>{
 
     @LayoutRes
     public static final int LAYOUT = R.layout.search_result_product_item_grid;
 
-    private ImageView productImage;
+    protected ImageView productImage;
     private TextView title;
     private TextView price;
     private TextView location;
@@ -44,7 +44,7 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
     private TextView reviewCount;
     private LinearLayout ratingReviewContainer;
     private ItemClickListener itemClickListener;
-    private Context context;
+    protected Context context;
     private TextView topLabel;
     private TextView bottomLabel;
 
@@ -96,10 +96,10 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
             location.setVisibility(View.INVISIBLE);
         }
 
-        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
-
         wishlistButtonContainer.setVisibility(View.VISIBLE);
         wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
+
+        setImageProduct(productItem);
 
         if (productItem.isWishlisted()) {
             wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
@@ -169,5 +169,9 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
                 LuckyShopImage.loadImage(context, badgeItem.getImageUrl(), badgesContainer);
             }
         }
+    }
+
+    public void setImageProduct(ProductItem productItem) {
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
     }
 }
