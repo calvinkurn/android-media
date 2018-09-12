@@ -114,8 +114,8 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
         //        @BindView(R2.id.)View ProdView;
         @BindView(R2.id.reputation_view)
         View viewReputation;
-//        @BindViews({R2.id.user_name, R2.id.product_name})
-//        List<TextView> textViews;
+        @BindViews({R2.id.user_name, R2.id.product_name})
+        List<TextView> textViews;
 
         TalkProductViewHolder(View view) {
             super(view);
@@ -234,7 +234,7 @@ public class InboxTalkAdapter extends BaseRecyclerViewAdapter {
 //                holder.CommentBut.setBackgroundResource(R.drawable.selectable_white_background);
                 holder.CommentBut.setBackgroundResource(R.drawable.inbox_read_message);
             }
-//            ButterKnife.apply(holder.textViews, CHANGE_COLOR, status);
+            ButterKnife.apply(holder.textViews, CHANGE_COLOR, status);
         }
         label.giveSquareLabel(talk.getTalkUserLabel());
         holder.MessageView.setText(MethodChecker.fromHtml(talk.getTalkMessage()));
