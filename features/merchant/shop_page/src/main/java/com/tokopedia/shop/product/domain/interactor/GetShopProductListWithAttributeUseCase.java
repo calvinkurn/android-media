@@ -49,11 +49,11 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
         final ShopProductRequestModel shopProductRequestModel = (ShopProductRequestModel) requestParams.getObject(SHOP_REQUEST);
         return getShopProductListUseCase.createObservable(GetShopProductListUseCase.createRequestParam(shopProductRequestModel))
                 .flatMap(new Func1<PagingList<ShopProduct>, Observable<PagingList<ShopProductViewModel>>>() {
-            @Override
-            public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
-                return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
-            }
-        });
+                    @Override
+                    public Observable<PagingList<ShopProductViewModel>> call(final PagingList<ShopProduct> shopProductPagingList) {
+                        return getShopProductViewModelList(shopProductRequestModel, shopProductPagingList);
+                    }
+                });
     }
 
     private Observable<PagingList<ShopProductViewModel>> getShopProductViewModelList(
@@ -74,19 +74,28 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                 });
     }
 
-    private Observable<List<List<ShopProductViewModel>>> createObservable(List<RequestParams> requestParams){
+    private Observable<List<List<ShopProductViewModel>>> createObservable(List<RequestParams> requestParams) {
         return Observable.from(requestParams)
                 .concatMap(new Func1<RequestParams, Observable<? extends List<ShopProductViewModel>>>() {
-            @Override
-            public Observable<? extends List<ShopProductViewModel>> call(RequestParams requestParams) {
-                return createObservable(requestParams).map(new Func1<PagingList<ShopProductViewModel>, List<ShopProductViewModel>>() {
                     @Override
-                    public List<ShopProductViewModel> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
-                        return shopProductViewModelPagingList.getList();
+                    public Observable<? extends List<ShopProductViewModel>> call(RequestParams requestParams) {
+                        return createObservable(requestParams).flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<List<ShopProductViewModel>>>() {
+                            @Override
+                            public Observable<List<ShopProductViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                                return Observable.just(shopProductViewModelPagingList.getList())
+                                        .flatMap(new Func1<List<ShopProductViewModel>, Observable<ShopProductViewModel>>() {
+                                            @Override
+                                            public Observable<ShopProductViewModel> call(List<ShopProductViewModel> shopProductViewModelList) {
+                                                return Observable.from(shopProductViewModelList);
+                                            }
+                                        })
+                                        .take(ShopPageConstant.ETALASE_HIGHLIGHT_COUNT)
+                                        .toList();
+                            }
+                        });
                     }
-                });
-            }
-        }).toList();
+                })
+                .toList();
     }
 
     public void executeList(List<RequestParams> requestParamsList, Subscriber<List<List<ShopProductViewModel>>> subscriber) {
@@ -96,11 +105,12 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(subscriber);
     }
+
     @Override
     public void unsubscribe() {
         super.unsubscribe();
         getShopProductListUseCase.unsubscribe();
-        if (listSubscription !=null && !listSubscription.isUnsubscribed()) {
+        if (listSubscription != null && !listSubscription.isUnsubscribed()) {
             listSubscription.unsubscribe();
         }
     }

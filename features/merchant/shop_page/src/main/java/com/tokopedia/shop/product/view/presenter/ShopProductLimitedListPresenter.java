@@ -98,7 +98,7 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                                                                     boolean isOfficialStore, int page,
                                                                     int itemPerPage,
                                                                     String etalaseId,
-                                                                    boolean isUseAce){
+                                                                    boolean isUseAce) {
         ShopProductRequestModel shopProductRequestModel = new ShopProductRequestModel(shopId, isShopClosed,
                 isOfficialStore, page, isUseAce, itemPerPage);
         shopProductRequestModel.setEtalaseId(etalaseId);
@@ -109,9 +109,11 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                                         boolean isOfficialStore,
                                         List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
         List<RequestParams> requestParamList = new ArrayList<>();
-        for (ShopEtalaseViewModel shopEtalaseViewModel: shopEtalaseViewModelList) {
+        int serverPerPage = (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT % 2 == 0) ? ShopPageConstant.ETALASE_HIGHLIGHT_COUNT :
+                (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT + 1);
+        for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModelList) {
             ShopProductRequestModel shopProductRequestModel = generateShopProductRequestModel(shopId, isShopClosed,
-                    isOfficialStore, 1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
+                    isOfficialStore, 1, serverPerPage,
                     shopEtalaseViewModel.getEtalaseId(), shopEtalaseViewModel.isUseAce());
             requestParamList.add(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel));
         }
@@ -138,28 +140,28 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
     }
 
     public void getShopEtalaseListByShop(String shopId, boolean isOwner) {
-            RequestParams params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isOwner);
-            getShopEtalaseByShopUseCase.execute(params, new Subscriber<ArrayList<ShopEtalaseModel>>() {
-                @Override
-                public void onCompleted() {
+        RequestParams params = GetShopEtalaseByShopUseCase.createRequestParams(shopId, true, false, isOwner);
+        getShopEtalaseByShopUseCase.execute(params, new Subscriber<ArrayList<ShopEtalaseModel>>() {
+            @Override
+            public void onCompleted() {
 
-                }
+            }
 
-                @Override
-                public void onError(Throwable e) {
-                    if (isViewAttached()) {
-                        getView().onErrorGetEtalaseListByShop(e);
-                    }
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().onErrorGetEtalaseListByShop(e);
                 }
+            }
 
-                @Override
-                public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
-                    if (isViewAttached()) {
-                        ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelList =ShopProductMapper.map(shopEtalaseModels);
-                        getView().onSuccessGetEtalaseListByShop(shopEtalaseViewModelList);
-                    }
+            @Override
+            public void onNext(ArrayList<ShopEtalaseModel> shopEtalaseModels) {
+                if (isViewAttached()) {
+                    ArrayList<ShopEtalaseViewModel> shopEtalaseViewModelList = ShopProductMapper.map(shopEtalaseModels);
+                    getView().onSuccessGetEtalaseListByShop(shopEtalaseViewModelList);
                 }
-            });
+            }
+        });
     }
 
     private void getProductListWithAttributes(ShopProductRequestModel shopProductRequestModel) {

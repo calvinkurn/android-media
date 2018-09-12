@@ -30,7 +30,7 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
         return typeFactory.type(this);
     }
 
-    public void setShopProductEtalaseHighLightViewModelList(List<List<ShopProductViewModel>> shopProductViewModelListList) {
+    private void setShopProductEtalaseHighLightViewModelList(List<List<ShopProductViewModel>> shopProductViewModelListList) {
         if (shopProductViewModelListList == null) {
             this.shopProductViewModelListList = new ArrayList<>();
         } else {
@@ -38,7 +38,7 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
         }
     }
 
-    public void setEtalaseViewModelList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
+    private void setEtalaseViewModelList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
         if (shopEtalaseViewModelList == null) {
             this.shopEtalaseViewModelList = new ArrayList<>();
         } else {
@@ -64,7 +64,6 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
                     return true;
                 }
             }
-
         }
         return false;
     }
