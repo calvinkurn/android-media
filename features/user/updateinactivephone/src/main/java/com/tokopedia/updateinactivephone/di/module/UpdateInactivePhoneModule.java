@@ -1,10 +1,13 @@
 package com.tokopedia.updateinactivephone.di.module;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
+import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.updateinactivephone.data.network.service.GetUploadHostService;
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl;
 import com.tokopedia.updateinactivephone.di.UpdateInactivePhoneScope;
 import com.tokopedia.updateinactivephone.usecase.CheckPhoneNumberStatusUsecase;
@@ -14,11 +17,15 @@ import com.tokopedia.updateinactivephone.usecase.UploadChangePhoneNumberRequestU
 import com.tokopedia.updateinactivephone.usecase.UploadImageUseCase;
 import com.tokopedia.updateinactivephone.usecase.ValidateUserDataUseCase;
 
+import javax.inject.Named;
+
 import dagger.Module;
 import dagger.Provides;
 
 @Module
 public class UpdateInactivePhoneModule {
+
+    private static final String WS_SERVICE = "WS_SERVICE";
 
     @UpdateInactivePhoneScope
     @Provides
@@ -32,6 +39,15 @@ public class UpdateInactivePhoneModule {
         return new ValidateUserDataUseCase(context);
     }
 
+
+  /*  @UpdateInactivePhoneScope
+    @Named(WS_SERVICE)
+    @Provides
+    GetUploadHostService provideGetUploadHostService(){
+        Bundle bundle = new Bundle();
+        return new GetUploadHostService();
+    }
+*/
     @UpdateInactivePhoneScope
     @Provides
     UploadImageUseCase provideUploadImageUseCase(ThreadExecutor threadExecutor,

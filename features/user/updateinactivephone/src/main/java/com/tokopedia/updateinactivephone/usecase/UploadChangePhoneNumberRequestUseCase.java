@@ -221,6 +221,7 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         RequestParams params = RequestParams.create();
         params.putString(PARAM_NEW_ADD, requestParams.getString(PARAM_NEW_ADD,
                 GetUploadHostUseCase.DEFAULT_NEW_ADD));
+        params.putString(USERID, requestParams.getString(USERID,SessionHandler.getTempLoginSession(MainApplication.getAppContext())));
         return params;
     }
 
