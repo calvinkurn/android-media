@@ -1087,7 +1087,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         new CacheApiClearAllUseCase().executeSync();
         TkpdSellerLogout.onLogOut(appComponent);
         new FlightDeleteDashboardCacheUseCase(appComponent.context()).executeSync();
-        new IndiSession(appComponent.context()).doLogout();
     }
 
     @Override
@@ -2826,6 +2825,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
         AppWidgetUtil.sendBroadcastToAppWidget(activity);
+        new IndiSession(activity).doLogout();
     }
 
     @Override
