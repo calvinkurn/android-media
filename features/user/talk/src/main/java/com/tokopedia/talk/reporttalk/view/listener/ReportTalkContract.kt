@@ -1,5 +1,6 @@
 package com.tokopedia.talk.reporttalk.view.listener
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 
@@ -10,10 +11,16 @@ interface ReportTalkContract {
 
     interface View : CustomerView {
         fun showLoadingFull()
+        fun hideLoadingFull()
+        fun onErrorReportTalk(errorMessage: String)
+        fun getContext(): Context?
+        fun onSuccessReportTalk()
+
 
     }
 
     interface Presenter : CustomerPresenter<View> {
+        fun reportTalk(talkId: String, shopId: String, productId: String, reason: String)
 
     }
 }

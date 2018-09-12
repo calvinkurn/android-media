@@ -214,7 +214,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToReportTalk() {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this)
+            val intent = ReportTalkActivity.createIntent(this, "", "" , "")
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
@@ -269,12 +269,20 @@ class ProductTalkFragment : BaseDaggerFragment(),
         alertDialog.show()
     }
 
-    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String) {
+    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
         //TODO STEVENFe
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
        // TODO STEVEN
+    }
+
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNoShowTalkCommentClick(talkId: String, commentId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onDestroyView() {

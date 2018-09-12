@@ -46,14 +46,6 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         } else false
     }
 
-    fun showReportedTalk(adapterPosition: Int) {
-        if (this.visitables[adapterPosition] is InboxTalkItemViewModel) {
-            (this.visitables[adapterPosition] as InboxTalkItemViewModel)
-                    .talkThread.headThread.menu.isReported = false
-            notifyItemChanged(adapterPosition)
-        }
-    }
-
     fun deleteTalkByTalkId(talkId: String) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
@@ -97,6 +89,33 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 talk.talkThread.headThread.menu.allowUnfollow = isFollowing
                 talk.talkThread.headThread.menu.allowFollow = !isFollowing
 
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+
+    fun showReportedTalk(talkId: String) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                talk.talkThread.headThread.menu.isMasked = false
+                talk.talkThread.headThread.comment = talk.talkThread.headThread.rawMessage
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    fun showReportedCommentTalk(talkId: String, commentId: String) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.talkThread.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        comment.menu.isMasked = false
+                        comment.comment = comment.rawMessage
+                    }
+                }
                 notifyItemChanged(position)
             }
         }

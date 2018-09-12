@@ -33,9 +33,9 @@ class InboxTalkItemViewHolder(val v: View,
 
     interface TalkItemListener {
         fun onReplyTalkButtonClick(allowReply: Boolean)
-        fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String)
-        fun onYesReportTalkItemClick()
-        fun onNoShowTalkItemClick(adapterPosition: Int)
+        fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
+        fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
+        fun onNoShowTalkItemClick(talkId: String)
     }
 
     private val productName: TextView = itemView.productName
@@ -107,8 +107,12 @@ class InboxTalkItemViewHolder(val v: View,
             separatorReport.visibility = View.GONE
         }
 
-        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick() }
-        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(adapterPosition) }
+        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick(
+                element.talkThread.headThread.talkId,
+                element.talkThread.headThread.shopId,
+                element.talkThread.headThread.productId) }
+        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(element.talkThread
+                .headThread.talkId) }
 
     }
 
@@ -159,7 +163,8 @@ class InboxTalkItemViewHolder(val v: View,
 
         menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
                 element.talkThread.headThread.shopId,
-                element.talkThread.headThread.talkId) }
+                element.talkThread.headThread.talkId,
+                element.talkThread.headThread.productId) }
     }
 
     fun onViewRecycled() {
