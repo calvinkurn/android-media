@@ -1,10 +1,12 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
+import android.text.TextUtils;
+
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.usecase.RequestParams;
 
@@ -32,8 +34,14 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         return Observable.zip(
                 getFeedPlus(requestParams),
                 getWhitelist(),
-                (feedResult, response) -> {
-                    feedResult.getFeedDomain().setWhitelist(response != null ? mappingWhitelist(response) : null);
+                getInterestWhitelist(),
+                (feedResult, response, interestResponse) -> {
+                    feedResult.getFeedDomain().setWhitelist(response != null
+                            ? mappingWhitelist(response)
+                            : null);
+                    feedResult.getFeedDomain().setInterestWhitelist(interestResponse != null
+                            ? mapInterestWhitelist(interestResponse)
+                            : false);
                     return feedResult;
                 }
         );
@@ -47,6 +55,14 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         getWhitelistUseCase.clearRequest();
         getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_CONTENT_USER))
+        );
+        return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
+    }
+
+    private Observable<GraphqlResponse> getInterestWhitelist() {
+        getWhitelistUseCase.clearRequest();
+        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_INTEREST))
         );
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
     }
@@ -84,5 +100,12 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
                     "");
             return domain;
         }
+    }
+
+    private static Boolean mapInterestWhitelist(GraphqlResponse response) {
+        WhitelistQuery whitelistQuery = response.getData(WhitelistQuery.class);
+        return whitelistQuery != null && whitelistQuery.getWhitelist() != null
+                && TextUtils.isEmpty(whitelistQuery.getWhitelist().getError())
+                && whitelistQuery.getWhitelist().isWhitelist();
     }
 }
