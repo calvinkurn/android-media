@@ -64,27 +64,19 @@ public class UploadChangePhoneNumberRequestUseCase extends UseCase<GraphqlRespon
         Observable<ChangePhoneNumberRequestModel> initialObservable = Observable.just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<ChangePhoneNumberRequestModel>>) requestParams1 -> Observable.just(changePhoneNumberRequestModel))
 
-                .flatMap(new Func1<ChangePhoneNumberRequestModel, Observable<UploadHostModel>>() {
-                    @Override
-                    public Observable<UploadHostModel> call(ChangePhoneNumberRequestModel changePhoneNumberRequestModel) {
-                        return getUploadHost(getUploadHostParam(requestParams));
-                    }
-                })
+                .flatMap((Func1<ChangePhoneNumberRequestModel, Observable<UploadHostModel>>) changePhoneNumberRequestModel14 -> getUploadHost(getUploadHostParam(requestParams)))
 
-                .flatMap(new Func1<UploadHostModel, Observable<ChangePhoneNumberRequestModel>>() {
-                    @Override
-                    public Observable<ChangePhoneNumberRequestModel> call(UploadHostModel uploadHostModel) {
-                        changePhoneNumberRequestModel.setUploadHostModel(uploadHostModel);
-                        changePhoneNumberRequestModel.setSuccess(uploadHostModel.isSuccess());
+                .flatMap((Func1<UploadHostModel, Observable<ChangePhoneNumberRequestModel>>) uploadHostModel -> {
+                    changePhoneNumberRequestModel.setUploadHostModel(uploadHostModel);
+                    changePhoneNumberRequestModel.setSuccess(uploadHostModel.isSuccess());
 
-                        if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
-                                && changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage() != null)
-                            throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage());
-                        else if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
-                                && changePhoneNumberRequestModel.getUploadHostModel().getResponseCode() != 200)
-                            throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getResponseCode()));
-                        return Observable.just(changePhoneNumberRequestModel);
-                    }
+                    if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                            && changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage() != null)
+                        throw new ErrorMessageException(changePhoneNumberRequestModel.getUploadHostModel().getErrorMessage());
+                    else if (!changePhoneNumberRequestModel.getUploadHostModel().isSuccess()
+                            && changePhoneNumberRequestModel.getUploadHostModel().getResponseCode() != 200)
+                        throw new RuntimeException(String.valueOf(changePhoneNumberRequestModel.getUploadHostModel().getResponseCode()));
+                    return Observable.just(changePhoneNumberRequestModel);
                 })
 
                 .flatMap((Func1<ChangePhoneNumberRequestModel, Observable<UploadImageModel>>) changePhoneNumberRequestModel1 -> uploadImage(getUploadIdImageParam(requestParams,
