@@ -5,7 +5,7 @@ package com.tokopedia.searchbar;
  */
 public class SearchBarConstant {
 
-    public static final String CLICK_TOP_NAV = "clickTopNav";
+    public static final String CLICK_HOME_PAGE = "clickHomePage";
 
     public static final String CLICK_WISHLIST = "clickWishlist";
 

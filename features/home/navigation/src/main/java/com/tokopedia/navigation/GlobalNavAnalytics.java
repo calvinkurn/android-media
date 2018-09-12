@@ -66,7 +66,7 @@ public class GlobalNavAnalytics {
 
         Map<String, Object> eventTracking = new HashMap<>();
         eventTracking.put(SCREEN_NAME, SCREEN_NAME_CHAT);
-        eventTracking.put(EVENT, CLICK_TOP_NAV);
+        eventTracking.put(EVENT, CLICK_HOME_PAGE);
         eventTracking.put(EVENT_CATEGORY, TOP_NAV);
         eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
         eventTracking.put(EVENT_LABEL, "");

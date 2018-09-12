@@ -30,7 +30,7 @@ public class SearchBarAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                SearchBarConstant.CLICK_TOP_NAV,
+                SearchBarConstant.CLICK_HOME_PAGE,
                 SearchBarConstant.TOP_NAV,
                 String.format("%s %s", SearchBarConstant.CLICK,
                         SearchBarConstant.SCAN_QR),
@@ -56,7 +56,7 @@ public class SearchBarAnalytics {
 
         analyticTracker.sendEventTracking(
                 getDataEvent(screenName,
-                        SearchBarConstant.CLICK_TOP_NAV,
+                        SearchBarConstant.CLICK_HOME_PAGE,
                         SearchBarConstant.TOP_NAV,
                         String.format("%s %s", SearchBarConstant.CLICK,
                                 SearchBarConstant.NOTIFICATION)));

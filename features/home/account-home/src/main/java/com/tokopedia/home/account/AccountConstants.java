@@ -106,7 +106,6 @@ public class AccountConstants {
         public static final String EVENT_CATEGORY = "eventCategory";
         public static final String EVENT_ACTION = "eventAction";
         public static final String EVENT_LABEL = "eventLabel";
-        public static final String CLICK_TOP_NAV = "clickTopNav";
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_ACCOUNT = "/account";
     }
