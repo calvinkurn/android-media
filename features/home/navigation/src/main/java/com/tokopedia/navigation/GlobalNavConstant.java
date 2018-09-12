@@ -4,6 +4,8 @@ package com.tokopedia.navigation;
  * Created by meta on 25/07/18.
  */
 public class GlobalNavConstant {
+    public static final String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
 
     public class Analytics {
 

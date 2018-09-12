@@ -292,6 +292,7 @@ import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
@@ -2167,6 +2168,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInstantLoanIntent(Context context) {
         return InstantLoanActivity.createIntent(context);
+    }
+
+    public Intent getOpenShopIntent(Context context) {
+        return ShopOpenDomainActivity.getIntent(context);
     }
 
     public void showForceHockeyAppDialog() {

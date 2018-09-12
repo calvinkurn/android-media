@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**
  * Created by meta on 18/07/18.
@@ -34,4 +35,8 @@ public interface GlobalNavRouter {
     void setCartCount(Context context, int count);
 
     void sendAnalyticsFirstTime();
+
+    Intent getShopPageIntent(Context context, String shopID);
+
+    Intent getOpenShopIntent(Context context);
 }
