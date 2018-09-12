@@ -17,6 +17,9 @@ public interface ShippingDurationBottomsheetListener {
                                    RecipientAddressModel recipientAddressModel,
                                    int cartPosition,
                                    int selectedServiceId,
-                                   boolean flagNeedToSetPinpoint);
+                                   String selectedServiceName, boolean flagNeedToSetPinpoint);
 
+    void onShippingDurationButtonCloseClicked();
+
+    void onShippingDurationButtonShowCaseDoneClicked();
 }

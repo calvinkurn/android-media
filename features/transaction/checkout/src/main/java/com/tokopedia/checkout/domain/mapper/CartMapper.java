@@ -12,6 +12,7 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartTickerErrorData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.DeleteCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ResetCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.ShopGroupData;
+import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateAndRefreshCartListData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.UpdateCartData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.WholesalePrice;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
@@ -131,6 +132,7 @@ public class CartMapper implements ICartMapper {
                 cartItemDataOrigin.setCategory(data.getProduct().getCategory());
                 cartItemDataOrigin.setCategoryId(String.valueOf(data.getProduct().getCategoryId()));
                 cartItemDataOrigin.setOriginalRemark(cartItemDataOrigin.getProductVarianRemark());
+                cartItemDataOrigin.setOriginalQty(data.getProduct().getProductQuantity());
                 cartItemDataOrigin.setShopName(shopGroup.getShop().getShopName());
                 cartItemDataOrigin.setGoldMerchant(shopGroup.getShop().getIsGold() == 1);
                 cartItemDataOrigin.setOfficialStore(shopGroup.getShop().getIsOfficial() == 1);
@@ -198,14 +200,19 @@ public class CartMapper implements ICartMapper {
                 }
 
                 if (cartItemData.isSingleChild()) {
-                    if (cartItemData.isError()) {
-                        shopGroupData.setError(true);
-                        shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
-                        shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
-                    } else if (cartItemData.isWarning()) {
-                        shopGroupData.setWarning(true);
-                        shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
-                        shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                    if (!shopGroupData.isError() && !shopGroupData.isWarning()) {
+                        cartItemData.setParentHasErrorOrWarning(false);
+                        if (cartItemData.isError()) {
+                            shopGroupData.setError(true);
+                            shopGroupData.setErrorTitle(cartItemData.getErrorMessageTitle());
+                            shopGroupData.setErrorDescription(cartItemData.getErrorMessageDescription());
+                        } else if (cartItemData.isWarning()) {
+                            shopGroupData.setWarning(true);
+                            shopGroupData.setWarningTitle(cartItemData.getWarningMessageTitle());
+                            shopGroupData.setWarningDescription(cartItemData.getWarningMessageDescription());
+                        }
+                    } else {
+                        cartItemData.setParentHasErrorOrWarning(true);
                     }
                 }
 
@@ -430,5 +437,17 @@ public class CartMapper implements ICartMapper {
         ResetCartData resetCartData = new ResetCartData();
         resetCartData.setSuccess(resetCartDataResponse.getSuccess() == 1);
         return resetCartData;
+    }
+
+    @Override
+    public UpdateAndRefreshCartListData convertToUpdateAndRefreshCartData(UpdateCartDataResponse updateCartDataResponse) {
+        UpdateCartData updateCartData = new UpdateCartData.Builder()
+                .goTo(updateCartDataResponse.get_goto())
+                .message(updateCartDataResponse.getError())
+                .success(updateCartDataResponse.isStatus())
+                .build();
+        UpdateAndRefreshCartListData updateAndRefreshCartListData = new UpdateAndRefreshCartListData();
+        updateAndRefreshCartListData.setUpdateCartData(updateCartData);
+        return null;
     }
 }

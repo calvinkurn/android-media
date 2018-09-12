@@ -11,8 +11,6 @@ import java.util.List;
  */
 
 public class HomeHeaderWalletAction implements Parcelable {
-    public static final int TYPE_ACTION_ACTIVATION = 1;
-    public static final int TYPE_ACTION_TOP_UP = 2;
 
     private String labelTitle;
     private String balance;
@@ -23,7 +21,34 @@ public class HomeHeaderWalletAction implements Parcelable {
     private String labelActionButton;
     private String appLinkActionButton;
     private String redirectUrlActionButton;
+    private boolean linked;
     private List<String> abTags = new ArrayList<>();
+
+    protected HomeHeaderWalletAction(Parcel in) {
+        labelTitle = in.readString();
+        balance = in.readString();
+        redirectUrlBalance = in.readString();
+        appLinkBalance = in.readString();
+        typeAction = in.readInt();
+        visibleActionButton = in.readByte() != 0;
+        labelActionButton = in.readString();
+        appLinkActionButton = in.readString();
+        redirectUrlActionButton = in.readString();
+        linked = in.readByte() != 0;
+        abTags = in.createStringArrayList();
+    }
+
+    public static final Creator<HomeHeaderWalletAction> CREATOR = new Creator<HomeHeaderWalletAction>() {
+        @Override
+        public HomeHeaderWalletAction createFromParcel(Parcel in) {
+            return new HomeHeaderWalletAction(in);
+        }
+
+        @Override
+        public HomeHeaderWalletAction[] newArray(int size) {
+            return new HomeHeaderWalletAction[size];
+        }
+    };
 
     public String getLabelTitle() {
         return labelTitle;
@@ -105,6 +130,14 @@ public class HomeHeaderWalletAction implements Parcelable {
         this.abTags = abTags;
     }
 
+    public boolean isLinked() {
+        return linked;
+    }
+
+    public void setLinked(boolean linked) {
+        this.linked = linked;
+    }
+
     public HomeHeaderWalletAction() {
     }
 
@@ -114,41 +147,17 @@ public class HomeHeaderWalletAction implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.labelTitle);
-        dest.writeString(this.balance);
-        dest.writeString(this.redirectUrlBalance);
-        dest.writeString(this.appLinkBalance);
-        dest.writeInt(this.typeAction);
-        dest.writeByte(this.visibleActionButton ? (byte) 1 : (byte) 0);
-        dest.writeString(this.labelActionButton);
-        dest.writeString(this.appLinkActionButton);
-        dest.writeString(this.redirectUrlActionButton);
-        dest.writeStringList(this.abTags);
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(labelTitle);
+        parcel.writeString(balance);
+        parcel.writeString(redirectUrlBalance);
+        parcel.writeString(appLinkBalance);
+        parcel.writeInt(typeAction);
+        parcel.writeByte((byte) (visibleActionButton ? 1 : 0));
+        parcel.writeString(labelActionButton);
+        parcel.writeString(appLinkActionButton);
+        parcel.writeString(redirectUrlActionButton);
+        parcel.writeByte((byte) (linked ? 1 : 0));
+        parcel.writeStringList(abTags);
     }
-
-    protected HomeHeaderWalletAction(Parcel in) {
-        this.labelTitle = in.readString();
-        this.balance = in.readString();
-        this.redirectUrlBalance = in.readString();
-        this.appLinkBalance = in.readString();
-        this.typeAction = in.readInt();
-        this.visibleActionButton = in.readByte() != 0;
-        this.labelActionButton = in.readString();
-        this.appLinkActionButton = in.readString();
-        this.redirectUrlActionButton = in.readString();
-        this.abTags = in.createStringArrayList();
-    }
-
-    public static final Creator<HomeHeaderWalletAction> CREATOR = new Creator<HomeHeaderWalletAction>() {
-        @Override
-        public HomeHeaderWalletAction createFromParcel(Parcel source) {
-            return new HomeHeaderWalletAction(source);
-        }
-
-        @Override
-        public HomeHeaderWalletAction[] newArray(int size) {
-            return new HomeHeaderWalletAction[size];
-        }
-    };
 }
