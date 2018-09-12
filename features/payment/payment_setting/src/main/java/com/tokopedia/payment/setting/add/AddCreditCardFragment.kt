@@ -2,9 +2,14 @@ package com.tokopedia.payment.setting.add
 
 import android.app.Activity
 import android.app.ProgressDialog
+import android.os.Build
 import android.os.Bundle
+import android.support.annotation.RequiresApi
 import android.view.View
+import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseWebViewFragment
 import com.tokopedia.abstraction.common.data.model.session.UserSession
@@ -91,6 +96,19 @@ class AddCreditCardFragment : BaseWebViewFragment(), AddCreditCardContract.View 
             activity?.finish()
         }
         return super.shouldOverrideUrlLoading(webView, url)
+    }
+
+    override fun getWebviewClient(): WebViewClient {
+        return object : WebViewClient() {
+            @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+            override fun shouldInterceptRequest(view: WebView?, request: WebResourceRequest?): WebResourceResponse? {
+                if(request?.url?.toString()?.equals(callbackUrl)?:false){
+                    activity?.setResult(Activity.RESULT_OK)
+                    activity?.finish()
+                }
+                return super.shouldInterceptRequest(view, request)
+            }
+        }
     }
 
     override fun onDestroy() {

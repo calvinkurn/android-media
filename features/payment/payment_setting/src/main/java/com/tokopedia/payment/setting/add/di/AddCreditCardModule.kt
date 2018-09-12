@@ -3,6 +3,7 @@ package com.tokopedia.payment.setting.add.di
 import android.content.Context
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
@@ -26,8 +27,8 @@ class AddCreditCardModule {
 
     @AddCreditCardScope
     @Provides
-    fun productAddCreditCardUseCase(tkpdAuthInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context) : AddCreditCardUseCase{
-        return AddCreditCardUseCase(tkpdAuthInterceptor, context)
+    fun productAddCreditCardUseCase(tkpdAuthInterceptor: ArrayList<Interceptor>, @ApplicationContext context: Context, userSession: UserSession) : AddCreditCardUseCase{
+        return AddCreditCardUseCase(tkpdAuthInterceptor, context, userSession)
     }
 
 
@@ -36,7 +37,9 @@ class AddCreditCardModule {
     fun provideTkpdAuthInterceptor(@ApplicationContext context: Context, networkRouter: NetworkRouter, userSession: UserSession) : ArrayList<Interceptor>{
         val  listInterceptor =  ArrayList<Interceptor>()
         listInterceptor.add(TkpdAuthInterceptor(context, networkRouter, userSession))
-        listInterceptor.add(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        if(GlobalConfig.DEBUG){
+            listInterceptor.add(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+        }
         return listInterceptor
     }
 
