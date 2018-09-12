@@ -1,13 +1,13 @@
-package com.tokopedia.feedplus.domain.usecase;
+package com.tokopedia.kolcommon.domain.usecase;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.feedplus.R;
-import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
+import com.tokopedia.kolcommon.R;
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 
 import javax.inject.Inject;
 
@@ -24,6 +24,9 @@ public class GetWhitelistUseCase extends GraphqlUseCase {
     }
 
     public GraphqlRequest getRequest() {
-        return new GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist), WhitelistQuery.class);
+        return new GraphqlRequest(
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_whitelist),
+                WhitelistQuery.class
+        );
     }
 }
