@@ -39,9 +39,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(com.tokopedia.core.base.domain.RequestParams requestParams) {
-        String url = UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE + "upload/attachment";
+        String uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment";
 
-        return uploadImageRepository.uploadImage(requestParams.getString(IMAGE_UPLOAD_URL, url),
+        return uploadImageRepository.uploadImage(uploadUrl,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
         );
@@ -51,10 +51,10 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         Map<String, String> requestBodyMap = new HashMap<>();
         requestBodyMap.put(USERID, requestParams.getString(USERID, ""));
         requestBodyMap.put(ID,
-                requestBodyMap.put(USERID, ""));
-        requestBodyMap.put(SERVER_ID, requestParams.getString(SERVER_ID, ""));
+                requestParams.getString(USERID, ""));
+        requestBodyMap.put(SERVER_ID, requestParams.getString(SERVER_ID, "49"));
         requestBodyMap.put(TOKEN, requestParams.getString(TOKEN, ""));
-        requestBodyMap.put(RESOLUTION, requestParams.getString(RESOLUTION, ""));
+        requestBodyMap.put(RESOLUTION, requestParams.getString(RESOLUTION, "215"));
 
         return requestBodyMap;
     }

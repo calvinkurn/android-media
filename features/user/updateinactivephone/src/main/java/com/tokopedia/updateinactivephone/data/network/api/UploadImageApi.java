@@ -2,6 +2,7 @@ package com.tokopedia.updateinactivephone.data.network.api;
 
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.updateinactivephone.model.response.UploadImageData;
 
 import java.util.Map;
@@ -26,6 +27,6 @@ public interface UploadImageApi {
                                                       @Part("fileToUpload\"; filename=\"image.jpg") RequestBody imageFile);
 
     @FormUrlEncoded
-    @POST("v4/action/generate-host/generate_host.pl")
+    @POST(UpdateInactivePhoneURL.GET_UPLOAD_HOST)
     Observable<Response<TkpdResponse>> getUploadHost(@FieldMap Map<String, Object> params);
 }

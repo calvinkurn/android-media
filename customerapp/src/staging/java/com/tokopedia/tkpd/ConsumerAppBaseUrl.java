@@ -55,6 +55,5 @@ public class ConsumerAppBaseUrl {
     public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
     public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
     public static final String KAI_WEB_DOMAIN = "https://tiket-staging.tokopedia.com/";
-    public static final String UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD = "https://up-staging.tokopedia.net/";
     public static final String TOKOCARD_BASE_DOMAIN = "https://staging.tokopedia.com/tokocard/";
 }

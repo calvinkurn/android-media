@@ -12,7 +12,7 @@ import rx.Observable;
 public class GetUploadHostUseCase extends UseCase<UploadHostModel> {
 
     public static final String PARAM_NEW_ADD = "new_add";
-    public static final String DEFAULT_NEW_ADD = "1";
+    public static final String DEFAULT_NEW_ADD = "2";
 
 
     private final UploadImageRepository uploadImageRepository;
