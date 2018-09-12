@@ -14,6 +14,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -32,6 +33,7 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopPr
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_shop_product_carousel;
+    public static final int VERTICAL_LAYOUT = R.layout.item_shop_product_carousel_vertical;
 
     public ShopProductCarouselViewHolder(View itemView, int deviceWidth,
                                          ShopProductClickedNewListener shopProductClickedNewListener,
@@ -54,6 +56,10 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopPr
         if (baseShopProductViewModel instanceof ShopProductFeaturedViewModel) {
             shopProductCarouselAdapter.replaceProductList(
                     ((ShopProductFeaturedViewModel)baseShopProductViewModel).getShopProductFeaturedViewModelList());
+        } else if (baseShopProductViewModel instanceof EtalaseHighlightCarouselViewModel){
+            shopProductCarouselAdapter.replaceProductList(
+                    ((EtalaseHighlightCarouselViewModel)baseShopProductViewModel).getShopProductViewModelList());
+            tvTitle.setText(((EtalaseHighlightCarouselViewModel) baseShopProductViewModel).getShopEtalaseViewModel().getEtalaseName());
         }
         shopProductCarouselAdapter.notifyDataSetChanged();
 

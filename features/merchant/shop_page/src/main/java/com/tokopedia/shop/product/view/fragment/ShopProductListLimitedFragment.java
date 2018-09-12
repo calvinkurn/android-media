@@ -52,6 +52,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductFeaturedViewModel;
@@ -61,6 +62,7 @@ import com.tokopedia.shop.product.view.presenter.ShopProductLimitedListPresenter
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -509,8 +511,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessGetEtalaseHighlight(@NonNull List<List<ShopProductViewModel>> list) {
+        ArrayList<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModels = new ArrayList<>();
+        for (int i = 0, sizei = list.size(); i<sizei; i++){
+            List<ShopProductViewModel> shopProductViewModelList = list.get(i);
+            etalaseHighlightCarouselViewModels.add(
+                    new EtalaseHighlightCarouselViewModel(shopProductViewModelList, highlightEtalaseViewModelList.get(i)));
+        }
         shopProductAdapter.setShopProductEtalaseHighlightViewModel(
-                new ShopProductEtalaseHighlightViewModel(list,highlightEtalaseViewModelList));
+                new ShopProductEtalaseHighlightViewModel(etalaseHighlightCarouselViewModels));
     }
 
     @Override

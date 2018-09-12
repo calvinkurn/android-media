@@ -12,17 +12,14 @@ import java.util.List;
 
 public class ShopProductEtalaseHighlightViewModel implements BaseShopProductViewModel{
 
-    private List<List<ShopProductViewModel>> shopProductViewModelListList;
-    private List<ShopEtalaseViewModel> shopEtalaseViewModelList;
+    private List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList;
 
     public ShopProductEtalaseHighlightViewModel(){
-        shopProductViewModelListList = new ArrayList<>();
+        etalaseHighlightCarouselViewModelList = new ArrayList<>();
     }
 
-    public ShopProductEtalaseHighlightViewModel(List<List<ShopProductViewModel>> shopProductViewModelListList,
-                                                List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
-        setShopProductEtalaseHighLightViewModelList(shopProductViewModelListList);
-        setEtalaseViewModelList(shopEtalaseViewModelList);
+    public ShopProductEtalaseHighlightViewModel(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
+        setEtalaseHighlightCarouselViewModelList(etalaseHighlightCarouselViewModelList);
     }
 
     @Override
@@ -30,38 +27,29 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
         return typeFactory.type(this);
     }
 
-    private void setShopProductEtalaseHighLightViewModelList(List<List<ShopProductViewModel>> shopProductViewModelListList) {
-        if (shopProductViewModelListList == null) {
-            this.shopProductViewModelListList = new ArrayList<>();
+    private void setEtalaseHighlightCarouselViewModelList(List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList) {
+        if (etalaseHighlightCarouselViewModelList == null) {
+            this.etalaseHighlightCarouselViewModelList = new ArrayList<>();
         } else {
-            this.shopProductViewModelListList = shopProductViewModelListList;
+            this.etalaseHighlightCarouselViewModelList = etalaseHighlightCarouselViewModelList;
         }
     }
 
-    private void setEtalaseViewModelList(List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
-        if (shopEtalaseViewModelList == null) {
-            this.shopEtalaseViewModelList = new ArrayList<>();
-        } else {
-            this.shopEtalaseViewModelList = shopEtalaseViewModelList;
-        }
-    }
-
-    public List<List<ShopProductViewModel>> getShopProductViewModelListList() {
-        return shopProductViewModelListList;
-    }
-
-    public List<ShopEtalaseViewModel> getShopEtalaseViewModelList() {
-        return shopEtalaseViewModelList;
+    public List<EtalaseHighlightCarouselViewModel> getEtalaseHighlightCarouselViewModelList() {
+        return etalaseHighlightCarouselViewModelList;
     }
 
     public boolean updateWishListStatus(String productId, boolean wishList) {
-        for (int i = 0, sizei = shopProductViewModelListList.size(); i < sizei; i++) {
-            List<ShopProductViewModel> shopProductViewModelList = shopProductViewModelListList.get(i);
-            for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
-                ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
-                if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
-                    shopProductViewModel.setWishList(wishList);
-                    return true;
+        if (etalaseHighlightCarouselViewModelList!= null) {
+            for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
+                EtalaseHighlightCarouselViewModel etalaseHighlightCarouselViewModel = etalaseHighlightCarouselViewModelList.get(i);
+                List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModel.getShopProductViewModelList();
+                for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
+                    ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
+                    if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
+                        shopProductViewModel.setWishList(wishList);
+                        return true;
+                    }
                 }
             }
         }

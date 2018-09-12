@@ -61,7 +61,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         shopProductPromoViewModel = new ShopProductPromoViewModel();
         shopProductViewModelList = new ArrayList<>();
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
-        shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null, null);
+        shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
         shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
         visitables.add(shopProductPromoViewModel);
