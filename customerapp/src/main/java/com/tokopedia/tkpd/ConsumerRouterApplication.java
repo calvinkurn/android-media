@@ -1590,12 +1590,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
             @Override
             public void sendScreen(Activity activity, final String screenName) {
-                ScreenTracking.sendScreen(activity, new ScreenTracking.IOpenScreenAnalytics() {
-                    @Override
-                    public String getScreenName() {
-                        return screenName;
-                    }
-                });
+                ScreenTracking.sendScreen(activity, () -> screenName);
             }
 
             @Override
