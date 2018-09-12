@@ -87,7 +87,6 @@ public class MainToolbar extends Toolbar {
         });
 
         btnWishlist.setOnClickListener(v -> {
-            String className = getContext().getClass().getSimpleName();
             searchBarAnalytics.eventTrackingWishlist(screenName);
             if (userSession.isLoggedIn()) {
                 getContext().startActivity(((SearchBarRouter) this.getContext().getApplicationContext())
