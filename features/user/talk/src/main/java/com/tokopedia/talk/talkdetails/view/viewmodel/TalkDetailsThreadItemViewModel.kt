@@ -7,6 +7,7 @@ import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactor
  * Created by Hendri on 29/08/18.
  */
 data class TalkDetailsThreadItemViewModel(
+        var id:String? = "",
         var avatar: String? = "",
         var name: String? = "",
         var timestamp: String? = "",

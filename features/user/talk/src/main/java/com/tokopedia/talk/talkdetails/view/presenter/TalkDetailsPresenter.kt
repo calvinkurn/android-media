@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.talk.talkdetails.domain.usecase.DeleteTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
+import com.tokopedia.talk.talkdetails.view.subscriber.DeleteTalkCommentSubscriber
 import com.tokopedia.talk.talkdetails.view.subscriber.GetTalkCommentsSubscriber
+import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsProductAttachViewModel
 
 /**
  * Created by Hendri on 28/08/18.
@@ -20,10 +22,15 @@ class TalkDetailsPresenter(private val getTalkComments:GetTalkCommentsUseCase,
     }
 
     override fun reportTalkComment(id: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        view.goToReportTalkPage(id)
     }
 
     override fun deleteTalkComment(id: String) {
+        deleteTalkCommentsUseCase.execute(DeleteTalkCommentsUseCase.getParameters(id),
+                                          DeleteTalkCommentSubscriber(this,view))
+    }
+
+    override fun sendTalkComment(id: String, attachedProduct: List<TalkDetailsProductAttachViewModel>?, message: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

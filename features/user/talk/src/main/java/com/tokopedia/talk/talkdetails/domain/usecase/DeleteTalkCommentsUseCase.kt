@@ -14,4 +14,12 @@ class DeleteTalkCommentsUseCase(val api: DetailTalkApi,
     override fun createObservable(requestParams: RequestParams?): Observable<String> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    companion object {
+        fun getParameters(talkId:String):RequestParams{
+            val requestParams:RequestParams = RequestParams.create()
+            requestParams.putString("talk_id",talkId)
+            return requestParams
+        }
+    }
 }

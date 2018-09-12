@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.talk.ProductTalkFragment
 import com.tokopedia.talk.talkdetails.view.fragment.TalkDetailsFragment
 
 /**
@@ -24,11 +23,13 @@ class TalkDetailsActivity : BaseSimpleActivity() {
 
     companion object {
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
+        const val SHOP_ID = "SHOP_ID"
 
         @JvmStatic
-        fun getCallingIntent(threadId:String, context: Context): Intent {
+        fun getCallingIntent(threadId:String, shopId:String, context: Context): Intent {
             var intent:Intent = Intent(context,TalkDetailsActivity.javaClass)
             intent.putExtra(THREAD_TALK_ID,threadId)
+            intent.putExtra(SHOP_ID,shopId)
             return intent
         }
     }
