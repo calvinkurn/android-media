@@ -30,7 +30,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     @Inject
-    lateinit var presenter: InterestPickPresenter
+    lateinit var presenter: InterestPickContract.Presenter
     lateinit var adapter: InterestPickAdapter
 
     override fun getScreenName() = null

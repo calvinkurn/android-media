@@ -1,5 +1,8 @@
 package com.tokopedia.interestpick.di
 
+import com.tokopedia.interestpick.view.listener.InterestPickContract
+import com.tokopedia.interestpick.view.presenter.InterestPickPresenter
+import dagger.Binds
 import dagger.Module
 
 /**
@@ -7,4 +10,9 @@ import dagger.Module
  */
 
 @Module
-class InterestPickModule
+abstract class InterestPickModule {
+    @InterestPickScope
+    @Binds
+    abstract fun provideInterestPickPresenter(interestPickPresenter: InterestPickPresenter)
+            : InterestPickContract.Presenter
+}
