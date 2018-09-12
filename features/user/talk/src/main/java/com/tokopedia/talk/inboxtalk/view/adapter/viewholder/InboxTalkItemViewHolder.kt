@@ -73,8 +73,8 @@ class InboxTalkItemViewHolder(val v: View,
             setProfileHeader(element)
             setCommentList(element)
 
-            if (element.talkThread.headThread.menu.isReported) {
-                setupReportedMessage(element)
+            if (element.talkThread.headThread.menu.isMasked) {
+                setupMaskedMessage(element)
             } else {
                 setupNormalTalk(element)
             }
@@ -92,7 +92,7 @@ class InboxTalkItemViewHolder(val v: View,
         else notification.visibility = View.VISIBLE
     }
 
-    private fun setupReportedMessage(element: InboxTalkItemViewModel) {
+    private fun setupMaskedMessage(element: InboxTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
 
@@ -160,6 +160,11 @@ class InboxTalkItemViewHolder(val v: View,
         menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
                 element.talkThread.headThread.shopId,
                 element.talkThread.headThread.talkId) }
+    }
+
+    fun onViewRecycled() {
+        ImageHandler.clearImage(profileAvatar)
+        ImageHandler.clearImage(productAvatar)
     }
 
 }

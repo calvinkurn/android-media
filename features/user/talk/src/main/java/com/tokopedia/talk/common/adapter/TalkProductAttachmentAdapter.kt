@@ -53,8 +53,14 @@ class TalkProductAttachmentAdapter(private val listener: ProductAttachmentItemCl
         return listProduct[position]
     }
 
+    override fun onViewRecycled(holder: ViewHolder) {
+        super.onViewRecycled(holder)
+
+        ImageHandler.clearImage(holder.productImage)
+    }
 }
 
 private fun ViewGroup.inflate(layoutRes: Int): View {
     return LayoutInflater.from(context).inflate(layoutRes, this, false)
 }
+

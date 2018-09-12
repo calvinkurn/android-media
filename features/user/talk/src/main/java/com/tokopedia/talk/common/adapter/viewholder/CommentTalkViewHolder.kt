@@ -78,4 +78,8 @@ class CommentTalkViewHolder(val v: View,
                 element.commentId) }
     }
 
+    fun onViewRecycled() {
+        ImageHandler.clearImage(profileAvatar)
+    }
+
 }

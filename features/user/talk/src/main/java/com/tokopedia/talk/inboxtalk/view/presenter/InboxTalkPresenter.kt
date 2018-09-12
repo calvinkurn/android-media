@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
 import com.tokopedia.talk.common.domain.usecase.DeleteTalkUseCase
+import com.tokopedia.talk.common.domain.usecase.FollowUnfollowTalkUseCase
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.inboxtalk.domain.GetInboxTalkUseCase
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
@@ -17,7 +18,10 @@ import javax.inject.Inject
  */
 class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: GetInboxTalkUseCase,
                                              private val deleteTalkUseCase: DeleteTalkUseCase,
-                                             private val deleteCommentTalkUseCase: DeleteCommentTalkUseCase)
+                                             private val deleteCommentTalkUseCase:
+                                             DeleteCommentTalkUseCase,
+                                             private val followUnfollowTalkUseCase:
+                                             FollowUnfollowTalkUseCase)
     : BaseDaggerPresenter<InboxTalkContract.View>(),
         InboxTalkContract.Presenter {
 
@@ -73,7 +77,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         if (!isRequesting) {
             page = 1
             page_id = 0
-            view.showLoadingFilter()
+            view.showLoadingAction()
             view.hideFilter()
             isRequesting = true
             getInboxTalkUseCase.execute(GetInboxTalkUseCase.getParam(
@@ -87,13 +91,13 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideLoadingFilter()
+                    view.hideLoadingAction()
                     onErrorTalk(e)
 
                 }
 
                 override fun onNext(talkViewModel: InboxTalkViewModel) {
-                    view.hideLoadingFilter()
+                    view.hideLoadingAction()
                     view.showFilter()
                     isRequesting = false
 
@@ -183,6 +187,8 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
     override fun deleteTalk(shopId: String, talkId: String) {
         if (!isRequesting) {
+            view.showLoadingAction()
+            view.hideFilter()
 
             deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
                     shopId,
@@ -193,14 +199,15 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideRefreshLoad()
+                    view.hideLoadingAction()
+                    view.showFilter()
                     onErrorTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteTalk(talkId)
-                    }
+                    view.hideLoadingAction()
+                    view.showFilter()
+                    view.onSuccessDeleteTalk(talkId)
                 }
             })
         }
@@ -208,7 +215,8 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
     override fun deleteCommentTalk(shopId: String, talkId: String, commentId: String) {
         if (!isRequesting) {
-
+            view.showLoadingAction()
+            view.hideFilter()
             deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
                     shopId,
                     talkId,
@@ -219,47 +227,72 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideRefreshLoad()
+                    view.hideLoadingAction()
+                    view.showFilter()
                     onErrorTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteCommentTalk(talkId, commentId)
-                    }
+                    view.hideLoadingAction()
+                    view.showFilter()
+                    view.onSuccessDeleteCommentTalk(talkId, commentId)
+
                 }
             })
         }
     }
 
-    override fun unfollowTalk() {
+    override fun unfollowTalk(talkId: String) {
         if (!isRequesting) {
-
-            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
-                    "",
-                    "",
-                    ""
+            view.showLoadingAction()
+            view.hideFilter()
+            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                    talkId
             ), object : Subscriber<BaseActionTalkViewModel>() {
                 override fun onCompleted() {
 
                 }
 
                 override fun onError(e: Throwable) {
-                    view.hideRefreshLoad()
+                    view.hideLoadingAction()
+                    view.showFilter()
                     onErrorTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    if (talkViewModel.isSuccess) {
-                        view.onSuccessUnfollowTalk()
-                    }
+                    view.hideLoadingAction()
+                    view.showFilter()
+                    view.onSuccessUnfollowTalk(talkId)
+
                 }
             })
         }
     }
 
-    override fun followTalk() {
+    override fun followTalk(talkId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+            view.hideFilter()
+            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
 
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    view.showFilter()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.showFilter()
+                    view.onSuccessFollowTalk(talkId)
+                }
+            })
+        }
     }
 
     override fun detachView() {
@@ -267,6 +300,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         getInboxTalkUseCase.unsubscribe()
         deleteTalkUseCase.unsubscribe()
         deleteCommentTalkUseCase.unsubscribe()
+        followUnfollowTalkUseCase.unsubscribe()
     }
 
 }

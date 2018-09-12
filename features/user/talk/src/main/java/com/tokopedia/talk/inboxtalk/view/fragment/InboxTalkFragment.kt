@@ -168,7 +168,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    private fun showUnfollowTalkDialog() {
+    private fun showUnfollowTalkDialog(talkId: String) {
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -181,7 +181,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.unfollowTalk()
+            presenter.unfollowTalk(talkId)
             alertDialog.dismiss()
         }
 
@@ -189,7 +189,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
 
-    private fun showFollowTalkDialog() {
+    private fun showFollowTalkDialog(talkId: String) {
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -202,7 +202,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.followTalk()
+            presenter.followTalk(talkId)
             alertDialog.dismiss()
         }
 
@@ -344,8 +344,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(shopId, talkId)
-            getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
-            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
+            getString(R.string.menu_follow_talk) -> showFollowTalkDialog(talkId)
+            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(talkId)
             getString(R.string.menu_report_talk) -> goToReportTalk()
         }
         bottomMenu.dismiss()
@@ -401,13 +401,13 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         icon_filter.visibility = View.VISIBLE
     }
 
-    override fun showLoadingFilter() {
+    override fun showLoadingAction() {
         progressBar.visibility = View.VISIBLE
         talk_rv.visibility = View.GONE
         swipeToRefresh.isEnabled = false
     }
 
-    override fun hideLoadingFilter() {
+    override fun hideLoadingAction() {
         progressBar.visibility = View.GONE
         talk_rv.visibility = View.VISIBLE
         swipeToRefresh.isEnabled = true
@@ -433,8 +433,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.deleteComment(talkId, commentId)
     }
 
-    override fun onSuccessUnfollowTalk() {
+    override fun onSuccessUnfollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, false)
+    }
 
+    override fun onSuccessFollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, true)
     }
 
     override fun onDestroy() {
