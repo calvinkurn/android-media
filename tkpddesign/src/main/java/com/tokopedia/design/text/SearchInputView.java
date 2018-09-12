@@ -234,8 +234,4 @@ public class SearchInputView extends BaseCustomView {
         return R.layout.widget_search_input_view;
     }
 
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
-        searchTextView.setText(searchText);
-    }
 }
