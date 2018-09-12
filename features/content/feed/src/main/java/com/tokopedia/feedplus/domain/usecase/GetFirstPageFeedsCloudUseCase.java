@@ -21,12 +21,15 @@ import rx.Observable;
 public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
     private GetWhitelistUseCase getWhitelistUseCase;
+    private GetWhitelistUseCase getWhitelistInterestUseCase;
 
     @Inject
     public GetFirstPageFeedsCloudUseCase(FeedRepository feedRepository,
-                                         GetWhitelistUseCase getWhitelistUseCase) {
+                                         GetWhitelistUseCase getWhitelistUseCase,
+                                         GetWhitelistUseCase getWhitelistInterestUseCase) {
         super(feedRepository);
         this.getWhitelistUseCase = getWhitelistUseCase;
+        this.getWhitelistInterestUseCase = getWhitelistInterestUseCase;
     }
 
     @Override
@@ -60,11 +63,11 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
     }
 
     private Observable<GraphqlResponse> getInterestWhitelist() {
-        getWhitelistUseCase.clearRequest();
-        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+        getWhitelistInterestUseCase.clearRequest();
+        getWhitelistInterestUseCase.addRequest(getWhitelistInterestUseCase.getRequest(
                 GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_INTEREST))
         );
-        return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
+        return getWhitelistInterestUseCase.createObservable(RequestParams.EMPTY);
     }
 
     private static WhitelistDomain mappingWhitelist(GraphqlResponse response) {
