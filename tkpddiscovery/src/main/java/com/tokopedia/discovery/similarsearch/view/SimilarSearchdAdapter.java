@@ -159,7 +159,7 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
             if (productsItem.isWishListed()) {
                 mWishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
             } else {
-                mWishlistButton.setBackgroundResource(R.drawable.ic_icon_wishlist_count_pdp);
+                mWishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
             }
             mWishlistButtonContainer.setEnabled(productsItem.isWishlistButtonEnabled());
 

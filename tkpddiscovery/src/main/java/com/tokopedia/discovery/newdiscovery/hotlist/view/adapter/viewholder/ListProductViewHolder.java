@@ -135,7 +135,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
         if (wishlist) {
             wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
         } else {
-            wishlistButton.setBackgroundResource(R.drawable.ic_icon_wishlist_count_pdp);
+            wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
         }
     }
 

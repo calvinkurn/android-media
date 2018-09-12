@@ -178,8 +178,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private void checkWishlistCount(int productId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putInt(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
-//        getWishlistCountUseCase.createObservable(requestParams)
-//                .subscribe();
 
         getWishlistCountUseCase.execute(requestParams, new Subscriber<Response<WishlistCountResponse>>() {
             @Override
@@ -189,13 +187,11 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
             @Override
             public void onError(Throwable e) {
-                Log.d("FikryDev : (error)", e.getMessage());
 
             }
 
             @Override
             public void onNext(Response<WishlistCountResponse> wishlistCountResponseResponse) {
-                Log.d("FikryDev, count :", String.valueOf(wishlistCountResponseResponse.message()));
                 String wishlistCountText = "0";
 
                 if(wishlistCountResponseResponse.body().getData() != null){

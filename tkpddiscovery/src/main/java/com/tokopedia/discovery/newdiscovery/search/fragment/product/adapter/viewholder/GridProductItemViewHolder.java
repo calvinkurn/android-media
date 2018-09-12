@@ -97,12 +97,12 @@ public class GridProductItemViewHolder extends AbstractViewHolder<ProductItem> {
         setImageProduct(productItem);
 
         wishlistButtonContainer.setVisibility(View.VISIBLE);
-        wishlistButton.setBackgroundResource(R.drawable.ic_icon_wishlist_count_pdp);
+        wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
 
         if (productItem.isWishlisted()) {
             wishlistButton.setBackgroundResource(R.drawable.ic_wishlist_red);
         } else {
-            wishlistButton.setBackgroundResource(R.drawable.ic_icon_wishlist_count_pdp);
+            wishlistButton.setBackgroundResource(R.drawable.ic_wishlist);
         }
 
         wishlistButtonContainer.setEnabled(productItem.isWishlistButtonEnabled());

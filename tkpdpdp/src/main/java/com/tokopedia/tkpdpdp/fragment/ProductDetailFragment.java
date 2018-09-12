@@ -855,7 +855,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         if (productPass.isWishlist()) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_icon_wishlist_count_pdp));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
     }
@@ -981,7 +981,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         } else if (status == 1) {
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist_red));
         } else {
-            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_icon_wishlist_count_pdp));
+            fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
         updateWishlistStatusVariant(status);
