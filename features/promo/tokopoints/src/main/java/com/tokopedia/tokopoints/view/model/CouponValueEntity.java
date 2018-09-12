@@ -37,7 +37,7 @@ public class CouponValueEntity {
     private String imageUrl;
 
     @Expose
-    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile"})
+    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile", "imageURLMobile"})
     private String imageUrlMobile;
 
     @Expose

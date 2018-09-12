@@ -50,10 +50,8 @@ public class PopupNotificationBottomSheet extends BottomSheets {
 
         action.setText(mData.getButtonText());
 
-        if (mData.getText() == null && mData.getText().isEmpty()) {
-            if (mData.getCatalog() != null && mData.getCatalog().getTitle() != null) {
-                title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
-            }
+        if (mData.getCatalog() != null && mData.getCatalog().getTitle() != null) {
+            title.setText(mData.getCatalog().getTitle() + " " + mData.getCatalog().getSubTitle());
         } else {
             title.setText(mData.getText());
         }
@@ -68,13 +66,13 @@ public class PopupNotificationBottomSheet extends BottomSheets {
             sender.setText("-" + mData.getSender());
         }
 
-        if (mData.getCatalog() == null
-                || mData.getCatalog().getExpired() == null
-                || mData.getCatalog().getExpired().isEmpty()) {
-            count.setVisibility(View.GONE);
-        } else {
+        if (mData.getCatalog() != null
+                && mData.getCatalog().getExpired() == null
+                && mData.getCatalog().getExpired().isEmpty()) {
             count.setVisibility(View.VISIBLE);
-            count.setText(mData.getText());
+            count.setText(mData.getCatalog().getExpired());
+        } else {
+            count.setVisibility(View.GONE);
         }
 
         if (mData.getImageURL() != null && !mData.getImageURL().isEmpty()) {
