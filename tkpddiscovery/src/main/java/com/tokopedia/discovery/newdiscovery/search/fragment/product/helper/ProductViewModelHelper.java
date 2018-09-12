@@ -63,6 +63,9 @@ public class ProductViewModelHelper {
         if (gqlResponse.getGuidedSearchResponse() != null) {
             productViewModel.setGuidedSearchViewModel(convertToGuidedSearchViewModel(gqlResponse.getGuidedSearchResponse()));
         }
+        if (gqlResponse.getQuickFilterModel() != null) {
+            productViewModel.setQuickFilterModel(gqlResponse.getQuickFilterModel());
+        }
         return productViewModel;
     }
 

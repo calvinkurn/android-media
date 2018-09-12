@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.discovery.newdiscovery.analytics.SearchTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -87,7 +88,6 @@ public class ProductListFragment extends SearchSectionFragment
     private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
     private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
     private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
-    private static final String EXTRA_QUICK_FILTER_LIST = "EXTRA_QUICK_FILTER_LIST";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
     @Inject
@@ -105,7 +105,6 @@ public class ProductListFragment extends SearchSectionFragment
     private SearchParameter searchParameter;
     private boolean forceSearch;
 
-    private ArrayList<Option> quickFilterOptions;
     private SimilarSearchManager similarSearchManager;
     private ShowCaseDialog showCaseDialog;
 
@@ -133,7 +132,6 @@ public class ProductListFragment extends SearchSectionFragment
 
     private void loadDataFromSavedState(Bundle savedInstanceState) {
         productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
-        quickFilterOptions = savedInstanceState.getParcelableArrayList(EXTRA_QUICK_FILTER_LIST);
         setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
         setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
         renderDynamicFilter(productViewModel.getDynamicFilterModel());
@@ -239,8 +237,9 @@ public class ProductListFragment extends SearchSectionFragment
         if (productViewModel.getGuidedSearchViewModel() != null) {
             headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
         }
-        if (quickFilterOptions != null && !quickFilterOptions.isEmpty()) {
-            headerViewModel.setQuickFilterList(quickFilterOptions);
+        if (productViewModel.getQuickFilterModel() != null
+                && productViewModel.getQuickFilterModel().getFilter() != null) {
+            headerViewModel.setQuickFilterList(getQuickFilterOptions(productViewModel.getQuickFilterModel()));
         }
         if (productViewModel.getCpmModel() != null) {
             headerViewModel.setCpmModel(productViewModel.getCpmModel());
@@ -444,13 +443,11 @@ public class ProductListFragment extends SearchSectionFragment
         outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
         outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
         outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
-        outState.putParcelableArrayList(EXTRA_QUICK_FILTER_LIST, quickFilterOptions);
     }
 
     @Override
     protected void onFirstTimeLaunch() {
         super.onFirstTimeLaunch();
-        getQuickFilter();
     }
 
     @Override
@@ -765,15 +762,10 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void getQuickFilter() {
-        presenter.requestQuickFilter(NetworkParamHelper.getParamMap(productViewModel.getAdditionalParams()));
-    }
-
-    @Override
-    public void renderQuickFilter(DynamicFilterModel dynamicFilterModel) {
-        quickFilterOptions = getOptionList(dynamicFilterModel);
+    public List<Option> getQuickFilterOptions(DataValue dynamicFilterModel) {
+        List<Option> quickFilterOptions = getOptionList(dynamicFilterModel);
         enrichWithInputState(quickFilterOptions);
-        adapter.updateQuickFilter(quickFilterOptions);
+        return quickFilterOptions;
     }
 
     private void enrichWithInputState(List<Option> optionList) {
@@ -790,9 +782,9 @@ public class ProductListFragment extends SearchSectionFragment
         }
     }
 
-    private ArrayList<Option> getOptionList(DynamicFilterModel dynamicFilterModel) {
+    private ArrayList<Option> getOptionList(DataValue dynamicFilterModel) {
         ArrayList<Option> optionList = new ArrayList<>();
-        for (Filter filter : dynamicFilterModel.getData().getFilter()) {
+        for (Filter filter : dynamicFilterModel.getFilter()) {
             for (Option option : filter.getOptions()) {
                 optionList.add(option);
             }

@@ -9,22 +9,20 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
-import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
-import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
+import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.GetQuickFilterSubscriber;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
-import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.GuidedSearchViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
@@ -44,8 +42,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import rx.Subscriber;
 
 
 /**
@@ -242,8 +238,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
                     @Override
                     public void onCompleted() {
-                        //getView().getDynamicFilter();
-                        getView().getQuickFilter();
                         getView().hideRefreshLayout();
                     }
 
@@ -273,6 +267,10 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                                 if (productViewModel.getGuidedSearchViewModel() != null) {
                                     headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
                                 }
+                                if (productViewModel.getQuickFilterModel() != null
+                                        && productViewModel.getQuickFilterModel().getFilter() != null) {
+                                    headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
+                                }
                                 list.add(headerViewModel);
                                 if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
                                     list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
@@ -288,14 +286,6 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                         }
                     }
                 });
-    }
-
-    @Override
-    public void requestQuickFilter(HashMap<String, String> additionalParams) {
-        RequestParams params = getQuickFilterRequestParams();
-        params = enrichWithFilterAndSortParams(params);
-        params = enrichWithAdditionalParams(params, additionalParams);
-        getDynamicFilterUseCase.execute(params, new GetQuickFilterSubscriber(getView()));
     }
 
     @Override

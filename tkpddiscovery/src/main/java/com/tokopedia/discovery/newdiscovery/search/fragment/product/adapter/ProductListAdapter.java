@@ -246,13 +246,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         return checkDataSize(position) && getItemList().get(position) instanceof TopAdsViewModel;
     }
 
-    public void updateQuickFilter(List<Option> quickFilterOptions) {
-        if (!list.isEmpty() && list.get(ADAPTER_POSITION_HEADER) instanceof HeaderViewModel) {
-            ((HeaderViewModel) list.get(ADAPTER_POSITION_HEADER)).setQuickFilterList(quickFilterOptions);
-            notifyItemChanged(ADAPTER_POSITION_HEADER);
-        }
-    }
-
     @Override
     public int getIconTypeRecyclerView() {
         switch (getTypeFactory().getRecyclerViewItem()) {

@@ -146,6 +146,37 @@ searchProduct(params: $params) {
         url
       }
   }
+  quick_filter(query: $query) {
+         filter {
+           options {
+             name
+             key
+             icon
+             value
+             input_type
+             total_data
+             val_max
+             val_min
+             hex_color
+             child {
+               key
+               value
+               name
+               icon
+               input_type
+               total_data
+               child {
+                 key
+                 value
+                 name
+                 icon
+                 input_type
+                 total_data
+               }
+             }
+           }
+         }
+  }
   productAds: displayAdsV3(displayParams: $params) {
         status {
           error_code

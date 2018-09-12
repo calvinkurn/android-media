@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.domain.gql;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.discovery.model.DataValue;
 import com.tokopedia.core.discovery.model.DynamicFilterModel;
 import com.tokopedia.core.network.entity.discovery.GuidedSearchResponse;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
@@ -22,6 +23,10 @@ public class SearchProductGqlResponse {
     @SerializedName("ace_guide")
     @Expose
     private GuidedSearchResponse guidedSearchResponse;
+
+    @SerializedName("quick_filter")
+    @Expose
+    private DataValue quickFilterModel;
 
     @SerializedName("productAds")
     @Expose
@@ -49,6 +54,10 @@ public class SearchProductGqlResponse {
 
     public GuidedSearchResponse getGuidedSearchResponse() {
         return guidedSearchResponse;
+    }
+
+    public DataValue getQuickFilterModel() {
+        return quickFilterModel;
     }
 
     public TopAdsModel getTopAdsModel() {
