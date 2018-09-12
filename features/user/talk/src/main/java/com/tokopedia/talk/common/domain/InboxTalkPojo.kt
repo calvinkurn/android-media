@@ -17,7 +17,7 @@ data class InboxTalkPojo(
         @Expose
         @SerializedName("paging")
         val paging: Paging = Paging()
-        )
+)
 
 data class InboxTalkItemPojo(
         @Expose
@@ -44,6 +44,9 @@ data class InboxTalkItemPojo(
         @Expose
         @SerializedName("talk_own")
         val talk_own: Int = 0,
+        @Expose
+        @SerializedName("talk_product_id")
+        val talk_product_id: String = "",
         @Expose
         @SerializedName("talk_product_image")
         val talk_product_image: String = "",

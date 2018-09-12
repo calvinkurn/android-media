@@ -25,7 +25,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     private final GetFeedsDetailUseCase getFeedsDetailUseCase;
     private final UserSession userSession;
-    private FeedPlusDetail.View viewListener;
 
 
     @Inject
@@ -41,7 +40,6 @@ public class FeedPlusDetailPresenter extends BaseDaggerPresenter<FeedPlusDetail.
 
     @Override
     public void attachView(FeedPlusDetail.View view, WishListActionListener wishlistListener) {
-        this.viewListener = view;
         this.wishListActionListener = wishlistListener;
         super.attachView(view);
     }

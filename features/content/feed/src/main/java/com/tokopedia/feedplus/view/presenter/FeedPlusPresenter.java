@@ -1,5 +1,7 @@
 package com.tokopedia.feedplus.view.presenter;
 
+import android.support.annotation.RestrictTo;
+
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -42,7 +44,7 @@ public class FeedPlusPresenter
     private final GetFeedsUseCase getFeedsUseCase;
     private final GetFirstPageFeedsUseCase getFirstPageFeedsUseCase;
     private final FavoriteShopUseCase doFavoriteShopUseCase;
-    private final GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
+    private GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase;
     private final LikeKolPostUseCase likeKolPostUseCase;
     private final FollowKolPostGqlUseCase followKolPostGqlUseCase;
     private final SendVoteUseCase sendVoteUseCase;
@@ -71,6 +73,16 @@ public class FeedPlusPresenter
         this.followKolPostGqlUseCase = followKolPostGqlUseCase;
         this.getWhitelistUseCase = whitelistUseCase;
         this.sendVoteUseCase = sendVoteUseCase;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public void setGetFirstPageFeedsCloudUseCase(GetFirstPageFeedsCloudUseCase getFirstPageFeedsCloudUseCase) {
+        this.getFirstPageFeedsCloudUseCase = getFirstPageFeedsCloudUseCase;
+    }
+
+    @RestrictTo(RestrictTo.Scope.TESTS)
+    public GetFirstPageFeedsCloudUseCase getGetFirstPageFeedsCloudUseCase() {
+        return getFirstPageFeedsCloudUseCase;
     }
 
     @Override
@@ -155,12 +167,16 @@ public class FeedPlusPresenter
 
                 if (isSuccess) {
                     stringBuilder.append(
-                            MethodChecker.fromHtml(promotedShopViewModel.getShop()
-                                    .getName()));
+                            MethodChecker.fromHtml(promotedShopViewModel.getShop().getName())
+                    ).append(" ");
                     if (promotedShopViewModel.isFavorit()) {
-                        stringBuilder.append(" dihapus dari toko favorit");
+                        stringBuilder.append(
+                                viewListener.getString(R.string.shop_success_unfollow)
+                        );
                     } else {
-                        stringBuilder.append(" berhasil difavoritkan");
+                        stringBuilder.append(
+                                viewListener.getString(R.string.shop_success_follow)
+                        );
                     }
                 } else {
                     stringBuilder.append(viewListener.getString(R.string.msg_network_error));

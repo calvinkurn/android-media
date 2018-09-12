@@ -14,8 +14,6 @@ import rx.Observable;
 
 public interface ITkpdLoyaltyModuleRouter {
 
-    Observable<CouponListResult> tkpdLoyaltyGetCouponListObservable(String page, String pageSize);
-
     ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor();
 
     FingerprintInterceptor loyaltyModuleRouterGetCartCheckoutFingerPrintInterceptor();

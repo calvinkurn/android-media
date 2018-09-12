@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -15,8 +14,8 @@ import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
@@ -26,23 +25,20 @@ import com.tokopedia.changepassword.data.ChangePasswordUrl;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.router.transactionmodule.TransactionRouter;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartRequest;
-import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.HockeyAppHelper;
 import com.tokopedia.digital.common.constant.DigitalUrl;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
+import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitratoppers.common.constant.MitraToppersBaseURL;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
-import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
@@ -52,9 +48,6 @@ import com.tokopedia.shop.common.constant.ShopUrl;
 import com.tokopedia.talk.common.data.TalkUrl;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topchat.chatroom.data.network.TopChatUrl;
-import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-
-import rx.Observable;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -211,6 +204,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GMCommonUrl.BASE_URL = SellerAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
         SQLoginUrl.BASE_URL = SellerAppBaseUrl.BASE_DOMAIN;
         SessionUrl.CHANGE_PHONE_DOMAIN = SellerAppBaseUrl.CHANGE_PHONE_DOMAIN;
+        LogoutUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_DOMAIN);
         SettingBankUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         BankListUrl.Companion.setBASE_URL(SellerAppBaseUrl.ACCOUNTS_DOMAIN);
         ChangePasswordUrl.Companion.setBASE_URL(SellerAppBaseUrl.BASE_ACCOUNTS_DOMAIN);
@@ -242,57 +236,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         new CacheApiWhiteListUseCase().executeSync(CacheApiWhiteListUseCase.createParams(
                 CacheApiWhiteList.getWhiteList(),
                 String.valueOf(getCurrentVersion(getApplicationContext()))));
-    }
-
-    @Override
-    public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
-        return null;
-    }
-
-    @Override
-    public Intent getCartIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public void updateMarketplaceCartCounter(TransactionRouter.CartNotificationListener listener) {
-
-    }
-
-    @Override
-    public Intent getPromoListIntent(Activity activity) {
-        return null;
-    }
-
-    @Override
-    public Intent getPromoDetailIntent(Context context, String slug) {
-        return null;
-    }
-
-    @Override
-    public Intent getOrderListIntent(Context context) {
-        return OrderListActivity.getInstance(context);
-    }
-
-    @Override
-    public boolean isSupportApplink(String appLink) {
-        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
-        return deepLinkDelegate.supportsUri(appLink);
-    }
-
-    @Override
-    public Intent getHelpUsIntent(Context context) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
-        return null;
-    }
-
-    @Override
-    public Intent getWebviewActivityWithIntent(Context context, String url) {
-        return null;
     }
 
 }

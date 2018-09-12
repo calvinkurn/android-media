@@ -1,5 +1,6 @@
 package com.tokopedia.talk.reporttalk.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -10,12 +11,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.reporttalk.di.DaggerReportTalkComponent
 import com.tokopedia.talk.reporttalk.view.ReportTalkPresenter
+import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.reporttalk.view.adapter.ReportTalkAdapter
 import com.tokopedia.talk.reporttalk.view.listener.ReportTalkContract
 import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
@@ -28,13 +32,20 @@ import javax.inject.Inject
 class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, ReportTalkAdapter.OnOptionClickListener {
 
     companion object {
-        fun newInstance() = ReportTalkFragment()
+        fun newInstance(bundle: Bundle): ReportTalkFragment {
+            val fragment = ReportTalkFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
-//    @Inject
-//    lateinit var presenter: ReportTalkPresenter
-
+    @Inject
+    lateinit var presenter: ReportTalkPresenter
     lateinit var reportTalkAdapter: ReportTalkAdapter
+
+    var talkId: String = ""
+    var shopId: String = ""
+    var productId: String = ""
 
 
     override fun getScreenName(): String {
@@ -42,11 +53,11 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     }
 
     override fun initInjector() {
-//        val reportTalkComponent = DaggerReportTalkComponent.builder()
-//                .talkComponent(getComponent(TalkComponent::class.java))
-//                .build()
-//        reportTalkComponent.inject(this)
-//        presenter.attachView(this)
+        val reportTalkComponent = DaggerReportTalkComponent.builder()
+                .talkComponent(getComponent(TalkComponent::class.java))
+                .build()
+        reportTalkComponent.inject(this)
+        presenter.attachView(this)
 
     }
 
@@ -57,8 +68,22 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initData(savedInstanceState)
         setupView()
+    }
 
+    private fun initData(savedInstanceState: Bundle?) {
+        savedInstanceState?.run {
+            talkId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            shopId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            productId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+        } ?: arguments?.run {
+            talkId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            shopId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            productId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+        } ?: activity?.run {
+            finish()
+        }
     }
 
     override fun onClickOption(talkReportOptionViewModel: TalkReportOptionViewModel) {
@@ -83,9 +108,10 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.layoutManager = linearLayoutManager
         optionRv.adapter = reportTalkAdapter
 
-        sendButton.setOnClickListener(View.OnClickListener {
+        sendButton.setOnClickListener {
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
 
-        })
+        }
 
         reason.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
@@ -143,5 +169,23 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     override fun showLoadingFull() {
 
     }
+
+    override fun hideLoadingFull() {
+
+    }
+
+    override fun onErrorReportTalk(errorMessage: String) {
+        NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
+        }
+    }
+
+    override fun onSuccessReportTalk() {
+        activity?.run {
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
+    }
+
 
 }

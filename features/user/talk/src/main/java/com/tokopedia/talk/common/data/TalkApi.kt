@@ -32,7 +32,7 @@ interface TalkApi {
 
     @FormUrlEncoded
     @POST(TalkUrl.PATH_FOLLOW_TALK)
-    fun followTalk(@FieldMap params: HashMap<String, Any>):
+    fun followUnfollowTalk(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<BaseActionTalkPojo>>>
 
     @FormUrlEncoded

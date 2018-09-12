@@ -1,10 +1,10 @@
 package com.tokopedia.tkpd.fcm.appupdate;
 
-import android.app.Activity;
+import android.content.Context;
 
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 
@@ -21,13 +21,13 @@ public class FirebaseRemoteAppUpdate implements ApplicationUpdate {
 
     private RemoteConfig remoteConfig;
 
-    public FirebaseRemoteAppUpdate(Activity activity) {
-        remoteConfig = new FirebaseRemoteConfigImpl(activity);
+    public FirebaseRemoteAppUpdate(Context context) {
+        remoteConfig = new FirebaseRemoteConfigImpl(context);
     }
 
     @Override
     public void checkApplicationUpdate(final OnUpdateListener listener) {
-        if(remoteConfig != null) {
+        if (remoteConfig != null) {
             DetailUpdate detailUpdate = getDetailUpdate();
             if (detailUpdate.isNeedUpdate() && GlobalConfig.VERSION_CODE < detailUpdate.getLatestVersionCode()) {
                 listener.onNeedUpdate(detailUpdate);

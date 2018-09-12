@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 27
+    compileSdkVersion = 28
     minSdkVersion = 16
-    targetSdkVersion = 27
-    buildToolsVersion = "27.0.3"
+    targetSdkVersion = 28
+    buildToolsVersion = "28.0.2"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -17,7 +17,7 @@ ext {
     glideVersion = '3.7.0'
     permissionDispatcherVersion = '2.4.0'
     deeplinkDispatchVersion = '3.0.0-rc1'
-    espressoVersion = "2.2.2"
+    espressoVersion = "3.0.1"
     runnerVersion = "1.0.2"
     rulesVersion = "1.0.2"
     apolloVersion = '0.3.0'
@@ -25,6 +25,7 @@ ext {
     cardioVersion = '5.5.1'
     reactNativeVersion = '0.52.1'
     alibabaCoreLibVersion = '3.2.8'
+    powerMockVersion = '1.6.2'
 
     tkpdUseCaseVersion = '2.23'
     tkpdAbstractionVersion = '2.22'
@@ -77,8 +78,14 @@ ext {
     tkpdOmsVersion = '2.22'
     tkpdWithdrawVersion = '2.22'
     tkpdTrainVersion = '2.22'
+    tkpdRecentviewVersion = '2.22'
+    tkpdUpdateInactivePhoneVersion = '2.22'
     tkpdBankDBVersion = '2.22'
+    transactionCheckoutVersion = '2.22'
     tkpdTalkVersion = '2.22'
+
+    groupIdTransaction = 'com.tokopedia.transaction'
+    artifactIdCheckout = 'checkout'
 
     networkDependencies = [
             retrofit          : "com.squareup.retrofit2:retrofit:${retrofitVersion}",
@@ -105,6 +112,7 @@ ext {
             cardViewV7      : "com.android.support:cardview-v7:${supportLibraryVersion}",
             exifinterface   : "com.android.support:exifinterface:${supportLibraryVersion}",
             constraintLayout: "com.android.support.constraint:constraint-layout:1.0.2",
+            preferenceV7    : "com.android.support:preference-v7:${supportLibraryVersion}",
             kotlinSupport   : "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
     ]
 
@@ -212,11 +220,18 @@ ext {
             androidTestRunner  : "com.android.support.test:runner:$runnerVersion",
             androidRulesVersion: "com.android.support.test:rules:$rulesVersion",
             espressoIntents    : "com.android.support.test.espresso:espresso-intents:$espressoVersion",
+            espressoContrib    : "com.android.support.test.espresso:espresso-contrib:$espressoVersion",
             retrofitMock       : "com.squareup.retrofit2:retrofit-mock:$retrofitVersion",
             retrofitMockWebser : "com.squareup.okhttp3:mockwebserver:$okHttpVersion",
             dexMaker           : 'com.google.dexmaker:dexmaker:1.2',
             dexMakerMockito    : 'com.google.dexmaker:dexmaker-mockito:1.2',
-            assertJ            : "org.assertj:assertj-core:1.7.1"
+            assertJ            : "org.assertj:assertj-core:1.7.1",
+            assertJCore        : 'org.assertj:assertj-core:3.8.0',
+            powerMock          : "org.powermock:powermock:$powerMockVersion",
+            powerMockJUnit     : "org.powermock:powermock-module-junit4:$powerMockVersion",
+            powerMockJUnitRule : "org.powermock:powermock-module-junit4-rule:$powerMockVersion",
+            powerMockito       : "org.powermock:powermock-api-mockito:$powerMockVersion",
+            powerMockXstream   : "org.powermock:powermock-classloading-xstream:$powerMockVersion"
     ]
 
     debugToolsDependencies = [
@@ -328,6 +343,7 @@ ext {
             mitraToppers          : ":features:fintech:mitra_toppers",
             event                 : ":features:digital:event",
             home                  : ":features:discovery:home",
+            recentview            : ":features:discovery:recentview",
             content               : ":tkpdcontent",
             checkout              : ":features:transaction:checkout",
             gamification          : ":features:promo:gamification",
@@ -348,13 +364,20 @@ ext {
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
+            vote                  : ":features:user:vote",
+            logout                : ":features:user:logout",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
+            navigation            : ":features:home:navigation",
+            searchbar             : ":features:home:searchbar",
+            navigationCommon      : ":features:home:navigation-common",
+            accountHome           : ":features:home:account-home",
             withdraw              : ":features:payment:withdraw",
             productDraftDatabase  : ":features:merchant:product_draft_database",
             paymentManagementSystem     : ":features:payment:pms",
-            train                 : ":features:digital:train"
+            train                 : ":features:digital:train",
+            updateinactivephone   : ":features:user:updateinactivephone"
     ]
 
     libraries = [

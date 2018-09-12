@@ -3,6 +3,8 @@ package com.tokopedia.talk.producttalk.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.common.domain.CommentProduct
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
@@ -54,7 +56,6 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
 
         val listCommentTalk = ArrayList<Visitable<*>>()
         listCommentTalk.add(LoadMoreCommentTalkViewModel(3))
-        //TODO NISIE CHECK PRODUCT ATTACHMENT
         for (data: TalkCommentItem in pojo.list) {
             listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
@@ -64,17 +65,17 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     mapCommentTalkState(data),
                     true,
                     true,
-                    ArrayList(),
+                    mapProductAttachment(data),
                     data.comment_raw_message,
                     data.comment_is_owner == 1,
                     data.comment_shop_id,
                     data.comment_talk_id,
-                    data.comment_id
+                    data.comment_id,
+                    pojo.talk_product_id
 
             ))
         }
 
-        //TODO NISIE CHECK PRODUCT ATTACHMENT
         return TalkThreadViewModel(
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
@@ -89,12 +90,26 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk_own == 1,
                         pojo.talk_shop_id,
                         pojo.talk_id,
-                        ""
+                        "",
+                        pojo.talk_product_id
 
                 ),
                 listCommentTalk)
     }
 
+    private fun mapProductAttachment(pojo: TalkCommentItem):
+            ArrayList<TalkProductAttachmentViewModel> {
+        val listProduct = ArrayList<TalkProductAttachmentViewModel>()
+        for (data: CommentProduct in pojo.listProduct) {
+            listProduct.add(TalkProductAttachmentViewModel(
+                    data.product_name,
+                    data.product_id,
+                    data.product_image,
+                    data.product_price
+            ))
+        }
+        return listProduct
+    }
 
     private fun mapHeaderTalkState(pojo: InboxTalkItemPojo): TalkState {
         return TalkState(

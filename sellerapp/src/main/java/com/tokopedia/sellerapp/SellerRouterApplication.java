@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
@@ -39,7 +40,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -170,6 +171,7 @@ import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
+import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -1350,11 +1352,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public boolean isSupportApplink(String appLink) {
-        return false;
-    }
-
-    @Override
     public Observable<AddToCartResult> addToCartProduct(AddToCartRequest addToCartRequest) {
         return null;
     }
@@ -1374,7 +1371,7 @@ public abstract class SellerRouterApplication extends MainApplication
         return new TkpdAuthInterceptor();
     }
 
-    @Override
+
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
@@ -1509,13 +1506,6 @@ public abstract class SellerRouterApplication extends MainApplication
         }
     }
 
-    @Override
-    public Intent getTalkIntent(Context context) {
-        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
-            return InboxTalkActivity.Companion.createIntent(context);
-        else {
-            return InboxRouter.getInboxTalkActivityIntent(context);
-        }
     public Intent createIntentProductVariant(Context context, ArrayList<ProductVariantByCatModel> productVariantByCatModelList,
                                              ProductVariantViewModel productVariant, int productPriceCurrency, double productPrice,
                                              int productStock, boolean officialStore, String productSku,
@@ -1532,8 +1522,13 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent createIntentProductEtalase(Context context,int etalaseId) {
+    public Intent createIntentProductEtalase(Context context, int etalaseId) {
         return EtalasePickerActivity.createInstance(context, etalaseId);
+    }
+
+    @Override
+    public Intent getCategoryPickerIntent(Context context, int categoryId) {
+        return CategoryPickerActivity.createIntent(context, categoryId);
     }
 
     @Override
@@ -1546,8 +1541,53 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getCategoryPickerIntent(Context context, int categoryId) {
-        return CategoryPickerActivity.createIntent(context, categoryId);
+    public Intent getProductTalk(Context context) {
+        return InboxTalkActivity.Companion.createIntent(context);
     }
 
+    @Override
+    public void setCartCount(Context context, int count) {
+
+    }
+
+    @Override
+    public int getCartCount(Context context) {
+        return 0;
+    }
+
+    @Override
+    public void goToApplinkActivity(Activity activity, String applink, Bundle bundle) {
+
+    }
+
+    @Override
+    public boolean isSupportApplink(String appLink) {
+        DeepLinkDelegate deepLinkDelegate = DeepLinkHandlerActivity.getDelegateInstance();
+        return deepLinkDelegate.supportsUri(appLink);
+    }
+
+    @Override
+    public ApplinkDelegate applinkDelegate() {
+        return null;
+    }
+
+    @Override
+    public Intent getHelpUsIntent(Context context) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url, String title) {
+        return null;
+    }
+
+    @Override
+    public Intent getWebviewActivityWithIntent(Context context, String url) {
+        return null;
+    }
+
+    @Override
+    public Intent getManagePeopleIntent(Context context) {
+        return null;
+    }
 }

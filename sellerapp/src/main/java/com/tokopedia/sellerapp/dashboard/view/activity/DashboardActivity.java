@@ -6,11 +6,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
-import com.tokopedia.core.appupdate.AppUpdateDialogBuilder;
-import com.tokopedia.core.appupdate.ApplicationUpdate;
-import com.tokopedia.core.appupdate.model.DetailUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
+import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
+import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.GCMHandlerListener;
 import com.tokopedia.core.gcm.NotificationModHandler;
@@ -53,7 +54,21 @@ public class DashboardActivity extends DrawerPresenterActivity
             @Override
             public void onNeedUpdate(final DetailUpdate detail) {
                 if (!isFinishing()) {
-                    new AppUpdateDialogBuilder(DashboardActivity.this, detail).getAlertDialog().show();
+                    new AppUpdateDialogBuilder(
+                        DashboardActivity.this,
+                        detail,
+                        new AppUpdateDialogBuilder.Listener() {
+                            @Override
+                            public void onPositiveButtonClicked(DetailUpdate detail) {
+
+                            }
+
+                            @Override
+                            public void onNegativeButtonClicked(DetailUpdate detail) {
+
+                            }
+                        }
+                    ).getAlertDialog().show();
                 }
             }
 

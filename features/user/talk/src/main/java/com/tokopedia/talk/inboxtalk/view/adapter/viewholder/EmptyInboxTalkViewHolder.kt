@@ -5,7 +5,6 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.data.TalkUrl
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 import kotlinx.android.synthetic.main.empty_inbox_talk.view.*
 
@@ -24,7 +23,11 @@ class EmptyInboxTalkViewHolder(val v: View) :
 
 
     override fun bind(element: EmptyInboxTalkViewModel?) {
-        ImageHandler.LoadImage(emptyIcon, TalkUrl.IMAGE_EMPTY_TALK)
+        ImageHandler.loadImageWithIdWithoutPlaceholder(emptyIcon, R.drawable.ic_empty_state)
+    }
+
+    fun onViewRecycled() {
+        ImageHandler.clearImage(emptyIcon)
     }
 
 }

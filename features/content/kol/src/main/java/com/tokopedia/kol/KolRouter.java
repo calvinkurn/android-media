@@ -22,4 +22,6 @@ public interface KolRouter {
     Interceptor getChuckInterceptor();
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    Intent getLoginIntent(Context context);
 }

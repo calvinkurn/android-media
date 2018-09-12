@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +24,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
+import android.view.Gravity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,6 +49,8 @@ import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.design.component.badge.BadgeView;
+import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
@@ -1186,6 +1191,8 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     public void onPrepareOptionsMenu(Menu menu) {
         if (getActivity() != null) {
             presenter.prepareOptionMenu(menu, getActivity(), productData);
+            int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
+            setDrawableCount(getContext(), cartCount);
         }
     }
 
@@ -1685,12 +1692,10 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back);
             if (menu != null && menu.size() > 2) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share));
-                LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
-                int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-                if (CartCache > 0) {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart_notif));
-                } else {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart));
+                int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter_dark));
+                if (cartCount > 0) {
+                    setDrawableCount(getContext(), cartCount);
                 }
             }
             toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more));
@@ -1705,16 +1710,22 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.drawable.icon_back_white);
             if (menu != null && menu.size() > 1) {
                 menu.findItem(R.id.action_share).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_share_white));
-                LocalCacheHandler Cache = new LocalCacheHandler(getActivity(), DrawerHelper.DRAWER_CACHE);
-                int CartCache = Cache.getInt(DrawerNotification.IS_HAS_CART);
-                if (CartCache > 0) {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.cart_active_white));
-                } else {
-                    menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_cart_white));
+                int cartCount = ((PdpRouter) getActivity().getApplicationContext()).getCartCount(getActivityContext());
+                menu.findItem(R.id.action_cart).setIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_cart_counter));
+                if (cartCount > 0) {
+                    setDrawableCount(getContext(), cartCount);
                 }
             }
             toolbar.setOverflowIcon(ContextCompat.getDrawable(getActivity(), R.drawable.icon_more_white));
         }
+    }
+
+    private void setCartBadge(View view, int count) {
+        BadgeView badgeView = new BadgeView(getContext());
+        badgeView.bindTarget(view);
+        badgeView.setGravityOffset(-10, 3, true);
+        badgeView.setBadgeGravity(Gravity.TOP|Gravity.END);
+        badgeView.setBadgeNumber(count);
     }
 
     private void initStatusBarDark() {
@@ -2151,5 +2162,20 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void onAddWishList(int position, Data data) {
 
+    }
+
+    public void setDrawableCount(Context context, int count) {
+        MenuItem menuItem = menu.findItem(R.id.action_cart);
+        if(menuItem.getIcon() instanceof  LayerDrawable) {
+            LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
+            CountDrawable badge = new CountDrawable(context);
+            if(count > 99) {
+                badge.setCount(getString(R.string.pdp_label_cart_count_max));
+            } else {
+                badge.setCount(Integer.toString(count));
+            }
+            icon.mutate();
+            icon.setDrawableByLayerId(R.id.ic_cart_count, badge);
+        }
     }
 }
