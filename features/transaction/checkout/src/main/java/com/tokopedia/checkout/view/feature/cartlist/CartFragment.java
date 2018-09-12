@@ -566,7 +566,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         List<CartShopHolderData> cartShopHolderDataList = getAllShopDataList();
         List<CartItemData> toBeDeletedCartItem = new ArrayList<>();
         List<CartItemData> allCartItemDataList = cartAdapter.getAllCartItemData();
-        final boolean deleteAllCartData = toBeDeletedCartItem.size() == allCartItemDataList.size();
 
         for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
             if (cartShopHolderData.getShopGroupData().isError()) {
@@ -581,6 +580,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 }
             }
         }
+        final boolean deleteAllCartData = toBeDeletedCartItem.size() == allCartItemDataList.size();
 
         sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
                 toBeDeletedCartItem, EnhancedECommerceCartMapData.REMOVE_ACTION
