@@ -24,6 +24,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
         <activity
+            android:name=".membership.view.activity.GmMembershipInfoActivity"
+            android:label="@string/gm_home_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+        <activity
             android:name=".membership.view.activity.GmMembershipProductActivity"
             android:label="@string/gm_membership_title"
             android:screenOrientation="portrait"

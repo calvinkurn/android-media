@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subsc
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
 
 
@@ -65,7 +66,9 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
         labelExtendPacket.setOnClickListener { goToProductPage() }
 
-        tvInfoAutoExtend.setOnClickListener {  }
+        tvInfoAutoExtend.setOnClickListener {
+            goToInfoGmPage()
+        }
 
         showAutoExtendLayout(false)
         getMembershipData()
@@ -76,6 +79,13 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
             val intent = GmMembershipProductActivity.createIntent(this)
             intent.putExtra(EXTRA_SUBSCRIPTION_TYPE, subscriptionTypeSelected)
             startActivityForResult(intent, EXTRA_MEMBERSHIP_PACKAGE)
+        }
+    }
+
+    private fun goToInfoGmPage(){
+        context?.run {
+            val intent = GmMembershipInfoActivity.createIntent(this)
+            startActivity(intent)
         }
     }
 
