@@ -1,7 +1,5 @@
 package com.tokopedia.interestpick.view.fragment
 
-import android.content.Context
-import android.net.Network
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,12 +7,10 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.interestpick.R
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
 import com.tokopedia.interestpick.view.adapter.InterestPickAdapter
 import com.tokopedia.interestpick.view.listener.InterestPickContract
-import com.tokopedia.interestpick.view.presenter.InterestPickPresenter
 import com.tokopedia.interestpick.view.viewmodel.InterestPickItemViewModel
 import kotlinx.android.synthetic.main.fragment_interest_pick.*
 import javax.inject.Inject
@@ -32,6 +28,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     @Inject
     lateinit var presenter: InterestPickContract.Presenter
     lateinit var adapter: InterestPickAdapter
+    var selectedCount = 0
 
     override fun getScreenName() = null
 
@@ -75,6 +72,13 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
 
     override fun onSuccessGetInterest(interestList: ArrayList<InterestPickItemViewModel>,
                                       title: String) {
+        for (item in interestList) {
+            if (item.isSelected) {
+                selectedCount++
+            }
+        }
+        updateSaveButtonState()
+
         adapter.setList(interestList)
         titleTextView.text = title
     }
@@ -102,6 +106,26 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
 
     override fun onErrorUpdateInterest(message: String) {
         NetworkErrorHelper.showRedSnackbar(view, message)
+    }
+
+    override fun onItemSelected(isSelected: Boolean) {
+        if (isSelected) {
+            selectedCount++
+        } else {
+            selectedCount--
+        }
+
+        updateSaveButtonState()
+    }
+
+    private fun updateSaveButtonState() {
+        if (selectedCount >= 1) {
+            saveInterest.text = getString(R.string.interest_save)
+            saveInterest.isEnabled = true
+        } else {
+            saveInterest.text = getString(R.string.interest_select_one)
+            saveInterest.isEnabled = false
+        }
     }
 
     private fun initView() {

@@ -26,6 +26,8 @@ interface InterestPickContract {
         fun onSuccessUpdateInterest()
 
         fun onErrorUpdateInterest(message: String)
+
+        fun onItemSelected(isSelected: Boolean)
     }
 
     interface Presenter : CustomerPresenter<View> {

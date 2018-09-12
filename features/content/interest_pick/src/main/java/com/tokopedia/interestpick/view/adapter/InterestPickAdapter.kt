@@ -42,6 +42,7 @@ class InterestPickAdapter(val listener: InterestPickContract.View)
             holder.itemView.backgroundView.setOnClickListener {
                 list[holder.adapterPosition].isSelected = !list[holder.adapterPosition].isSelected
                 notifyItemChanged(holder.adapterPosition)
+                listener.onItemSelected(list[holder.adapterPosition].isSelected)
             }
         } else {
             holder.itemView.backgroundView.setOnClickListener(null)
