@@ -20,7 +20,15 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
     private val graphqlUseCase: GraphqlUseCase
 
     protected abstract val graphQLRawResId: Int
-    var forceNetwork: Boolean = false
+    // default, always use network.
+    // do not change to false. Other use-cases might not handling force network when swipe refresh.
+    var forceNetwork: Boolean = true
+
+    var useCache: Boolean
+        get() = !forceNetwork
+        set(value) {
+            forceNetwork = value
+        }
 
     init {
         this.graphqlUseCase = GraphqlUseCase()

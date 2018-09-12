@@ -12,7 +12,11 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapter;
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<ShopProductEtalaseHighlightViewModel> {
 
@@ -25,7 +29,7 @@ public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<Sh
     public ShopProductEtalaseHighlightViewHolder(View itemView, int deviceWidth,
                                                  ShopProductClickedNewListener shopProductClickedNewListener) {
         super(itemView);
-        etalaseHighlightAdapter = new EtalaseHighlightAdapter(null,
+        etalaseHighlightAdapter = new EtalaseHighlightAdapter(
                 new EtalaseHighlightAdapterTypeFactory(shopProductClickedNewListener,deviceWidth));
         findViews(itemView);
     }
@@ -33,9 +37,13 @@ public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<Sh
     @Override
     public void bind(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
         Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
-
-        etalaseHighlightAdapter.setEtalaseHighlightCarouselViewModelList(
-                shopProductEtalaseHighlightViewModel.getEtalaseHighlightCarouselViewModelList());
+        List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList
+                = shopProductEtalaseHighlightViewModel.getEtalaseHighlightCarouselViewModelList();
+        if (etalaseHighlightCarouselViewModelList == null) {
+            etalaseHighlightCarouselViewModelList = new ArrayList<>();
+        }
+        etalaseHighlightAdapter.softClear();
+        etalaseHighlightAdapter.setElement(etalaseHighlightCarouselViewModelList);
         etalaseHighlightAdapter.notifyDataSetChanged();
 
         if (recyclerViewState != null) {

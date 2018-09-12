@@ -8,6 +8,7 @@ import android.support.v7.widget.SimpleItemAnimator;
 import android.view.View;
 import android.widget.TextView;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
@@ -24,7 +25,7 @@ import java.util.List;
  * Created by normansyahputa on 2/22/18.
  */
 
-public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopProductViewModel> {
+public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable> {
 
     private TextView tvTitle;
     private RecyclerView recyclerView;
@@ -50,16 +51,16 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<BaseShopPr
     }
 
     @Override
-    public void bind(BaseShopProductViewModel baseShopProductViewModel) {
+    public void bind(Visitable visitable) {
         Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
 
-        if (baseShopProductViewModel instanceof ShopProductFeaturedViewModel) {
+        if (visitable instanceof ShopProductFeaturedViewModel) {
             shopProductCarouselAdapter.replaceProductList(
-                    ((ShopProductFeaturedViewModel)baseShopProductViewModel).getShopProductFeaturedViewModelList());
-        } else if (baseShopProductViewModel instanceof EtalaseHighlightCarouselViewModel){
+                    ((ShopProductFeaturedViewModel)visitable).getShopProductFeaturedViewModelList());
+        } else if (visitable instanceof EtalaseHighlightCarouselViewModel){
             shopProductCarouselAdapter.replaceProductList(
-                    ((EtalaseHighlightCarouselViewModel)baseShopProductViewModel).getShopProductViewModelList());
-            tvTitle.setText(((EtalaseHighlightCarouselViewModel) baseShopProductViewModel).getShopEtalaseViewModel().getEtalaseName());
+                    ((EtalaseHighlightCarouselViewModel)visitable).getShopProductViewModelList());
+            tvTitle.setText(((EtalaseHighlightCarouselViewModel) visitable).getShopEtalaseViewModel().getEtalaseName());
         }
         shopProductCarouselAdapter.notifyDataSetChanged();
 

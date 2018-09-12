@@ -1,6 +1,9 @@
 package com.tokopedia.shop.product.view.model;
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
+import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 
 import java.util.ArrayList;
@@ -10,14 +13,10 @@ import java.util.List;
  * Created by zulfikarrahman on 1/16/18.
  */
 
-public class EtalaseHighlightCarouselViewModel {
+public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterTypeFactory>{
 
     private List<ShopProductViewModel> shopProductViewModelList;
     private ShopEtalaseViewModel shopEtalaseViewModel;
-
-    public EtalaseHighlightCarouselViewModel(){
-        shopProductViewModelList = new ArrayList<>();
-    }
 
     public EtalaseHighlightCarouselViewModel(List<ShopProductViewModel> shopProductViewModelList,
                                              ShopEtalaseViewModel shopEtalaseViewModel) {
@@ -43,6 +42,17 @@ public class EtalaseHighlightCarouselViewModel {
 
     private void setEtalaseViewModel(ShopEtalaseViewModel shopEtalaseViewModel) {
         this.shopEtalaseViewModel = shopEtalaseViewModel;
+    }
+
+    @Override
+    public int type(BaseAdapterTypeFactory typeFactory) {
+        if (typeFactory instanceof EtalaseHighlightAdapterTypeFactory) {
+            return ((EtalaseHighlightAdapterTypeFactory)typeFactory).type(this);
+        } else if (typeFactory instanceof ShopProductAdapterTypeFactory){
+            return ((ShopProductAdapterTypeFactory)typeFactory).type(this);
+        } else {
+            return 0;
+        }
     }
 
 //    public boolean updateWishListStatus(String productId, boolean wishList) {

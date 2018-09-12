@@ -151,6 +151,11 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
+    public void setVisitables(List<Visitable> visitables) {
+        this.visitables = visitables;
+        notifyDataSetChanged();
+    }
+
     public void setElement(int position, Visitable element) {
         visitables.set(position, element);
         notifyDataSetChanged();
@@ -185,6 +190,10 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     public void clearAllElements() {
         visitables.clear();
+    }
+
+    public void softClear() {
+        visitables = new ArrayList<>();
     }
 
     public void addMoreData(List<? extends Visitable> data) {

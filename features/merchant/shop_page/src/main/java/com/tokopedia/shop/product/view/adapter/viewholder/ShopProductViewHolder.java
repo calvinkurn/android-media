@@ -49,6 +49,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private int deviceWidth;
     private int layoutType;
     private View vgRating;
+    private View badgeContainer;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
                                  boolean isFixWidth, int deviceWidth, boolean isFeatured, int layoutType) {
@@ -70,6 +71,8 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
         cashBackTextView = view.findViewById(R.id.text_view_cashback);
         wholesaleTextView = view.findViewById(R.id.text_view_wholesale);
         preOrderTextView = view.findViewById(R.id.text_view_pre_order);
+
+        badgeContainer = view.findViewById(R.id.badges_container);
 
         freeReturnImageView = view.findViewById(R.id.image_view_free_return);
         productImageView = view.findViewById(R.id.product_image);
@@ -154,16 +157,36 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     private void updateDisplayBadges(final ShopProductViewModel shopProductViewModel) {
+        badgeContainer.setVisibility(View.GONE);
         if (shopProductViewModel.getCashback() > 0) {
             cashBackTextView.setText(cashBackTextView.getContext().getString(
                     R.string.shop_product_manage_item_cashback, (int) shopProductViewModel.getCashback()));
             cashBackTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
         } else {
             cashBackTextView.setVisibility(View.GONE);
         }
-        freeReturnImageView.setVisibility(shopProductViewModel.isFreeReturn() ? View.VISIBLE : View.GONE);
-        preOrderTextView.setVisibility(shopProductViewModel.isPo() ? View.VISIBLE : View.GONE);
-        wholesaleTextView.setVisibility(shopProductViewModel.isWholesale() ? View.VISIBLE : View.GONE);
+
+        if (shopProductViewModel.isFreeReturn()) {
+            freeReturnImageView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            freeReturnImageView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isPo()) {
+            preOrderTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            preOrderTextView.setVisibility(View.GONE);
+        }
+
+        if (shopProductViewModel.isWholesale()) {
+            wholesaleTextView.setVisibility(View.VISIBLE);
+            badgeContainer.setVisibility(View.VISIBLE);
+        } else {
+            wholesaleTextView.setVisibility(View.GONE);
+        }
     }
 
     private void updateDisplayWishList(final ShopProductViewModel shopProductViewModel) {

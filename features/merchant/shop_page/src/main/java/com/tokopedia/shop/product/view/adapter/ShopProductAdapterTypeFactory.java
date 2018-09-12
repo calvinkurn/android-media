@@ -20,6 +20,7 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselVie
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
@@ -86,6 +87,18 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
             return HideViewHolder.LAYOUT;
         } else {
             return ShopProductEtalaseHighlightViewHolder.LAYOUT;
+        }
+    }
+
+    public int type(EtalaseHighlightCarouselViewModel etalaseHighlightCarouselViewModel) {
+        if (etalaseHighlightCarouselViewModel.getShopProductViewModelList().size() == 0) {
+            return HideViewHolder.LAYOUT;
+        } else {
+            if (etalaseHighlightCarouselViewModel.getShopProductViewModelList().size() <= SMALL_DATA_LIMIT){
+                return ShopProductCarouselViewHolder.VERTICAL_LAYOUT;
+            } else {
+                return ShopProductCarouselViewHolder.LAYOUT;
+            }
         }
     }
 
