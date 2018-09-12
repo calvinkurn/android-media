@@ -34,6 +34,8 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     private String fromPayment = "false";
     private String orderId;
     private OrderDetailsComponent orderListComponent;
+    String category = null;
+
 
     @DeepLink({TransactionAppLink.ORDER_DETAIL, TransactionAppLink.ORDER_OMS_DETAIL})
     public static Intent getOrderDetailIntent(Context context, Bundle bundle) {
@@ -45,7 +47,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected Fragment getNewFragment() {
-        String category = getIntent().getStringExtra((DeepLink.URI));
         if (category != null) {
             category = category.toUpperCase();
 
@@ -55,7 +56,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment);
             }
         }
-        finish();
+        //finish();
         return null;
 
 
@@ -63,14 +64,10 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     @Override
     protected void onCreate(Bundle arg) {
-        UserSession userSession = new UserSession(this);
-        if (userSession != null && !userSession.isLoggedIn()) {
-            RouteManager.route(this, ApplinkConst.LOGIN);
-        }
         if (getIntent().getExtras() != null) {
             orderId = getIntent().getStringExtra(ORDER_ID);
             Uri uri = getIntent().getData();
-            if(uri != null){
+            if (uri != null) {
                 fromPayment = uri.getQueryParameter(FROM_PAYMENT);
             }
         }
@@ -79,6 +76,12 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
             if (fromPayment.equalsIgnoreCase("true")) {
                 updateTitle(getResources().getString(R.string.thank_you));
             }
+        }
+        UserSession userSession = new UserSession(this);
+        if (!userSession.isLoggedIn()) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 100);
+        } else {
+            category = getIntent().getStringExtra((DeepLink.URI));
         }
 
     }
@@ -94,5 +97,28 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
         GraphqlClient.init(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            category = getIntent().getStringExtra((DeepLink.URI));
+
+            if (category != null) {
+                category = category.toUpperCase();
+
+                if (category.contains(OrderCategory.DIGITAL)) {
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.parent_view, OrderListDetailFragment.getInstance(orderId, OrderCategory.DIGITAL)).commit();
+
+                } else if (category.contains("")) {
+                    getSupportFragmentManager().beginTransaction()
+                            .add(R.id.parent_view, OmsDetailFragment.getInstance(orderId, "", fromPayment)).commit();
+                }
+            }
+        } else {
+            finish();
+        }
     }
 }

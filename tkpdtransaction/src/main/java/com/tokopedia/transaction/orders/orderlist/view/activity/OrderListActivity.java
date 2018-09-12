@@ -141,15 +141,16 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     protected void onCreate(Bundle savedInstanceState) {
         GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
-        UserSession userSession = new UserSession(getActivity());
-        if (userSession != null && !userSession.isLoggedIn()) {
-            RouteManager.route(getActivity(), ApplinkConst.LOGIN);
-        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
-        initTabs();
+        UserSession userSession = new UserSession(getActivity());
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), 100);
+        } else {
+            initTabs();
+        }
     }
 
     private void initTabs() {
@@ -204,4 +205,11 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            initTabs();
+        }
+    }
 }
