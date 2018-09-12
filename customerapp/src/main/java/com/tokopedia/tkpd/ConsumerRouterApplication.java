@@ -1084,9 +1084,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getManagePeopleIntent(Context context) {
-        //TODO milhamj restore this
-        return InterestPickActivity.Companion.createIntent(context);
-//        return new Intent(context, AccountSettingActivity.class);
+        return new Intent(context, AccountSettingActivity.class);
     }
 
     @Override

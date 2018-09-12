@@ -53,6 +53,8 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
+import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
+import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -127,6 +129,7 @@ import io.branch.referral.BranchError;
         ProfileApplinkModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
+        InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
         HowtopayApplinkModule.class,
@@ -173,6 +176,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
                 new ExploreApplinkModuleLoader(),
+                new InterestPickApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
                 new HowtopayApplinkModuleLoader(),
