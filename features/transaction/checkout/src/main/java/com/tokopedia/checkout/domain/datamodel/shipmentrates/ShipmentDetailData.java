@@ -28,6 +28,35 @@ public class ShipmentDetailData implements Parcelable {
     public ShipmentDetailData() {
     }
 
+    protected ShipmentDetailData(Parcel in) {
+        shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
+        totalQuantity = in.readInt();
+        shipmentTickerInfo = in.readString();
+        shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
+        selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
+        selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
+        byte tmpUseInsurance = in.readByte();
+        useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
+        usePartialOrder = in.readByte() != 0;
+        useDropshipper = in.readByte() != 0;
+        dropshipperName = in.readString();
+        dropshipperPhone = in.readString();
+        dropshipperNameValid = in.readByte() != 0;
+        dropshipperPhoneValid = in.readByte() != 0;
+    }
+
+    public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
+        @Override
+        public ShipmentDetailData createFromParcel(Parcel in) {
+            return new ShipmentDetailData(in);
+        }
+
+        @Override
+        public ShipmentDetailData[] newArray(int size) {
+            return new ShipmentDetailData[size];
+        }
+    };
+
     public boolean isDropshipperNameValid() {
         return dropshipperNameValid;
     }
@@ -139,46 +168,18 @@ public class ShipmentDetailData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.shipmentItemData);
-        dest.writeInt(this.totalQuantity);
-        dest.writeString(this.shipmentTickerInfo);
-        dest.writeParcelable(this.shipmentCartData, flags);
-        dest.writeParcelable(this.selectedShipment, flags);
-        dest.writeParcelable(this.selectedCourier, flags);
-        dest.writeByte(this.useInsurance ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.usePartialOrder ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.useDropshipper ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.dropshipperNameValid ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.dropshipperPhoneValid ? (byte) 1 : (byte) 0);
-        dest.writeString(this.dropshipperName);
-        dest.writeString(this.dropshipperPhone);
+        dest.writeTypedList(shipmentItemData);
+        dest.writeInt(totalQuantity);
+        dest.writeString(shipmentTickerInfo);
+        dest.writeParcelable(shipmentCartData, flags);
+        dest.writeParcelable(selectedShipment, flags);
+        dest.writeParcelable(selectedCourier, flags);
+        dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
+        dest.writeByte((byte) (usePartialOrder ? 1 : 0));
+        dest.writeByte((byte) (useDropshipper ? 1 : 0));
+        dest.writeString(dropshipperName);
+        dest.writeString(dropshipperPhone);
+        dest.writeByte((byte) (dropshipperNameValid ? 1 : 0));
+        dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
     }
-
-    protected ShipmentDetailData(Parcel in) {
-        this.shipmentItemData = in.createTypedArrayList(ShipmentItemData.CREATOR);
-        this.totalQuantity = in.readInt();
-        this.shipmentTickerInfo = in.readString();
-        this.shipmentCartData = in.readParcelable(ShipmentCartData.class.getClassLoader());
-        this.selectedShipment = in.readParcelable(ShipmentItemData.class.getClassLoader());
-        this.selectedCourier = in.readParcelable(CourierItemData.class.getClassLoader());
-        this.useInsurance = in.readByte() != 0;
-        this.usePartialOrder = in.readByte() != 0;
-        this.useDropshipper = in.readByte() != 0;
-        this.dropshipperNameValid = in.readByte() != 0;
-        this.dropshipperPhoneValid = in.readByte() != 0;
-        this.dropshipperName = in.readString();
-        this.dropshipperPhone = in.readString();
-    }
-
-    public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
-        @Override
-        public ShipmentDetailData createFromParcel(Parcel source) {
-            return new ShipmentDetailData(source);
-        }
-
-        @Override
-        public ShipmentDetailData[] newArray(int size) {
-            return new ShipmentDetailData[size];
-        }
-    };
 }

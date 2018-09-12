@@ -3,13 +3,16 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
@@ -18,7 +21,6 @@ import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
@@ -43,6 +45,10 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
 
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
+
+    private static final int MARGIN_TAB = 8;
+    private static final int MARGIN_START_END_TAB = 16;
+
     Fragment sellerReputationFragment;
 
     ViewPager viewPager;
@@ -125,6 +131,44 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
             if (goToReputationHistory) {
                 viewPager.setCurrentItem(TAB_SELLER_REPUTATION_HISTORY);
             }
+        }
+
+        wrapTabIndicatorToTitle(indicator, (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_START_END_TAB), (int) CommonUtils.DptoPx(getApplicationContext(), MARGIN_TAB));
+    }
+
+    public void wrapTabIndicatorToTitle(TabLayout tabLayout, int externalMargin, int internalMargin) {
+        View tabStrip = tabLayout.getChildAt(0);
+        if (tabStrip instanceof ViewGroup) {
+            ViewGroup tabStripGroup = (ViewGroup) tabStrip;
+            int childCount = ((ViewGroup) tabStrip).getChildCount();
+            for (int i = 0; i < childCount; i++) {
+                View tabView = tabStripGroup.getChildAt(i);
+                tabView.setMinimumWidth(0);
+                tabView.setPadding(0, tabView.getPaddingTop(), 0, tabView.getPaddingBottom());
+                if (tabView.getLayoutParams() instanceof ViewGroup.MarginLayoutParams) {
+                    ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) tabView.getLayoutParams();
+                    if (i == 0) {
+                        settingMargin(layoutParams, externalMargin, internalMargin);
+                    } else if (i == childCount - 1) {
+                        settingMargin(layoutParams, internalMargin, externalMargin);
+                    } else {
+                        settingMargin(layoutParams, internalMargin, internalMargin);
+                    }
+                }
+            }
+            tabLayout.requestLayout();
+        }
+    }
+
+    private void settingMargin(ViewGroup.MarginLayoutParams layoutParams, int start, int end) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            layoutParams.setMarginStart(start);
+            layoutParams.setMarginEnd(end);
+            layoutParams.leftMargin = start;
+            layoutParams.rightMargin = end;
+        } else {
+            layoutParams.leftMargin = start;
+            layoutParams.rightMargin = end;
         }
     }
 

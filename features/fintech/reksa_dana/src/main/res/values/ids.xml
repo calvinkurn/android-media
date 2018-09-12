@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="education_id"/>
+    <item type="id" name="income_amount_id" />
+    <item type="id" name="income_source_id"/>
+    <item type="id" name="investment_id" />
+    <item type="id" name="occupation_id"/>
+</resources>

@@ -10,10 +10,13 @@
 
     <color name="light_green">#F3FEF3</color>
     <color name="medium_green_50">#8042b549</color>
+    <color name="strong_green">#7cb211</color>
+    <color name="yellow_green">#ecf7be</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-
+    <color name="pin_normal">#6B767E</color>
+    <color name="countdown_background">#ff3b30</color>
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
     <color name="background_notification">#EA212D</color>
@@ -49,7 +52,7 @@
 
     <color name="black_55">#8C000000</color>
 
-    <color name="bottomnav_bg">#FAFAFA</color>
+    <color name="bottomnav_bg">#FFFFFF</color>
     <color name="bottomnav_active">@color/green_250</color>
     <color name="bottomnav_inactive">#8C000000</color>
 

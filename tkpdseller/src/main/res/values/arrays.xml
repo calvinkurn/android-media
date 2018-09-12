@@ -1,31 +1,4 @@
 <resources>
-
-    <!-- Library =============================================================================== -->
-    <string-array name="lib_date_picker_month_entries">
-        <item>Jan</item>
-        <item>Feb</item>
-        <item>Mar</item>
-        <item>Apr</item>
-        <item>Mei</item>
-        <item>Jun</item>
-        <item>Jul</item>
-        <item>Agu</item>
-        <item>Sep</item>
-        <item>Okt</item>
-        <item>Nov</item>
-        <item>Des</item>
-    </string-array>
-
-    <!-- Product =============================================================================== -->
-    <string-array name="product_currency_entries">
-        <item>Rp</item>
-        <item>US$</item>
-    </string-array>
-    <string-array name="product_currency_values">
-        <item>@string/product_currency_value_idr</item>
-        <item>@string/product_currency_value_usd</item>
-    </string-array>
-
     <string-array name="product_weight_entries">
         <item>Gram</item>
         <item>Kg</item>

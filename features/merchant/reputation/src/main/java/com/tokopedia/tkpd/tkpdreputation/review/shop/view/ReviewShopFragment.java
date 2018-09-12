@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +17,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView;
 import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.router.productdetail.PdpRouter;
@@ -97,8 +98,9 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.clearItemDecoration();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_vertical_product_review));
+        getRecyclerView(view).addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -242,7 +244,8 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     }
 
     @Override
-    public void onErrorPostLikeDislike(Throwable e) {
+    public void onErrorPostLikeDislike(Throwable e, String reviewId, int likeStatus) {
+        ((ReviewProductAdapter) getAdapter()).updateLikeStatusError(reviewId, likeStatus);
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(e));
     }
 

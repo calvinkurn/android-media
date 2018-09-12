@@ -8,19 +8,15 @@ import com.tokopedia.core.base.domain.executor.PostExecutionThread;
 import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.apiservices.mojito.apis.MojitoAuthApi;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
-import com.tokopedia.discovery.newdiscovery.data.mapper.AddWishlistActionMapper;
 import com.tokopedia.discovery.newdiscovery.data.mapper.ProductMapper;
-import com.tokopedia.discovery.newdiscovery.data.mapper.RemoveWishlistActionMapper;
 import com.tokopedia.discovery.newdiscovery.data.repository.BannerRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepository;
 import com.tokopedia.discovery.newdiscovery.data.repository.ProductRepositoryImpl;
 import com.tokopedia.discovery.newdiscovery.data.source.ProductDataSource;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.AddWishlistActionUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
-import com.tokopedia.discovery.newdiscovery.domain.usecase.RemoveWishlistActionUseCase;
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 
 import dagger.Module;
 import dagger.Provides;
@@ -50,31 +46,16 @@ public class ProductModule {
     }
 
     @Provides
-    AddWishlistActionUseCase addWishlistActionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            @MojitoWishlistActionQualifier MojitoAuthApi service,
-            AddWishlistActionMapper mapper) {
-        return new AddWishlistActionUseCase(threadExecutor, postExecutionThread, service, mapper);
+    AddWishListUseCase providesTkpdAddWishListUseCase(
+            @ApplicationContext Context context) {
+        return new AddWishListUseCase(context);
     }
 
-    @Provides
-    RemoveWishlistActionUseCase removeWishlistActionUseCase(
-            ThreadExecutor threadExecutor,
-            PostExecutionThread postExecutionThread,
-            @MojitoWishlistActionQualifier MojitoAuthApi service,
-            RemoveWishlistActionMapper mapper) {
-        return new RemoveWishlistActionUseCase(threadExecutor, postExecutionThread, service, mapper);
-    }
 
     @Provides
-    AddWishlistActionMapper addWishlistActionMapper() {
-        return new AddWishlistActionMapper();
-    }
-
-    @Provides
-    RemoveWishlistActionMapper removeWishlistActionMapper() {
-        return new RemoveWishlistActionMapper();
+    RemoveWishListUseCase providesTkpdRemoveWishListUseCase(
+            @ApplicationContext Context context) {
+        return new RemoveWishListUseCase(context);
     }
 
     @Provides

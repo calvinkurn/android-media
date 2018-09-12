@@ -13,18 +13,12 @@ import java.util.List;
 
 public interface ShopProductDedicatedListView extends BaseListViewListener<BaseShopProductViewModel> {
 
-    void onErrorRemoveFromWishList(Throwable e);
-
-    void onSuccessRemoveFromWishList(String productId, Boolean value);
-
     void onErrorAddToWishList(Throwable e);
-
-    void onSuccessAddToWishList(String productId, Boolean value);
 
     void renderProductList(@NonNull List<ShopProductViewModel> list, boolean hasNextPage);
 
     void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList, String selectedEtalaseId,
-                                 String selectedEtalaseName);
+                                 String selectedEtalaseName, boolean useAce);
 
     void onErrorGetEtalaseList(Throwable e);
 

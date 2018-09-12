@@ -9,11 +9,11 @@ public class CouponValueEntity {
     private int catalogId;
 
     @Expose
-    @SerializedName("catalog_title")
+    @SerializedName("catalogTitle")
     private String catalogTitle;
 
     @Expose
-    @SerializedName("catalog_sub_title")
+    @SerializedName("catalogSubTitle")
     private String catalogSubTitle;
 
     @Expose
@@ -41,28 +41,44 @@ public class CouponValueEntity {
     private String icon;
 
     @Expose
-    @SerializedName("image_url")
+    @SerializedName("imageUrl")
     private String imageUrl;
 
     @Expose
-    @SerializedName("image_url_mobile")
+    @SerializedName("imageUrlMobile")
     private String imageUrlMobile;
 
     @Expose
-    @SerializedName("promo_id")
-    private int promoId;
-
-    @Expose
-    @SerializedName("sub_title")
-    private String subTitle;
-
-    @Expose
-    @SerializedName("thumbnail_url")
+    @SerializedName("thumbnailUrl")
     private String thumbnailUrl;
 
     @Expose
-    @SerializedName("thumbnail_url_mobile")
+    @SerializedName("thumbnailUrlMobile")
     private String thumbnailUrlMobile;
+
+    @Expose
+    @SerializedName("imageV2Url")
+    private String imageV2Url;
+
+    @Expose
+    @SerializedName("imageV2UrlMobile")
+    private String imageV2UrlMobile;
+
+    @Expose
+    @SerializedName("thumbnailV2Url")
+    private String thumbnailV2Url;
+
+    @Expose
+    @SerializedName("thumbnailV2UrlMobile")
+    private String thumbnailV2UrlMobile;
+
+    @Expose
+    @SerializedName("promoID")
+    private int promoId;
+
+    @Expose
+    @SerializedName("subTitle")
+    private String subTitle;
 
     @Expose
     @SerializedName("title")
@@ -160,22 +176,6 @@ public class CouponValueEntity {
         this.imageUrlMobile = imageUrlMobile;
     }
 
-    public int getPromoId() {
-        return promoId;
-    }
-
-    public void setPromoId(int promoId) {
-        this.promoId = promoId;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
@@ -190,6 +190,54 @@ public class CouponValueEntity {
 
     public void setThumbnailUrlMobile(String thumbnailUrlMobile) {
         this.thumbnailUrlMobile = thumbnailUrlMobile;
+    }
+
+    public String getImageV2Url() {
+        return imageV2Url;
+    }
+
+    public void setImageV2Url(String imageV2Url) {
+        this.imageV2Url = imageV2Url;
+    }
+
+    public String getImageV2UrlMobile() {
+        return imageV2UrlMobile;
+    }
+
+    public void setImageV2UrlMobile(String imageV2UrlMobile) {
+        this.imageV2UrlMobile = imageV2UrlMobile;
+    }
+
+    public String getThumbnailV2Url() {
+        return thumbnailV2Url;
+    }
+
+    public void setThumbnailV2Url(String thumbnailV2Url) {
+        this.thumbnailV2Url = thumbnailV2Url;
+    }
+
+    public String getThumbnailV2UrlMobile() {
+        return thumbnailV2UrlMobile;
+    }
+
+    public void setThumbnailV2UrlMobile(String thumbnailV2UrlMobile) {
+        this.thumbnailV2UrlMobile = thumbnailV2UrlMobile;
+    }
+
+    public int getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(int promoId) {
+        this.promoId = promoId;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public String getTitle() {
@@ -222,10 +270,14 @@ public class CouponValueEntity {
                 ", icon='" + icon + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", imageUrlMobile='" + imageUrlMobile + '\'' +
-                ", promoId=" + promoId +
-                ", subTitle='" + subTitle + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
+                ", imageV2Url='" + imageV2Url + '\'' +
+                ", imageV2UrlMobile='" + imageV2UrlMobile + '\'' +
+                ", thumbnailV2Url='" + thumbnailV2Url + '\'' +
+                ", thumbnailV2UrlMobile='" + thumbnailV2UrlMobile + '\'' +
+                ", promoId=" + promoId +
+                ", subTitle='" + subTitle + '\'' +
                 ", title='" + title + '\'' +
                 ", usage=" + usage +
                 '}';

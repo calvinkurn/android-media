@@ -28,8 +28,6 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
     init {
         graphQLUseCase = object : SingleGraphQLUseCase<CloseShopScheduleMutation>(context, CloseShopScheduleMutation::class.java) {
 
-            val MAX_CLOSE_END = "253402275599" //Epoch for 31 Dec 999
-
             override val graphQLRawResId: Int
                 get() = R.raw.gql_mutation_close_shop_schedule
 
@@ -41,7 +39,7 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
                 // close end, to shop to start open
                 val closeEnd = requestParams.getString(CLOSE_END, "")
                 if (!TextUtils.isEmpty(closeEnd)) {
-                    variables[CLOSE_END] = (java.lang.Long.parseLong(closeEnd) / 1000L).toString()
+                    variables[CLOSE_END] = (closeEnd.toLong() / 1000L).toString()
                 }
 
                 val closeNow = requestParams.getBoolean(CLOSE_NOW, false)
@@ -50,12 +48,15 @@ constructor(@ApplicationContext context: Context) : UseCase<String>() {
                 if (closeNow) {
                     // closeNow true must have end date; the business currently does not allow empty end date
                     if (TextUtils.isEmpty(closeEnd)) {
-                        variables[CLOSE_END] = MAX_CLOSE_END
+                        val closeStart = requestParams.getString(CLOSE_START, "")
+                        if (!closeStart.isNullOrEmpty()) {
+                            variables[CLOSE_END] = closeStart
+                        }
                     }
                 } else { // open with schedule start
                     val closeStart = requestParams.getString(CLOSE_START, "")
                     if (!TextUtils.isEmpty(closeStart)) {
-                        variables[CLOSE_START] = (java.lang.Long.parseLong(closeStart) / 1000L).toString()
+                        variables[CLOSE_START] = (closeStart.toLong() / 1000L).toString()
                     }
                 }
 

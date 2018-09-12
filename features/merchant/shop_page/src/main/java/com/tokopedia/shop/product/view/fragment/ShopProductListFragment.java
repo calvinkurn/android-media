@@ -54,6 +54,7 @@ import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 import com.tokopedia.shop.product.view.presenter.ShopProductListPresenter;
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity;
+import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class ShopProductListFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements ShopProductDedicatedListView, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
+        implements ShopProductDedicatedListView, WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, EtalaseChipAdapter.OnEtalaseChipAdapterListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -130,7 +131,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
                 this, null,
-                false, 0,false
+                false, 0, false
         );
     }
 
@@ -187,7 +188,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         super.onCreate(savedInstanceState);
         etalaseChipAdapter = new EtalaseChipAdapter(null, null, this);
-        shopProductListPresenter.attachView(this);
+        shopProductListPresenter.attachView(this, this);
     }
 
     @Nullable
@@ -206,7 +207,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return view;
     }
 
-    public void setUpEtalaseView(View view){
+    public void setUpEtalaseView(View view) {
         RecyclerView recyclerViewEtalase = view.findViewById(R.id.recycler_view_etalase);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewEtalase.setLayoutManager(layoutManager);
@@ -242,11 +243,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     }
 
-    private void showEtalaseList(){
+    private void showEtalaseList() {
         vgEtalaseList.setVisibility(View.VISIBLE);
     }
 
-    private void hideEtalaseList(){
+    private void hideEtalaseList() {
         vgEtalaseList.setVisibility(View.GONE);
     }
 
@@ -331,7 +332,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         loadInitialData();
     }
 
-    private void bindEtalaseChipData(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel){
+    private void bindEtalaseChipData(ShopProductEtalaseListViewModel shopProductEtalaseListViewModel) {
         etalaseChipAdapter.setEtalaseViewModelList(shopProductEtalaseListViewModel.getEtalaseModelList());
         String selectedEtalaseId = shopProductEtalaseListViewModel.getSelectedEtalaseId();
         etalaseChipAdapter.setSelectedEtalaseId(selectedEtalaseId);
@@ -490,32 +491,32 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onErrorAddToWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
+    public void onErrorAddWishList(String errorMessage, String productId) {
+        if (!shopProductListPresenter.isLogin()) {
             Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
             startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
             return;
         }
-        NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
     @Override
-    public void onSuccessAddToWishList(String productId, Boolean value) {
+    public void onSuccessAddWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, true);
     }
 
     @Override
-    public void onSuccessRemoveFromWishList(String productId, Boolean value) {
+    public void onErrorRemoveWishlist(String errorMessage, String productId) {
+        NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSuccessRemoveWishlist(String productId) {
         shopProductAdapter.updateWishListStatus(productId, false);
     }
 
     @Override
-    public void onErrorRemoveFromWishList(Throwable e) {
-        if (e instanceof UserNotLoginException) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
+    public void onErrorAddToWishList(Throwable e) {
         NetworkErrorHelper.showCloseSnackbar(getActivity(), ErrorHandler.getErrorMessage(getActivity(), e));
     }
 
@@ -536,15 +537,15 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         showGetListError(e);
     }
 
-    public void addToSelectedEtalaseList(String etalaseId, String etalaseName) {
+    public void addToSelectedEtalaseList(String etalaseId, String etalaseName, boolean useAce) {
         // only add the etalase with not-empty name. Empty name is a deleted etalase (that come from deeplink)
         if (TextUtils.isEmpty(etalaseName)) {
             return;
         }
         // if etalase id is not on the list, add it
-        boolean isAddedToCurrentEtalaseList = addEtalaseFromListMore(etalaseId, etalaseName);
+        boolean isAddedToCurrentEtalaseList = addEtalaseFromListMore(etalaseId, etalaseName, useAce);
         if (isAddedToCurrentEtalaseList) {
-            selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName));
+            selectedEtalaseList.add(0, new ShopEtalaseViewModel(selectedEtalaseId, selectedEtalaseName, useAce));
             if (selectedEtalaseList.size() > ShopPageConstant.MAXIMUM_SELECTED_ETALASE_LIST) {
                 selectedEtalaseList.remove(selectedEtalaseList.size() - 1);
             }
@@ -554,11 +555,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
     }
 
-    public void addEtalaseToChip(String etalaseId, String etalaseName){
+    public void addEtalaseToChip(String etalaseId, String etalaseName, boolean useAce) {
         // add the etalase by permutation
         // 1 2 3 4 5; after add 6 will be 1 6 2 3 4
         List<ShopEtalaseViewModel> shopEtalaseViewModelList = etalaseChipAdapter.getEtalaseViewModelList();
-        ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName);
+        ShopEtalaseViewModel shopEtalaseViewModelToAdd = new ShopEtalaseViewModel(etalaseId, etalaseName, useAce);
         // index no 0 will always be "All Etalase", so, add from index 1.
         int indexToAdd = shopEtalaseViewModelList.size() > 1 ? 1 : 0;
         shopEtalaseViewModelList.add(indexToAdd, shopEtalaseViewModelToAdd);
@@ -580,11 +581,11 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     /**
      * @return true, if add etalase to current list; false if no add needed.
      */
-    public boolean addEtalaseFromListMore(String etalaseId, String etalaseName) {
+    public boolean addEtalaseFromListMore(String etalaseId, String etalaseName, boolean useAce) {
         if (isEtalaseInChip(etalaseId)) {
             return false;
         }
-        addEtalaseToChip(etalaseId, etalaseName);
+        addEtalaseToChip(etalaseId, etalaseName, useAce);
         return true;
     }
 
@@ -628,7 +629,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessGetEtalaseList(List<ShopEtalaseViewModel> shopEtalaseViewModelList,
-                                        String etalaseId, String etalaseName) {
+                                        String etalaseId, String etalaseName, boolean isUseAce) {
         //default select first index as selected.
         if (shopEtalaseViewModelList == null || shopEtalaseViewModelList.size() == 0) {
             selectedEtalaseId = null;
@@ -642,7 +643,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         }
         // update the adapter
         bindEtalaseChipData(new ShopProductEtalaseListViewModel(shopEtalaseViewModelList, selectedEtalaseId));
-        addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName);
+        addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, isUseAce);
         shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
     }
 
@@ -653,8 +654,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
                 if (resultCode == Activity.RESULT_OK) {
                     selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
+                    boolean useAce = data.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true);
 
-                    addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName);
+                    addToSelectedEtalaseList(selectedEtalaseId, selectedEtalaseName, useAce);
                     if (shopPageTracking != null) {
                         shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
                                 false, selectedEtalaseName, shopId, shopProductListPresenter.isMyShop(shopId),

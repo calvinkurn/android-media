@@ -39,11 +39,11 @@ public class RatesDataConverter {
                                                     RecipientAddressModel recipientAddressModel) {
         ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
         ShipmentCartData shipmentCartData = shipmentCartItemModel.getShipmentCartData();
-        shipmentCartData.setDestinationAddress(recipientAddressModel.getAddressStreet());
+        shipmentCartData.setDestinationAddress(recipientAddressModel.getStreet());
         shipmentCartData.setDestinationDistrictId(recipientAddressModel.getDestinationDistrictId());
         shipmentCartData.setDestinationLatitude(recipientAddressModel.getLatitude());
         shipmentCartData.setDestinationLongitude(recipientAddressModel.getLongitude());
-        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getAddressPostalCode());
+        shipmentCartData.setDestinationPostalCode(recipientAddressModel.getPostalCode());
         shipmentDetailData.setShipmentCartData(shipmentCartData);
         int totalQuantity = 0;
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {

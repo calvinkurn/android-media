@@ -202,6 +202,8 @@ public interface FeedPlus {
         void onErrorSendVote(String message);
 
         int getAdapterListSize();
+
+        void onWhitelistClicked(String url);
     }
 
     interface Presenter extends CustomerPresenter<View> {
@@ -229,6 +231,5 @@ public interface FeedPlus {
 
         void unfollowKolFromRecommendation(int id, int rowNumber, int position, View.Kol
                 kolListener);
-
     }
 }

@@ -15,7 +15,6 @@ buildCache {
     }
 }
 
-
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
@@ -34,13 +33,7 @@ include 'sellerapp'
 include 'tkpdseller'
 include 'tkpdtokocash'
 include 'tkpdabstraction'
-include 'tkpdflight'
 include 'tkpdcontent'
 include 'tkpdstream'
-include 'tkpdshop'
-include 'tkpdshop-common'
-include 'tkpdgm-common'
-include 'tkpdreputation-common'
-include 'tkpdwishlist-common'
 include 'tkpdtransaction-common'
 include 'posapp'

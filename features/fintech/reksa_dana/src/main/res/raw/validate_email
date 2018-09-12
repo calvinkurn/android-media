@@ -1,0 +1,11 @@
+query MF($email: String!) {
+  mf_pre_validate_email(email:$email) {
+    result {
+      code
+      message
+      success
+    }
+    valid
+    message
+  }
+}

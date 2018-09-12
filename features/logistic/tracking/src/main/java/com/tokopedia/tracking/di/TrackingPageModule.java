@@ -3,8 +3,8 @@ package com.tokopedia.tracking.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-
 import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
@@ -24,6 +24,7 @@ import com.tokopedia.tracking.repository.TrackingPageRepository;
 import com.tokopedia.tracking.usecase.TrackCourierUseCase;
 import com.tokopedia.tracking.utils.DateUtil;
 import com.tokopedia.tracking.view.ITrackingPageFragment;
+import com.tokopedia.transactionanalytics.OrderAnalyticsOrderTracking;
 
 import java.util.concurrent.TimeUnit;
 
@@ -46,6 +47,12 @@ public class TrackingPageModule {
 
     public TrackingPageModule(ITrackingPageFragment view) {
         this.view = view;
+    }
+
+    @Provides
+    @TrackingPageScope
+    OrderAnalyticsOrderTracking provideOrderAnalyticsOrderTracking(AbstractionRouter abstractionRouter) {
+        return new OrderAnalyticsOrderTracking(abstractionRouter.getAnalyticTracker());
     }
 
     @Provides
@@ -117,7 +124,7 @@ public class TrackingPageModule {
 
     @Provides
     @TrackingPageScope
-    DateUtil provideDateUtil(){
+    DateUtil provideDateUtil() {
         return new DateUtil();
     }
 
