@@ -2,13 +2,11 @@ package com.tokopedia.gm.subscribe.membership.view.adapter
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.view.recyclerview.GmProductAdapter
 import com.tokopedia.gm.subscribe.view.recyclerview.GmProductAdapterCallback
-import com.tokopedia.gm.subscribe.view.recyclerview.GmProductViewHolder
 
 class GmMembershipProductAdapter(listener: GmProductAdapterCallback) : GmProductAdapter(listener) {
 
@@ -16,7 +14,7 @@ class GmMembershipProductAdapter(listener: GmProductAdapterCallback) : GmProduct
         return when (viewType) {
             GmProductAdapter.GM_PRODUCT -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_gm_subscribe_membership_product, parent, false)
-                GmProductViewHolder(view)
+                GmMembershipProductViewHolder(view)
             }
             else -> super.onCreateViewHolder(parent, viewType)
         }

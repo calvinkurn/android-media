@@ -17,6 +17,10 @@ class GmMembershipProductFragment : GmProductFragment(){
 
     private var adapter: GmMembershipProductAdapter = GmMembershipProductAdapter(this)
 
+    override fun getFragmentLayout(): Int {
+        return R.layout.fragment_gm_subscribe_product_membership
+    }
+
     override fun initView(view: View?) {
         super.initView(view)
         (activity as AppCompatActivity).supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_close_default)
