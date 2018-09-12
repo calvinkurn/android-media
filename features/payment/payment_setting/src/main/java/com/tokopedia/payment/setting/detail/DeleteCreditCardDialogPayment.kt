@@ -19,8 +19,8 @@ class DeleteCreditCardDialogPayment : DialogFragment() {
 
     private var deleteCreditCardDialogListener: DeleteCreditCardDialogListener? = null
 
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
-        activity?.run {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        context?.run {
             return AlertDialog.Builder(this)
                     .setTitle(R.string.payment_title_delete_credit_card)
                     .setMessage(R.string.payment_label_forever_delete_credit_card)

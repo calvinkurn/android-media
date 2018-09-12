@@ -81,7 +81,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(resultCode == Activity.RESULT_OK){
             when (requestCode){
-                REQUEST_CODE_DETAIL_CREDIT_CARD, REQUEST_CODE_ADD_CREDIT_CARD -> settingListPaymentPresenter.getCreditCardList(resources)
+                REQUEST_CODE_DETAIL_CREDIT_CARD, REQUEST_CODE_ADD_CREDIT_CARD -> loadInitialData()
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
