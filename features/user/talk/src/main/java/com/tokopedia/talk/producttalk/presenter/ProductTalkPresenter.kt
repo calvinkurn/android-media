@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.di.TalkScope
+import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
+import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
@@ -24,6 +26,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
 
     }
 
+    var isRequesting: Boolean = false
     var page: Int = 1
     var pageId: Int = 0
 
@@ -44,9 +47,11 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
     }
 
     fun getProductTalk(productId: String, reset: Boolean) {
+        isRequesting = true
         getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1, productId)
                 , object : Subscriber<ProductTalkViewModel>(){
             override fun onNext(viewModel: ProductTalkViewModel) {
+                isRequesting = false
                 view.hideLoadingFull()
                 if (viewModel.listThread.isEmpty()) {
                     view.onEmptyTalk()
@@ -69,16 +74,50 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
             }
 
             override fun onError(e: Throwable) {
+                isRequesting = false
                 view.hideRefresh()
                 view.hideLoadingFull()
-                if (e is MessageErrorException) {
-                    view.onErrorGetTalks(e.message ?: "")
-                } else {
-                    view.onErrorGetTalks(ErrorHandler.getErrorMessage(view.getContext(), e))
-                }
+                onErrorTalk(e)
             }
 
         })
+    }
+
+    private fun onErrorTalk(e: Throwable) {
+        if (e is MessageErrorException) {
+            view.onErrorGetTalks(e.message ?: "")
+        } else {
+            view.onErrorGetTalks(ErrorHandler.getErrorMessage(view.getContext(), e))
+        }
+    }
+
+    override fun deleteCommentTalk(shopId: String, talkId: String, commentId: String) {
+        if (!isRequesting) {
+            isRequesting = true
+            view.showLoadingAction()
+            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
+                    shopId,
+                    talkId,
+                    commentId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    isRequesting = false
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    isRequesting = false
+                    view.hideLoadingAction()
+                    view.onSuccessDeleteCommentTalk(talkId, commentId)
+
+                }
+            })
+        }
     }
 
     override fun detachView() {

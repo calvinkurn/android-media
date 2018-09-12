@@ -165,6 +165,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
+        adapter.deleteComment(talkId, commentId)
+    }
+
     override fun onReplyTalkButtonClick(allowReply: Boolean) {
         if (allowReply) goToDetailTalk()
         else showErrorReplyTalk()
@@ -270,7 +274,69 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
-        //TODO STEVENFe
+        context?.run {
+            val listMenu = ArrayList<Menus.ItemMenus>()
+            if (menu.allowReport) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_report_comment)))
+            }
+            if (menu.allowDelete) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_delete_comment)))
+            }
+
+            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+            bottomMenu.itemMenuList = listMenu
+            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+            }
+            bottomMenu.show()
+        }
+    }
+
+
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+        when (itemMenu.title) {
+            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
+                    talkId, commentId)
+        }
+        bottomMenu.dismiss()
+    }
+
+    private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
+
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
+        alertDialog.setTitle(getString(R.string.delete_comment_talk_dialog_title))
+        alertDialog.setDesc(getString(R.string.delete_comment_talk_dialog_desc))
+        alertDialog.setBtnCancel(getString(R.string.button_cancel))
+        alertDialog.setBtnOk(getString(R.string.button_delete))
+        alertDialog.setOnCancelClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.setOnOkClickListener {
+            presenter.deleteCommentTalk(shopId, talkId, commentId)
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+    }
+
+    override fun showLoadingAction() {
+        talkProgressBar.visibility = View.VISIBLE
+        list_thread.visibility = View.GONE
+        swipeToRefresh.isEnabled = false
+    }
+
+    override fun hideLoadingAction() {
+        talkProgressBar.visibility = View.GONE
+        list_thread.visibility = View.VISIBLE
+        swipeToRefresh.isEnabled = true
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
