@@ -34,6 +34,15 @@ public class GlobalNavConstant {
         static final String LABEL_OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
         static final String LABEL_FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
 
+        public static final String SCREEN_NAME = "screenName";
+        public static final String EVENT = "event";
+        public static final String EVENT_CATEGORY = "eventCategory";
+        public static final String EVENT_ACTION = "eventAction";
+        public static final String EVENT_LABEL = "eventLabel";
+        public static final String CLICK_TOP_NAV = "clickTopNav";
+        public static final String TOP_NAV = "top nav";
+        public static final String SCREEN_NAME_CHAT = "/chat";
+
     }
 
     public class Cache {

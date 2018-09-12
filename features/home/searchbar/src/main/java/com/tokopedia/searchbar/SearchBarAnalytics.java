@@ -65,11 +65,11 @@ public class SearchBarAnalytics {
     private Map<String, Object> getDataEvent(String screenName, String event,
                                              String category, String action) {
         Map<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put("screenName", screenName);
-        eventTracking.put("event", event);
-        eventTracking.put("eventCategory", category);
-        eventTracking.put("eventAction", action);
-        eventTracking.put("eventLabel", "");
+        eventTracking.put(SearchBarConstant.SCREEN_NAME, screenName);
+        eventTracking.put(SearchBarConstant.EVENT, event);
+        eventTracking.put(SearchBarConstant.EVENT_CATEGORY, category);
+        eventTracking.put(SearchBarConstant.EVENT_ACTION, action);
+        eventTracking.put(SearchBarConstant.EVENT_LABEL, "");
         return eventTracking;
     }
 }

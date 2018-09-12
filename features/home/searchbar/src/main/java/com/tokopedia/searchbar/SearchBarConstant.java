@@ -19,4 +19,14 @@ public class SearchBarConstant {
 
     public static final String SCAN_QR = "scan qr";
 
+    public static final String SCREEN_NAME = "screenName";
+
+    public static final String EVENT = "event";
+
+    public static final String EVENT_CATEGORY = "eventCategory";
+
+    public static final String EVENT_ACTION = "eventAction";
+
+    public static final String EVENT_LABEL = "eventLabel";
+
 }

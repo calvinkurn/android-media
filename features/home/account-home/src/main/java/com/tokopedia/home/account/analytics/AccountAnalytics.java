@@ -135,11 +135,11 @@ public class AccountAnalytics {
             return;
 
         Map<String, Object> eventTracking = new HashMap<>();
-        eventTracking.put("screenName", "/account");
-        eventTracking.put("event", "clickTopNav");
-        eventTracking.put("eventCategory", "top nav");
-        eventTracking.put("eventAction", "click notification");
-        eventTracking.put("eventLabel", "");
+        eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
+        eventTracking.put(EVENT, CLICK_TOP_NAV);
+        eventTracking.put(EVENT_CATEGORY, TOP_NAV);
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
+        eventTracking.put(EVENT_LABEL, "");
 
         analyticTracker.sendEventTracking(eventTracking);
     }
