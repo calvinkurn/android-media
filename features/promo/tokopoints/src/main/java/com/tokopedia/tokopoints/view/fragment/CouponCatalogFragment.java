@@ -549,8 +549,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         description.setText(data.getTitle());
         btnAction2.setText(data.getButtonStr());
         btnAction2.setBackgroundResource(R.drawable.bg_button_orange);
-        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnAction1.getLayoutParams();
-        layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
 
         ImageHandler.loadImageFitCenter(imgBanner.getContext(), imgBanner, data.getImageUrlMobile());
         //setting points info if exist in response
@@ -632,9 +630,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         }
 
         if (data.getIsGift() == 1) {
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) btnAction1.getLayoutParams();
+            layoutParams.rightMargin = getResources().getDimensionPixelOffset(R.dimen.tp_margin_medium);
             btnAction1.setVisibility(View.VISIBLE);
             btnAction1.setText(R.string.tp_label_send);
             btnAction1.setOnClickListener(view -> mPresenter.startSendGift(data.getId(), data.getTitle(), data.getPointsStr()));
+        } else {
+            btnAction1.setVisibility(View.GONE);
         }
 
         btnAction2.setOnClickListener(v -> {
