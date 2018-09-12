@@ -450,9 +450,9 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
+    public void eventViewCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
+                EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_PRESELECTED_COURIER_OPTION,
                 eventLabelPreselectedCourierPartner

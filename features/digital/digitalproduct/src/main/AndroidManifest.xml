@@ -31,6 +31,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".product.view.activity.DigitalWebActivity"
+            android:theme="@style/Toolbar.White"
             android:screenOrientation="portrait" />
         <activity
             android:name=".categorylist.view.activity.DigitalCategoryListActivity"

@@ -82,6 +82,8 @@ public class HomepagePagerAdapter extends PagerAdapter {
                 ((TextView) view.findViewById(R.id.text_label_error)).setText(mEmptyMessages.get(CommonConstant.CouponMapKeys.SUB_TITLE));
                 view.findViewById(R.id.button_continue).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.button_continue).setOnClickListener(view12 -> mPresenter.getView().gotoCatalog());
+                view.findViewById(R.id.text_empty_action).setOnClickListener(v ->
+                        mPresenter.getView().openWebView(CommonConstant.WebLink.INFO));
             } else {
                 containerInner.setDisplayedChild(0);
                 RecyclerView recyclerView = view.findViewById(R.id.recycler_view_promos);

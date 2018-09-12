@@ -52,4 +52,7 @@
     <string name="tp_send_gift_failed_title">Kupon Gagal Dikirim</string>
     <string name="tp_send_gift_failed_message">Oops, ada yang tidak beres. Coba ulangi beberapa saat lagi.</string>
 
+    <string name="tp_default_empty_coupons_title">Anda tidak memiliki Kupon untuk kategori ini.</string>
+    <string name="tp_default_empty_coupons_subtitle">Tukar Points Anda dengan Kupon di halaman TokoPoints.</string>
+
 </resources>

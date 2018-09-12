@@ -16,6 +16,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.adapter.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.hotlist.view.model.HotlistProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.tkpdpdp.customview.RatingView;
 
 import java.util.List;
@@ -88,7 +89,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
         renderWishlistButton(element.isWishlist());
         renderShopLocation(element);
-        renderProductImage(element.getImageUrl());
+        renderProductImage(element);
         renderBadges(element.getBadgesList());
         renderRating(element.getRating(), element.getCountReview());
 
@@ -139,8 +140,8 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
         }
     }
 
-    protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
+    protected void renderProductImage(HotlistProductViewModel productItem) {
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {

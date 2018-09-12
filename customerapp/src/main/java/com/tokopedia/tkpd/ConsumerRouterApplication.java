@@ -49,7 +49,7 @@ import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
 import com.tokopedia.contactus.createticket.activity.ContactUsCreateTicketActivity;
 import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.Router;
 import com.tokopedia.core.analytics.AnalyticsEventTrackingHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
@@ -223,6 +223,7 @@ import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
+import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
@@ -1738,6 +1739,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Observable<WalletModel> getTokoCashAccountBalance() {
+        return new GetBalanceTokoCashWrapper(this, tokoCashComponent.getBalanceTokoCashUseCase())
+                .getTokoCashAccountBalance();
+    }
+
+    @Override
     public void sendEventTracking(String event, String category, String action, String label) {
         UnifyTracking.sendGTMEvent(new EventTracking(event, category, action, label).getEvent());
     }
@@ -2609,7 +2616,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Fragment getCartFragment() {
-        return CartFragment.newInstance();
+        return CartFragment.newInstance(CartFragment.class.getSimpleName());
     }
 
     @Override
@@ -2620,11 +2627,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getManageProfileIntent(Context context) {
         return new Intent(context, ManagePeopleProfileActivity.class);
-    }
-
-    @Override
-    public Intent getManagePasswordIntent(Context context) {
-        return new Intent(context, ManagePasswordActivity.class);
     }
 
     @Override
@@ -2670,11 +2672,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToManageBankAccount(Context context) {
-        context.startActivity(new Intent(context, ManagePeopleBankActivity.class));
-    }
-
-    @Override
     public void goToManageCreditCard(Context context) {
         if (context instanceof Activity)
         goToUserPaymentList((Activity) context);
@@ -2715,7 +2712,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     public Intent getInboxHelpIntent(Context context) {
-        return InboxTicketActivity.getCallingIntent(context);
+        return InboxListActivity.getCallingIntent(context);
     }
 
     @Override
@@ -2725,7 +2722,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getInboxTicketCallingIntent(Context context) {
-        return new Intent(context, InboxTicketActivity.class);
+        return new Intent(context, InboxListActivity.class);
     }
 
     @Override

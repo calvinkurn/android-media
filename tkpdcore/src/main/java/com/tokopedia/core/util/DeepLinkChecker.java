@@ -60,6 +60,7 @@ public class DeepLinkChecker {
     private static final String KEY_PROMO = "promo";
     private static final String KEY_SALE = "sale";
     private static final String GROUPCHAT_SEGMENT = "groupchat";
+    private static final String MYBILLS = "mybills";
 
     public static int getDeepLinkType(String url) {
         Uri uriData = Uri.parse(url);
@@ -123,6 +124,10 @@ public class DeepLinkChecker {
             e.printStackTrace();
             return OTHER;
         }
+    }
+
+    private static boolean isMyBills(List<String> linkSegment) {
+        return linkSegment.size() > 0 && linkSegment.get(0).equalsIgnoreCase(MYBILLS);
     }
 
     private static boolean isGroupChat(List<String> linkSegment) {
@@ -231,7 +236,8 @@ public class DeepLinkChecker {
                 && !linkSegment.get(0).equals("referral"))
                 && !isTokoPoint(linkSegment)
                 && !isEGold(linkSegment)
-                && !isMutualFund(linkSegment);
+                && !isMutualFund(linkSegment)
+                && !isMyBills(linkSegment);
     }
 
     private static boolean isSearch(String url) {

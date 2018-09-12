@@ -38,12 +38,15 @@ public class SendMessageUseCase extends UseCase<SendMessageViewModel> {
     public static RequestParams getParam(String message, String toShopId, String
             toUserId, String source) {
         RequestParams param = RequestParams.create();
-        param.putString(PARAM_MESSAGE, message);
+        if (message != null) {
+            param.putString(PARAM_MESSAGE, message);
+        }
         if (toShopId != null)
             param.putString(PARAM_TO_SHOP_ID, toShopId);
         if (toUserId != null)
             param.putString(PARAM_TO_USER_ID, toUserId);
-        param.putString(PARAM_SOURCE, source);
+        if (source != null)
+            param.putString(PARAM_SOURCE, source);
         return param;
     }
 }
