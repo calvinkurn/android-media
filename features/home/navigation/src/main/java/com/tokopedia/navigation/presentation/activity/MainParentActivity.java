@@ -637,79 +637,73 @@ public class MainParentActivity extends AppCompatActivity implements
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
                 if (shortcutManager != null) {
                     shortcutManager.removeAllDynamicShortcuts();
-                }
 
-                Bundle args = new Bundle();
-                args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
-                args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
+                    List<ShortcutInfo> shortcutInfos = new ArrayList<>();
+                    Bundle args = new Bundle();
+                    args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
+                    args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                Intent intentHome = MainParentActivity.start(this);
-                intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                intentHome.setAction(Intent.ACTION_VIEW);
+                    Intent intentHome = MainParentActivity.start(this);
+                    intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intentHome.setAction(Intent.ACTION_VIEW);
 
-                Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
-                productIntent.setAction(Intent.ACTION_VIEW);
+                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
+                    productIntent.setAction(Intent.ACTION_VIEW);
 
-                ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
-                        .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                        .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                        .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                        .setIntents(new Intent[]{
-                                intentHome, productIntent
-                        })
-                        .build();
-
-                Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
-                digitalIntent.setAction(Intent.ACTION_VIEW);
-
-                ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
-                        .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                        .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                        .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
-                        .setIntents(new Intent[]{intentHome, digitalIntent})
-                        .build();
-
-                if (userSession.isLoggedIn()) {
-                    String shopID = userSession.getShopId();
-
-                    Intent shopIntent;
-                    if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
-                        shopIntent = ((GlobalNavRouter) getApplication()).getOpenShopIntent(this);
-                    } else {
-                        shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
-                    }
-
-                    shopIntent.setAction(Intent.ACTION_VIEW);
-                    shopIntent.putExtras(args);
-
-                    ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
-                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
-                            .setIntents(new Intent[]{
-                                    intentHome, shopIntent
-                            })
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
+                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                            .setIntents(new Intent[]{ intentHome, productIntent })
                             .build();
+                    shortcutInfos.add(productShortcut);
 
-                    Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
-                    referralIntent.setAction(Intent.ACTION_VIEW);
+                    Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
+                    digitalIntent.setAction(Intent.ACTION_VIEW);
 
-                    ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
-                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                            .setIntents(new Intent[]{
-                                    intentHome, referralIntent
-                            })
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
+                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                            .setIntents(new Intent[]{intentHome, digitalIntent})
                             .build();
+                    shortcutInfos.add(digitalShortcut);
 
-                    if (shortcutManager != null) {
-                        shortcutManager.addDynamicShortcuts(Arrays.asList(referralShortcut, shopShortcut, productShortcut, digitalShortcut));
+                    if (userSession.isLoggedIn()) {
+                        String shopID = userSession.getShopId();
+
+                        Intent shopIntent;
+                        if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
+                            shopIntent = ((GlobalNavRouter) getApplication()).getOpenShopIntent(this);
+                        } else {
+                            shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
+                        }
+
+                        shopIntent.setAction(Intent.ACTION_VIEW);
+                        shopIntent.putExtras(args);
+
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                                .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
+                                .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                                .setIntents(new Intent[]{ intentHome, shopIntent })
+                                .build();
+                        shortcutInfos.add(shopShortcut);
+
+                        if (((GlobalNavRouter) getApplication()).getBooleanRemoteConfig(GlobalNavConstant.APP_SHOW_REFERRAL_BUTTON, false)) {
+                            Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
+                            referralIntent.setAction(Intent.ACTION_VIEW);
+
+                            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                                    .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                    .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                                    .setIntents(new Intent[]{ intentHome, referralIntent })
+                                    .build();
+                            shortcutInfos.add(referralShortcut);
+                        }
                     }
-                } else {
-                    if (shortcutManager != null) {
-                        shortcutManager.addDynamicShortcuts(Arrays.asList(productShortcut, digitalShortcut));
-                    }
+                    shortcutManager.addDynamicShortcuts(shortcutInfos);
                 }
             } catch (SecurityException e) {
                 e.printStackTrace();

@@ -47,4 +47,6 @@ public interface GlobalNavRouter {
     Intent instanceIntentDigitalCategoryList();
 
     Intent getReferralIntent(Context context);
+
+    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
 }
