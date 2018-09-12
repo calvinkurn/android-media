@@ -643,11 +643,11 @@ public class MainParentActivity extends AppCompatActivity implements
                 args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
                 args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                Intent intentHome = RouteManager.getIntent(this, ApplinkConst.HOME);
+                Intent intentHome = MainParentActivity.start(this);
                 intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 intentHome.setAction(Intent.ACTION_VIEW);
 
-                Intent productIntent = RouteManager.getIntent(this, ApplinkConst.DISCOVERY_SEARCH);
+                Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
                 productIntent.setAction(Intent.ACTION_VIEW);
 
                 ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
@@ -659,7 +659,7 @@ public class MainParentActivity extends AppCompatActivity implements
                         })
                         .build();
 
-                Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL);
+                Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
                 digitalIntent.setAction(Intent.ACTION_VIEW);
 
                 ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
@@ -691,7 +691,7 @@ public class MainParentActivity extends AppCompatActivity implements
                             })
                             .build();
 
-                    Intent referralIntent = RouteManager.getIntent(this, ApplinkConst.REFERRAL);
+                    Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
                     referralIntent.setAction(Intent.ACTION_VIEW);
 
                     ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)

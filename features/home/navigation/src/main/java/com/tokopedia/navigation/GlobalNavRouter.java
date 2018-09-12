@@ -39,4 +39,12 @@ public interface GlobalNavRouter {
     Intent getShopPageIntent(Context context, String shopID);
 
     Intent getOpenShopIntent(Context context);
+
+    Intent getHomeIntent(Context context);
+
+    Intent gotoSearchPage(Context context);
+
+    Intent instanceIntentDigitalCategoryList();
+
+    Intent getReferralIntent(Context context);
 }
