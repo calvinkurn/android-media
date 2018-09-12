@@ -2,9 +2,12 @@ package com.tokopedia.product.manage.list.view.presenter;
 
 import android.accounts.NetworkErrorException;
 
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
 import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
+import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
+import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.product.manage.list.domain.DeleteProductUseCase;
 import com.tokopedia.product.manage.list.domain.EditPriceProductUseCase;
@@ -43,31 +46,34 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
     private final EditPriceProductUseCase editPriceProductUseCase;
     private final DeleteProductUseCase deleteProductUseCase;
     private final GetProductListManageMapperView getProductListManageMapperView;
-    private final SellerModuleRouter sellerModuleRouter;
     private final MultipleDeleteProductUseCase multipleDeleteProductUseCase;
     private final TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private final TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase;
+    private final GetFeatureProductListUseCase getFeatureProductListUseCase;
     private SetCashbackUseCase setCashbackUseCase;
+    private final UserSession userSession;
 
     public ProductManagePresenterImpl(GetShopInfoUseCase getShopInfoUseCase,
                                       GetProductListSellingUseCase getProductListSellingUseCase,
                                       EditPriceProductUseCase editPriceProductUseCase,
                                       DeleteProductUseCase deleteProductUseCase,
                                       GetProductListManageMapperView getProductListManageMapperView,
-                                      SellerModuleRouter sellerModuleRouter,
                                       MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                      UserSession userSession,
                                       TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                       TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
+                                      GetFeatureProductListUseCase getFeatureProductListUseCase,
                                       SetCashbackUseCase setCashbackUseCase) {
         this.getShopInfoUseCase = getShopInfoUseCase;
         this.getProductListSellingUseCase = getProductListSellingUseCase;
         this.editPriceProductUseCase = editPriceProductUseCase;
         this.deleteProductUseCase = deleteProductUseCase;
         this.getProductListManageMapperView = getProductListManageMapperView;
-        this.sellerModuleRouter = sellerModuleRouter;
         this.multipleDeleteProductUseCase = multipleDeleteProductUseCase;
+        this.userSession = userSession;
         this.topAdsAddSourceTaggingUseCase = topAdsAddSourceTaggingUseCase;
         this.topAdsGetShopDepositGraphQLUseCase = topAdsGetShopDepositGraphQLUseCase;
+        this.getFeatureProductListUseCase = getFeatureProductListUseCase;
         this.setCashbackUseCase = setCashbackUseCase;
     }
 
@@ -175,7 +181,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
 
     @Override
     public void getListFeaturedProduct() {
-        sellerModuleRouter.getFeaturedProduct().subscribe(getSubscriberGetListFeaturedProduct());
+        getFeatureProductListUseCase.execute(GetFeatureProductListUseCase.createRequestParam(userSession.getShopId()),
+                getSubscriberGetListFeaturedProduct());
     }
 
     @Override
@@ -240,8 +247,8 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
         };
     }
 
-    private Subscriber<GMFeaturedProductDomainModel> getSubscriberGetListFeaturedProduct() {
-        return new Subscriber<GMFeaturedProductDomainModel>() {
+    private Subscriber<List<GMFeaturedProduct>> getSubscriberGetListFeaturedProduct() {
+        return new Subscriber<List<GMFeaturedProduct>>() {
             @Override
             public void onCompleted() {
 
@@ -253,16 +260,16 @@ public class ProductManagePresenterImpl extends BaseDaggerPresenter<ProductManag
             }
 
             @Override
-            public void onNext(GMFeaturedProductDomainModel gmFeaturedProductDomainModel) {
-                getView().onSuccessGetFeaturedProductList(transform(gmFeaturedProductDomainModel.getData()));
+            public void onNext(List<GMFeaturedProduct> gmFeaturedProducts) {
+                getView().onSuccessGetFeaturedProductList(transform(gmFeaturedProducts));
             }
         };
     }
 
-    private List<String> transform(List<GMFeaturedProductDomainModel.Datum> datas) {
+    private List<String> transform(List<GMFeaturedProduct> data) {
         List<String> productIds = new ArrayList<>();
-        for (GMFeaturedProductDomainModel.Datum data : datas) {
-            productIds.add(String.valueOf(data.getProductId()));
+        for (GMFeaturedProduct datum : data) {
+            productIds.add(String.valueOf(datum.getParentId()));
         }
         return productIds;
     }

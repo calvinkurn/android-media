@@ -22,7 +22,7 @@ class TopAdsWebViewFragment: BaseSessionWebViewFragment(){
         activity?.run {
             if (url != null && application is TopAdsWebViewRouter){
                 var tempUrl: String = url
-                if (GlobalConfig.isSellerApp() && url.startsWith(WEBVIEWLINK_START)){
+                if (url.startsWith(WEBVIEWLINK_START)){
                     val uri = Uri.parse(url)
                     tempUrl = uri.getQueryParameter(QUERY_KEY_URL) ?: ""
                     tempUrl = Uri.decode(tempUrl)

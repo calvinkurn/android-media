@@ -103,7 +103,6 @@ import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.BranchSdkUtils;
 import com.tokopedia.core.util.DeepLinkChecker;
 import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.util.SessionRefresh;
 import com.tokopedia.core.var.ProductItem;
@@ -121,6 +120,7 @@ import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
 import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.district_recommendation.view.shopsettings.DistrictRecommendationShopSettingsActivity;
 import com.tokopedia.events.data.entity.response.verifyresponse.VerifyCartResponse;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
@@ -138,7 +138,6 @@ import com.tokopedia.flight.TkpdFlight;
 import com.tokopedia.flight.booking.data.cloud.entity.CartEntity;
 import com.tokopedia.flight.booking.domain.FlightAddToCartUseCase;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
-import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationCameraPassData;
 import com.tokopedia.flight.common.domain.FlightRepository;
 import com.tokopedia.flight.contactus.model.FlightContactUsPassData;
 import com.tokopedia.flight.dashboard.domain.FlightDeleteDashboardCacheUseCase;
@@ -213,7 +212,7 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;
@@ -226,9 +225,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -239,9 +235,11 @@ import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
 import com.tokopedia.shop.ShopModuleRouter;
+import com.tokopedia.shop.common.router.ShopSettingRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.shop.settings.ShopSettingsInternalRouter;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -378,7 +376,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         DealsModuleRouter,
         OmsModuleRouter,
         ProductEditModuleRouter,
-        TopAdsWebViewRouter {
+        TopAdsWebViewRouter,
+        ShopSettingRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -501,7 +500,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getIntentCreateShop(Context context) {
-        return ShopOpenRouter.getIntentCreateEditShop(context, true, false);
+        return ShopOpenRouter.getIntentCreateEditShop(context);
     }
 
     @Override
@@ -731,6 +730,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToEtalaseList(Context context) {
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
         context.startActivity(intent);
     }
 
@@ -1860,7 +1865,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToEditShopNote(Context context) {
-        Intent intent = new Intent(context, ManageShopNotesActivity.class);
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
         context.startActivity(intent);
     }
 
@@ -2327,8 +2332,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToEditShop(Context context) {
-        Intent intent = new Intent(context, ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         UnifyTracking.eventManageShopInfo();
 
         context.startActivity(intent);
@@ -2358,6 +2362,31 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
+    }
+
+    @Override
+    public @NonNull Intent getManageShopEtalaseIntent(@NonNull Context context) {
+        return ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
+    }
+
+    @Override
+    public @NonNull Intent getManageShopNotesIntent(@NonNull Context context) {
+        return ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
+    }
+
+    @Override
+    public @NonNull Intent getManageShopBasicDataIntent(@NonNull Context context) {
+        return ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
+    }
+
+    @Override
+    public @NonNull Intent getManageShopLocationIntent(@NonNull Context context) {
+        return ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
+    }
+
+    @Override
+    public @NonNull Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
+        return DistrictRecommendationShopSettingsActivity.createInstance(activity);
     }
 
 
