@@ -188,7 +188,7 @@
             android:layout_height="19dp"
             android:layout_marginLeft="8dp"
             android:layout_centerVertical="true"
-            android:background="@drawable/ic_wishlist"
+            android:background="@drawable/ic_icon_wishlist_count_pdp"
             />
 
     </RelativeLayout>

@@ -36,10 +36,12 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.entity.variant.Campaign;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
+import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
 import com.tokopedia.core.product.facade.NetworkParam;
 import com.tokopedia.core.product.interactor.CacheInteractor;
 import com.tokopedia.core.product.interactor.CacheInteractorImpl;
@@ -78,17 +80,22 @@ import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
+import com.tokopedia.tkpdpdp.listener.WishlistViewCountListener;
+import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
+import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal;
 import com.tokopedia.topads.sourcetagging.domain.interactor.TopAdsAddSourceTaggingUseCase;
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository;
+import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -106,6 +113,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import retrofit2.Response;
+import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -135,6 +144,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
     private final WishListActionListener wishListActionListener;
+    private final WishlistViewCountListener wishlistViewCountListener;
+
+    private GetWishlistCountUseCase getWishlistCountUseCase;
 
 
     private ProductDetailView viewListener;
@@ -148,13 +160,52 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
     private GetRateEstimationUseCase getRateEstimationUseCase;
 
-    public ProductDetailPresenterImpl(ProductDetailView viewListener,
-                                      WishListActionListener wishListActionListener) {
+    public ProductDetailPresenterImpl(
+            GetWishlistCountUseCase getWishlistCountUseCase,
+            ProductDetailView viewListener,
+            WishListActionListener wishListActionListener,
+            WishlistViewCountListener wishlistViewCountListener) {
         this.viewListener = viewListener;
+        this.wishlistViewCountListener = wishlistViewCountListener;
         this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = new RetrofitInteractorImpl();
         this.cacheInteractor = new CacheInteractorImpl();
+        this.getWishlistCountUseCase = getWishlistCountUseCase;
         this.df = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+
+    }
+
+    private void checkWishlistCount(int productId) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putInt(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
+//        getWishlistCountUseCase.createObservable(requestParams)
+//                .subscribe();
+
+        getWishlistCountUseCase.execute(requestParams, new Subscriber<Response<WishlistCountResponse>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("FikryDev : (error)", e.getMessage());
+
+            }
+
+            @Override
+            public void onNext(Response<WishlistCountResponse> wishlistCountResponseResponse) {
+                Log.d("FikryDev, count :", String.valueOf(wishlistCountResponseResponse.message()));
+                String wishlistCountText = "0";
+
+                if(wishlistCountResponseResponse.body().getData() != null){
+                    int wishlistCount = wishlistCountResponseResponse.body().getData().getCount();
+                    wishlistCountText = String.valueOf(wishlistCount);
+                }
+
+                wishlistViewCountListener.onWishlistCountLoaded(wishlistCountText);
+            }
+        });
     }
 
     @Override
@@ -489,6 +540,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.onProductDetailLoaded(productDetailData);
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
+
+                            checkWishlistCount(productDetailData.getInfo().getProductId());
+
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
                             setVideoProduct(context, productDetailData);
@@ -995,6 +1049,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                     public void onSuccess(@NonNull ProductDetailData data) {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
                         viewListener.onProductDetailLoaded(data);
+
+                        checkWishlistCount(data.getInfo().getProductId());
+
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();
                         requestOtherProducts(context, NetworkParam.paramOtherProducts(data));

@@ -26,6 +26,7 @@ import com.tokopedia.core.network.di.qualifier.MerlinQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoWishlistCountQualifier;
 import com.tokopedia.core.network.di.qualifier.ResolutionQualifier;
 import com.tokopedia.core.network.di.qualifier.TomeQualifier;
 import com.tokopedia.core.network.di.qualifier.TopAdsQualifier;
@@ -79,6 +80,9 @@ public interface AppComponent {
 
     @MojitoGetWishlistQualifier
     Retrofit mojitoGetWishlistRetrofit();
+
+    @MojitoWishlistCountQualifier
+    Retrofit mojitoWishlistCount();
 
     @MojitoWishlistActionQualifier
     Retrofit mojitoWishlistActionRetrofit();

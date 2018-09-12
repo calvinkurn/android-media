@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.di.module;
+package com.tokopedia.tkpdpdp.presenter.di;
 
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.apiservices.hades.apis.HadesApi;
@@ -23,42 +23,9 @@ import retrofit2.Retrofit;
 
 @Module
 public class ApiModule {
-
-    @Provides
-    BrowseApi provideSearchApi(@AceQualifier Retrofit retrofit) {
-        return retrofit.create(BrowseApi.class);
-    }
-
-    @Provides
-    HotListApi provideHotlistApi(@WsV4Qualifier Retrofit retrofit) {
-        return retrofit.create(HotListApi.class);
-    }
-
-    @Provides
-    MojitoApi provideMojitoApi(@MojitoQualifier Retrofit retrofit) {
-        return retrofit.create(MojitoApi.class);
-    }
-
-    @MojitoGetWishlistQualifier
-    @Provides
-    MojitoApi mojitoGetWishlist(@MojitoGetWishlistQualifier Retrofit retrofit){
-        return retrofit.create(MojitoApi.class);
-    }
-
     @MojitoWishlistCountQualifier
     @Provides
     MojitoApi mojitoGetWishlistCount(@MojitoWishlistCountQualifier Retrofit retrofit){
         return retrofit.create(MojitoApi.class);
-    }
-
-    @MojitoWishlistActionQualifier
-    @Provides
-    MojitoAuthApi mojitoWishlistAction(@MojitoWishlistActionQualifier Retrofit retrofit){
-        return retrofit.create(MojitoAuthApi.class);
-    }
-
-    @Provides
-    HadesApi provideHadesApi(@HadesQualifier Retrofit retrofit) {
-        return retrofit.create(HadesApi.class);
     }
 }
