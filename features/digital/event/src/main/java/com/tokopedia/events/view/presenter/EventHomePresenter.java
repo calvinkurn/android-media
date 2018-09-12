@@ -19,6 +19,7 @@ import com.tokopedia.events.domain.GetUserLikesUseCase;
 import com.tokopedia.events.domain.model.EventsCategoryDomain;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
+import com.tokopedia.events.domain.scanTicketUsecase.CheckScanOptionUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
 import com.tokopedia.events.view.activity.EventFavouriteActivity;
 import com.tokopedia.events.view.activity.EventSearchActivity;
@@ -31,6 +32,7 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +61,9 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
     private GetProductRatingUseCase getProductRatingUseCase;
+    private CheckScanOptionUseCase checkScanOptionUseCase;
     private CategoryViewModel carousel;
+    private UserSession userSession;
     private List<CategoryViewModel> categoryViewModels;
     private List<CategoryItemsViewModel> likedEvents;
     private TouchViewPager mTouchViewPager;
@@ -74,11 +78,13 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                               PostUpdateEventLikesUseCase eventLikesUseCase,
                               GetUserLikesUseCase likesUseCase,
-                              GetProductRatingUseCase ratingUseCase) {
+                              GetProductRatingUseCase ratingUseCase, CheckScanOptionUseCase checkScanOptionUseCase, UserSession userSession) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
         this.getProductRatingUseCase = ratingUseCase;
+        this.checkScanOptionUseCase = checkScanOptionUseCase;
+        this.userSession = userSession;
         adapterCallbacks = new ArrayList<>();
     }
 
@@ -142,6 +148,10 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
+        RequestParams params = RequestParams.create();
+        params.putString("user_id", userSession.getUserId());
+        params.putString("email", userSession.getEmail());
+        checkScanOptionUseCase.setRequestParams(params);
         if (id == R.id.action_menu_search) {
             ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
                     .getTopEvents();
@@ -154,7 +164,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
         } else if (id == R.id.action_scan_qr_code) {
             Intent intent = new Intent(getView().getActivity(), ScanQRCodeActivity.class);
             getView().navigateToActivityRequest(intent, 100);
-
             return true;
         } else if (id == R.id.action_promo) {
             startGeneralWebView(PROMOURL);
