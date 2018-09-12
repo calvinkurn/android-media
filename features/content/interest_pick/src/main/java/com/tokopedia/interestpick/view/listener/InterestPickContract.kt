@@ -28,11 +28,15 @@ interface InterestPickContract {
         fun onErrorUpdateInterest(message: String)
 
         fun onItemSelected(isSelected: Boolean)
+
+        fun onBackPressed()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun fetchData()
 
         fun updateInterest(interestIds: Array<Int>)
+
+        fun onBackPressed()
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.interestpick.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -106,6 +107,10 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
 
     override fun onErrorUpdateInterest(message: String) {
         NetworkErrorHelper.showRedSnackbar(view, message)
+    }
+
+    override fun onBackPressed() {
+        presenter.onBackPressed()
     }
 
     override fun onItemSelected(isSelected: Boolean) {
