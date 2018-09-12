@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.abstraction.common.network.exception.ResponseDataNullException;
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PaymentTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -71,10 +73,14 @@ import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
 import com.tokopedia.tkpdpdp.ProductInfoActivity;
 import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
+import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -140,6 +146,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     DateFormat df;
 
     private TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase;
+    private GetRateEstimationUseCase getRateEstimationUseCase;
 
     public ProductDetailPresenterImpl(ProductDetailView viewListener,
                                       WishListActionListener wishListActionListener) {
@@ -156,8 +163,32 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
+    public void initGetRateEstimationUseCase(){
+        getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
+    }
+
+    @Override
     public void processDataPass(@NonNull ProductPass productPass) {
         if (productPass.haveBasicData()) viewListener.renderTempProductData(productPass);
+    }
+
+    @Override
+    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain){
+        getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_pdp_estimasi_ongkir), productWeight, shopDomain),
+                new Subscriber<RatesEstimationModel>() {
+                    @Override
+                    public void onCompleted() { }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+                        throwable.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(RatesEstimationModel ratesEstimationModel) {
+                        viewListener.onSuccesLoadRateEstimaion(ratesEstimationModel.getRates());
+                    }
+                });
     }
 
     @Override

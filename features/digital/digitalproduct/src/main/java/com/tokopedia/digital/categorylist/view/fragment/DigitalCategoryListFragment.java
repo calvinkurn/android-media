@@ -415,7 +415,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
-                )) && tokoCashBalanceData != null && tokoCashBalanceData.getLink() != TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
             WalletRouterUtil.navigateWallet(
                     getActivity().getApplication(),
                     this,

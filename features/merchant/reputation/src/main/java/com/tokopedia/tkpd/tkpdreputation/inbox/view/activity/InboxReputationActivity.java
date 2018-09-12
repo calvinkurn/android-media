@@ -7,22 +7,20 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.View;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.tkpd.tkpdreputation.R;
+import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.SectionsPagerAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.fragment.InboxReputationFragment;
 
@@ -33,20 +31,19 @@ import java.util.List;
  * @author by nisie on 8/10/17.
  */
 
-public class InboxReputationActivity extends DrawerPresenterActivity implements HasComponent {
+public class InboxReputationActivity extends BaseTemporaryDrawerActivity implements HasComponent {
 
     public static final String GO_TO_REPUTATION_HISTORY = "GO_TO_REPUTATION_HISTORY";
 
     public static final int TAB_WAITING_REVIEW = 1;
     public static final int TAB_MY_REVIEW = 2;
     public static final int TAB_BUYER_REVIEW = 3;
-
-    private static final int OFFSCREEN_PAGE_LIMIT = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
-    Fragment sellerReputationFragment;
+    private static final int OFFSCREEN_PAGE_LIMIT = 3;
+    private Fragment sellerReputationFragment;
 
-    ViewPager viewPager;
-    TabLayout indicator;
+    private ViewPager viewPager;
+    private TabLayout indicator;
 
     private boolean goToReputationHistory;
 
@@ -70,23 +67,31 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
+    protected void setupURIPass(Uri data) { }
 
+    @Override
+    protected void setupBundlePass(Bundle extras) { }
+
+    @Override
+    protected void initialPresenter() { }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
     }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp())
+            return super.getContentId();
+        return R.layout.layout_tab_secondary;
     }
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_inbox_reputation;
+        if (GlobalConfig.isSellerApp())
+            return R.layout.activity_inbox_reputation;
+        return 0;
     }
 
     @Override
@@ -149,19 +154,13 @@ public class InboxReputationActivity extends DrawerPresenterActivity implements 
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
+    protected void setViewListener() { }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
-
-    }
+    protected void setActionVar() { }
 
     @Override
     protected int setDrawerPosition() {

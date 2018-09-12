@@ -75,6 +75,8 @@ public class ChatRoomContract {
 
         void startActivity(Intent instance);
 
+        void startActivityForResult(Intent intent, int requestCode);
+
         Context getActivity();
 
         void onSuccessSendReply(ReplyActionData data, String reply);
