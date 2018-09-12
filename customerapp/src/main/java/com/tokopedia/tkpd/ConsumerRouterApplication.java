@@ -212,7 +212,7 @@ import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.TkpdSeller;
 import com.tokopedia.seller.common.cashback.DataCashbackModel;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.seller.common.featuredproduct.GMFeaturedProductDomainModel;
 import com.tokopedia.seller.common.logout.TkpdSellerLogout;
 import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity;

@@ -35,7 +35,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.BaseRetryDataBinder;
 import com.tokopedia.product.manage.item.common.util.ItemType;
-import com.tokopedia.seller.common.datepicker.view.listener.DatePickerResultListener;
+import com.tokopedia.datepicker.range.view.listener.DatePickerResultListener;
 import com.tokopedia.seller.common.utils.DefaultErrorSubscriber;
 import com.tokopedia.seller.common.utils.NetworkStatus;
 import com.tokopedia.seller.reputation.di.DaggerSellerReputationComponent;
