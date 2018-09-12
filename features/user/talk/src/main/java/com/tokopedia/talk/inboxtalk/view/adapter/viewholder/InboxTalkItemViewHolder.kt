@@ -98,13 +98,17 @@ class InboxTalkItemViewHolder(val v: View,
 
         reportedMessage.text = element.talkThread.headThread.comment
 
-        if (element.talkThread.headThread.isOwner) {
+        if (element.talkThread.headThread.menu.allowUnmasked) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
             rawMessage.text = element.talkThread.headThread.rawMessage
+            yesReportButton.visibility = View.VISIBLE
+            noReportButton.visibility = View.VISIBLE
         } else {
             rawMessage.visibility = View.GONE
             separatorReport.visibility = View.GONE
+            yesReportButton.visibility = View.GONE
+            noReportButton.visibility = View.GONE
         }
 
         yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick(

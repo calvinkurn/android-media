@@ -70,31 +70,39 @@ class CommentTalkViewHolder(val v: View,
 
     private fun setupNormalTalk(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.GONE
-
         talkContent.visibility = View.VISIBLE
+        listProduct.visibility = View.VISIBLE
         talkContent.text = element.comment
     }
 
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
-
+        listProduct.visibility = View.GONE
         reportedMessage.text = element.comment
 
         if (element.isOwner) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
             rawMessage.text = element.rawMessage
+            yesReportButton.visibility = View.VISIBLE
+            noReportButton.visibility = View.VISIBLE
         } else {
             rawMessage.visibility = View.GONE
             separatorReport.visibility = View.GONE
+            yesReportButton.visibility = View.GONE
+            noReportButton.visibility = View.GONE
         }
 
-        yesReportButton.setOnClickListener { listener.onYesReportTalkCommentClick(
-                element.talkId, element.shopId, element.productId
-        ) }
-        noReportButton.setOnClickListener { listener.onNoShowTalkCommentClick(element.talkId,
-                element.commentId) }
+        yesReportButton.setOnClickListener {
+            listener.onYesReportTalkCommentClick(
+                    element.talkId, element.shopId, element.productId
+            )
+        }
+        noReportButton.setOnClickListener {
+            listener.onNoShowTalkCommentClick(element.talkId,
+                    element.commentId)
+        }
     }
 
     private fun setProfileHeader(element: ProductTalkItemViewModel) {
@@ -124,11 +132,13 @@ class CommentTalkViewHolder(val v: View,
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onCommentMenuButtonClicked(menu,
-                element.shopId,
-                element.talkId,
-                element.commentId,
-                element.productId) }
+        menuButton.setOnClickListener {
+            listener.onCommentMenuButtonClicked(menu,
+                    element.shopId,
+                    element.talkId,
+                    element.commentId,
+                    element.productId)
+        }
     }
 
     fun onViewRecycled() {

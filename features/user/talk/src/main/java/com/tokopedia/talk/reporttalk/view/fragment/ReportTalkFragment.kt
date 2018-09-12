@@ -109,7 +109,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.adapter = reportTalkAdapter
 
         sendButton.setOnClickListener {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
 
         }
 
@@ -167,16 +167,20 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
 
     override fun showLoadingFull() {
-
+        progressBar.visibility = View.VISIBLE
+        mainView.visibility = View.GONE
+        sendButton.visibility = View.GONE
     }
 
     override fun hideLoadingFull() {
-
+        progressBar.visibility = View.GONE
+        mainView.visibility = View.VISIBLE
+        sendButton.visibility = View.VISIBLE
     }
 
     override fun onErrorReportTalk(errorMessage: String) {
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
         }
     }
 

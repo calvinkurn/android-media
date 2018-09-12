@@ -6,18 +6,22 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.reporttalk.domain.ReportTalkUseCase
 import com.tokopedia.talk.reporttalk.view.listener.ReportTalkContract
+import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
 import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * @author by nisie on 8/30/18.
  */
-class ReportTalkPresenter @Inject constructor(val reportTalkUseCase: ReportTalkUseCase)
+class ReportTalkPresenter @Inject constructor(private val reportTalkUseCase: ReportTalkUseCase)
     : BaseDaggerPresenter<ReportTalkContract.View>(),
         ReportTalkContract.Presenter {
 
-    override fun reportTalk(talkId: String, shopId: String, productId: String, reason: String) {
-
+    override fun reportTalk(talkId: String, shopId: String, productId: String, otherReason: String,
+                            selectedOption: TalkReportOptionViewModel) {
+        var reason = selectedOption.reportTitle
+        if (selectedOption.isChecked) {
+            if (selectedOption.position == 2) reason = otherReason
             view.showLoadingFull()
             reportTalkUseCase.execute(ReportTalkUseCase.getParam(
                     productId,
@@ -43,6 +47,7 @@ class ReportTalkPresenter @Inject constructor(val reportTalkUseCase: ReportTalkU
                     view.onSuccessReportTalk()
                 }
             })
+        }
 
     }
 

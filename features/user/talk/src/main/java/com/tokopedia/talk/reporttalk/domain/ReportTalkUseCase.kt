@@ -16,7 +16,7 @@ class ReportTalkUseCase @Inject constructor(val api: TalkApi,
                                             val mapper: BaseActionMapper) :
         UseCase<BaseActionTalkViewModel>() {
     override fun createObservable(requestParams: RequestParams): Observable<BaseActionTalkViewModel> {
-        return api.followUnfollowTalk(requestParams.parameters).map(mapper)
+        return api.reportTalk(requestParams.parameters).map(mapper)
     }
 
     companion object {
