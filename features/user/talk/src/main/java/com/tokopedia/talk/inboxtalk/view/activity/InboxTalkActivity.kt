@@ -5,17 +5,20 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.widget.TextView
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkPagerAdapter
 import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.activity_talk_inbox.*
@@ -33,8 +36,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
     @Inject
     lateinit var userSession: UserSession
 
-    lateinit var titles: Array<String>
-
+    private lateinit var titles: Array<String>
 
     companion object {
 
@@ -101,20 +103,68 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         viewPager.adapter = inboxTalkPagerAdapter
 
         tabLayout.setupWithViewPager(viewPager)
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        for (i: Int in 0 until tabLayout.tabCount) {
+            tabLayout.getTabAt(i)?.customView = getTabCustomView(titles[i])
+        }
+        tabLayout.getTabAt(0)?.run {
+            setTabSelected(this)
+        }
 
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabReselected(tab: TabLayout.Tab?) {
+
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                setTabUnSelected(tab)
+            }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
-
+                setTabSelected(tab)
             }
         })
     }
 
-    override fun onGetNotification(notification: Int, nav : String) {
+    private fun setTabUnSelected(tab: TabLayout.Tab) {
+        tab.customView?.run {
+            val view: View = this
+            val title: TextView = view.findViewById(R.id.title)
+            title.setTextColor(MethodChecker.getColor(this.context, R.color.black_38))
+        }
+    }
+
+    private fun setTabSelected(tab: TabLayout.Tab) {
+        tab.customView?.run {
+            val view: View = this
+            val title: TextView = view.findViewById(R.id.title)
+            title.setTextColor(MethodChecker.getColor(this.context, R.color.medium_green))
+        }
+    }
+
+    private fun getTabCustomView(titleText: String): View {
+        val view: View = LayoutInflater.from(this).inflate(R.layout.custom_tab_inbox_talk, null)
+
+        val title: TextView = view.findViewById(R.id.title)
+        val notification: TextView = view.findViewById(R.id.notification)
+
+        title.text = titleText
+        notification.text = "0"
+        return view
+    }
+
+    override fun onGetNotification(notifCount: Int, nav: String) {
         if (tabLayout.visibility == View.VISIBLE) {
-        //TODO SET NOTIFICATION
+            tabLayout.getTabAt(inboxTalkPagerAdapter.getFragmentPosition(nav))?.customView?.run {
+                val notification: TextView = this.findViewById(R.id.notification)
+
+                if (notifCount > 0) {
+                    notification.visibility = View.VISIBLE
+                    notification.text = notifCount.toString()
+                } else {
+                    notification.visibility = View.GONE
+                }
+            }
         }
     }
 }

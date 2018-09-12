@@ -141,7 +141,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.showEmpty()
     }
 
-    override fun setLoading() {
+    override fun setCanLoad() {
         adapter.setLoadModel()
     }
 
@@ -150,10 +150,12 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
+        adapter.hideLoading()
         adapter.addList(listThread)
     }
 
     override fun onLoadClicked() {
+        adapter.dismissLoadModel()
         presenter.getProductTalk(productId)
     }
 
@@ -267,7 +269,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         alertDialog.show()
     }
 
-    override fun onCommentMenuButtonClicked(menu: TalkState) {
+    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String) {
         //TODO STEVENFe
     }
 

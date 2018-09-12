@@ -20,7 +20,12 @@ class BaseActionMapper @Inject constructor() : Func1<Response<DataResponse<BaseA
                 (response.body().header != null && response.body().header.messages.isEmpty()) ||
                 (response.body().header != null && response.body().header.messages[0].isBlank())) {
             val pojo: BaseActionTalkPojo = response.body().data
-            return mapToViewModel(pojo)
+
+            if (pojo.is_success == 1) {
+                return mapToViewModel(pojo)
+            } else {
+                throw MessageErrorException("")
+            }
         } else {
             throw MessageErrorException(response.body().header.messages[0])
         }

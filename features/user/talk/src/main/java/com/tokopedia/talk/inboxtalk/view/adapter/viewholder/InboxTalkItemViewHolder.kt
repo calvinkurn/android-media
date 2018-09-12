@@ -33,7 +33,7 @@ class InboxTalkItemViewHolder(val v: View,
 
     interface TalkItemListener {
         fun onReplyTalkButtonClick(allowReply: Boolean)
-        fun onMenuButtonClicked(menu: TalkState)
+        fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String)
         fun onYesReportTalkItemClick()
         fun onNoShowTalkItemClick(adapterPosition: Int)
     }
@@ -69,7 +69,7 @@ class InboxTalkItemViewHolder(val v: View,
 
             setReadNotification(element)
             setProductHeader(element)
-            setupMenuButton(element.talkThread.headThread.menu)
+            setupMenuButton(element)
             setProfileHeader(element)
             setCommentList(element)
 
@@ -148,14 +148,18 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setupMenuButton(menu: TalkState) {
+    private fun setupMenuButton(element: InboxTalkItemViewModel) {
+        val menu : TalkState = element.talkThread.headThread.menu
+
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
         } else {
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu) }
+        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
+                element.talkThread.headThread.shopId,
+                element.talkThread.headThread.talkId) }
     }
 
 }

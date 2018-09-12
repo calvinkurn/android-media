@@ -28,7 +28,6 @@ import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
@@ -57,6 +56,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private lateinit var viewModel: InboxTalkViewModel
     private lateinit var filter: String
     private lateinit var bottomMenu: Menus
+    private lateinit var filterMenuList: ArrayList<Menus.ItemMenus>
 
     @Inject
     lateinit var presenter: InboxTalkPresenter
@@ -118,6 +118,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
         filter = "all"
         presenter.getInboxTalk(filter, nav)
+
+        filterMenuList = ArrayList()
+        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk)))
+        filterMenuList[0].iconEnd = R.drawable.ic_check
+        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read)))
+
     }
 
     private fun onRefreshData() {
@@ -129,10 +135,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private fun showFilterDialog(): View.OnClickListener {
         return View.OnClickListener { _ ->
             context?.run {
-                val menuItem = arrayOf(resources.getString(R.string.filter_all_talk),
-                        resources.getString(R.string.filter_not_read))
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-                bottomMenu.setItemMenuList(menuItem)
+                bottomMenu.itemMenuList = filterMenuList
                 bottomMenu.setActionText(getString(R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { _, pos ->
@@ -149,10 +153,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             POS_FILTER_UNREAD -> filter = FILTER_UNREAD
         }
 
-        for (itemMenu in filterMenu.itemMenuList) {
+        for (itemMenu in filterMenuList) {
             itemMenu.iconEnd = 0
         }
-        filterMenu.getItemMenu(pos).iconEnd = R.drawable.ic_check
+        filterMenuList[pos].iconEnd = R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, nav)
         filterMenu.dismiss()
     }
@@ -205,7 +209,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         alertDialog.show()
     }
 
-    private fun showDeleteTalkDialog() {
+    private fun showDeleteTalkDialog(shopId: String, talkId: String) {
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
@@ -218,14 +222,14 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.deleteTalk()
+            presenter.deleteTalk(shopId, talkId)
             alertDialog.dismiss()
         }
 
         alertDialog.show()
     }
 
-    private fun showDeleteCommentTalkDialog() {
+    private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -239,7 +243,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog.dismiss()
         }
         alertDialog.setOnOkClickListener {
-            presenter.deleteCommentTalk()
+            presenter.deleteCommentTalk(shopId, talkId, commentId)
             alertDialog.dismiss()
         }
 
@@ -294,10 +298,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
             onSuccessReportTalk()
-        }else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK){
+        } else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK) {
             //TODO UPDATE NOTIFICATION READ
             data?.run {
-//                val talkThread : ProductTalkItemViewModel = data.getParcelableExtra<ProductTalkItemViewModel>()
+                //                val talkThread : ProductTalkItemViewModel = data.getParcelableExtra<ProductTalkItemViewModel>()
             }
 
         }
@@ -314,7 +318,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         else showErrorReplyTalk()
     }
 
-    override fun onMenuButtonClicked(menu: TalkState) {
+    override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
@@ -331,15 +335,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onMenuItemClicked(itemMenus, bottomMenu)
+                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId)
             }
             bottomMenu.show()
         }
     }
 
-    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus) {
+    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog()
+            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(shopId, talkId)
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
             getString(R.string.menu_report_talk) -> goToReportTalk()
@@ -347,7 +351,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         bottomMenu.dismiss()
     }
 
-    override fun onCommentMenuButtonClicked(menu: TalkState) {
+    override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowReport) {
@@ -364,16 +368,17 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onCommentMenuItemClicked(itemMenus, bottomMenu)
+                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId)
             }
             bottomMenu.show()
         }
     }
 
-    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus) {
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> goToReportTalk()
-            getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog()
+            getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
+                    talkId, commentId)
         }
         bottomMenu.dismiss()
     }
@@ -420,13 +425,18 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     }
 
-    override fun onSuccessDeleteTalk() {
-        //TODO DELETE TALK
+    override fun onSuccessDeleteTalk(talkId: String) {
+        adapter.deleteTalkByTalkId(talkId)
     }
 
-    override fun onSuccessDeleteCommentTalk() {
-        //TODO DELETE COMMENT TALK
+    override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
+        adapter.deleteComment(talkId, commentId)
     }
+
+    override fun onSuccessUnfollowTalk() {
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()

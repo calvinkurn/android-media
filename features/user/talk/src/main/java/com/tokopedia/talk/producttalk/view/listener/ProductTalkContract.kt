@@ -19,7 +19,7 @@ interface ProductTalkContract {
         fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>)
         fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>)
         fun onErrorGetTalks(errorMessage: String?)
-        fun setLoading()
+        fun setCanLoad()
         fun showRefresh()
         fun hideRefresh()
     }

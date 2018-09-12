@@ -25,16 +25,17 @@ interface InboxTalkContract {
         fun showLoadingFilter()
         fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
         fun hideLoadingFilter()
-        fun onSuccessDeleteTalk()
-        fun onSuccessDeleteCommentTalk()
+        fun onSuccessDeleteTalk(talkId: String)
+        fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
+        fun onSuccessUnfollowTalk()
     }
 
     interface Presenter : CustomerPresenter<View> {
         fun refreshTalk(filter: String, nav: String)
         fun getInboxTalk(filter: String, nav: String)
         fun getInboxTalkWithFilter(filter: String, nav: String)
-        fun deleteTalk()
-        fun deleteCommentTalk()
+        fun deleteTalk(shopId: String, talkId: String)
+        fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
         fun unfollowTalk()
         fun followTalk()
     }

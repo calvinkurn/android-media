@@ -8,8 +8,8 @@ import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.talk_item.view.*
 
@@ -22,7 +22,7 @@ class CommentTalkViewHolder(val v: View,
         AbstractViewHolder<ProductTalkItemViewModel>(v) {
 
     interface TalkCommentItemListener {
-        fun onCommentMenuButtonClicked(menu: TalkState)
+        fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String)
     }
 
     private val profileAvatar: ImageView = itemView.prof_pict
@@ -57,20 +57,25 @@ class CommentTalkViewHolder(val v: View,
             talkContent.text = element.comment
             datetime.text = element.timestamp
 
-            setupMenuButton(element.menu)
+            setupMenuButton(element)
 
         }
 
     }
 
-    private fun setupMenuButton(menu: TalkState) {
+    private fun setupMenuButton(element: ProductTalkItemViewModel) {
+        val menu: TalkState = element.menu
+
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
         } else {
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onCommentMenuButtonClicked(menu) }
+        menuButton.setOnClickListener { listener.onCommentMenuButtonClicked(menu,
+                element.shopId,
+                element.talkId,
+                element.commentId) }
     }
 
 }

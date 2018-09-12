@@ -181,12 +181,12 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         }
     }
 
-    override fun deleteTalk() {
+    override fun deleteTalk(shopId: String, talkId: String) {
         if (!isRequesting) {
 
             deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
-                    "",
-                    ""
+                    shopId,
+                    talkId
             ), object : Subscriber<BaseActionTalkViewModel>() {
                 override fun onCompleted() {
 
@@ -199,14 +199,40 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
                     if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteTalk()
+                        view.onSuccessDeleteTalk(talkId)
                     }
                 }
             })
         }
     }
 
-    override fun deleteCommentTalk() {
+    override fun deleteCommentTalk(shopId: String, talkId: String, commentId: String) {
+        if (!isRequesting) {
+
+            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
+                    shopId,
+                    talkId,
+                    commentId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideRefreshLoad()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    if (talkViewModel.isSuccess) {
+                        view.onSuccessDeleteCommentTalk(talkId, commentId)
+                    }
+                }
+            })
+        }
+    }
+
+    override fun unfollowTalk() {
         if (!isRequesting) {
 
             deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
@@ -225,11 +251,15 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
                     if (talkViewModel.isSuccess) {
-                        view.onSuccessDeleteCommentTalk()
+                        view.onSuccessUnfollowTalk()
                     }
                 }
             })
         }
+    }
+
+    override fun followTalk() {
+
     }
 
     override fun detachView() {

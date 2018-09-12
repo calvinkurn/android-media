@@ -44,4 +44,13 @@ class InboxTalkPagerAdapter(val fragmentManager: FragmentManager,
     fun getRegisteredFragment(position: Int): Fragment? {
         return registeredFragments.get(position)
     }
+
+    fun getFragmentPosition(nav: String): Int {
+        return when (nav) {
+            InboxTalkActivity.INBOX_ALL -> 0
+            InboxTalkActivity.MY_PRODUCT -> 1
+            InboxTalkActivity.FOLLOWING -> 2
+            else -> 0
+        }
+    }
 }
