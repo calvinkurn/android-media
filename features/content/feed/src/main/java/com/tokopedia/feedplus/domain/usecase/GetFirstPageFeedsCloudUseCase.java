@@ -45,7 +45,9 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
     private Observable<GraphqlResponse> getWhitelist() {
         getWhitelistUseCase.clearRequest();
-        getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
+        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_CONTENT_USER))
+        );
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
     }
 
