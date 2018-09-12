@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.core.util.DateFormatUtils
 import com.tokopedia.gm.subscribe.R
-import com.tokopedia.gm.subscribe.membership.data.model.MembershipData
+import com.tokopedia.gm.subscribe.membership.data.model.GetMembershipData
 import com.tokopedia.gm.subscribe.membership.di.GmSubscribeMembershipComponent
 import com.tokopedia.gm.subscribe.membership.view.presenter.GmMembershipPresenterImpl
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subscribe.*
@@ -97,7 +97,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         layoutAutoExtend.visibility = if(isAutoExtend) View.VISIBLE else View.GONE
     }
 
-    override fun onSuccessGetGmSubscribeMembershipData(membershipData: MembershipData) {
+    override fun onSuccessGetGmSubscribeMembershipData(membershipData: GetMembershipData) {
         swAutoExtend.isChecked = (membershipData.auto_extend == 1)
 
         subscriptionTypeSelected = membershipData.subscription.subscription_type
@@ -105,7 +105,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         val expiredDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.expired_date)
         val autoWithdrawalDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.auto_withdrawal_date)
         tvExpiredDate.text = getString(R.string.gmsubscribe_expired_date, expiredDate)
-        labelExtendPacket.setContent(membershipData.subscription.name)
+        labelExtendPacket.setContent(membershipData.subscription.product_time_range_fmt + " " + membershipData.subscription.price_fmt)
 
         tvAutoExtendDate.text = MethodChecker.fromHtml(getString(R.string.gmsubscribe_membership_auto_extend_date, expiredDate))
         val withdrawalDate = "$autoWithdrawalDate - $expiredDate"

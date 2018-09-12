@@ -1,7 +1,7 @@
 package com.tokopedia.gm.subscribe.membership.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.gm.subscribe.membership.data.model.MembershipData
+import com.tokopedia.gm.subscribe.membership.data.model.GetMembershipData
 import com.tokopedia.gm.subscribe.membership.domain.GetGmSubscribeMembershipUsecase
 import com.tokopedia.gm.subscribe.membership.domain.SetGmSubscribeMembershipUsecase
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipView
@@ -20,12 +20,12 @@ constructor(private val getGmSubscribeMembershipUsecase: GetGmSubscribeMembershi
 
     override fun getMembershipData() {
         getGmSubscribeMembershipUsecase.execute(RequestParams.EMPTY,
-                object : Subscriber<MembershipData>() {
+                object : Subscriber<GetMembershipData>() {
                     override fun onCompleted() {}
                     override fun onError(throwable: Throwable) {
                         view.onErrorGetGmSubscribeMembershipData(throwable)
                     }
-                    override fun onNext(membershipData: MembershipData) {
+                    override fun onNext(membershipData: GetMembershipData) {
                         view.onSuccessGetGmSubscribeMembershipData(membershipData)
                     }
                 })

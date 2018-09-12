@@ -4,5 +4,8 @@ data class Subscription(
         var subscription_type: Int = 0,
         var name: String = "",
         var notes: String = "",
-        var days_limit: Int = 0
+        var days_limit: Int = 0,
+        var price:  Int = 0,
+        var price_fmt: String = "",
+        var product_time_range_fmt: String = ""
 )

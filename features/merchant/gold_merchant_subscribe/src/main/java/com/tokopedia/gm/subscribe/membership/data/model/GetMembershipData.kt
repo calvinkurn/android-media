@@ -1,6 +1,6 @@
 package com.tokopedia.gm.subscribe.membership.data.model
 
-data class MembershipData(
+data class GetMembershipData(
         var shop_id: Int = 0,
         var expired_date: String = "",
         var auto_withdrawal_date: String = "",
