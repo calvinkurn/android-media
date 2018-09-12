@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chatlist.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -104,6 +105,16 @@ public class InboxChatActivity extends BaseTemporaryDrawerActivity
         super.onCreate(savedInstanceState);
         NotificationModHandler.clearCacheIfFromNotification(this, getIntent());
         MainApplication.setCurrentActivity(this);
+    }
+
+    @Override
+    public Resources.Theme getTheme() {
+        Resources.Theme theme = super.getTheme();
+        if(GlobalConfig.isCustomerApp()) {
+            theme.applyStyle(R.style.Theme_White, true);
+        }
+
+        return theme;
     }
 
     @Override

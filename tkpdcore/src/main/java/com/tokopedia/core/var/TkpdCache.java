@@ -232,6 +232,11 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     }
 
     public class RemoteConfigKey {
+        public static final String MAINAPP_WALLET_APPLINK = "mainapp_wallet_applink";
+        public static final String MAINAPP_WALLET_APPLINK_REGISTER = "mainapp_wallet_applink_register";
+        public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
+        public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
+
         public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";

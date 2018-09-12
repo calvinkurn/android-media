@@ -31,8 +31,12 @@ public class NotificationsModel {
     @Expose
     private String totalCart;
 
+    @SerializedName("inbox")
+    @Expose
     private InboxModel inbox;
 
+    @SerializedName("chat")
+    @Expose
     private ChatModel chat;
 
     public NotificationResolutionModel getResolution() {

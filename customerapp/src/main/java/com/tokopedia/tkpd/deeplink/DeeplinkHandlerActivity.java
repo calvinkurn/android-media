@@ -105,6 +105,7 @@ import io.branch.referral.BranchError;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
+        ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
@@ -138,7 +139,6 @@ import io.branch.referral.BranchError;
         AccountHomeApplinkModule.class,
         InstantLoanAppLinkModule.class,
         RecentViewApplinkModule.class,
-        ProductAddDeeplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         SettingBankApplinkModule.class,
         ChallengesDeepLinkModule.class
@@ -153,6 +153,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         if(applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
@@ -186,7 +187,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
                 new RecentViewApplinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
                 new ChallengesDeepLinkModuleLoader()
