@@ -21,7 +21,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
     private val registeredFragments = SparseArrayCompat<Fragment>()
 
     override fun getItem(position: Int): Fragment {
-        if (shopPageActivity.shopInfo?.isShowFeed ?: false) {
+        if (shopPageActivity.isShowFeed) {
             return when (position) {
                 ShopPageActivity.TAB_POSITION_HOME -> {
                     val f = ShopProductListLimitedFragment.createInstance(shopAttribution)

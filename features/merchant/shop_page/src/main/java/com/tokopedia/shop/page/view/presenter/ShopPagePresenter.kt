@@ -1,9 +1,14 @@
 package com.tokopedia.shop.page.view.presenter
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
+import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase.WHITELIST_SHOP
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase
@@ -34,6 +39,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
             private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
+            private val getWhitelistUseCase: GetWhitelistUseCase,
             private val userSession: UserSession) : BaseDaggerPresenter<ShopPageView>() {
 
     fun isMyShop(shopId: String) = (userSession.shopId == shopId)
@@ -86,6 +92,31 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         })
     }
 
+    fun getFeedWhitelist(shopId: String) {
+        getWhitelistUseCase.execute(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP),
+                object : Subscriber<GraphqlResponse>() {
+                    override fun onCompleted() {
+                    }
+
+                    override fun onError(e: Throwable?) {
+                    }
+
+                    override fun onNext(graphqlResponse: GraphqlResponse?) {
+                        graphqlResponse?.let {
+                            val whitelistQuery: WhitelistQuery = it.getData(WhitelistQuery::class.java)
+                            whitelistQuery.whitelist
+                        }?.let {
+                            if (!TextUtils.isEmpty(it.error)) {
+                                return
+                            }
+                            view.onSuccessGetFeedWhitelist(it.isWhitelist)
+                        }
+                    }
+                }
+        )
+    }
+
     fun clearCache() {
         deleteShopInfoUseCase.executeSync()
         deleteShopProductUseCase.executeSync()
@@ -106,5 +137,6 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopNoteUseCase.unsubscribe()
         deleteFeatureProductListCacheUseCase.unsubscribe()
         deleteReputationSpeedDailyUseCase.unsubscribe()
+        getWhitelistUseCase.unsubscribe()
     }
 }

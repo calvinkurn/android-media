@@ -54,6 +54,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
+    var isShowFeed: Boolean = false
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -171,7 +172,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                     shopPageTracking.eventClickTabShopPage(titles[tab.getPosition()], shopId,
                             presenter.isMyShop(shopId!!), ShopPageTracking.getShopType(info))
                 }
-                shopInfo?.isShowFeed.run {
+                isShowFeed.run {
                     val tabNameColor: Int = if (tab.position == TAB_POSITION_FEED)
                         R.color.tkpd_main_green else
                         R.color.font_black_disabled_38
@@ -315,8 +316,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                         info.shopId, presenter.isMyShop(info.shopId), ShopPageTracking.getShopType(info))
             }
 
-            shouldAddFeed(shopInfo.isShowFeed)
-
             val productListFragment: Fragment? = shopPageViewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
             if (productListFragment != null) {
                 (productListFragment as ShopProductListLimitedFragment).displayProduct(this)
@@ -326,12 +325,14 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             if (shopInfoFragment != null) {
                 (shopInfoFragment as ShopInfoFragment).updateShopInfo(this)
             }
+
+            presenter.getFeedWhitelist(info.shopId)
         }
         viewPager.currentItem = if (tabPosition == TAB_POSITION_INFO) shopPageViewPagerAdapter.titles.size else tabPosition
         swipeToRefresh.isRefreshing = false
     }
 
-    private fun shouldAddFeed(isShowFeed: Boolean) {
+    private fun addFeed() {
         if (isShowFeed) {
             titles = arrayOf(
                     getString(R.string.shop_info_title_tab_product),
@@ -388,6 +389,13 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             return
         }
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
+    }
+
+    override fun onSuccessGetFeedWhitelist(isWhitelist: Boolean) {
+        isShowFeed = isWhitelist
+        if (isShowFeed) {
+            addFeed()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -472,6 +480,6 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     fun getShopInfoPosition() : Int {
-        return if (shopInfo?.isShowFeed ?: false) TAB_POSITION_INFO else TAB_POSITION_INFO - 1
+        return if (isShowFeed) TAB_POSITION_INFO else TAB_POSITION_INFO - 1
     }
 }

@@ -21,9 +21,6 @@ public class ShopInfo {
     @SerializedName("is_open")
     @Expose
     private long isOpen;
-    @SerializedName("show_feed")
-    @Expose
-    private boolean showFeed;
     @SerializedName("owner")
     @Expose
     private ShopInfoOwner owner = new ShopInfoOwner();
@@ -76,14 +73,6 @@ public class ShopInfo {
 
     public void setIsOpen(long isOpen) {
         this.isOpen = isOpen;
-    }
-
-    public boolean isShowFeed() {
-        return showFeed;
-    }
-
-    public void setShowFeed(boolean showFeed) {
-        this.showFeed = showFeed;
     }
 
     public ShopInfoOwner getOwner() {
