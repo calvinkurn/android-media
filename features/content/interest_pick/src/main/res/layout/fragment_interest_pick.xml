@@ -30,7 +30,7 @@
                 android:textColor="@color/font_black_primary_70"
                 android:textSize="@dimen/sp_16"
                 android:textStyle="bold"
-                tools:text="Kamu Suka Apa? Aku suka kamu hehe xD " />
+                tools:text="Kamu Suka Apa? Aku suka kamu hehe xD Kalau kamu gimana? Yang bener dong" />
 
             <TextView
                 android:id="@+id/subtitleTextView"
@@ -38,7 +38,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_4"
                 android:fontFamily="sans-serif"
                 android:text="@string/interest_change"
                 android:textColor="@color/font_black_secondary_54"
