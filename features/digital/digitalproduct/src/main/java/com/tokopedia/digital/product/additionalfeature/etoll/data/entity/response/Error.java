@@ -20,7 +20,7 @@ public class Error {
     @Expose
     private String title;
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
