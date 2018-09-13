@@ -28,6 +28,7 @@ import com.tokopedia.checkout.view.common.utils.QuantityTextWatcher;
 import com.tokopedia.checkout.view.common.utils.QuantityWrapper;
 import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +52,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     public static final int TYPE_VIEW_ITEM_CART = R.layout.holder_item_cart_new;
     private static final int QTY_MIN = 1;
     private static final int QTY_MAX = 10000;
+    private static final int MAX_SHOWING_NOTES_CHAR = 20;
 
     private final Context context;
     private final CartItemAdapter.ActionListener actionListener;
@@ -84,6 +86,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvRemark;
     private TextView tvLabelFormRemark;
     private ImageView imgWishlist;
+    private TextView tvEllipsize;
 
     private CartItemHolderData cartItemHolderData;
     private QuantityTextWatcher.QuantityTextwatcherListener quantityTextwatcherListener;
@@ -125,6 +128,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         this.tvRemark = itemView.findViewById(R.id.tv_remark);
         this.tvLabelFormRemark = itemView.findViewById(R.id.tv_label_form_remark);
         this.imgWishlist = itemView.findViewById(R.id.img_wishlist);
+        this.tvEllipsize = itemView.findViewById(R.id.tv_ellipsize);
 
         etRemark.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -156,7 +160,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 };
             }
         }).debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<QuantityWrapper>() {
                     @Override
@@ -186,7 +190,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 };
             }
         }).debounce(TEXTWATCHER_NOTE_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Editable>() {
                     @Override
@@ -230,6 +234,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     data.setSelected(isChecked);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                         actionListener.onCartItemCheckChanged(getAdapterPosition(), parentPosition, data.isSelected());
+                        viewHolderListener.onNeedToRefreshAllShop();
                     }
                 }
             }
@@ -237,26 +242,44 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderWarningAndError(CartItemHolderData data) {
-        if (!data.getCartItemData().isSingleChild()) {
-            renderErrorItemHeader(data);
-            renderWarningItemHeader(data);
-            if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
-                    !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
-                    (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
-                llWarningAndError.setVisibility(View.VISIBLE);
+        if (data.getCartItemData().isParentHasErrorOrWarning()) {
+            if (data.getCartItemData().isSingleChild()) {
+                renderErrorItemHeader(data);
+                renderWarningItemHeader(data);
+                setWarningAndErrorVisibility(data);
             } else {
-                llWarningAndError.setVisibility(View.GONE);
+                disableView(data);
             }
         } else {
-            if (data.getCartItemData().isError()) {
-                flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
-                btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
+            if (!data.getCartItemData().isSingleChild()) {
+                renderErrorItemHeader(data);
+                renderWarningItemHeader(data);
+                setWarningAndErrorVisibility(data);
             } else {
-                flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
-                btnDelete.setImageResource(R.drawable.ic_delete_cart);
+                disableView(data);
             }
+        }
+    }
+
+    private void setWarningAndErrorVisibility(CartItemHolderData data) {
+        if ((!TextUtils.isEmpty(data.getCartItemData().getErrorMessageTitle()) ||
+                !TextUtils.isEmpty(data.getCartItemData().getWarningMessageTitle())) &&
+                (data.getCartItemData().isError() || data.getCartItemData().isWarning())) {
+            llWarningAndError.setVisibility(View.VISIBLE);
+        } else {
             llWarningAndError.setVisibility(View.GONE);
         }
+    }
+
+    private void disableView(CartItemHolderData data) {
+        if (data.getCartItemData().isError()) {
+            flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_disabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart_bold);
+        } else {
+            flCartItemContainer.setForeground(ContextCompat.getDrawable(flCartItemContainer.getContext(), R.drawable.fg_enabled_item));
+            btnDelete.setImageResource(R.drawable.ic_delete_cart);
+        }
+        llWarningAndError.setVisibility(View.GONE);
     }
 
     private void renderProductInfo(CartItemHolderData data, int parentPosition) {
@@ -269,7 +292,8 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         if (data.getCartItemData().getOriginData().getWholesalePriceFormatted() != null) {
             this.tvProductPrice.setText(data.getCartItemData().getOriginData().getWholesalePriceFormatted());
         } else {
-            this.tvProductPrice.setText(data.getCartItemData().getOriginData().getPriceFormatted());
+            this.tvProductPrice.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                    data.getCartItemData().getOriginData().getPricePlan(), false));
         }
 
         ImageHandler.loadImageRounded2(
@@ -308,12 +332,6 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             productProperties.setVisibility(View.GONE);
         }
 
-        itemView.setOnClickListener(v -> {
-            if (!data.getCartItemData().isError()) {
-                cbSelectItem.setChecked(!data.isSelected());
-            }
-        });
-
         btnDelete.setOnClickListener(view -> {
             if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                 actionListener.onCartItemDeleteButtonClicked(data, getAdapterPosition(), parentPosition);
@@ -348,7 +366,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                     }
                     data.setStateRemarkExpanded(true);
                     if (getAdapterPosition() != RecyclerView.NO_POSITION) {
-                        viewHolderListener.onNeedToRefresh(getAdapterPosition());
+                        viewHolderListener.onNeedToRefreshSingleProduct(getAdapterPosition());
                     }
                 }
             }
@@ -371,6 +389,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 this.etRemark.setSelection(etRemark.length());
                 this.tvLabelRemarkOption.setVisibility(View.GONE);
                 this.tvNoteCharCounter.setVisibility(View.VISIBLE);
+                this.tvEllipsize.setVisibility(View.GONE);
             } else {
                 // Has notes from pdp
                 this.tvLabelFormRemark.setVisibility(View.GONE);
@@ -380,6 +399,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
                 this.tvNoteCharCounter.setVisibility(View.GONE);
                 this.tvLabelRemarkOption.setText(tvLabelRemarkOption.getContext().getString(R.string.label_button_change_note));
+                if (data.getCartItemData().getUpdatedData().getRemark().length() >= MAX_SHOWING_NOTES_CHAR) {
+                    this.tvEllipsize.setVisibility(View.VISIBLE);
+                } else {
+                    this.tvEllipsize.setVisibility(View.GONE);
+                }
             }
         } else {
             // No notes at all
@@ -390,6 +414,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             this.tvLabelRemarkOption.setText(tvLabelRemarkOption.getContext().getString(R.string.label_button_add_note));
             this.tvLabelRemarkOption.setVisibility(View.VISIBLE);
             this.etRemark.setText("");
+            this.tvEllipsize.setVisibility(View.GONE);
         }
 
         this.etRemark.setFilters(new InputFilter[]{
@@ -424,7 +449,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                         if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                             actionListener.onCartItemQuantityPlusButtonClicked(data, getAdapterPosition(), parentPosition);
                             validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
-                            viewHolderListener.onNeedToRefresh(getAdapterPosition());
+                            handleRefreshType(data, viewHolderListener, parentPosition);
                         }
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
@@ -441,7 +466,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                         if (getAdapterPosition() != RecyclerView.NO_POSITION) {
                             actionListener.onCartItemQuantityMinusButtonClicked(data, getAdapterPosition(), parentPosition);
                             validateWithAvailableQuantity(cartItemHolderData, Integer.parseInt(etQty.getText().toString()));
-                            viewHolderListener.onNeedToRefresh(getAdapterPosition());
+                            handleRefreshType(data, viewHolderListener, parentPosition);
                         }
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
@@ -455,6 +480,19 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
         }
         this.etQty.addTextChangedListener(new QuantityTextWatcher(quantityTextwatcherListener));
         this.etQty.setEnabled(!data.getCartItemData().isError());
+    }
+
+    private void handleRefreshType(CartItemHolderData data, ViewHolderListener viewHolderListener, int parentPosition) {
+        if (data.getCartItemData().getOriginData().getWholesalePrice() != null &&
+                data.getCartItemData().getOriginData().getWholesalePrice().size() > 0) {
+            if (data.getCartItemData().getOriginData().isPreOrder()) {
+                viewHolderListener.onNeedToRefreshAllShop();
+            } else {
+                viewHolderListener.onNeedToRefreshSingleShop(parentPosition);
+            }
+        } else {
+            viewHolderListener.onNeedToRefreshSingleProduct(getAdapterPosition());
+        }
     }
 
     private void renderWishlist(CartItemHolderData data) {
@@ -631,7 +669,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 if (zeroCount == quantity.getEditable().length()) {
                     actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition, needToUpdateView);
-                    viewHolderListener.onNeedToRefresh(getAdapterPosition());
+                    handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
                 } else if (quantity.getEditable().charAt(0) == '0') {
                     etQty.setText(quantity.getEditable().toString()
                             .substring(zeroCount, quantity.getEditable().toString().length()));
@@ -641,7 +679,7 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
             } else if (TextUtils.isEmpty(etQty.getText())) {
                 actionListener.onCartItemQuantityReseted(getAdapterPosition(), parentPosition,
                         !String.valueOf(quantity.getQtyBefore()).equals(quantity.getEditable().toString()));
-                viewHolderListener.onNeedToRefresh(getAdapterPosition());
+                handleRefreshType(cartItemHolderData, viewHolderListener, parentPosition);
             }
 
             int qty = 0;
@@ -659,7 +697,11 @@ public class CartItemViewHolder extends RecyclerView.ViewHolder {
 
     public interface ViewHolderListener {
 
-        void onNeedToRefresh(int childPosition);
+        void onNeedToRefreshSingleProduct(int childPosition);
+
+        void onNeedToRefreshSingleShop(int parentPosition);
+
+        void onNeedToRefreshAllShop();
 
     }
 }

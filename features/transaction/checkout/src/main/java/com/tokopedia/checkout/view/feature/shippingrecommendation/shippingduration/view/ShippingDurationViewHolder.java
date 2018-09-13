@@ -80,7 +80,8 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
                 if (TextUtils.isEmpty(shippingDurationViewModel.getErrorMessage())) {
                     shippingDurationViewModel.setSelected(!shippingDurationViewModel.isSelected());
                     shippingDurationAdapterListener.onShippingDurationChoosen(
-                            shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition);
+                            shippingDurationViewModel.getShippingCourierViewModelList(), cartPosition,
+                            shippingDurationViewModel.getServiceData().getServiceName());
                 }
             }
         });
@@ -92,7 +93,7 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
         if (getAdapterPosition() == 0) {
             tvDurationHeaderInfo.setVisibility(View.VISIBLE);
             if (shippingDurationViewModel.isShowShowCase()) {
-                setShowCase();
+                setShowCase(shippingDurationAdapterListener);
             }
         } else {
             tvDurationHeaderInfo.setVisibility(View.GONE);
@@ -100,17 +101,22 @@ public class ShippingDurationViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    private void setShowCase() {
-        ShowCaseObject showCase = new ShowCaseObject(
-                rlContent, itemView.getContext().getString(R.string.label_title_showcase_shipping_duration),
-                itemView.getContext().getString(R.string.label_body_showcase_shipping_duration),
-                ShowCaseContentPosition.UNDEFINED);
+    private void setShowCase(ShippingDurationAdapterListener shippingDurationAdapterListener) {
+        String label = itemView.getContext().getString(R.string.label_title_showcase_shipping_duration);
+        String text = itemView.getContext().getString(R.string.label_body_showcase_shipping_duration);
+        ShowCaseObject showCase = new ShowCaseObject(rlContent, label, text, ShowCaseContentPosition.UNDEFINED);
 
         ArrayList<ShowCaseObject> showCaseObjectList = new ArrayList<>();
 
         showCaseObjectList.add(showCase);
 
         ShowCaseDialog showCaseDialog = createShowCaseDialog();
+        showCaseDialog.setShowCaseStepListener(new ShowCaseDialog.OnShowCaseStepListener() {
+            @Override
+            public boolean onShowCaseGoTo(int previousStep, int nextStep, ShowCaseObject showCaseObject) {
+                return false;
+            }
+        });
 
         if (!ShowCasePreference.hasShown(itemView.getContext(), ShippingDurationViewHolder.class.getName()))
             showCaseDialog.show(

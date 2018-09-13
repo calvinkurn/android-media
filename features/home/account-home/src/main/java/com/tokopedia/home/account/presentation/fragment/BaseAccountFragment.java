@@ -24,13 +24,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 
 /**

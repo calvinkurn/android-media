@@ -77,11 +77,13 @@ public interface ICartListView extends IBaseView {
 
     void enableSwipeRefresh();
 
-    List<CartShopHolderData> getAllCartDataList();
+    List<CartShopHolderData> getAllShopDataList();
 
     List<CartItemData> getSelectedCartDataList();
 
-    void renderDetailInfoSubTotal(String qty, String subtotalPrice);
+    List<CartItemData> getAllCartDataList();
+
+    void renderDetailInfoSubTotal(String qty, String subtotalPrice, boolean selectAllItem);
 
     void updateCashback(double cashback);
 

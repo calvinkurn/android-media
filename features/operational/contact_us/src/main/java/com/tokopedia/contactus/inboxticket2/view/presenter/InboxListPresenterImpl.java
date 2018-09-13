@@ -12,6 +12,7 @@ import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.contactus.R;
 import com.tokopedia.contactus.common.analytics.ContactUsTracking;
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking;
+import com.tokopedia.contactus.home.view.ContactUsHomeActivity;
 import com.tokopedia.contactus.inboxticket2.domain.TicketListResponse;
 import com.tokopedia.contactus.inboxticket2.domain.TicketsItem;
 import com.tokopedia.contactus.inboxticket2.domain.usecase.GetTicketListUseCase;
@@ -188,6 +189,7 @@ public class InboxListPresenterImpl
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == InboxBaseContract.InboxBaseView.REQUEST_DETAILS) {
             if (resultCode == InboxBaseContract.InboxBaseView.RESULT_FINISH) {
+                mView.navigateToActivityRequest(new Intent(mView.getActivity(), ContactUsHomeActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP), 100);
                 mView.getActivity().finish();
             }
         }
