@@ -39,6 +39,8 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
         void removeBuyView();
 
+        void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int id);
+
     }
 
     public MitraDigitalCategoryView(Context context) {
@@ -121,6 +123,22 @@ public class MitraDigitalCategoryView extends LinearLayout {
                 baseWidgetItems, renderOperatorId);
     }
 
+//    public void renderProductsByOpId(RenderOperatorModel renderOperatorModel, String operatorId) {
+//        // remove rendered products view
+//        if (containerDigitalProductWidgetView.getChildCount() > 0) {
+//            RenderProductModel renderProductModel = findOperatorById(operatorId,
+//                    renderOperatorModel.getRenderProductModels());
+//            Operator operator = renderProductModel.getOperator();
+//
+//            for (int i=0; i<renderProductModel.getInputFieldModels().size(); i++ ) {
+//                if (renderProductModel.getInputFieldModels().get(i).)
+//            }
+//
+//            containerDigitalProductWidgetView.removeAllViews();
+//            actionListener.removeBuyView();
+//        }
+//    }
+
     public void renderProductsByOperatorId(RenderOperatorModel renderOperatorModel, String operatorId,
                                            String renderProductId) {
         // remove rendered products view
@@ -150,8 +168,9 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
             @Override
             public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-                actionListener.onClickDropdown(inputFieldModel,
-                        operator.getOperatorId());
+//                actionListener.onClickDropdown(inputFieldModel, operator.getOperatorId());
+                actionListener.onClickDropdownTest(inputFieldModel, operator.getOperatorId(),
+                        productInquiryWidgetView.getId());
             }
 
             @Override

@@ -144,6 +144,17 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
             public void removeBuyView() {
                 mitraDigitalBuyView.setVisibility(View.GONE);
             }
+
+            @Override
+            public void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int id) {
+                if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+                    selectedOperatorId = operatorId;
+                    String titleChooser = inputFieldModel.getText();
+                    Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser(getActivity(),
+                            digitalCategoryModel.getId(), operatorId, titleChooser);
+                    startActivityForResult(intent, 1002);
+                }
+            }
         });
         mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(),
                 digitalCategoryModel.getDefaultOperatorId());
@@ -182,6 +193,11 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
         mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
                 selectedOperatorId, product.getProductId());
 //        mitraDigitalCategoryView.updateProduct(selectedOperatorId, product.getProductId());
+    }
+
+    private void handleCallbackProductChooser(Product product, int viewId) {
+        mitraDigitalCategoryView.updateView(digitalCategoryModel.getRenderOperatorModel(),
+                selectedOperatorId, product.getProductId(), viewId);
     }
 
     @Override
