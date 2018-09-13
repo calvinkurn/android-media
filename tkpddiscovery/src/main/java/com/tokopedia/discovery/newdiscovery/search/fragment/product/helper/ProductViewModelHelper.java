@@ -112,7 +112,7 @@ public class ProductViewModelHelper {
                 = NetworkParamHelper.getQueryValue(gqlSuggestionResponse.getQuery());
         model.setSuggestedQuery(suggestedQuery);
         model.setSuggestionCurrentKeyword(gqlSuggestionResponse.getCurrentKeyword());
-        //model.setFormattedResultCount(Long.toString(searchProductResponse.getCount()));
+        model.setFormattedResultCount(searchProductResponse.getCountText());
         return model;
     }
 
@@ -182,19 +182,23 @@ public class ProductViewModelHelper {
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());
         productItem.setOriginalPrice(productModel.getOriginalPrice());
         productItem.setPrice(productModel.getPrice());
-        //productItem.setPriceRange(productModel.getPriceRange());
+        productItem.setPriceRange(productModel.getPriceRange());
         productItem.setShopID(productModel.getShop().getId());
         productItem.setShopName(productModel.getShop().getName());
         productItem.setShopCity(productModel.getShop().getCity());
         productItem.setGoldMerchant(productModel.getShop().isGoldmerchant());
         productItem.setOfficial(productModel.getShop().isOfficial());
-        //productItem.setWishlisted(productModel.isWishlist());
+        productItem.setWishlisted(productModel.isWishlist());
         productItem.setBadgesList(convertToBadgesItemListGql(productModel.getBadges()));
         productItem.setLabelList(convertToLabelsItemListGql(productModel.getLabels()));
         productItem.setPosition(position);
-        //productItem.setTopLabel(productModel.getTopLabel());
-        //productItem.setBottomLabel(productModel.getBottomLabel());
+        productItem.setTopLabel(isContainItems(productModel.getTopLabel()) ? productModel.getTopLabel().get(0) : "");
+        productItem.setBottomLabel(isContainItems(productModel.getBottomLabel()) ? productModel.getBottomLabel().get(0) : "");
         return productItem;
+    }
+
+    private static boolean isContainItems(List list) {
+        return list != null && !list.isEmpty();
     }
 
     private static ProductItem convertToProductItem(ProductModel productModel, int position) {
@@ -270,7 +274,7 @@ public class ProductViewModelHelper {
         BadgeItem badgeItem = new BadgeItem();
         badgeItem.setImageUrl(badgeModel.getImageUrl());
         badgeItem.setTitle(badgeModel.getTitle());
-        //badgeItem.setShown(badgeModel.isShown());
+        badgeItem.setShown(badgeModel.isShown());
         return badgeItem;
     }
 

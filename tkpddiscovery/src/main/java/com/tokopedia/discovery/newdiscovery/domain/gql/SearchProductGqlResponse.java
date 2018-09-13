@@ -85,6 +85,9 @@ public class SearchProductGqlResponse {
         @SerializedName("count")
         @Expose
         private int count;
+        @SerializedName("count_text")
+        @Expose
+        private String countText;
         @SerializedName("redirection")
         @Expose
         private Redirection redirection;
@@ -116,6 +119,10 @@ public class SearchProductGqlResponse {
 
         public int getCount() {
             return count;
+        }
+
+        public String getCountText() {
+            return countText;
         }
 
         public Redirection getRedirection() {
@@ -306,6 +313,15 @@ public class SearchProductGqlResponse {
         @SerializedName("price")
         @Expose
         private String price;
+        @SerializedName("price_range")
+        @Expose
+        private String priceRange;
+        @SerializedName("top_label")
+        @Expose
+        private List<String> topLabel;
+        @SerializedName("bottom_label")
+        @Expose
+        private List<String> bottomLabel;
         @SerializedName("whole_sale_price")
         @Expose
         private List<WholeSalePrice> wholeSalePrice = null;
@@ -492,6 +508,18 @@ public class SearchProductGqlResponse {
             return wishlist;
         }
 
+        public String getPriceRange() {
+            return priceRange;
+        }
+
+        public List<String> getTopLabel() {
+            return topLabel;
+        }
+
+        public List<String> getBottomLabel() {
+            return bottomLabel;
+        }
+
         public Shop getShop() {
             return shop;
         }
@@ -545,6 +573,9 @@ public class SearchProductGqlResponse {
         @SerializedName("image_url")
         @Expose
         private String imageUrl;
+        @SerializedName("show")
+        @Expose
+        private boolean isShown;
 
         public String getTitle() {
             return title;
@@ -552,6 +583,10 @@ public class SearchProductGqlResponse {
 
         public String getImageUrl() {
             return imageUrl;
+        }
+
+        public boolean isShown() {
+            return isShown;
         }
     }
 
