@@ -63,6 +63,8 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
     }
 
     public void bindLastItem(DigitalBrowseServiceCategoryViewModel element) {
+        this.item  = element;
+
         setItemView();
 
         itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
