@@ -8,13 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.tokopedia.tkpd.test.R;
 
 public class EmptyFragment extends Fragment {
 
     TextView emptyTextView;
 
-    public static Fragment newInstance(int number){
+    public static Fragment newInstance(int number) {
         Bundle arguments = new Bundle();
         arguments.putInt("NUMBER", number);
         Fragment fragment = new EmptyFragment();
@@ -32,9 +33,9 @@ public class EmptyFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         emptyTextView = view.findViewById(R.id.empty_textView);
 
-        if(savedInstanceState == null && getArguments() != null){
+        if (savedInstanceState == null && getArguments() != null) {
             int number = 0;
-            if((number = getArguments().getInt("NUMBER", -1))!= -1){
+            if ((number = getArguments().getInt("NUMBER", -1)) != -1) {
                 emptyTextView.setText(Integer.toString(number));
             }
         }

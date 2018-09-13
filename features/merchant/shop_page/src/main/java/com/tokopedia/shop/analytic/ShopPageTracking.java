@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfoDetail;
-import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 import java.util.ArrayList;

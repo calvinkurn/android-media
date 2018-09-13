@@ -3,6 +3,7 @@ package com.tokopedia.applink;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 
 /**
  * @author ricoharisin .
@@ -14,11 +15,13 @@ public interface ApplinkRouter {
 
     void goToApplinkActivity(Context context, String applink);
 
+    void goToApplinkActivity(Activity activity, String applink, Bundle bundle);
+
     Intent getApplinkIntent(Context context, String applink);
 
     boolean isSupportApplink(String appLink);
 
     ApplinkUnsupported getApplinkUnsupported(Activity activity);
 
-    void dispatchFrom(Activity activity, Intent intent);
+    ApplinkDelegate applinkDelegate();
 }

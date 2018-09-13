@@ -6,11 +6,11 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.core.base.di.component.HasComponent;
+import com.tokopedia.product.manage.item.category.view.istener.CategoryPickerFragmentListener;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.seller.product.common.di.component.ProductComponent;
+import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.seller.product.category.view.fragment.CategoryPickerFragment;
-import com.tokopedia.seller.product.edit.view.listener.CategoryPickerFragmentListener;
 import com.tokopedia.core.common.category.view.model.CategoryViewModel;
 
 import org.parceler.Parcels;
@@ -44,7 +44,7 @@ public class CategoryPickerActivity extends BaseSimpleActivity implements
         fragment.startActivityForResult(intent, requestCode);
     }
 
-    protected static Intent createIntent(Context context, long departmentId) {
+    public static Intent createIntent(Context context, long departmentId) {
         Intent intent = new Intent(context, CategoryPickerActivity.class);
         if (departmentId > 0) {
             intent.putExtra(CATEGORY_ID_INIT_SELECTED, departmentId);

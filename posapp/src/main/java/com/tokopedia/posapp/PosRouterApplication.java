@@ -438,11 +438,6 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     @Override
-    public Intent getChangePasswordIntent(Context context) {
-        return null;
-    }
-
-    @Override
     public Intent getPhoneVerificationProfileIntent(Context context) {
         return null;
     }
@@ -747,7 +742,7 @@ public class PosRouterApplication extends MainApplication implements
     }
 
     public PosAppComponent getPosAppComponent() {
-        if(posAppComponent == null) {
+        if (posAppComponent == null) {
             posAppComponent = DaggerPosAppComponent.builder().baseAppComponent(getBaseAppComponent()).build();
         }
 
@@ -762,6 +757,7 @@ public class PosRouterApplication extends MainApplication implements
 
     @Override
     public Intent getChangePasswordIntent(Context context) {
+        //        There is no change password in pos
         return null;
     }
 }

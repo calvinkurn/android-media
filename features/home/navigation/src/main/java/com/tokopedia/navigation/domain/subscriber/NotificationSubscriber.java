@@ -1,6 +1,5 @@
 package com.tokopedia.navigation.domain.subscriber;
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.data.mapper.NotificationMapper;
 import com.tokopedia.navigation.presentation.view.MainParentView;
@@ -22,9 +21,7 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
     public void onCompleted() { }
 
     @Override
-    public void onError(Throwable e) {
-
-    }
+    public void onError(Throwable e) { }
 
     @Override
     public void onNext(NotificationEntity notificationEntity) {

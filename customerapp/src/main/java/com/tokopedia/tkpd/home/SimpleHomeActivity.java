@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
@@ -37,7 +38,7 @@ public class SimpleHomeActivity extends TActivity
 
     FragmentManager supportFragmentManager;
 
-    @DeepLink(Constants.Applinks.WISHLIST)
+    @DeepLink({Constants.Applinks.WISHLIST, ApplinkConst.WISHLIST})
     public static Intent getWishlistApplinkIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return newWishlistInstance(context)

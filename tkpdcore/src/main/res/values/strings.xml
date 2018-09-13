@@ -926,8 +926,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_track">Track</string>
     <string name="title_status">Status</string>
     <string name="item_all_stats">Semua Status</string>
-    <string name="item_on_shipping">Dalam Pengiriman</string>
-    <string name="item_delivered">Transaksi Terkirim</string>
+    <string name="item_on_shipping">Sedang Dikirim</string>
+    <string name="item_delivered">Sampai Tujuan</string>
     <string name="item_finished">Transaksi Selesai</string>
     <string name="item_cancel">Transaksi Dibatalkan</string>
     <string name="title_city">Kota</string>
@@ -2221,6 +2221,7 @@ di Tokopedia Sekarang!</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
+    <string name="label_tokocard">TokoCard</string>
     <string name="react_native_developer_mode">React Native Developer Mode</string>
 
 </resources>

@@ -8,6 +8,7 @@ import com.tokopedia.discovery.search.domain.interactor.SearchMapper;
 import com.tokopedia.discovery.search.domain.model.SearchData;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Response;
 import rx.Observable;
@@ -26,6 +27,7 @@ public class AutoCompleteDataSource {
 
     public Observable<List<SearchData>> getUniverseAutoComplete(TKPDMapParam<String, Object> param) {
         return browseApi.getUniverseAutoCompleteV5(param)
+                .debounce(300, TimeUnit.MILLISECONDS)
                 .doOnNext(new Action1<Response<String>>() {
                     @Override
                     public void call(Response<String> response) {

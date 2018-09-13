@@ -8,7 +8,7 @@ import com.tokopedia.home.account.data.model.AppNotificationSettingModel;
 import com.tokopedia.home.account.data.model.SettingEditResponse;
 import com.tokopedia.home.account.domain.GetEmailNotifUseCase;
 import com.tokopedia.home.account.domain.SaveEmailNotifUseCase;
-import com.tokopedia.home.account.presentation.view.EmailNotificationView;
+import com.tokopedia.home.account.presentation.listener.EmailNotificationView;
 
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -57,7 +57,7 @@ public class EmailNotificationPresenter extends BaseDaggerPresenter<EmailNotific
         });
     }
 
-    public void saveEmailNotifUseCase(HashMap<String, String> setting){
+    public void saveEmailNotifUseCase(HashMap<String, Integer> setting){
         saveEmailNotifUseCase.setBodyParams(setting);
         saveEmailNotifUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

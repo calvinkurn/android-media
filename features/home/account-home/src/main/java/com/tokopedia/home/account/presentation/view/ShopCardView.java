@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.view;
 
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.reputation.ShopReputationView;
@@ -24,7 +27,7 @@ public class ShopCardView extends BaseCustomView {
     private ImageView imageShop;
     private ImageView badge;
     private TextView textShopName;
-    private ShopReputationView shopReputation;
+    private ImageView shopReputation;
     private TextView textSaldoAmount;
 
     public ShopCardView(@NonNull Context context) {
@@ -85,8 +88,17 @@ public class ShopCardView extends BaseCustomView {
         textSaldoAmount.setText(balance);
     }
 
-    public void setShopReputation(int medalType, int level) {
-        shopReputation.setValue(medalType, level, "");
+    public void setShopReputation(String url) {
+        if(!TextUtils.isEmpty(url)) {
+            Glide.with(getContext())
+                    .load(url)
+                    .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                    .into(shopReputation);
+            shopReputation.setVisibility(VISIBLE);
+        } else {
+            shopReputation.setVisibility(GONE);
+        }
     }
 
     public void setOnClickShopAvatar(View.OnClickListener listener) {

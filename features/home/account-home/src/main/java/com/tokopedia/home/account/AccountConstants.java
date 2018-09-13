@@ -42,8 +42,12 @@ public class AccountConstants {
         }
 
         public static final String REKSA_DANA_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/";
+        public static final String REKSA_DANA_TX_URL = TkpdBaseURL.WEB_DOMAIN + "reksa-dana/mobile-dashboard/list";
+
+        public static final String TOKOCARD_URL = TkpdBaseURL.WEB_DOMAIN + "tokocard/";
 
         public static final String EMAS_URL = TkpdBaseURL.WEB_DOMAIN + "emas/";
+        public static final String EMAS_TX_URL = TkpdBaseURL.WEB_DOMAIN + "emas/daftar-transaksi/";
 
     }
 
@@ -97,5 +101,12 @@ public class AccountConstants {
         public static final String CHAT = "chat";
         public static final String TOKOPEDIA = "tokopedia";
         public static final String NEWS_LETTER = "newsletter";
+        public static final String SCREEN_NAME = "screenName";
+        public static final String EVENT = "event";
+        public static final String EVENT_CATEGORY = "eventCategory";
+        public static final String EVENT_ACTION = "eventAction";
+        public static final String EVENT_LABEL = "eventLabel";
+        public static final String TOP_NAV = "top nav";
+        public static final String SCREEN_NAME_ACCOUNT = "/account";
     }
 }

@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.content.res.AppCompatResources;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -159,6 +160,8 @@ public class LabelView extends BaseCustomView {
 
         rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
         contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
+        rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
+        contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
 
         invalidate();
         requestLayout();
@@ -198,6 +201,12 @@ public class LabelView extends BaseCustomView {
 
     public void setTitle(String textTitle) {
         titleTextView.setText(textTitle);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setTitle(SpannableString spannableString){
+        titleTextView.setText(spannableString);
         invalidate();
         requestLayout();
     }

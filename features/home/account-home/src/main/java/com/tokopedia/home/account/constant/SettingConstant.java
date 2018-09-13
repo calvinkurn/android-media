@@ -20,6 +20,7 @@ public class SettingConstant {
     public static final int SETTING_SHOP_SHIPMENT_ID = 25;
     public static final int SETTING_SHOP_NOTE_ID = 26;
     public static final int SETTING_TOKOCASH_ID = 31;
+    public static final int SETTING_TOKOCARD_ID = 25;
     public static final int SETTING_SALDO_ID = 32;
     public static final int SETTING_BANK_ACCOUNT_ID = 33;
     public static final int SETTING_CREDIT_CARD_ID = 34;

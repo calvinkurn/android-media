@@ -273,9 +273,7 @@ public class ExploreFragment extends BaseListFragment<Visitable, TypeFactory> im
     }
 
     private void onGoToShopSetting() {
-        Intent intent = SellerRouter.getActivityManageShop(getActivity());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        getActivity().startActivity(intent);
+        ((IHomeRouter) getActivity().getApplicationContext()).goToManageShop(getActivity());
     }
 
     @Override

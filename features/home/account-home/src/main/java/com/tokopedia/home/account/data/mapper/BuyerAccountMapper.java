@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -31,7 +32,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  * @author by alvinatin on 10/08/18.
  */
 
-public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel>{
+public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
     private Context context;
 
     @Inject
@@ -40,8 +41,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
     }
 
     @Override
-    public BuyerViewModel call(GraphqlResponse graphqlResponse) {
-        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
+    public BuyerViewModel call(AccountModel accountModel) {
         return getBuyerModel(context, accountModel);
     }
 
@@ -53,18 +53,19 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         buyerCardViewModel.setUserId(accountModel.getProfile().getUserId());
         buyerCardViewModel.setName(accountModel.getProfile().getFullName());
         buyerCardViewModel.setTokopoint(accountModel.getTokopoints().getStatus().getPoints().getRewardStr());
-        buyerCardViewModel.setVoucher(context.getString(R.string.label_tokopoint_see_voucher));
+        buyerCardViewModel.setCoupons(accountModel.getTokopointsSumCoupon().getSumCoupon());
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
+        tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
         if (!accountModel.getWallet().isLinked()){
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
-            tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
         } else {
-            tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
+            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
@@ -162,15 +163,6 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         );
         menuGridItems.add(gridItem);
         gridItem = new MenuGridItemViewModel(
-                R.drawable.ic_deals,
-                context.getString(R.string.title_menu_deals),
-                ApplinkConst.DEALS_ORDER,
-                0,
-                PEMBELI,
-                context.getString(R.string.title_menu_transaction)
-        );
-        menuGridItems.add(gridItem);
-        gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_flight,
                 context.getString(R.string.title_menu_flight),
                 ApplinkConst.FLIGHT_ORDER,
@@ -179,6 +171,17 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
                 context.getString(R.string.title_menu_transaction)
         );
         menuGridItems.add(gridItem);
+
+        gridItem = new MenuGridItemViewModel(
+                R.drawable.ic_train,
+                context.getString(R.string.title_menu_train),
+                AccountConstants.Navigation.TRAIN_ORDER_LIST,
+                0,
+                PEMBELI,
+                context.getString(R.string.title_menu_transaction)
+        );
+        menuGridItems.add(gridItem);
+
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_see_all,
                 context.getString(R.string.title_menu_show_all),
@@ -229,6 +232,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
 
+//        will be implemented on next sprint
 //        menuList = new MenuListViewModel();
 //        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
 //        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
@@ -249,14 +253,16 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
 //        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
 //        items.add(menuList);
 
-        InfoCardViewModel infoCard = new InfoCardViewModel();
-        infoCard.setIconRes(R.drawable.ic_tokocash_big);
-        infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
-        infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
-        infoCard.setApplink(ApplinkConst.REFERRAL);
-        infoCard.setTitleTrack(PEMBELI);
-        infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
-        items.add(infoCard);
+        if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
+            InfoCardViewModel infoCard = new InfoCardViewModel();
+            infoCard.setIconRes(R.drawable.ic_tokocash_big);
+            infoCard.setMainText(context.getString(R.string.title_menu_wallet_referral));
+            infoCard.setSecondaryText(context.getString(R.string.label_menu_wallet_referral));
+            infoCard.setApplink(ApplinkConst.REFERRAL);
+            infoCard.setTitleTrack(PEMBELI);
+            infoCard.setSectionTrack(context.getString(R.string.title_menu_wallet_referral));
+            items.add(infoCard);
+        }
 
         menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_help));

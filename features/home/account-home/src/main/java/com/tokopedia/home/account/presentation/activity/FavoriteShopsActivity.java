@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.fragment.FavoriteShopsFragment;
 
 /**
