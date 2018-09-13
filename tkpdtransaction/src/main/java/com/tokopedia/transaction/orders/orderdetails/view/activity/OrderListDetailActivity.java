@@ -31,7 +31,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
     private static final String ORDER_ID = "order_id";
     private static final String FROM_PAYMENT = "from_payment";;
-    private static final int REQUEST_CODE = 100
+    private static final int REQUEST_CODE = 100;
     private String fromPayment = "false";
     private String orderId;
     private OrderDetailsComponent orderListComponent;
