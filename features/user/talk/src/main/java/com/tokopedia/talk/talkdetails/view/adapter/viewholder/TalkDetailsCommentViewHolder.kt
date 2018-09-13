@@ -11,7 +11,7 @@ import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsCommentViewModel
 /**
  * Created by Hendri on 29/08/18.
  */
-class TalkDetailsReplyViewHolder(itemView: View):
+class TalkDetailsCommentViewHolder(itemView: View):
         AbstractViewHolder<TalkDetailsCommentViewModel>(itemView){
     val profPic:ImageView = itemView.findViewById(R.id.prof_pict)
     val name:TextView = itemView.findViewById(R.id.username)

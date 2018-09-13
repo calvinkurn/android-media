@@ -3,6 +3,7 @@ package com.tokopedia.talk.producttalk.view.viewmodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.talk.common.adapter.ProductTalkChildThreadTypeFactory
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactory
 
 
 /**
@@ -24,7 +25,7 @@ data class ProductTalkItemViewModel(
         var talkId : String = "",
         var commentId : String = "",
         var productId : String = "") :
-        Visitable<ProductTalkChildThreadTypeFactory> {
+        Visitable<ProductTalkChildThreadTypeFactory>{
 
     override fun type(typeFactory: ProductTalkChildThreadTypeFactory): Int {
         return typeFactory.type(this)

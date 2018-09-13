@@ -13,7 +13,7 @@ data class TalkDetailsThreadItemViewModel(
         var timestamp: String? = "",
         var comment: String? = "",
         var menu: List<TalkDetailsMenuItem>? = ArrayList<TalkDetailsMenuItem>()) : Visitable<TalkDetailsTypeFactory> {
-    override fun type(typeFactory: TalkDetailsTypeFactory?): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun type(typeFactory: TalkDetailsTypeFactory): Int {
+        return typeFactory.type(this)
     }
 }

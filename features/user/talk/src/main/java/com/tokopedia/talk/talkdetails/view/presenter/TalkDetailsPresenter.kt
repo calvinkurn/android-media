@@ -6,7 +6,7 @@ import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.subscriber.DeleteTalkCommentSubscriber
 import com.tokopedia.talk.talkdetails.view.subscriber.GetTalkCommentsSubscriber
-import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsProductAttachViewModel
+import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsHeaderProductViewModel
 
 /**
  * Created by Hendri on 28/08/18.
@@ -30,7 +30,7 @@ class TalkDetailsPresenter(private val getTalkComments:GetTalkCommentsUseCase,
                                           DeleteTalkCommentSubscriber(this,view))
     }
 
-    override fun sendTalkComment(id: String, attachedProduct: List<TalkDetailsProductAttachViewModel>?, message: String) {
+    override fun sendTalkComment(id: String, attachedHeaderProduct: List<TalkDetailsHeaderProductViewModel>?, message: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

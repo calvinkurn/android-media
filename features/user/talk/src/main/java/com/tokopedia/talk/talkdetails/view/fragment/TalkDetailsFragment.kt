@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -33,6 +34,8 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
 
     lateinit var adapter: TalkDetailsAdapter
     lateinit var recyclerView: RecyclerView
+    lateinit var attachProductButton: ImageView
+    lateinit var attachedProductList: RecyclerView
 
     override fun getAdapterTypeFactory(): TalkDetailsTypeFactoryImpl {
         return TalkDetailsTypeFactoryImpl()

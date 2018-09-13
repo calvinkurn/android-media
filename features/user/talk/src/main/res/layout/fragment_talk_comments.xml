@@ -11,9 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintVertical_chainStyle="spread"
-        app:layout_constraintBottom_toTopOf="@+id/talk_details_reply_container"
+        app:layout_constraintBottom_toTopOf="@+id/talk_details_attach_product_list"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/talk_details_attach_product_list"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:visibility="gone"
+        app:layout_constraintVertical_chainStyle="spread"
+        app:layout_constraintBottom_toTopOf="@+id/talk_details_reply_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/talk_details_reply_list"/>
 
     <RelativeLayout
         android:id="@+id/talk_details_reply_container"
@@ -29,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/talk_details_reply_list">
+        app:layout_constraintTop_toBottomOf="@+id/talk_details_attach_product_list">
 
 
         <ImageView
