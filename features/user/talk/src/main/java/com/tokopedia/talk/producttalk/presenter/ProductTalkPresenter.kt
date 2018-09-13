@@ -17,7 +17,8 @@ import javax.inject.Inject
  * @author by Steven
  */
 class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
-                                               @TalkScope val getProductTalkUseCase : GetProductTalkUseCase) :
+                                               @TalkScope val getProductTalkUseCase : GetProductTalkUseCase,
+                                               @TalkScope val deleteCommentTalkUseCase: DeleteCommentTalkUseCase) :
         ProductTalkContract.Presenter,
         BaseDaggerPresenter<ProductTalkContract.View>() {
 
