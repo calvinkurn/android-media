@@ -8,6 +8,7 @@ import com.tokopedia.payment.setting.R
 import com.tokopedia.payment.setting.list.model.SettingListPaymentModel
 import com.tokopedia.payment.setting.util.PaymentSettingRouter
 import com.tokopedia.payment.setting.util.getBackgroundAssets
+import com.tokopedia.payment.setting.util.getLogoAsset
 import com.tokopedia.payment.setting.util.getMaskedNumberSubStringPayment
 import kotlinx.android.synthetic.main.item_setting_list_payment.view.*
 
@@ -17,7 +18,7 @@ class SettingListPaymentViewHolder(itemView : View?, val paymentSettingRouter: P
         ImageHandler.LoadImage(itemView.imageCCBackground, element?.getBackgroundAssets(paymentSettingRouter, itemView.context))
 
         itemView.cardNumber.setText(element?.maskedNumber?.getMaskedNumberSubStringPayment())
-        ImageHandler.LoadImage(itemView.cardImage, element?.cardType)
+        ImageHandler.LoadImage(itemView.cardImage, element?.getLogoAsset())
     }
 
     companion object {
