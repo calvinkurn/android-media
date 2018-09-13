@@ -38,7 +38,7 @@
     <string name="change_inactive_phone_heading">Masukkan nomor ponsel yang terhubung dengan akun Anda.</string>
     <string name="input_phone_number_title">Nomor Ponsel</string>
     <string name="selanjutnya">Selanjutnya</string>
-    <string name="invalid_phone_number">Nomor Ponsel Harus Berupa Angka.</string>
+    <string name="invalid_phone_number">Nomor ponsel harus berupa angka</string>
     <string name="invalid_email_error" >Format email salah</string>
     <string name="phone_field_empty">Nomor ponsel harus diisi</string>
     <string name="email_field_empty">Email harus diisi</string>
