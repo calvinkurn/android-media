@@ -71,19 +71,18 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 fromPayment = uri.getQueryParameter(FROM_PAYMENT);
             }
         }
-        super.onCreate(arg);
-        if (fromPayment != null) {
-            if (fromPayment.equalsIgnoreCase("true")) {
-                updateTitle(getResources().getString(R.string.thank_you));
-            }
-        }
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
             startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 100);
         } else {
             category = getIntent().getStringExtra((DeepLink.URI));
         }
-
+        super.onCreate(arg);
+        if (fromPayment != null) {
+            if (fromPayment.equalsIgnoreCase("true")) {
+                updateTitle(getResources().getString(R.string.thank_you));
+            }
+        }
     }
 
     @Override
