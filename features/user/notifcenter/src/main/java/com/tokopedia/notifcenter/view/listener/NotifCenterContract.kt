@@ -34,6 +34,8 @@ interface NotifCenterContract {
 
         fun updateFilterId(filterId: Int)
 
+        fun resetCursor()
+
         fun resetParam()
     }
 }

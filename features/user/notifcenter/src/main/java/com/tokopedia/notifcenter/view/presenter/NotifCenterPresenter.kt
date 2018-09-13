@@ -47,6 +47,10 @@ class NotifCenterPresenter @Inject constructor(private val notifCenterUseCase: N
         this.filterId = filterId
     }
 
+    override fun resetCursor() {
+        lastNotifId = ""
+    }
+
     override fun resetParam() {
         filterId = 0
         lastNotifId = ""

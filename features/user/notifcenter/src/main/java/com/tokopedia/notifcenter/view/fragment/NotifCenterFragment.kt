@@ -162,7 +162,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         })
         swipeToRefresh.setOnRefreshListener {
             filterBtn.hide(false)
-            resetParam()
+            resetCursor()
             adapter.clearAllElements()
             presenter.fetchDataWithoutCache()
         }
@@ -200,6 +200,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     }
 
     private fun isLoading() = adapter.isLoading
+
+    private fun resetCursor() = presenter.resetCursor()
 
     private fun resetParam() = presenter.resetParam()
 
