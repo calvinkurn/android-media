@@ -27,6 +27,7 @@ public class AccountConstants {
         public static final String IMAGE_URL = CDN_URL + CDN_IMAGE_PATH;
 
         public static final String MORE_SELLER = BASE_SELLER_URL + "mulai-berjualan/";
+        public static final String GOLD_MERCHANT = "https://seller.tokopedia.com/gold-merchant/";
 
         public class Pulsa {
 
