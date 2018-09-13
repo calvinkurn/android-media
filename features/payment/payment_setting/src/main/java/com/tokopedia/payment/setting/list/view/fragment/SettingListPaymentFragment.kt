@@ -17,9 +17,9 @@ import javax.inject.Inject
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.payment.setting.add.AddCreditCardActivity
-import com.tokopedia.payment.setting.authenticate.AuthenticateCreditCardActivity
-import com.tokopedia.payment.setting.detail.DetailCreditCardActivity
+import com.tokopedia.payment.setting.add.view.activity.AddCreditCardActivity
+import com.tokopedia.payment.setting.authenticate.view.activity.AuthenticateCreditCardActivity
+import com.tokopedia.payment.setting.detail.view.activity.DetailCreditCardActivity
 import com.tokopedia.payment.setting.list.di.SettingListPaymentModule
 import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContract
 import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
