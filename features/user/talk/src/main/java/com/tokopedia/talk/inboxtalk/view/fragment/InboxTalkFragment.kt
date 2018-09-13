@@ -30,6 +30,7 @@ import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject
 
@@ -313,8 +314,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if (allowReply) goToDetailTalk()
+    override fun onReplyTalkButtonClick(allowReply: Boolean,talkId: String, shopId: String,
+                                        productId: String) {
+        if (allowReply) goToDetailTalk(talkId,shopId, productId)
         else showErrorReplyTalk()
     }
 
@@ -438,8 +440,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
-    private fun goToDetailTalk() {
-
+    private fun goToDetailTalk(talkId: String, shopId: String,
+                               productId: String) {
+        val intent = TalkDetailsActivity.getCallingIntent(talkId,shopId,context!!)
+        startActivityForResult(intent,REQUEST_GO_TO_DETAIL)
     }
 
     override fun onSuccessDeleteTalk(talkId: String) {

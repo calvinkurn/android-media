@@ -28,6 +28,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
+import com.tokopedia.talk.common.data.TalkUrl
 import javax.inject.Scope
 
 /**
@@ -37,6 +38,14 @@ import javax.inject.Scope
 @TalkDetailsScope
 @Module
 class TalkDetailsModule {
+
+
+
+    @Provides
+    @TalkDetailsScope
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        return UserSession(context)
+    }
 
     @Provides
     @TalkDetailsScope
@@ -105,14 +114,14 @@ class TalkDetailsModule {
         return builder.build()
     }
 
-    @Provides
-    @TalkDetailsScope
-    fun provideGson(): Gson {
-        return GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls().create()
-    }
+//    @Provides
+//    @TalkDetailsScope
+//    fun provideGson(): Gson {
+//        return GsonBuilder()
+//                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+//                .setPrettyPrinting()
+//                .serializeNulls().create()
+//    }
 
     @Provides
     @TalkDetailsScope
@@ -130,7 +139,7 @@ class TalkDetailsModule {
                 .addConverterFactory(stringResponseConverter)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl("")
+                .baseUrl(TalkUrl.BASE_URL)
                 .client(okHttpClient)
                 .build()
     }

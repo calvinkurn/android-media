@@ -21,8 +21,8 @@ class TalkDetailsPresenter(private val getTalkComments:GetTalkCommentsUseCase,
                                 GetTalkCommentsSubscriber(this,view))
     }
 
-    override fun reportTalkComment(id: String) {
-        view.goToReportTalkPage(id)
+    override fun reportTalkComment(id:String, shopId:String, productId:String) {
+        view.goToReportTalkPage(id,shopId,productId)
     }
 
     override fun deleteTalkComment(id: String) {

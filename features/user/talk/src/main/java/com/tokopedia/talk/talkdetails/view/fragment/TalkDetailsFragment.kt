@@ -1,10 +1,12 @@
 package com.tokopedia.talk.talkdetails.view.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -47,9 +49,8 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
     }
 
     override fun initInjector() {
-        val talkDetailsComponent = DaggerTalkDetailsComponent.builder()
-                .talkComponent(getComponent(TalkComponent::class.java))
-                .build()
+        val talkDetailsComponent = DaggerTalkDetailsComponent.builder().baseAppComponent(
+                (activity!!.application as BaseMainApplication).baseAppComponent).build()
         talkDetailsComponent.inject(this)
         presenter.attachView(this)
     }
@@ -77,9 +78,9 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
         adapter.removeCommentWithId(id)
     }
 
-    override fun goToReportTalkPage(id: String) {
-        val intent = ReportTalkActivity.createIntent(context!!)
-        startActivityForResult(intent,GO_TO_REPORT_TALK_REQ_CODE)
+    override fun goToReportTalkPage(id: String, shopId: String, productId: String) {
+        val intent = ReportTalkActivity.createIntent(context!!,id,shopId,productId)
+        startActivityForResult(intent, GO_TO_REPORT_TALK_REQ_CODE)
     }
 
     override fun onSuccessSendTalkComment(item: Visitable<*>) {
@@ -89,4 +90,5 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
     companion object {
         const val GO_TO_REPORT_TALK_REQ_CODE = 101
     }
+
 }

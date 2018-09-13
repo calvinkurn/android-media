@@ -32,7 +32,7 @@ class InboxTalkItemViewHolder(val v: View,
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
-        fun onReplyTalkButtonClick(allowReply: Boolean)
+        fun onReplyTalkButtonClick(allowReply: Boolean,talkId: String, shopId: String, productId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
@@ -81,7 +81,10 @@ class InboxTalkItemViewHolder(val v: View,
 
             replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(element.talkThread
-                        .headThread.menu.allowReply)
+                        .headThread.menu.allowReply,
+                        element.talkThread.headThread.talkId,
+                        element.talkThread.headThread.shopId,
+                        element.talkThread.headThread.productId)
             }
         }
 

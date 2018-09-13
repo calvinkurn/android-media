@@ -10,7 +10,7 @@ import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsProductAttachVie
 class TalkDetailsContract {
     interface Presenter {
         fun loadTalkDetails(id:String)
-        fun reportTalkComment(id:String)
+        fun reportTalkComment(id:String, shopId:String, productId:String)
         fun deleteTalkComment(id:String)
         fun sendTalkComment(id:String, attachedProduct:List<TalkDetailsProductAttachViewModel>?, message:String)
         fun onDestroy()
@@ -20,6 +20,6 @@ class TalkDetailsContract {
         fun onSuccessLoadTalkDetails(data:List<Visitable<*>>)
         fun onSuccessDeleteTalkComment(id:String)
         fun onSuccessSendTalkComment(item:Visitable<*>)
-        fun goToReportTalkPage(id:String)
+        fun goToReportTalkPage(id:String, shopId:String, productId: String)
     }
 }
