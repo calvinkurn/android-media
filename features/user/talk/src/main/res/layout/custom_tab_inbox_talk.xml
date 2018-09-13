@@ -30,6 +30,7 @@
         android:fontFamily="sans-serif"
         android:gravity="center"
         android:lineSpacingExtra="0sp"
+        android:visibility="gone"
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
         android:textColor="#ffffff"

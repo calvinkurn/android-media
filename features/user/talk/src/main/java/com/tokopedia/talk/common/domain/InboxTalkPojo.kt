@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName
 
 data class InboxTalkPojo(
         @Expose
-        @SerializedName("is_unread")
-        val is_unread: Int = 0,
+        @SerializedName("unread_count")
+        val unreadCount: UnreadCount = UnreadCount(),
         @Expose
         @SerializedName("list")
         val list: List<InboxTalkItemPojo> = ArrayList(),
@@ -222,4 +222,17 @@ data class Paging(
         @Expose
         @SerializedName("page_id")
         val page_id: Int = 0
+)
+
+
+data class UnreadCount(
+        @Expose
+        @SerializedName("all")
+        val all: Int = 0,
+        @Expose
+        @SerializedName("my_product")
+        val my_product: Int = 0,
+        @Expose
+        @SerializedName("following")
+        val following: Int = 0
 )

@@ -19,6 +19,7 @@ import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.domain.UnreadCount
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
@@ -265,9 +266,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         setNotificationTab(talkViewModel.unreadNotification)
     }
 
-    private fun setNotificationTab(unreadNotification: Int) {
+    private fun setNotificationTab(unreadNotification: UnreadCount) {
         if (activity is GetUnreadNotificationListener) {
-            (activity as GetUnreadNotificationListener).onGetNotification(unreadNotification, nav)
+            val notifCount: Int = when (nav) {
+                InboxTalkActivity.INBOX_ALL -> unreadNotification.all
+                InboxTalkActivity.FOLLOWING -> unreadNotification.following
+                InboxTalkActivity.MY_PRODUCT -> unreadNotification.my_product
+                else -> 0
+            }
+            (activity as GetUnreadNotificationListener).onGetNotification(notifCount, nav)
         }
     }
 
@@ -290,7 +297,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     override fun onEmptyTalk() {
         adapter.clearAllElements()
         adapter.showEmpty()
-        setNotificationTab(0)
+        setNotificationTab(UnreadCount())
 
     }
 
@@ -303,7 +310,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
             data?.extras?.run {
-                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID,"")
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
                 onSuccessReportTalk(talkId)
 
             }
@@ -321,9 +328,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        if(!talkId.isBlank()) {
+        if (!talkId.isBlank()) {
             adapter.updateReportTalk(talkId)
-        }else{
+        } else {
             onRefreshData()
         }
     }

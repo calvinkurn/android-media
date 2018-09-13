@@ -76,12 +76,12 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     private fun initData(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
             talkId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            productId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            shopId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_SHOP_ID) ?: ""
+            productId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_PRODUCT_ID) ?: ""
         } ?: arguments?.run {
             talkId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            productId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            shopId = getString(ReportTalkActivity.Companion.EXTRA_SHOP_ID) ?: ""
+            productId = getString(ReportTalkActivity.Companion.EXTRA_PRODUCT_ID) ?: ""
         } ?: activity?.run {
             finish()
         }
@@ -196,5 +196,11 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ReportTalkActivity.EXTRA_PRODUCT_ID, productId)
+        outState.putString(ReportTalkActivity.EXTRA_SHOP_ID, shopId)
+        outState.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
+    }
 
 }

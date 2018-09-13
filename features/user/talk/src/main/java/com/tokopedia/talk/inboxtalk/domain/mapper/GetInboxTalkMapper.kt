@@ -50,7 +50,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 listTalk,
                 pojo.paging.has_next,
                 pojo.paging.page_id,
-                pojo.is_unread)
+                pojo.unreadCount)
     }
 
     private fun mapListThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
