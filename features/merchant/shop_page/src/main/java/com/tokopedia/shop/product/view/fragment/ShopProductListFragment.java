@@ -307,6 +307,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     public void onSwipeRefresh() {
         shopProductListPresenter.clearCache();
+        shopEtalaseViewModelList = null;
         hideEtalaseList();
         etalaseChipAdapter.setEtalaseViewModelList(null);
         shopProductAdapter.setShopEtalaseTitle(null);
