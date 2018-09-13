@@ -10,7 +10,6 @@ import com.tokopedia.core.network.di.qualifier.HadesQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
 import com.tokopedia.core.network.di.qualifier.MojitoWishlistActionQualifier;
-import com.tokopedia.core.network.di.qualifier.MojitoWishlistCountQualifier;
 import com.tokopedia.core.network.di.qualifier.WsV4Qualifier;
 
 import dagger.Module;
@@ -42,12 +41,6 @@ public class ApiModule {
     @MojitoGetWishlistQualifier
     @Provides
     MojitoApi mojitoGetWishlist(@MojitoGetWishlistQualifier Retrofit retrofit){
-        return retrofit.create(MojitoApi.class);
-    }
-
-    @MojitoWishlistCountQualifier
-    @Provides
-    MojitoApi mojitoGetWishlistCount(@MojitoWishlistCountQualifier Retrofit retrofit){
         return retrofit.create(MojitoApi.class);
     }
 
