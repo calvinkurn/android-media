@@ -105,7 +105,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_BANK_ACCOUNT_ID:
                     accountAnalytics.eventClickPaymentSetting(ACCOUNT_BANK);
                     if (userSession.isHasPassword()) {
-                        router.goToManageBankAccount(getActivity());
+                        startActivity(router.getSettingBankIntent(getActivity()));
                     } else {
                         showNoPasswordDialog();
                     }
@@ -162,7 +162,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getManagePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
+                    .getChangePasswordIntent(getActivity()), REQUEST_CHANGE_PASSWORD);
         }
     }
 }

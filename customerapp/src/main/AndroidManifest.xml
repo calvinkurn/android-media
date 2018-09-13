@@ -108,6 +108,7 @@
             android:name=".deeplink.activity.DeepLinkActivity"
             android:hardwareAccelerated="true"
             android:label="@string/title_activity_deep_link"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -183,7 +184,6 @@
             android:exported="true"
             android:label="Tokopedia"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait" />
         <activity

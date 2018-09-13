@@ -164,8 +164,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         super.setupToolbar(view);
         toolbarTitle = toolbar.findViewById(R.id.toolbar_title);
         menuItemNotification = toolbar.findViewById(R.id.action_notification);
-        menuItemNotification.setOnClickListener(v ->
-                startActivity(NotificationActivity.start(getActivity())));
+        menuItemNotification.setOnClickListener(v -> {
+            globalNavAnalytics.eventTrackingNotification();
+            startActivity(NotificationActivity.start(getActivity()));
+        });
     }
 
     @Override
