@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.di.TalkScope
 import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
+import com.tokopedia.talk.common.domain.usecase.MarkTalkNotFraudUseCase
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
@@ -18,7 +19,8 @@ import javax.inject.Inject
  */
 class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
                                                @TalkScope val getProductTalkUseCase : GetProductTalkUseCase,
-                                               @TalkScope val deleteCommentTalkUseCase: DeleteCommentTalkUseCase) :
+                                               @TalkScope val deleteCommentTalkUseCase: DeleteCommentTalkUseCase,
+                                               private val markTalkNotFraudUseCase: MarkTalkNotFraudUseCase) :
         ProductTalkContract.Presenter,
         BaseDaggerPresenter<ProductTalkContract.View>() {
 
@@ -83,6 +85,52 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
             }
 
         })
+    }
+
+    override fun markTalkNotFraud(talkId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+            markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.onSuccessMarkTalkNotFraud(talkId)
+                }
+            })
+        }
+    }
+
+    override fun markCommentNotFraud(talkId: String, commentId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+            markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.onSuccessMarkCommentNotFraud(talkId, commentId)
+                }
+            })
+        }
     }
 
     private fun onErrorTalk(e: Throwable) {

@@ -3,6 +3,7 @@ package com.tokopedia.talk.producttalk.view.adapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.*
 
 /**
@@ -58,6 +59,34 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
                 for (comment in talk.listChild) {
                     if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
                         talk.listChild.remove(comment)
+                    }
+                }
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+
+
+    fun showReportedTalk(talkId: String) {
+        for (talk in visitables) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                talk.headThread.menu.isMasked = false
+                talk.headThread.comment = talk.headThread.rawMessage
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    fun showReportedCommentTalk(talkId: String, commentId: String) {
+        for (talk in visitables) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        comment.menu.isMasked = false
+                        comment.comment = comment.rawMessage
                     }
                 }
                 notifyItemChanged(position)
