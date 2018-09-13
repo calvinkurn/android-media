@@ -54,7 +54,6 @@ import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.core.router.wallet.IWalletRouter;
 import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RouterUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
@@ -229,7 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         initEggTokenScrollListener();
-        registerBroadcastReceiverHeader();
+        registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -915,13 +914,13 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         return null;
     }
 
-    protected void registerBroadcastReceiverHeader() {
+    protected void registerBroadcastReceiverTokoCash() {
         if (getActivity() == null)
             return;
 
         getActivity().registerReceiver(
-                headerBroadcastReceiver,
-                new IntentFilter(GlobalConfig.getPackageApplicationName())
+                tokoCashBroadcaseReceiver,
+                new IntentFilter(TokocashPendingDataBroadcastReceiver.class.getSimpleName())
         );
     }
 
@@ -929,15 +928,15 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (getActivity() == null)
             return;
 
-        getActivity().unregisterReceiver(headerBroadcastReceiver);
+        getActivity().unregisterReceiver(tokoCashBroadcaseReceiver);
     }
 
-    private BroadcastReceiver headerBroadcastReceiver = new BroadcastReceiver() {
+    private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             if (extras != null) {
-                String data = extras.getString(GlobalConfig.getPackageApplicationName());
+                String data = extras.getString(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
                 if (data != null && !data.isEmpty())
                     presenter.getHeaderData(false); // update header data
             }
