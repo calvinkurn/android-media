@@ -227,7 +227,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         return shopProductViewModelList;
     }
 
-    public void updateWishListStatus(String productId, String selectedEtalaseId, boolean wishList) {
+    public void updateWishListStatus(String productId, boolean wishList) {
         for (int i = 0, sizei = shopProductViewModelList.size(); i < sizei; i++) {
             ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
             if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
@@ -241,7 +241,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             notifyItemChanged(DEFAULT_FEATURED_POSITION);
         }
 
-        boolean isEtalaseChanged = shopProductEtalaseHighlightViewModel.updateWishListStatus(productId, selectedEtalaseId, wishList);
+        boolean isEtalaseChanged = shopProductEtalaseHighlightViewModel.updateWishListStatus(productId, wishList);
         if (isEtalaseChanged) {
             notifyItemChanged(DEFAULT_ETALASE_HIGHLIGHT_POSITION);
         }

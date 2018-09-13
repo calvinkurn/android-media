@@ -43,19 +43,16 @@ public class ShopProductEtalaseHighlightViewModel implements BaseShopProductView
         return etalaseHighlightCarouselViewModelList;
     }
 
-    public boolean updateWishListStatus(String productId, String selectedEtalaseId, boolean wishList) {
+    public boolean updateWishListStatus(String productId, boolean wishList) {
         if (etalaseHighlightCarouselViewModelList != null) {
             for (int i = 0, sizei = etalaseHighlightCarouselViewModelList.size(); i < sizei; i++) {
                 EtalaseHighlightCarouselViewModel etalaseHighlightCarouselViewModel = etalaseHighlightCarouselViewModelList.get(i);
-                if (TextUtils.isEmpty(selectedEtalaseId) ||
-                        etalaseHighlightCarouselViewModel.getShopEtalaseViewModel().getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
-                    List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModel.getShopProductViewModelList();
-                    for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
-                        ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
-                        if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
-                            shopProductViewModel.setWishList(wishList);
-                            return true;
-                        }
+                List<ShopProductViewModel> shopProductViewModelList = etalaseHighlightCarouselViewModel.getShopProductViewModelList();
+                for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
+                    ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
+                    if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
+                        shopProductViewModel.setWishList(wishList);
+                        return true;
                     }
                 }
             }

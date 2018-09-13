@@ -50,7 +50,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductDedicatedListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
@@ -67,7 +67,7 @@ import javax.inject.Inject;
 import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHOW;
 
 public class ShopProductListFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
-        implements ShopProductDedicatedListView, WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedNewListener,
+        implements ShopProductDedicatedListView, WishListActionListener, BaseEmptyViewHolder.Callback, ShopProductClickedListener,
         ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, EtalaseChipAdapter.OnEtalaseChipAdapterListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
@@ -137,9 +137,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     @Override
     protected ShopProductAdapterTypeFactory getAdapterTypeFactory() {
         return new ShopProductAdapterTypeFactory(null,
-                this, this,
+                this, null, this,
                 this,
-                 true, 0, ShopTrackProductTypeDef.PRODUCT
+                true, 0, ShopTrackProductTypeDef.PRODUCT
         );
     }
 
@@ -522,7 +522,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId, true);
+        shopProductAdapter.updateWishListStatus(productId, true);
     }
 
     @Override
@@ -532,7 +532,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId,false);
+        shopProductAdapter.updateWishListStatus(productId, false);
     }
 
     @Override

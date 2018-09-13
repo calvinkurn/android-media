@@ -20,7 +20,8 @@ import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseTitl
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.HideViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
@@ -35,7 +36,8 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.SMALL_DATA_LIM
 public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     private final ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener;
-    private final ShopProductClickedNewListener shopProductClickedListener;
+    private final ShopProductClickedListener shopProductClickedListener;
+    private final ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener;
     private final EmptyResultViewHolder.Callback emptyProductOnClickListener;
     private final ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener onShopProductEtalaseListViewHolderListener;
 
@@ -46,7 +48,8 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
     private ShopProductAdapter shopProductAdapter;
 
     public ShopProductAdapterTypeFactory(ShopProductPromoViewHolder.PromoViewHolderListener promoViewHolderListener,
-                                         ShopProductClickedNewListener shopProductClickedListener,
+                                         ShopProductClickedListener shopProductClickedListener,
+                                         ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener,
                                          EmptyResultViewHolder.Callback emptyProductOnClickListener,
                                          ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener
                                                  onShopProductEtalaseListViewHolderListener,
@@ -55,6 +58,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                          @ShopTrackProductTypeDef int shopTrackType) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
+        this.shopCarouselSeeAllClickedListener = shopCarouselSeeAllClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         this.isGridSquareLayout = isGridSquareLayout;
@@ -181,9 +185,9 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                 type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
                     type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT,
-                    parent.getContext().getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED);
+                    parent.getContext().getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED,null);
         } if (type == ShopProductEtalaseHighlightViewHolder.LAYOUT) {
-            return new ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener);
+            return new ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener, shopCarouselSeeAllClickedListener);
         } else if (type == ShopProductViewHolder.GRID_LAYOUT ||
                 type == ShopProductViewHolder.LIST_LAYOUT) {
             return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type);

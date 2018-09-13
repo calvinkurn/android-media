@@ -1,6 +1,5 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
-import android.os.Parcelable;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,7 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapter;
 import com.tokopedia.shop.product.view.adapter.EtalaseHighlightAdapterTypeFactory;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 
@@ -27,10 +27,13 @@ public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<Sh
     public static final int LAYOUT = R.layout.item_shop_product_etalase_highlight;
 
     public ShopProductEtalaseHighlightViewHolder(View itemView, int deviceWidth,
-                                                 ShopProductClickedNewListener shopProductClickedNewListener) {
+                                                 ShopProductClickedListener shopProductClickedListener,
+                                                 ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener) {
         super(itemView);
         etalaseHighlightAdapter = new EtalaseHighlightAdapter(
-                new EtalaseHighlightAdapterTypeFactory(shopProductClickedNewListener,deviceWidth));
+                new EtalaseHighlightAdapterTypeFactory(shopProductClickedListener,
+                        shopCarouselSeeAllClickedListener,
+                        deviceWidth));
         findViews(itemView);
     }
 

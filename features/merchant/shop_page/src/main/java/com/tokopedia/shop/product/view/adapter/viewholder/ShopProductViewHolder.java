@@ -1,11 +1,9 @@
 package com.tokopedia.shop.product.view.adapter.viewholder;
 
-import android.app.Activity;
 import android.graphics.Paint;
 import android.support.annotation.LayoutRes;
 import android.support.v7.widget.AppCompatRatingBar;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -15,7 +13,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 /**
@@ -29,7 +27,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     public static final int LIST_LAYOUT = R.layout.item_shop_product_list;
     public static final double RATIO_WITH_RELATIVE_TO_SCREEN = 2.3;
 
-    private final ShopProductClickedNewListener shopProductClickedListener;
+    private final ShopProductClickedListener shopProductClickedListener;
     private ImageView wishlistImageView;
     private FrameLayout wishlistContainer;
     protected ImageView productImageView;
@@ -52,7 +50,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private View vgRating;
     private View badgeContainer;
 
-    public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
+    public ShopProductViewHolder(View itemView, ShopProductClickedListener shopProductClickedListener,
                                  boolean isFixWidth, int deviceWidth,
                                  @ShopTrackProductTypeDef int shopTrackType, int layoutType) {
         super(itemView);

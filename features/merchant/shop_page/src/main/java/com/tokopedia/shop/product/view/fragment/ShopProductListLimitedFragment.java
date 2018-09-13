@@ -34,7 +34,6 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
-import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -51,7 +50,8 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductPromoViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder;
-import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
+import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener;
+import com.tokopedia.shop.product.view.listener.ShopProductClickedListener;
 import com.tokopedia.shop.product.view.listener.ShopProductListView;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
 import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
@@ -78,8 +78,8 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.ETALASE_TO_SHO
 
 public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements ShopProductListView, WishListActionListener, BaseEmptyViewHolder.Callback,
-        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedNewListener,
-        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener {
+        ShopProductPromoViewHolder.PromoViewHolderListener, ShopProductClickedListener,
+        ShopProductEtalaseListViewHolder.OnShopProductEtalaseListViewHolderListener, ShopCarouselSeeAllClickedListener {
 
     private static final int REQUEST_CODE_USER_LOGIN = 100;
     private static final int REQUEST_CODE_USER_LOGIN_FOR_WEBVIEW = 101;
@@ -361,7 +361,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int deviceWidth = displaymetrics.widthPixels;
         return new ShopProductAdapterTypeFactory(this,
-                this, this,
+                this,this, this,
                 this,
                 true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         );
@@ -449,7 +449,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId, true);
+        shopProductAdapter.updateWishListStatus(productId, true);
     }
 
     @Override
@@ -459,7 +459,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId,false);
+        shopProductAdapter.updateWishListStatus(productId,false);
     }
 
     @Override
@@ -696,6 +696,14 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
+    public void onSeeAllClicked(ShopEtalaseViewModel shopEtalaseViewModel) {
+        Intent intent = ShopProductListActivity.createIntent(getActivity(),
+                shopInfo.getInfo().getShopId(), "",
+                shopEtalaseViewModel.getEtalaseId(), attribution, sortName);
+        startActivity(intent);
+    }
+
+    @Override
     public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
         if (shopInfo != null) {
             if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
@@ -804,4 +812,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         super.onAttachActivity(context);
         shopModuleRouter = ((ShopModuleRouter) context.getApplicationContext());
     }
+
+
 }

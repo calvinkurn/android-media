@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_margin="@dimen/dp_8"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        style="@style/TextView.Title.Bold"
+        android:singleLine="true"
+        android:ellipsize="end"
+        tools:text="@string/shop_page_label_featured_product"/>
+
+    <TextView
+        android:id="@+id/tvSeeAll"
+        style="@style/TextView.Title.Green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:text="@string/label_see_all"
+        android:padding="@dimen/dp_4"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</LinearLayout>
