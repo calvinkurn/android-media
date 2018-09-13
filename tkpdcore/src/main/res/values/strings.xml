@@ -241,7 +241,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_message">Chat</string>
     <string name="shipping_status">Status Pengiriman</string>
     <string name="shipping_confirm">Konfirmasi Pengiriman</string>
-    <string name="new_order">Order Baru</string>
+    <string name="new_order">Pesanan Baru</string>
     <string name="order_status">Status Pemesanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
     <string name="delivery_confirm">Konfirmasi Penerimaan</string>
