@@ -118,6 +118,13 @@ public class MainParentActivity extends AppCompatActivity implements
         return intent;
     }
 
+    @DeepLink({ApplinkConst.HOME_ACCOUNT})
+    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        return intent;
+    }
+
     public static Intent getApplinkFeedIntent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
@@ -206,6 +213,10 @@ public class MainParentActivity extends AppCompatActivity implements
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
                     break;
+                case ACCOUNT_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
+                    break;
                 case HOME_MENU:
                 default:
                     bottomNavigation.getMenu().findItem(R.id.menu_home).setChecked(true);
@@ -264,7 +275,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean gonNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 

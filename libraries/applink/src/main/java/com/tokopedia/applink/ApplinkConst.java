@@ -9,6 +9,7 @@ package com.tokopedia.applink;
 public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
+    String HOME_ACCOUNT = "tokopedia://home/account";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
