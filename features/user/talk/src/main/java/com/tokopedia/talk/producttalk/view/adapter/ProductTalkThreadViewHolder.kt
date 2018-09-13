@@ -14,6 +14,7 @@ import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
+import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 
 class ProductTalkThreadViewHolder(val v: View,
@@ -25,7 +26,9 @@ class ProductTalkThreadViewHolder(val v: View,
 
     interface TalkItemListener {
         fun onReplyTalkButtonClick(allowReply: Boolean)
-        fun onMenuButtonClicked(menu: TalkState)
+        fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
+        fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
+        fun onNoShowTalkItemClick(talkId: String)
     }
 
     companion object {
@@ -42,44 +45,102 @@ class ProductTalkThreadViewHolder(val v: View,
     val replyButton: View = itemView.findViewById(R.id.replyButton)
     val menuButton: ImageView = itemView.menu
 
+    private val reportedLayout: View = itemView.layout_reported
+    private val reportedMessage: TextView = itemView.reportedMessage
+    private val yesReportButton: TextView = itemView.reportYes
+    private val noReportButton: TextView = itemView.reportNo
+    private val rawMessage: TextView = itemView.rawMessage
+    private val separatorReport: View = itemView.separatorReport
+
+
     private lateinit var adapter: CommentTalkAdapter
 
     override fun bind(element: TalkThreadViewModel) {
         element?.run {
 
-            if (!element.listChild.isEmpty()) {
-                val typeFactoryImpl = CommentTalkTypeFactoryImpl(commentTalkListener, talkProductAttachmentListener)
-                adapter = CommentTalkAdapter(typeFactoryImpl, element.listChild)
-                commentRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
-                        .VERTICAL, false)
-                commentRecyclerView.adapter = adapter
-                commentRecyclerView.visibility = View.VISIBLE
+            setCommentList(element)
+            setHeader(element)
+            setupMenuButton(element)
+            if (element.headThread.menu.isMasked) {
+                setupMaskedMessage(element)
             } else {
-                commentRecyclerView.visibility = View.GONE
+                setupNormalTalk(element)
             }
-
-            ImageHandler.loadImageCircle2(avatar.context, avatar, element.headThread.avatar)
-            userName.text = element.headThread.name
-            content.text = element.headThread.comment
-            timestamp.text = element.headThread.timestamp
-
             replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(element.headThread.menu.allowReply)
             }
 
-            setupMenuButton(element.headThread.menu)
-
         }
     }
 
-    private fun setupMenuButton(menu: TalkState) {
+    private fun setHeader(element: TalkThreadViewModel) {
+        ImageHandler.loadImageCircle2(avatar.context, avatar, element.headThread.avatar)
+        userName.text = element.headThread.name
+        content.text = element.headThread.comment
+        timestamp.text = element.headThread.timestamp
+    }
+
+    private fun setCommentList(element: TalkThreadViewModel) {
+        if (!element.listChild.isEmpty()) {
+            val typeFactoryImpl = CommentTalkTypeFactoryImpl(commentTalkListener, talkProductAttachmentListener)
+            adapter = CommentTalkAdapter(typeFactoryImpl, element.listChild)
+            commentRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
+                    .VERTICAL, false)
+            commentRecyclerView.adapter = adapter
+            commentRecyclerView.visibility = View.VISIBLE
+        } else {
+            commentRecyclerView.visibility = View.GONE
+        }
+    }
+
+    private fun setupMenuButton(element: TalkThreadViewModel) {
+        val menu : TalkState = element.headThread.menu
+
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
         } else {
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu) }
+
+        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
+                element.headThread.shopId,
+                element.headThread.talkId,
+                element.headThread.productId)  }
     }
 
+
+
+    private fun setupMaskedMessage(element: TalkThreadViewModel) {
+        reportedLayout.visibility = View.VISIBLE
+        content.visibility = View.GONE
+
+        reportedMessage.text = element.headThread.comment
+
+        if (element.headThread.isOwner) {
+            rawMessage.visibility = View.VISIBLE
+            separatorReport.visibility = View.VISIBLE
+            rawMessage.text = element.headThread.rawMessage
+        } else {
+            rawMessage.visibility = View.GONE
+            separatorReport.visibility = View.GONE
+        }
+
+        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick(
+                element.headThread.talkId,
+                element.headThread.shopId,
+                element.headThread.productId) }
+        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(element
+                .headThread.talkId) }
+
+    }
+
+
+    private fun setupNormalTalk(element: TalkThreadViewModel) {
+        reportedLayout.visibility = View.GONE
+
+        content.visibility = View.VISIBLE
+        content.text = element.headThread.comment
+
+    }
 }
