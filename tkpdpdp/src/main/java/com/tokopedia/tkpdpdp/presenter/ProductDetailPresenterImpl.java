@@ -1395,7 +1395,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         @Override
         public void onError(Throwable e) {
-            Log.d("FikryWishlist", e.getMessage());
+
         }
 
         @Override

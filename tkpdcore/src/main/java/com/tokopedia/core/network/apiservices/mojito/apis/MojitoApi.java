@@ -51,7 +51,6 @@ public interface MojitoApi {
     @GET(TkpdBaseURL.Mojito.API_V1_WISHLIST_COUNT)
     Observable<Response<WishlistCountResponse>> getWishlistCount(@Query("product_id") String productId);
 
-
     @GET(TkpdBaseURL.Mojito.API_V2_BRANDS)
     Observable<Response<String>> getBrandsOfficialStore();
 
