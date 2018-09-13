@@ -1,10 +1,11 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
@@ -44,7 +45,9 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
     private Observable<GraphqlResponse> getWhitelist() {
         getWhitelistUseCase.clearRequest();
-        getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
+        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_CONTENT_USER))
+        );
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
     }
 
