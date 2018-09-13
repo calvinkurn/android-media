@@ -363,7 +363,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onPreviewCameraViewVisible() {
-        viewPager.SetAllowPageSwitching(false);
+        viewPager.setAllowPageSwitching(false);
         tabLayout.setVisibility(View.GONE);
         imagePickerPreviewWidget.setVisibility(View.GONE);
         disableDoneView();
@@ -371,7 +371,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     @Override
     public void onCameraViewVisible() {
-        viewPager.SetAllowPageSwitching(true);
+        viewPager.setAllowPageSwitching(true);
         if (tabLayout.getTabCount() > 1) {
             tabLayout.setVisibility(View.VISIBLE);
         }

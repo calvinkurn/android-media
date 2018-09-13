@@ -468,7 +468,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         this.isInEditMode = isInEditMode;
         this.currentEditActionType = editActionType;
 
-        viewPager.SetAllowPageSwitching(!isInEditMode);
+        viewPager.setAllowPageSwitching(!isInEditMode);
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (isInEditMode) {
             editorMainView.setVisibility(View.GONE);
