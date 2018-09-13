@@ -8,15 +8,15 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Error {
 
-    @@SerializedName("id")
+    @SerializedName("id")
     @Expose
     private int id;
 
-    @@SerializedName("status")
+    @SerializedName("status")
     @Expose
     private String status;
 
-    @@SerializedName("title")
+    @SerializedName("title")
     @Expose
     private String title;
 
