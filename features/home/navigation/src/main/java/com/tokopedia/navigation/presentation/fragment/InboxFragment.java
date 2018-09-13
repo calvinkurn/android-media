@@ -84,6 +84,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         RecyclerView recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getInboxData());
 
