@@ -274,9 +274,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getOrderListIntent(Context context) {
         return OrderListActivity.getInstance(context);
     }
-
-    @Override
-    public Fragment getKolPostShopFragment(String shopId) {
-        return KolPostShopFragment.newInstance(shopId);
-    }
 }
