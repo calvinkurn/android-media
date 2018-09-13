@@ -131,7 +131,9 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
         }
     }
 
