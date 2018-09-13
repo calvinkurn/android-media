@@ -138,6 +138,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
+        setHasOptionsMenu(false)
         adapter.showEmpty()
     }
 

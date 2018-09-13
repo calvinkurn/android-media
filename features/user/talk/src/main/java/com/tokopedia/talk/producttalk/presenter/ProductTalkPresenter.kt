@@ -58,6 +58,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
                     view.onEmptyTalk()
                 } else {
                     if(reset){
+                        view.hideRefresh()
                         view.onSuccessResetTalk(viewModel.listThread)
                     }else {
                         view.onSuccessGetTalks(viewModel.listThread)
