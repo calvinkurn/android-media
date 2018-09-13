@@ -37,6 +37,7 @@ import com.tokopedia.challenges.ChallengesAnalytics;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
+import com.tokopedia.challenges.view.activity.AllSubmissionsActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
@@ -225,6 +226,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             submitButton.setOnClickListener(this);
             btnShare.setVisibility(View.VISIBLE);
             submitButton.setVisibility(View.VISIBLE);
+            bottomMarginView.setVisibility(View.VISIBLE);
         }
         if (!TextUtils.isEmpty(challengeId) || challengeResult == null) {
             mPresenter.initialize(true, challengeResult);
@@ -357,6 +359,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             submitButton.setOnClickListener(this);
             btnShare.setVisibility(View.VISIBLE);
             submitButton.setVisibility(View.VISIBLE);
+            bottomMarginView.setVisibility(View.VISIBLE);
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
@@ -464,7 +467,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
-            Utils.generateText(tvHowBuzzPointsText,buzzPointText);
+            Utils.generateText(tvHowBuzzPointsText, buzzPointText);
         }
     }
 
@@ -491,13 +494,15 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 seeMoreButtonDesc.setText(R.string.see_more);
                 shortDescription.setVisibility(View.VISIBLE);
                 longDescription.setVisibility(View.GONE);
-                nestedScrollView.scrollTo(0, 0);
             }
         } else if (v.getId() == R.id.tv_see_all) {
             analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
                     ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION_SEE_ALL,
                     ChallengesAnalytics.EVENT_ACTION_CLICK, "");
-            fragmentCallbacks.replaceFragment(submissionResults, challengeResult.getId());
+            Intent intent = AllSubmissionsActivity.newInstance(getActivity());
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
+            intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
+            startActivity(intent);
         } else if (v.getId() == R.id.ll_continue) {
             mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
@@ -508,16 +513,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesAnalytics.EVENT_ACTION_CLICK, ChallengesAnalytics.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
-            String mediaUrl;
-            boolean isVideo;
-            if (TextUtils.isEmpty(challengeResult.getSharing().getAssets().getVideo())) {
-                mediaUrl = challengeResult.getThumbnailUrl();
-                isVideo = false;
-            } else {
-                mediaUrl = challengeResult.getSharing().getAssets().getVideo();
-                isVideo = true;
-            }
-            // ShareBottomSheet.show(getActivity().getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), challengeResult.getTitle(), challengeResult.getSharing().getMetaTags().getOgUrl(), challengeResult.getSharing().getMetaTags().getOgTitle(), challengeResult.getSharing().getMetaTags().getOgImage(), challengeResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeResult.getId()), true, mediaUrl, challengeResult.getHashTag(), isVideo);
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult);
         }
     }

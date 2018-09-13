@@ -417,13 +417,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     private void showVideoImageChooseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(getContext().getResources().getString(R.string.dialog_upload_option));
-        builder.setPositiveButton(getContext().getResources().getString(R.string.title_video), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                selectVideo();
-            }
-        }).setNegativeButton(getContext().getResources().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+        builder.setMessage(getContext().getResources().getString(R.string.dialog_upload_options));
+        builder.setPositiveButton(getContext().getResources().getString(R.string.title_video), (dialogInterface, i) -> selectVideo()).setNegativeButton(getContext().getResources().getString(R.string.title_image), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 showImagePickerDialog();

@@ -208,10 +208,11 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
         public void bindData(final SubmissionResult productItem) {
             submissionTitle.setText(productItem.getTitle());
-            if(Utils.checkIsPastChallenge(productItem.getCollection().getEndDate())) {
+            if (productItem.getCollection() != null &&
+                    Utils.checkIsPastChallenge(productItem.getCollection().getEndDate())) {
                 ivFavourite.setVisibility(View.GONE);
                 ivShareVia.setVisibility(View.GONE);
-            }else {
+            } else {
                 ivFavourite.setVisibility(View.VISIBLE);
                 ivShareVia.setVisibility(View.VISIBLE);
             }

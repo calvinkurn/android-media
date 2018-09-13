@@ -45,14 +45,15 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Inject
     AllSubmissionPresenter mPresenter;
     private Toolbar toolbar;
-    private ChallengesFragmentCallbacks fragmentCallbacks;
+
     private TextView mostRecent;
     private TextView buzzPoints;
     private static final int SORT_RECENT = 1;
     private static final int SORT_POINTS = 2;
     private int currentFilter;
     private boolean isPastChallenge;
-
+    private List<SubmissionResult> submissions;
+    private String challengeId;
 
     public static Fragment createInstance(Bundle extras) {
         AllSubmissionFragment categoryFragment = new AllSubmissionFragment();
@@ -64,10 +65,11 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        if (fragmentCallbacks.getSubmissions() != null)
-            mPresenter.setPageStart(fragmentCallbacks.getSubmissions().size());
-        this.isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
-
+        mPresenter.setPageStart(0);
+        if (getArguments() != null) {
+            this.isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
+            this.challengeId = getArguments().getString(Utils.QUERY_PARAM_CHALLENGE_ID);
+        }
     }
 
     @Nullable
@@ -75,13 +77,15 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_submissions, container, false);
         setUpVariables(view);
-        if (fragmentCallbacks != null) {
-            showProgressBar();
-            recyclerview.setAdapter(new SubmissionItemAdapter(fragmentCallbacks.getSubmissions(), this, LinearLayoutManager.VERTICAL, isPastChallenge));
-            mPresenter.setChallengeId(fragmentCallbacks.getChallengeId());
-            hideProgressBar();
-        }
+//        if (fragmentCallbacks != null) {
+//            showProgressBar();
+            recyclerview.setAdapter(new SubmissionItemAdapter(submissions, this, LinearLayoutManager.VERTICAL, isPastChallenge));
+            mPresenter.setChallengeId(challengeId);
+//            hideProgressBar();
+//        }
+        mPresenter.loadMoreItems(true);
         recyclerview.addOnScrollListener(rvOnScrollListener);
+
         return view;
     }
 
@@ -117,7 +121,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        fragmentCallbacks = (ChallengeDetailActivity) activity;
+       // fragmentCallbacks = (ChallengeDetailActivity) activity;
     }
 
     @Override

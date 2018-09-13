@@ -26,7 +26,6 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.Utils;
-import com.tokopedia.core.shop.model.shopData.Image;
 import com.tokopedia.design.component.BottomSheets;
 
 import java.io.File;

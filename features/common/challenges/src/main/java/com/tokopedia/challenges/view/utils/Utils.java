@@ -1,27 +1,20 @@
 package com.tokopedia.challenges.view.utils;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.webkit.URLUtil;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.BulletTextView;
-import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.Awards;
-import com.tokopedia.core.gcm.Constants;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
 import okhttp3.MediaType;
@@ -165,7 +157,7 @@ public class Utils {
 
     public static String getApplinkPathForBranch(String url, String id) {
         if (url != null && id != null) {
-            url = url.replace(Constants.Schemes.APPLINKS + "://", "");
+            url = url.replace("tokopedia://", "");
             url = url.replaceFirst("\\{.*?\\} ?", id == null ? "" : id);
         }
         return url;
@@ -231,7 +223,7 @@ public class Utils {
             tvStatus.setText(context.getResources().getString(R.string.completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
-        }else if (Utils.STATUS_ENCODING.equalsIgnoreCase(status)) {
+        } else if (Utils.STATUS_ENCODING.equalsIgnoreCase(status)) {
             tvStatus.setText(context.getResources().getString(R.string.pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
@@ -270,7 +262,7 @@ public class Utils {
     }
 
     public static void generateText(LinearLayout layout, @NonNull String text) {
-        for (String each : text.replaceFirst("~","").split("~")) {
+        for (String each : text.replaceFirst("~", "").split("~")) {
             BulletTextView bulletTextView = new BulletTextView(layout.getContext());
             bulletTextView.setBuzzPoint(each);
             layout.addView(bulletTextView);
@@ -282,7 +274,7 @@ public class Utils {
     }
 
     public static boolean isImage(String videoUrl) {
-        for (int i=0; i<isImage.length; i++) {
+        for (int i = 0; i < isImage.length; i++) {
             if (videoUrl.endsWith(isImage[i]))
                 return true;
         }

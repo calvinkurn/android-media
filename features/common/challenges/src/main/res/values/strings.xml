@@ -78,6 +78,8 @@
     <string name="error_msg_select_image">Please Select Image</string>
     <string name="error_msg_select_video">Please Select Video</string>
     <string name="error_msg_select_image_video">Please Select Image or Video</string>
+    <string name="dialog_upload_options">Bagaimana Anda ingin mengatur gambar Anda ?</string>
+    <string name="copy">salinlink</string>
 
 
 </resources>

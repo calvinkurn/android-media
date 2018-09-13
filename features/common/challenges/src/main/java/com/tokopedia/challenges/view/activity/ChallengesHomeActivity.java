@@ -17,7 +17,6 @@ import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.design.utils.TabUtil;
 
 /**

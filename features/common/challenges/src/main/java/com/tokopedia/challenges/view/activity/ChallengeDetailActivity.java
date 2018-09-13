@@ -22,13 +22,10 @@ import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.List;
 
-public class ChallengeDetailActivity extends BaseActivity implements ChallengesFragmentCallbacks{
+public class ChallengeDetailActivity extends BaseActivity implements ChallengesFragmentCallbacks {
 
 
-    public static final int REQUEST_CODE_LOGIN = 1011;
     public static final int REQUEST_CODE_SUBMISSIONDETAILACTIVITY = 10;
-    private List<SubmissionResult> submissions;
-    private String challengeId;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_DETAILS})
     public static TaskStackBuilder getInstanceIntentAppLinkBackToHome(Context context, Bundle extras) {
@@ -65,17 +62,6 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
     }
 
     @Override
-    public void replaceFragment(List<SubmissionResult> submissions, String challengeId) {
-        this.submissions = submissions;
-        this.challengeId = challengeId;
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(R.anim.slide_in_up, R.anim.slide_in_down, R.anim.slide_out_down, R.anim.slide_out_up);
-        transaction.add(R.id.parent_view, AllSubmissionFragment.createInstance(getIntent().getExtras()));
-        transaction.addToBackStack(null);
-        transaction.commit();
-    }
-
-    @Override
     public void replaceFragment(String text, String toolBarText) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Bundle bundle = new Bundle();
@@ -87,13 +73,4 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
         transaction.commit();
     }
 
-    @Override
-    public List<SubmissionResult> getSubmissions() {
-        return submissions;
-    }
-
-    @Override
-    public String getChallengeId() {
-        return challengeId;
-    }
 }

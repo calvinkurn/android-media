@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.core.customwidget.TouchImageView;
+import com.tokopedia.design.image.TouchImageView;
 
 import java.util.ArrayList;
 

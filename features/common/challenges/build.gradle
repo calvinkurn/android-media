@@ -5,7 +5,7 @@ project.ext {
     artifactId = 'challenges'
     groupId = 'com.tokopedia.challenges'
     versionName = "${tkpdChallengesVersion}"
-    artifactName ="challenges-release"
+    artifactName = "challenges-release"
 }
 dependencies {
 
@@ -23,13 +23,12 @@ dependencies {
     annotationProcessor rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+    implementation(rootProject.ext.miscDependencies.loaderviewlibrary) {
         exclude group: 'com.android.support'
     }
     implementation rootProject.ext.networkDependencies.glide
-    compile project(path: ':tkpdcore')
 }
 
 apply from: '../../../publish_local.gradle'

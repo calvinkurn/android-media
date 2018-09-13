@@ -308,10 +308,11 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
         this.participateTitle.setText(participateTitle);
         // String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
-        Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
-        intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
+
         // this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
         this.participateTitle.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
+            intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
             navigateToActivity(intent);
         });
     }
