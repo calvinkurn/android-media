@@ -2,6 +2,7 @@ package com.tokopedia.talk.reporttalk.view.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
@@ -181,12 +182,16 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     override fun onErrorReportTalk(errorMessage: String) {
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
             presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
-        }
+        }.showRetrySnackbar()
     }
 
     override fun onSuccessReportTalk() {
         activity?.run {
-            setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }

@@ -82,7 +82,7 @@ data class InboxTalkItemPojo(
         val talk_user_label: String = "",
         @Expose
         @SerializedName("talk_user_label_id")
-        val talk_user_label_id: String = "",
+        val talk_user_label_id: Int = 0,
         @Expose
         @SerializedName("talk_user_name")
         val talk_user_name: String = "",

@@ -120,4 +120,15 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
             }
         }
     }
+
+    fun updateReportTalk(talkId: String) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                talk.talkThread.headThread.menu.isReported = true
+                talk.talkThread.headThread.menu.allowReport = false
+                notifyItemChanged(position)
+            }
+        }
+    }
 }

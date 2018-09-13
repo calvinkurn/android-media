@@ -262,9 +262,12 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.hideEmpty()
         adapter.addList(talkViewModel.listTalk)
 
+        setNotificationTab(talkViewModel.unreadNotification)
+    }
+
+    private fun setNotificationTab(unreadNotification: Int) {
         if (activity is GetUnreadNotificationListener) {
-            (activity as GetUnreadNotificationListener).onGetNotification(talkViewModel
-                    .unreadNotification, nav)
+            (activity as GetUnreadNotificationListener).onGetNotification(unreadNotification, nav)
         }
     }
 
@@ -276,7 +279,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                 presenter.getInboxTalk(filter, nav)
-            }
+            }.showRetrySnackbar()
         }
     }
 
@@ -287,6 +290,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     override fun onEmptyTalk() {
         adapter.clearAllElements()
         adapter.showEmpty()
+        setNotificationTab(0)
+
     }
 
     override fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>) {
@@ -297,7 +302,11 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
-            onSuccessReportTalk()
+            data?.extras?.run {
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID,"")
+                onSuccessReportTalk(talkId)
+
+            }
         } else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK) {
             //TODO UPDATE NOTIFICATION READ
             data?.run {
@@ -307,9 +316,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    private fun onSuccessReportTalk() {
+    private fun onSuccessReportTalk(talkId: String) {
         activity?.run {
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
+        }
+
+        if(!talkId.isBlank()) {
+            adapter.updateReportTalk(talkId)
+        }else{
+            onRefreshData()
         }
     }
 

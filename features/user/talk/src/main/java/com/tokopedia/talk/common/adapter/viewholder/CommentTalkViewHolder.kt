@@ -22,6 +22,8 @@ class CommentTalkViewHolder(val v: View,
                             private val productListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<ProductTalkItemViewModel>(v) {
 
+    private val SELLER_LABEL_ID: Int = 1
+
     interface TalkCommentItemListener {
         fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
         fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String)
@@ -34,6 +36,7 @@ class CommentTalkViewHolder(val v: View,
     private val menuButton: ImageView = itemView.menu
     private val talkContent: TextView = itemView.talk_content
     private val listProduct: RecyclerView = itemView.productAttachment
+    private val profileLabel: TextView = itemView.seller_label
 
     private lateinit var adapter: TalkProductAttachmentAdapter
 
@@ -71,14 +74,12 @@ class CommentTalkViewHolder(val v: View,
     private fun setupNormalTalk(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.GONE
         talkContent.visibility = View.VISIBLE
-        listProduct.visibility = View.VISIBLE
         talkContent.text = element.comment
     }
 
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
-        listProduct.visibility = View.GONE
         reportedMessage.text = element.comment
 
         if (element.isOwner) {
@@ -105,10 +106,17 @@ class CommentTalkViewHolder(val v: View,
         }
     }
 
+
     private fun setProfileHeader(element: ProductTalkItemViewModel) {
         ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.avatar)
         profileName.text = element.name
         datetime.text = element.timestamp
+        if (element.labelId == SELLER_LABEL_ID) {
+            profileLabel.visibility = View.VISIBLE
+            profileLabel.text = element.labelString
+        } else {
+            profileLabel.visibility = View.GONE
+        }
     }
 
     private fun setupProductAttachment(element: ProductTalkItemViewModel) {

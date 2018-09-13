@@ -23,7 +23,9 @@ data class ProductTalkItemViewModel(
         var shopId : String = "",
         var talkId : String = "",
         var commentId : String = "",
-        var productId : String = "") :
+        var productId : String = "",
+        var labelId : Int = 0,
+        var labelString : String = "") :
         Visitable<ProductTalkChildThreadTypeFactory> {
 
     override fun type(typeFactory: ProductTalkChildThreadTypeFactory): Int {

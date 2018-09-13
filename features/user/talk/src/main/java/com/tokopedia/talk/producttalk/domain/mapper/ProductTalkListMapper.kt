@@ -71,7 +71,9 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_shop_id,
                     data.comment_talk_id,
                     data.comment_id,
-                    pojo.talk_product_id
+                    pojo.talk_product_id,
+                    data.comment_user_label_id,
+                    data.comment_user_label
 
             ))
         }
@@ -91,7 +93,9 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk_shop_id,
                         pojo.talk_id,
                         "",
-                        pojo.talk_product_id
+                        pojo.talk_product_id,
+                        pojo.talk_user_label_id,
+                        pojo.talk_user_label
 
                 ),
                 listCommentTalk)
