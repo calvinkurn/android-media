@@ -13,6 +13,7 @@ import com.tokopedia.discovery.imagesearch.data.subscriber.DefaultImageSearchSub
 import com.tokopedia.discovery.imagesearch.domain.usecase.GetImageSearchUseCase;
 import com.tokopedia.discovery.newdiscovery.base.BaseDiscoveryContract.View;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
+import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -55,24 +56,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         RequestParams requestParams = GetProductUseCase.createInitializeSearchParam(searchParameter, false, false);
         enrichWithForceSearchParam(requestParams, forceSearch);
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("query", searchParameter.getQueryKey());
-        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
-        variables.put("source", searchParameter.getSource());
-
-        TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
-        headlineParams.put(TopAdsParams.KEY_EP, HEADLINE);
-        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, TEMPLATE_VALUE);
-        headlineParams.put(TopAdsParams.KEY_ITEM, ITEM_VALUE);
-        variables.put("headline_params", UrlParamHelper.generateUrlParamString(headlineParams));
-
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
-        graphqlUseCase.clearRequest();
-        graphqlUseCase.setRequest(graphqlRequest);
-
-        graphqlUseCase.execute(
+        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase,
                 new DefaultGqlSearchSubscriber(searchParameter, forceSearch, getBaseDiscoveryView(), false)
         );
     }

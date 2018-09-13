@@ -20,6 +20,7 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCa
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
+import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
 import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
@@ -42,6 +43,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+
+import rx.Subscriber;
 
 
 /**
@@ -147,60 +150,51 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
+        Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
+            @Override
+            public void onStart() {
+                getView().incrementStart();
+            }
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_search_product), SearchProductGqlResponse.class, variables);
-
-        graphqlUseCase.clearRequest();
-        graphqlUseCase.setRequest(graphqlRequest);
-
-        graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
-                    @Override
-                    public void onStart() {
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse objects) {
-                        SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
-                        ProductViewModel productViewModel
-                                = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
-                        if (isViewAttached()) {
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().removeLoading();
-                            } else {
-                                List<Visitable> list = new ArrayList<Visitable>();
-                                getView().removeLoading();
-                                if(!productViewModel.getAdsModel().getData().isEmpty()) {
-                                    list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
-                                }
-                                list.addAll(productViewModel.getProductList());
-                                getView().setProductList(list);
-                                getView().addLoading();
-                            }
-                            getView().storeTotalData(productViewModel.getTotalData());
+            @Override
+            public void onNext(GraphqlResponse objects) {
+                SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
+                ProductViewModel productViewModel
+                        = ProductViewModelHelper.convertToProductViewModel(gqlResponse);
+                if (isViewAttached()) {
+                    if (productViewModel.getProductList().isEmpty()) {
+                        getView().removeLoading();
+                    } else {
+                        List<Visitable> list = new ArrayList<Visitable>();
+                        getView().removeLoading();
+                        if(!productViewModel.getAdsModel().getData().isEmpty()) {
+                            list.add(new TopAdsViewModel(productViewModel.getAdsModel()));
                         }
+                        list.addAll(productViewModel.getProductList());
+                        getView().setProductList(list);
+                        getView().addLoading();
                     }
+                    getView().storeTotalData(productViewModel.getTotalData());
+                }
+            }
 
-                    @Override
-                    public void onCompleted() {
-                        if (isViewAttached()) {
-                            getView().hideRefreshLayout();
-                        }
-                    }
+            @Override
+            public void onCompleted() {
+                if (isViewAttached()) {
+                    getView().hideRefreshLayout();
+                }
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().removeLoading();
-                            getView().hideRefreshLayout();
-                            getView().showNetworkError(searchParameter.getStartRow());
-                        }
-                    }
-                });
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().removeLoading();
+                    getView().hideRefreshLayout();
+                    getView().showNetworkError(searchParameter.getStartRow());
+                }
+            }
+        };
+        GqlSearchHelper.requestProductLoadMore(context, requestParams, graphqlUseCase, subscriber);
     }
 
     @Override
@@ -211,81 +205,64 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
         enrichWithAdditionalParams(requestParams, additionalParams);
         removeDefaultCategoryParam(requestParams);
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("query", searchParameter.getQueryKey());
-        variables.put("params", UrlParamHelper.generateUrlParamString(requestParams.getParamsAllValueInString()));
-        variables.put("source", searchParameter.getSource());
+        Subscriber<GraphqlResponse> subscriber = new DefaultSubscriber<GraphqlResponse>() {
+            @Override
+            public void onStart() {
+                getView().showRefreshLayout();
+                getView().incrementStart();
+            }
 
-        TKPDMapParam<String, String> headlineParams = requestParams.getParamsAllValueInString();
-        headlineParams.put(TopAdsParams.KEY_EP, DiscoveryPresenter.HEADLINE);
-        headlineParams.put(TopAdsParams.KEY_TEMPLATE_ID, DiscoveryPresenter.TEMPLATE_VALUE);
-        headlineParams.put(TopAdsParams.KEY_ITEM, DiscoveryPresenter.ITEM_VALUE);
-        variables.put("headline_params", UrlParamHelper.generateUrlParamString(headlineParams));
+            @Override
+            public void onCompleted() {
+                getView().hideRefreshLayout();
+            }
 
-        GraphqlRequest graphqlRequest = new
-                GraphqlRequest(GraphqlHelper.loadRawString(context.getResources(),
-                R.raw.gql_search_product_first_page), SearchProductGqlResponse.class, variables);
+            @Override
+            public void onError(Throwable e) {
+                if (isViewAttached()) {
+                    getView().removeLoading();
+                    getView().showNetworkError(0);
+                    getView().hideRefreshLayout();
+                }
+            }
 
-        graphqlUseCase.clearRequest();
-        graphqlUseCase.setRequest(graphqlRequest);
-
-        graphqlUseCase.execute(new DefaultSubscriber<GraphqlResponse>() {
-                    @Override
-                    public void onStart() {
-                        getView().showRefreshLayout();
-                        getView().incrementStart();
-                    }
-
-                    @Override
-                    public void onCompleted() {
-                        getView().hideRefreshLayout();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (isViewAttached()) {
-                            getView().removeLoading();
-                            getView().showNetworkError(0);
-                            getView().hideRefreshLayout();
+            @Override
+            public void onNext(GraphqlResponse objects) {
+                if (isViewAttached()) {
+                    SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
+                    ProductViewModel productViewModel
+                            = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
+                    List<Visitable> list = new ArrayList<Visitable>();
+                    if (productViewModel.getProductList().isEmpty()) {
+                        getView().removeLoading();
+                        getView().setEmptyProduct();
+                        getView().setTotalSearchResultCount("0");
+                    } else {
+                        HeaderViewModel headerViewModel = new HeaderViewModel();
+                        headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
+                        if (productViewModel.getGuidedSearchViewModel() != null) {
+                            headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
                         }
-                    }
-
-                    @Override
-                    public void onNext(GraphqlResponse objects) {
-                        if (isViewAttached()) {
-                            SearchProductGqlResponse gqlResponse = objects.getData(SearchProductGqlResponse.class);
-                            ProductViewModel productViewModel
-                                    = ProductViewModelHelper.convertToProductViewModelFirstPageGql(gqlResponse);
-                            List<Visitable> list = new ArrayList<Visitable>();
-                            if (productViewModel.getProductList().isEmpty()) {
-                                getView().removeLoading();
-                                getView().setEmptyProduct();
-                                getView().setTotalSearchResultCount("0");
-                            } else {
-                                HeaderViewModel headerViewModel = new HeaderViewModel();
-                                headerViewModel.setSuggestionModel(productViewModel.getSuggestionModel());
-                                if (productViewModel.getGuidedSearchViewModel() != null) {
-                                    headerViewModel.setGuidedSearch(productViewModel.getGuidedSearchViewModel());
-                                }
-                                if (productViewModel.getQuickFilterModel() != null
-                                        && productViewModel.getQuickFilterModel().getFilter() != null) {
-                                    headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
-                                }
-                                list.add(headerViewModel);
-                                if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
-                                    list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
-                                }
-                                list.addAll(productViewModel.getProductList());
-                                getView().removeLoading();
-                                getView().setProductList(list);
-                                getView().addLoading();
-                                getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
-                            }
-                            getView().storeTotalData(productViewModel.getTotalData());
-                            getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
+                        if (productViewModel.getQuickFilterModel() != null
+                                && productViewModel.getQuickFilterModel().getFilter() != null) {
+                            headerViewModel.setQuickFilterList(getView().getQuickFilterOptions(productViewModel.getQuickFilterModel()));
                         }
+                        list.add(headerViewModel);
+                        if(!gqlResponse.getTopAdsModel().getData().isEmpty()) {
+                            list.add(new TopAdsViewModel(gqlResponse.getTopAdsModel()));
+                        }
+                        list.addAll(productViewModel.getProductList());
+                        getView().removeLoading();
+                        getView().setProductList(list);
+                        getView().addLoading();
+                        getView().setTotalSearchResultCount(productViewModel.getSuggestionModel().getFormattedResultCount());
                     }
-                });
+                    getView().storeTotalData(productViewModel.getTotalData());
+                    getView().renderDynamicFilter(productViewModel.getDynamicFilterModel());
+                }
+            }
+        };
+        GqlSearchHelper.requestProductFirstPage(context, requestParams, graphqlUseCase, subscriber);
     }
 
     @Override
