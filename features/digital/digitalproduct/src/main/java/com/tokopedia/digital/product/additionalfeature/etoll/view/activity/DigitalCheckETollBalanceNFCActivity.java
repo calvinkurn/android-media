@@ -336,8 +336,6 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         } catch (IOException e) {
             e.printStackTrace();
             showError(getResources().getString(R.string.failed_read_card));
-        } finally {
-            isoDep.close();
         }
     }
 
