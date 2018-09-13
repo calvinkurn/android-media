@@ -66,6 +66,7 @@
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginRight="@dimen/dp_16"
                 android:text="@string/interest_select_one"
+                android:textAllCaps="false"
                 app:buttonCompatSize="medium"
                 app:buttonCompatType="primary" />
         </LinearLayout>
