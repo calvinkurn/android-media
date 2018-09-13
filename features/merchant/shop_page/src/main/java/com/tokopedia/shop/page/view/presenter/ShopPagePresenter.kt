@@ -94,7 +94,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
 
     fun getFeedWhitelist(shopId: String) {
         getWhitelistUseCase.execute(
-                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP),
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_SHOP, shopId),
                 object : Subscriber<GraphqlResponse>() {
                     override fun onCompleted() {
                     }
