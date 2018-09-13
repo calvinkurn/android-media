@@ -175,9 +175,9 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
     }
 
-    private void checkWishlistCount(int productId) {
+    private void checkWishlistCount(String productId) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putInt(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
+        requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
 
         getWishlistCountUseCase.execute(requestParams, new Subscriber<Response<WishlistCountResponse>>() {
             @Override
@@ -537,7 +537,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                             viewListener.hideProgressLoading();
                             viewListener.refreshMenu();
 
-                            checkWishlistCount(productDetailData.getInfo().getProductId());
+                            checkWishlistCount(String.valueOf(productDetailData.getInfo().getProductId()));
 
                             requestOtherProducts(context,
                                     NetworkParam.paramOtherProducts(productDetailData));
@@ -1046,7 +1046,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                         cacheInteractor.storeProductDetailCache(data.getInfo().getProductId().toString(), data);
                         viewListener.onProductDetailLoaded(data);
 
-                        checkWishlistCount(data.getInfo().getProductId());
+                        checkWishlistCount(String.valueOf(data.getInfo().getProductId()));
 
                         viewListener.hideProgressLoading();
                         viewListener.refreshMenu();

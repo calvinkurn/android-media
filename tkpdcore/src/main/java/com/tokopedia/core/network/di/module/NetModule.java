@@ -90,14 +90,6 @@ public class NetModule {
         return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
     }
 
-    @MojitoWishlistCountQualifier
-    @ApplicationScope
-    @Provides
-    public Retrofit provideMojitoWishlistCountRetrofit(@MojitoNoRetryAuth OkHttpClient okHttpClient,
-                                                        Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(TkpdBaseURL.MOJITO_DOMAIN).client(okHttpClient).build();
-    }
-
     @HadesQualifier
     @ApplicationScope
     @Provides

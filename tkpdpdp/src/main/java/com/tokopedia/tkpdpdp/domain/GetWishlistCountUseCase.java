@@ -19,6 +19,6 @@ public class GetWishlistCountUseCase extends UseCase<Response<WishlistCountRespo
 
     @Override
     public Observable<Response<WishlistCountResponse>> createObservable(RequestParams requestParams) {
-        return service.getWishlistCount(requestParams.getInt(PRODUCT_ID_PARAM, 0));
+        return service.getWishlistCount(requestParams.getString(PRODUCT_ID_PARAM, "0"));
     }
 }

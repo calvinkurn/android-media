@@ -81,9 +81,6 @@ public interface AppComponent {
     @MojitoGetWishlistQualifier
     Retrofit mojitoGetWishlistRetrofit();
 
-    @MojitoWishlistCountQualifier
-    Retrofit mojitoWishlistCount();
-
     @MojitoWishlistActionQualifier
     Retrofit mojitoWishlistActionRetrofit();
 

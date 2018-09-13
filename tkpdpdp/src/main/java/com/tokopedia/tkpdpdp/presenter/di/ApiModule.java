@@ -23,9 +23,9 @@ import retrofit2.Retrofit;
 
 @Module
 public class ApiModule {
-    @MojitoWishlistCountQualifier
+    @MojitoGetWishlistQualifier
     @Provides
-    MojitoApi mojitoGetWishlistCount(@MojitoWishlistCountQualifier Retrofit retrofit){
+    MojitoApi mojitoGetWishlistCount(@MojitoGetWishlistQualifier Retrofit retrofit){
         return retrofit.create(MojitoApi.class);
     }
 }
