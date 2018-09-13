@@ -16,6 +16,8 @@ public interface ConstantTransactionAnalytics {
 
     interface EventName {
         String CLICK_ATC = "clickATC";
+        String CLICK_BUY = "clickBuy";
+        String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
         String REMOVE_FROM_CART = "removeFromCart";
         String CHECKOUT = "checkout";
@@ -28,6 +30,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO = "viewPromo";
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
+        String CLICK_ADDRESS = "clickAddress";
     }
 
     interface EventCategory {
@@ -162,6 +165,24 @@ public interface ConstantTransactionAnalytics {
         String CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click + from ubah from kirim ke beberapa alamat";
         String CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click - from ubah from kirim ke beberapa alamat";
         String CLICK_TOP_DONASI = "click top donasi";
+
+        String CLICK_ADD_FROM_WISHLIST_ON_EMPTY_CART = "click add from wishlist on empty cart";
+
+        String CLICK_CHECKOUT = "click checkout";
+        String CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk";
+        String CLICK_BAYAR = "click bayar";
+        String CLICK_UBAH_KURIR = "click ubah kurir";
+        String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
+
+        //ROBINHOOD
+        String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
+        String CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman";
+        String CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN = "click checklist pilih durasi pengiriman";
+        String CLICK_CTA_BUTTON = "click cta button";
+        String VIEW_PRESELECTED_COURIER_OPTION = "view preselected courier option";
+        String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
+        String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
+        String CLICK_UBAH_DURASI = "click ubah durasi";
     }
 
     interface EventLabel {
@@ -169,16 +190,26 @@ public interface ConstantTransactionAnalytics {
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
+        String FAILED = "failed";
+        String CHECKLIST = "checklist";
+        String UN_CHECKLIST = "unchecklist";
+        String FAILED_DROPSHIPPER = "failed dropshipper";
+
+        String CHECKOUT_SUCCESS_DEFAULT = "success - default";
+        String CHECKOUT_SUCCESS_CHECK_ALL = "success - check all";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - shop and product";
     }
 
     interface ScreenName {
         String CART = "/cart page (step 1)";
         String CHECKOUT = "/cart summary page (step 2)";
         String SELECT_COURIER = "/selectcourier";
-        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
-        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";
-        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment/voucher";
-        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment/coupon";
+        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
+        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment#voucher";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment#coupon";
         String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
         String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
         String ADDRESS_LIST_PAGE = "/cart/address";

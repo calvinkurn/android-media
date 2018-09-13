@@ -20,6 +20,12 @@ public class Product {
     @SerializedName("product_name")
     @Expose
     private String productName;
+    @SerializedName("sku")
+    @Expose
+    private String sku;
+    @SerializedName("campaign_id")
+    @Expose
+    private int campaignId;
     @SerializedName("free_returns")
     @Expose
     private FreeReturns freeReturns;
@@ -29,6 +35,12 @@ public class Product {
     @SerializedName("product_price")
     @Expose
     private int productPrice;
+    @SerializedName("product_original_price")
+    @Expose
+    private int productOriginalPrice;
+    @SerializedName("is_slash_price")
+    @Expose
+    private boolean isSlashPrice;
     @SerializedName("category_id")
     @Expose
     private int categoryId;
@@ -77,6 +89,9 @@ public class Product {
     @SerializedName("product_switch_invenage")
     @Expose
     private int productSwitchInvenage;
+    @SerializedName("currency_rate")
+    @Expose
+    private int currencyRate;
     @SerializedName("product_price_currency")
     @Expose
     private int productPriceCurrency;
@@ -85,7 +100,7 @@ public class Product {
     private ProductImage productImage;
     @SerializedName("product_all_images")
     @Expose
-    private Object productAllImages;
+    private String productAllImages;
     @SerializedName("product_notes")
     @Expose
     private String productNotes;
@@ -113,6 +128,15 @@ public class Product {
     @SerializedName("product_showcase")
     @Expose
     private ProductShowCase productShowcase;
+    @SerializedName("product_finsurance")
+    @Expose
+    private int productFinsurance;
+    @SerializedName("product_shop_id")
+    @Expose
+    private int productShopId;
+    @SerializedName("is_wishlisted")
+    @Expose
+    private boolean isWishlisted;
     @SerializedName("product_tracker_data")
     @Expose
     private ProductTrackerData productTrackerData;
@@ -213,7 +237,7 @@ public class Product {
         return productImage;
     }
 
-    public Object getProductAllImages() {
+    public String getProductAllImages() {
         return productAllImages;
     }
 
@@ -255,5 +279,37 @@ public class Product {
 
     public FreeReturns getFreeReturns() {
         return freeReturns;
+    }
+
+    public String getSku() {
+        return sku;
+    }
+
+    public int getCampaignId() {
+        return campaignId;
+    }
+
+    public int getProductOriginalPrice() {
+        return productOriginalPrice;
+    }
+
+    public boolean isSlashPrice() {
+        return isSlashPrice;
+    }
+
+    public int getCurrencyRate() {
+        return currencyRate;
+    }
+
+    public int getProductFinsurance() {
+        return productFinsurance;
+    }
+
+    public int getProductShopId() {
+        return productShopId;
+    }
+
+    public boolean isWishlisted() {
+        return isWishlisted;
     }
 }

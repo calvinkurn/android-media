@@ -1,7 +1,13 @@
 package com.tokopedia.travelcalendar.di;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.di.scope.ApplicationScope;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.travelcalendar.data.TravelCalendarRepository;
 import com.tokopedia.travelcalendar.domain.GetHolidayUseCase;
+import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.travelcalendar.network.TravelCalendarApi;
 import com.tokopedia.travelcalendar.network.TravelCalendarAuthInterceptor;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
@@ -9,6 +15,7 @@ import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 
 /**
@@ -19,9 +26,16 @@ public class TravelCalendarModule {
 
     @TravelCalendarScope
     @Provides
-    OkHttpClient provideOkHttpClient(TravelCalendarAuthInterceptor travelCalendarAuthInterceptor) {
+    OkHttpClient provideOkHttpClient(@ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                     TravelCalendarAuthInterceptor travelCalendarAuthInterceptor,
+                                     TravelCalendarRouter travelCalendarRouter) {
+
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(travelCalendarAuthInterceptor);
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(httpLoggingInterceptor)
+                    .addInterceptor(travelCalendarRouter.getChuckInterceptor());
+        }
         return builder.build();
     }
 
@@ -42,4 +56,13 @@ public class TravelCalendarModule {
     GetHolidayUseCase provideGetHolidayUseCase(TravelCalendarRepository travelCalendarRepository) {
         return new GetHolidayUseCase(travelCalendarRepository);
     }
+
+    @Provides
+    public TravelCalendarRouter provideTravelCalendarRouter(@ApplicationContext Context context) {
+        if (context instanceof TravelCalendarRouter) {
+            return ((TravelCalendarRouter) context);
+        }
+        throw new RuntimeException("Application must implement " + TravelCalendarRouter.class.getCanonicalName());
+    }
+
 }

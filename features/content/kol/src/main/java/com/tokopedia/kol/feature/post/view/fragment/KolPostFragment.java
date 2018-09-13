@@ -259,29 +259,43 @@ public class KolPostFragment extends BaseDaggerFragment implements
 
     @Override
     public void onOpenKolTooltip(int rowNumber, String url) {
-        ((KolRouter) getActivity().getApplication()).openRedirectUrl(getActivity(), url);
+        kolRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
     public void onFollowKolClicked(int rowNumber, int id) {
-        presenter.followKol(id, rowNumber, this);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.followKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnfollowKolClicked(int rowNumber, int id) {
-        presenter.unfollowKol(id, rowNumber, this);
-
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unfollowKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onLikeKolClicked(int rowNumber, int id) {
-        presenter.likeKol(id, rowNumber, this);
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.likeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override
     public void onUnlikeKolClicked(int rowNumber, int id) {
-        presenter.unlikeKol(id, rowNumber, this);
-
+        if (userSession != null && userSession.isLoggedIn()) {
+            presenter.unlikeKol(id, rowNumber, this);
+        } else {
+            startActivity(kolRouter.getLoginIntent(getActivity()));
+        }
     }
 
     @Override

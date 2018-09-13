@@ -196,6 +196,7 @@ android {
 
 dependencies {
     implementation project(rootProject.ext.features.core)
+    implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.cacheApi)
