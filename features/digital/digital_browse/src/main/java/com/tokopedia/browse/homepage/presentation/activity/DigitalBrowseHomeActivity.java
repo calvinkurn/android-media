@@ -15,6 +15,7 @@ import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment;
+import com.tokopedia.graphql.data.GraphqlClient;
 
 public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity implements HasComponent<DigitalBrowseHomeComponent> {
 
@@ -25,12 +26,24 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
     private static final int TYPE_BELANJA = 1;
     private static final int TYPE_LAYANAN = 2;
 
+    private static final String TITLE_BELANJA = "Belanja di Tokopedia";
+    private static final String TITLE_LAYANAN = "Semua Layanan";
+
     private static DigitalBrowseHomeComponent digitalBrowseHomeComponent;
 
     @DeepLink({ApplinkConstant.DIGITAL_BROWSE })
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         Intent intent = new Intent(context, DigitalBrowseHomeActivity.class);
+
+        if (!extras.containsKey(EXTRA_TITLE)) {
+            if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_BELANJA) {
+                extras.putString(EXTRA_TITLE, TITLE_BELANJA);
+            } else if (Integer.parseInt(extras.getString(EXTRA_TYPE)) == TYPE_LAYANAN) {
+                extras.putString(EXTRA_TITLE, TITLE_LAYANAN);
+            }
+        }
+
         return intent.setData(uri.build()).putExtras(extras);
     }
 
@@ -41,6 +54,8 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
         if (getIntent().hasExtra(EXTRA_TITLE)) {
             setupToolbar();
         }
+
+        GraphqlClient.init(this);
     }
 
     @Override

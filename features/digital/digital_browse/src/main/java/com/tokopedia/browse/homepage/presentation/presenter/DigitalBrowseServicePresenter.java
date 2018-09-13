@@ -8,10 +8,10 @@ import com.tokopedia.browse.R;
 import com.tokopedia.browse.homepage.domain.subscriber.GetDigitalCategorySubscriber;
 import com.tokopedia.browse.homepage.domain.usecase.DigitalBrowseServiceUseCase;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceContract;
-import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 import com.tokopedia.browse.homepage.presentation.model.IndexPositionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,9 +57,24 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
 
     @Override
     public void processTabData(Map<String, IndexPositionModel> titleMap) {
-        for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
-            getView().addTab(entry.getKey());
+        getView().showTab();
+
+        List<String> titleList = new ArrayList<>();
+        for (int i = 0; i < titleMap.size(); i++) {
+            titleList.add("");
         }
+
+        for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
+            titleList.set(entry.getValue().getIndexPositionInTab(), entry.getKey());
+        }
+
+        for (String title : titleList) {
+            if (!title.equals("")) {
+                getView().addTab(title);
+            }
+        }
+
+        getView().renderTab();
     }
 
     @Override

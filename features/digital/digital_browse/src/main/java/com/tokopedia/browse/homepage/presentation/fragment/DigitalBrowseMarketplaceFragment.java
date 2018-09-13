@@ -4,23 +4,59 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
-import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.R;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
+import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapter;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapterTypeFactory;
-import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseBelanjaContract;
+import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowseCategoryViewHolder;
+import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowsePopularViewHolder;
+import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseMarketplaceContract;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseMarketplaceViewModel;
+import com.tokopedia.browse.homepage.presentation.model.DigitalBrowsePopularBrandsViewModel;
+import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseRowViewModel;
+import com.tokopedia.browse.homepage.presentation.presenter.DigitalBrowseMarketplacePresenter;
+import com.tokopedia.design.component.TextViewCompat;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author by furqan on 30/08/18.
  */
 
-public class DigitalBrowseMarketplaceFragment extends BaseListFragment<DigitalBrowseMarketplaceViewModel, DigitalBrowseMarketplaceAdapterTypeFactory>
-        implements DigitalBrowseBelanjaContract.View {
+public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
+        implements DigitalBrowseMarketplaceContract.View, DigitalBrowseCategoryViewHolder.CategoryListener,
+        DigitalBrowsePopularViewHolder.PopularBrandListener {
+
+    private static final int COLUMN_NUMBER = 4;
+    private static final String OFFICIAL_STORES = "tokopedia://official-stores";
+    private static final String KEY_MARKETPLACE_DATA = "KEY_MARKETPLACE_DATA";
+
+    @Inject
+    DigitalBrowseMarketplacePresenter presenter;
+
+    private LinearLayout containerPopularBrand;
+    private TextViewCompat tvAllPopularBrand;
+    private RecyclerView rvPopularBrand;
+    private RecyclerView rvCategory;
+
+    private DigitalBrowseMarketplaceAdapter categoryAdapter;
+    private DigitalBrowseMarketplaceAdapter popularAdapter;
+
+    private DigitalBrowseMarketplaceViewModel digitalBrowseMarketplaceViewModel;
+
 
     public static Fragment getFragmentInstance() {
         return new DigitalBrowseMarketplaceFragment();
@@ -32,22 +68,51 @@ public class DigitalBrowseMarketplaceFragment extends BaseListFragment<DigitalBr
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_digital_browse_marketplace, container, false);
+        View view = inflater.inflate(R.layout.fragment_digital_browse_marketplace, container, false);
+
+        containerPopularBrand = view.findViewById(R.id.container_popular_title);
+        tvAllPopularBrand = view.findViewById(R.id.tv_all_popular);
+        rvPopularBrand = view.findViewById(R.id.rv_popular_brand);
+        rvCategory = view.findViewById(R.id.rv_category);
+
+        tvAllPopularBrand.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RouteManager.route(getContext(), OFFICIAL_STORES);
+            }
+        });
+
+        return view;
     }
 
     @Override
-    public void loadData(int page) {
-
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
-    protected DigitalBrowseMarketplaceAdapterTypeFactory getAdapterTypeFactory() {
-        return new DigitalBrowseMarketplaceAdapterTypeFactory();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        presenter.attachView(this);
+        presenter.onInit();
+
+        initializeCategoryView();
+        initializePopularView();
+
+        if (savedInstanceState != null) {
+            digitalBrowseMarketplaceViewModel = savedInstanceState.getParcelable(KEY_MARKETPLACE_DATA);
+
+            renderCategory(digitalBrowseMarketplaceViewModel.getRowViewModelList());
+            renderPopularBrands(digitalBrowseMarketplaceViewModel.getPopularBrandsList());
+        }
     }
 
     @Override
-    protected String getScreenName() {
-        return null;
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(KEY_MARKETPLACE_DATA, digitalBrowseMarketplaceViewModel);
     }
 
     @Override
@@ -56,7 +121,87 @@ public class DigitalBrowseMarketplaceFragment extends BaseListFragment<DigitalBr
     }
 
     @Override
-    public void onItemClicked(DigitalBrowseMarketplaceViewModel viewModel) {
+    protected String getScreenName() {
+        return null;
+    }
 
+    @Override
+    public void renderData(DigitalBrowseMarketplaceViewModel marketplaceData) {
+        this.digitalBrowseMarketplaceViewModel = marketplaceData;
+
+        renderCategory(marketplaceData.getRowViewModelList());
+        renderPopularBrands(marketplaceData.getPopularBrandsList());
+    }
+
+    private void initializeCategoryView() {
+        tvAllPopularBrand.setVisibility(View.GONE);
+        containerPopularBrand.setVisibility(View.GONE);
+        rvPopularBrand.setVisibility(View.GONE);
+
+        DigitalBrowseMarketplaceAdapterTypeFactory digitalBrowseMarketplaceAdapterTypeFactory = new DigitalBrowseMarketplaceAdapterTypeFactory(this, this);
+        categoryAdapter = new DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, new ArrayList<>());
+        popularAdapter = new DigitalBrowseMarketplaceAdapter(digitalBrowseMarketplaceAdapterTypeFactory, new ArrayList<>());
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), COLUMN_NUMBER);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if (categoryAdapter.isLoadingObject(position)) {
+                    return 4;
+                } else {
+                    return 1;
+                }
+            }
+        });
+
+        rvCategory.setLayoutManager(layoutManager);
+        rvCategory.setHasFixedSize(false);
+        rvCategory.setAdapter(categoryAdapter);
+
+        categoryAdapter.showLoading();
+    }
+
+    private void initializePopularView() {
+        hidePopularBrand();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+
+        rvPopularBrand.setLayoutManager(layoutManager);
+        rvPopularBrand.setHasFixedSize(false);
+        rvPopularBrand.setAdapter(popularAdapter);
+    }
+
+    private void renderCategory(List<DigitalBrowseRowViewModel> digitalBrowseRowViewModels) {
+        categoryAdapter.hideLoading();
+        categoryAdapter.clearAllElements();
+        categoryAdapter.addElement(digitalBrowseRowViewModels);
+    }
+
+    private void renderPopularBrands(List<DigitalBrowsePopularBrandsViewModel> digitalBrowsePopularBrandsViewModels) {
+        showPopularBrand();
+
+        popularAdapter.clearAllElements();
+        popularAdapter.addElement(digitalBrowsePopularBrandsViewModels);
+    }
+
+    private void showPopularBrand() {
+        containerPopularBrand.setVisibility(View.VISIBLE);
+        tvAllPopularBrand.setVisibility(View.VISIBLE);
+        rvPopularBrand.setVisibility(View.VISIBLE);
+    }
+
+    private void hidePopularBrand() {
+        containerPopularBrand.setVisibility(View.GONE);
+        tvAllPopularBrand.setVisibility(View.GONE);
+        rvPopularBrand.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel) {
+        RouteManager.route(getContext(), viewModel.getUrl());
+    }
+
+    @Override
+    public void onCategoryItemClicked(DigitalBrowseRowViewModel viewModel) {
+        RouteManager.route(getContext(), viewModel.getAppLinks());
     }
 }

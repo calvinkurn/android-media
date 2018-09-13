@@ -7,7 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowseServiceShimmeringViewHolder;
-import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
+import com.tokopedia.browse.homepage.presentation.adapter.viewholder.DigitalBrowseServiceViewHolder;
+import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel;
 
 /**
  * @author by furqan on 04/09/18.
@@ -15,10 +16,18 @@ import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceView
 
 public class DigitalBrowseServiceAdapterTypeFactory extends BaseAdapterTypeFactory implements AdapterTypeFactory {
 
+    private DigitalBrowseServiceViewHolder.CategoryListener categoryListener;
+
+    public DigitalBrowseServiceAdapterTypeFactory(DigitalBrowseServiceViewHolder.CategoryListener categoryListener) {
+        this.categoryListener = categoryListener;
+    }
+
     @Override
     public AbstractViewHolder createViewHolder(View parent, int type) {
         if (type == DigitalBrowseServiceShimmeringViewHolder.LAYOUT) {
             return new DigitalBrowseServiceShimmeringViewHolder(parent);
+        } else if (type == DigitalBrowseServiceViewHolder.LAYOUT) {
+            return new DigitalBrowseServiceViewHolder(parent, categoryListener);
         } else {
             return super.createViewHolder(parent, type);
         }
@@ -29,7 +38,7 @@ public class DigitalBrowseServiceAdapterTypeFactory extends BaseAdapterTypeFacto
         return DigitalBrowseServiceShimmeringViewHolder.LAYOUT;
     }
 
-    public int type(DigitalBrowseServiceViewModel viewModel) {
-        return 0;
+    public int type(DigitalBrowseServiceCategoryViewModel viewModel) {
+        return DigitalBrowseServiceViewHolder.LAYOUT;
     }
 }

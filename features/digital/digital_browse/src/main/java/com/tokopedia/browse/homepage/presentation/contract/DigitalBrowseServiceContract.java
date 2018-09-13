@@ -3,11 +3,9 @@ package com.tokopedia.browse.homepage.presentation.contract;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 import com.tokopedia.browse.homepage.presentation.model.IndexPositionModel;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -22,7 +20,13 @@ public interface DigitalBrowseServiceContract {
 
         void renderData(DigitalBrowseServiceViewModel viewModel);
 
+        void showTab();
+
+        void hideTab();
+
         void addTab(String key);
+
+        void renderTab();
     }
 
     interface Presenter {

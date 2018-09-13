@@ -29,13 +29,13 @@ public class ServiceViewModelMapper {
         DigitalBrowseServiceViewModel returnData = new DigitalBrowseServiceViewModel();
 
         List<DigitalBrowseServiceCategoryViewModel> categoryViewModelList = new ArrayList<>();
-        Map<String, Integer> titleMap = new HashMap<>();
+        Map<String, IndexPositionModel> titleMap = new HashMap<>();
 
         for (DigitalBrowseCategoryGroupEntity row : data.getCategoryGroups().getDynamicHomeCategoryGroupEntities()) {
             IndexPositionModel indexPositionModel = new IndexPositionModel();
             indexPositionModel.setIndexPositionInTab(titleIndex);
             indexPositionModel.setIndexPositionInList(categoryViewModelList.size());
-            titleMap.put(row.getTitle(), titleIndex);
+            titleMap.put(row.getTitle(), indexPositionModel);
 
             DigitalBrowseServiceCategoryViewModel returnRow = new DigitalBrowseServiceCategoryViewModel();
 
@@ -49,6 +49,8 @@ public class ServiceViewModelMapper {
             titleIndex++;
         }
 
+        returnData.setCategoryViewModelList(categoryViewModelList);
+        returnData.setTitleMap(titleMap);
         return returnData;
     }
 
