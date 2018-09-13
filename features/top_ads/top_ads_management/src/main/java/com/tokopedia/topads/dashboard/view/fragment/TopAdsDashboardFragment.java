@@ -33,6 +33,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.design.component.FloatingButton;
 import com.tokopedia.design.component.Menus;
+import com.tokopedia.design.component.ticker.TickerView;
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.design.utils.DateLabelUtils;
 import com.tokopedia.graphql.data.GraphqlClient;
@@ -40,6 +41,7 @@ import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
 import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.topads.R;
+import com.tokopedia.topads.common.TopAdsWebViewActivity;
 import com.tokopedia.topads.common.data.model.DataDeposit;
 import com.tokopedia.topads.common.view.adapter.TopAdsOptionMenuAdapter;
 import com.tokopedia.topads.common.view.utils.TopAdsMenuBottomSheets;
@@ -106,8 +108,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private View viewGroupPromo;
     private SwipeToRefresh swipeToRefresh;
     private SnackbarRetry snackbarRetry;
-    private RecyclerView recyclerTicker;
-    private TickerTopadsAdapter tickerTopadsAdapter;
+    private TickerView tickerView;
 
     private LabelView dateLabelView;
     Date startDate, endDate;
@@ -190,10 +191,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void initTicker(View view) {
-        recyclerTicker = view.findViewById(R.id.ticker_list);
-        recyclerTicker.setLayoutManager(new LinearLayoutManager(getContext()));
-        tickerTopadsAdapter = new TickerTopadsAdapter();
-        recyclerTicker.setAdapter(tickerTopadsAdapter);
+        tickerView = view.findViewById(R.id.ticker_view);
     }
 
     private void initEmptyStateView(View view) {
@@ -711,7 +709,16 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
 
     @Override
     public void onSuccessGetTicker(List<String> message) {
-        tickerTopadsAdapter.setListMessageTicker(message);
+        tickerView.setListMessage(new ArrayList<>(message));
+        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
+            @Override
+            public void onClick(View view, String messageClick) {
+                startActivity(TopAdsWebViewActivity.createIntent(getContext(), messageClick));
+            }
+        });
+        tickerView.buildView();
+        tickerView.setVisibility(View.VISIBLE);
     }
 
     @Override
