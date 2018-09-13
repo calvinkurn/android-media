@@ -1,8 +1,9 @@
 package com.tokopedia.settingbank.choosebank.domain.usecase
 
 import com.raizlabs.android.dbflow.sql.language.Select
-import com.tokopedia.core.database.model.Bank
-import com.tokopedia.core.database.model.Bank_Table
+import com.tokopedia.bankdb.Bank
+import com.tokopedia.bankdb.Bank_Table
+
 import com.tokopedia.settingbank.choosebank.domain.mapper.GetBankListDBMapper
 import com.tokopedia.settingbank.choosebank.view.viewmodel.BankListViewModel
 import com.tokopedia.usecase.RequestParams

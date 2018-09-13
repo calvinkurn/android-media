@@ -11,6 +11,7 @@ import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.activation.presentation.fragment.ActivateTokoCashFragment;
 import com.tokopedia.tokocash.activation.presentation.fragment.RequestOTPWalletFragment;
+import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadcastReceiver;
 
 /**
  * Created by nabillasabbaha on 7/24/17.
@@ -43,10 +44,20 @@ public class ActivateTokoCashActivity extends BaseSimpleActivity
 
     @Override
     public void directToSuccessActivateTokoCashPage() {
+        sendBroadcastTokocash();
         startActivity(SuccessActivateTokoCashActivity.newInstance(getApplicationContext()));
         setResult(RESULT_OK);
         finish();
     }
+
+    private void sendBroadcastTokocash() {
+        Intent intent = new Intent(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        Bundle extras = new Bundle();
+        extras.putString(TokocashPendingDataBroadcastReceiver.class.getSimpleName(), TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        intent.putExtras(extras);
+        sendBroadcast(intent);
+    }
+
 
     @Override
     public void directPageToOTPWallet() {

@@ -159,10 +159,6 @@ public interface FeedPlus {
 
         int getColor(int black);
 
-        void onSeeAllRecentView();
-
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
-
         void onShowEmpty();
 
         void clearData();

@@ -177,4 +177,13 @@ public class AppLinkWebsiteActivity extends BasePresenterActivity
             }
         }
     }
+
+    @Override
+    protected int getContentId() {
+        if(com.tokopedia.abstraction.common.utils.GlobalConfig.isCustomerApp()) {
+            return com.tokopedia.abstraction.R.layout.activity_base_legacy_light;
+        }
+
+        return super.getContentId();
+    }
 }

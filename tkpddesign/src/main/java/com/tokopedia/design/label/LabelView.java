@@ -32,6 +32,8 @@ public class LabelView extends BaseCustomView {
     private TextView titleTextView;
     private TextView subTitleTextView;
     private TextView contentTextView;
+    private TextView badgeTextView;
+    private ImageView rightArrow;
 
     private Drawable imageDrawable;
     private int imageWidth;
@@ -43,6 +45,7 @@ public class LabelView extends BaseCustomView {
     private int titleColorValue;
     private int contentTextStyleValue;
 
+    private int badgeCounter;
     private String contentText;
     @ColorInt
     private int contentColorValue;
@@ -50,11 +53,12 @@ public class LabelView extends BaseCustomView {
 
     private int maxLines;
     private float titleTextSize;
-    private float subtitleTextSize;
+    private float subTitleTextSize;
     private float contentTextSize;
     private float contentMaxWidthPercentage;
     private int minTitleWidth;
 
+    private boolean isArrowShown;
     private boolean enabled;
 
     public LabelView(Context context) {
@@ -86,6 +90,7 @@ public class LabelView extends BaseCustomView {
             titleColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_title_color, ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
             subTitleText = styledAttributes.getString(R.styleable.LabelView_lv_sub_title);
             contentText = styledAttributes.getString(R.styleable.LabelView_lv_content);
+            badgeCounter = styledAttributes.getInt(R.styleable.LabelView_lv_badge, 0);
             contentColorValue = styledAttributes.getColor(R.styleable.LabelView_lv_content_color, ContextCompat.getColor(getContext(), R.color.font_black_secondary_54));
             contentTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_content_text_style, Typeface.NORMAL);
             titleTextStyleValue = styledAttributes.getInt(R.styleable.LabelView_lv_title_text_style, Typeface.NORMAL);
@@ -93,8 +98,9 @@ public class LabelView extends BaseCustomView {
             contentTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_content_text_size, getResources().getDimension(R.dimen.sp_16));
             contentMaxWidthPercentage = styledAttributes.getFloat(R.styleable.LabelView_lv_content_max_width_percentage, MAX_WIDTH_PERCENT_CONTENT);
             titleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_title_text_size, contentTextSize);
-            subtitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, contentTextSize);
+            subTitleTextSize = styledAttributes.getDimension(R.styleable.LabelView_lv_sub_title_text_size, getResources().getDimension(R.dimen.sp_12));
             minTitleWidth = styledAttributes.getDimensionPixelSize(R.styleable.LabelView_lv_title_min_width, 0);
+            isArrowShown = styledAttributes.getBoolean(R.styleable.LabelView_lv_show_arrow, false);
         } finally {
             styledAttributes.recycle();
         }
@@ -107,6 +113,8 @@ public class LabelView extends BaseCustomView {
         titleTextView = view.findViewById(R.id.text_view_title);
         subTitleTextView = view.findViewById(R.id.text_view_sub_title);
         contentTextView = view.findViewById(R.id.text_view_content);
+        rightArrow = view.findViewById(R.id.image_arrow);
+        badgeTextView = view.findViewById(R.id.text_view_badge);
     }
 
     @Override
@@ -126,13 +134,21 @@ public class LabelView extends BaseCustomView {
         titleTextView.setTypeface(null, titleTextStyleValue);
         titleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, titleTextSize);
         titleTextView.setMinWidth(minTitleWidth);
+        subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subTitleTextSize);
         if (!TextUtils.isEmpty(subTitleText)) {
             subTitleTextView.setText(subTitleText);
-            subTitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_PX, subtitleTextSize);
             subTitleTextView.setVisibility(View.VISIBLE);
         } else {
             subTitleTextView.setVisibility(View.GONE);
         }
+
+        if (badgeCounter > 0) {
+            badgeTextView.setText(badgeCounter(badgeCounter));
+            badgeTextView.setVisibility(View.VISIBLE);
+        } else {
+            badgeTextView.setVisibility(View.GONE);
+        }
+
         contentTextView.setText(contentText);
         contentTextView.setTextColor(contentColorValue);
         contentTextView.setTypeface(null, contentTextStyleValue);
@@ -142,6 +158,8 @@ public class LabelView extends BaseCustomView {
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
+        contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
+        rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
         contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
 
         invalidate();
@@ -230,5 +248,42 @@ public class LabelView extends BaseCustomView {
 
     public ImageView getImageView() {
         return imageView;
+    }
+
+    public void showRightArrow(boolean hideArrow) {
+        rightArrow.setVisibility(hideArrow ? GONE : VISIBLE);
+        invalidate();
+        requestLayout();
+    }
+
+    public void setImageResource(int imageResource) {
+        if (imageResource >= 0){
+            imageDrawable = AppCompatResources.getDrawable(getContext(), imageResource);
+            imageView.setImageDrawable(imageDrawable);
+            imageView.setVisibility(VISIBLE);
+            titleTextView.setPadding(imageMarginRight, 0, 0, 0);
+            subTitleTextView.setPadding(imageMarginRight, 0, 0, 0);
+        } else {
+            imageView.setVisibility(GONE);
+            titleTextView.setPadding(0, 0, 0, 0);
+            subTitleTextView.setPadding(0, 0, 0, 0);
+        }
+        invalidate();
+        requestLayout();
+    }
+
+    public void setBadgeCounter(int badge){
+        badgeTextView.setText(badgeCounter(badge));
+        badgeTextView.setVisibility(badge > 0 ? View.VISIBLE : View.GONE);
+        invalidate();
+        requestLayout();
+    }
+
+    private String badgeCounter(int badge) {
+        String counter = String.valueOf(badge);
+        if (badge > 99) {
+            counter = "99+";
+        }
+        return counter;
     }
 }
