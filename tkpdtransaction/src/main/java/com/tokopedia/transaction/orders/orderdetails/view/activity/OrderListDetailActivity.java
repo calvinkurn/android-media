@@ -56,7 +56,6 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
                 return OmsDetailFragment.getInstance(orderId, "", fromPayment);
             }
         }
-        //finish();
         return null;
 
 

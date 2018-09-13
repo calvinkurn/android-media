@@ -210,6 +210,8 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 100 && resultCode == RESULT_OK) {
             initTabs();
+        } else {
+            finish();
         }
     }
 }
