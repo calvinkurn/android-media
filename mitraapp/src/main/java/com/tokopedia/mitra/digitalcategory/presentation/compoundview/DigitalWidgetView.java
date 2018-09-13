@@ -35,6 +35,8 @@ public class DigitalWidgetView extends FrameLayout {
 
     private ActionListener actionListener;
 
+    private int position;
+
     interface ActionListener {
 
         void onItemSelected(BaseWidgetItem item);
@@ -75,6 +77,14 @@ public class DigitalWidgetView extends FrameLayout {
         recyclerview = view.findViewById(R.id.recyclerview);
         digitalWidgetDropdownInputView = view.findViewById(R.id.dropdown_input_view);
         digitalWidgetRadioInputView = view.findViewById(R.id.radio_input_view);
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     public void setActionListener(ActionListener actionListener) {

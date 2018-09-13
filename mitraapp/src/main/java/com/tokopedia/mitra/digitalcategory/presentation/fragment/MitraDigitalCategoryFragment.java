@@ -146,12 +146,12 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
             }
 
             @Override
-            public void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int id) {
+            public void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int viewId, int position) {
                 if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
                     selectedOperatorId = operatorId;
                     String titleChooser = inputFieldModel.getText();
-                    Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser(getActivity(),
-                            digitalCategoryModel.getId(), operatorId, titleChooser);
+                    Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser2(getActivity(),
+                            digitalCategoryModel.getId(), operatorId, titleChooser, viewId, position);
                     startActivityForResult(intent, 1002);
                 }
             }
@@ -175,10 +175,12 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 break;
             case 1002:
                 if (resultCode == Activity.RESULT_OK && data != null)
-                    handleCallBackProductChooser(
+                    handleCallbackProductChooser2(
                             data.getParcelableExtra(
                                     MitraDigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
-                            )
+                            ),
+                            data.getIntExtra(MitraDigitalChooserActivity.EXTRA_CALLBACK_VIEW_ID, 0),
+                            data.getIntExtra(MitraDigitalChooserActivity.EXTRA_CALLBACK_POSITION, 0)
                     );
                 break;
         }
@@ -189,15 +191,15 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 operator.getOperatorId(), "");
     }
 
-    private void handleCallBackProductChooser(Product product) {
-        mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
-                selectedOperatorId, product.getProductId());
-//        mitraDigitalCategoryView.updateProduct(selectedOperatorId, product.getProductId());
-    }
+//    private void handleCallBackProductChooser(Product product) {
+//        mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
+//                selectedOperatorId, product.getProductId());
+////        mitraDigitalCategoryView.updateProduct(selectedOperatorId, product.getProductId());
+//    }
 
-    private void handleCallbackProductChooser(Product product, int viewId) {
+    private void handleCallbackProductChooser2(Product product, int viewId, int position) {
         mitraDigitalCategoryView.updateView(digitalCategoryModel.getRenderOperatorModel(),
-                selectedOperatorId, product.getProductId(), viewId);
+                selectedOperatorId, product.getProductId(), position);
     }
 
     @Override

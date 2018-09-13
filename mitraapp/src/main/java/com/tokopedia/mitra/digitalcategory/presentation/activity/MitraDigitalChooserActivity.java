@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
@@ -25,15 +26,21 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     private static final String EXTRA_OPERATOR_LABEL = "EXTRA_OPERATOR_LABEL";
     private static final String EXTRA_TITLE_CHOOSER = "EXTRA_TITLE_CHOOSER";
     private static final String EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME";
+    private static final String EXTRA_VIEW_ID = "EXTRA_VIEW_ID";
+    private static final String EXTRA_POSITION= "EXTRA_POSITION";
 
     public static final String EXTRA_CALLBACK_OPERATOR_DATA = "EXTRA_CALLBACK_OPERATOR_DATA";
     public static final String EXTRA_CALLBACK_PRODUCT_DATA = "EXTRA_CALLBACK_PRODUCT_DATA";
+    public static final String EXTRA_CALLBACK_VIEW_ID = "EXTRA_CALLBACK_VIEW_ID";
+    public static final String EXTRA_CALLBACK_POSITION = "EXTRA_CALLBACK_POSITION";
 
     private String categoryId;
     private String operatorId;
     private String operatorLabel;
     private String categoryName;
     private String titleToolbar;
+    private int viewId;
+    private int position;
 
     public static Intent newInstanceProductChooser(
             Activity activity, String categoryId, String operatorId, String titleChooser
@@ -43,6 +50,20 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
         bundle.putString(EXTRA_CATEGORY_ID, categoryId);
         bundle.putString(EXTRA_OPERATOR_ID, operatorId);
         bundle.putString(EXTRA_TITLE_CHOOSER, titleChooser);
+        intent.putExtras(bundle);
+        return intent;
+    }
+
+    public static Intent newInstanceProductChooser2(FragmentActivity activity, String categoryId,
+                                                    String operatorId, String titleChooser,
+                                                    int viewId, int position) {
+        Intent intent = new Intent(activity, MitraDigitalChooserActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(EXTRA_CATEGORY_ID, categoryId);
+        bundle.putString(EXTRA_OPERATOR_ID, operatorId);
+        bundle.putString(EXTRA_TITLE_CHOOSER, titleChooser);
+        bundle.putInt(EXTRA_VIEW_ID, viewId);
+        bundle.putInt(EXTRA_POSITION, position);
         intent.putExtras(bundle);
         return intent;
     }
@@ -68,6 +89,8 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
                 this.operatorId = extras.getString(EXTRA_OPERATOR_ID);
                 this.operatorLabel = extras.getString(EXTRA_OPERATOR_LABEL);
                 this.categoryName = extras.getString(EXTRA_CATEGORY_NAME);
+                this.viewId = extras.getInt(EXTRA_VIEW_ID);
+                this.position = extras.getInt(EXTRA_POSITION);
                 if (titleToolbar == null) titleToolbar = extras.getString(EXTRA_TITLE_CHOOSER);
             }
         }
@@ -104,7 +127,10 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
 
     @Override
     public void onProductItemSelected(Product product) {
-        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
+        setResult(RESULT_OK, new Intent()
+                .putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product)
+                .putExtra(EXTRA_CALLBACK_VIEW_ID, viewId)
+                .putExtra(EXTRA_CALLBACK_POSITION, position));
         finish();
         overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up );
     }
@@ -119,7 +145,7 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(R.anim.digital_anim_stay,R.anim.digital_slide_out_up );
+        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up );
     }
 
 }
