@@ -1,5 +1,6 @@
 package com.tokopedia.mitra.digitalcategory.presentation.mapper;
 
+import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.OperatorBuilder;
@@ -102,7 +103,11 @@ public class RechargeCategoryDetailMapper {
             String placeholder = responseInputField.getPlaceholder();
             String _default = responseInputField.getDefault();
             List<Validation> validation = transformValidation(responseInputField.getValidation());
-            inputFieldModels.add(new InputFieldModel(name, type, text, placeholder, _default, validation));
+            InputFieldModel inputFieldModel = new InputFieldModel(name, type, text, placeholder, _default, validation);
+            if (responseInputField.getType().equals("numeric")) {
+                inputFieldModel.setAdditionalButton(new AdditionalButton("inquiry", "Cek"));
+            }
+            inputFieldModels.add(inputFieldModel);
         }
         return inputFieldModels;
     }

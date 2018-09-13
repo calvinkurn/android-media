@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by Rizky on 04/09/18.
  */
-public class DigitalWidgetRadioInputView<T> extends LinearLayout {
+public class DigitalWidgetRadioInputView extends LinearLayout {
 
     private static final int EMPTY_MARGIN_VALUE = 0;
     private static final int RADIO_DIVIDER_MARGIN_VALUE = 40;
@@ -32,9 +33,9 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
 
     private ActionListener actionListener;
 
-    public interface ActionListener<T> {
+    public interface ActionListener {
 
-        void onItemSelected(T item);
+        void onItemSelected(BaseWidgetItem item);
 
     }
 
@@ -69,7 +70,7 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderInitDataList(final List<T> items, InputFieldModel inputFieldModel, String defaultId) {
+    public void renderInitDataList(final List<BaseWidgetItem> items, InputFieldModel inputFieldModel, String defaultId) {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         View viewRadioGroup = inflater.inflate(R.layout.view_digital_radio_group_button, null, false);
         RadioGroup radioGroup = viewRadioGroup.findViewById(R.id.radio_group_button);
@@ -84,7 +85,7 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
                 EMPTY_MARGIN_VALUE
         );
 
-        if (inputFieldModel.getName().equals("operator_id")) {
+        if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
             for (int i = 0; i < items.size(); i++) {
                 Operator operator = ((Operator) items.get(i));
                 View radioView = inflater.inflate(R.layout.view_digital_radio_button,null, false);
@@ -101,8 +102,9 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
             Operator operator = ((Operator) items.get(radioGroup.getChildAt(0)
                     .getId()));
             actionListener.onItemSelected(operator);
+            selectDefaultId(radioGroup, items, inputFieldModel, defaultId);
 //            initCheckRadioButtonBasedOnLastOrder(radioGroup, defaultId);
-        } else if (inputFieldModel.getName().equals("product_id")) {
+        } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
 
         }
 
@@ -122,13 +124,13 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
 //        }
 //    }
 
-    private String findItemById(List<T> items, InputFieldModel inputFieldModel, String defaultOperatorId) {
+    private void selectDefaultId(RadioGroup radioGroup, List<BaseWidgetItem> items, InputFieldModel inputFieldModel, String defaultOperatorId) {
         if (inputFieldModel.getName().equals("operator_id")) {
             for (int i = 0, operatorsSize = items.size(); i < operatorsSize; i++) {
                 Operator operator = ((Operator) items.get(i));
                 if (String.valueOf(operator.getOperatorId())
                         .equalsIgnoreCase(defaultOperatorId)) {
-                    return operator.getName();
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
                 }
             }
         } else if (inputFieldModel.getName().equals("product_id")){
@@ -136,11 +138,10 @@ public class DigitalWidgetRadioInputView<T> extends LinearLayout {
                 Product product = ((Product) items.get(i));
                 if (String.valueOf(product.getProductId())
                         .equalsIgnoreCase(defaultOperatorId)) {
-                    return product.getDesc();
+                    radioGroup.check(radioGroup.getChildAt(i).getId());
                 }
             }
         }
-        return null;
     }
 
 }

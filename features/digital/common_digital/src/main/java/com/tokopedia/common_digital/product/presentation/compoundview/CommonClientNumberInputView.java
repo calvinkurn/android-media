@@ -38,6 +38,7 @@ public abstract class CommonClientNumberInputView extends LinearLayout {
     protected Button btnContactPicker;
     protected RelativeLayout pulsaFramelayout;
     protected TextView tvErrorClientNumber;
+    protected Button buttonAditional;
 
     private ActionListener actionListener;
     private Context context;
@@ -70,6 +71,7 @@ public abstract class CommonClientNumberInputView extends LinearLayout {
         btnContactPicker = view.findViewById(R.id.btn_contact_picker);
         pulsaFramelayout = view.findViewById(R.id.fl_holder_input_client_number);
         tvErrorClientNumber = view.findViewById(R.id.tv_error_client_number);
+        buttonAditional = view.findViewById(R.id.button_additional);
 
         initialTextWatcher();
         setImgOperatorInvisible();

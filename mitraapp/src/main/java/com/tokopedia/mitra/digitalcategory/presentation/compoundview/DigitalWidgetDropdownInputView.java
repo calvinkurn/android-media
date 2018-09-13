@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -23,7 +24,7 @@ import java.util.List;
 /**
  * Created by Rizky on 04/09/18.
  */
-public class DigitalWidgetDropdownInputView<T> extends LinearLayout {
+public class DigitalWidgetDropdownInputView extends LinearLayout {
 
     private TextView tvLabelChooser;
     private TextView tvItemName;
@@ -37,7 +38,7 @@ public class DigitalWidgetDropdownInputView<T> extends LinearLayout {
 
         void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId);
 
-        void onItemSelected(T item);
+        void onItemSelected(BaseWidgetItem item);
 
     }
 
@@ -76,7 +77,7 @@ public class DigitalWidgetDropdownInputView<T> extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderDropdownView(List<T> items, InputFieldModel inputFieldModel, String defaultId) {
+    public void renderDropdownView(List<BaseWidgetItem> items, InputFieldModel inputFieldModel, String defaultId) {
         if (!TextUtils.isEmpty(inputFieldModel.getText())) {
             tvLabelChooser.setText(inputFieldModel.getText());
             tvLabelChooser.setVisibility(VISIBLE);
@@ -84,25 +85,25 @@ public class DigitalWidgetDropdownInputView<T> extends LinearLayout {
             tvLabelChooser.setVisibility(GONE);
         }
 
-        T item = null;
+        BaseWidgetItem item = null;
         String itemId = null;
         String itemName = null;
         if (!items.isEmpty()) {
             item = findItemById(items, inputFieldModel, defaultId);
             if (item == null) {
                 item = items.get(0);
-                if (inputFieldModel.getName().equals("operator_id")) {
+                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
                     itemId = ((Operator) items.get(0)).getOperatorId();
                     itemName = ((Operator) items.get(0)).getName();
-                } else if (inputFieldModel.getName().equals("product_id")) {
+                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
                     itemId = ((Product) items.get(0)).getProductId();
                     itemName = ((Product) items.get(0)).getDesc();
                 }
             } else {
-                if (inputFieldModel.getName().equals("operator_id")) {
+                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
                     itemId = ((Operator) item).getOperatorId();
                     itemName = ((Operator) item).getName();
-                } else if (inputFieldModel.getName().equals("product_id")) {
+                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
                     itemId = ((Product) item).getProductId();
                     itemName = ((Product) item).getDesc();
                 }
@@ -114,21 +115,21 @@ public class DigitalWidgetDropdownInputView<T> extends LinearLayout {
         dropdownLayout.setOnClickListener(v -> actionListener.onClickDropdown(inputFieldModel, finalItemId));
     }
 
-    private T findItemById(List<T> items, InputFieldModel inputFieldModel, String defaultId) {
-        if (inputFieldModel.getName().equals("operator_id")) {
+    private BaseWidgetItem findItemById(List<BaseWidgetItem> items, InputFieldModel inputFieldModel, String defaultId) {
+        if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
             for (int i = 0, operatorsSize = items.size(); i < operatorsSize; i++) {
                 Operator operator = ((Operator) items.get(i));
                 if (String.valueOf(operator.getOperatorId())
                         .equalsIgnoreCase(defaultId)) {
-                    return (T) operator;
+                    return operator;
                 }
             }
-        } else if (inputFieldModel.getName().equals("product_id")){
+        } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)){
             for (int i = 0, productSize = items.size(); i < productSize; i++) {
                 Product product = ((Product) items.get(i));
                 if (String.valueOf(product.getProductId())
                         .equalsIgnoreCase(defaultId)) {
-                    return (T) product;
+                    return product;
                 }
             }
         }

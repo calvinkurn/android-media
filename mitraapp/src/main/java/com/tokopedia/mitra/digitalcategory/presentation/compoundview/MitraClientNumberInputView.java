@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.common_digital.product.presentation.compoundview.CommonClientNumberInputView;
+import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
+import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.mitra.DeviceUtil;
@@ -20,11 +22,11 @@ import java.util.List;
 /**
  * Created by Rizky on 05/09/18.
  */
-public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
+public class MitraClientNumberInputView extends CommonClientNumberInputView {
 
     private MitraClientNumberActionListener actionListener;
 
-    private List<T> items;
+    private List<BaseWidgetItem> items;
 
     public MitraClientNumberInputView(Context context) {
         super(context);
@@ -65,7 +67,8 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
                             String validClientNumber = DeviceUtil.validatePrefixClientNumber(tempInput);
                             boolean operatorFound = false;
                             outerLoop:
-                            for (Operator operator : (List<Operator>) items) {
+                            for (BaseWidgetItem baseWidgetItem : items) {
+                                Operator operator = (Operator) baseWidgetItem;
                                 for (String prefix : operator.getPrefixList()) {
                                     if (validClientNumber.startsWith(prefix)) {
                                         setOperator(operator);
@@ -80,8 +83,6 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
                         } else {
                             resetOperator();
                         }
-                    } else {
-
                     }
                 }
             }
@@ -94,13 +95,15 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
     }
 
     @NonNull
+    protected OnClickListener getButtonContactPickerClickListener() {
+        return v -> actionListener.onButtonContactPickerClicked();
+    }
+
+    @NonNull
     protected OnClickListener getButtonClearClickListener() {
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                actionListener.onClientNumberCleared();
-                autoCompleteTextView.setText("");
-            }
+        return v -> {
+            actionListener.onClientNumberCleared();
+            autoCompleteTextView.setText("");
         };
     }
 
@@ -119,31 +122,19 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
     }
 
     private void resetOperator() {
-//        operatorSelected = null;
-//        productSelected = null;
         disableImageOperator();
-        actionListener.onOperatorNotFound();
-//        clearHolder(holderChooserProduct);
-//        clearHolder(holderAdditionalInfoProduct);
-//        clearHolder(holderPriceInfoProduct);
+        actionListener.onOperatorByPrefixNotFound();
     }
 
     private void setOperator(Operator operator) {
-//        operatorSelected = operator;
         tvErrorClientNumber.setText("");
         tvErrorClientNumber.setVisibility(GONE);
         enableImageOperator(operator.getImage());
         setFilterMaxLength(operator.getRule().getMaximumLength());
-//        if (operator.getRule().getProductViewStyle() == SINGLE_PRODUCT) {
-//            renderDefaultProductSelected();
-//        } else {
-//            showProducts();
-//        }
-//        setBtnBuyDigitalText(operator.getRule().getButtonText());
         actionListener.onOperatorFoundByPrefix(operator);
     }
 
-    public void renderData(ClientNumber clientNumber, List<T> operators) {
+    public void renderData(ClientNumber clientNumber, List<BaseWidgetItem> operators) {
         this.items = operators;
         this.clientNumber = clientNumber;
         if (!TextUtils.isEmpty(clientNumber.getText())) {
@@ -154,20 +145,34 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
         }
         tvLabel.setText(clientNumber.getText());
         autoCompleteTextView.setHint(clientNumber.getPlaceholder());
-        setupLayoutParamAndInputType(clientNumber);
-        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
+        setupLayoutParamAndInputType(clientNumber) ;
+
         final TextWatcher textWatcher = getTextWatcherInput(clientNumber);
         autoCompleteTextView.removeTextChangedListener(textWatcher);
+        autoCompleteTextView.setOnFocusChangeListener(getFocusChangeListener());
         autoCompleteTextView.addTextChangedListener(textWatcher);
-        this.btnClear.setOnClickListener(getButtonClearClickListener());
-        this.btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
+        btnClear.setOnClickListener(getButtonClearClickListener());
+        btnContactPicker.setOnClickListener(getButtonContactPickerClickListener());
     }
 
     @Override
     protected void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        // TODO: add checking for type "inquiry"
+        // TODO: add checking for additional button with type "inquiry"
+        if (clientNumber.getAdditionalButton() != null) {
+            if (clientNumber.getAdditionalButton().getType().equals("inquiry")) {
+                buttonAditional.setVisibility(VISIBLE);
+                buttonAditional.setOnClickListener(view -> {
+                    actionListener.onClickAdditionalButton(clientNumber.getAdditionalButton());
+                    buttonAditional.setVisibility(GONE);
+                });
+            } else {
+                buttonAditional.setVisibility(GONE);
+            }
+        } else {
+            buttonAditional.setVisibility(GONE);
+        }
         if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
             btnContactPicker.setVisibility(View.VISIBLE);
             layoutParams.weight = 0.88f;
@@ -188,7 +193,9 @@ public class MitraClientNumberInputView<T> extends CommonClientNumberInputView {
 
         void onOperatorFoundByPrefix(Operator operator);
 
-        void onOperatorNotFound();
+        void onOperatorByPrefixNotFound();
+
+        void onClickAdditionalButton(AdditionalButton additionalButton);
 
     }
 

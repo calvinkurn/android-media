@@ -22,6 +22,7 @@ public class ClientNumber implements Parcelable {
     private String placeholder;
     private String _default;
     private List<Validation> validation = new ArrayList<>();
+    private AdditionalButton additionalButton;
 
     public ClientNumber(String name, String type, String text, String placeholder, String _default,
                         List<Validation> validation) {
@@ -81,6 +82,13 @@ public class ClientNumber implements Parcelable {
         this.validation = validation;
     }
 
+    public AdditionalButton getAdditionalButton() {
+        return additionalButton;
+    }
+
+    public void setAdditionalButton(AdditionalButton additionalButton) {
+        this.additionalButton = additionalButton;
+    }
 
     @Override
     public int describeContents() {

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
 
@@ -16,9 +17,9 @@ import java.util.List;
 /**
  * Created by Rizky on 05/09/18.
  */
-public class WidgetItemAdapter<T> extends RecyclerView.Adapter<WidgetItemAdapter.WidgetItemViewHolder> {
+public class WidgetItemAdapter extends RecyclerView.Adapter<WidgetItemAdapter.WidgetItemViewHolder> {
 
-    private List<T> items;
+    private List<BaseWidgetItem> items;
     private String defaultId;
 
     private ActionListener actionListener;
@@ -29,7 +30,7 @@ public class WidgetItemAdapter<T> extends RecyclerView.Adapter<WidgetItemAdapter
 
     }
 
-    public WidgetItemAdapter(ActionListener actionListener, List<T> items, String defaultId) {
+    public WidgetItemAdapter(ActionListener actionListener, List<BaseWidgetItem> items, String defaultId) {
         this.actionListener = actionListener;
         this.items = items;
         this.defaultId = defaultId;
@@ -71,7 +72,7 @@ public class WidgetItemAdapter<T> extends RecyclerView.Adapter<WidgetItemAdapter
             itemView.setOnClickListener(view -> actionListener.onItemSelected(product));
         }
 
-        void bind(F f, String defaultId) {
+        void bind(BaseWidgetItem f, String defaultId) {
             this.product = (Product) f;
             textProductName.setText(((Product) f).getDesc());
             textProductPrice.setText(((Product) f).getPrice());

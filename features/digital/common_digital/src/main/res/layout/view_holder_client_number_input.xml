@@ -64,6 +64,16 @@
                 android:gravity="center"
                 android:orientation="horizontal">
 
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_6"
+                    android:layout_marginBottom="@dimen/dp_6"
+                    android:layout_gravity="center"
+                    android:id="@+id/button_additional"
+                    style="@style/Button.Submit.Green.Full"
+                    android:text="Cek"/>
+
                 <ImageView
                     android:id="@+id/iv_pic_operator"
                     android:layout_width="wrap_content"
@@ -77,12 +87,14 @@
 
                 <Button
                     android:id="@+id/btn_clear_client_number"
+                    android:background="@drawable/digital_bg_widget_close"
                     android:layout_width="@dimen/dp_20"
                     android:layout_height="@dimen/dp_25"
                     android:layout_gravity="end|center_vertical"
                     android:paddingBottom="@dimen/dp_5" />
 
             </LinearLayout>
+
         </RelativeLayout>
 
         <LinearLayout
@@ -95,6 +107,7 @@
 
             <Button
                 android:id="@+id/btn_contact_picker"
+                android:background="@drawable/ic_digital_client_number_contact"
                 android:layout_width="@dimen/dp_25"
                 android:layout_height="@dimen/dp_25"
                 android:layout_marginEnd="4dp"

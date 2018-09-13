@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author anggaprasetiyo on 5/3/17.
  */
-public class Operator implements Parcelable {
+public class Operator implements Parcelable, BaseWidgetItem {
 
     public static final String DEFAULT_TYPE_CONTRACT = "operator";
 

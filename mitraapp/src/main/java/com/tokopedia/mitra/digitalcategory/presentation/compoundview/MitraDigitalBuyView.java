@@ -8,13 +8,18 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
 
 /**
  * Created by Rizky on 07/09/18.
  */
 public class MitraDigitalBuyView extends LinearLayout {
+
+    private TextView textTotalPrice;
+    private TextView textBalance;
 
     public MitraDigitalBuyView(Context context) {
         super(context);
@@ -40,6 +45,13 @@ public class MitraDigitalBuyView extends LinearLayout {
     private void init(Context context) {
         View view = LayoutInflater.from(context).inflate(R.layout.view_mitra_digital_buy, this,
                 true);
+        textTotalPrice = view.findViewById(R.id.text_total_price);
+        textBalance = view.findViewById(R.id.text_balance);
+    }
+
+    public void renderBuyView(Product product) {
+        textTotalPrice.setText(product.getPrice());
+        textBalance.setText("Rp 2.300.000");
     }
 
 }

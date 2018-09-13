@@ -43,8 +43,18 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 
     private int categoryId;
 
+    private String selectedOperatorId;
+
+    private ActionListener actionListener;
+
     @Inject
     MitraDigitalCategoryPresenter presenter;
+
+    public interface ActionListener {
+
+        void updateToolbarTitle(String toolbarTitle);
+
+    }
 
     public static Fragment newInstance(int categoryId) {
         Fragment fragment = new MitraDigitalCategoryFragment();
@@ -101,32 +111,42 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     }
 
     @Override
-    public void renderWidgetView(DigitalCategoryModel digitalCategoryModel, String defaultId) {
+    public void renderCategory(DigitalCategoryModel digitalCategoryModel) {
         this.digitalCategoryModel = digitalCategoryModel;
+
+        actionListener.updateToolbarTitle(digitalCategoryModel.getName());
 
         mitraDigitalCategoryView.setActionListener(new MitraDigitalCategoryView.ActionListener() {
             @Override
             public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-                if (inputFieldModel.getName().equals("operator_id")) {
+                if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
                     String titleChooser = inputFieldModel.getText() + " " + digitalCategoryModel.getOperatorLabel();
                     Intent intent = MitraDigitalChooserActivity.newInstanceOperatorChooser(getActivity(),
                             digitalCategoryModel.getId(), titleChooser, digitalCategoryModel.getOperatorLabel(),
                             digitalCategoryModel.getName());
                     startActivityForResult(intent, 1001);
-                } else if (inputFieldModel.getName().equals("product_id")) {
+                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
+                    selectedOperatorId = selectedItemId;
                     String titleChooser = inputFieldModel.getText();
                     Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser(getActivity(),
                             digitalCategoryModel.getId(), selectedItemId, titleChooser);
-                    startActivityForResult(intent, 1001);
+                    startActivityForResult(intent, 1002);
                 }
             }
 
             @Override
             public void onProductSelected(Product product) {
                 mitraDigitalBuyView.setVisibility(View.VISIBLE);
+                mitraDigitalBuyView.renderBuyView(product);
+            }
+
+            @Override
+            public void removeBuyView() {
+                mitraDigitalBuyView.setVisibility(View.GONE);
             }
         });
-        mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(), defaultId);
+        mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(),
+                digitalCategoryModel.getDefaultOperatorId());
     }
 
     @Override
@@ -142,12 +162,33 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                             )
                     );
                 break;
+            case 1002:
+                if (resultCode == Activity.RESULT_OK && data != null)
+                    handleCallBackProductChooser(
+                            data.getParcelableExtra(
+                                    MitraDigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
+                            )
+                    );
+                break;
         }
     }
 
     private void handleCallbackOperatorChooser(Operator operator) {
-        mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(),
-                operator.getOperatorId());
+        mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
+                operator.getOperatorId(), "");
+    }
+
+    private void handleCallBackProductChooser(Product product) {
+        mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
+                selectedOperatorId, product.getProductId());
+//        mitraDigitalCategoryView.updateProduct(selectedOperatorId, product.getProductId());
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        this.actionListener = (ActionListener) activity;
     }
 
 }

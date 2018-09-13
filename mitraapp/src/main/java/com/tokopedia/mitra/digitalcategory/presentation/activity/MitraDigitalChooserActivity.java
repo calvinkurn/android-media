@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
 import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalOperatorChooserFragment;
 import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalProductChooserFragment;
@@ -17,7 +18,7 @@ import com.tokopedia.mitra.digitalcategory.presentation.fragment.MitraDigitalPro
  * Created by Rizky on 06/09/18.
  */
 public class MitraDigitalChooserActivity extends BaseSimpleActivity
-        implements MitraDigitalOperatorChooserFragment.ActionListener {
+        implements MitraDigitalOperatorChooserFragment.ActionListener, MitraDigitalProductChooserFragment.ActionListener {
 
     private static final String EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID";
     private static final String EXTRA_OPERATOR_ID = "EXTRA_OPERATOR_ID";
@@ -26,6 +27,7 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     private static final String EXTRA_CATEGORY_NAME = "EXTRA_CATEGORY_NAME";
 
     public static final String EXTRA_CALLBACK_OPERATOR_DATA = "EXTRA_CALLBACK_OPERATOR_DATA";
+    public static final String EXTRA_CALLBACK_PRODUCT_DATA = "EXTRA_CALLBACK_PRODUCT_DATA";
 
     private String categoryId;
     private String operatorId;
@@ -96,6 +98,13 @@ public class MitraDigitalChooserActivity extends BaseSimpleActivity
     @Override
     public void onOperatorItemSelected(Operator operator) {
         setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_OPERATOR_DATA, operator));
+        finish();
+        overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up );
+    }
+
+    @Override
+    public void onProductItemSelected(Product product) {
+        setResult(RESULT_OK, new Intent().putExtra(EXTRA_CALLBACK_PRODUCT_DATA, product));
         finish();
         overridePendingTransition(R.anim.digital_anim_stay, R.anim.digital_slide_out_up );
     }

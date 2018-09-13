@@ -4,11 +4,13 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
@@ -34,6 +36,8 @@ public class MitraDigitalCategoryView extends LinearLayout {
         void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId);
 
         void onProductSelected(Product item);
+
+        void removeBuyView();
 
     }
 
@@ -69,62 +73,34 @@ public class MitraDigitalCategoryView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderWidgetViews(RenderOperatorModel renderOperatorModel, String defaultId) {
+    public void renderWidgetViews(RenderOperatorModel renderOperatorModel, String renderOperatorId) {
         if (containerDigitalOperatorWidgetView.getChildCount() > 0) {
             containerDigitalOperatorWidgetView.removeAllViews();
         }
-        if (containerDigitalProductWidgetView.getChildCount() > 0) {
-            containerDigitalProductWidgetView.removeAllViews();
-        }
 
-        DigitalWidgetView<Operator> operatorWidgetView =
-                new DigitalWidgetView<>(getContext());
+        final String[] oldOperatorId = {null};
+
+        DigitalWidgetView operatorWidgetView =
+                new DigitalWidgetView(getContext());
         operatorWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
             @Override
-            public void onItemSelected(Object operatorItem) {
+            public void onItemSelected(BaseWidgetItem operatorItem) {
                 if (operatorItem instanceof Operator) {
-                    // remove rendered products view
-                    if (containerDigitalProductWidgetView.getChildCount() > 0) {
-                        containerDigitalProductWidgetView.removeAllViews();
-                    }
-
-                    // re-render products for selected operator
-                    String operatorId = ((Operator) operatorItem).getOperatorId();
-                    RenderProductModel renderProductModel = findOperatorById(operatorId,
-                            renderOperatorModel.getRenderProductModels());
-                    for (int i=0; i<renderProductModel.getInputFieldModels().size(); i++ ) {
-                        DigitalWidgetView<Product> digitalWidgetView =
-                                new DigitalWidgetView<>(getContext());
-                        digitalWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
-                            @Override
-                            public void onItemSelected(Object item) {
-                                if (item instanceof Product) {
-                                    actionListener.onProductSelected((Product) item);
-                                }
-                            }
-
-                            @Override
-                            public void onOperatorNotFound() {
-
-                            }
-
-                            @Override
-                            public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-                                actionListener.onClickDropdown(inputFieldModel, selectedItemId);
-                            }
-                        });
-                        digitalWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
-                                renderProductModel.getOperator().getProductList(),
-                                String.valueOf(renderProductModel.getOperator().getDefaultProductId()));
-                        containerDigitalProductWidgetView.addView(digitalWidgetView);
+                    // re-render products for selected operator if only a new operator is actually selected
+                    String selectedOperatorId = ((Operator) operatorItem).getOperatorId();
+                    if (!selectedOperatorId.equals(oldOperatorId[0])) {
+                        oldOperatorId[0] = selectedOperatorId;
+                        renderProductsByOperatorId(renderOperatorModel, selectedOperatorId, "");
                     }
                 }
             }
 
             @Override
-            public void onOperatorNotFound() {
+            public void onOperatorByPrefixNotFound() {
                 if (containerDigitalOperatorWidgetView.getChildCount() > 0) {
+                    oldOperatorId[0] = "0";
                     containerDigitalProductWidgetView.removeAllViews();
+                    actionListener.removeBuyView();
                 }
             }
 
@@ -132,10 +108,111 @@ public class MitraDigitalCategoryView extends LinearLayout {
             public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
                 actionListener.onClickDropdown(inputFieldModel, selectedItemId);
             }
+
+            @Override
+            public void onClickInquiryButton() {
+
+            }
         });
         containerDigitalOperatorWidgetView.addView(operatorWidgetView);
+        List<BaseWidgetItem> baseWidgetItems =
+                new ArrayList<>(transformOperators(renderOperatorModel.getRenderProductModels()));
         operatorWidgetView.renderWidget(renderOperatorModel.getInputFieldModels().get(0),
-                transformOperators(renderOperatorModel.getRenderProductModels()), defaultId);
+                baseWidgetItems, renderOperatorId);
+    }
+
+    public void renderProductsByOperatorId(RenderOperatorModel renderOperatorModel, String operatorId,
+                                           String renderProductId) {
+        // remove rendered products view
+        if (containerDigitalProductWidgetView.getChildCount() > 0) {
+            containerDigitalProductWidgetView.removeAllViews();
+            actionListener.removeBuyView();
+        }
+
+        RenderProductModel renderProductModel = findOperatorById(operatorId,
+                renderOperatorModel.getRenderProductModels());
+        Operator operator = renderProductModel.getOperator();
+
+        DigitalWidgetView productInquiryWidgetView =
+                new DigitalWidgetView(getContext());
+        productInquiryWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
+            @Override
+            public void onItemSelected(BaseWidgetItem item) {
+                if (item instanceof Product) {
+                    actionListener.onProductSelected((Product) item);
+                }
+            }
+
+            @Override
+            public void onOperatorByPrefixNotFound() {
+
+            }
+
+            @Override
+            public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
+                actionListener.onClickDropdown(inputFieldModel,
+                        operator.getOperatorId());
+            }
+
+            @Override
+            public void onClickInquiryButton() {
+
+            }
+        });
+
+        boolean showInputField = true;
+
+        for (int i=0; i<renderProductModel.getInputFieldModels().size(); i++ ) {
+            DigitalWidgetView productWidgetView =
+                    new DigitalWidgetView(getContext());
+            productWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
+                @Override
+                public void onItemSelected(BaseWidgetItem item) {
+                    if (item instanceof Product) {
+                        actionListener.onProductSelected((Product) item);
+                    }
+                }
+
+                @Override
+                public void onOperatorByPrefixNotFound() {
+
+                }
+
+                @Override
+                public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
+                    actionListener.onClickDropdown(inputFieldModel,
+                            operator.getOperatorId());
+                }
+
+                @Override
+                public void onClickInquiryButton() {
+                    containerDigitalProductWidgetView.addView(productInquiryWidgetView);
+                }
+            });
+
+            List<BaseWidgetItem> baseWidgetItems = new ArrayList<>(operator.getProductList());
+            String productId;
+            if (!TextUtils.isEmpty(renderProductId)) {
+                productId = renderProductId;
+            } else {
+                productId = String.valueOf(operator.getDefaultProductId());
+            }
+            productWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
+                    baseWidgetItems,
+                    productId);
+            if (showInputField) {
+                containerDigitalProductWidgetView.addView(productWidgetView);
+            } else {
+                productInquiryWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
+                        baseWidgetItems,
+                        productId);
+            }
+            if (renderProductModel.getInputFieldModels().get(i).getAdditionalButton() != null &&
+                    renderProductModel.getInputFieldModels().get(i).getAdditionalButton().getType()
+                            .equals("inquiry")) {
+                showInputField = false;
+            }
+        }
     }
 
     private RenderProductModel findOperatorById(String operatorId,

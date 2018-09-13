@@ -1,5 +1,6 @@
 package com.tokopedia.mitra.digitalcategory.presentation.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,19 +12,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.common_digital.common.di.DaggerDigitalComponent;
+import com.tokopedia.common_digital.common.di.DigitalComponent;
+import com.tokopedia.common_digital.product.presentation.adapter.ProductChooserAdapter;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.digitalcategory.presentation.adapter.MitraDigitalOperatorChooserAdapter;
+import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalProductChooserContract;
+import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalProductChooserPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Created by Rizky on 06/09/18.
  */
 public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
-        implements MitraDigitalProductChooserContract.View {
+        implements MitraDigitalProductChooserContract.View, ProductChooserAdapter.ActionListener {
 
     private static final String ARG_PARAM_EXTRA_CATEGORY_ID = "ARG_PARAM_EXTRA_CATEGORY_ID";
     private static final String ARG_PARAM_EXTRA_OPERATOR_ID = "ARG_PARAM_EXTRA_OPERATOR_ID";
@@ -33,6 +43,21 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
 
     private String categoryId;
     private String operatorId;
+
+    private ProductChooserAdapter productChooserAdapter;
+
+    private List<Product> products = new ArrayList<>();
+
+    private ActionListener actionListener;
+
+    @Inject
+    MitraDigitalProductChooserPresenter mitraDigitalProductChooserPresenter;
+
+    public interface ActionListener {
+
+        void onProductItemSelected(Product product);
+
+    }
 
     public static Fragment newInstance(String categoryId, String operatorId) {
         Bundle bundle = new Bundle();
@@ -64,12 +89,20 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
 
         rvListChooser.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        productChooserAdapter = new MitraDigitalOperatorChooserAdapter(this, operatorList);
+        productChooserAdapter = new ProductChooserAdapter(this, products, this);
 
-        rvListChooser.setAdapter(operatorChooserAdapter);
-
+        rvListChooser.setAdapter(productChooserAdapter);
 
         return rootview;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mitraDigitalProductChooserPresenter.attachView(this);
+
+        mitraDigitalProductChooserPresenter.getProducts(Integer.valueOf(categoryId), operatorId);
     }
 
     @Override
@@ -79,12 +112,32 @@ public class MitraDigitalProductChooserFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
-
+        DigitalComponent digitalComponent =
+                DaggerDigitalComponent.builder().baseAppComponent((
+                        (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
+                        .build();
+        AgentDigitalCategoryComponent agentDigitalCategoryComponent =
+                DaggerAgentDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+                        .build();
+        agentDigitalCategoryComponent.inject(this);
     }
 
     @Override
     public void renderProducts(List<Product> productList) {
+        products.addAll(productList);
+        productChooserAdapter.notifyDataSetChanged();
+    }
 
+    @Override
+    public void onProductItemSelected(Product product) {
+        actionListener.onProductItemSelected(product);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+
+        this.actionListener = (ActionListener) activity;
     }
 
 }

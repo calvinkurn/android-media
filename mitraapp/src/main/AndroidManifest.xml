@@ -24,6 +24,7 @@
         <activity android:name=".digitalcategory.presentation.activity.MitraDigitalChooserActivity"
             android:theme="@style/Theme.White" />
         <activity android:name=".homepage.activity.MitraParentHomepageActivity" />
+        <activity android:name=".applink.MitraDeeplinkActivity" />
     </application>
 
 </manifest>

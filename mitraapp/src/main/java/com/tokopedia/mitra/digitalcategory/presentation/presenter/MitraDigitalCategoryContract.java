@@ -15,7 +15,7 @@ public class MitraDigitalCategoryContract {
 
         Resources getResources();
 
-        void renderWidgetView(DigitalCategoryModel digitalCategoryModel, String defaultId);
+        void renderCategory(DigitalCategoryModel digitalCategoryModel);
 
     }
 
