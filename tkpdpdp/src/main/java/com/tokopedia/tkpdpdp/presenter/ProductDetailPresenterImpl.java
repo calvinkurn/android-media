@@ -179,29 +179,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
 
-        getWishlistCountUseCase.execute(requestParams, new Subscriber<Response<WishlistCountResponse>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Response<WishlistCountResponse> wishlistCountResponseResponse) {
-                String wishlistCountText = "0";
-
-                if(wishlistCountResponseResponse.body().getData() != null){
-                    int wishlistCount = wishlistCountResponseResponse.body().getData().getCount();
-                    wishlistCountText = String.valueOf(wishlistCount);
-                }
-
-                wishlistViewCountListener.onWishlistCountLoaded(wishlistCountText);
-            }
-        });
+        getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber());
     }
 
     @Override
@@ -1406,6 +1384,30 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 ex.printStackTrace();
                 return;
             }
+        }
+    }
+
+    private class WishlistCountSubscriber extends Subscriber<Response<WishlistCountResponse>> {
+        @Override
+        public void onCompleted() {
+
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Log.d("FikryWishlist", e.getMessage());
+        }
+
+        @Override
+        public void onNext(Response<WishlistCountResponse> wishlistCountResponseResponse) {
+            String wishlistCountText = "0";
+
+            if(wishlistCountResponseResponse.body().getData() != null){
+                int wishlistCount = wishlistCountResponseResponse.body().getData().getCount();
+                wishlistCountText = String.valueOf(wishlistCount);
+            }
+
+            wishlistViewCountListener.onWishlistCountLoaded(wishlistCountText);
         }
     }
 }

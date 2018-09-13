@@ -1,7 +1,8 @@
 package com.tokopedia.tkpdpdp.presenter.di;
 
 import com.tokopedia.core.network.apiservices.mojito.apis.MojitoApi;
-import com.tokopedia.core.network.di.qualifier.MojitoGetWishlistQualifier;
+import com.tokopedia.core.network.di.qualifier.MojitoQualifier;
+
 import dagger.Module;
 import dagger.Provides;
 import retrofit2.Retrofit;
@@ -12,9 +13,9 @@ import retrofit2.Retrofit;
 
 @Module
 public class ApiModule {
-    @MojitoGetWishlistQualifier
+    @MojitoQualifier
     @Provides
-    MojitoApi mojitoGetWishlistCount(@MojitoGetWishlistQualifier Retrofit retrofit){
+    MojitoApi mojitoGetWishlistCount(@MojitoQualifier Retrofit retrofit){
         return retrofit.create(MojitoApi.class);
     }
 }
