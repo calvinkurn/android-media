@@ -275,7 +275,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public boolean gonNavigationItemSelected(@NonNull MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
