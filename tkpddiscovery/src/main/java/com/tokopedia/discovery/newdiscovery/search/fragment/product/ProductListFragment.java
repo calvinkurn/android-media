@@ -682,6 +682,7 @@ public class ProductListFragment extends SearchSectionFragment
         }
         showRefreshLayout();
         adapter.clearData();
+        adapter.notifyDataSetChanged();
         initTopAdsParams();
         SearchParameter searchParameter
                 = generateLoadMoreParameter(0, productViewModel.getQuery());
