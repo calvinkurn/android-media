@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -157,7 +156,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(BUYER_INFO,
-                getString(R.string.buyer_info), ApplinkConst.BUYER_INFO));
+                getString(R.string.user_info), ApplinkConst.BUYER_INFO));
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
