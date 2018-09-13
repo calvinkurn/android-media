@@ -491,7 +491,9 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void hitBannerImpression(BannerSlidesModel slidesModel) {
-        if (!slidesModel.isImpressed() && !slidesModel.getTopadsViewUrl().isEmpty()) {
+        if (!slidesModel.isImpressed()
+                && slidesModel.getTopadsViewUrl()!=null
+                && !slidesModel.getTopadsViewUrl().isEmpty()) {
             new ImpresionTask(new ImpressionListener() {
                 @Override
                 public void onSuccess() {
@@ -508,7 +510,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
 
     @Override
     public void onBannerClicked(BannerSlidesModel slidesModel) {
-        if(!slidesModel.getRedirectUrl().isEmpty()) {
+        if(slidesModel.getRedirectUrl()!=null && !slidesModel.getRedirectUrl().isEmpty()) {
             new ImpresionTask().execute(slidesModel.getRedirectUrl());
         }
     }
