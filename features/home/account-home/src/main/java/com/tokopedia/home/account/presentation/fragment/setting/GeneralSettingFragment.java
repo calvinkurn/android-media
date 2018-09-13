@@ -111,7 +111,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
 
         WalletModel walletModel = walletPref.retrieveWallet();
-        String walletName = walletModel != null ? walletModel.getText() + "," : "";
+        String walletName = walletModel != null ? walletModel.getText() + ", " : "";
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));
