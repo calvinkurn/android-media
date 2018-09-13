@@ -2,11 +2,9 @@ package com.tokopedia.kol.feature.post.view.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import com.project.youtubeutils.activity.YoutubePlayerActivity;
+import com.tokopedia.youtubeutils.activity.YoutubePlayerActivity;
 
 /**
  * @author by yfsx on 29/06/18.

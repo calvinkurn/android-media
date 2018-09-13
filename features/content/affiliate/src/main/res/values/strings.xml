@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">affiliate</string>
+    <string name="title_dashboard">Pencapaian Saya</string>
+    <string name="title_dashboard_saldo">Total komisi masuk ke Saldo Tokopedia</string>
+    <string name="title_profil_dilihat">Profil Dilihat</string>
+    <string name="title_klik_produk">Klik Produk</string>
+    <string name="title_produk_dibeli">Produk Dibeli</string>
+</resources>

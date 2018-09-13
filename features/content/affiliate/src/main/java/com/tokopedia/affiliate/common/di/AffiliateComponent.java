@@ -1,0 +1,13 @@
+package com.tokopedia.affiliate.common.di;
+
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+
+import dagger.Component;
+
+/**
+ * @author by yfsx on 13/09/18.
+ */
+@AffiliateScope
+@Component(modules = AffiliateModule.class, dependencies = BaseAppComponent.class)
+public interface AffiliateComponent {
+}

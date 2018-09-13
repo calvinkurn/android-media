@@ -1,4 +1,4 @@
-package com.project.youtubeutils.common;
+package com.tokopedia.youtubeutils.common;
 
 /**
  * @author by yfsx on 29/06/18.

@@ -1,13 +1,13 @@
-package com.project.youtubeutils.activity;
+package com.tokopedia.youtubeutils.activity;
 
 import android.os.Bundle;
 
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.project.youtubeutils.common.YoutubeInitializer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.youtubeutil.R;
+import com.tokopedia.youtubeutils.common.YoutubeInitializer;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 /**
  * @author by yfsx on 29/06/18.

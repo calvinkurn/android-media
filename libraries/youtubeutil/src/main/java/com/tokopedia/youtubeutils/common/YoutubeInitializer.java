@@ -1,4 +1,4 @@
-package com.project.youtubeutils.common;
+package com.tokopedia.youtubeutils.common;
 
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
