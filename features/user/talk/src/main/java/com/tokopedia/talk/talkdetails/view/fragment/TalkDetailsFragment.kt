@@ -3,6 +3,7 @@ package com.tokopedia.talk.talkdetails.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -31,6 +32,7 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
     lateinit var presenter: TalkDetailsPresenter
 
     lateinit var adapter: TalkDetailsAdapter
+    lateinit var recyclerView: RecyclerView
 
     override fun getAdapterTypeFactory(): TalkDetailsTypeFactoryImpl {
         return TalkDetailsTypeFactoryImpl()
@@ -56,7 +58,7 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_talk_comments,container)
+        return inflater.inflate(R.layout.fragment_talk_comments,container,false)
     }
 
     //TalkDetailsContract.View
@@ -85,6 +87,10 @@ class TalkDetailsFragment : BaseListFragment<Visitable<*>, TalkDetailsTypeFactor
 
     override fun onSuccessSendTalkComment(item: Visitable<*>) {
         adapter.addItem(item)
+    }
+
+    override fun getRecyclerView(view: View?): RecyclerView {
+        return view!!.findViewById(R.id.talk_details_reply_list)
     }
 
     companion object {

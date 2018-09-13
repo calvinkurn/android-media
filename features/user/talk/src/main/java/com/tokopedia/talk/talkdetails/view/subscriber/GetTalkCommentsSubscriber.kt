@@ -19,6 +19,6 @@ class GetTalkCommentsSubscriber(val presenter:TalkDetailsContract.Presenter,
     }
 
     override fun onError(e: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        e!!.printStackTrace()
     }
 }
