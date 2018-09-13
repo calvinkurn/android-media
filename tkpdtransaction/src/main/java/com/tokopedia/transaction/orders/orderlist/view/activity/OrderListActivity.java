@@ -34,6 +34,7 @@ import java.util.List;
 public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
     private static final String ORDER_CATEGORY = "orderCategory";
+    private static final int REQUEST_CODE = 100;
     private String orderCategory = "ALL";
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -147,7 +148,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         }
         UserSession userSession = new UserSession(getActivity());
         if (userSession != null && !userSession.isLoggedIn()) {
-            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), 100);
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             initTabs();
         }
@@ -208,7 +209,7 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             initTabs();
         } else {
             finish();

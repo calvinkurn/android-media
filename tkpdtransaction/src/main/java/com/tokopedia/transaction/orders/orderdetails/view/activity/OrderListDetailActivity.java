@@ -30,7 +30,8 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
 
 
     private static final String ORDER_ID = "order_id";
-    private static final String FROM_PAYMENT = "from_payment";
+    private static final String FROM_PAYMENT = "from_payment";;
+    private static final int REQUEST_CODE = 100
     private String fromPayment = "false";
     private String orderId;
     private OrderDetailsComponent orderListComponent;
@@ -72,7 +73,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
         }
         UserSession userSession = new UserSession(this);
         if (!userSession.isLoggedIn()) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 100);
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE);
         } else {
             category = getIntent().getStringExtra((DeepLink.URI));
         }
@@ -100,7 +101,7 @@ public class OrderListDetailActivity extends BaseSimpleActivity implements HasCo
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100 && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             category = getIntent().getStringExtra((DeepLink.URI));
 
             if (category != null) {
