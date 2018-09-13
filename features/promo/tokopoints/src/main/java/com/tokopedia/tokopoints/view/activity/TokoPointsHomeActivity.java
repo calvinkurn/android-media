@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
@@ -48,5 +49,19 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
         tokoPointComponent = DaggerTokoPointComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        sendBroadcastTokopoint();
+    }
+
+    private void sendBroadcastTokopoint() {
+        Intent intent = new Intent(GlobalConfig.getPackageApplicationName());
+        Bundle extras = new Bundle();
+        extras.putString(GlobalConfig.getPackageApplicationName(), GlobalConfig.getPackageApplicationName());
+        intent.putExtras(extras);
+        sendBroadcast(intent);
     }
 }

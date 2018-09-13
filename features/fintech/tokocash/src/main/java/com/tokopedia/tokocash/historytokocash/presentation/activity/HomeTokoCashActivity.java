@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.tokocash.ApplinkConstant;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashRouter;
@@ -95,9 +96,9 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
     }
 
     private void sendBroadcastTokocash() {
-        Intent intent = new Intent(TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        Intent intent = new Intent(GlobalConfig.getPackageApplicationName());
         Bundle extras = new Bundle();
-        extras.putString(TokocashPendingDataBroadcastReceiver.class.getSimpleName(), TokocashPendingDataBroadcastReceiver.class.getSimpleName());
+        extras.putString(GlobalConfig.getPackageApplicationName(), GlobalConfig.getPackageApplicationName());
         intent.putExtras(extras);
         sendBroadcast(intent);
     }
