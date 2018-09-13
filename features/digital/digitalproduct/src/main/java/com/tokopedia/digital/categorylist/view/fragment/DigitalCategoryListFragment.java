@@ -477,7 +477,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
                     RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
-//                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
                     break;
                 }
             default:
