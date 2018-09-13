@@ -52,6 +52,7 @@ public class GmSubscribeProductMapper implements Func1<GmServiceModel, GmProduct
         domain.setNextInv(serviceModel.getNextInv());
         domain.setFreeDays(serviceModel.getFreeDays());
         domain.setLastPrice(serviceModel.getLastPriceFmt());
+        domain.setTimeRange(serviceModel.getProductTimeRangeFmt());
         return domain;
     }
 

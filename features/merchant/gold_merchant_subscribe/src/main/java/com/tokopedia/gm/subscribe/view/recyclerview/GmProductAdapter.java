@@ -61,7 +61,7 @@ public class GmProductAdapter extends BaseLinearRecyclerViewAdapter {
                         Integer.valueOf(data.get(position).getProductId())
                 );
                 listener.selectedProductName(
-                        data.get(position).getName()
+                        data.get(position).getTimeRange()
                 );
                 listener.selectedProductPrice(
                         data.get(position).getPrice()
