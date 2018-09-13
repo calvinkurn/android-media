@@ -73,7 +73,6 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         recyclerView = view.findViewById(R.id.recycler_seller);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
-        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
     }
 
