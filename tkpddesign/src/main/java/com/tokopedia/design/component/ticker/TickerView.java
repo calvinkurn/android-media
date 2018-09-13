@@ -58,8 +58,11 @@ public class TickerView extends BaseCustomView {
     private int defaultHighLightColor;
     private int defaultBackgroundColor;
     private int defaultTextColor;
+    private int defaultLinkColor;
     private int defaultPageIndicatorOnColor;
     private int defaultPageIndicatorOffColor;
+    private boolean isShowCloseButton;
+    private boolean isUnderlinedLink;
 
     private ArrayList<Integer> listBackGroundColor;
     private ArrayList<Integer> listTextColor;
@@ -135,6 +138,10 @@ public class TickerView extends BaseCustomView {
                     R.styleable.TickerView_tckv_indicator_off_color,
                     ContextCompat.getColor(getContext(), DEFAULT_COLOR_INDICATOR_OFF)
             );
+            defaultLinkColor = styledAttributes.getColor(R.styleable.TickerView_tckv_link_color,
+                    ContextCompat.getColor(getContext(), DEFAULT_COLOR_HIGHLIGHT_TICKER));
+            isShowCloseButton = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_close_button, true);
+            isUnderlinedLink = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_link_underline, true);
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -155,9 +162,11 @@ public class TickerView extends BaseCustomView {
         tickerAdapter = new TickerViewAdapter(
                 listTextColor,
                 listBackGroundColor,
+                defaultLinkColor,
                 listMessage,
                 onPartialTextClickListener
         );
+        tickerAdapter.setIsUnderlinedLink(isUnderlinedLink);
 
         tickerHandler = new Handler();
         tickerRunnable = new Runnable() {
@@ -201,6 +210,7 @@ public class TickerView extends BaseCustomView {
                 setVisibility(GONE);
             }
         });
+        imageViewActionClose.setVisibility(isShowCloseButton? VISIBLE : GONE);
     }
 
     public void setHighLightColor(int highLightColor) {
@@ -290,6 +300,8 @@ public class TickerView extends BaseCustomView {
         tickerAdapter.setListTextColor(listTextColor);
         tickerAdapter.setListBackGroundColor(listBackGroundColor);
         tickerAdapter.setListener(onPartialTextClickListener);
+        tickerAdapter.setDefaultLinkColor(defaultLinkColor);
+        tickerAdapter.setIsUnderlinedLink(isUnderlinedLink);
         tickerAdapter.notifyDataSetChanged();
 
         invalidate();
