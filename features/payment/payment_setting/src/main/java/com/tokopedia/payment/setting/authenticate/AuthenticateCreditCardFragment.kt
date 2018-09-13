@@ -3,6 +3,8 @@ package com.tokopedia.payment.setting.authenticate
 import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +37,11 @@ class AuthenticateCreditCardFragment : BaseListFragment<TypeAuthenticateCreditCa
         super.onViewCreated(view, savedInstanceState)
         buttonUse.setOnClickListener{
             authenticateCCPresenter.updateWhiteList((adapter as AuthenticateCreditCardAdapter).getSelectedState(), resources)
+        }
+        context?.let {
+            val dividerItemDecoration = DividerItemDecoration(it, DividerItemDecoration.VERTICAL)
+            ContextCompat.getDrawable(it, R.drawable.divider_list_card)?.let { it1 -> dividerItemDecoration.setDrawable(it1) }
+            getRecyclerView(view).addItemDecoration(dividerItemDecoration)
         }
         progressDialog.setMessage(getString(R.string.title_loading))
         updateVisibilityButtonUse()
