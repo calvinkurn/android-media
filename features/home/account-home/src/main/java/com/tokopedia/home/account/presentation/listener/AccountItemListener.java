@@ -36,7 +36,8 @@ public interface AccountItemListener {
 
     void onAddProductClicked();
 
-    void onTokopediaPayItemClicked(String label, String applink);
+    void onTokopediaPayItemClicked(String label, String applink, String bsTitle,
+                                   String bsBody, String bsBtnText, String bsRedUrl);
 
     void onDepositClicked(ShopCardViewModel element);
 

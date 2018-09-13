@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.design.utils.CurrencyFormatHelper;
+import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -32,7 +34,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  * @author by alvinatin on 10/08/18.
  */
 
-public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel>{
+public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel> {
     private Context context;
 
     @Inject
@@ -60,7 +62,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
         items.add(buyerCardViewModel);
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
-        if (!accountModel.getWallet().isLinked()){
+        if (!accountModel.getWallet().isLinked()) {
             tokopediaPayViewModel.setLabelLeft(context.getString(R.string.label_tokopedia_pay_wallet));
             tokopediaPayViewModel.setAmountLeft(context.getString(R.string.label_wallet_activation));
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
@@ -69,10 +71,56 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
             tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
-        tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
-        tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
-        tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
-        items.add(tokopediaPayViewModel);
+
+        if (accountModel.getVccUserStatus() == null
+                || accountModel.getVccUserStatus().getStatus() == null
+                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
+                || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_ELIGIBLE)) {
+            tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
+            tokopediaPayViewModel.setAmountRight(accountModel.getDeposit().getDepositFmt());
+            tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
+            items.add(tokopediaPayViewModel);
+        } else {
+            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
+            tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
+
+            if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
+                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(accountModel.getVccUserStatus().getBody()), true));
+            } else {
+                tokopediaPayViewModel.setAmountRight(accountModel.getVccUserStatus().getBody());
+            }
+
+            switch (accountModel.getVccUserStatus().getStatus()) {
+                case AccountConstants.VccStatus.BLOCKED:
+                case AccountConstants.VccStatus.ELIGIBLE:
+                case AccountConstants.VccStatus.DEACTIVATED:
+                    tokopediaPayViewModel.setRightImportant(true);
+                    break;
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getRedirectionUrl())) {
+                tokopediaPayViewModel.setApplinkRight(accountModel.getVccUserStatus().getRedirectionUrl());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageHeader())) {
+                tokopediaPayViewModel.setBottomSheetTitleRight(accountModel.getVccUserStatus().getMessageHeader());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageBody())) {
+                tokopediaPayViewModel.setBottomSheetMessageRight(accountModel.getVccUserStatus().getMessageBody());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageButtonName())) {
+                tokopediaPayViewModel.setBottomSheetButtonTextRight(accountModel.getVccUserStatus().getMessageButtonName());
+            }
+
+            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageUrl())) {
+                tokopediaPayViewModel.setBottomSheetButtonRedirectionUrlRight(accountModel.getVccUserStatus().getMessageUrl());
+            }
+
+            items.add(tokopediaPayViewModel);
+        }
+
 
         MenuTitleViewModel menuTitle = new MenuTitleViewModel();
         menuTitle.setTitle(context.getString(R.string.title_menu_transaction));

@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.viewholder;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.webkit.URLUtil;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.account.R;
@@ -31,14 +32,25 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
     public void bind(TokopediaPayViewModel element) {
         tokopediaPayCardView.setTextAmountLeft(element.getAmountLeft());
         tokopediaPayCardView.setTextDescLeft(element.getLabelLeft());
-        tokopediaPayCardView.setTextAmountRight(element.getAmountRight());
+        tokopediaPayCardView.setTextAmountRight(element.getAmountRight(), element.isRightImportant());
         tokopediaPayCardView.setTextDesctRight(element.getLabelRight());
+        tokopediaPayCardView.setIconLeft(element.getIconUrlLeft());
+        tokopediaPayCardView.setIconRight(element.getIconUrlRight());
+
         tokopediaPayCardView.setActionTextClickListener(v -> listener.onTokopediaPayLinkClicked());
         tokopediaPayCardView.setLeftItemClickListener(v -> listener.onTokopediaPayItemClicked(
                 element.getLabelLeft(),
-                element.getApplinkLeft()));
+                element.getApplinkLeft(),
+                element.getBottomSheetTitleLeft(),
+                element.getBottomSheetMessageRight(),
+                element.getBottomSheetButtonTextLeft(),
+                element.getBottomSheetButtonRedirectionUrlLeft()));
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayItemClicked(
                 element.getLabelRight(),
-                element.getApplinkRight()));
+                element.getApplinkRight(),
+                element.getBottomSheetTitleRight(),
+                element.getBottomSheetMessageRight(),
+                element.getBottomSheetButtonTextRight(),
+                element.getBottomSheetButtonRedirectionUrlRight()));
     }
 }
