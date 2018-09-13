@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory;
 import com.tokopedia.shop.product.view.adapter.ShopProductAdapter;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
@@ -38,14 +39,15 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
 
     public ShopProductCarouselViewHolder(View itemView, int deviceWidth,
                                          ShopProductClickedNewListener shopProductClickedNewListener,
-                                         boolean isVerticalLayout, String titleString) {
+                                         boolean isVerticalLayout, String titleString,
+                                         @ShopTrackProductTypeDef int shopTrackType) {
         super(itemView);
         this.isVerticalLayout = isVerticalLayout;
         shopProductCarouselAdapter = new ShopProductAdapter(new ShopProductAdapterTypeFactory(
                 null,
                 shopProductClickedNewListener, null,
                 null,
-                false, deviceWidth, true));
+                false, deviceWidth, shopTrackType));
         findViews(itemView);
         tvTitle.setText(titleString);
     }

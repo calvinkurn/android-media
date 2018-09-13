@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductCarouselViewHolder;
@@ -85,7 +86,7 @@ public class EtalaseHighlightAdapterTypeFactory extends BaseAdapterTypeFactory {
                 type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
                     type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT,
-                    null);
+                    null, ShopTrackProductTypeDef.ETALASE_HIGHLIGHT);
         } else if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);
         } else {

@@ -36,7 +36,6 @@ public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<Sh
 
     @Override
     public void bind(ShopProductEtalaseHighlightViewModel shopProductEtalaseHighlightViewModel) {
-        Parcelable recyclerViewState = recyclerView.getLayoutManager().onSaveInstanceState();
         List<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModelList
                 = shopProductEtalaseHighlightViewModel.getEtalaseHighlightCarouselViewModelList();
         if (etalaseHighlightCarouselViewModelList == null) {
@@ -45,10 +44,6 @@ public class ShopProductEtalaseHighlightViewHolder extends AbstractViewHolder<Sh
         etalaseHighlightAdapter.softClear();
         etalaseHighlightAdapter.setElement(etalaseHighlightCarouselViewModelList);
         etalaseHighlightAdapter.notifyDataSetChanged();
-
-        if (recyclerViewState != null) {
-            recyclerView.getLayoutManager().onRestoreInstanceState(recyclerViewState);
-        }
     }
 
     private void findViews(View view) {

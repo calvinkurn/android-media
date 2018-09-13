@@ -33,6 +33,8 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
+import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
@@ -289,8 +291,8 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
     }
 
-    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId){
-        if (etalaseViewModelList!= null) {
+    private boolean isUseAce(List<ShopEtalaseViewModel> etalaseViewModelList, String selectedEtalaseId) {
+        if (etalaseViewModelList != null) {
             for (ShopEtalaseViewModel shopEtalaseViewModel : etalaseViewModelList) {
                 if (shopEtalaseViewModel.getEtalaseId().equalsIgnoreCase(selectedEtalaseId)) {
                     return shopEtalaseViewModel.isUseAce();
@@ -361,7 +363,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         return new ShopProductAdapterTypeFactory(this,
                 this, this,
                 this,
-                true, deviceWidth, false
+                true, deviceWidth, ShopTrackProductTypeDef.PRODUCT
         );
     }
 
@@ -447,7 +449,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, true);
+        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId, true);
     }
 
     @Override
@@ -457,7 +459,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, false);
+        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId,false);
     }
 
     @Override
@@ -515,7 +517,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onSuccessGetEtalaseHighlight(@NonNull List<List<ShopProductViewModel>> list) {
         ArrayList<EtalaseHighlightCarouselViewModel> etalaseHighlightCarouselViewModels = new ArrayList<>();
-        for (int i = 0, sizei = list.size(); i<sizei; i++){
+        for (int i = 0, sizei = list.size(); i < sizei; i++) {
             List<ShopProductViewModel> shopProductViewModelList = list.get(i);
             etalaseHighlightCarouselViewModels.add(
                     new EtalaseHighlightCarouselViewModel(shopProductViewModelList, highlightEtalaseViewModelList.get(i)));
@@ -570,7 +572,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         // update the adapter
         List<ShopEtalaseViewModel> shopEtalaseModelListToShow;
-        if (shopEtalaseModelList!= null && shopEtalaseModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
+        if (shopEtalaseModelList != null && shopEtalaseModelList.size() > ShopPageConstant.ETALASE_TO_SHOW) {
             shopEtalaseModelListToShow = shopEtalaseModelList.subList(0, ETALASE_TO_SHOW);
         } else {
             shopEtalaseModelListToShow = shopEtalaseModelList;
@@ -583,10 +585,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         loadEtalaseHighLight();
     }
 
-    private void loadEtalaseHighLight(){
+    private void loadEtalaseHighLight() {
         // load etalase highlight
         highlightEtalaseViewModelList = new ArrayList<>();
-        if (shopEtalaseViewModelList!= null) {
+        if (shopEtalaseViewModelList != null) {
             for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModelList) {
                 if (shopEtalaseViewModel.isHighlight()) {
                     highlightEtalaseViewModelList.add(shopEtalaseViewModel);
@@ -673,13 +675,13 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
         if (shopInfo != null) {
-            if (isFromFeatured) {
+            if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
                 shopPageTracking.eventClickWishlistShopPageFeatured(getString(R.string.shop_info_title_tab_product),
                         shopProductViewModel.isWishList(), shopProductViewModel.getId(), shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                         ShopPageTracking.getShopType(shopInfo.getInfo()));
-            } else {
+            } else if (shopTrackType == ShopTrackProductTypeDef.PRODUCT) {
                 shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
                         true, shopProductViewModel.getId(),
                         shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
@@ -694,16 +696,16 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
         if (shopInfo != null) {
-            if (isFromFeatured) {
+            if (shopTrackType == ShopTrackProductTypeDef.FEATURED) {
                 shopPageTracking.eventClickProductFeaturedImpression(getString(R.string.shop_info_title_tab_product),
                         shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                         attribution, shopProductViewModel.getPositionTracking(), true,
                         shopProductLimitedListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
                         ShopPageTracking.getShopType(shopInfo.getInfo()), false,
                         ShopPageTrackingConstant.PRODUCT, selectedEtalaseName);
-            } else {
+            } else if (shopTrackType == ShopTrackProductTypeDef.PRODUCT) {
                 shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                         shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                         attribution, shopProductViewModel.getPositionTracking(), true,
@@ -722,7 +724,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         switch (requestCode) {
             case REQUEST_CODE_ETALASE:
                 if (resultCode == Activity.RESULT_OK && shopProductLimitedListPresenter != null && shopInfo != null
-                        && data!=null) {
+                        && data != null) {
                     String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
 
@@ -754,7 +756,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                 }
                 break;
             case REQUEST_CODE_SORT:
-                if (resultCode == Activity.RESULT_OK && data!=null) {
+                if (resultCode == Activity.RESULT_OK && data != null) {
                     String sortName = data.getStringExtra(ShopProductSortActivity.SORT_NAME);
                     startActivity(ShopProductListActivity.createIntent(getActivity(), shopInfo.getInfo().getShopId(),
                             "", selectedEtalaseId, "", sortName));

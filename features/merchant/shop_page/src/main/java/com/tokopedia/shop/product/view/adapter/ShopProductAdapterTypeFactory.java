@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringGridViewHolder;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.HideViewHolder;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseHighlightViewHolder;
@@ -40,7 +41,7 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
 
     // gridLayout is for main product
     private final boolean isGridSquareLayout;
-    private final boolean isFeaturedOnly;
+    private final @ShopTrackProductTypeDef int shopTrackType;
     private final int deviceWidth;
     private ShopProductAdapter shopProductAdapter;
 
@@ -51,13 +52,13 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                                                  onShopProductEtalaseListViewHolderListener,
                                          boolean isGridSquareLayout,
                                          int deviceWidth,
-                                         boolean isFeaturedOnly) {
+                                         @ShopTrackProductTypeDef int shopTrackType) {
         this.promoViewHolderListener = promoViewHolderListener;
         this.shopProductClickedListener = shopProductClickedListener;
         this.emptyProductOnClickListener = emptyProductOnClickListener;
         this.onShopProductEtalaseListViewHolderListener = onShopProductEtalaseListViewHolderListener;
         this.isGridSquareLayout = isGridSquareLayout;
-        this.isFeaturedOnly = isFeaturedOnly;
+        this.shopTrackType = shopTrackType;
         this.deviceWidth = deviceWidth;
     }
 
@@ -180,12 +181,12 @@ public class ShopProductAdapterTypeFactory extends BaseAdapterTypeFactory {
                 type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT) {
             return new ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
                     type == ShopProductCarouselViewHolder.VERTICAL_LAYOUT,
-                    parent.getContext().getString(R.string.shop_page_label_featured_product));
+                    parent.getContext().getString(R.string.shop_page_label_featured_product), ShopTrackProductTypeDef.FEATURED);
         } if (type == ShopProductEtalaseHighlightViewHolder.LAYOUT) {
             return new ShopProductEtalaseHighlightViewHolder(parent, deviceWidth, shopProductClickedListener);
         } else if (type == ShopProductViewHolder.GRID_LAYOUT ||
                 type == ShopProductViewHolder.LIST_LAYOUT) {
-            return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, isFeaturedOnly, type);
+            return new ShopProductViewHolder(parent, shopProductClickedListener, !isGridSquareLayout, deviceWidth, shopTrackType, type);
         }
         if (type == HideViewHolder.LAYOUT) {
             return new HideViewHolder(parent);

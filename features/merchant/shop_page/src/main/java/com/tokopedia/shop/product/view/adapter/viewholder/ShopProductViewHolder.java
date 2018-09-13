@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.product.view.listener.ShopProductClickedNewListener;
 import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
@@ -45,17 +46,18 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     private View soldOutView;
 
     private boolean isFixWidth;
-    private boolean isFeatured;
+    private @ShopTrackProductTypeDef int shopTrackType;
     private int deviceWidth;
     private int layoutType;
     private View vgRating;
     private View badgeContainer;
 
     public ShopProductViewHolder(View itemView, ShopProductClickedNewListener shopProductClickedListener,
-                                 boolean isFixWidth, int deviceWidth, boolean isFeatured, int layoutType) {
+                                 boolean isFixWidth, int deviceWidth,
+                                 @ShopTrackProductTypeDef int shopTrackType, int layoutType) {
         super(itemView);
         this.isFixWidth = isFixWidth;
-        this.isFeatured = isFeatured;
+        this.shopTrackType = shopTrackType;
         this.deviceWidth = deviceWidth;
         this.layoutType = layoutType;
         this.shopProductClickedListener = shopProductClickedListener;
@@ -119,7 +121,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onProductClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onProductClicked(shopProductViewModel, isFeatured);
+        shopProductClickedListener.onProductClicked(shopProductViewModel, shopTrackType);
     }
 
     private void updateDisplayRating(final ShopProductViewModel shopProductViewModel) {
@@ -201,7 +203,7 @@ public class ShopProductViewHolder extends AbstractViewHolder<ShopProductViewMod
     }
 
     protected void onWishlistClicked(ShopProductViewModel shopProductViewModel) {
-        shopProductClickedListener.onWishListClicked(shopProductViewModel, isFeatured);
+        shopProductClickedListener.onWishListClicked(shopProductViewModel, shopTrackType);
     }
 
     protected String getImageUrl(ShopProductViewModel shopProductViewModel) {

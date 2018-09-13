@@ -8,7 +8,7 @@ import com.tokopedia.shop.product.view.model.ShopProductViewModel;
 
 public interface ShopProductClickedNewListener {
 
-    void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured);
+    void onWishListClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
 
-    void onProductClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured);
+    void onProductClicked(ShopProductViewModel shopProductViewModel, int shopTrackType);
 }

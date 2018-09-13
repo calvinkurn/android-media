@@ -15,6 +15,7 @@ import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder;
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener;
 import com.tokopedia.shop.product.view.model.BaseShopProductViewModel;
+import com.tokopedia.shop.product.view.model.EtalaseHighlightCarouselViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseHighlightViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseListViewModel;
 import com.tokopedia.shop.product.view.model.ShopProductEtalaseTitleViewModel;
@@ -37,7 +38,7 @@ import static com.tokopedia.shop.common.constant.ShopPageConstant.ITEM_OFFSET;
 
 public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel, ShopProductAdapterTypeFactory>
         implements DataEndlessScrollListener.OnDataEndlessScrollListener,
-        StickySingleHeaderView.OnStickySingleHeaderAdapter{
+        StickySingleHeaderView.OnStickySingleHeaderAdapter {
 
     private boolean needToShowEtalase = false;
 
@@ -226,7 +227,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         return shopProductViewModelList;
     }
 
-    public void updateWishListStatus(String productId, boolean wishList) {
+    public void updateWishListStatus(String productId, String selectedEtalaseId, boolean wishList) {
         for (int i = 0, sizei = shopProductViewModelList.size(); i < sizei; i++) {
             ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(i);
             if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
@@ -239,6 +240,12 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         if (isFeaturedChanged) {
             notifyItemChanged(DEFAULT_FEATURED_POSITION);
         }
+
+        boolean isEtalaseChanged = shopProductEtalaseHighlightViewModel.updateWishListStatus(productId, selectedEtalaseId, wishList);
+        if (isEtalaseChanged) {
+            notifyItemChanged(DEFAULT_ETALASE_HIGHLIGHT_POSITION);
+        }
+
     }
 
     @Override
@@ -274,8 +281,8 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
     @Override
     public void onBindViewHolder(AbstractViewHolder holder, int position) {
         // mechanism to transfer the state from sticky etalase state to non-sticky view holder
-        if (holder instanceof ShopProductEtalaseListViewHolder ) {
-            if (onStickySingleHeaderViewListener!= null &&
+        if (holder instanceof ShopProductEtalaseListViewHolder) {
+            if (onStickySingleHeaderViewListener != null &&
                     onStickySingleHeaderViewListener.isStickyShowed()) {
                 Parcelable recyclerViewState = null;
                 try {
@@ -300,15 +307,15 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         Parcelable recyclerViewState = null;
         try {
             if (shopProductEtalaseListStickyWeakReference != null &&
-                    shopProductEtalaseListStickyWeakReference.get()!= null) {
+                    shopProductEtalaseListStickyWeakReference.get() != null) {
                 recyclerViewState = shopProductEtalaseListStickyWeakReference.get().getRecyclerViewState();
             }
         } catch (Throwable e) {
             recyclerViewState = null;
         }
-        if (recyclerViewState!= null) {
+        if (recyclerViewState != null) {
             if (shopProductEtalaseListViewHolderWeakReference != null &&
-                    shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                    shopProductEtalaseListViewHolderWeakReference.get() != null) {
                 shopProductEtalaseListViewHolderWeakReference.get().setRecyclerViewState(recyclerViewState);
             }
         }
@@ -329,14 +336,14 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
             Parcelable recyclerViewState = null;
             try {
                 if (shopProductEtalaseListViewHolderWeakReference != null &&
-                        shopProductEtalaseListViewHolderWeakReference.get()!= null) {
+                        shopProductEtalaseListViewHolderWeakReference.get() != null) {
                     recyclerViewState = shopProductEtalaseListViewHolderWeakReference.get().getRecyclerViewState();
                 }
             } catch (Throwable e) {
                 recyclerViewState = null;
             }
-            ((ShopProductEtalaseListViewHolder)viewHolder).setRecyclerViewState(recyclerViewState);
-            ((ShopProductEtalaseListViewHolder)viewHolder).bind(shopProductEtalaseListViewModel);
+            ((ShopProductEtalaseListViewHolder) viewHolder).setRecyclerViewState(recyclerViewState);
+            ((ShopProductEtalaseListViewHolder) viewHolder).bind(shopProductEtalaseListViewModel);
         }
     }
 
@@ -345,8 +352,8 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         this.onStickySingleHeaderViewListener = onStickySingleHeaderViewListener;
     }
 
-    public void refreshSticky(){
-        if (onStickySingleHeaderViewListener!= null) {
+    public void refreshSticky() {
+        if (onStickySingleHeaderViewListener != null) {
             onStickySingleHeaderViewListener.refreshSticky();
         }
     }

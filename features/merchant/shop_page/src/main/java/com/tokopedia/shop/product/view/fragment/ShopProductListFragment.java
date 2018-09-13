@@ -34,6 +34,7 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.analytic.ShopPageTracking;
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant;
+import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef;
 import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
@@ -138,7 +139,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
         return new ShopProductAdapterTypeFactory(null,
                 this, this,
                 this,
-                 true, 0, false
+                 true, 0, ShopTrackProductTypeDef.PRODUCT
         );
     }
 
@@ -504,9 +505,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onProductClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
+    public void onProductClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
         if (shopInfo != null) {
-            // isFromFeature is always false
+            // shopTrackType is always from product
             shopPageTracking.eventClickProductImpression(getString(R.string.shop_info_title_tab_product),
                     shopProductViewModel.getName(), shopProductViewModel.getId(), shopProductViewModel.getDisplayedPrice(),
                     attribution, shopProductViewModel.getPositionTracking(), true,
@@ -521,7 +522,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessAddWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, true);
+        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId, true);
     }
 
     @Override
@@ -531,7 +532,7 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
 
     @Override
     public void onSuccessRemoveWishlist(String productId) {
-        shopProductAdapter.updateWishListStatus(productId, false);
+        shopProductAdapter.updateWishListStatus(productId, selectedEtalaseId,false);
     }
 
     @Override
@@ -621,9 +622,9 @@ public class ShopProductListFragment extends BaseListFragment<BaseShopProductVie
     }
 
     @Override
-    public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeature) {
+    public void onWishListClicked(ShopProductViewModel shopProductViewModel, @ShopTrackProductTypeDef int shopTrackType) {
         if (shopInfo != null) {
-            //isFromFeature is always false anyway.
+            //shopTrackType is always from Product
             shopPageTracking.eventClickWishlistShop(getString(R.string.shop_info_title_tab_product), shopProductViewModel.isWishList(),
                     true, shopProductViewModel.getId(),
                     shopProductListPresenter.isMyShop(shopInfo.getInfo().getShopId()),
