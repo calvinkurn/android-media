@@ -1,7 +1,7 @@
 package com.tokopedia.payment.setting.list.di
 
 import com.tokopedia.payment.setting.detail.di.DetailCreditCardScope
-import com.tokopedia.payment.setting.list.SettingListPaymentPresenter
+import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
 import dagger.Module
 import dagger.Provides
 
@@ -10,7 +10,7 @@ class SettingListPaymentModule {
 
     @DetailCreditCardScope
     @Provides
-    fun providePresenter() : SettingListPaymentPresenter{
+    fun providePresenter() : SettingListPaymentPresenter {
         return SettingListPaymentPresenter()
     }
 }

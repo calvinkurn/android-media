@@ -2,10 +2,8 @@ package com.tokopedia.payment.setting.authenticate.model
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.google.gson.annotations.Expose
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.payment.setting.authenticate.AuthenticateCCAdapterFactory
+import com.tokopedia.payment.setting.authenticate.view.adapter.AuthenticateCCAdapterFactory
 
 data class TypeAuthenticateCreditCard(var isSelected: Boolean = false, var description: String = "",
                                       var title : String = "", var stateWhenSelected : Int = 0)

@@ -1,8 +1,7 @@
 package com.tokopedia.payment.setting.add.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.payment.setting.add.AddCreditCardFragment
-import com.tokopedia.payment.setting.authenticate.di.AuthenticateCCScope
+import com.tokopedia.payment.setting.add.view.fragment.AddCreditCardFragment
 import dagger.Component
 
 @AddCreditCardScope

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.payment.setting.list.SettingListPaymentAdapterTypeFactory
+import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
 
 open class SettingListPaymentModel() : Visitable<SettingListPaymentAdapterTypeFactory>, Parcelable {
     override fun type(typeFactory: SettingListPaymentAdapterTypeFactory?): Int {

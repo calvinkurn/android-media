@@ -1,7 +1,7 @@
 package com.tokopedia.payment.setting.authenticate.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.payment.setting.authenticate.AuthenticateCreditCardFragment
+import com.tokopedia.payment.setting.authenticate.view.fragment.AuthenticateCreditCardFragment
 import dagger.Component
 
 @AuthenticateCCScope
