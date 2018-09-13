@@ -14,7 +14,7 @@ public class Error {
 
     @SerializedName("status")
     @Expose
-    private String status;
+    private int status;
 
     @SerializedName("title")
     @Expose
@@ -24,7 +24,7 @@ public class Error {
         return id;
     }
 
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
