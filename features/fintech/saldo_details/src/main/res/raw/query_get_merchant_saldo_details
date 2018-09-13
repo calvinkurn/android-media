@@ -1,0 +1,21 @@
+query {
+    sp_getmerchantstatus {
+        is_enabled
+        is_eligible
+        status
+        show_new_logo
+        title
+        show_toggle
+        box_type
+        description
+        anchorList {
+          label
+          url
+          color
+        }
+        infoList {
+          label
+          value
+        }
+      }
+}

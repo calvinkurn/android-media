@@ -25,7 +25,7 @@ public interface DepositFragmentPresenter {
 
     void setCache();
 
-    void getSellerDetails();
+    void getMerchantSaldoDetails();
 
     void loadMore(int lastItemPosition, int visibleItem);
 

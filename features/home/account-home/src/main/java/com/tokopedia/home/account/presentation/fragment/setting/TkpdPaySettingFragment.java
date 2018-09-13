@@ -127,7 +127,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                     break;
                 case SettingConstant.SETTING_SALDO_ID:
                     accountAnalytics.eventClickPaymentSetting(BALANCE);
-                    router.goToSaldo(getActivity());
+                    router.goToSaldo(getActivity(), userSession.getUserId());
                     break;
                 case SettingConstant.SETTING_TOKOCARD_ID:
                     RouteManager.route(getActivity(), String.format("%s?url=%s",

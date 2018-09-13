@@ -1,0 +1,528 @@
+package com.tokopedia.saldodetails.response.model;
+
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+
+public class GqlMerchantSaldoDetailsResponse implements Parcelable {
+
+    @SerializedName("data")
+    @Expose
+    private Data data;
+    public final static Parcelable.Creator<GqlMerchantSaldoDetailsResponse> CREATOR = new Creator<GqlMerchantSaldoDetailsResponse>() {
+
+
+        @SuppressWarnings({
+                "unchecked"
+        })
+        public GqlMerchantSaldoDetailsResponse createFromParcel(Parcel in) {
+            return new GqlMerchantSaldoDetailsResponse(in);
+        }
+
+        public GqlMerchantSaldoDetailsResponse[] newArray(int size) {
+            return (new GqlMerchantSaldoDetailsResponse[size]);
+        }
+
+    };
+
+    protected GqlMerchantSaldoDetailsResponse(Parcel in) {
+        this.data = ((Data) in.readValue((Data.class.getClassLoader())));
+    }
+
+    public GqlMerchantSaldoDetailsResponse() {
+    }
+
+    public Data getData() {
+        return data;
+    }
+
+    public void setData(Data data) {
+        this.data = data;
+    }
+
+    public GqlMerchantSaldoDetailsResponse withData(Data data) {
+        this.data = data;
+        return this;
+    }
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(data);
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+
+    public class InfoList implements Parcelable {
+
+        @SerializedName("label")
+        @Expose
+        private String label;
+        @SerializedName("value")
+        @Expose
+        private String value;
+        public final Parcelable.Creator<InfoList> CREATOR = new Creator<InfoList>() {
+
+
+            @SuppressWarnings({
+                    "unchecked"
+            })
+            public InfoList createFromParcel(Parcel in) {
+                return new InfoList(in);
+            }
+
+            public InfoList[] newArray(int size) {
+                return (new InfoList[size]);
+            }
+
+        };
+
+        protected InfoList(Parcel in) {
+            this.label = ((String) in.readValue((String.class.getClassLoader())));
+            this.value = ((String) in.readValue((String.class.getClassLoader())));
+        }
+
+        public InfoList() {
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public InfoList withLabel(String label) {
+            this.label = label;
+            return this;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
+        }
+
+        public InfoList withValue(String value) {
+            this.value = value;
+            return this;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(label);
+            dest.writeValue(value);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+    }
+
+    public class SellerDetails implements Parcelable {
+
+        @SerializedName("details")
+        @Expose
+        private Details details;
+        public final Parcelable.Creator<SellerDetails> CREATOR = new Creator<SellerDetails>() {
+
+
+            @SuppressWarnings({
+                    "unchecked"
+            })
+            public SellerDetails createFromParcel(Parcel in) {
+                return new SellerDetails(in);
+            }
+
+            public SellerDetails[] newArray(int size) {
+                return (new SellerDetails[size]);
+            }
+
+        };
+
+        protected SellerDetails(Parcel in) {
+            this.details = ((Details) in.readValue((Details.class.getClassLoader())));
+        }
+
+        public SellerDetails() {
+        }
+
+        public Details getDetails() {
+            return details;
+        }
+
+        public void setDetails(Details details) {
+            this.details = details;
+        }
+
+        public SellerDetails withDetails(Details details) {
+            this.details = details;
+            return this;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(details);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+    }
+
+    public class AnchorList implements Parcelable {
+
+        @SerializedName("label")
+        @Expose
+        private String label;
+        @SerializedName("url")
+        @Expose
+        private String url;
+        @SerializedName("color")
+        @Expose
+        private String color;
+        public final Parcelable.Creator<AnchorList> CREATOR = new Creator<AnchorList>() {
+
+
+            @SuppressWarnings({
+                    "unchecked"
+            })
+            public AnchorList createFromParcel(Parcel in) {
+                return new AnchorList(in);
+            }
+
+            public AnchorList[] newArray(int size) {
+                return (new AnchorList[size]);
+            }
+
+        };
+
+        protected AnchorList(Parcel in) {
+            this.label = ((String) in.readValue((String.class.getClassLoader())));
+            this.url = ((String) in.readValue((String.class.getClassLoader())));
+            this.color = ((String) in.readValue((String.class.getClassLoader())));
+        }
+
+        public AnchorList() {
+        }
+
+        public String getLabel() {
+            return label;
+        }
+
+        public void setLabel(String label) {
+            this.label = label;
+        }
+
+        public AnchorList withLabel(String label) {
+            this.label = label;
+            return this;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public AnchorList withUrl(String url) {
+            this.url = url;
+            return this;
+        }
+
+        public String getColor() {
+            return color;
+        }
+
+        public void setColor(String color) {
+            this.color = color;
+        }
+
+        public AnchorList withColor(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(label);
+            dest.writeValue(url);
+            dest.writeValue(color);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+    }
+
+
+    public class Data implements Parcelable {
+
+        @SerializedName("seller_details")
+        @Expose
+        private SellerDetails sellerDetails;
+        public final Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
+
+
+            @SuppressWarnings({
+                    "unchecked"
+            })
+            public Data createFromParcel(Parcel in) {
+                return new Data(in);
+            }
+
+            public Data[] newArray(int size) {
+                return (new Data[size]);
+            }
+
+        };
+
+        protected Data(Parcel in) {
+            this.sellerDetails = ((SellerDetails) in.readValue((SellerDetails.class.getClassLoader())));
+        }
+
+        public Data() {
+        }
+
+        public SellerDetails getSellerDetails() {
+            return sellerDetails;
+        }
+
+        public void setSellerDetails(SellerDetails sellerDetails) {
+            this.sellerDetails = sellerDetails;
+        }
+
+        public Data withSellerDetails(SellerDetails sellerDetails) {
+            this.sellerDetails = sellerDetails;
+            return this;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(sellerDetails);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+    }
+
+    public class Details implements Parcelable {
+
+        @SerializedName("is_eligible")
+        @Expose
+        private boolean isEligible;
+        @SerializedName("status")
+        @Expose
+        private String status;
+        @SerializedName("is_enabled")
+        @Expose
+        private boolean isEnabled;
+        @SerializedName("show_new_logo")
+        @Expose
+        private boolean showNewLogo;
+        @SerializedName("title")
+        @Expose
+        private String title;
+        @SerializedName("show_toggle")
+        @Expose
+        private boolean showToggle;
+        @SerializedName("box_type")
+        @Expose
+        private String boxType;
+        @SerializedName("description")
+        @Expose
+        private String description;
+        @SerializedName("infoList")
+        @Expose
+        private List<InfoList> infoList = null;
+        @SerializedName("anchorList")
+        @Expose
+        private List<AnchorList> anchorList = null;
+        public final Parcelable.Creator<Details> CREATOR = new Creator<Details>() {
+
+
+            @SuppressWarnings({
+                    "unchecked"
+            })
+            public Details createFromParcel(Parcel in) {
+                return new Details(in);
+            }
+
+            public Details[] newArray(int size) {
+                return (new Details[size]);
+            }
+
+        };
+
+        protected Details(Parcel in) {
+            this.isEligible = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.status = ((String) in.readValue((String.class.getClassLoader())));
+            this.isEnabled = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.showNewLogo = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.title = ((String) in.readValue((String.class.getClassLoader())));
+            this.showToggle = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.boxType = ((String) in.readValue((String.class.getClassLoader())));
+            this.description = ((String) in.readValue((String.class.getClassLoader())));
+            in.readList(this.infoList, (com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse.InfoList.class.getClassLoader()));
+            in.readList(this.anchorList, (com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse.AnchorList.class.getClassLoader()));
+        }
+
+        public Details() {
+        }
+
+        public boolean isIsEligible() {
+            return isEligible;
+        }
+
+        public void setIsEligible(boolean isEligible) {
+            this.isEligible = isEligible;
+        }
+
+        public Details withIsEligible(boolean isEligible) {
+            this.isEligible = isEligible;
+            return this;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public Details withStatus(String status) {
+            this.status = status;
+            return this;
+        }
+
+        public boolean isIsEnabled() {
+            return isEnabled;
+        }
+
+        public void setIsEnabled(boolean isEnabled) {
+            this.isEnabled = isEnabled;
+        }
+
+        public Details withIsEnabled(boolean isEnabled) {
+            this.isEnabled = isEnabled;
+            return this;
+        }
+
+        public boolean isShowNewLogo() {
+            return showNewLogo;
+        }
+
+        public void setShowNewLogo(boolean showNewLogo) {
+            this.showNewLogo = showNewLogo;
+        }
+
+        public Details withShowNewLogo(boolean showNewLogo) {
+            this.showNewLogo = showNewLogo;
+            return this;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public Details withTitle(String title) {
+            this.title = title;
+            return this;
+        }
+
+        public boolean isShowToggle() {
+            return showToggle;
+        }
+
+        public void setShowToggle(boolean showToggle) {
+            this.showToggle = showToggle;
+        }
+
+        public Details withShowToggle(boolean showToggle) {
+            this.showToggle = showToggle;
+            return this;
+        }
+
+        public String getDescription() {
+            return description;
+        }
+
+        public void setDescription(String description) {
+            this.description = description;
+        }
+
+        public Details withDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public List<InfoList> getInfoList() {
+            return infoList;
+        }
+
+        public void setInfoList(List<InfoList> infoList) {
+            this.infoList = infoList;
+        }
+
+        public Details withInfoList(List<InfoList> infoList) {
+            this.infoList = infoList;
+            return this;
+        }
+
+        public List<AnchorList> getAnchorList() {
+            return anchorList;
+        }
+
+        public void setAnchorList(List<AnchorList> anchorList) {
+            this.anchorList = anchorList;
+        }
+
+        public Details withAnchorList(List<AnchorList> anchorList) {
+            this.anchorList = anchorList;
+            return this;
+        }
+
+        public String getBoxType() {
+            return boxType;
+        }
+
+        public void setBoxType(String boxType) {
+            this.boxType = boxType;
+        }
+
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeValue(isEligible);
+            dest.writeValue(status);
+            dest.writeValue(isEnabled);
+            dest.writeValue(showNewLogo);
+            dest.writeValue(title);
+            dest.writeValue(showToggle);
+            dest.writeValue(boxType);
+            dest.writeValue(description);
+            dest.writeList(infoList);
+            dest.writeList(anchorList);
+        }
+
+        public int describeContents() {
+            return 0;
+        }
+
+    }
+}

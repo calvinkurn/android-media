@@ -93,8 +93,8 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == DepositFragmentPresenterImpl.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK){
-            ((DepositFragment)getFragmentManager().findFragmentByTag(TAG)).refresh();
+        if (requestCode == DepositFragmentPresenterImpl.REQUEST_WITHDRAW_CODE && resultCode == Activity.RESULT_OK) {
+            ((DepositFragment) getFragmentManager().findFragmentByTag(TAG)).refresh();
         }
     }
 

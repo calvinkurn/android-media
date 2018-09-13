@@ -21,6 +21,9 @@ import com.tokopedia.core.deposit.listener.DepositFragmentView;
 import com.tokopedia.core.deposit.model.SummaryDepositParam;
 import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -29,6 +32,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Map;
+
+import rx.Subscriber;
 
 /**
  * Created by Nisie on 3/30/16.
@@ -58,7 +63,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     @Override
     public void onDrawClicked(Intent intent) {
         Context context = viewListener.getContext();
-        UserSession session = ((AbstractionRouter)context.getApplicationContext()).getSession();
+        UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
             depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
                 @Override
@@ -95,8 +100,40 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
     @Override
-    public void getSellerDetails() {
+    public void getMerchantSaldoDetails() {
+        viewListener.setLoading();
+        GetMerchantSaldoDetails getMerchantSaldoDetails =
+                new GetMerchantSaldoDetails(viewListener.getContext());
 
+
+        getMerchantSaldoDetails.execute(new Subscriber<com.tokopedia.graphql.data.model.GraphqlResponse>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                viewListener.hideSaldoPrioritasFragment();
+            }
+
+            @Override
+            public void onNext(GraphqlResponse graphqlResponse) {
+
+                if (graphqlResponse != null &&
+                        graphqlResponse.getData(GqlMerchantSaldoDetailsResponse.class) != null) {
+
+                    GqlMerchantSaldoDetailsResponse gqlMerchantSaldoDetailsResponse =
+                            graphqlResponse.getData(GqlMerchantSaldoDetailsResponse.class);
+
+                    viewListener.showSaldoPrioritasFragment(gqlMerchantSaldoDetailsResponse.getData().getSellerDetails());
+
+                } else {
+                    viewListener.hideSaldoPrioritasFragment();
+                }
+                viewListener.finishLoading();
+            }
+        });
     }
 
     @Override
@@ -204,9 +241,9 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
                 viewListener.getAdapter().getList().size() == 0) {
             viewListener.setLoading();
 
-        } else if(paging.getPage() == 1){
+        } else if (paging.getPage() == 1) {
             viewListener.showRefreshing();
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(true);
         }
     }
@@ -301,7 +338,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
 
         if (paging.CheckNextPage()) {
             viewListener.getAdapter().showLoading(true);
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(false);
         }
     }

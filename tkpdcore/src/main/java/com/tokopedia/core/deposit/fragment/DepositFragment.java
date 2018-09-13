@@ -19,6 +19,8 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -33,6 +35,7 @@ import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import butterknife.BindView;
 
@@ -244,6 +247,8 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
+
+        presenter.getMerchantSaldoDetails();
     }
 
     @Override
@@ -418,6 +423,16 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     public void onDestroyView() {
         super.onDestroyView();
         presenter.onDestroyView();
+    }
+
+    @Override
+    public void hideSaldoPrioritasFragment() {
+
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.SellerDetails sellerDetails) {
+
     }
 
     @Override
