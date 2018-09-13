@@ -39,7 +39,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
 
     @Override
     public void onInit() {
-        getDigitalCategoryCloud();
+        getCategoryDataFromCache();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
         compositeSubscription.add(
                 digitalBrowseServiceUseCase.createObservable(
                         GraphqlHelper.loadRawString(getView().getContext().getResources(),
-                                R.raw.digital_browser_brand_query))
+                                R.raw.digital_browse_category_query))
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
@@ -85,5 +85,32 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
     @Override
     public void onSuccessGetDigitalCategory(DigitalBrowseServiceViewModel digitalBrowseServiceViewModel) {
         getView().renderData(digitalBrowseServiceViewModel);
+    }
+
+    private void getCategoryDataFromCache() {
+        compositeSubscription.add(
+                digitalBrowseServiceUseCase.getCategoryDataFromCache()
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new GetDigitalCategorySubscriber(new GetDigitalCategorySubscriber.DigitalCategoryActionListener() {
+                            @Override
+                            public void onErrorGetDigitalCategory(String errorMessage) {
+                                Log.e("ERROR", errorMessage);
+                                getDigitalCategoryCloud();
+                            }
+
+                            @Override
+                            public void onSuccessGetDigitalCategory(DigitalBrowseServiceViewModel digitalBrowseServiceViewModel) {
+                                if (digitalBrowseServiceViewModel != null &&
+                                        digitalBrowseServiceViewModel.getCategoryViewModelList() != null &&
+                                        digitalBrowseServiceViewModel.getCategoryViewModelList().size() > 0) {
+                                    getView().renderData(digitalBrowseServiceViewModel);
+                                }
+
+                                getDigitalCategoryCloud();
+                            }
+                        }, getView().getContext()))
+        );
     }
 }

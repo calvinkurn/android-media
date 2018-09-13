@@ -7,7 +7,9 @@
     android:background="@drawable/bg_digital_browser_item"
     android:clickable="true"
     android:focusable="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_8"
+    android:paddingRight="@dimen/dp_8">
 
     <LinearLayout
         android:layout_width="@dimen/dp_90"

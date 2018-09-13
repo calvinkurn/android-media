@@ -67,7 +67,10 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
     public void getMarketplaceDataCloud() {
         compositeSubscription.add(
                 digitalBrowseMarketplaceUseCase.createObservable(
-                        GraphqlHelper.loadRawString(getView().getContext().getResources(), R.raw.digital_browser_brand_query))
+                        GraphqlHelper.loadRawString(getView().getContext().getResources(),
+                                R.raw.digital_browse_category_query),
+                        GraphqlHelper.loadRawString(getView().getContext().getResources(),
+                                R.raw.digital_browse_brand_query))
                         .subscribeOn(Schedulers.io())
                         .unsubscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())

@@ -5,7 +5,6 @@ import com.tokopedia.browse.homepage.data.entity.DigitalBrowseDynamicHomeIcon;
 import com.tokopedia.browse.homepage.data.entity.DigitalBrowseMarketplaceData;
 import com.tokopedia.browse.homepage.data.entity.DigitalBrowseOfficialStoreBrandsEntity;
 import com.tokopedia.browse.homepage.data.source.cache.DigitalBrowseMarketplaceCacheSource;
-import com.tokopedia.browse.homepage.data.source.cloud.DigitalBrowseMarketplaceDataCloudSource;
 import com.tokopedia.browse.homepage.domain.mapper.MarketplaceViewModelMapper;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseMarketplaceViewModel;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
@@ -22,7 +21,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.functions.Func1;
-import rx.functions.Func2;
 
 /**
  * @author by furqan on 04/09/18.
@@ -33,55 +31,60 @@ public class DigitalBrowseMarketplaceUseCase extends GraphqlUseCase {
     private static final String PARAM_LANG = "lang";
     private static final String PARAM_SOURCE = "source";
     private static final String PARAM_TOTAL = "total";
+    private static final String PARAM_TYPE = "type";
 
     private static final String VALUE_LANG = "id";
     private static final String VALUE_SOURCE = "microsite";
-    private static final int VALUE_TOTAL = 6;
+    private static final int VALUE_TOTAL = 12;
+    private static final int VALUE_TYPE = 1;
 
-    private static final String OPERATION_NAME = "officialStoreBrands";
+    private static final String OFFICIAL_OPERATION_NAME = "officialStoreBrands";
+    private static final String CATEGORY_OPERTAION_NAME = "dynamicHomeIcon";
 
-    private DigitalBrowseMarketplaceDataCloudSource digitalBrowseMarketplaceDataCloudSource;
     private DigitalBrowseMarketplaceCacheSource digitalBrowseMarketplaceCacheSource;
     private MarketplaceViewModelMapper marketplaceViewModelMapper;
 
     @Inject
-    public DigitalBrowseMarketplaceUseCase(DigitalBrowseMarketplaceDataCloudSource digitalBrowseMarketplaceDataCloudSource,
-                                           MarketplaceViewModelMapper marketplaceViewModelMapper,
+    public DigitalBrowseMarketplaceUseCase(MarketplaceViewModelMapper marketplaceViewModelMapper,
                                            DigitalBrowseMarketplaceCacheSource digitalBrowseMarketplaceCacheSource) {
-        this.digitalBrowseMarketplaceDataCloudSource = digitalBrowseMarketplaceDataCloudSource;
         this.marketplaceViewModelMapper = marketplaceViewModelMapper;
         this.digitalBrowseMarketplaceCacheSource = digitalBrowseMarketplaceCacheSource;
     }
 
-    public Observable<DigitalBrowseMarketplaceViewModel> createObservable(String query) {
+    public Observable<DigitalBrowseMarketplaceViewModel> createObservable(String queryCategory, String queryOfficial) {
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put(PARAM_LANG, VALUE_LANG);
-        variables.put(PARAM_SOURCE, VALUE_SOURCE);
-        variables.put(PARAM_TOTAL, VALUE_TOTAL);
+        Map<String, Object> variablesCategory = new HashMap<>();
+        variablesCategory.put(PARAM_TYPE, VALUE_TYPE);
+
+        Map<String, Object> variablesOfficial = new HashMap<>();
+        variablesOfficial.put(PARAM_LANG, VALUE_LANG);
+        variablesOfficial.put(PARAM_SOURCE, VALUE_SOURCE);
+        variablesOfficial.put(PARAM_TOTAL, VALUE_TOTAL);
 
         clearRequest();
 
-        GraphqlRequest graphqlRequest = new GraphqlRequest(query,
-                DigitalBrowseOfficialStoreBrandsEntity.class, variables, OPERATION_NAME);
+        addRequest(new GraphqlRequest(queryCategory,
+                DigitalBrowseMarketplaceData.class, variablesCategory, CATEGORY_OPERTAION_NAME));
+        addRequest(new GraphqlRequest(queryOfficial,
+                DigitalBrowseOfficialStoreBrandsEntity.class, variablesOfficial, OFFICIAL_OPERATION_NAME));
 
-        addRequest(graphqlRequest);
+        return getExecuteObservable(RequestParams.EMPTY)
+                .flatMap(new Func1<GraphqlResponse, Observable<DigitalBrowseMarketplaceViewModel>>() {
+                    @Override
+                    public Observable<DigitalBrowseMarketplaceViewModel> call(GraphqlResponse graphqlResponse) {
+                        DigitalBrowseMarketplaceData digitalBrowseMarketplaceData = new DigitalBrowseMarketplaceData();
 
-        return digitalBrowseMarketplaceDataCloudSource.getData(new HashMap<>())
-                .zipWith(getExecuteObservable(RequestParams.EMPTY),
-                        new Func2<DigitalBrowseMarketplaceData, GraphqlResponse, DigitalBrowseMarketplaceViewModel>() {
-                            @Override
-                            public DigitalBrowseMarketplaceViewModel call(DigitalBrowseMarketplaceData digitalBrowseMarketplaceData, GraphqlResponse graphqlResponse) {
-                                if (graphqlResponse != null) {
-                                    DigitalBrowseOfficialStoreBrandsEntity officialStoreBrandsEntity = graphqlResponse.getData(DigitalBrowseOfficialStoreBrandsEntity.class);
-                                    digitalBrowseMarketplaceData.setPopularBrandDatas(officialStoreBrandsEntity.getOfficialStoreBrandList().get(0).getData());
-                                }
+                        if (graphqlResponse != null) {
+                            digitalBrowseMarketplaceData = graphqlResponse.getData(DigitalBrowseMarketplaceData.class);
+                            DigitalBrowseOfficialStoreBrandsEntity officialStoreBrandsEntity = graphqlResponse.getData(DigitalBrowseOfficialStoreBrandsEntity.class);
+                            digitalBrowseMarketplaceData.setPopularBrandDatas(officialStoreBrandsEntity.getOfficialStoreBrandList().get(0).getData());
+                        }
 
-                                digitalBrowseMarketplaceCacheSource.saveCache(digitalBrowseMarketplaceData);
+                        digitalBrowseMarketplaceCacheSource.saveCache(digitalBrowseMarketplaceData);
 
-                                return marketplaceViewModelMapper.transform(digitalBrowseMarketplaceData);
-                            }
-                        });
+                        return Observable.just(marketplaceViewModelMapper.transform(digitalBrowseMarketplaceData));
+                    }
+                });
     }
 
     public Observable<DigitalBrowseMarketplaceViewModel> getMarketplaceDataFromCache() {
@@ -90,24 +93,30 @@ public class DigitalBrowseMarketplaceUseCase extends GraphqlUseCase {
                     @Override
                     public Observable<DigitalBrowseMarketplaceViewModel> call(DigitalBrowseMarketplaceData digitalBrowseMarketplaceData) {
                         if (digitalBrowseMarketplaceData != null) {
-                            return Observable.just(marketplaceViewModelMapper.transform(digitalBrowseMarketplaceData));
+                            return Observable.just(marketplaceViewModelMapper.transform(
+                                    digitalBrowseMarketplaceData));
                         } else {
-                            DigitalBrowseCategoryGroupEntity categoryGroupEntity = new DigitalBrowseCategoryGroupEntity();
-                            categoryGroupEntity.setCategoryRow(new ArrayList<>());
-
-                            List<DigitalBrowseCategoryGroupEntity> list = new ArrayList<>();
-                            list.add(categoryGroupEntity);
-
-                            DigitalBrowseDynamicHomeIcon digitalBrowseDynamicHomeIcon = new DigitalBrowseDynamicHomeIcon();
-                            digitalBrowseDynamicHomeIcon.setDynamicHomeCategoryGroupEntities(list);
-
-                            DigitalBrowseMarketplaceData data = new DigitalBrowseMarketplaceData();
-                            data.setPopularBrandDatas(new ArrayList<>());
-                            data.setCategoryGroups(digitalBrowseDynamicHomeIcon);
-
-                            return Observable.just(marketplaceViewModelMapper.transform(data));
+                            return Observable.just(marketplaceViewModelMapper.transform(
+                                    getEmptyCacheData()));
                         }
                     }
                 });
+    }
+
+    private DigitalBrowseMarketplaceData getEmptyCacheData() {
+        DigitalBrowseCategoryGroupEntity categoryGroupEntity = new DigitalBrowseCategoryGroupEntity();
+        categoryGroupEntity.setCategoryRow(new ArrayList<>());
+
+        List<DigitalBrowseCategoryGroupEntity> list = new ArrayList<>();
+        list.add(categoryGroupEntity);
+
+        DigitalBrowseDynamicHomeIcon digitalBrowseDynamicHomeIcon = new DigitalBrowseDynamicHomeIcon();
+        digitalBrowseDynamicHomeIcon.setDynamicHomeCategoryGroupEntities(list);
+
+        DigitalBrowseMarketplaceData data = new DigitalBrowseMarketplaceData();
+        data.setPopularBrandDatas(new ArrayList<>());
+        data.setCategoryGroups(digitalBrowseDynamicHomeIcon);
+
+        return data;
     }
 }

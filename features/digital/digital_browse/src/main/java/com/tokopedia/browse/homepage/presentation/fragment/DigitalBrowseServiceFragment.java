@@ -175,6 +175,9 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
 
     @Override
     public void renderData(DigitalBrowseServiceViewModel viewModel) {
+        serviceAdapter.clearAllElements();
+        tabLayout.removeAllTabs();
+
         this.viewModel = viewModel;
 
         serviceAdapter.hideLoading();

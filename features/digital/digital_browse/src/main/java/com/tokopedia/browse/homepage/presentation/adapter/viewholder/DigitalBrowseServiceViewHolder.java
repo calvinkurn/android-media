@@ -47,13 +47,14 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
 
     @Override
     public void bind(DigitalBrowseServiceCategoryViewModel element) {
-        this.item  = element;
+        this.item = element;
         if (element.isTitle()) {
             ivProduct.setVisibility(View.GONE);
             tvProduct.setTextAppearance(ivProduct.getContext(), R.style.TextView_Title_Bold);
             tvProduct.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
             ((LinearLayout) itemView).setGravity(Gravity.LEFT);
             itemView.setClickable(false);
+            itemView.setPadding(0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_16), 0, 0);
         } else {
             setItemView();
 
@@ -63,7 +64,7 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
     }
 
     public void bindLastItem(DigitalBrowseServiceCategoryViewModel element) {
-        this.item  = element;
+        this.item = element;
 
         setItemView();
 
@@ -79,6 +80,7 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
         tvProduct.setTextAppearance(ivProduct.getContext(), R.style.TextView_Micro);
         ((LinearLayout) itemView).setGravity(Gravity.CENTER_HORIZONTAL);
         itemView.setClickable(true);
+        itemView.setPadding(0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_8), 0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
     }
 
     public interface CategoryListener {
