@@ -1,6 +1,7 @@
 package com.tokopedia.talk.producttalk.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -20,6 +21,7 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
+import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.LoadProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
@@ -39,7 +41,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         ProductTalkThreadViewHolder.TalkItemListener,
         LoadProductTalkThreadViewHolder.LoadTalkListener,
         CommentTalkViewHolder.TalkCommentItemListener,
-        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
+        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+        EmptyProductTalkViewHolder.TalkItemListener{
 
     override fun getContext(): Context? {
         return activity
@@ -65,6 +68,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var productName: String = ""
     var productPrice: String = ""
     var productImage: String = ""
+    var intentChat: Intent? = null
+
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
                 .talkComponent(getComponent(TalkComponent::class.java))
@@ -81,6 +86,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
             fragment.productPrice = extras.getString("product_price")
             fragment.productName = extras.getString("prod_name")
             fragment.productImage = extras.getString("product_image")
+            fragment.intentChat = extras.getParcelable("intent_chat")
             return fragment
         }
 
@@ -103,7 +109,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun setUpView(view: View) {
         setMenuVisibility(false)
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -155,7 +161,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
         adapter.hideLoading()
         adapter.addList(listThread)
-    }T
+    }
 
     override fun onLoadClicked() {
         adapter.dismissLoadModel()
@@ -373,5 +379,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
+    }
+
+    override fun onAskButtonClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChatClicked() {
+        startActivity(intentChat)
     }
 }
