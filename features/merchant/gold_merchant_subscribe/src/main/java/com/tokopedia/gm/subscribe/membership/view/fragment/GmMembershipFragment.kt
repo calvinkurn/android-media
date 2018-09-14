@@ -19,6 +19,7 @@ import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
+import kotlinx.android.synthetic.main.fragment_gm_subscribe_membership.*
 
 
 class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
@@ -53,8 +54,18 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         tvSave.run {
             text = getString(R.string.save)
             setOnClickListener {
-                if(!swAutoExtend.isChecked) subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
-                presenter.setMembershipData(subscriptionTypeSelected)
+                if(!swAutoExtend.isChecked) {
+                    subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
+                    presenter.setMembershipData(subscriptionTypeSelected)
+                }
+                else {
+                    if(subscriptionTypeSelected == DEFAULT_SUBSCRIPTION_TYPE) {
+                        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(R.string.gm_subscribe_no_product_selected))
+                    } else {
+                        presenter.setMembershipData(subscriptionTypeSelected)
+                    }
+                }
+
             }}
 
 
@@ -105,6 +116,9 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
     }
 
     override fun onSuccessGetGmSubscribeMembershipData(membershipData: GetMembershipData) {
+        llLoading.visibility = View.GONE
+        llMembership.visibility = View.VISIBLE
+
         swAutoExtend.isChecked = (membershipData.auto_extend == 1)
 
         subscriptionTypeSelected = membershipData.subscription.subscription_type
