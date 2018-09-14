@@ -345,9 +345,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean,talkId: String, shopId: String,
-                                        productId: String) {
-        if (allowReply) goToDetailTalk(talkId,shopId, productId)
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String){
+        if (allowReply) goToDetailTalk(talkId,shopId)
         else showErrorReplyTalk()
     }
 

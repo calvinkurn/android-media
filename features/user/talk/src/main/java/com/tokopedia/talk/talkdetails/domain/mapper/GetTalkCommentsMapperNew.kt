@@ -4,10 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
-import com.tokopedia.talk.common.domain.CommentProduct
-import com.tokopedia.talk.common.domain.InboxTalkItemPojo
-import com.tokopedia.talk.common.domain.InboxTalkPojo
-import com.tokopedia.talk.common.domain.TalkCommentItem
+import com.tokopedia.talk.common.domain.*
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.ProductHeader
@@ -52,7 +49,7 @@ class GetTalkCommentsMapperNew @Inject constructor() : Func1<Response<DataRespon
                 listTalk,
                 false,
                 0,
-                0)
+                UnreadCount())
     }
 
     private fun mapListThread(pojo: TalkDetailsPojo): TalkThreadViewModel {

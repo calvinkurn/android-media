@@ -10,7 +10,6 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 class TalkDetailsContract {
     interface Presenter {
         fun loadTalkDetails(id:String)
-        fun reportTalkComment(id:String, shopId:String, productId:String)
         fun deleteTalkComment(id:String)
 //        fun sendTalkComment(id:String, attachedHeaderProduct:List<TalkDetailsHeaderProductViewModel>?, message:String)
         fun onDestroy()

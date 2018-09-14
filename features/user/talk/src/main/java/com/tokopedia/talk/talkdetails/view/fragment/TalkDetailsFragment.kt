@@ -1,5 +1,6 @@
 package com.tokopedia.talk.talkdetails.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -29,6 +30,7 @@ import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
@@ -44,7 +46,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         TalkDetailsContract.View,
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
-        InboxTalkItemViewHolder.TalkItemListener{
+        InboxTalkItemViewHolder.TalkItemListener,
+        LoadMoreCommentTalkViewHolder.LoadMoreListener{
     @Inject
     lateinit var presenter: TalkDetailsPresenter
 
@@ -84,7 +87,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
                 .HORIZONTAL,false)
         attachedProductList.adapter = attachedProductListAdapter
 
-        val adapterTypeFactory = TalkDetailsTypeFactoryImpl(this, this, this)
+        val adapterTypeFactory = TalkDetailsTypeFactoryImpl(this,
+                this,
+                this,
+                this)
         val listTalk = ArrayList<Visitable<*>>()
         adapter = InboxTalkAdapter(adapterTypeFactory, listTalk)
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -151,11 +157,6 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         adapter.deleteComment(id,id)
     }
 
-    override fun goToReportTalkPage(id: String, shopId: String, productId: String) {
-        val intent = ReportTalkActivity.createIntent(context!!,id,shopId,productId)
-        startActivityForResult(intent, GO_TO_REPORT_TALK_REQ_CODE)
-    }
-
     override fun onSuccessSendTalkComment(commentId: String) {
         sendMessageEditText.setText("")
     }
@@ -202,19 +203,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun onNoShowTalkCommentClick(talkId: String, commentId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String, productId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
@@ -227,6 +220,30 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onNoShowTalkItemClick(talkId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun goToReportTalkPage(id: String, shopId: String, productId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onGoToPdp(productId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onGoToUserProfile(userId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
