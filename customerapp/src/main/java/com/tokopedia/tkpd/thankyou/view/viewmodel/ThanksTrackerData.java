@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.thankyou.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+
 /**
  * Created by okasurya on 12/4/17.
  */
@@ -11,6 +13,7 @@ public class ThanksTrackerData implements Parcelable {
     private String platform;
     private String template;
     private String id;
+    private ArrayList<String> shopTypes;
 
     public String getPlatform() {
         return platform;
@@ -34,6 +37,12 @@ public class ThanksTrackerData implements Parcelable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public ArrayList<String> getShopTypes() { return shopTypes; }
+
+    public void setShopTypes(ArrayList<String> shopTypes) {
+        this.shopTypes = shopTypes;
     }
 
 
@@ -69,4 +78,5 @@ public class ThanksTrackerData implements Parcelable {
             return new ThanksTrackerData[size];
         }
     };
+
 }

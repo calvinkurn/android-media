@@ -132,6 +132,7 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
+        data.setShopTypes(initialProps.getStringArrayList(ThanksTrackerConst.Key.SHOP_TYPES) );
         ThanksTrackerService.start(this, data);
     }
 
