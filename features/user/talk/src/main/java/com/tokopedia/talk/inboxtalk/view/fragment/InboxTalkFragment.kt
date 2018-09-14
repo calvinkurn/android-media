@@ -46,7 +46,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
-
     private val REQUEST_REPORT_TALK: Int = 101
     private val REQUEST_GO_TO_DETAIL: Int = 102
 

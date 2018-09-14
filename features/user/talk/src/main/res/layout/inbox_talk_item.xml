@@ -31,7 +31,7 @@
         android:background="@color/grey_300"
         app:layout_constraintBottom_toBottomOf="parent"/>
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/replyButton"
         android:layout_width="wrap_content"
         android:layout_gravity="end"
@@ -42,7 +42,7 @@
         android:gravity="end|center_vertical"
         android:text="@string/reply_talk"
         android:textColor="@color/medium_green"
-        android:drawableRight="@drawable/ic_chevron_right"
+        app:drawableRightCompat="@drawable/ic_chevron_right"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         />
