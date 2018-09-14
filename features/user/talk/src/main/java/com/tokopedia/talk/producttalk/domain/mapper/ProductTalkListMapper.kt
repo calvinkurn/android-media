@@ -27,11 +27,9 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
     private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
-        if (response.body() != null) {
-//                (response.body().header!= null &&
-//                        response.body().header!= null &&
-//                response.body().header.messages.isEmpty() ||
-//                response.body().header.messages[0].isBlank())) {
+        if ((response.body() != null) && (response.body().header == null ||
+                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
+                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
             val pojo: InboxTalkPojo = response.body().data
             return mapToViewModel(pojo)
         } else {
@@ -48,19 +46,19 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
         }
         return ProductTalkViewModel("",
                 listThread,
-                true,//                pojo.paging.has_next,
+                pojo.paging.has_next,
                 pojo.paging.page_id)
     }
 
     private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
         val listCommentTalk = ArrayList<Visitable<*>>()
-        listCommentTalk.add(LoadMoreCommentTalkViewModel(3))
+
         for (data: TalkCommentItem in pojo.list) {
             listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
-                    data.comment_create_time_fmt,
+                    data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
@@ -71,9 +69,21 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_shop_id,
                     data.comment_talk_id,
                     data.comment_id,
-                    pojo.talk_product_id
+                    pojo.talk_product_id,
+                    data.comment_user_label_id,
+                    data.comment_user_label,
+                    data.comment_user_id
 
             ))
+        }
+
+        if (pojo.talk_total_comment.toInt() > 1) {
+            val totalExistComent: Int = listCommentTalk.size
+            listCommentTalk.add(0,
+                    LoadMoreCommentTalkViewModel((pojo.talk_total_comment.toInt()
+                            - totalExistComent),
+                            pojo.talk_id,
+                            pojo.talk_shop_id))
         }
 
         return TalkThreadViewModel(
@@ -91,7 +101,10 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk_shop_id,
                         pojo.talk_id,
                         "",
-                        pojo.talk_product_id
+                        pojo.talk_product_id,
+                        pojo.talk_user_label_id,
+                        pojo.talk_user_label,
+                        pojo.talk_user_id
 
                 ),
                 listCommentTalk)

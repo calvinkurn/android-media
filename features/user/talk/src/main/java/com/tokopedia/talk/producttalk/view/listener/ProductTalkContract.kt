@@ -22,6 +22,11 @@ interface ProductTalkContract {
         fun setCanLoad()
         fun showRefresh()
         fun hideRefresh()
+        fun showLoadingAction()
+        fun hideLoadingAction()
+        fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
+        fun onSuccessMarkTalkNotFraud(talkId: String)
+        fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -29,5 +34,8 @@ interface ProductTalkContract {
         fun getProductTalk(productId: String)
         fun resetProductTalk(productId: String)
         fun initProductTalk(productId: String)
+        fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
+        fun markTalkNotFraud(talkId: String)
+        fun markCommentNotFraud(talkId: String, commentId: String)
     }
 }

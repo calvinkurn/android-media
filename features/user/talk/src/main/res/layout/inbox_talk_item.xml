@@ -42,6 +42,7 @@
         android:gravity="end|center_vertical"
         android:text="@string/reply_talk"
         android:textColor="@color/medium_green"
+        android:drawableRight="@drawable/ic_chevron_right"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         />

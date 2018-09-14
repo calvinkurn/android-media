@@ -24,6 +24,9 @@ data class ProductTalkItemViewModel(
         var talkId : String = "",
         var commentId : String = "",
         var productId : String = "",
+        var labelId : Int = 0,
+        var labelString : String = "",
+        var userId : String = "",
         var isSending : Boolean = false):
         Visitable<ProductTalkChildThreadTypeFactory>{
 

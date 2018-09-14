@@ -2,6 +2,7 @@ package com.tokopedia.talk.inboxtalk.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -131,6 +132,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
             title.setTextColor(MethodChecker.getColor(this.context, R.color.black_38))
+            title.typeface = Typeface.create("sans-serif", Typeface.NORMAL)
         }
     }
 
@@ -139,6 +141,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
             val view: View = this
             val title: TextView = view.findViewById(R.id.title)
             title.setTextColor(MethodChecker.getColor(this.context, R.color.medium_green))
+            title.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
         }
     }
 

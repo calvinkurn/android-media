@@ -170,6 +170,7 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
@@ -223,7 +224,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter, ProductEditModuleRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter,
+        ProductEditModuleRouter, TalkRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;

@@ -62,6 +62,17 @@ class ReportTalkAdapter(private val optionClickListener: OnOptionClickListener,
         return listOption[position]
     }
 
+    fun getSelectedOption(): TalkReportOptionViewModel {
+        var selectedOption = TalkReportOptionViewModel()
+        for (talkOption in listOption) {
+            if (talkOption.isChecked) {
+                selectedOption = talkOption
+                break
+            }
+        }
+        return selectedOption
+    }
+
 }
 
 private fun ViewGroup.inflate(layoutRes: Int): View {

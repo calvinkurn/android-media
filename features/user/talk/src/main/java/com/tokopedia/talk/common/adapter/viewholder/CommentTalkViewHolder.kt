@@ -22,9 +22,11 @@ class CommentTalkViewHolder(val v: View,
                             private val productListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<ProductTalkItemViewModel>(v) {
 
+    private val SELLER_LABEL_ID: Int = 3
+
     interface TalkCommentItemListener {
         fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
-        fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String)
+        fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String)
         fun onNoShowTalkCommentClick(talkId: String, commentId: String)
     }
 
@@ -34,6 +36,7 @@ class CommentTalkViewHolder(val v: View,
     private val menuButton: ImageView = itemView.menu
     private val talkContent: TextView = itemView.talk_content
     private val listProduct: RecyclerView = itemView.productAttachment
+    private val profileLabel: TextView = itemView.seller_label
 
     private lateinit var adapter: TalkProductAttachmentAdapter
 
@@ -71,7 +74,6 @@ class CommentTalkViewHolder(val v: View,
 
     private fun setupNormalTalk(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.GONE
-
         talkContent.visibility = View.VISIBLE
         talkContent.text = element.comment
     }
@@ -79,29 +81,44 @@ class CommentTalkViewHolder(val v: View,
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
-
         reportedMessage.text = element.comment
 
         if (element.isOwner) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
             rawMessage.text = element.rawMessage
+            yesReportButton.visibility = View.VISIBLE
+            noReportButton.visibility = View.VISIBLE
         } else {
             rawMessage.visibility = View.GONE
             separatorReport.visibility = View.GONE
+            yesReportButton.visibility = View.GONE
+            noReportButton.visibility = View.GONE
         }
 
-        yesReportButton.setOnClickListener { listener.onYesReportTalkCommentClick(
-                element.talkId, element.shopId, element.productId
-        ) }
-        noReportButton.setOnClickListener { listener.onNoShowTalkCommentClick(element.talkId,
-                element.commentId) }
+        yesReportButton.setOnClickListener {
+            listener.onYesReportTalkCommentClick(
+                    element.talkId, element.shopId, element.productId,
+                    element.commentId
+            )
+        }
+        noReportButton.setOnClickListener {
+            listener.onNoShowTalkCommentClick(element.talkId,
+                    element.commentId)
+        }
     }
+
 
     private fun setProfileHeader(element: ProductTalkItemViewModel) {
         ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.avatar)
         profileName.text = element.name
         datetime.text = element.timestamp
+        if (element.labelId == SELLER_LABEL_ID) {
+            profileLabel.visibility = View.VISIBLE
+            profileLabel.text = element.labelString
+        } else {
+            profileLabel.visibility = View.GONE
+        }
     }
 
     private fun setupProductAttachment(element: ProductTalkItemViewModel) {
@@ -125,11 +142,13 @@ class CommentTalkViewHolder(val v: View,
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onCommentMenuButtonClicked(menu,
-                element.shopId,
-                element.talkId,
-                element.commentId,
-                element.productId) }
+        menuButton.setOnClickListener {
+            listener.onCommentMenuButtonClicked(menu,
+                    element.shopId,
+                    element.talkId,
+                    element.commentId,
+                    element.productId)
+        }
     }
 
     fun onViewRecycled() {

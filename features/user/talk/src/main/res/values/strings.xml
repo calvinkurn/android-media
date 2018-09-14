@@ -55,5 +55,6 @@
     <string name="write_question">Tulis Pertanyaan</string>
     <string name="contact_seller">Atau hubungi langsung penjual</string>
     <string name="chat_seller">Chat Penjual</string>
+    <string name="label_talk_seller">Penjual</string>
 
 </resources>

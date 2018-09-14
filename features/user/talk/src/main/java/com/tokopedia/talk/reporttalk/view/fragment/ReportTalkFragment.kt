@@ -2,6 +2,7 @@ package com.tokopedia.talk.reporttalk.view.fragment
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
@@ -46,7 +47,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     var talkId: String = ""
     var shopId: String = ""
     var productId: String = ""
-
+    var commentId: String = ""
 
     override fun getScreenName(): String {
         return TalkAnalytics.SCREEN_NAME_REPORT_TALK
@@ -74,13 +75,17 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     private fun initData(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
-            talkId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            productId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            talkId = savedInstanceState.getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
+            shopId = savedInstanceState.getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
+            productId = savedInstanceState.getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
+            commentId = savedInstanceState.getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+
         } ?: arguments?.run {
-            talkId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            productId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
+            talkId = getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
+            shopId = getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
+            productId = getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
+            commentId = getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+
         } ?: activity?.run {
             finish()
         }
@@ -109,8 +114,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.adapter = reportTalkAdapter
 
         sendButton.setOnClickListener {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
 
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
         }
 
         reason.addTextChangedListener(object : TextWatcher {
@@ -167,25 +172,47 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
 
     override fun showLoadingFull() {
-
+        progressBar.visibility = View.VISIBLE
+        mainView.visibility = View.GONE
+        sendButton.visibility = View.GONE
     }
 
     override fun hideLoadingFull() {
-
+        progressBar.visibility = View.GONE
+        mainView.visibility = View.VISIBLE
+        sendButton.visibility = View.VISIBLE
     }
 
     override fun onErrorReportTalk(errorMessage: String) {
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString())
-        }
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
+        }.showRetrySnackbar()
     }
 
     override fun onSuccessReportTalk() {
         activity?.run {
-            setResult(Activity.RESULT_OK)
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(ReportTalkActivity.EXTRA_PRODUCT_ID, productId)
+        outState.putString(ReportTalkActivity.EXTRA_SHOP_ID, shopId)
+        outState.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
+        outState.putString(ReportTalkActivity.EXTRA_COMMENT_ID, commentId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        context?.run {
+            KeyboardHandler.DropKeyboard(this, view)
+        }
+    }
 
 }

@@ -292,6 +292,7 @@ import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
+import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
@@ -460,7 +461,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         WithdrawRouter,
         ProductEditModuleRouter,
         EventModuleRouter,
-        TravelCalendarRouter {
+        TravelCalendarRouter,
+        TalkRouter {
 
     private static final String EXTRA = "extra";
 

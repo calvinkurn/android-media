@@ -3,6 +3,7 @@ package com.tokopedia.talk.reporttalk.view.listener
 import android.content.Context
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
 
 /**
  * @author by nisie on 8/30/18.
@@ -20,7 +21,8 @@ interface ReportTalkContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun reportTalk(talkId: String, shopId: String, productId: String, reason: String)
+        fun reportTalk(talkId: String, shopId: String, productId: String, otherReason: String,
+                       selectedOption: TalkReportOptionViewModel)
 
     }
 }

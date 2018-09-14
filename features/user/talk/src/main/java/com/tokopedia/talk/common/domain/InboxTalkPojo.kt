@@ -9,8 +9,8 @@ import com.google.gson.annotations.SerializedName
 
 data class InboxTalkPojo(
         @Expose
-        @SerializedName("is_unread")
-        val is_unread: Int = 0,
+        @SerializedName("unread_count")
+        val unreadCount: UnreadCount = UnreadCount(),
         @Expose
         @SerializedName("list")
         val list: List<InboxTalkItemPojo> = ArrayList(),
@@ -82,7 +82,7 @@ data class InboxTalkItemPojo(
         val talk_user_label: String = "",
         @Expose
         @SerializedName("talk_user_label_id")
-        val talk_user_label_id: String = "",
+        val talk_user_label_id: Int = 0,
         @Expose
         @SerializedName("talk_user_name")
         val talk_user_name: String = "",
@@ -98,6 +98,9 @@ data class TalkCommentItem(
         @Expose
         @SerializedName("comment_create_time_fmt")
         val comment_create_time_fmt: String = "",
+        @Expose
+        @SerializedName("comment_create_time_list")
+        val comment_create_time_list: CreateTimeList= CreateTimeList(),
         @Expose
         @SerializedName("comment_id")
         val comment_id: String = "",
@@ -138,6 +141,9 @@ data class TalkCommentItem(
         @SerializedName("comment_user_image")
         val comment_user_image: String = "",
         @Expose
+        @SerializedName("comment_user_id")
+        val comment_user_id: String = "",
+        @Expose
         @SerializedName("comment_user_label")
         val comment_user_label: String = "",
         @Expose
@@ -164,6 +170,15 @@ data class CommentProduct(
         @Expose
         @SerializedName("product_status")
         val product_status: Int = 0
+)
+
+data class CreateTimeList(
+        @Expose
+        @SerializedName("date_time_android")
+        val date_time_android: String = "",
+        @Expose
+        @SerializedName("date_time_ios")
+        val date_time_ios: String = ""
 )
 
 
@@ -222,4 +237,17 @@ data class Paging(
         @Expose
         @SerializedName("page_id")
         val page_id: Int = 0
+)
+
+
+data class UnreadCount(
+        @Expose
+        @SerializedName("all")
+        val all: Int = 0,
+        @Expose
+        @SerializedName("my_product")
+        val my_product: Int = 0,
+        @Expose
+        @SerializedName("following")
+        val following: Int = 0
 )

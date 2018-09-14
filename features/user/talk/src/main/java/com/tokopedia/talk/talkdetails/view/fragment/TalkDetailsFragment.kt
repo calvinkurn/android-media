@@ -1,6 +1,5 @@
 package com.tokopedia.talk.talkdetails.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -18,6 +17,10 @@ import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.di.DaggerTalkDetailsComponent
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
@@ -30,7 +33,6 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
-import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.adapter.AttachedProductListAdapter
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
@@ -39,7 +41,7 @@ import javax.inject.Inject
  * Created by Hendri on 28/08/18.
  */
 class TalkDetailsFragment : BaseDaggerFragment(),
-                            TalkDetailsContract.View,
+        TalkDetailsContract.View,
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         InboxTalkItemViewHolder.TalkItemListener{
@@ -61,7 +63,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     fun loadData() {
         showLoadingAction()
-        presenter.loadTalkDetails(arguments?.getString(TalkDetailsActivity.THREAD_TALK_ID)?:"")
+        presenter.loadTalkDetails(arguments?.getString(TalkDetailsActivity.THREAD_TALK_ID) ?: "")
     }
 
     override fun getScreenName(): String {
@@ -124,7 +126,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_talk_comments,container,false)
+        val view = inflater.inflate(R.layout.fragment_talk_comments, container,false)
         return view
     }
 

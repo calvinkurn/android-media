@@ -16,6 +16,7 @@ import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
@@ -39,7 +40,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         ProductTalkThreadViewHolder.TalkItemListener,
         LoadProductTalkThreadViewHolder.LoadTalkListener,
         CommentTalkViewHolder.TalkCommentItemListener,
-        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
+        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+        LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
     override fun getContext(): Context? {
         return activity
@@ -102,7 +104,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView(view: View) {
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
+        setMenuVisibility(false)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -138,6 +141,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
+        setMenuVisibility(false)
         adapter.showEmpty()
     }
 
@@ -146,6 +150,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
+        setMenuVisibility(true)
         adapter.setList(listThread, ProductTalkTitleViewModel(productImage, productName, productPrice))
     }
 
@@ -165,8 +170,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
+        adapter.deleteComment(talkId, commentId)
+    }
+
     override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if (allowReply) goToDetailTalk()
+        //TODO
+        if (allowReply) goToDetailTalk("", "")
         else showErrorReplyTalk()
     }
 
@@ -175,11 +185,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showRedSnackbar(view, "Error dud")
     }
 
-    private fun goToDetailTalk() {
-
+    private fun goToDetailTalk(talkId: String, shopId: String) {
+        //TODO
     }
 
-    override fun onMenuButtonClicked(menu: TalkState) {
+    override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
         context?.run {
             val listMenu = ArrayList<Menus.ItemMenus>()
             if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
@@ -196,25 +206,25 @@ class ProductTalkFragment : BaseDaggerFragment(),
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
             bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
-                onMenuItemClicked(itemMenus, bottomMenu)
+                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
             }
             bottomMenu.show()
         }
     }
 
-    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus) {
+    private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_delete_talk) -> showDeleteTalkDialog()
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
-            getString(R.string.menu_report_talk) -> goToReportTalk()
+            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId)
         }
         bottomMenu.dismiss()
     }
 
-    private fun goToReportTalk() {
+    private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this, "", "" , "")
+            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "", "")
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
@@ -270,19 +280,101 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
-        //TODO STEVENFe
+        context?.run {
+            val listMenu = ArrayList<Menus.ItemMenus>()
+            if (menu.allowReport) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_report_comment)))
+            }
+            if (menu.allowDelete) {
+                listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_delete_comment)))
+            }
+
+            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+            bottomMenu.itemMenuList = listMenu
+            bottomMenu.setActionText(getString(R.string.button_cancel))
+            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+            }
+            bottomMenu.show()
+        }
+    }
+
+
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+        when (itemMenu.title) {
+            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
+                    talkId, commentId)
+        }
+        bottomMenu.dismiss()
+    }
+
+    private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
+
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
+        alertDialog.setTitle(getString(R.string.delete_comment_talk_dialog_title))
+        alertDialog.setDesc(getString(R.string.delete_comment_talk_dialog_desc))
+        alertDialog.setBtnCancel(getString(R.string.button_cancel))
+        alertDialog.setBtnOk(getString(R.string.button_delete))
+        alertDialog.setOnCancelClickListener {
+            alertDialog.dismiss()
+        }
+        alertDialog.setOnOkClickListener {
+            presenter.deleteCommentTalk(shopId, talkId, commentId)
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+    }
+
+    override fun showLoadingAction() {
+        talkProgressBar.visibility = View.VISIBLE
+        list_thread.visibility = View.GONE
+        swipeToRefresh.isEnabled = false
+    }
+
+    override fun hideLoadingAction() {
+        talkProgressBar.visibility = View.GONE
+        list_thread.visibility = View.VISIBLE
+        swipeToRefresh.isEnabled = true
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-       // TODO STEVEN
+        // TODO STEVEN
     }
 
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onNoShowTalkItemClick(talkId: String) {
+        presenter.markTalkNotFraud(talkId)
     }
 
     override fun onNoShowTalkCommentClick(talkId: String, commentId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        presenter.markCommentNotFraud(talkId, commentId)
+    }
+
+    override fun onSuccessMarkTalkNotFraud(talkId: String) {
+        adapter.showReportedTalk(talkId)
+    }
+
+    override fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String) {
+        adapter.showReportedCommentTalk(talkId, commentId)
+    }
+
+    override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
+        goToReportTalk(talkId, shopId, productId)
+    }
+
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+        goToDetailTalk(talkId, shopId)
     }
 
     override fun onDestroyView() {

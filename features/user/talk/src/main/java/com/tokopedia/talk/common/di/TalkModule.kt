@@ -5,6 +5,7 @@ import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
 import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.network.NetworkRouter
@@ -15,6 +16,7 @@ import com.tokopedia.talk.common.data.TalkUrl
 import com.tokopedia.talk.common.domain.mapper.BaseActionMapper
 import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
 import com.tokopedia.talk.common.domain.usecase.DeleteTalkUseCase
+import com.tokopedia.talk.common.network.TalkErrorResponse
 import com.tokopedia.talk.inboxtalk.domain.GetInboxTalkUseCase
 import com.tokopedia.talk.inboxtalk.domain.mapper.GetInboxTalkMapper
 import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
@@ -82,12 +84,10 @@ class TalkModule {
             builder.addInterceptor(httpLoggingInterceptor)
         }
 
-        val headerResponseInterceptor =
-                HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java)
-
         builder.addInterceptor(fingerprintInterceptor)
         builder.addInterceptor(tkpdAuthInterceptor)
-        builder.addInterceptor(headerResponseInterceptor)
+        builder.addInterceptor(HeaderErrorResponseInterceptor(HeaderErrorListResponse::class.java))
+        builder.addInterceptor(ErrorResponseInterceptor(TalkErrorResponse::class.java))
 
         return builder.build()
     }
