@@ -27,11 +27,9 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
     private val IS_FOLLOWED = 1
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
-        if (response.body() != null) {
-//                (response.body().header!= null &&
-//                        response.body().header!= null &&
-//                response.body().header.messages.isEmpty() ||
-//                response.body().header.messages[0].isBlank())) {
+        if ((response.body() != null) && (response.body().header == null ||
+                    (response.body().header != null && response.body().header.messages.isEmpty()) ||
+                    (response.body().header != null && response.body().header.messages[0].isBlank()))) {
             val pojo: InboxTalkPojo = response.body().data
             return mapToViewModel(pojo)
         } else {
@@ -48,14 +46,14 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
         }
         return ProductTalkViewModel("",
                 listThread,
-                true,//                pojo.paging.has_next,
+                pojo.paging.has_next,
                 pojo.paging.page_id)
     }
 
     private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
         val listCommentTalk = ArrayList<Visitable<*>>()
-        listCommentTalk.add(LoadMoreCommentTalkViewModel(3))
+
         for (data: TalkCommentItem in pojo.list) {
             listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
@@ -76,6 +74,11 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_user_label
 
             ))
+        }
+
+        if(pojo.talk_total_comment.toInt() > 1){
+            val totalExistComent : Int = listCommentTalk.size
+            listCommentTalk.add(0, LoadMoreCommentTalkViewModel(pojo.talk_total_comment.toInt()-totalExistComent))
         }
 
         return TalkThreadViewModel(

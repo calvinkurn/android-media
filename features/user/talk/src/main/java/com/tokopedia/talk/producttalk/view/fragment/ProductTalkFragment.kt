@@ -102,6 +102,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView(view: View) {
+        setMenuVisibility(false)
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
@@ -138,7 +139,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
-        setHasOptionsMenu(false)
+        setMenuVisibility(false)
         adapter.showEmpty()
     }
 
@@ -147,6 +148,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
+        setMenuVisibility(true)
         adapter.setList(listThread, ProductTalkTitleViewModel(productImage, productName, productPrice))
     }
 
@@ -365,10 +367,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
-        goToReportTalk(talkId, shopId, productId)
-    }
-
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
         goToReportTalk(talkId, shopId, productId)
     }
 
