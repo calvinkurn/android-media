@@ -8,6 +8,7 @@ query shopShowcasesByShopID($shopID:String!, $hideNoCount:Boolean!, $hideShowcas
           highlighted
           alias
           useAce
+          badge
       }
       error {
           message

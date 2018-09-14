@@ -46,7 +46,7 @@ public class ShopEtalaseViewModel implements Visitable<ShopEtalaseAdapterTypeFac
     }
 
     public ShopEtalaseViewModel(ShopEtalaseModel shopEtalaseModel) {
-        setEtalaseBadge(null);
+        setEtalaseBadge(shopEtalaseModel.getBadge());
         setEtalaseId(shopEtalaseModel.getId());
         setEtalaseName(shopEtalaseModel.getName());
         setEtalaseCount(shopEtalaseModel.getCount());

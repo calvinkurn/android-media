@@ -5,9 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.etalase.di.component.DaggerShopEtalaseComponent;
@@ -42,6 +46,23 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         arguments.putString(ShopParamConstant.EXTRA_ETALASE_ID, selectedEtalaseId);
         fragment.setArguments(arguments);
         return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_base_list_swipe, container, false);
+    }
+
+    @Nullable
+    public SwipeRefreshLayout getSwipeRefreshLayout(View view) {
+        return view.findViewById(R.id.swipe_refresh_layout);
+    }
+
+    @Override
+    public void onSwipeRefresh() {
+        super.onSwipeRefresh();
+        shopEtalasePresenter.clearEtalaseCache();
     }
 
     @Override
@@ -89,7 +110,6 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
     protected void initInjector() {
         DaggerShopEtalaseComponent
                 .builder()
-                .shopEtalaseModule(new ShopEtalaseModule())
                 .shopComponent(getComponent(ShopComponent.class))
                 .build()
                 .inject(this);

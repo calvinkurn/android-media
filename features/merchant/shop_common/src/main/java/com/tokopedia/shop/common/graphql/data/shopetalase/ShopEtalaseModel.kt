@@ -28,5 +28,8 @@ data class ShopEtalaseModel(@SerializedName("id")
                             val alias: String = "",
                             @SerializedName("useAce")
                             @Expose
-                            val useAce: Boolean = true) {
+                            val useAce: Boolean = true,
+                            @SerializedName("badge")
+                            @Expose
+                            val badge: String = "") {
 }

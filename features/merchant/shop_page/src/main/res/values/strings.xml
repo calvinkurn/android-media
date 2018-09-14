@@ -140,5 +140,6 @@
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
+    <string name="x_product">%1$s Produk</string>
 
 </resources>
