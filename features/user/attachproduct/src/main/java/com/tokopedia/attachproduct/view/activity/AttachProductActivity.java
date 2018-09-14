@@ -105,6 +105,13 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     }
 
     @Override
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+        getIntent().putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY,shopName);
+        toolbar.setSubtitle(shopName);
+    }
+
+    @Override
     public void goToAddProduct(String shopId) {
 //        if(MainApplication.getAppContext() instanceof TkpdInboxRouter) {
 //            TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();

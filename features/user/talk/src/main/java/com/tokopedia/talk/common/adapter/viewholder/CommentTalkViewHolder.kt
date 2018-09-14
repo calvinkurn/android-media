@@ -65,7 +65,8 @@ class CommentTalkViewHolder(val v: View,
                 setupNormalTalk(element)
             }
             talkContent.text = element.comment
-
+            if(element.isSending) itemView.setBackgroundResource(R.color.white_grey)
+            else itemView.setBackgroundResource(R.color.transparent)
 
         }
 

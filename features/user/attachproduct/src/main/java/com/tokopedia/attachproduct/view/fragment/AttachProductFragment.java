@@ -259,6 +259,11 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     }
 
     @Override
+    public void setShopName(String shopName) {
+        activityContract.setShopName(shopName);
+    }
+
+    @Override
     public void onDestroy() {
         if(presenter != null) presenter.detachView();
         super.onDestroy();

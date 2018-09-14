@@ -1,7 +1,7 @@
 package com.tokopedia.talk.talkdetails.view.subscriber
 
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
-import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsViewModel
 import rx.Subscriber
 
 /**
@@ -9,16 +9,15 @@ import rx.Subscriber
  */
 class GetTalkCommentsSubscriber(val presenter:TalkDetailsContract.Presenter,
                                 val view:TalkDetailsContract.View):
-                                    Subscriber<TalkDetailsViewModel>() {
-    override fun onNext(t: TalkDetailsViewModel?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                                    Subscriber<InboxTalkViewModel>() {
+    override fun onNext(t: InboxTalkViewModel?) {
+        view.onSuccessLoadTalkDetails(t!!.listTalk)
     }
 
     override fun onCompleted() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun onError(e: Throwable?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        view.onError(e?:Throwable("Unknown Error"))
     }
 }

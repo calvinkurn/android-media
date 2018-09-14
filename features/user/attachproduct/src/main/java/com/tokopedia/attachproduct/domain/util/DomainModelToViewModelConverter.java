@@ -14,6 +14,7 @@ public class DomainModelToViewModelConverter {
                 product.getProductId(),
                 product.getProductImageFull(),
                 product.getProductImage(),
-                product.getProductPrice());
+                product.getProductPrice(),
+                product.getShopName());
     }
 }

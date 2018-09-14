@@ -2,8 +2,6 @@ package com.tokopedia.talk.talkdetails.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
@@ -13,11 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.talk.common.data.TalkUrl
 import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
-import com.tokopedia.talk.talkdetails.domain.mapper.DeleteTalkCommentsMapper
-import com.tokopedia.talk.talkdetails.domain.mapper.GetTalkCommentsMapper
-import com.tokopedia.talk.talkdetails.domain.usecase.DeleteTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.user.session.UserSession
@@ -28,6 +22,11 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import com.readystatesoftware.chuck.ChuckInterceptor
+import com.tokopedia.talk.common.data.TalkUrl
+import com.tokopedia.talk.inboxtalk.domain.mapper.GetTalkCommentsMapperNew
+import com.tokopedia.talk.talkdetails.domain.mapper.SendCommentMapper
+import com.tokopedia.talk.talkdetails.domain.usecase.SendCommentsUseCase
 
 /**
  * Created by Hendri on 03/09/18.
@@ -37,54 +36,62 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Module
 class TalkDetailsModule {
 
+
+
+    @Provides
+    @TalkDetailsScope
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+        return UserSession(context)
+    }
+
     @Provides
     @TalkDetailsScope
     fun provideTalkDetailsPresenter(getTalkCommentsUseCase: GetTalkCommentsUseCase,
-                                    deleteTalkCommentsUseCase: DeleteTalkCommentsUseCase): TalkDetailsPresenter {
-        return TalkDetailsPresenter(getTalkCommentsUseCase, deleteTalkCommentsUseCase)
+                                    sendCommentsUseCase: SendCommentsUseCase) :
+            TalkDetailsPresenter{
+        return TalkDetailsPresenter(getTalkCommentsUseCase,sendCommentsUseCase)
+    }
+
+    @Provides
+    @TalkDetailsScope
+    fun provideSendCommentUseCase(detailsTalkApi: DetailTalkApi,
+                                  sendCommentsMapper: SendCommentMapper) : SendCommentsUseCase {
+        return SendCommentsUseCase(detailsTalkApi,sendCommentsMapper)
+    }
+
+    @Provides
+    @TalkDetailsScope
+    fun providesSendCommentMapper():SendCommentMapper{
+        return SendCommentMapper()
     }
 
     @Provides
     @TalkDetailsScope
     fun provideGetTalkCommentsUseCase(detailsTalkApi: DetailTalkApi,
-                                      getTalkCommentsMapper: GetTalkCommentsMapper)
-            : GetTalkCommentsUseCase {
-        return GetTalkCommentsUseCase(detailsTalkApi, getTalkCommentsMapper)
+                                      getTalkCommentsMapper: GetTalkCommentsMapperNew)
+            :GetTalkCommentsUseCase {
+        return GetTalkCommentsUseCase(detailsTalkApi,getTalkCommentsMapper)
     }
 
     @Provides
     @TalkDetailsScope
-    fun provideGetTalkCommentsMapper(): GetTalkCommentsMapper {
-        return GetTalkCommentsMapper()
+    fun provideGetTalkCommentsMapper():GetTalkCommentsMapperNew{
+        return GetTalkCommentsMapperNew()
     }
 
     @Provides
     @TalkDetailsScope
-    fun provideDeleteTalkCommentsUseCase(detailsTalkApi: DetailTalkApi,
-                                         deleteTalkCommentsMapper: DeleteTalkCommentsMapper)
-            : DeleteTalkCommentsUseCase {
-        return DeleteTalkCommentsUseCase(detailsTalkApi, deleteTalkCommentsMapper)
-    }
-
-    @Provides
-    @TalkDetailsScope
-    fun provideDeleteTalkCommentsMapper(): DeleteTalkCommentsMapper {
-        return DeleteTalkCommentsMapper()
-    }
-
-    @Provides
-    @TalkDetailsScope
-    fun provideDetailsTalkApi(retrofit: Retrofit): DetailTalkApi {
+    fun provideDetailsTalkApi(retrofit: Retrofit) : DetailTalkApi {
         return retrofit.create(DetailTalkApi::class.java)
     }
 
     @Provides
     @TalkDetailsScope
-    fun provideHttpClient(@ApplicationContext context: Context,
+    fun provideHttpClient(@ApplicationContext context:Context,
                           userSession: UserSession,
-                          chuckInterceptor: ChuckInterceptor): OkHttpClient {
+                          chuckInterceptor: ChuckInterceptor):OkHttpClient {
         val builder: OkHttpClient.Builder = OkHttpClient.Builder()
-        val networkRouter: NetworkRouter = context as NetworkRouter
+        val networkRouter : NetworkRouter = context as NetworkRouter
         val fingerprintInterceptor = FingerprintInterceptor(networkRouter, userSession)
         val tkpdAuthInterceptor = TkpdAuthInterceptor(context, networkRouter, userSession)
         val headerResponseInterceptor =
@@ -104,18 +111,18 @@ class TalkDetailsModule {
         return builder.build()
     }
 
-    @Provides
-    @TalkDetailsScope
-    fun provideGson(): Gson {
-        return GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .setPrettyPrinting()
-                .serializeNulls().create()
-    }
+//    @Provides
+//    @TalkDetailsScope
+//    fun provideGson(): Gson {
+//        return GsonBuilder()
+//                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+//                .setPrettyPrinting()
+//                .serializeNulls().create()
+//    }
 
     @Provides
     @TalkDetailsScope
-    fun provideStringResponseConverter(): StringResponseConverter {
+    fun provideStringResponseConverter():StringResponseConverter {
         return StringResponseConverter()
     }
 
@@ -123,7 +130,7 @@ class TalkDetailsModule {
     @TalkDetailsScope
     fun provideRetrofit(gson: Gson,
                         stringResponseConverter: StringResponseConverter,
-                        okHttpClient: OkHttpClient): Retrofit {
+                        okHttpClient:OkHttpClient):Retrofit {
         val retrofitBuilder: Retrofit.Builder = Retrofit.Builder()
         return retrofitBuilder
                 .addConverterFactory(stringResponseConverter)
