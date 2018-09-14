@@ -53,13 +53,14 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onNext(talkViewModel: InboxTalkViewModel) {
                     view.hideLoading()
-                    view.showFilter()
                     isRequesting = false
 
                     if (page == 1 && talkViewModel.listTalk.isEmpty()) {
+                        view.hideFilter()
                         view.onEmptyTalk()
                     } else if (!talkViewModel.listTalk.isEmpty()) {
                         view.onSuccessGetInboxTalk(talkViewModel)
+                        view.showFilter()
                     }
 
                     if (talkViewModel.hasNextPage) {

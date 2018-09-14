@@ -6,7 +6,7 @@
                                              android:layout_height="wrap_content"
                                              android:background="@color/white"
                                              android:orientation="vertical"
-                                             android:padding="@dimen/dp_16">
+                                             android:padding="@dimen/dp_12">
 
     <ImageView
         android:id="@+id/prof_pict"
@@ -18,7 +18,6 @@
         android:id="@+id/identity"
         android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-
         android:layout_marginLeft="@dimen/dp_10"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/prof_pict"
@@ -29,10 +28,9 @@
             android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif"
+            android:fontFamily="sans-serif-medium"
             android:textColor="@color/black_70"
             android:textSize="@dimen/sp_13"
-            android:textStyle="bold"
             tools:text="Lord Atep"/>
 
         <TextView
@@ -109,9 +107,10 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/productAttachment"
         android:layout_width="0dp"
+        android:visibility="gone"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_14"
         app:layout_constraintEnd_toStartOf="@id/menu"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/prof_pict"

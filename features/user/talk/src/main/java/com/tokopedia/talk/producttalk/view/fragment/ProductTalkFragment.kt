@@ -214,7 +214,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToReportTalk() {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this, "", "" , "")
+            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "" , "")
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
@@ -277,7 +277,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
        // TODO STEVEN
     }
 
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

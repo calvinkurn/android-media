@@ -47,7 +47,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
     var talkId: String = ""
     var shopId: String = ""
     var productId: String = ""
-
+    var commentId: String = ""
 
     override fun getScreenName(): String {
         return TalkAnalytics.SCREEN_NAME_REPORT_TALK
@@ -75,13 +75,17 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     private fun initData(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
-            talkId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_SHOP_ID) ?: ""
-            productId = savedInstanceState.getString(ReportTalkActivity.Companion.EXTRA_PRODUCT_ID) ?: ""
+            talkId = savedInstanceState.getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
+            shopId = savedInstanceState.getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
+            productId = savedInstanceState.getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
+            commentId = savedInstanceState.getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+
         } ?: arguments?.run {
-            talkId = getString(ReportTalkActivity.Companion.EXTRA_TALK_ID) ?: ""
-            shopId = getString(ReportTalkActivity.Companion.EXTRA_SHOP_ID) ?: ""
-            productId = getString(ReportTalkActivity.Companion.EXTRA_PRODUCT_ID) ?: ""
+            talkId = getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
+            shopId = getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
+            productId = getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
+            commentId = getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+
         } ?: activity?.run {
             finish()
         }
@@ -110,8 +114,8 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         optionRv.adapter = reportTalkAdapter
 
         sendButton.setOnClickListener {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
 
+            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
         }
 
         reason.addTextChangedListener(object : TextWatcher {
@@ -201,6 +205,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         outState.putString(ReportTalkActivity.EXTRA_PRODUCT_ID, productId)
         outState.putString(ReportTalkActivity.EXTRA_SHOP_ID, shopId)
         outState.putString(ReportTalkActivity.EXTRA_TALK_ID, talkId)
+        outState.putString(ReportTalkActivity.EXTRA_COMMENT_ID, commentId)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        context?.run {
+            KeyboardHandler.DropKeyboard(this, view)
+        }
     }
 
 }
