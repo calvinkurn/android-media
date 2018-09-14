@@ -1,0 +1,97 @@
+package com.tokopedia.shop.common.graphql.domain.usecase.shoplocation
+
+import android.content.Context
+import android.text.TextUtils
+
+import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.shop.common.R
+import com.tokopedia.shop.common.graphql.data.shoplocation.gql.AddShopLocationMutation
+import com.tokopedia.shop.common.graphql.domain.mapper.GraphQLSuccessMapper
+import com.tokopedia.shop.common.graphql.domain.usecase.base.SingleGraphQLUseCase
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
+
+import java.util.HashMap
+
+import javax.inject.Inject
+
+import rx.Observable
+import rx.functions.Func1
+
+class AddShopLocationUseCase @Inject
+constructor(@ApplicationContext context: Context) : UseCase<String>() {
+
+    private val graphQLUseCase: SingleGraphQLUseCase<AddShopLocationMutation>
+
+    init {
+        graphQLUseCase = object : SingleGraphQLUseCase<AddShopLocationMutation>(context, AddShopLocationMutation::class.java) {
+            override val graphQLRawResId: Int
+                get() = R.raw.gql_mutation_add_shop_location
+
+            override fun createGraphQLVariable(requestParams: RequestParams): HashMap<String, Any> {
+                val variables = HashMap<String, Any>()
+                variables[NAME] = requestParams.getString(NAME, "")
+                variables[ADDRESS] = requestParams.getString(ADDRESS, "")
+                variables[DISTRICT_ID] = requestParams.getInt(DISTRICT_ID, 0)
+                variables[CITY_ID] = requestParams.getInt(CITY_ID, 0)
+                variables[STATE_ID] = requestParams.getInt(STATE_ID, 0)
+                variables[POSTAL_CODE] = requestParams.getInt(POSTAL_CODE, 0)
+                val email = requestParams.getString(EMAIL, "")
+                if (!TextUtils.isEmpty(email)) {
+                    variables[EMAIL] = email
+                }
+                val phone = requestParams.getString(PHONE, "")
+                if (!TextUtils.isEmpty(phone)) {
+                    variables[PHONE] = phone
+                }
+                val fax = requestParams.getString(FAX, "")
+                if (!TextUtils.isEmpty(fax)) {
+                    variables[FAX] = fax
+                }
+                return variables
+            }
+        }
+    }
+
+    override fun createObservable(requestParams: RequestParams): Observable<String> {
+        return graphQLUseCase.createObservable(requestParams)
+                .flatMap(GraphQLSuccessMapper())
+
+    }
+
+    override fun unsubscribe() {
+        super.unsubscribe()
+        graphQLUseCase.unsubscribe()
+    }
+
+    companion object {
+        val NAME = "name"
+        val ADDRESS = "address"
+        val DISTRICT_ID = "districtId"
+        val CITY_ID = "cityId"
+        val STATE_ID = "stateId"
+        val POSTAL_CODE = "postalCode"
+        val EMAIL = "email"
+        val PHONE = "phone"
+        val FAX = "fax"
+
+        @JvmStatic
+        fun createRequestParams(name: String, address: String,
+                                districtId: Int, cityId: Int,
+                                stateId: Int, postalCode: Int,
+                                email: String?, phone: String?, fax: String?): RequestParams {
+            val requestParams = RequestParams.create()
+            requestParams.putString(NAME, name)
+            requestParams.putString(ADDRESS, address)
+            requestParams.putInt(DISTRICT_ID, districtId)
+            requestParams.putInt(CITY_ID, cityId)
+            requestParams.putInt(STATE_ID, stateId)
+            requestParams.putInt(POSTAL_CODE, postalCode)
+            requestParams.putString(EMAIL, email)
+            requestParams.putString(PHONE, phone)
+            requestParams.putString(FAX, fax)
+            return requestParams
+        }
+    }
+}

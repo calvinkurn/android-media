@@ -16,6 +16,7 @@ import com.tokopedia.gm.common.data.interceptor.GMAuthInterceptor;
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl;
 import com.tokopedia.gm.common.data.source.GMCommonDataSource;
 import com.tokopedia.gm.common.data.source.cloud.api.GMCommonApi;
+import com.tokopedia.gm.common.domain.interactor.GetFeatureProductListUseCase;
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -64,14 +65,21 @@ public class ProductManageModule {
                                                                 EditPriceProductUseCase editPriceProductUseCase,
                                                                 DeleteProductUseCase deleteProductUseCase,
                                                                 GetProductListManageMapperView getProductListManageMapperView,
-                                                                SellerModuleRouter sellerModuleRouter,
                                                                 MultipleDeleteProductUseCase multipleDeleteProductUseCase,
+                                                                UserSession userSession,
                                                                 TopAdsAddSourceTaggingUseCase topAdsAddSourceTaggingUseCase,
                                                                 TopAdsGetShopDepositGraphQLUseCase topAdsGetShopDepositGraphQLUseCase,
+                                                                GetFeatureProductListUseCase getFeatureProductListUseCase,
                                                                 SetCashbackUseCase setCashbackUseCase){
         return new ProductManagePresenterImpl(getShopInfoUseCase, getProductListSellingUseCase, editPriceProductUseCase,
-                deleteProductUseCase, getProductListManageMapperView,sellerModuleRouter, multipleDeleteProductUseCase,
-                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, setCashbackUseCase);
+                deleteProductUseCase, getProductListManageMapperView, multipleDeleteProductUseCase, userSession,
+                topAdsAddSourceTaggingUseCase, topAdsGetShopDepositGraphQLUseCase, getFeatureProductListUseCase, setCashbackUseCase);
+    }
+
+    @Provides
+    @ProductManageScope
+    public GetFeatureProductListUseCase provideGetFeatureProductListUseCase(GMCommonRepository gmCommonRepository){
+        return new GetFeatureProductListUseCase(gmCommonRepository);
     }
 
     @Provides
@@ -132,6 +140,16 @@ public class ProductManageModule {
         return logging;
     }
 
+    @Provides
+    @ProductManageScope
+    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
+        if(context instanceof SellerModuleRouter){
+            return ((SellerModuleRouter)context);
+        }else{
+            return null;
+        }
+    }
+
     @ProductManageScope
     @Provides
     public GMAuthInterceptor provideGMAuthInterceptor(@ApplicationContext Context context,
@@ -185,16 +203,6 @@ public class ProductManageModule {
     @ProductManageScope
     public TomeProductApi provideTomeApi(@TomeQualifier Retrofit retrofit){
         return retrofit.create(TomeProductApi.class);
-    }
-
-    @Provides
-    @ProductManageScope
-    public SellerModuleRouter provideSellerModuleRouter(@ApplicationContext Context context){
-        if(context instanceof SellerModuleRouter){
-            return ((SellerModuleRouter)context);
-        }else{
-            return null;
-        }
     }
 
     @Provides

@@ -14,8 +14,9 @@ import com.tokopedia.core.manage.shop.notes.model.ShopNote;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public class ManageShopNotesActivity extends BasePresenterActivity {
 
     public static final String PARAM_SHOP_ID = "shop_id";
