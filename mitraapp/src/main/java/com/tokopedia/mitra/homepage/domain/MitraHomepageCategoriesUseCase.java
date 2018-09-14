@@ -5,6 +5,8 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -17,12 +19,14 @@ import com.tokopedia.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.functions.Func1;
 
 public class MitraHomepageCategoriesUseCase extends UseCase<List<CategoryRow>> {
     private static final String PARAM_QUERY = "query";
+    private static final long ON_DAY_CACHE_DURATION = TimeUnit.DAYS.toSeconds(1);
 
     private Context context;
     private GraphqlUseCase graphqlUseCase;
@@ -39,7 +43,14 @@ public class MitraHomepageCategoriesUseCase extends UseCase<List<CategoryRow>> {
         GraphqlClient.init(context);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(query, DynamicHomeIconWrapper.class, requestParams.getParameters());
+        GraphqlCacheStrategy cacheStrategy =
+                new GraphqlCacheStrategy
+                        .Builder(CacheType.CACHE_FIRST)
+                        .setExpiryTime(ON_DAY_CACHE_DURATION)
+                        .setSessionIncluded(false)
+                        .build();
         graphqlUseCase.clearRequest();
+        graphqlUseCase.setCacheStrategy(cacheStrategy);
         graphqlUseCase.addRequest(graphqlRequest);
         return graphqlUseCase.createObservable(null)
                 .map(new Func1<GraphqlResponse, List<CategoryRow>>() {

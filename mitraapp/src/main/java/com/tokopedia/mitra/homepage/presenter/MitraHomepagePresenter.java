@@ -36,6 +36,8 @@ public class MitraHomepagePresenter extends BaseDaggerPresenter<MitraHomepageCon
         } else {
             getView().showLoginContainer();
         }
+        getView().showCategoriesLoading();
+        getView().hideCategories();
 
         mitraHomepageCategoriesUseCase
                 .createObservable(mitraHomepageCategoriesUseCase.create())
@@ -51,10 +53,15 @@ public class MitraHomepagePresenter extends BaseDaggerPresenter<MitraHomepageCon
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().showMessageInRedSnackBar(e.getMessage());
+                        }
                     }
 
                     @Override
                     public void onNext(List<CategoryRow> categoryRows) {
+                        getView().hideCategoriesLoading();
+                        getView().showCategories();
                         getView().renderCategories(categoryRows);
                     }
                 });

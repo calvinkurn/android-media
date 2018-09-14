@@ -16,18 +16,25 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.constant.AbstractionBaseURL;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.applink.TkpdApplinkDelegate;
+import com.tokopedia.common_digital.common.constant.DigitalUrl;
 import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.imageuploader.data.ImageUploaderUrl;
+import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.mitra.applink.MitraAppApplinkModuleLoader;
 import com.tokopedia.mitra.fingerprint.FingerprintModelGenerator;
 import com.tokopedia.mitra.fingerprint.LocationUtils;
 import com.tokopedia.mitra.homepage.activity.MitraParentHomepageActivity;
 import com.tokopedia.mitra.session.UserSessionImpl;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.network.SessionUrl;
 import com.tokopedia.network.data.model.FingerprintModel;
 
 import java.io.IOException;
@@ -50,6 +57,8 @@ public class MitraApplication extends MainApplication implements NetworkRouter, 
         GlobalConfig.VERSION_NAME = BuildConfig.VERSION_NAME;
         GlobalConfig.DEBUG = BuildConfig.DEBUG;
         GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
+        generateVariantUrl();
+
         super.onCreate();
 
         initDbFlow();
@@ -59,6 +68,53 @@ public class MitraApplication extends MainApplication implements NetworkRouter, 
         locationUtils = new LocationUtils(this);
         locationUtils.initLocationBackground();
         applinkDelegate = new TkpdApplinkDelegate(new MitraAppApplinkModuleLoader());
+    }
+
+    private void generateVariantUrl() {
+        TkpdBaseURL.DEFAULT_TOKOPEDIA_WEBSITE_URL = MitraAppBaseUrl.BASE_TOKOPEDIA_WEBSITE;
+        TkpdBaseURL.BASE_DOMAIN = MitraAppBaseUrl.BASE_DOMAIN;
+        TkpdBaseURL.BASE_API_DOMAIN = MitraAppBaseUrl.BASE_API_DOMAIN;
+        TkpdBaseURL.ACE_DOMAIN = MitraAppBaseUrl.BASE_ACE_DOMAIN;
+        TkpdBaseURL.TOME_DOMAIN = MitraAppBaseUrl.BASE_TOME_DOMAIN;
+        TkpdBaseURL.TOPADS_DOMAIN = MitraAppBaseUrl.BASE_TOPADS_DOMAIN;
+        TkpdBaseURL.MOJITO_DOMAIN = MitraAppBaseUrl.BASE_MOJITO_DOMAIN;
+        TkpdBaseURL.HADES_DOMAIN = MitraAppBaseUrl.BASE_HADES_DOMAIN;
+        TkpdBaseURL.ACCOUNTS_DOMAIN = MitraAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        TkpdBaseURL.INBOX_DOMAIN = MitraAppBaseUrl.BASE_INBOX_DOMAIN;
+        TkpdBaseURL.JS_DOMAIN = MitraAppBaseUrl.BASE_JS_DOMAIN;
+        TkpdBaseURL.KERO_DOMAIN = MitraAppBaseUrl.BASE_KERO_DOMAIN;
+        TkpdBaseURL.KERO_RATES_DOMAIN = MitraAppBaseUrl.BASE_KERO_RATES_DOMAIN;
+        TkpdBaseURL.JAHE_DOMAIN = MitraAppBaseUrl.BASE_JAHE_DOMAIN;
+        TkpdBaseURL.PULSA_WEB_DOMAIN = MitraAppBaseUrl.BASE_PULSA_WEB_DOMAIN;
+        TkpdBaseURL.GOLD_MERCHANT_DOMAIN = MitraAppBaseUrl.BASE_GOLD_MERCHANT_DOMAIN;
+        TkpdBaseURL.WEB_DOMAIN = MitraAppBaseUrl.BASE_WEB_DOMAIN;
+        TkpdBaseURL.MOBILE_DOMAIN = MitraAppBaseUrl.BASE_MOBILE_DOMAIN;
+        TkpdBaseURL.BASE_CONTACT_US = MitraAppBaseUrl.BASE_WEB_DOMAIN + "contact-us";
+        TkpdBaseURL.TOKO_CASH_DOMAIN = MitraAppBaseUrl.BASE_TOKO_CASH_DOMAIN;
+        TkpdBaseURL.BASE_ACTION = MitraAppBaseUrl.BASE_DOMAIN + "v4/action/";
+        TkpdBaseURL.DIGITAL_API_DOMAIN = MitraAppBaseUrl.BASE_DIGITAL_API_DOMAIN;
+        TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN = MitraAppBaseUrl.BASE_DIGITAL_WEBSITE_DOMAIN;
+        TkpdBaseURL.GRAPHQL_DOMAIN = MitraAppBaseUrl.GRAPHQL_DOMAIN;
+        TkpdBaseURL.HOME_DATA_BASE_URL = MitraAppBaseUrl.HOME_DATA_BASE_URL;
+        TkpdBaseURL.SCROOGE_DOMAIN = MitraAppBaseUrl.SCROOGE_DOMAIN;
+        TkpdBaseURL.SCROOGE_CREDIT_CARD_DOMAIN = MitraAppBaseUrl.SCROOGE_CREDIT_CARD_DOMAIN;
+        TkpdBaseURL.PAYMENT_DOMAIN = MitraAppBaseUrl.PAYMENT_DOMAIN;
+        TkpdBaseURL.GALADRIEL = MitraAppBaseUrl.GALADRIEL;
+        TkpdBaseURL.CHAT_DOMAIN = MitraAppBaseUrl.CHAT_DOMAIN;
+        TkpdBaseURL.CHAT_WEBSOCKET_DOMAIN = MitraAppBaseUrl.CHAT_WEBSOCKET_DOMAIN;
+        TkpdBaseURL.MAPS_DOMAIN = MitraAppBaseUrl.MAPS_DOMAIN;
+        TkpdBaseURL.WALLET_DOMAIN = MitraAppBaseUrl.BASE_WALLET;
+        TkpdBaseURL.EVENTS_DOMAIN = MitraAppBaseUrl.EVENT_DOMAIN;
+        TkpdBaseURL.TOKOPOINT_API_DOMAIN = MitraAppBaseUrl.TOKOPOINT_API_DOMAIN;
+        AbstractionBaseURL.JS_DOMAIN = MitraAppBaseUrl.BASE_JS_DOMAIN;
+        SessionUrl.ACCOUNTS_DOMAIN = MitraAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        SessionUrl.BASE_DOMAIN = MitraAppBaseUrl.BASE_DOMAIN;
+        DigitalUrl.WEB_DOMAIN = MitraAppBaseUrl.BASE_WEB_DOMAIN;
+        com.tokopedia.network.constant.TkpdBaseURL.DEFAULT_TOKOPEDIA_GQL_URL = MitraAppBaseUrl.BASE_TOKOPEDIA_GQL;
+        SessionUrl.CHANGE_PHONE_DOMAIN = MitraAppBaseUrl.CHANGE_PHONE_DOMAIN;
+        GraphqlUrl.BASE_URL = MitraAppBaseUrl.GRAPHQL_DOMAIN;
+        ImageUploaderUrl.BASE_URL = MitraAppBaseUrl.BASE_DOMAIN;
+        LogoutUrl.Companion.setBASE_URL(MitraAppBaseUrl.BASE_DOMAIN);
     }
 
     @Override

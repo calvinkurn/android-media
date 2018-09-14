@@ -19,6 +19,8 @@ public interface MitraHomepageContract {
 
         void showMessageInRedSnackBar(@StringRes int resId);
 
+        void showMessageInRedSnackBar(String message);
+
         void navigateToLoginPage();
 
         void renderCategories(List<CategoryRow> categoryRows);
@@ -26,6 +28,14 @@ public interface MitraHomepageContract {
         Activity getActivity();
 
         void navigateToNextPage(Intent applinkIntent);
+
+        void showCategoriesLoading();
+
+        void hideCategories();
+
+        void hideCategoriesLoading();
+
+        void showCategories();
     }
 
     interface Presenter extends CustomerPresenter<View> {

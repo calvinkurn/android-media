@@ -3,13 +3,14 @@
     categoryGroup{
       id
       title
+      desc
       categoryRows{
         id
         name
         url
         imageUrl
         categoryId
-        appLinks
+        applinks
         categoryLabel
       }
     }

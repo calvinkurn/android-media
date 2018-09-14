@@ -243,6 +243,11 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
 
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+
+        exclude group: 'com.android.support'
+    }
+
     // this is for graphql usecase
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.network)

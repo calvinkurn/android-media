@@ -41,6 +41,7 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
 
     private static final int REQUEST_CODE_LOGIN = 1001;
     LinearLayout loginLayout;
+    LinearLayout categoriesLoadingLayout;
     AppCompatButton loginBtn;
     RecyclerView categoriesRecyclerView;
 
@@ -58,6 +59,7 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_mitra_homepage, container, false);
+        categoriesLoadingLayout = view.findViewById(R.id.category_loading_layout);
         loginLayout = view.findViewById(R.id.layout_login);
         loginBtn = view.findViewById(R.id.btn_login);
         categoriesRecyclerView = view.findViewById(R.id.rv_categories);
@@ -116,6 +118,31 @@ public class MitraHomepageFragment extends MitraBaseFragment<MitraHomepageContra
     @Override
     public void showMessageInRedSnackBar(int resId) {
         SnackbarManager.makeRed(getView(), getString(resId), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showMessageInRedSnackBar(String message) {
+        SnackbarManager.makeRed(getView(), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showCategoriesLoading() {
+        categoriesLoadingLayout.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideCategories() {
+        categoriesRecyclerView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void hideCategoriesLoading() {
+        categoriesLoadingLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showCategories() {
+        categoriesRecyclerView.setVisibility(View.VISIBLE);
     }
 
     @Override
