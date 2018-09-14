@@ -14,8 +14,8 @@
     <string name="payment_label_no">Tidak</string>
     <string name="payment_label_credit_card_verification">Verifikasi Kartu Kredit</string>
     <string name="payment_label_use">Terapkan</string>
-    <string name="payment_authentication_title_1">Autentikasi Tunggal</string>
-    <string name="payment_authentication_title_2">Autentikasi Ganda</string>
-    <string name="payment_authentication_description_1">Anda hanya akan diminta memasukkan CVV untuk setiap transaksi. Verifikasi via SMS akan diperlukan untuk transaksi kasus tertentu.</string>
-    <string name="payment_authentication_description_2">Anda akan diminta memasukkan CVV dan verifikasi via SMS untuk setiap transaksi.</string>
+    <string name="payment_authentication_title_1">Verifikasi oleh Tokopedia</string>
+    <string name="payment_authentication_title_2">Verifikasi oleh Bank</string>
+    <string name="payment_authentication_description_1">Anda akan diminta memasukkan angka CVV disetiap transaksi. Verifikasi via SMS atau sidik jari hanya diperlukan untuk transaksi tertentu.</string>
+    <string name="payment_authentication_description_2">Anda akan diminta memasukkan angka CVV dan verifikasi via SMS untuk setiap transaksi.</string>
 </resources>
