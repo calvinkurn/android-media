@@ -47,6 +47,8 @@ public interface TrainBookingPassengerContract {
 
         String getDestinationCity();
 
+        TrainScheduleRequest convertTripToRequestParam(TrainScheduleViewModel trainScheduleViewModel);
+
         void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity);
 
         Observable<ProfileBuyerInfo> getObservableProfileBuyerInfo();
@@ -101,5 +103,7 @@ public interface TrainBookingPassengerContract {
         void onSubmitButtonClicked();
 
         void onChooseSeatButtonClicked();
+
+        void onDestroyView();
     }
 }

@@ -19,7 +19,9 @@ import com.tokopedia.train.common.data.TrainDataStoreFactory;
 import com.tokopedia.train.common.data.TrainRepositoryImpl;
 import com.tokopedia.train.common.data.interceptor.TrainInterceptor;
 import com.tokopedia.train.common.data.interceptor.model.TrainErrorResponse;
+import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.domain.TrainRepository;
+import com.tokopedia.train.common.domain.TrainScheduler;
 import com.tokopedia.train.common.util.TrainFlowUtil;
 import com.tokopedia.train.passenger.data.cloud.TrainSoftBookingCloudDataStore;
 import com.tokopedia.train.reviewdetail.data.TrainCheckVoucherCloudDataStore;
@@ -230,6 +232,11 @@ public class TrainModule {
     @Provides
     GetScheduleDetailUseCase provideGetScheduleDetailUseCase(TrainRepository trainRepository) {
         return new GetScheduleDetailUseCase(trainRepository);
+    }
+
+    @Provides
+    TrainProvider provideGetTrainProvider() {
+        return new TrainScheduler();
     }
 
 }

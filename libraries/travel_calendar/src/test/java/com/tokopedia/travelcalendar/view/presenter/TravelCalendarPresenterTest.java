@@ -46,6 +46,7 @@ public class TravelCalendarPresenterTest {
 
     @Test
     public void showMonthsBasedMinDateAndMaxDate() {
+        //given
         String minDateString = "07-12-2017";
         String maxDateString = "07-02-2019";
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", new Locale("in", "ID"));
@@ -54,8 +55,10 @@ public class TravelCalendarPresenterTest {
             minDate = formatter.parse(minDateString);
             maxDate = formatter.parse(maxDateString);
 
+            //when
             presenter.getMonthsCalendarList(minDate, maxDate);
 
+            //then
             Mockito.verify(view).renderCalendarMonthList(11, 2017, 15);
         } catch (ParseException e) {
             e.printStackTrace();
@@ -64,23 +67,29 @@ public class TravelCalendarPresenterTest {
 
     @Test
     public void showErrorGetHolidayDatesWhenFailed() throws Exception {
+        //given
         String message = "Terjadi kesalahan. Ulangi beberapa saat lagi";
         Mockito.when(getHolidayUseCase.createObservable(Mockito.anyObject()))
                 .thenReturn(Observable.error(new MessageErrorException(message)));
 
+        //when
         presenter.getHolidayEvents();
+        //then
         Mockito.verify(view).renderErrorMessage(Mockito.anyObject());
     }
 
     @Test
     public void showHolidayDatesWhenSuccess() throws Exception {
+        //given
         List<HolidayResult> holidayResultList = new ArrayList<>();
         holidayResultList.add(new HolidayResult());
 
         Mockito.when(getHolidayUseCase.createObservable(Mockito.anyObject()))
                 .thenReturn(Observable.just(holidayResultList));
 
+        //when
         presenter.getHolidayEvents();
+        //then
         Mockito.verify(view).hideLoading();
         Mockito.verify(view).renderAllHolidayEvent(Mockito.anyList());
     }

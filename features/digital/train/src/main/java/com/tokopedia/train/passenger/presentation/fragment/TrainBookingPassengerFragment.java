@@ -358,6 +358,19 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public TrainScheduleRequest convertTripToRequestParam(TrainScheduleViewModel trainScheduleViewModel) {
+        TrainScheduleRequest trainScheduleRequest = new TrainScheduleRequest();
+        trainScheduleRequest.setDepartureTimestamp(trainScheduleViewModel.getDepartureTimestamp());
+        trainScheduleRequest.setDestination(trainScheduleViewModel.getDestination());
+        trainScheduleRequest.setOrigin(trainScheduleViewModel.getOrigin());
+        trainScheduleRequest.setSubClass(trainScheduleViewModel.getSubclass());
+        trainScheduleRequest.setTrainClass(trainScheduleViewModel.getClassTrain());
+        trainScheduleRequest.setTrainName(trainScheduleViewModel.getTrainName());
+        trainScheduleRequest.setTrainNo(trainScheduleViewModel.getTrainNumber());
+        return trainScheduleRequest;
+    }
+
+    @Override
     public void setCityRouteTripInfo(CardWithAction cardWithAction, String originCity, String destinationCity) {
         cardWithAction.setContent(originCity + " - " + destinationCity);
     }

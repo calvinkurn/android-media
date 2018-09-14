@@ -8,6 +8,7 @@ import com.tokopedia.design.component.CardWithAction;
 import com.tokopedia.tkpdtrain.R;
 import com.tokopedia.train.common.data.interceptor.TrainNetworkException;
 import com.tokopedia.train.common.data.interceptor.model.TrainError;
+import com.tokopedia.train.common.domain.TrainProvider;
 import com.tokopedia.train.common.util.TrainNetworkErrorConstant;
 import com.tokopedia.train.passenger.data.TrainBookingPassenger;
 import com.tokopedia.train.passenger.domain.TrainSoftBookingUseCase;
@@ -28,8 +29,6 @@ import java.util.regex.Pattern;
 import javax.inject.Inject;
 
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -48,21 +47,61 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     private CompositeSubscription compositeSubscription;
     private GetDetailScheduleUseCase getDetailScheduleUseCase;
     private TrainSoftBookingUseCase trainSoftBookingUseCase;
+    private TrainProvider trainProvider;
 
     @Inject
-    public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase, TrainSoftBookingUseCase trainSoftBookingUseCase) {
+    public TrainBookingPassengerPresenter(GetDetailScheduleUseCase getDetailScheduleUseCase,
+                                          TrainSoftBookingUseCase trainSoftBookingUseCase,
+                                          TrainProvider trainProvider) {
         this.getDetailScheduleUseCase = getDetailScheduleUseCase;
         this.trainSoftBookingUseCase = trainSoftBookingUseCase;
+        this.trainProvider = trainProvider;
         compositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    public void getDetailSchedule(String idSchedule, CardWithAction cardWithAction) {
+        getDetailScheduleUseCase.setIdSchedule(idSchedule);
+        compositeSubscription.add(getDetailScheduleUseCase.createObservable(RequestParams.EMPTY)
+                .subscribeOn(trainProvider.computation())
+                .unsubscribeOn(trainProvider.computation())
+                .observeOn(trainProvider.uiScheduler())
+                .subscribe(new Subscriber<TrainScheduleViewModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getView().hideDetailSchedule();
+                    }
+
+                    @Override
+                    public void onNext(TrainScheduleViewModel viewModel) {
+                        if (viewModel != null) {
+                            if (viewModel.isReturnTrip()) {
+                                getView().setCityRouteTripInfo(cardWithAction, getView().getDestinationCity(), getView().getOriginCity());
+                                getView().showReturnTripInfo();
+                                getView().setReturnTripRequest(getView().convertTripToRequestParam(viewModel));
+                            } else {
+                                getView().showDepartureTripInfo();
+                                getView().setCityRouteTripInfo(cardWithAction, getView().getOriginCity(), getView().getDestinationCity());
+                                getView().hideReturnTripInfo();
+                                getView().setDepartureTripRequest(getView().convertTripToRequestParam(viewModel));
+                            }
+                            getView().loadDetailSchedule(viewModel, cardWithAction);
+                        }
+                    }
+                }));
     }
 
     @Override
     public void getProfilBuyer() {
         compositeSubscription.add(getView().getObservableProfileBuyerInfo()
-                .onBackpressureDrop()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(trainProvider.computation())
+                .unsubscribeOn(trainProvider.computation())
+                .observeOn(trainProvider.uiScheduler())
                 .subscribe(new Subscriber<ProfileBuyerInfo>() {
                     @Override
                     public void onCompleted() {
@@ -71,7 +110,11 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
 
                     @Override
                     public void onError(Throwable e) {
-                        e.printStackTrace();
+                        if (isViewAttached()) {
+                            getView().setContactName("");
+                            getView().setEmail("");
+                            getView().setPhoneNumber("");
+                        }
                     }
 
                     @Override
@@ -87,54 +130,6 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
                         }
                     }
                 }));
-    }
-
-    @Override
-    public void getDetailSchedule(String idSchedule, CardWithAction cardWithAction) {
-        getDetailScheduleUseCase.setIdSchedule(idSchedule);
-        getDetailScheduleUseCase.execute(RequestParams.EMPTY, new Subscriber<TrainScheduleViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-                getView().hideDetailSchedule();
-            }
-
-            @Override
-            public void onNext(TrainScheduleViewModel viewModel) {
-                if (viewModel != null) {
-                    if (viewModel.isReturnTrip()) {
-                        getView().setCityRouteTripInfo(cardWithAction,
-                                getView().getDestinationCity(), getView().getOriginCity());
-                        getView().showReturnTripInfo();
-                        getView().setReturnTripRequest(convertTripToRequestParam(viewModel));
-                    } else {
-                        getView().showDepartureTripInfo();
-                        getView().setCityRouteTripInfo(cardWithAction,
-                                getView().getOriginCity(), getView().getDestinationCity());
-                        getView().hideReturnTripInfo();
-                        getView().setDepartureTripRequest(convertTripToRequestParam(viewModel));
-                    }
-                    getView().loadDetailSchedule(viewModel, cardWithAction);
-                }
-            }
-        });
-    }
-
-    private TrainScheduleRequest convertTripToRequestParam(TrainScheduleViewModel trainScheduleViewModel) {
-        TrainScheduleRequest trainScheduleRequest = new TrainScheduleRequest();
-        trainScheduleRequest.setDepartureTimestamp(trainScheduleViewModel.getDepartureTimestamp());
-        trainScheduleRequest.setDestination(trainScheduleViewModel.getDestination());
-        trainScheduleRequest.setOrigin(trainScheduleViewModel.getOrigin());
-        trainScheduleRequest.setSubClass(trainScheduleViewModel.getSubclass());
-        trainScheduleRequest.setTrainClass(trainScheduleViewModel.getClassTrain());
-        trainScheduleRequest.setTrainName(trainScheduleViewModel.getTrainName());
-        trainScheduleRequest.setTrainNo(trainScheduleViewModel.getTrainNumber());
-        return trainScheduleRequest;
     }
 
     @Override
@@ -311,7 +306,7 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
         return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() && !contactEmail.contains(".@") && !contactEmail.contains("@.");
     }
 
-    private List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {
+    protected List<TrainPassengerViewModel> initPassenger(int adultPassengers, int infantPassengers) {
         List<TrainPassengerViewModel> trainPassengerViewModelList = new ArrayList<>();
         int passengerId = 1;
         for (int i = 1; i <= adultPassengers; i++) {
@@ -345,9 +340,8 @@ public class TrainBookingPassengerPresenter extends BaseDaggerPresenter<TrainBoo
     }
 
     @Override
-    public void detachView() {
-        getDetailScheduleUseCase.unsubscribe();
-        trainSoftBookingUseCase.unsubscribe();
-        super.detachView();
+    public void onDestroyView() {
+        if (compositeSubscription.hasSubscriptions()) compositeSubscription.unsubscribe();
+        detachView();
     }
 }

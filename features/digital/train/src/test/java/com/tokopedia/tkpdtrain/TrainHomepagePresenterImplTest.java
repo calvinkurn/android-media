@@ -49,8 +49,8 @@ public class TrainHomepagePresenterImplTest {
         Date fakeCurrentDate = fakeCurrentCalendar.getTime();
         when(TrainDateUtil.getCurrentDate()).thenReturn(fakeCurrentDate); // 17-9-1994
 
-        trainHomepagePresenterImpl = new TrainHomepagePresenterImpl();
-        trainHomepagePresenterImpl.attachView(trainHomepageView);
+//        trainHomepagePresenterImpl = new TrainHomepagePresenterImpl();
+//        trainHomepagePresenterImpl.attachView(trainHomepageView);
     }
 
     @Test
@@ -158,6 +158,7 @@ public class TrainHomepagePresenterImplTest {
     // departure date = 26 Feb 1995
     @Test
     public void onDepartureDateChange_SelectedDepartureDateGreaterThan100Days_ShowError() {
+        //given
         // set limit date: today's date + 100
         fakeCurrentCalendar.add(Calendar.DATE, 100);
         Date limitDate = fakeCurrentCalendar.getTime();
@@ -167,8 +168,10 @@ public class TrainHomepagePresenterImplTest {
         int newFakeDepartureMonth = 1;
         int newFakeDepartureDate = 26;
 
+        //when
         trainHomepagePresenterImpl.onDepartureDateChange(newFakeDepartureYear, newFakeDepartureMonth, newFakeDepartureDate);
 
+        //then
         verify(trainHomepageView).showDepartureDateMax90Days(R.string.kai_homepage_departure_max_90_days_from_today_error);
     }
 
