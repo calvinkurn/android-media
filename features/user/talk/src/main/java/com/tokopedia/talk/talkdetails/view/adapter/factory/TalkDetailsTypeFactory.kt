@@ -1,39 +1,35 @@
 package com.tokopedia.talk.talkdetails.view.adapter.factory
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.talk.talkdetails.view.adapter.viewholder.TalkDetailsReplyViewHolder
-import com.tokopedia.talk.talkdetails.view.adapter.viewholder.TalkDetailsThreadViewHolder
-import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsCommentViewModel
-import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsThreadItemViewModel
+import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
+import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.EmptyInboxTalkViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
+//import com.tokopedia.talk.talkdetails.view.adapter.viewholder.TalkDetailsCommentViewHolder
+import com.tokopedia.talk.talkdetails.view.adapter.viewholder.TalkDetailsViewHolder
+//import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsCommentViewModel
 
 /**
  * Created by Hendri on 29/08/18.
  */
-interface TalkDetailsTypeFactory {
 
-    fun type(talkDetailsCommentViewModel: TalkDetailsCommentViewModel): Int
+class TalkDetailsTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHolder.TalkItemListener,
+                                 private val talkCommentItemListener: CommentTalkViewHolder.TalkCommentItemListener,
+                                 private val talkAttachmentItemClickListener: TalkProductAttachmentAdapter
+                                 .ProductAttachmentItemClickListener,
+                                 private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener
+):InboxTalkTypeFactoryImpl(talkItemListener, talkCommentItemListener,
+        talkAttachmentItemClickListener,talkCommentLoadMoreListener) {
 
-    fun type(talkDetailsThreadItemViewModel: TalkDetailsThreadItemViewModel): Int
-
-    fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*>
-}
-
-class TalkDetailsTypeFactoryImpl:BaseAdapterTypeFactory(), TalkDetailsTypeFactory {
-    override fun type(talkDetailsCommentViewModel: TalkDetailsCommentViewModel): Int {
-        return TalkDetailsReplyViewHolder.LAYOUT
-    }
-
-    override fun type(talkDetailsThreadItemViewModel: TalkDetailsThreadItemViewModel): Int {
-        return TalkDetailsThreadViewHolder.LAYOUT
-    }
-
-    override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
-        return when(type) {
-            TalkDetailsReplyViewHolder.LAYOUT -> TalkDetailsReplyViewHolder(parent)
-            TalkDetailsThreadViewHolder.LAYOUT -> TalkDetailsThreadViewHolder(parent)
-            else -> super.createViewHolder(parent, type)
+    override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
+        return when (type) {
+            InboxTalkItemViewHolder.LAYOUT -> TalkDetailsViewHolder(view, talkItemListener,
+                    talkCommentItemListener, talkAttachmentItemClickListener,talkCommentLoadMoreListener)
+            EmptyInboxTalkViewHolder.LAYOUT -> EmptyInboxTalkViewHolder(view)
+            else -> super.createViewHolder(view, type)
         }
     }
 }

@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/talk_details_reply_list"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintVertical_chainStyle="spread"
         app:layout_constraintBottom_toTopOf="@+id/talk_details_reply_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <RelativeLayout
         android:id="@+id/talk_details_reply_container"
@@ -31,6 +34,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/talk_details_reply_list">
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_5"
+            android:id="@+id/talk_details_attach_product_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/add_url"
@@ -43,20 +53,11 @@
             app:srcCompat="@drawable/ic_attach" />
 
         <ImageView
-            android:id="@+id/image_picker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/new_comment"
-            android:layout_toRightOf="@id/add_url"
-            android:padding="@dimen/dp_10"
-            app:srcCompat="@drawable/ic_image_picker" />
-
-        <ImageView
             android:id="@+id/maximize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/new_comment"
-            android:layout_toRightOf="@id/image_picker"
+            android:layout_toRightOf="@id/add_url"
             android:padding="@dimen/dp_10"
             android:visibility="gone"
             app:srcCompat="@drawable/ic_maximize" />
@@ -92,7 +93,8 @@
             android:paddingRight="@dimen/dp_12"
             android:paddingTop="@dimen/dp_10"
             android:textSize="@dimen/sp_16"
-            tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd" />
+            tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd"
+            android:layout_below="@id/talk_details_attach_product_list"/>
 
         <ProgressBar
             android:id="@+id/loading"
@@ -105,4 +107,15 @@
             android:visibility="gone"
             tools:visibility="visible" />
     </RelativeLayout>
+
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:visibility="gone"/>
 </android.support.constraint.ConstraintLayout>

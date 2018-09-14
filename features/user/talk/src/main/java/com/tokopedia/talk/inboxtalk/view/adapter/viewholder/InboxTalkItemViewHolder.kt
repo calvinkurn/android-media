@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
  * @author by nisie on 8/30/18.
  */
 
-class InboxTalkItemViewHolder(val v: View,
+open class InboxTalkItemViewHolder(val v: View,
                               val listener: TalkItemListener,
                               private val talkCommentListener: CommentTalkViewHolder.TalkCommentItemListener,
                               private val talkProductAttachmentItemClickListener:
@@ -44,27 +44,28 @@ class InboxTalkItemViewHolder(val v: View,
         fun onGoToUserProfile(userId: String)
     }
 
-    private val productName: TextView = itemView.productName
-    private val productAvatar: ImageView = itemView.productAvatar
-    private val profileAvatar: ImageView = itemView.prof_pict
-    private val notification: View = itemView.notification
-    private val profileName: TextView = itemView.username
-    private val timestamp: TextView = itemView.timestamp
-    private val menuButton: ImageView = itemView.menu
-    private val talkContent: TextView = itemView.talk_content
-    private val listComment: RecyclerView = itemView.list_child
-    private val replyButton: TextView = itemView.replyButton
-    private val separatorChild: View = itemView.separatorChild
+    protected val productName: TextView = itemView.productName
+    protected val productAvatar: ImageView = itemView.productAvatar
+    protected val profileAvatar: ImageView = itemView.prof_pict
+    protected val notification: View = itemView.notification
+    protected val profileName: TextView = itemView.username
+    protected val timestamp: TextView = itemView.timestamp
+    protected val menuButton: ImageView = itemView.menu
+    protected val talkContent: TextView = itemView.talk_content
+    protected val listComment: RecyclerView = itemView.list_child
+    protected val replyButton: TextView = itemView.replyButton
+    protected val separatorChild: View = itemView.separatorChild
 
-    private val reportedLayout: View = itemView.layout_reported
-    private val reportedMessage: TextView = itemView.reportedMessage
-    private val yesReportButton: TextView = itemView.reportYes
-    private val noReportButton: TextView = itemView.reportNo
-    private val rawMessage: TextView = itemView.rawMessage
-    private val separatorReport: View = itemView.separatorReport
+    protected val reportedLayout: View = itemView.layout_reported
+    protected val reportedMessage: TextView = itemView.reportedMessage
+    protected val yesReportButton: TextView = itemView.reportYes
+    protected val noReportButton: TextView = itemView.reportNo
+    protected val rawMessage: TextView = itemView.rawMessage
+    protected val separatorReport: View = itemView.separatorReport
+    protected val containerView:View = itemView.container_view
+    protected val itemSeparator:View = itemView.item_separator
 
-
-    private lateinit var adapter: CommentTalkAdapter
+    protected lateinit var adapter: CommentTalkAdapter
 
     companion object {
         val LAYOUT = R.layout.inbox_talk_item
@@ -95,7 +96,7 @@ class InboxTalkItemViewHolder(val v: View,
 
     }
 
-    private fun setReadNotification(element: InboxTalkItemViewModel) {
+    protected fun setReadNotification(element: InboxTalkItemViewModel) {
         if (element.talkThread.headThread.isRead) {
             notification.visibility = View.GONE
             productName.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
@@ -105,7 +106,7 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setupMaskedMessage(element: InboxTalkItemViewModel) {
+    protected fun setupMaskedMessage(element: InboxTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
 
@@ -137,7 +138,7 @@ class InboxTalkItemViewHolder(val v: View,
 
     }
 
-    private fun setupNormalTalk(element: InboxTalkItemViewModel) {
+    protected fun setupNormalTalk(element: InboxTalkItemViewModel) {
         reportedLayout.visibility = View.GONE
 
         talkContent.visibility = View.VISIBLE
@@ -145,7 +146,7 @@ class InboxTalkItemViewHolder(val v: View,
 
     }
 
-    private fun setProfileHeader(element: InboxTalkItemViewModel) {
+    protected fun setProfileHeader(element: InboxTalkItemViewModel) {
         ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.talkThread
                 .headThread.avatar)
         profileName.text = element.talkThread.headThread.name
@@ -161,7 +162,7 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setProductHeader(element: InboxTalkItemViewModel) {
+    protected fun setProductHeader(element: InboxTalkItemViewModel) {
         productName.text = MethodChecker.fromHtml(element.productHeader.productName)
         ImageHandler.loadImageRounded2(productAvatar.context, productAvatar,
                 element.productHeader.productAvatar)
@@ -174,7 +175,7 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setCommentList(element: InboxTalkItemViewModel) {
+    protected fun setCommentList(element: InboxTalkItemViewModel) {
         if (!element.talkThread.listChild.isEmpty()) {
             val typeFactoryImpl = CommentTalkTypeFactoryImpl(
                     talkCommentListener, talkProductAttachmentItemClickListener, talkCommentLoadMoreListener)
@@ -190,7 +191,7 @@ class InboxTalkItemViewHolder(val v: View,
         }
     }
 
-    private fun setupMenuButton(element: InboxTalkItemViewModel) {
+    protected fun setupMenuButton(element: InboxTalkItemViewModel) {
         val menu: TalkState = element.talkThread.headThread.menu
 
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {

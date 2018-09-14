@@ -1,0 +1,42 @@
+package com.tokopedia.talk.talkdetails.view.adapter
+
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.talk.R
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+
+class AttachedProductListAdapter(var data: List<TalkProductAttachmentViewModel>) : RecyclerView
+.Adapter<AttachedProductViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedProductViewHolder {
+        val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.attached_product_item, parent, false)
+        return AttachedProductViewHolder(itemView)
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    override fun onBindViewHolder(holder: AttachedProductViewHolder, position: Int) {
+        holder.bind(data[position])
+    }
+}
+
+class AttachedProductViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+    val image = itemView.findViewById<ImageView>(R.id.attach_product_chat_image)
+    val name = itemView.findViewById<TextView>(R.id.attach_product_chat_name)
+    val price = itemView.findViewById<TextView>(R.id.attach_product_chat_price)
+
+    fun bind(element:TalkProductAttachmentViewModel) {
+        ImageHandler.loadImageRounded2(itemView.getContext(), image, element.productImage)
+        name.text = element.productName
+        name.maxLines = 1
+        price.text = element.productPrice
+    }
+}
