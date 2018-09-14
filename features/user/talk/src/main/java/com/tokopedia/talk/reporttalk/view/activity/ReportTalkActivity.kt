@@ -25,20 +25,35 @@ class ReportTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     }
 
     companion object {
-        public const val EXTRA_TALK_ID: String = "talkId"
-        public const val EXTRA_SHOP_ID: String = "shopId"
-        public const val EXTRA_PRODUCT_ID: String = "productId"
+        const val EXTRA_TALK_ID: String = "talkId"
+        const val EXTRA_SHOP_ID: String = "shopId"
+        const val EXTRA_PRODUCT_ID: String = "productId"
+        const val EXTRA_COMMENT_ID: String = "commentId"
 
-
-        open fun createIntent(context: Context,
-                              talkId: String,
-                              shopId: String,
-                              productId: String): Intent {
+        open fun createIntentReportTalk(context: Context,
+                                        talkId: String,
+                                        shopId: String,
+                                        productId: String): Intent {
             val intent = Intent(context, ReportTalkActivity::class.java)
             val bundle = Bundle()
             bundle.putString(EXTRA_TALK_ID, talkId)
             bundle.putString(EXTRA_SHOP_ID, shopId)
             bundle.putString(EXTRA_PRODUCT_ID, productId)
+            intent.putExtras(bundle)
+            return intent
+        }
+
+        open fun createIntentReportComment(context: Context,
+                                           talkId: String,
+                                           commentId: String,
+                                           shopId: String,
+                                           productId: String): Intent {
+            val intent = Intent(context, ReportTalkActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString(EXTRA_TALK_ID, talkId)
+            bundle.putString(EXTRA_SHOP_ID, shopId)
+            bundle.putString(EXTRA_PRODUCT_ID, productId)
+            bundle.putString(EXTRA_COMMENT_ID, commentId)
             intent.putExtras(bundle)
             return intent
         }

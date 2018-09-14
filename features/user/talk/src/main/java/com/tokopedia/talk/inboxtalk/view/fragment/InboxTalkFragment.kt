@@ -31,6 +31,7 @@ import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject
 
@@ -162,10 +163,16 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         filterMenu.dismiss()
     }
 
-    private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
+    private fun goToReportTalk(talkId: String, shopId: String, productId: String, commentId:
+    String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this, talkId, shopId, productId)
-            startActivityForResult(intent, REQUEST_REPORT_TALK)
+            val intent: Intent = if (commentId.isBlank()) {
+                ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
+            } else {
+                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
+                        productId, commentId)
+            }
+            this@InboxTalkFragment.startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
 
@@ -335,8 +342,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if (allowReply) goToDetailTalk()
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+        if (allowReply) goToDetailTalk(talkId, shopId)
         else showErrorReplyTalk()
     }
 
@@ -368,7 +375,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(shopId, talkId)
             getString(R.string.menu_follow_talk) -> showFollowTalkDialog(talkId)
             getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(talkId)
-            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
         }
         bottomMenu.dismiss()
     }
@@ -398,7 +405,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
+                    commentId)
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -440,7 +448,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
-        goToReportTalk(talkId, shopId, productId)
+        goToReportTalk(talkId, shopId, productId, "")
     }
 
     override fun onSuccessMarkTalkNotFraud(talkId: String) {
@@ -452,16 +460,20 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     }
 
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
-        goToReportTalk(talkId, shopId, productId)
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
+        goToReportTalk(talkId, shopId, productId, commentId)
     }
 
     override fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String) {
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
-    private fun goToDetailTalk() {
-
+    private fun goToDetailTalk(talkId: String, shopId: String) {
+        context?.run {
+            this@InboxTalkFragment.startActivityForResult(
+                    TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                    , REQUEST_GO_TO_DETAIL)
+        }
     }
 
     override fun onSuccessDeleteTalk(talkId: String) {

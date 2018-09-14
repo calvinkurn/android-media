@@ -23,7 +23,7 @@ class ReportTalkPresenter @Inject constructor(private val reportTalkUseCase: Rep
         if (selectedOption.isChecked) {
             if (selectedOption.position == 2) reason = otherReason
             view.showLoadingFull()
-            reportTalkUseCase.execute(ReportTalkUseCase.getParam(
+            reportTalkUseCase.execute(ReportTalkUseCase.getParamTalk(
                     productId,
                     shopId,
                     talkId,

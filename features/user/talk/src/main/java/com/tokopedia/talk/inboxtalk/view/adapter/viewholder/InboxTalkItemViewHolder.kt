@@ -1,5 +1,6 @@
 package com.tokopedia.talk.inboxtalk.view.adapter.viewholder
 
+import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -32,7 +33,7 @@ class InboxTalkItemViewHolder(val v: View,
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
-        fun onReplyTalkButtonClick(allowReply: Boolean)
+        fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
@@ -80,16 +81,23 @@ class InboxTalkItemViewHolder(val v: View,
             }
 
             replyButton.setOnClickListener {
-                listener.onReplyTalkButtonClick(element.talkThread
-                        .headThread.menu.allowReply)
+                listener.onReplyTalkButtonClick(
+                        element.talkThread.headThread.menu.allowReply,
+                        element.talkThread.headThread.talkId,
+                        element.talkThread.headThread.shopId)
             }
         }
 
     }
 
     private fun setReadNotification(element: InboxTalkItemViewModel) {
-        if (element.talkThread.headThread.isRead) notification.visibility = View.GONE
-        else notification.visibility = View.VISIBLE
+        if (element.talkThread.headThread.isRead) {
+            notification.visibility = View.GONE
+            productName.typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+        } else {
+            notification.visibility = View.VISIBLE
+            productName.typeface = Typeface.create("sans-serif", Typeface.BOLD)
+        }
     }
 
     private fun setupMaskedMessage(element: InboxTalkItemViewModel) {
@@ -111,12 +119,16 @@ class InboxTalkItemViewHolder(val v: View,
             noReportButton.visibility = View.GONE
         }
 
-        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick(
-                element.talkThread.headThread.talkId,
-                element.talkThread.headThread.shopId,
-                element.talkThread.headThread.productId) }
-        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(element.talkThread
-                .headThread.talkId) }
+        yesReportButton.setOnClickListener {
+            listener.onYesReportTalkItemClick(
+                    element.talkThread.headThread.talkId,
+                    element.talkThread.headThread.shopId,
+                    element.talkThread.headThread.productId)
+        }
+        noReportButton.setOnClickListener {
+            listener.onNoShowTalkItemClick(element.talkThread
+                    .headThread.talkId)
+        }
 
     }
 
@@ -157,7 +169,7 @@ class InboxTalkItemViewHolder(val v: View,
     }
 
     private fun setupMenuButton(element: InboxTalkItemViewModel) {
-        val menu : TalkState = element.talkThread.headThread.menu
+        val menu: TalkState = element.talkThread.headThread.menu
 
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
@@ -165,10 +177,12 @@ class InboxTalkItemViewHolder(val v: View,
             menuButton.visibility = View.GONE
         }
 
-        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
-                element.talkThread.headThread.shopId,
-                element.talkThread.headThread.talkId,
-                element.talkThread.headThread.productId) }
+        menuButton.setOnClickListener {
+            listener.onMenuButtonClicked(menu,
+                    element.talkThread.headThread.shopId,
+                    element.talkThread.headThread.talkId,
+                    element.talkThread.headThread.productId)
+        }
     }
 
     fun onViewRecycled() {

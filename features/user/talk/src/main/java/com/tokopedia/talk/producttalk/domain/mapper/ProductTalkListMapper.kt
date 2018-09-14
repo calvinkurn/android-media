@@ -58,7 +58,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
             listCommentTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
-                    data.comment_create_time_fmt,
+                    data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,

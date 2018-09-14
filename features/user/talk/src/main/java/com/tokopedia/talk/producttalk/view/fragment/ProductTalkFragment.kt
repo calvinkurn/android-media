@@ -155,7 +155,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
         adapter.hideLoading()
         adapter.addList(listThread)
-    }T
+    }
 
     override fun onLoadClicked() {
         adapter.dismissLoadModel()
@@ -221,7 +221,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntent(this, talkId, shopId, productId)
+            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "" , "")
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
@@ -346,6 +346,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
        // TODO STEVEN
     }
 
+    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun onNoShowTalkItemClick(talkId: String) {
         presenter.markTalkNotFraud(talkId)
     }
@@ -363,10 +367,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
-        goToReportTalk(talkId, shopId, productId)
-    }
-
-    override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String) {
         goToReportTalk(talkId, shopId, productId)
     }
 
