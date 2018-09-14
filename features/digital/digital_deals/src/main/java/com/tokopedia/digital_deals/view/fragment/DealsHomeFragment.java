@@ -198,7 +198,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             case DealsHomeActivity.REQUEST_CODE_DEALSLOCATIONACTIVITY:
                 Location location = Utils.getSingletonInstance().getLocation(getActivity());
                 if (location == null) {
-                    Toast.makeText(getActivity(), getResources().getString(R.string.select_location_first), Toast.LENGTH_SHORT).show();
                     getActivity().finish();
                 } else {
                     if (data != null) {
@@ -385,7 +384,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 
