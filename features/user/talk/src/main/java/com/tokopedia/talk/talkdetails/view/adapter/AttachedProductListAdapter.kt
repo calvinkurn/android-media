@@ -36,6 +36,7 @@ class AttachedProductViewHolder(itemView:View) : RecyclerView.ViewHolder(itemVie
     fun bind(element:TalkProductAttachmentViewModel) {
         ImageHandler.loadImageRounded2(itemView.getContext(), image, element.productImage)
         name.text = element.productName
+        name.maxLines = 1
         price.text = element.productPrice
     }
 }

@@ -7,6 +7,17 @@
     android:background="@color/white">
 
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/talk_details_reply_list"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/talk_details_reply_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
     <RelativeLayout
         android:id="@+id/talk_details_reply_container"
         android:layout_width="0dp"
@@ -29,8 +40,7 @@
             android:id="@+id/talk_details_attach_product_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintVertical_chainStyle="spread" />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/add_url"
@@ -83,7 +93,8 @@
             android:paddingRight="@dimen/dp_12"
             android:paddingTop="@dimen/dp_10"
             android:textSize="@dimen/sp_16"
-            tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd" />
+            tools:text="dsajj\ndifjidfi\nidjfidj\nfdfidjidfijdfijd"
+            android:layout_below="@id/talk_details_attach_product_list"/>
 
         <ProgressBar
             android:id="@+id/loading"
@@ -97,16 +108,6 @@
             tools:visibility="visible" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/talk_details_reply_list"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/talk_details_reply_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_chainStyle="spread_inside"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside" />
 
     <ProgressBar
         android:id="@+id/progressBar"
