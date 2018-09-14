@@ -14,7 +14,6 @@
         android:maxLines="3"
         android:ellipsize="end"
         android:maxLength="105"
-        style="@style/TextView.Small"
-        />
+        style="@style/TextView.Small" />
 
 </LinearLayout>

@@ -61,6 +61,7 @@ public class TickerView extends BaseCustomView {
     private int defaultLinkColor;
     private int defaultPageIndicatorOnColor;
     private int defaultPageIndicatorOffColor;
+    private float contentTextSize;
     private boolean isShowCloseButton;
     private boolean isUnderlinedLink;
 
@@ -115,7 +116,6 @@ public class TickerView extends BaseCustomView {
     }
 
     private void init(AttributeSet attrs) {
-        init();
         TypedArray styledAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.TickerView);
         try {
             defaultHighLightColor = styledAttributes.getColor(
@@ -142,11 +142,13 @@ public class TickerView extends BaseCustomView {
                     ContextCompat.getColor(getContext(), DEFAULT_COLOR_HIGHLIGHT_TICKER));
             isShowCloseButton = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_close_button, true);
             isUnderlinedLink = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_link_underline, true);
+            contentTextSize = styledAttributes.getDimension(R.styleable.TickerView_tckv_content_text_size, getResources().getDimension(R.dimen.sp_14));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             styledAttributes.recycle();
         }
+        init();
     }
 
     private void init() {
@@ -163,6 +165,7 @@ public class TickerView extends BaseCustomView {
                 listTextColor,
                 listBackGroundColor,
                 defaultLinkColor,
+                contentTextSize,
                 listMessage,
                 onPartialTextClickListener
         );
@@ -217,7 +220,7 @@ public class TickerView extends BaseCustomView {
         GradientDrawable gradientDrawable;
         try {
             gradientDrawable = (GradientDrawable) tickerHighlightView.getBackground();
-            gradientDrawable.setColor(highLightColor);
+            gradientDrawable.setColor(defaultHighLightColor);
 
             tickerHighlightView.setBackground(gradientDrawable);
         } catch (Exception e) {

@@ -138,6 +138,7 @@
         <attr name="tckv_link_color" format="color" />
         <attr name="tckv_show_close_button" format="boolean"/>
         <attr name="tckv_show_link_underline" format="boolean"/>
+        <attr name="tckv_content_text_size" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="UserReputationView">

@@ -47,8 +47,7 @@
     <com.tkpd.library.ui.widget.TouchViewPager
         android:id="@+id/view_pager_ticker"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.design.viewpagerindicator.CirclePageIndicator
         android:id="@+id/page_indicator_ticker"

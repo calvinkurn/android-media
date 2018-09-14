@@ -9,6 +9,7 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,17 +30,20 @@ class TickerViewAdapter extends PagerAdapter {
     private ArrayList<Integer> listBackGroundColor;
     private ArrayList<Integer> listTextColor;
     private int defaultLinkColor;
+    private float textSize;
     private TickerView.OnPartialTextClickListener listener;
     private boolean isUnderlinedLink = true;
 
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              ArrayList<Integer> listBackGroundColor,
                              int defaultLinkColor,
+                             float textSize,
                              ArrayList<String> listMessage,
                              TickerView.OnPartialTextClickListener listener) {
         this.listTextColor = listTextColor;
         this.listBackGroundColor = listBackGroundColor;
         this.defaultLinkColor = defaultLinkColor;
+        this.textSize = textSize;
         this.listMessage = listMessage;
         this.listener = listener;
     }
@@ -50,6 +54,7 @@ class TickerViewAdapter extends PagerAdapter {
         View view = inflater.inflate(R.layout.item_ticker, container, false);
         View tickerBackground = view.findViewById(R.id.ticker_background);
         TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
+        tickerMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
         tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
         tickerMessage.setTextColor(listTextColor.get(position));
