@@ -17,6 +17,7 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String SHOP_ID = "shop_id";
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
+    public static final String EVENT_LABEL = "eventLabel";
 
     public static final String USER_ID = "userId";
 
