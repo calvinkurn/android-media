@@ -218,7 +218,7 @@ public abstract class CommonClientNumberInputView extends LinearLayout {
     @NonNull
     protected abstract TextWatcher getTextWatcherInput(final ClientNumber clientNumber);
 
-    public boolean isValidInput(List<String> prefixList) {
+    protected boolean isValidInput(List<String> prefixList) {
         String clientNumberInput = autoCompleteTextView.getText().toString();
         boolean isStartWithPrefix = false;
         for (String string : prefixList) {

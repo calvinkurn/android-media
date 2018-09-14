@@ -67,8 +67,11 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/dp_6"
                     android:layout_marginBottom="@dimen/dp_6"
+                    android:background="@drawable/bg_button_disabled"
+                    android:clickable="false"
                     android:layout_gravity="center"
                     android:id="@+id/button_additional"
                     style="@style/Button.Submit.Green.Full"

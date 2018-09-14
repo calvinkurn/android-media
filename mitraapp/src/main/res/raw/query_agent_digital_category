@@ -62,6 +62,10 @@ query recharge_category_detail($category_id: Int) {
           help
           placeholder
           default
+          validation {
+            regex
+            error
+          }
         }
       }
     }

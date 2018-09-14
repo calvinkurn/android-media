@@ -10,9 +10,9 @@ import dagger.Component;
 /**
  * Created by Rizky on 30/08/18.
  */
-@AgentDigitalCategoryScope
-@Component(dependencies = DigitalComponent.class, modules = AgentDigitalCategoryModule.class)
-public interface AgentDigitalCategoryComponent {
+@MitraDigitalCategoryScope
+@Component(dependencies = DigitalComponent.class, modules = MitraDigitalCategoryModule.class)
+public interface MitraDigitalCategoryComponent {
 
     void inject(MitraDigitalCategoryFragment mitraDigitalCategoryFragment);
 

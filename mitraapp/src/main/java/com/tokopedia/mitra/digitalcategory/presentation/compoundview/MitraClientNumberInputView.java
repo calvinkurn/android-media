@@ -15,9 +15,12 @@ import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.ClientNumber;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
+import com.tokopedia.common_digital.product.presentation.model.Validation;
 import com.tokopedia.mitra.DeviceUtil;
+import com.tokopedia.mitra.R;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Created by Rizky on 05/09/18.
@@ -83,8 +86,26 @@ public class MitraClientNumberInputView extends CommonClientNumberInputView {
                         } else {
                             resetOperator();
                         }
+                    } else {
+                        // TODO: add checking for additional button with type "inquiry"
+                        if (clientNumber.getAdditionalButton() != null &&
+                                clientNumber.getAdditionalButton().getType().equals("inquiry")) {
+                            if (isValidInput()) {
+                                buttonAditional.setBackground(getResources().getDrawable(R.drawable.bg_button_green_enabled));
+                                buttonAditional.setClickable(true);
+                            } else {
+                                disableAditionalButton();
+                                buttonAditional.setBackground(getResources().getDrawable(R.drawable.bg_button_disable));
+                                buttonAditional.setClickable(false);
+                            }
+                        }
                     }
                 }
+            }
+
+            private void disableAditionalButton() {
+                buttonAditional.setBackground(getResources().getDrawable(R.drawable.bg_button_disable));
+                buttonAditional.setClickable(false);
             }
 
             @Override
@@ -143,6 +164,16 @@ public class MitraClientNumberInputView extends CommonClientNumberInputView {
         } else {
             tvLabel.setVisibility(GONE);
         }
+        if (clientNumber.getAdditionalButton() != null) {
+            if (clientNumber.getAdditionalButton().getType().equals("inquiry")) {
+                buttonAditional.setVisibility(VISIBLE);
+                buttonAditional.setOnClickListener(view -> {
+                    actionListener.onClickAdditionalButton(clientNumber.getAdditionalButton());
+                    buttonAditional.setBackground(getResources().getDrawable(R.drawable.bg_button_disable));
+                    buttonAditional.setClickable(false);
+                });
+            }
+        }
         tvLabel.setText(clientNumber.getText());
         autoCompleteTextView.setHint(clientNumber.getPlaceholder());
         setupLayoutParamAndInputType(clientNumber) ;
@@ -159,20 +190,6 @@ public class MitraClientNumberInputView extends CommonClientNumberInputView {
     protected void setupLayoutParamAndInputType(ClientNumber clientNumber) {
         LayoutParams layoutParams = new LayoutParams(
                 0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        // TODO: add checking for additional button with type "inquiry"
-        if (clientNumber.getAdditionalButton() != null) {
-            if (clientNumber.getAdditionalButton().getType().equals("inquiry")) {
-                buttonAditional.setVisibility(VISIBLE);
-                buttonAditional.setOnClickListener(view -> {
-                    actionListener.onClickAdditionalButton(clientNumber.getAdditionalButton());
-                    buttonAditional.setVisibility(GONE);
-                });
-            } else {
-                buttonAditional.setVisibility(GONE);
-            }
-        } else {
-            buttonAditional.setVisibility(GONE);
-        }
         if (clientNumber.getType().equalsIgnoreCase(ClientNumber.TYPE_INPUT_TEL)) {
             btnContactPicker.setVisibility(View.VISIBLE);
             layoutParams.weight = 0.88f;
@@ -186,6 +203,20 @@ public class MitraClientNumberInputView extends CommonClientNumberInputView {
             setInputTypeNumber();
         } else {
             setInputTypeText();
+        }
+    }
+
+    private boolean isValidInput() {
+        String clientNumberInput = autoCompleteTextView.getText().toString();
+        if (clientNumber != null) {
+            boolean isValidRegex = false;
+            for (Validation validation : clientNumber.getValidation()) {
+                if (Pattern.matches(validation.getRegex(), clientNumberInput))
+                    isValidRegex = true;
+            }
+            return isValidRegex;
+        } else {
+            return true;
         }
     }
 

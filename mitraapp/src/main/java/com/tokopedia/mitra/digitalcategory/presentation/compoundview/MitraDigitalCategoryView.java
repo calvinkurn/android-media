@@ -4,12 +4,12 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.common_digital.product.presentation.model.AdditionalButton;
 import com.tokopedia.common_digital.product.presentation.model.BaseWidgetItem;
 import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
@@ -33,13 +33,13 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
     public interface ActionListener {
 
-        void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId);
+        void onClickOperatorDropdown(InputFieldModel inputFieldModel, String selectedItemId);
 
         void onProductSelected(Product item);
 
         void removeBuyView();
 
-        void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int id, int position);
+        void onClickProductDropdown(InputFieldModel inputFieldModel, String operatorId, int position);
 
     }
 
@@ -75,7 +75,7 @@ public class MitraDigitalCategoryView extends LinearLayout {
         this.actionListener = actionListener;
     }
 
-    public void renderWidgetViews(RenderOperatorModel renderOperatorModel, String renderOperatorId) {
+    public void renderCategory(RenderOperatorModel renderOperatorModel, String renderOperatorId) {
         if (containerDigitalOperatorWidgetView.getChildCount() > 0) {
             containerDigitalOperatorWidgetView.removeAllViews();
         }
@@ -92,7 +92,7 @@ public class MitraDigitalCategoryView extends LinearLayout {
                     String selectedOperatorId = ((Operator) operatorItem).getOperatorId();
                     if (!selectedOperatorId.equals(oldOperatorId[0])) {
                         oldOperatorId[0] = selectedOperatorId;
-                        renderProductsByOperatorId(renderOperatorModel, selectedOperatorId, "");
+                        renderProductsByOperatorId(renderOperatorModel, selectedOperatorId);
                     }
                 }
             }
@@ -108,7 +108,7 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
             @Override
             public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-                actionListener.onClickDropdown(inputFieldModel, selectedItemId);
+                actionListener.onClickOperatorDropdown(inputFieldModel, selectedItemId);
             }
 
             @Override
@@ -123,8 +123,7 @@ public class MitraDigitalCategoryView extends LinearLayout {
                 baseWidgetItems, renderOperatorId);
     }
 
-    public void renderProductsByOperatorId(RenderOperatorModel renderOperatorModel, String operatorId,
-                                           String renderProductId) {
+    private void renderProductsByOperatorId(RenderOperatorModel renderOperatorModel, String operatorId) {
         // remove rendered products view
         if (containerDigitalProductWidgetView.getChildCount() > 0) {
             containerDigitalProductWidgetView.removeAllViews();
@@ -135,13 +134,82 @@ public class MitraDigitalCategoryView extends LinearLayout {
                 renderOperatorModel.getRenderProductModels());
         Operator operator = renderProductModel.getOperator();
 
-        DigitalWidgetView productInquiryWidgetView =
-                new DigitalWidgetView(getContext());
+        boolean showInputField = true;
+
+        for (int i=0; i<renderProductModel.getInputFieldModels().size(); i++ ) {
+            if (showInputField) {
+                DigitalWidgetView productWidgetView =
+                        new DigitalWidgetView(getContext());
+                productWidgetView.setTag(i);
+                productWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
+                    @Override
+                    public void onItemSelected(BaseWidgetItem item) {
+                        if (item instanceof Product) {
+                            actionListener.onProductSelected((Product) item);
+                        }
+                    }
+
+                    @Override
+                    public void onOperatorByPrefixNotFound() {
+
+                    }
+
+                    @Override
+                    public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
+                        actionListener.onClickProductDropdown(inputFieldModel, operator.getOperatorId(),
+                                (Integer) productWidgetView.getTag());
+                    }
+
+                    @Override
+                    public void onClickInquiryButton() {
+                        DigitalWidgetView productInquiryWidgetView =
+                                createProductInquiryView(renderProductModel, operator, ((Integer) productWidgetView.getTag()));
+                        List<BaseWidgetItem> productList = new ArrayList<>(operator.getProductList());
+                        String productId = String.valueOf(operator.getDefaultProductId());
+                        containerDigitalProductWidgetView.addView(productInquiryWidgetView);
+                        productInquiryWidgetView.renderWidget(
+                                renderProductModel.getInputFieldModels().get((Integer) productInquiryWidgetView.getTag()),
+                                productList,
+                                productId);
+                    }
+                });
+
+                List<BaseWidgetItem> productList = new ArrayList<>(operator.getProductList());
+                String productId = String.valueOf(operator.getDefaultProductId());
+                containerDigitalProductWidgetView.addView(productWidgetView);
+                productWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
+                        productList,
+                        productId);
+            }
+            if (isInquiry(renderProductModel.getInputFieldModels().get(i).getAdditionalButton())) {
+                showInputField = false;
+            }
+        }
+    }
+
+    private boolean isInquiry(AdditionalButton additionalButton) {
+        return additionalButton != null && additionalButton.getType().equals("inquiry");
+    }
+
+    private DigitalWidgetView createProductInquiryView(RenderProductModel renderProductModel, Operator operator, Integer tag) {
+        DigitalWidgetView productInquiryWidgetView = new DigitalWidgetView(getContext());
+        productInquiryWidgetView.setTag(renderProductModel.getInputFieldModels().size()-1);
         productInquiryWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
             @Override
             public void onItemSelected(BaseWidgetItem item) {
                 if (item instanceof Product) {
                     actionListener.onProductSelected((Product) item);
+                    showInquiryResult();
+                }
+            }
+
+            private void showInquiryResult() {
+                if (containerDigitalProductWidgetView.findViewWithTag("inquiry_result_view") == null) {
+                    MitraDigitalInquiryResultView mitraDigitalInquiryResultView =
+                            new MitraDigitalInquiryResultView(getContext());
+                    mitraDigitalInquiryResultView.setTag("inquiry_result_view");
+                    containerDigitalProductWidgetView.addView(mitraDigitalInquiryResultView,
+                            (Integer) productInquiryWidgetView.getTag());
                 }
             }
 
@@ -152,10 +220,8 @@ public class MitraDigitalCategoryView extends LinearLayout {
 
             @Override
             public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-//                actionListener.onClickDropdown(inputFieldModel, operator.getOperatorId());
-                actionListener.onClickDropdownTest(inputFieldModel, operator.getOperatorId(),
-                        containerDigitalProductWidgetView.getChildAt(renderProductModel.getInputFieldModels().size()-1).getId(),
-                        renderProductModel.getInputFieldModels().size()-1);
+                actionListener.onClickProductDropdown(inputFieldModel, operator.getOperatorId(),
+                        ((Integer) productInquiryWidgetView.getTag()));
             }
 
             @Override
@@ -164,68 +230,12 @@ public class MitraDigitalCategoryView extends LinearLayout {
             }
         });
 
-        boolean showInputField = true;
-
-        for (int i=0; i<renderProductModel.getInputFieldModels().size(); i++ ) {
-            DigitalWidgetView productWidgetView =
-                    new DigitalWidgetView(getContext());
-            productWidgetView.setPosition(i);
-            productWidgetView.setActionListener(new DigitalWidgetView.ActionListener() {
-                @Override
-                public void onItemSelected(BaseWidgetItem item) {
-                    if (item instanceof Product) {
-                        actionListener.onProductSelected((Product) item);
-                    }
-                }
-
-                @Override
-                public void onOperatorByPrefixNotFound() {
-
-                }
-
-                @Override
-                public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
-//                    actionListener.onClickDropdown(inputFieldModel,
-//                            operator.getOperatorId());
-                    actionListener.onClickDropdownTest(inputFieldModel, operator.getOperatorId(),
-                            containerDigitalProductWidgetView.getChildAt(productWidgetView.getPosition()).getId(),
-                            productWidgetView.getPosition());
-                }
-
-                @Override
-                public void onClickInquiryButton() {
-                    containerDigitalProductWidgetView.addView(productInquiryWidgetView);
-                }
-            });
-
-            List<BaseWidgetItem> baseWidgetItems = new ArrayList<>(operator.getProductList());
-            String productId;
-            if (!TextUtils.isEmpty(renderProductId)) {
-                productId = renderProductId;
-            } else {
-                productId = String.valueOf(operator.getDefaultProductId());
-            }
-            productWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
-                    baseWidgetItems,
-                    productId);
-            if (showInputField) {
-                containerDigitalProductWidgetView.addView(productWidgetView);
-            } else {
-                productInquiryWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(i),
-                        baseWidgetItems,
-                        productId);
-            }
-            if (renderProductModel.getInputFieldModels().get(i).getAdditionalButton() != null &&
-                    renderProductModel.getInputFieldModels().get(i).getAdditionalButton().getType()
-                            .equals("inquiry")) {
-                showInputField = false;
-            }
-        }
+        return productInquiryWidgetView;
     }
 
-    public void updateView(RenderOperatorModel renderOperatorModel, String operatorId,
-                           String productId, int position) {
-        DigitalWidgetView productWidgetView = (DigitalWidgetView) containerDigitalProductWidgetView.getChildAt(position);
+    public void updateProductDropdownView(RenderOperatorModel renderOperatorModel, InputFieldModel inputFieldModel, String operatorId,
+                                          String productId, int viewTag) {
+        DigitalWidgetView productWidgetView = containerDigitalProductWidgetView.findViewWithTag(viewTag);
         containerDigitalProductWidgetView.removeView(productWidgetView);
 
         RenderProductModel renderProductModel = findOperatorById(operatorId,
@@ -233,7 +243,7 @@ public class MitraDigitalCategoryView extends LinearLayout {
         Operator operator = renderProductModel.getOperator();
         List<BaseWidgetItem> baseWidgetItems = new ArrayList<>(operator.getProductList());
 
-        productWidgetView.renderWidget(renderProductModel.getInputFieldModels().get(position),
+        productWidgetView.renderWidget(inputFieldModel,
                 baseWidgetItems,
                 productId);
         containerDigitalProductWidgetView.addView(productWidgetView);

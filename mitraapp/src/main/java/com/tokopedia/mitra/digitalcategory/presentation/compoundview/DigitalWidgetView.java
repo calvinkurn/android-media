@@ -114,7 +114,8 @@ public class DigitalWidgetView extends FrameLayout {
         recyclerview.setVisibility(VISIBLE);
         recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        WidgetItemAdapter widgetItemAdapter = new WidgetItemAdapter(product -> actionListener.onItemSelected(product), items, defaultId);
+        WidgetItemAdapter widgetItemAdapter = new WidgetItemAdapter(product ->
+                actionListener.onItemSelected(product), items, defaultId);
         recyclerview.setAdapter(widgetItemAdapter);
 
         widgetItemAdapter.notifyDataSetChanged();

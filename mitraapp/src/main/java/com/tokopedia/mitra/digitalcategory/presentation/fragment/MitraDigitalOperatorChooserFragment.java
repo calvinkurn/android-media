@@ -22,8 +22,8 @@ import com.tokopedia.common_digital.common.di.DigitalComponent;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.RenderProductModel;
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
-import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.di.MitraDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.di.DaggerMitraDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.adapter.MitraDigitalOperatorChooserAdapter;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalOperatorChooserContract;
 import com.tokopedia.mitra.digitalcategory.presentation.presenter.MitraDigitalOperatorChooserPresenter;
@@ -124,10 +124,10 @@ public class MitraDigitalOperatorChooserFragment extends BaseDaggerFragment
                 DaggerDigitalComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
-        AgentDigitalCategoryComponent agentDigitalCategoryComponent =
-                DaggerAgentDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+        MitraDigitalCategoryComponent mitraDigitalCategoryComponent =
+                DaggerMitraDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
                         .build();
-        agentDigitalCategoryComponent.inject(this);
+        mitraDigitalCategoryComponent.inject(this);
     }
 
     @Override

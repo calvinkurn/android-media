@@ -18,8 +18,8 @@ import com.tokopedia.common_digital.product.presentation.model.InputFieldModel;
 import com.tokopedia.common_digital.product.presentation.model.Operator;
 import com.tokopedia.common_digital.product.presentation.model.Product;
 import com.tokopedia.mitra.R;
-import com.tokopedia.mitra.digitalcategory.di.AgentDigitalCategoryComponent;
-import com.tokopedia.mitra.digitalcategory.di.DaggerAgentDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.di.MitraDigitalCategoryComponent;
+import com.tokopedia.mitra.digitalcategory.di.DaggerMitraDigitalCategoryComponent;
 import com.tokopedia.mitra.digitalcategory.presentation.activity.MitraDigitalChooserActivity;
 import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalBuyView;
 import com.tokopedia.mitra.digitalcategory.presentation.compoundview.MitraDigitalCategoryView;
@@ -44,6 +44,7 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     private int categoryId;
 
     private String selectedOperatorId;
+    private InputFieldModel tempProductInputFieldModel;
 
     private ActionListener actionListener;
 
@@ -99,10 +100,10 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                 DaggerDigitalComponent.builder().baseAppComponent((
                         (BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
                         .build();
-        AgentDigitalCategoryComponent agentDigitalCategoryComponent =
-                DaggerAgentDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
+        MitraDigitalCategoryComponent mitraDigitalCategoryComponent =
+                DaggerMitraDigitalCategoryComponent.builder().digitalComponent(digitalComponent)
                         .build();
-        agentDigitalCategoryComponent.inject(this);
+        mitraDigitalCategoryComponent.inject(this);
     }
 
     @Override
@@ -118,19 +119,13 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 
         mitraDigitalCategoryView.setActionListener(new MitraDigitalCategoryView.ActionListener() {
             @Override
-            public void onClickDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
+            public void onClickOperatorDropdown(InputFieldModel inputFieldModel, String selectedItemId) {
                 if (inputFieldModel.getName().equals(InputFieldModel.NAME_OPERATOR_ID)) {
                     String titleChooser = inputFieldModel.getText() + " " + digitalCategoryModel.getOperatorLabel();
                     Intent intent = MitraDigitalChooserActivity.newInstanceOperatorChooser(getActivity(),
                             digitalCategoryModel.getId(), titleChooser, digitalCategoryModel.getOperatorLabel(),
                             digitalCategoryModel.getName());
                     startActivityForResult(intent, 1001);
-                } else if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
-                    selectedOperatorId = selectedItemId;
-                    String titleChooser = inputFieldModel.getText();
-                    Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser(getActivity(),
-                            digitalCategoryModel.getId(), selectedItemId, titleChooser);
-                    startActivityForResult(intent, 1002);
                 }
             }
 
@@ -146,17 +141,19 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
             }
 
             @Override
-            public void onClickDropdownTest(InputFieldModel inputFieldModel, String operatorId, int viewId, int position) {
+            public void onClickProductDropdown(InputFieldModel inputFieldModel, String operatorId, int position) {
                 if (inputFieldModel.getName().equals(InputFieldModel.NAME_PRODUCT_ID)) {
                     selectedOperatorId = operatorId;
+                    tempProductInputFieldModel = inputFieldModel;
                     String titleChooser = inputFieldModel.getText();
                     Intent intent = MitraDigitalChooserActivity.newInstanceProductChooser2(getActivity(),
-                            digitalCategoryModel.getId(), operatorId, titleChooser, viewId, position);
+                            digitalCategoryModel.getId(), operatorId, titleChooser, position);
                     startActivityForResult(intent, 1002);
                 }
             }
         });
-        mitraDigitalCategoryView.renderWidgetViews(digitalCategoryModel.getRenderOperatorModel(),
+
+        mitraDigitalCategoryView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
                 digitalCategoryModel.getDefaultOperatorId());
     }
 
@@ -179,7 +176,6 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
                             data.getParcelableExtra(
                                     MitraDigitalChooserActivity.EXTRA_CALLBACK_PRODUCT_DATA
                             ),
-                            data.getIntExtra(MitraDigitalChooserActivity.EXTRA_CALLBACK_VIEW_ID, 0),
                             data.getIntExtra(MitraDigitalChooserActivity.EXTRA_CALLBACK_POSITION, 0)
                     );
                 break;
@@ -187,8 +183,8 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
     }
 
     private void handleCallbackOperatorChooser(Operator operator) {
-        mitraDigitalCategoryView.renderProductsByOperatorId(digitalCategoryModel.getRenderOperatorModel(),
-                operator.getOperatorId(), "");
+        mitraDigitalCategoryView.renderCategory(digitalCategoryModel.getRenderOperatorModel(),
+                operator.getOperatorId());
     }
 
 //    private void handleCallBackProductChooser(Product product) {
@@ -197,9 +193,9 @@ public class MitraDigitalCategoryFragment extends BaseDaggerFragment implements 
 ////        mitraDigitalCategoryView.updateProduct(selectedOperatorId, product.getProductId());
 //    }
 
-    private void handleCallbackProductChooser2(Product product, int viewId, int position) {
-        mitraDigitalCategoryView.updateView(digitalCategoryModel.getRenderOperatorModel(),
-                selectedOperatorId, product.getProductId(), position);
+    private void handleCallbackProductChooser2(Product product, int position) {
+        mitraDigitalCategoryView.updateProductDropdownView(digitalCategoryModel.getRenderOperatorModel(),
+                tempProductInputFieldModel, selectedOperatorId, product.getProductId(), position);
     }
 
     @Override
