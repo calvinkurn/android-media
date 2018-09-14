@@ -102,6 +102,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun setUpView(view: View) {
+        setMenuVisibility(false)
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
@@ -138,7 +139,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
-        setHasOptionsMenu(false)
+        setMenuVisibility(false)
         adapter.showEmpty()
     }
 
@@ -147,13 +148,14 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
+        setMenuVisibility(true)
         adapter.setList(listThread, ProductTalkTitleViewModel(productImage, productName, productPrice))
     }
 
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
         adapter.hideLoading()
         adapter.addList(listThread)
-    }
+    }T
 
     override fun onLoadClicked() {
         adapter.dismissLoadModel()
