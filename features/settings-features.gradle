@@ -1,5 +1,5 @@
 include "features:common:nps"
-include "features:common:challenges"
+include "features:im:challenges"
 include "features:fintech:mitra_toppers"
 include "features:fintech:instant_loan"
 include "features:digital:flight_no_op"

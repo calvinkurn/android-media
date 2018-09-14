@@ -378,7 +378,7 @@ ext {
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
             updateinactivephone   : ":features:user:updateinactivephone",
-            challenges            : ":features:common:challenges"
+            challenges            : ":features:im:challenges"
     ]
 
     libraries = [
