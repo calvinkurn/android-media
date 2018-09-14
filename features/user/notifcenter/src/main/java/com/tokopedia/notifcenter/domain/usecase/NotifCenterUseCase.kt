@@ -51,9 +51,7 @@ class NotifCenterUseCase @Inject constructor(@ApplicationContext val context: Co
         graphqlUseCase.execute(subscriber)
     }
 
-    fun unsubscribe() {
-        graphqlUseCase.unsubscribe()
-    }
+    fun unsubscribe() = graphqlUseCase.unsubscribe()
 
     companion object {
         const val PARAM_FILTER_ID = "filterId"
