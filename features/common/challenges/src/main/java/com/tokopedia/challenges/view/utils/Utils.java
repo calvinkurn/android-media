@@ -51,6 +51,7 @@ public class Utils {
     public static final String STATUS_WAITING = "Waiting";
     public static final String STATUS_ENCODING = "Encoding";
     public static final String QUERY_PARAM_IS_FROM_NOTIF = "from_notif";
+    public static final  String QUERY_PARAM_FILE_PATH="filePath";
 
     private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 

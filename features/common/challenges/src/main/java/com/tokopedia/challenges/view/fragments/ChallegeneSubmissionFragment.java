@@ -479,7 +479,6 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         tncText = termsNCondition.getTerms();
         if (!TextUtils.isEmpty(tncText)) {
             tvTnc.setVisibility(View.VISIBLE);
-            //tvTnCText.setText(tncText);
         }
     }
 

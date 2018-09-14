@@ -266,7 +266,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
                 if (mainDataObject != null && mainDataObject.getSubmissionResults() != null && mainDataObject.getSubmissionResults().size() > 0) {
 
                     Intent detailsIntent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
-                    detailsIntent.putExtra("submissionsResult", mainDataObject.getSubmissionResults().get(0));
+                    detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, mainDataObject.getSubmissionResults().get(0));
                     getView().navigateToActivity(detailsIntent);
                 }else {
                     getView().setSnackBarErrorMessage("Please wait.. try after some time.");

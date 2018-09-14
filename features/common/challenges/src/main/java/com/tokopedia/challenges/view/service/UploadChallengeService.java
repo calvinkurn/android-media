@@ -30,15 +30,15 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public static final String UPLOAD_CHALLENGE_ID = "UploadChallengeID";
     public static final String UPLOAD_FILE_PATH = "UploadFilePath";
     public static final String UPLOAD_POST_ID = "Uploadpostid";
-    String GENERAL = "ANDROID_GENERAL_CHANNEL";
+    private String GENERAL = "ANDROID_GENERAL_CHANNEL";
 
 
     @Inject
     UploadChallengePresenterImpl presenter;
 
     UploadFingerprints uploadFingerprints;
-    String challengeID;
-    String uploadFilePath;
+    private String challengeID;
+    private String uploadFilePath;
     private NotificationManager notificationManager;
     private String postId;
 
@@ -131,8 +131,8 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         Notification notification = builder.setContentText(getString(R.string.submitted_success)).build();
         notificationManager.notify(TAG, notificationID, notification);
         Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
-        intent1.putExtra("submissionId", uploadFingerprints.getNewPostId());
-        intent1.putExtra("filePath", getUploadFilePath());
+        intent1.putExtra(Utils.QUERY_PARAM_SUBMISSION_ID, uploadFingerprints.getNewPostId());
+        intent1.putExtra(Utils.QUERY_PARAM_FILE_PATH, getUploadFilePath());
         sendBroadcast(intent1);
         stopSelf();
 

@@ -43,7 +43,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public static final String ACTION_UPLOAD_COMPLETE = "action.upload.complete";
     public static final String ACTION_UPLOAD_FAIL = "action.upload.fail";
     GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase;
-    String postId;
+    private String postId;
+
 
     @Inject
     public ChallengesSubmitPresenter(GetChallengeSettingUseCase mGetChallengeSettingUseCase, GetChallegeTermsUseCase mGetChallegeTermsUseCase, IntializeMultiPartUseCase mIntializeMultiPartUseCase, GetDetailsSubmissionsUseCase getDetailsSubmissionsUseCase) {
@@ -126,8 +127,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
                 } else {
                     Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
-                    intent1.putExtra("submissionId", fingerprints.getNewPostId());
-                    intent1.putExtra("filePath", filePath);
+                    intent1.putExtra(Utils.QUERY_PARAM_SUBMISSION_ID, fingerprints.getNewPostId());
+                    intent1.putExtra(Utils.QUERY_PARAM_FILE_PATH, filePath);
                     getView().sendBroadcast(intent1);
                 }
                 ChallengesCacheHandler.resetCache();
@@ -142,6 +143,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         getView().getContext().unregisterReceiver(receiver);
     }
 
+
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
@@ -154,7 +156,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                         ChallengesMoengageAnalyticsTracker.challengeSubmitStart(getView().getActivity(), getView().getChallengeTitle(),
                                 getView().getChallengeId(), postId);
                     }
-                    getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
+                    getView().saveLocalpath(intent.getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID), intent.getStringExtra(Utils.QUERY_PARAM_FILE_PATH));
                 } else if (intent.getAction() == ACTION_UPLOAD_FAIL) {
                     getView().setSnackBarErrorMessage("Submission Fails!");
                 }
@@ -236,8 +238,8 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 SubmissionResult submissionResult = res1.getData();
                 if (submissionResult != null) {
                     Intent intent = new Intent(getView().getActivity(), SubmitDetailActivity.class);
-                    intent.putExtra("submissionsResult", submissionResult);
-                    intent.putExtra("fromSubmission", true);
+                    intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, submissionResult);
+                    intent.putExtra(Utils.QUERY_PARAM_FROM_SUBMISSION, true);
                     getView().getActivity().startActivity(intent);
                     // ShareBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
                     getView().getActivity().finish();
