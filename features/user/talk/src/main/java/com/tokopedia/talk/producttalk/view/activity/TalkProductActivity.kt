@@ -44,8 +44,6 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return super.onOptionsItemSelected(item)
     }
 
-
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
