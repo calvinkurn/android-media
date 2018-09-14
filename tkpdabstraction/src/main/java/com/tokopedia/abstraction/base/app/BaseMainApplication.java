@@ -13,7 +13,13 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.DaggerBaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.AppModule;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 
 /**
  * Created by User on 10/24/2017.
@@ -41,7 +47,10 @@ public class BaseMainApplication extends MultiDexApplication {
 
     protected static final int INVALID = 1;
 
-    public static final String SIGNATURE = "1234";
+    public static final String SIGNATURE = "j7iaQ6MRmax40fHCokI4i6Hbn64=";
+
+
+
 
     protected static int checkAppSignature(Context context) {
 
@@ -63,7 +72,7 @@ public class BaseMainApplication extends MultiDexApplication {
 
                 final String currentSignature = Base64.encodeToString(md.digest(), Base64.DEFAULT);
 
-                Log.d("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature);
+                Log.i("REMOVE_ME", "Include this string as a value for SIGNATURE:" + currentSignature);
 
                 //compare signatures
 
