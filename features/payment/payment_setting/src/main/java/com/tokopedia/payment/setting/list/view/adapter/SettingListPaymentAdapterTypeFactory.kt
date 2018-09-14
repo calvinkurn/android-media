@@ -27,7 +27,7 @@ class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSett
     }
 
     override fun type(viewModel: EmptyModel?): Int {
-        return SettingListEmptyViewHolder.LAYOUT
+        return SettingListNetworkErrorHolder.LAYOUT
     }
 
     override fun type(viewModel: LoadingModel?): Int {
@@ -43,6 +43,8 @@ class SettingListPaymentAdapterTypeFactory(val paymentSettingRouter: PaymentSett
             return SettingListAddCardViewHolder(parent, listenerEmptyViewHolder)
         }else if(type == SettingListLoadingPaymentViewHolder.LAYOUT){
             return SettingListLoadingPaymentViewHolder(parent)
+        }else if(type == SettingListNetworkErrorHolder.LAYOUT){
+            return SettingListNetworkErrorHolder(parent, listenerEmptyViewHolder)
         }
         return super.createViewHolder(parent, type)
     }
