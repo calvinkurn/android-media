@@ -122,6 +122,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         super.onCreate();
         initReact();
 
+        checkAppSignature(this);
+
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
 
