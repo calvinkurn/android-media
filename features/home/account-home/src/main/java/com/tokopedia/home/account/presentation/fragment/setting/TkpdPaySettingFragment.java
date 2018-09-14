@@ -133,7 +133,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_TOKOCARD_ID:
                     RouteManager.route(getActivity(), String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW,
-                            AccountHomeUrl.TOKOCARD_URL));
+                            AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
                     break;
                 default:
                     break;

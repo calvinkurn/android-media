@@ -30,7 +30,7 @@ public class AccountHomeUrl {
     public static String REKSA_DANA_URL = WEB_DOMAIN + "reksa-dana/";
     public static String REKSA_DANA_TX_URL = WEB_DOMAIN + "reksa-dana/mobile-dashboard/list";
 
-    public static String TOKOCARD_URL = WEB_DOMAIN + "tokocard/";
+    public static String TOKOCARD_URL = "tokocard/";
 
     public static String EMAS_URL = WEB_DOMAIN + "emas/";
     public static String EMAS_TX_URL = WEB_DOMAIN + "emas/daftar-transaksi/";
