@@ -4,14 +4,18 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.design.bottomsheet.BottomSheetCallAction
+import android.widget.ImageView
+import android.widget.TextView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 
-class AttachedProductListAdapter(val data: List<TalkProductAttachmentViewModel>) : RecyclerView.Adapter<AttachedProductViewHolder>() {
+class AttachedProductListAdapter(var data: List<TalkProductAttachmentViewModel>) : RecyclerView
+.Adapter<AttachedProductViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedProductViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.talk_product_attachment, parent, false)
+                .inflate(R.layout.attached_product_item, parent, false)
         return AttachedProductViewHolder(itemView)
     }
 
@@ -20,13 +24,18 @@ class AttachedProductListAdapter(val data: List<TalkProductAttachmentViewModel>)
     }
 
     override fun onBindViewHolder(holder: AttachedProductViewHolder, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        holder.bind(data[position])
     }
 }
 
 class AttachedProductViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+    val image = itemView.findViewById<ImageView>(R.id.attach_product_chat_image)
+    val name = itemView.findViewById<TextView>(R.id.attach_product_chat_name)
+    val price = itemView.findViewById<TextView>(R.id.attach_product_chat_price)
 
     fun bind(element:TalkProductAttachmentViewModel) {
-
+        ImageHandler.loadImageRounded2(itemView.getContext(), image, element.productImage)
+        name.text = element.productName
+        price.text = element.productPrice
     }
 }

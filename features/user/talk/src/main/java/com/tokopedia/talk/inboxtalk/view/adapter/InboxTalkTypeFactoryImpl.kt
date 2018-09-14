@@ -14,7 +14,8 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
  * @author by nisie on 8/29/18.
  */
 
-class InboxTalkTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHolder.TalkItemListener,
+open class InboxTalkTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHolder
+.TalkItemListener,
                                private val talkCommentItemListener: CommentTalkViewHolder
                                .TalkCommentItemListener,
                                private val talkAttachmentItemClickListener: TalkProductAttachmentAdapter

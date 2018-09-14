@@ -28,6 +28,10 @@ public class DataProductResponse {
     @Expose
     private String productPrice;
 
+    @SerializedName("shop_name")
+    @Expose
+    private String shopName;
+
     public String getProductUrl() {
         return productUrl;
     }
@@ -74,5 +78,13 @@ public class DataProductResponse {
 
     public void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
     }
 }

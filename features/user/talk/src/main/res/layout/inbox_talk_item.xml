@@ -25,7 +25,7 @@
         />
 
     <View
-        android:id="@+id/separator"
+        android:id="@+id/item_separator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
         android:background="@color/grey_300"

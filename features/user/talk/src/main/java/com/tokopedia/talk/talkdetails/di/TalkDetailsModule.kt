@@ -2,7 +2,6 @@ package com.tokopedia.talk.talkdetails.di
 
 import android.content.Context
 import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor
@@ -12,11 +11,7 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.talk.inboxtalk.di.InboxTalkScope
 import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
-import com.tokopedia.talk.talkdetails.domain.mapper.DeleteTalkCommentsMapper
-import com.tokopedia.talk.talkdetails.domain.mapper.GetTalkCommentsMapper
-import com.tokopedia.talk.talkdetails.domain.usecase.DeleteTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.user.session.UserSession
@@ -29,7 +24,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import com.readystatesoftware.chuck.ChuckInterceptor
 import com.tokopedia.talk.common.data.TalkUrl
-import javax.inject.Scope
+import com.tokopedia.talk.inboxtalk.domain.mapper.GetTalkCommentsMapperNew
+import com.tokopedia.talk.talkdetails.domain.mapper.SendCommentMapper
+import com.tokopedia.talk.talkdetails.domain.usecase.SendCommentsUseCase
 
 /**
  * Created by Hendri on 03/09/18.
@@ -50,36 +47,36 @@ class TalkDetailsModule {
     @Provides
     @TalkDetailsScope
     fun provideTalkDetailsPresenter(getTalkCommentsUseCase: GetTalkCommentsUseCase,
-                                    deleteTalkCommentsUseCase: DeleteTalkCommentsUseCase) : TalkDetailsPresenter{
-        return TalkDetailsPresenter(getTalkCommentsUseCase,deleteTalkCommentsUseCase)
+                                    sendCommentsUseCase: SendCommentsUseCase) :
+            TalkDetailsPresenter{
+        return TalkDetailsPresenter(getTalkCommentsUseCase,sendCommentsUseCase)
+    }
+
+    @Provides
+    @TalkDetailsScope
+    fun provideSendCommentUseCase(detailsTalkApi: DetailTalkApi,
+                                  sendCommentsMapper: SendCommentMapper) : SendCommentsUseCase {
+        return SendCommentsUseCase(detailsTalkApi,sendCommentsMapper)
+    }
+
+    @Provides
+    @TalkDetailsScope
+    fun providesSendCommentMapper():SendCommentMapper{
+        return SendCommentMapper()
     }
 
     @Provides
     @TalkDetailsScope
     fun provideGetTalkCommentsUseCase(detailsTalkApi: DetailTalkApi,
-                                      getTalkCommentsMapper: GetTalkCommentsMapper)
+                                      getTalkCommentsMapper: GetTalkCommentsMapperNew)
             :GetTalkCommentsUseCase {
         return GetTalkCommentsUseCase(detailsTalkApi,getTalkCommentsMapper)
     }
 
     @Provides
     @TalkDetailsScope
-    fun provideGetTalkCommentsMapper():GetTalkCommentsMapper{
-        return GetTalkCommentsMapper()
-    }
-
-    @Provides
-    @TalkDetailsScope
-    fun provideDeleteTalkCommentsUseCase(detailsTalkApi: DetailTalkApi,
-                                         deleteTalkCommentsMapper: DeleteTalkCommentsMapper)
-            :DeleteTalkCommentsUseCase {
-        return DeleteTalkCommentsUseCase(detailsTalkApi,deleteTalkCommentsMapper)
-    }
-
-    @Provides
-    @TalkDetailsScope
-    fun provideDeleteTalkCommentsMapper():DeleteTalkCommentsMapper {
-        return DeleteTalkCommentsMapper()
+    fun provideGetTalkCommentsMapper():GetTalkCommentsMapperNew{
+        return GetTalkCommentsMapperNew()
     }
 
     @Provides

@@ -1,18 +1,18 @@
 package com.tokopedia.talk.talkdetails.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.talk.talkdetails.domain.usecase.DeleteTalkCommentsUseCase
+import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
+import com.tokopedia.talk.talkdetails.domain.usecase.SendCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
-import com.tokopedia.talk.talkdetails.view.subscriber.DeleteTalkCommentSubscriber
 import com.tokopedia.talk.talkdetails.view.subscriber.GetTalkCommentsSubscriber
-import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailsHeaderProductViewModel
+import com.tokopedia.talk.talkdetails.view.subscriber.SendCommentSubscriber
 
 /**
  * Created by Hendri on 28/08/18.
  */
 class TalkDetailsPresenter(private val getTalkComments:GetTalkCommentsUseCase,
-                           private val deleteTalkCommentsUseCase: DeleteTalkCommentsUseCase):
+                           private val sendCommentsUseCase: SendCommentsUseCase):
                                BaseDaggerPresenter<TalkDetailsContract.View>(),
                                TalkDetailsContract.Presenter {
 
@@ -25,17 +25,22 @@ class TalkDetailsPresenter(private val getTalkComments:GetTalkCommentsUseCase,
         view.goToReportTalkPage(id,shopId,productId)
     }
 
-    override fun deleteTalkComment(id: String) {
-        deleteTalkCommentsUseCase.execute(DeleteTalkCommentsUseCase.getParameters(id),
-                                          DeleteTalkCommentSubscriber(this,view))
+    override fun sendComment(talkId:String, productId: String, message:String,
+                             attachedProduct:List<TalkProductAttachmentViewModel>,
+                             userId:String) {
+        sendCommentsUseCase.execute(SendCommentsUseCase.getParameters(
+                talkId=talkId,
+                productId = productId,
+                message = message,
+                userId = userId), SendCommentSubscriber(this,view))
     }
 
-    override fun sendTalkComment(id: String, attachedHeaderProduct: List<TalkDetailsHeaderProductViewModel>?, message: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun deleteTalkComment(id: String) {
+
     }
 
     override fun onDestroy() {
         getTalkComments.unsubscribe()
-        deleteTalkCommentsUseCase.unsubscribe()
+        sendCommentsUseCase.unsubscribe()
     }
 }
