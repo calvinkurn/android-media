@@ -46,7 +46,7 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextView.Small.BlackSecondary"
+                style="@style/TextView.Small.BlackPrimary"
                 android:ellipsize="end"
                 android:lineSpacingExtra="5sp"
                 android:maxLines="2"
