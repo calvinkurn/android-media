@@ -25,6 +25,7 @@ import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentContr
 import com.tokopedia.payment.setting.list.view.presenter.SettingListPaymentPresenter
 import com.tokopedia.payment.setting.list.view.adapter.SettingListEmptyViewHolder
 import com.tokopedia.payment.setting.list.view.adapter.SettingListPaymentAdapterTypeFactory
+import kotlinx.android.synthetic.main.fragment_setting_list_payment.*
 import kotlinx.android.synthetic.main.fragment_setting_list_payment.view.*
 
 
@@ -99,6 +100,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
     }
 
     override fun showGetListError(throwable: Throwable?) {
+        hideAuthPaymentView()
         super.showGetListError(throwable)
     }
 
@@ -108,6 +110,7 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
             list.add(SettingListAddCardModel())
         }
         super.renderList(list)
+        showAuthPaymentView()
     }
 
     override fun initInjector() {
@@ -126,6 +129,19 @@ class SettingListPaymentFragment : BaseListFragment<SettingListPaymentModel, Set
 
     override fun loadData(page: Int) {
         settingListPaymentPresenter.getCreditCardList(resources)
+        hideAuthPaymentView()
+    }
+
+    private fun hideAuthPaymentView() {
+        counterCreditCard?.visibility = View.GONE
+        dividerListPayment?.visibility = View.GONE
+        authenticateCreditCard?.visibility = View.GONE
+    }
+
+    private fun showAuthPaymentView() {
+        counterCreditCard?.visibility = View.VISIBLE
+        dividerListPayment?.visibility = View.VISIBLE
+        authenticateCreditCard?.visibility = View.VISIBLE
     }
 
     companion object {
