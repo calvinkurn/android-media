@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
-import com.tokopedia.payment.setting.add.AddCreditCardPresenter
 import com.tokopedia.payment.setting.add.domain.AddCreditCardUseCase
+import com.tokopedia.payment.setting.add.view.presenter.AddCreditCardPresenter
 import com.tokopedia.payment.setting.authenticate.di.AuthenticateCCScope
 import com.tokopedia.user.session.UserSession
 import dagger.Module
@@ -21,7 +21,7 @@ class AddCreditCardModule {
 
     @AddCreditCardScope
     @Provides
-    fun providePresenter(addCreditCardUseCase: AddCreditCardUseCase) : AddCreditCardPresenter{
+    fun providePresenter(addCreditCardUseCase: AddCreditCardUseCase) : AddCreditCardPresenter {
         return AddCreditCardPresenter(addCreditCardUseCase)
     }
 
