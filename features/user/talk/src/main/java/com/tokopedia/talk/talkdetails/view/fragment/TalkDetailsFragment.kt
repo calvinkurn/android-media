@@ -193,7 +193,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     fun setAttachedProduct(products:ArrayList<TalkProductAttachmentViewModel>){
         attachedProductListAdapter.data = products
         attachedProductListAdapter.notifyDataSetChanged()
-        if(attachedProductListAdapter.data.size == 0)
+        if(attachedProductListAdapter.data.isEmpty())
             attachedProductList.visibility = View.GONE
         else
             attachedProductList.visibility = View.VISIBLE
