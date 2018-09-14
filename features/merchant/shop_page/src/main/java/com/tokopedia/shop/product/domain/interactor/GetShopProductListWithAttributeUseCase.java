@@ -79,19 +79,10 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                 .concatMap(new Func1<RequestParams, Observable<? extends List<ShopProductViewModel>>>() {
                     @Override
                     public Observable<? extends List<ShopProductViewModel>> call(RequestParams requestParams) {
-                        return createObservable(requestParams).flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<List<ShopProductViewModel>>>() {
+                        return createObservable(requestParams).map(new Func1<PagingList<ShopProductViewModel>, List<ShopProductViewModel>>() {
                             @Override
-                            public Observable<List<ShopProductViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
-//                                return Observable.just(shopProductViewModelPagingList.getList())
-//                                        .flatMap(new Func1<List<ShopProductViewModel>, Observable<ShopProductViewModel>>() {
-//                                            @Override
-//                                            public Observable<ShopProductViewModel> call(List<ShopProductViewModel> shopProductViewModelList) {
-//                                                return Observable.from(shopProductViewModelList);
-//                                            }
-//                                        })
-//                                        .take(ShopPageConstant.ETALASE_HIGHLIGHT_COUNT)
-//                                        .toList();
-                                return Observable.just(shopProductViewModelPagingList.getList());
+                            public List<ShopProductViewModel> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
+                                return shopProductViewModelPagingList.getList();
                             }
                         });
                     }
