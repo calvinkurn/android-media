@@ -9,7 +9,7 @@
         android:supportsRtl="true">
 
         <activity android:name=".feature.dashboard.view.activity.DashboardActivity"
-            android:label="@string/title_dashboard"
+            android:label="@string/title_af_dashboard"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.White" />

@@ -21,7 +21,7 @@
 
                 <FrameLayout
                     android:id="@+id/layout_saldo"
-                    android:background="@drawable/bg_saldo"
+                    android:background="@drawable/bg_af_saldo"
                     android:layout_width="match_parent"
                     android:padding="@dimen/dp_16"
                     android:layout_height="wrap_content">
@@ -54,7 +54,7 @@
                             android:layout_marginTop="@dimen/dp_8"
                             android:textSize="@dimen/sp_14"
                             android:fontFamily="sans-serif"
-                            android:text="@string/title_dashboard_saldo"/>
+                            android:text="@string/title_af_dashboard_saldo"/>
 
                     </LinearLayout>
                 </FrameLayout>
@@ -114,7 +114,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_password_hint_hidden_eye_opened"
+                            android:src="@drawable/ic_af_dashboard_click_grey"
                             />
 
                         <TextView
@@ -124,7 +124,7 @@
                             android:layout_gravity="center"
                             android:textSize="@dimen/sp_12"
                             android:textColor="@color/font_black_disabled_38"
-                            android:text="@string/title_profil_dilihat"/>
+                            android:text="@string/title_klik_produk"/>
 
                     </LinearLayout>
 
@@ -139,7 +139,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:layout_weight="1"
-                            android:src="@drawable/ic_password_hint_hidden_eye_opened"
+                            android:src="@drawable/ic_af_dashboard_cart"
                             />
 
                         <TextView
@@ -149,7 +149,7 @@
                             android:layout_gravity="center"
                             android:textSize="@dimen/sp_12"
                             android:textColor="@color/font_black_disabled_38"
-                            android:text="@string/title_profil_dilihat"/>
+                            android:text="@string/title_produk_dibeli"/>
 
                     </LinearLayout>
 
