@@ -56,8 +56,8 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     private Purchase getTrackignData(OrderData orderData) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
-        purchase.setEvent(PurchaseTracking.EVENT_CATEGORY);
-        purchase.setEvent(PurchaseTracking.EVENT_LABEL);
+        purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
+        purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));

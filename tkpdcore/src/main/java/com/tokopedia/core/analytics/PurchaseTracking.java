@@ -10,14 +10,14 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String TRANSACTION = "transaction";
     public static final String PURCHASE = "purchase";
     public static final String EVENT = "event";
-    public static final String EVENT_CATEGORY = "eventCategory";
+    public static final String EVENT_CATEGORY = "order complete";
     public static final String PAYMENT_ID = "payment_id";
     public static final String PAYMENT_STATUS = "payment_status";
     public static final String PAYMENT_TYPE = "payment_type";
     public static final String SHOP_ID = "shop_id";
     public static final String LOGISTIC_TYPE = "logistic_type";
     public static final String ECOMMERCE = "ecommerce";
-    public static final String EVENT_LABEL = "eventLabel";
+    public static final String EVENT_LABEL = "";
 
     public static final String USER_ID = "userId";
 
