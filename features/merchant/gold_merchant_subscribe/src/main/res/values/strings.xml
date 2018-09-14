@@ -4,6 +4,8 @@
     <string name="gm_membership_title">Keanggotaan</string>
     <string name="gm_extend_membership">Perpanjang Keanggotaan</string>
     <string name="gm_auto_extend">Perpanjang Otomatis</string>
+    <string name="gm_auto_extend_package">Paket Perpanjangan</string>
+    <string name="gm_choose_package">Pilih Paket</string>
     <string name="gm_learn_more">Pelajari Selengkapnya</string>
     <string name="gm_home_subtitle">Nikmati beragam keistimewaan untuk toko Anda</string>
     <string name="gmsubscribe_home_button_finish">Pilih Paket Berlangganan</string>

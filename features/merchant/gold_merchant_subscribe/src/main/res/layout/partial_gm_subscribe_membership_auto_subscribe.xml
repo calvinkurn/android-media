@@ -43,7 +43,7 @@
                 android:id="@+id/labelExtendPacket"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:lv_title="@string/gm_auto_extend"
+                app:lv_title="@string/gm_auto_extend_package"
                 app:lv_title_text_size="14sp"
                 app:lv_content_text_size="14sp"
                 app:lv_content_color="@color/tkpd_main_green"

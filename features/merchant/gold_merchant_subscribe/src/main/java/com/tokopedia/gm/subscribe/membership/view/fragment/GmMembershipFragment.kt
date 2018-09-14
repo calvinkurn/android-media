@@ -53,13 +53,13 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         tvSave.run {
             text = getString(R.string.save)
             setOnClickListener {
+                if(!swAutoExtend.isChecked) subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
                 presenter.setMembershipData(subscriptionTypeSelected)
             }}
 
 
         swAutoExtend.setOnCheckedChangeListener { _, bool ->
             showAutoExtendLayout(bool)
-            if(!bool) subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
         }
 
         btnExtend.setOnClickListener { goToProductPage() }
@@ -70,8 +70,15 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
             goToInfoGmPage()
         }
 
-        showAutoExtendLayout(false)
+        initView()
         getMembershipData()
+    }
+
+    private fun initView(){
+        showAutoExtendLayout(false)
+        if(subscriptionTypeSelected == DEFAULT_SUBSCRIPTION_TYPE){
+            labelExtendPacket.setContent(getString(R.string.gm_choose_package))
+        }
     }
 
     private fun goToProductPage(){
@@ -105,7 +112,9 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         val expiredDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.expired_date)
         val autoWithdrawalDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.auto_withdrawal_date)
         tvExpiredDate.text = getString(R.string.gmsubscribe_expired_date, expiredDate)
-        labelExtendPacket.setContent(membershipData.subscription.product_time_range_fmt + " " + membershipData.subscription.price_fmt)
+        if(subscriptionTypeSelected != DEFAULT_SUBSCRIPTION_TYPE){
+            labelExtendPacket.setContent(membershipData.subscription.product_time_range_fmt + " " + membershipData.subscription.price_fmt)
+        }
 
         tvAutoExtendDate.text = MethodChecker.fromHtml(getString(R.string.gmsubscribe_membership_auto_extend_date, expiredDate))
         val withdrawalDate = "$autoWithdrawalDate - $expiredDate"

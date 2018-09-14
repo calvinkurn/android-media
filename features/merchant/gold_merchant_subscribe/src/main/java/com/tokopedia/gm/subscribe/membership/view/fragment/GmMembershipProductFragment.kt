@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.core.analytics.UnifyTracking
 import com.tokopedia.gm.subscribe.R
 import com.tokopedia.gm.subscribe.membership.view.adapter.GmMembershipProductAdapter
+import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.DEFAULT_SUBSCRIPTION_TYPE
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_NAME
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_PRICE
 import com.tokopedia.gm.subscribe.membership.view.fragment.GmMembershipFragment.Companion.EXTRA_SUBSCRIPTION_TYPE
@@ -74,7 +75,7 @@ class GmMembershipProductFragment : GmProductFragment(){
     }
 
     override fun confirmSelection() {
-        if (currentSelectedProductId != UNDEFINED_DEFAULT_SELECTED) {
+        if (currentSelectedProductId != DEFAULT_SUBSCRIPTION_TYPE) {
             UnifyTracking.eventClickSubscribeGoldMerchant(adapter.productSelection)
             setReturn()
         } else {
