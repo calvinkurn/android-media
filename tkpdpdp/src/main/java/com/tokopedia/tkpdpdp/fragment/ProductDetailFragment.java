@@ -49,7 +49,6 @@ import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
-import com.tokopedia.tkpdpdp.listener.WishlistViewCountListener;
 import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
 import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
@@ -199,7 +198,7 @@ import static com.tokopedia.topads.sdk.domain.TopAdsParams.SRC_PDP_VALUE;
  */
 @RuntimePermissions
 public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetailPresenter>
-        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener, WishlistViewCountListener {
+        implements ProductDetailView, TopAdsItemClickListener, TopAdsListener, TopAdsItemImpressionListener, ITransactionAnalyticsProductDetailPage, WishListActionListener {
 
     private static final int FROM_COLLAPSED = 0;
     private static final int FROM_EXPANDED = 1;
@@ -350,7 +349,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     protected void initialPresenter() {
-        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this, this);
+        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this);
         this.presenter.initGetRateEstimationUseCase();
     }
 
@@ -2187,6 +2186,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
             CountDrawable badge = new CountDrawable(context);
             if(count > 99) {
+                badge.setCount(getString(R.string.pdp_label_cart_count_max));
                 badge.setCount(getString(R.string.pdp_label_cart_count_max));
             } else {
                 badge.setCount(Integer.toString(count));

@@ -83,12 +83,8 @@ import com.tokopedia.tkpdpdp.dialog.DialogToEtalase;
 import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
 import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesEstimationModel;
 import com.tokopedia.tkpdpdp.estimasiongkir.domain.interactor.GetRateEstimationUseCase;
-import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.fragment.ProductDetailFragment;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
-import com.tokopedia.tkpdpdp.listener.WishlistViewCountListener;
-import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
-import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRepositoryImpl;
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource;
@@ -144,7 +140,6 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     private static final String OFFICIAL_STORE_TYPE = "os";
     private static final String MERCHANT_TYPE = "merchant";
     private final WishListActionListener wishListActionListener;
-    private final WishlistViewCountListener wishlistViewCountListener;
 
     private GetWishlistCountUseCase getWishlistCountUseCase;
 
@@ -163,10 +158,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     public ProductDetailPresenterImpl(
             GetWishlistCountUseCase getWishlistCountUseCase,
             ProductDetailView viewListener,
-            WishListActionListener wishListActionListener,
-            WishlistViewCountListener wishlistViewCountListener) {
+            WishListActionListener wishListActionListener) {
         this.viewListener = viewListener;
-        this.wishlistViewCountListener = wishlistViewCountListener;
         this.wishListActionListener = wishListActionListener;
         this.retrofitInteractor = new RetrofitInteractorImpl();
         this.cacheInteractor = new CacheInteractorImpl();
@@ -1395,7 +1388,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
 
         @Override
         public void onError(Throwable e) {
-
+            viewListener.onWishlistCountLoaded("-");
         }
 
         @Override
@@ -1407,7 +1400,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
                 wishlistCountText = String.valueOf(wishlistCount);
             }
 
-            wishlistViewCountListener.onWishlistCountLoaded(wishlistCountText);
+            viewListener.onWishlistCountLoaded(wishlistCountText);
         }
     }
 }
