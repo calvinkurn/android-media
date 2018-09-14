@@ -129,9 +129,11 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             button.setOnClickListener(view -> {
                 String newUri = actionButton.uri();
                 if (newUri.startsWith(KEY_URI)) {
-                    Uri url = Uri.parse(newUri);
-                    newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
-                    newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
+                    if(newUri.contains(KEY_URI_PARAMETER)) {
+                        Uri url = Uri.parse(newUri);
+                        newUri = newUri.replace(url.getQueryParameter(KEY_URI_PARAMETER), "");
+                        newUri = newUri.replace(KEY_URI_PARAMETER_EQUAL, "");
+                    }
                     RouteManager.route(context, newUri);
                 } else if (newUri != null && !newUri.equals("")) {
                     TransactionPurchaseRouter.startWebViewActivity(context, newUri);

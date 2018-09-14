@@ -2,6 +2,7 @@ package com.tokopedia.reputation.common.data.repository;
 
 import com.tokopedia.reputation.common.data.source.ReputationCommonDataSource;
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed;
+import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeedV2;
 import com.tokopedia.reputation.common.domain.repository.ReputationCommonRepository;
 
 import rx.Observable;
@@ -20,6 +21,11 @@ public class ReputationCommonRepositoryImpl implements ReputationCommonRepositor
     @Override
     public Observable<ReputationSpeed> getStatisticSpeed(String shopId) {
         return reputationCommonDataSource.getStatisticSpeed(shopId);
+    }
+
+    @Override
+    public Observable<ReputationSpeedV2> getStatisticSpeedDaily(String shopId) {
+        return reputationCommonDataSource.getStatisticSpeedDaily(shopId);
     }
 
 }

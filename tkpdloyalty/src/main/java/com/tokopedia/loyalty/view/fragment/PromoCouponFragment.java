@@ -34,6 +34,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST;
+import static com.tokopedia.abstraction.constant.IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT;
+
 
 /**
  * @author anggaprasetiyo on 29/11/17.
@@ -237,6 +240,17 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void receiveResult(CouponViewModel couponViewModel) {
+        if (getArguments().getString(PLATFORM_KEY, "")
+                .equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    listener.sendAnalyticsOnCouponItemClickedCartListPageSuccess();
+                    break;
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    listener.sendAnalyticsOnCouponItemClickedCartShipmentPageSuccess();
+                    break;
+            }
+        }
         listener.onCouponSuccess(couponViewModel.getCode(),
                 couponViewModel.getMessage(),
                 couponViewModel.getAmount(),
@@ -268,6 +282,17 @@ public class PromoCouponFragment extends BasePresenterFragment
 
     @Override
     public void couponError() {
+        if (getArguments().getString(PLATFORM_KEY, "")
+                .equalsIgnoreCase(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            switch (getArguments().getString(PLATFORM_PAGE_KEY, "")) {
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_LIST:
+                    listener.sendAnalyticsOnCouponItemClickedCartListPageFailed();
+                    break;
+                case IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT:
+                    listener.sendAnalyticsOnCouponItemClickedCartShipmentPageFailed();
+                    break;
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -503,9 +528,17 @@ public class PromoCouponFragment extends BasePresenterFragment
 
         void sendAnalyticsOnCouponItemClickedCartListPage();
 
+        void sendAnalyticsOnCouponItemClickedCartListPageSuccess();
+
+        void sendAnalyticsOnCouponItemClickedCartListPageFailed();
+
         void sendAnalyticsOnCouponItemClicked(String couponName);
 
         void sendAnalyticsOnCouponItemClickedCartShipmentPage();
+
+        void sendAnalyticsOnCouponItemClickedCartShipmentPageSuccess();
+
+        void sendAnalyticsOnCouponItemClickedCartShipmentPageFailed();
 
         void sendAnalyticsImpressionCouponEmptyCartListPage();
 

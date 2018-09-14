@@ -12,10 +12,10 @@ import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductMapper;
 import com.tokopedia.gm.featured.domain.mapper.GMFeaturedProductSubmitMapper;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepository;
 import com.tokopedia.gm.featured.repository.GMFeaturedProductRepositoryImpl;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.seller.shop.common.data.source.ShopInfoDataSource;
-import com.tokopedia.seller.shop.common.data.source.cloud.api.ShopApi;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 
 import dagger.Module;
 import dagger.Provides;
