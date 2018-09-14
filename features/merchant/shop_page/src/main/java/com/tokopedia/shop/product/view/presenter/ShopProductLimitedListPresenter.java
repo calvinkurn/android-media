@@ -109,11 +109,11 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
                                         boolean isOfficialStore,
                                         List<ShopEtalaseViewModel> shopEtalaseViewModelList) {
         List<RequestParams> requestParamList = new ArrayList<>();
-        int serverPerPage = (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT % 2 == 0) ? ShopPageConstant.ETALASE_HIGHLIGHT_COUNT :
-                (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT + 1);
+//        int serverPerPage = (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT % 2 == 0) ? ShopPageConstant.ETALASE_HIGHLIGHT_COUNT :
+//                (ShopPageConstant.ETALASE_HIGHLIGHT_COUNT + 1);
         for (ShopEtalaseViewModel shopEtalaseViewModel : shopEtalaseViewModelList) {
             ShopProductRequestModel shopProductRequestModel = generateShopProductRequestModel(shopId, isShopClosed,
-                    isOfficialStore, 1, serverPerPage,
+                    isOfficialStore, 1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
                     shopEtalaseViewModel.getEtalaseId(), shopEtalaseViewModel.isUseAce());
             requestParamList.add(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel));
         }

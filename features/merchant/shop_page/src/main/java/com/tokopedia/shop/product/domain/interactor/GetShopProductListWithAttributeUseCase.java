@@ -82,15 +82,16 @@ public class GetShopProductListWithAttributeUseCase extends BaseGetShopProductAt
                         return createObservable(requestParams).flatMap(new Func1<PagingList<ShopProductViewModel>, Observable<List<ShopProductViewModel>>>() {
                             @Override
                             public Observable<List<ShopProductViewModel>> call(PagingList<ShopProductViewModel> shopProductViewModelPagingList) {
-                                return Observable.just(shopProductViewModelPagingList.getList())
-                                        .flatMap(new Func1<List<ShopProductViewModel>, Observable<ShopProductViewModel>>() {
-                                            @Override
-                                            public Observable<ShopProductViewModel> call(List<ShopProductViewModel> shopProductViewModelList) {
-                                                return Observable.from(shopProductViewModelList);
-                                            }
-                                        })
-                                        .take(ShopPageConstant.ETALASE_HIGHLIGHT_COUNT)
-                                        .toList();
+//                                return Observable.just(shopProductViewModelPagingList.getList())
+//                                        .flatMap(new Func1<List<ShopProductViewModel>, Observable<ShopProductViewModel>>() {
+//                                            @Override
+//                                            public Observable<ShopProductViewModel> call(List<ShopProductViewModel> shopProductViewModelList) {
+//                                                return Observable.from(shopProductViewModelList);
+//                                            }
+//                                        })
+//                                        .take(ShopPageConstant.ETALASE_HIGHLIGHT_COUNT)
+//                                        .toList();
+                                return Observable.just(shopProductViewModelPagingList.getList());
                             }
                         });
                     }
