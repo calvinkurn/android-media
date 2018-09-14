@@ -83,7 +83,6 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
         String url = ChallengesUrl.INDI_DOMAIN + ChallengesUrl.Me.SUBMISSIONS + "&status=all&start=" + start + "&size=" + size;
         if (ChallengesCacheHandler.MY_SUBMISSTIONS_LIST_CACHE) {
             headers.put("Cache-Control", "max-age=0");
-            Utils.FROMNOCACHE = false;
             ChallengesCacheHandler.setMySubmissionsListCache();
         }
 

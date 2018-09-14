@@ -113,7 +113,7 @@ public class Utils {
 
 
     public static RequestBody generateImageRequestBodySlice(String path, int start, int end) {
-        return RequestBody.create(MediaType.parse("image/*"), sliceFile(path, start, end));
+        return RequestBody.create(MediaType.parse("multipart/form-data; charset=UTF-8"), sliceFile(path, start, end));
     }
 
     public static MultipartBody.Part generateRequestImages(String name, String path) {

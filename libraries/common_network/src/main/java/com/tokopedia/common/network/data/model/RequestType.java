@@ -14,5 +14,7 @@ public enum RequestType {
 
     POST_MULTIPART, /* Represent Multipart request and invoke via HTTP Post */
 
-    PUT_MULTIPART /* Represent Multipart request and invoke via HTTP Put */
+    PUT_MULTIPART, /* Represent Multipart request and invoke via HTTP Put */
+
+    PUT_REQUEST_BODY /* Represent requestbody and invoke via HTTP Put */
 }

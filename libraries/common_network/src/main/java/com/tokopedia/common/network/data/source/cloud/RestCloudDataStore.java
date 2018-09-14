@@ -79,6 +79,12 @@ public class RestCloudDataStore implements RestDataStore {
                     return putPartMap(request);
 
                 }
+            case PUT_REQUEST_BODY:
+                if (request.getBody() instanceof RequestBody) {
+                    return putRequestBody(request);
+                } else {
+                    throw new IllegalArgumentException("RequestBody must have params");
+                }
             default:
                 return doGet(request);
         }
@@ -200,6 +206,11 @@ public class RestCloudDataStore implements RestDataStore {
                 .map(response -> processData(request, response));
     }
 
+    private Observable<RestResponseIntermediate> putRequestBody(RestRequest request) {
+        return mApi.putRequestBody(request.getUrl(), (RequestBody) request.getBody(), request.getHeaders())
+                .map(response -> processData(request, response));
+    }
+
     private Observable<RestResponseIntermediate> putPartMap(RestRequest request) {
         return mApi.putMultipart(request.getUrl(), (Map<String, RequestBody>) request.getBody(), request.getQueryParams(), request.getHeaders())
                 .map(response -> processData(request, response));
@@ -266,7 +277,7 @@ public class RestCloudDataStore implements RestDataStore {
         UserSession userSession = new UserSession(context.getApplicationContext());
         FlowManager.initModule(CommonNetworkGeneratedDatabaseHolder.class);
         TkpdOkHttpBuilder okkHttpBuilder = new TkpdOkHttpBuilder(context, new OkHttpClient.Builder());
-        if(interceptors != null) {
+        if (interceptors != null) {
             okkHttpBuilder.addInterceptor(new FingerprintInterceptor((NetworkRouter) context.getApplicationContext(), userSession));
             for (Interceptor interceptor : interceptors) {
                 if (interceptor == null) {
