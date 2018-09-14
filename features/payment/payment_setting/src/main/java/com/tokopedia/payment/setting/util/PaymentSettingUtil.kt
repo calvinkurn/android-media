@@ -54,7 +54,7 @@ fun SettingListPaymentModel.getBackgroundAssets(paymentSettingRouter : PaymentSe
 fun SettingListPaymentModel.getBackgroundAssetsLarge(paymentSettingRouter : PaymentSettingRouter?,
                                                 context : Context?): String {
     val resourceUrl = paymentSettingRouter?.getResourceUrlAssetPayment()
-    val assetName = getBackgroundResource()
+    val assetName = getBackgroundResourceLarge()
     val density = DisplayMetricUtils.getScreenDensity(context)
 
     return String.format(resourceUrl + FORMAT_URL_IMAGE, assetName, density, assetName)
