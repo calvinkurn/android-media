@@ -6,10 +6,10 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.bumptech.glide.Glide;
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantOption;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.base.view.adapter.viewholder.BaseItemPickerCacheViewHolder;
 import com.tokopedia.seller.common.utils.CircleTransform;
-import com.tokopedia.seller.product.variant.data.model.variantbycat.ProductVariantOption;
 
 /**
  * @author normansyahputa on 5/26/17.

@@ -23,9 +23,10 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.home.account.R;
+import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.di.component.AccountHomeComponent;
 import com.tokopedia.home.account.presentation.AccountHome;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.home.account.presentation.adapter.AccountFragmentItem;
 import com.tokopedia.home.account.presentation.adapter.AccountHomePagerAdapter;
@@ -54,6 +55,8 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     private Toolbar toolbar;
     private ImageButton menuNotification;
     private int counterNumber = 0;
+
+    private AccountAnalytics accountAnalytics;
 
     public static Fragment newInstance() {
         return new AccountHomeFragment();
@@ -129,6 +132,7 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
     }
 
     private void initView(View view) {
+        accountAnalytics = new AccountAnalytics(getActivity());
         setToolbar(view);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         tabLayout = view.findViewById(R.id.tab_home_account);
@@ -145,8 +149,10 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
 
         menuSettings.setOnClickListener(v -> startActivity(GeneralSettingActivity.createIntent
                 (getActivity())));
-        menuNotification.setOnClickListener(v -> RouteManager.route(getActivity(), ApplinkConst
-                .NOTIFICATION));
+        menuNotification.setOnClickListener(v -> {
+            accountAnalytics.eventTrackingNotification();
+            RouteManager.route(getActivity(), ApplinkConst.NOTIFICATION);
+        });
 
         if (getActivity() instanceof AppCompatActivity) {
             ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
@@ -199,6 +205,11 @@ public class AccountHomeFragment extends TkpdBaseV4Fragment implements
         if (currentFragment != null && currentFragment instanceof CustomerView) {
             ((BaseAccountView) currentFragment).showError(message);
         }
+    }
+
+    @Override
+    public void showErroNoConnection() {
+        showError(getString(R.string.error_no_internet_connection));
     }
 
     @Override

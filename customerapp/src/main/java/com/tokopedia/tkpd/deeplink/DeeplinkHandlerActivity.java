@@ -9,8 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
+import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModuleLoader;
 import com.tokopedia.contact_us.applink.CustomerCareApplinkModule;
@@ -60,6 +63,8 @@ import com.tokopedia.notifcenter.applink.NotifCenterApplinkModule;
 import com.tokopedia.notifcenter.applink.NotifCenterApplinkModuleLoader;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
+import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -68,8 +73,11 @@ import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
+import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -97,6 +105,7 @@ import io.branch.referral.BranchError;
 
 @DeepLinkHandler({
         ConsumerDeeplinkModule.class,
+        ProductAddDeeplinkModule.class,
         CoreDeeplinkModule.class,
         InboxDeeplinkModule.class,
         SellerApplinkModule.class,
@@ -130,16 +139,20 @@ import io.branch.referral.BranchError;
         HomeNavigationApplinkModule.class,
         AccountHomeApplinkModule.class,
         InstantLoanAppLinkModule.class,
-        RecentViewApplinkModule.class
+        RecentViewApplinkModule.class,
+        ChangePasswordDeeplinkModule.class,
+        SettingBankApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
 
+    private static ApplinkDelegate applinkDelegate;
 
-
-    public static DeepLinkDelegate getDelegateInstance() {
-        return new DeepLinkDelegate(
+    public static ApplinkDelegate getApplinkDelegateInstance() {
+        if(applinkDelegate == null) {
+            applinkDelegate = new TkpdApplinkDelegate(
                 new ConsumerDeeplinkModuleLoader(),
+                new ProductAddDeeplinkModuleLoader(),
                 new CoreDeeplinkModuleLoader(),
                 new InboxDeeplinkModuleLoader(),
                 new SellerApplinkModuleLoader(),
@@ -173,15 +186,20 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new HomeNavigationApplinkModuleLoader(),
                 new AccountHomeApplinkModuleLoader(),
                 new InstantLoanAppLinkModuleLoader(),
-                new RecentViewApplinkModuleLoader()
-        );
+                new RecentViewApplinkModuleLoader(),
+                new ChangePasswordDeeplinkModuleLoader(),
+                new SettingBankApplinkModuleLoader()
+            );
+        }
+
+        return applinkDelegate;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initBranchSession();
-        DeepLinkDelegate deepLinkDelegate = getDelegateInstance();
+        ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();

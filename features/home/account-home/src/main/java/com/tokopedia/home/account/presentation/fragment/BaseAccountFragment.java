@@ -13,7 +13,7 @@ import com.tokopedia.home.account.AccountConstants;
 
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
 import com.tokopedia.home.account.presentation.activity.TkpdPaySettingActivity;
 import com.tokopedia.home.account.presentation.listener.AccountItemListener;
 import com.tokopedia.home.account.presentation.view.SeeAllView;
@@ -24,13 +24,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
 
-import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
-import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
-import static com.tokopedia.home.account.AccountConstants.Analytics.MY_COUPON;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PENJUAL;
-import static com.tokopedia.home.account.AccountConstants.Analytics.PROFILE;
-import static com.tokopedia.home.account.AccountConstants.Analytics.TOKOPOINTS;
+import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 import static com.tokopedia.home.account.AccountConstants.TOP_SELLER_APPLICATION_PACKAGE;
 
 /**
@@ -70,8 +64,8 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
                     (getContext());
         } else if (applink.equals(AccountConstants.Navigation.TRAIN_ORDER_LIST)
                 && getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
-                    (getContext());
+            getActivity().startActivity(((AccountHomeRouter) getContext().getApplicationContext()).getTrainOrderListIntent
+                    (getContext()));
         } else if (applink.equals(AccountConstants.Navigation.FEATURED_PRODUCT)
             && getContext().getApplicationContext() instanceof AccountHomeRouter) {
             Intent launchIntent = getContext().getPackageManager()

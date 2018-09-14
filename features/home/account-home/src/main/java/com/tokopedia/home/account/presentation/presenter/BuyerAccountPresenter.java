@@ -3,12 +3,10 @@ package com.tokopedia.home.account.presentation.presenter;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.domain.GetBuyerAccountUseCase;
 import com.tokopedia.home.account.presentation.BuyerAccount;
-import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.home.account.presentation.subscriber.GetBuyerAccountSubscriber;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.HashMap;
-
-import rx.Subscriber;
 
 /**
  * @author okasurya on 7/17/18.
@@ -30,24 +28,7 @@ public class BuyerAccountPresenter implements BuyerAccount.Presenter {
         requestParams.putString(AccountConstants.QUERY, query);
         requestParams.putObject(AccountConstants.VARIABLES, new HashMap<>());
 
-        getBuyerAccountUseCase.execute(requestParams, new Subscriber<BuyerViewModel>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                view.showError(throwable.getLocalizedMessage());
-                view.hideLoading();
-            }
-
-            @Override
-            public void onNext(BuyerViewModel buyerViewModel) {
-                view.loadBuyerData(buyerViewModel);
-                view.hideLoading();
-            }
-        });
+        getBuyerAccountUseCase.execute(requestParams, new GetBuyerAccountSubscriber(view));
     }
 
     @Override

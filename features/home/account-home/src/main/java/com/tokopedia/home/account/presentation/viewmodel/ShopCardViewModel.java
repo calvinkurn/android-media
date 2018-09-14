@@ -14,8 +14,7 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
     private String balance;
     private String shopImageUrl;
     private Boolean isGoldMerchant;
-    private int medalType;
-    private int level;
+    private String reputationImageUrl;
 
     public String getShopId() {
         return shopId;
@@ -57,20 +56,12 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
         isGoldMerchant = goldMerchant;
     }
 
-    public int getMedalType() {
-        return medalType;
+    public String getReputationImageUrl() {
+        return reputationImageUrl;
     }
 
-    public void setMedalType(int medalType) {
-        this.medalType = medalType;
-    }
-
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
+    public void setReputationImageUrl(String reputationImageUrl) {
+        this.reputationImageUrl = reputationImageUrl;
     }
 
     @Override
@@ -88,21 +79,21 @@ public class ShopCardViewModel implements ParcelableViewModel<AccountTypeFactory
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.shopId);
         dest.writeString(this.shopName);
         dest.writeString(this.balance);
         dest.writeString(this.shopImageUrl);
         dest.writeValue(this.isGoldMerchant);
-        dest.writeInt(this.medalType);
-        dest.writeInt(this.level);
+        dest.writeString(this.reputationImageUrl);
     }
 
     protected ShopCardViewModel(Parcel in) {
+        this.shopId = in.readString();
         this.shopName = in.readString();
         this.balance = in.readString();
         this.shopImageUrl = in.readString();
         this.isGoldMerchant = (Boolean) in.readValue(Boolean.class.getClassLoader());
-        this.medalType = in.readInt();
-        this.level = in.readInt();
+        this.reputationImageUrl = in.readString();
     }
 
     public static final Creator<ShopCardViewModel> CREATOR = new Creator<ShopCardViewModel>() {

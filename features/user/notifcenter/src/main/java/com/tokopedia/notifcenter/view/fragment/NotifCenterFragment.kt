@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Menus
 import com.tokopedia.notifcenter.NotifCenterRouter
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.R.string.notif_no_info_desc
 import com.tokopedia.notifcenter.di.DaggerNotifCenterComponent
 import com.tokopedia.notifcenter.view.adapter.NotifCenterAdapter
 import com.tokopedia.notifcenter.view.adapter.typefactory.NotifCenterTypeFactoryImpl
@@ -86,6 +87,18 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
             (visitables.first() as NotifItemViewModel).showTimeSummary = false
         }
         adapter.addElement(visitables)
+
+        if (adapter.getList().isEmpty()) {
+            showEmpty()
+        }
+    }
+
+    private fun showEmpty() {
+        adapter.addEmpty(getString(
+                R.string.notif_no_info),
+                getString(notif_no_info_desc),
+                R.drawable.ic_info_empty
+        )
     }
 
     override fun onErrorFetchData(message: String) {
@@ -149,7 +162,7 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
         })
         swipeToRefresh.setOnRefreshListener {
             filterBtn.hide(false)
-            resetParam()
+            resetCursor()
             adapter.clearAllElements()
             presenter.fetchDataWithoutCache()
         }
@@ -187,6 +200,8 @@ class NotifCenterFragment : BaseDaggerFragment(), NotifCenterContract.View {
     }
 
     private fun isLoading() = adapter.isLoading
+
+    private fun resetCursor() = presenter.resetCursor()
 
     private fun resetParam() = presenter.resetParam()
 

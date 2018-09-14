@@ -24,5 +24,4 @@ public interface ICartCheckoutModuleRouter {
             Context context, String platform, String category
     );
 
-
 }

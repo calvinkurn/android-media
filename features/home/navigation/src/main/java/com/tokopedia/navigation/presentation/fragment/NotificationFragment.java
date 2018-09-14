@@ -6,11 +6,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.navigation.GlobalNavAnalytics;
-import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
@@ -35,6 +34,7 @@ import static com.tokopedia.navigation.GlobalNavConstant.*;
 public class NotificationFragment extends BaseParentFragment implements NotificationView {
 
     private SwipeRefreshLayout swipeRefreshLayout;
+    private View emptyLayout;
 
     private NotificationAdapter adapter;
 
@@ -63,6 +63,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout = parentView.findViewById(R.id.swipe);
         RecyclerView recyclerView = parentView.findViewById(R.id.recyclerview);
+        emptyLayout = parentView.findViewById(R.id.empty_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setHasFixedSize(true);
 
@@ -71,12 +72,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.getDrawerNotification());
 
-        adapter.setOnItemClickListener((view1, position) -> {
-            sendTracking(position, 0);
-            DrawerNotification item = adapter.getItem(position);
-            DrawerNotification.ChildDrawerNotification child = item.getChilds().get(0);
-            RouteManager.route(getActivity(), child.getApplink());
-        });
         adapter.setOnNotifClickListener((parent, child) -> {
             sendTracking(parent, child);
             DrawerNotification item = adapter.getItem(parent);
@@ -104,7 +99,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     @Override
     public void onError(String message) {
-        CommonUtils.dumper(message);
+        emptyLayout.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), emptyLayout, message, () ->
+                presenter.getDrawerNotification());
     }
 
     @Override
@@ -127,9 +125,10 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
     @Override
     public void renderNotification(NotificationsModel data, NotifcenterUnread unread,
                                    boolean isHasShop) {
+        emptyLayout.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         if (!isHasAdded) {
             if (isHasShop) {
-                adapter.add(sellerInfoData(), SELLER_INFO);
                 adapter.add(sellerData(), PENJUALAN);
             }
             adapter.add(complain(isHasShop));
@@ -157,7 +156,7 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.PURCHASE_DELIVERED));
         childBuyer.add(new DrawerNotification.ChildDrawerNotification(BUYER_INFO,
-                getString(R.string.buyer_info), ApplinkConst.BUYER_INFO));
+                getString(R.string.user_info), ApplinkConst.BUYER_INFO));
         buyer.setChilds(childBuyer);
         notifications.add(buyer);
 
@@ -181,16 +180,6 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         return complain;
     }
 
-    private DrawerNotification sellerInfoData() {
-        DrawerNotification inbox = new DrawerNotification();
-
-        List<DrawerNotification.ChildDrawerNotification> childInbox = new ArrayList<>();
-        childInbox.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
-                ApplinkConst.SELLER_INFO));
-        inbox.setChilds(childInbox);
-        return inbox;
-    }
-
     private DrawerNotification sellerData() {
         DrawerNotification seller = new DrawerNotification();
         seller.setId(PENJUALAN);
@@ -205,6 +194,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
                 getString(R.string.sedang_dikirim), ApplinkConst.SELLER_PURCHASE_SHIPPED));
         childSeller.add(new DrawerNotification.ChildDrawerNotification(SAMPAI_TUJUAN,
                 getString(R.string.sampai_tujuan), ApplinkConst.SELLER_PURCHASE_DELIVERED));
+        childSeller.add(new DrawerNotification.ChildDrawerNotification(SELLER_INFO, getString(R.string.info_penjual),
+                ApplinkConst.SELLER_INFO));
         seller.setChilds(childSeller);
         return seller;
     }

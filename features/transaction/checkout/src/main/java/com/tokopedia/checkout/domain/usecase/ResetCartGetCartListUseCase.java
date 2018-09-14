@@ -49,7 +49,7 @@ public class ResetCartGetCartListUseCase extends UseCase<ResetAndRefreshCartList
                 .flatMap(new Func1<ResetAndRefreshCartListData, Observable<ResetAndRefreshCartListData>>() {
                     @Override
                     public Observable<ResetAndRefreshCartListData> call(final ResetAndRefreshCartListData resetAndRefreshCartListData) {
-                        return cartRepository.getCartList(paramGetCart)
+                        return cartRepository.getShopGroupList(paramGetCart)
                                 .map(new Func1<CartDataListResponse, ResetAndRefreshCartListData>() {
                                     @Override
                                     public ResetAndRefreshCartListData call(

@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.design.label.LabelView;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.address.view.model.ShopAddressViewModel;
-import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.common.util.TextHtmlUtils;
 
 /**

@@ -7,6 +7,9 @@ import com.google.gson.annotations.SerializedName;
  * @author okasurya on 7/21/18.
  */
 public class WalletModel {
+    @SerializedName("text")
+    @Expose
+    private String text;
     @SerializedName("linked")
     @Expose
     private boolean linked;
@@ -25,6 +28,14 @@ public class WalletModel {
     @SerializedName("action")
     @Expose
     private WalletAction action;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
 
     public boolean isLinked() {
         return linked;
@@ -72,41 +83,5 @@ public class WalletModel {
 
     public void setBalance(String balance) {
         this.balance = balance;
-    }
-
-    public class WalletAction {
-        @SerializedName("text")
-        @Expose
-        private String text;
-        @SerializedName("redirect_url")
-        @Expose
-        private String redirectUrl;
-        @SerializedName("applinks")
-        @Expose
-        private String applink;
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public String getRedirectUrl() {
-            return redirectUrl;
-        }
-
-        public void setRedirectUrl(String redirectUrl) {
-            this.redirectUrl = redirectUrl;
-        }
-
-        public String getApplink() {
-            return applink;
-        }
-
-        public void setApplink(String applink) {
-            this.applink = applink;
-        }
     }
 }

@@ -9,6 +9,7 @@ import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.data.mapper.BuyerAccountMapper;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
+import com.tokopedia.navigation_common.model.WalletAction;
 import com.tokopedia.navigation_common.model.WalletModel;
 import com.tokopedia.navigation_common.model.WalletPref;
 import com.tokopedia.usecase.RequestParams;
@@ -31,18 +32,34 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private GraphqlUseCase graphqlUseCase;
     private BuyerAccountMapper mapper;
+    private Observable<WalletModel> tokocashAccountBalance;
     private WalletPref walletPref;
 
     @Inject
-    public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase, BuyerAccountMapper mapper,
+    public GetBuyerAccountUseCase(GraphqlUseCase graphqlUseCase,
+                                  Observable<WalletModel> tokocashAccountBalance,
+                                  BuyerAccountMapper mapper,
                                   WalletPref walletPref) {
         this.graphqlUseCase = graphqlUseCase;
+        this.tokocashAccountBalance = tokocashAccountBalance;
         this.mapper = mapper;
         this.walletPref = walletPref;
     }
 
     @Override
     public Observable<BuyerViewModel> createObservable(RequestParams requestParams) {
+        return Observable.zip(
+                getAccountData(requestParams),
+                tokocashAccountBalance,
+                (accountModel, walletModel) -> {
+                    accountModel.setWallet(walletModel);
+                    return accountModel;
+                })
+                .doOnNext(this::saveLocallyWallet)
+                .map(mapper);
+    }
+
+    private Observable<AccountModel> getAccountData(RequestParams requestParams) {
         return Observable
                 .just(requestParams)
                 .flatMap((Func1<RequestParams, Observable<GraphqlResponse>>) request -> {
@@ -58,20 +75,10 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
                     }
 
                     return Observable.error(new Exception("Query and/or variable are empty."));
-                })
-                .doOnNext(graphqlResponse -> saveLocallyWallet(graphqlResponse))
-                .map(mapper);
+                }).map(graphqlResponse -> graphqlResponse.getData(AccountModel.class));
     }
 
-    private void saveLocallyWallet(GraphqlResponse graphqlResponse) {
-        AccountModel accountModel = graphqlResponse.getData(AccountModel.class);
-        WalletModel walletModel = accountModel.getWallet();
-        if (!walletModel.isLinked()){
-            WalletModel.WalletAction action = walletModel.getAction();
-            action.setText("Aktivasi TokoCash");
-            action.setApplink("tokopedia://wallet/activation");
-            walletModel.setAction(action);
-        }
+    private void saveLocallyWallet(AccountModel accountModel) {
         walletPref.saveWallet(accountModel.getWallet());
     }
 }

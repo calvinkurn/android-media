@@ -79,6 +79,6 @@ public class EventReviewTicketsContractor {
 
         void clickGoToPromo();
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
     }
 }

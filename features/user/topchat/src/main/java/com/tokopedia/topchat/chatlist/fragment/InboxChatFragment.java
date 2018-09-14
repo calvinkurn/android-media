@@ -32,6 +32,7 @@ import com.tokopedia.core.customView.TextDrawable;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.topchat.R;
@@ -126,7 +127,11 @@ public class InboxChatFragment extends BaseDaggerFragment
     private Drawable getDetailMenuItem() {
         TextDrawable drawable = new TextDrawable(getContext());
         drawable.setText(getResources().getString(R.string.option_organize));
-        drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        if (GlobalConfig.isSellerApp()) {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.white));
+        } else {
+            drawable.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
+        }
         drawable.setTextSize(16.0f);
         return drawable;
     }

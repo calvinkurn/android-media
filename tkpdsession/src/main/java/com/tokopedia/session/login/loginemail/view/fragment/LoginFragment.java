@@ -845,8 +845,10 @@ public class LoginFragment extends BaseDaggerFragment
             getActivity().setResult(Activity.RESULT_OK);
             getActivity().finish();
         } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            sessionHandler.clearUserData(getActivity());
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
+            getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

@@ -18,24 +18,20 @@ import java.util.List;
 
 public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.EmailNotifViewHolder> {
 
-    private static final String SELECTED = "1";
-    private static final String NOT_SELECTED = "0";
+    private static final int SELECTED = 1;
+    private static final int NOT_SELECTED = 0;
 
-    public interface EmailNotificationListener {
-        void onClickEmailNotif(String key);
-    }
-
-    private EmailNotificationListener emailNotificationListener;
+    private OnItemChangeListener itemChangeListener;
 
     private List<EmailNotifViewModel> items;
     private AppNotificationSettingModel notification;
-    private HashMap<String, String> selectedSetting = new HashMap<>();
+    private HashMap<String, Integer> selectedSetting = new HashMap<>();
 
     public EmailNotifAdapter(List<EmailNotifViewModel> items) {
         this.items = items;
     }
 
-    public HashMap<String, String> getSelectedSetting() {
+    public HashMap<String, Integer> getSelectedSetting() {
         return selectedSetting;
     }
 
@@ -44,10 +40,6 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
     public EmailNotifViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new EmailNotifViewHolder(LayoutInflater
                 .from(parent.getContext()).inflate(R.layout.item_notif_setting, parent, false));
-    }
-
-    public void setEmailNotificationListener(EmailNotificationListener emailNotificationListener) {
-        this.emailNotificationListener = emailNotificationListener;
     }
 
     @Override
@@ -67,14 +59,19 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
     }
 
     private void generateMapSetting(){
-        selectedSetting.put(SettingType.FLAG_ADMIN_MESSAGE, String.valueOf(notification.getFlagAdminMessage()));
-        selectedSetting.put(SettingType.FLAG_MESSAGE, String.valueOf(notification.getFlagMessage()));
-        selectedSetting.put(SettingType.FLAG_NEWSLETTER, String.valueOf(notification.getFlagNewsletter()));
-        selectedSetting.put(SettingType.FLAG_REVIEW, String.valueOf(notification.getFlagreview()));
-        selectedSetting.put(SettingType.FLAG_TALK, String.valueOf(notification.getFlagTalkProduct()));
+        selectedSetting.put(SettingType.FLAG_ADMIN_MESSAGE, notification.getFlagAdminMessage());
+        selectedSetting.put(SettingType.FLAG_MESSAGE, notification.getFlagMessage());
+        selectedSetting.put(SettingType.FLAG_NEWSLETTER, notification.getFlagNewsletter());
+        selectedSetting.put(SettingType.FLAG_REVIEW, notification.getFlagreview());
+        selectedSetting.put(SettingType.FLAG_TALK, notification.getFlagTalkProduct());
+    }
+
+    public void setItemChangeListener(OnItemChangeListener itemChangeListener) {
+        this.itemChangeListener = itemChangeListener;
     }
 
     class EmailNotifViewHolder extends RecyclerView.ViewHolder{
+
         private TextView titleTextView;
         private TextView summaryextView;
         private Switch aSwitch;
@@ -84,12 +81,10 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
             titleTextView = itemView.findViewById(R.id.title);
             summaryextView = itemView.findViewById(R.id.subtitle);
             aSwitch = itemView.findViewById(R.id.switchWidget);
-            aSwitch.setOnCheckedChangeListener((compoundButton, isChecked) ->
-                    selectedSetting.put(items.get(getAdapterPosition()).getId(), isChecked ? SELECTED : NOT_SELECTED));
 
             itemView.setOnClickListener(view -> {
-                if (emailNotificationListener != null)
-                    emailNotificationListener.onClickEmailNotif(items.get(getAdapterPosition()).getId());
+                selectedSetting.put(items.get(getAdapterPosition()).getId(), !aSwitch.isChecked() ? SELECTED : NOT_SELECTED);
+                itemChangeListener.onItemChange(items.get(getAdapterPosition()).getId());
                 aSwitch.toggle();
             });
         }
@@ -103,5 +98,9 @@ public class EmailNotifAdapter extends RecyclerView.Adapter<EmailNotifAdapter.Em
                 aSwitch.setChecked(false);
             }
         }
+    }
+
+    public interface OnItemChangeListener {
+        void onItemChange(String key);
     }
 }

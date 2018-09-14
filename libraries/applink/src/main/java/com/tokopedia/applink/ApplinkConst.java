@@ -134,6 +134,8 @@ public interface ApplinkConst {
     String DEVELOPER_OPTIONS = "tokopedia://setting/dev-opts";
     String SETTING_PAYMENT = "tokopedia://setting/payment";
     String SETTING_ACCOUNT = "tokopedia://setting/account";
+    String SETTING_PASSWORD = "tokopedia://setting/password";
+    String SETTING_PROFILE = "tokopedia://setting/profile";
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
@@ -152,6 +154,9 @@ public interface ApplinkConst {
     String DEPOSIT = "tokopedia://saldo";
     String INSTANT_LOAN = "tokopedia://loan";
     String INSTANT_LOAN_TAB = "tokopedia://loan/category/{tab_name}";
+
+    String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
+    String SETTING_BANK = "tokopedia://settings/bankaccount";
 
     interface SellerApp {
         String PRODUCT_ADD = "sellerapp://product/add";

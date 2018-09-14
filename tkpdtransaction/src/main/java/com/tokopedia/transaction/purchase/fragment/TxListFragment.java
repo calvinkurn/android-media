@@ -602,22 +602,10 @@ public class TxListFragment extends BasePresenterFragment<TxListPresenter> imple
     private void getData(int typeRequest) {
         fabFilter.hide();
         if (getView() != null) NetworkErrorHelper.hideEmptyState(getView());
-//        switch (typeInstance) {
-//            case TransactionPurchaseRouter.INSTANCE_ALL:
-                isLoading = true;
-                presenter.getAllOrderData(
-                        getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
-                );
-//                break;
-//            case INSTANCE_RECEIVE:
-//                isLoading = true;
-//                presenter.getDeliverOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-//                break;
-//            case INSTANCE_STATUS:
-//                isLoading = true;
-//                presenter.getAllOrderData(getActivity(), pagingHandler.getPage(), typeRequest);
-//                break;
-//        }
+        isLoading = true;
+        presenter.getAllOrderData(
+                getActivity(), pagingHandler.getPage(), allTxFilter, typeRequest
+        );
     }
 
     public interface StateFilterListener {

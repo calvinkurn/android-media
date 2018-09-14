@@ -34,6 +34,15 @@ public class GlobalNavConstant {
         static final String LABEL_OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
         static final String LABEL_FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
 
+        public static final String SCREEN_NAME = "screenName";
+        public static final String EVENT = "event";
+        public static final String EVENT_CATEGORY = "eventCategory";
+        public static final String EVENT_ACTION = "eventAction";
+        public static final String EVENT_LABEL = "eventLabel";
+        public static final String CLICK_HOME_PAGE = "clickHomePage";
+        public static final String TOP_NAV = "top nav";
+        public static final String SCREEN_NAME_CHAT = "/chat";
+
     }
 
     public class Cache {
@@ -43,10 +52,10 @@ public class GlobalNavConstant {
 
     public static final String QUERY = "Query";
 
-    public static final int SELLER_INFO = 0;
-    public static final int PEMBELIAN = 1;
-    public static final int PENJUALAN = 2;
-    public static final int KOMPLAIN = 3;
+    public static final int SELLER_INFO = 13;
+    public static final int PEMBELIAN = 0;
+    public static final int PENJUALAN = 1;
+    public static final int KOMPLAIN = 2;
 
     public static final int MENUNGGU_PEMBAYARAN = 4;
     public static final int MENUNGGU_KONFIRMASI = 5;

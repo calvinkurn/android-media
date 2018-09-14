@@ -16,25 +16,10 @@
             android:layout_weight="1"
             android:background="@android:color/white"/>
 
-        <LinearLayout style="@style/LabelLayout"
-            android:orientation="vertical"
-            android:clickable="false"
-            android:layout_marginTop="@dimen/dp_16"
-            android:padding="0dp">
-
-            <Button
-                android:id="@+id/buttonSave"
-                style="@style/Button.Submit.Green"
-                android:layout_width="match_parent"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="@dimen/dp_16"
-                android:layout_marginLeft="@dimen/dp_16"
-                android:layout_marginRight="@dimen/dp_16"
-                android:text="@string/save_setting_label" />
-        </LinearLayout>
     </LinearLayout>
 
     <include layout="@layout/loading_layout"
         android:id="@+id/loading_state_view"
         android:visibility="gone"/>
+
 </FrameLayout>

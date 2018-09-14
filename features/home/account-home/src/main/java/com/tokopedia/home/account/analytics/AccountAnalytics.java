@@ -1,12 +1,15 @@
 package com.tokopedia.home.account.analytics;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
-import com.tokopedia.home.account.presentation.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeRouter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.*;
 
@@ -47,7 +50,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", USER, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -59,7 +62,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", ACCOUNT, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -71,7 +74,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -83,7 +86,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", SHOP, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -95,7 +98,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", NOTIFICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -108,7 +111,7 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", APPLICATION, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
@@ -120,14 +123,32 @@ public class AccountAnalytics {
             return;
 
         analyticTracker.sendEventTracking(
-                "",
+                AccountConstants.Analytics.CLICK_HOME_PAGE,
                 String.format("%s %s", EMAIL, SETTING),
                 String.format("%s %s", CLICK, item),
                 ""
         );
     }
 
+    public void eventTrackingNotification() {
+        if (analyticTracker == null)
+            return;
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, SCREEN_NAME_ACCOUNT);
+        eventTracking.put(EVENT, CLICK_HOME_PAGE);
+        eventTracking.put(EVENT_CATEGORY, TOP_NAV);
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
+        eventTracking.put(EVENT_LABEL, "");
+
+        analyticTracker.sendEventTracking(eventTracking);
+    }
+
     public void setUserAttributes(UserAttributeData data) {
         ((AccountHomeRouter) context.getApplicationContext()).sendAnalyticsUserAttribute(data);
+    }
+
+    public void setPromoPushPreference(Boolean newValue) {
+        ((AccountHomeRouter) context.getApplicationContext()).setPromoPushPreference(newValue);
     }
 }

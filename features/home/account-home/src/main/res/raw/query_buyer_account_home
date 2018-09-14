@@ -52,4 +52,8 @@ query {
       arriveAtDestination
     }
   }
+  tokopointsSumCoupon {
+      sumCoupon
+      sumCouponStr
+    }
 }

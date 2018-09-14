@@ -43,8 +43,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void enableWishlistButton(String productId);
 
-    void showBottomBarNavigation(boolean show);
-
     void showNetworkError(int startRow);
     String getQueryKey();
 
@@ -56,11 +54,11 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
 
     void backToTop();
 
-    void addGuidedSearch();
-
     void onGetGuidedSearchComplete(GuidedSearchViewModel guidedSearchViewModel);
 
     void getQuickFilter();
 
     void renderQuickFilter(DynamicFilterModel dynamicFilterModel);
+
+    void getGuidedSearch();
 }

@@ -155,8 +155,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
-    public void setElements(int position, List<? extends Visitable> data) {
-        visitables.addAll(position, data);
+    public void setElements( List< Visitable> data) {
+        visitables = data;
         notifyDataSetChanged();
     }
 

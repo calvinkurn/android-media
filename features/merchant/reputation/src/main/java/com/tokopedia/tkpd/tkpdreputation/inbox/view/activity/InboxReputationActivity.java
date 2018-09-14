@@ -40,10 +40,10 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     public static final int TAB_BUYER_REVIEW = 3;
     public static final int TAB_SELLER_REPUTATION_HISTORY = 2;
     private static final int OFFSCREEN_PAGE_LIMIT = 3;
-    Fragment sellerReputationFragment;
+    private Fragment sellerReputationFragment;
 
-    ViewPager viewPager;
-    TabLayout indicator;
+    private ViewPager viewPager;
+    private TabLayout indicator;
 
     private boolean goToReputationHistory;
 
@@ -67,19 +67,13 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     }
 
     @Override
-    protected void setupURIPass(Uri data) {
-
-    }
+    protected void setupURIPass(Uri data) { }
 
     @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
+    protected void setupBundlePass(Bundle extras) { }
 
     @Override
-    protected void initialPresenter() {
-
-    }
+    protected void initialPresenter() { }
 
     @Override
     protected boolean isLightToolbarThemes() {
@@ -160,19 +154,13 @@ public class InboxReputationActivity extends BaseTemporaryDrawerActivity impleme
     }
 
     @Override
-    protected void setViewListener() {
-
-    }
+    protected void setViewListener() { }
 
     @Override
-    protected void initVar() {
-
-    }
+    protected void initVar() { }
 
     @Override
-    protected void setActionVar() {
-
-    }
+    protected void setActionVar() { }
 
     @Override
     protected int setDrawerPosition() {

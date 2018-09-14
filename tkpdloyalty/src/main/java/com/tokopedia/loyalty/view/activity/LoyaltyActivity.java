@@ -304,6 +304,13 @@ public class LoyaltyActivity extends BasePresenterActivity
 
     @Override
     public void onCodeSuccess(String voucherCode, String voucherMessage, String voucherAmount) {
+        if (platformString.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            if (platformPageString.equals(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
+                checkoutAnalyticsCart.eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess();
+            } else if (platformPageString.equals(PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT)) {
+                checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponSuccess();
+            }
+        }
         Intent intent = new Intent();
         Bundle bundle = new Bundle();
         bundle.putString(
@@ -389,6 +396,16 @@ public class LoyaltyActivity extends BasePresenterActivity
     }
 
     @Override
+    public void sendAnalyticsOnCouponItemClickedCartListPageSuccess() {
+        checkoutAnalyticsCart.eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartListPageFailed() {
+        checkoutAnalyticsCart.eventClickCouponCartClickKuponFromGunakanKodePromoAtauKuponFailed();
+    }
+
+    @Override
     public void sendAnalyticsOnCouponItemClicked(String couponName) {
         checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromKuponSaya(couponName);
     }
@@ -396,6 +413,16 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void sendAnalyticsOnCouponItemClickedCartShipmentPage() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickKuponFromGunakanKodePromoAtauKupon();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartShipmentPageSuccess() {
+        checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsOnCouponItemClickedCartShipmentPageFailed() {
+        checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickKuponFromGunakanKodePromoAtauKuponFailed();
     }
 
     @Override
@@ -453,6 +480,13 @@ public class LoyaltyActivity extends BasePresenterActivity
     @Override
     public void sendAnalyticsOnErrorGetPromoCode(String errorMessage) {
         checkoutAnalyticsCourierSelection.eventViewPromoCourierSelectionValidationErrorVoucherPromoFromGunakanKodePromoAtauKupon(errorMessage);
+        if (platformString.equals(IRouterConstant.LoyaltyModule.ExtraLoyaltyActivity.MARKETPLACE_STRING)) {
+            if (platformPageString.equals(PLATFORM_PAGE_MARKETPLACE_CART_LIST)) {
+                checkoutAnalyticsCart.eventClickCouponCartClickGunakanKodeFormGunakanKodePromoAtauKuponFailed();
+            } else if (platformPageString.equals(PLATFORM_PAGE_MARKETPLACE_CART_SHIPMENT)) {
+                checkoutAnalyticsCourierSelection.eventClickCouponCourierSelectionClickGunakanKodeFormGunakanKodePromoAtauKuponFailed();
+            }
+        }
     }
 
     public static Intent newInstanceCouponActive(Activity activity, String platform, String categoryId, String cartId) {
