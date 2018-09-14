@@ -14,6 +14,7 @@ import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import kotlinx.android.synthetic.main.inbox_talk_item.view.*
@@ -29,7 +30,9 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
 class InboxTalkItemViewHolder(val v: View,
                               val listener: TalkItemListener,
                               private val talkCommentListener: CommentTalkViewHolder.TalkCommentItemListener,
-                              private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
+                              private val talkProductAttachmentItemClickListener:
+                              TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+                              private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
@@ -37,6 +40,8 @@ class InboxTalkItemViewHolder(val v: View,
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
+        fun onGoToPdp(productId: String)
+        fun onGoToUserProfile(userId: String)
     }
 
     private val productName: TextView = itemView.productName
@@ -146,16 +151,33 @@ class InboxTalkItemViewHolder(val v: View,
         profileName.text = element.talkThread.headThread.name
 
         timestamp.text = element.talkThread.headThread.timestamp
+
+        profileAvatar.setOnClickListener {
+            listener.onGoToUserProfile(element.talkThread.headThread.userId)
+        }
+
+        profileName.setOnClickListener {
+            listener.onGoToUserProfile(element.talkThread.headThread.userId)
+        }
     }
 
     private fun setProductHeader(element: InboxTalkItemViewModel) {
         productName.text = MethodChecker.fromHtml(element.productHeader.productName)
-        ImageHandler.LoadImage(productAvatar, element.productHeader.productAvatar)
+        ImageHandler.loadImageRounded2(productAvatar.context, productAvatar,
+                element.productHeader.productAvatar)
+
+        productName.setOnClickListener {
+            listener.onGoToPdp(element.productHeader.productId)
+        }
+        productAvatar.setOnClickListener {
+            listener.onGoToPdp(element.productHeader.productId)
+        }
     }
 
     private fun setCommentList(element: InboxTalkItemViewModel) {
         if (!element.talkThread.listChild.isEmpty()) {
-            val typeFactoryImpl = CommentTalkTypeFactoryImpl(talkCommentListener, talkProductAttachmentItemClickListener)
+            val typeFactoryImpl = CommentTalkTypeFactoryImpl(
+                    talkCommentListener, talkProductAttachmentItemClickListener, talkCommentLoadMoreListener)
             adapter = CommentTalkAdapter(typeFactoryImpl, element.talkThread.listChild)
             listComment.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
                     .VERTICAL, false)

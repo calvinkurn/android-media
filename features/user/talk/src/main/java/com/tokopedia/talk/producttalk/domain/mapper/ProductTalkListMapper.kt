@@ -28,8 +28,8 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
         if ((response.body() != null) && (response.body().header == null ||
-                    (response.body().header != null && response.body().header.messages.isEmpty()) ||
-                    (response.body().header != null && response.body().header.messages[0].isBlank()))) {
+                        (response.body().header != null && response.body().header.messages.isEmpty()) ||
+                        (response.body().header != null && response.body().header.messages[0].isBlank()))) {
             val pojo: InboxTalkPojo = response.body().data
             return mapToViewModel(pojo)
         } else {
@@ -71,14 +71,19 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_id,
                     pojo.talk_product_id,
                     data.comment_user_label_id,
-                    data.comment_user_label
+                    data.comment_user_label,
+                    data.comment_user_id
 
             ))
         }
 
-        if(pojo.talk_total_comment.toInt() > 1){
-            val totalExistComent : Int = listCommentTalk.size
-            listCommentTalk.add(0, LoadMoreCommentTalkViewModel(pojo.talk_total_comment.toInt()-totalExistComent))
+        if (pojo.talk_total_comment.toInt() > 1) {
+            val totalExistComent: Int = listCommentTalk.size
+            listCommentTalk.add(0,
+                    LoadMoreCommentTalkViewModel((pojo.talk_total_comment.toInt()
+                            - totalExistComent),
+                            pojo.talk_id,
+                            pojo.talk_shop_id))
         }
 
         return TalkThreadViewModel(
@@ -98,7 +103,8 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                         "",
                         pojo.talk_product_id,
                         pojo.talk_user_label_id,
-                        pojo.talk_user_label
+                        pojo.talk_user_label,
+                        pojo.talk_user_id
 
                 ),
                 listCommentTalk)
