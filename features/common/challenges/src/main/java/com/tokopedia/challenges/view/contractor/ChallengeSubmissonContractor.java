@@ -74,5 +74,6 @@ public class ChallengeSubmissonContractor {
 
         void onDestroy();
 
+        void getSubmissionChallenges(boolean loadFromApi, Result challengeResult);
     }
 }

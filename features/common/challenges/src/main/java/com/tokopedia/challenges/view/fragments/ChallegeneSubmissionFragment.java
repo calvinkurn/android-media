@@ -33,7 +33,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -41,6 +41,7 @@ import com.tokopedia.challenges.view.activity.AllSubmissionsActivity;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.adapter.AwardAdapter;
 import com.tokopedia.challenges.view.adapter.SubmissionItemAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.contractor.ChallengeSubmissonContractor;
 import com.tokopedia.challenges.view.customview.CountDownView;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
@@ -118,7 +119,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     private TextView submitPhoto;
 
     @Inject
-    public ChallengesAnalytics analytics;
+    public ChallengesGaAnalyticsTracker analytics;
 
     public static Fragment createInstance(Bundle extras) {
         Fragment fragment = new ChallegeneSubmissionFragment();
@@ -363,6 +364,8 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
         baseMainContent.setVisibility(View.VISIBLE);
         showBuzzPointsText();
+        ChallengesMoengageAnalyticsTracker.challengeDetailsOpen(getActivity(),challengeResult.getTitle(),challengeResult.getId(),mPresenter.isParticipated(challengeResult));
+
     }
 
     @Override
@@ -496,9 +499,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                 longDescription.setVisibility(View.GONE);
             }
         } else if (v.getId() == R.id.tv_see_all) {
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION_SEE_ALL,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK, "");
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION_SEE_ALL,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, "");
             Intent intent = AllSubmissionsActivity.newInstance(getActivity());
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, challengeId);
@@ -509,9 +512,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
         } else if (v.getId() == R.id.tv_tnc) {
             fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK, ChallengesAnalytics.EVENT_TNC);
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult);
         }

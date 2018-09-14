@@ -1,16 +1,11 @@
 package com.tokopedia.challenges.view.adapter;
 
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.util.SparseArrayCompat;
-import android.view.View;
-import android.view.ViewGroup;
 
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.fragments.ChallengesFragment;
 import com.tokopedia.challenges.view.fragments.MySubmissionsFragment;
 
@@ -43,9 +38,9 @@ public class ChallengesHomeAdapter extends FragmentStatePagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0) {
-            return ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES;
+            return ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES;
         } else {
-            return ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS;
+            return ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS;
         }
     }
 }

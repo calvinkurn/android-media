@@ -11,6 +11,7 @@ import com.tokopedia.challenges.domain.usecase.PostBuzzPointEventUseCase;
 import com.tokopedia.challenges.domain.usecase.PostDeleteSubmissionUseCase;
 import com.tokopedia.challenges.domain.usecase.PostSubmissionLikeUseCase;
 import com.tokopedia.challenges.view.activity.ChallengesSubmitActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
@@ -73,6 +74,9 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             if (position != -1)
                 getView().setWinnerPosition(String.valueOf(position));
         }
+        if (model.getCollection() != null) {
+            ChallengesMoengageAnalyticsTracker.challengePostOpen(getView().getActivity(), model.getCollection().getTitle(), model.getCollection().getId(), model.getId(), getParticipatedStatus(model));
+        }
     }
 
     @Override
@@ -101,6 +105,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     }
 
+    @Override
     public void sendBuzzPointEvent(String submissionId) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
@@ -123,6 +128,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         });
     }
 
+    @Override
     public void getSubmissionDetails(String submissionId) {
         getDetailsSubmissionsUseCase.setRequestParams(submissionId);
         getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -154,6 +160,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     }
 
 
+    @Override
     public void onSubmitButtonClick(String challegeId) {
         getView().showProgressBar();
         getChallengeDetailsAndSttingsUseCase.setRequestParams(challegeId);
@@ -186,7 +193,8 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
         });
     }
 
-    public void deleteSubmittedPost(String submissionId, String challengeId) {
+    @Override
+    public void deleteSubmittedPost(String submissionId, String challengeId, String challengeName) {
         getView().showProgressBar();
         postDeleteSubmissionUseCase.setRequestParams(submissionId);
         postDeleteSubmissionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -204,13 +212,11 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 getView().hidProgressBar();
                 Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
-                Utils.FROMNOCACHE = true;
                 ChallengesCacheHandler.addManipulatedMap(submissionId, ChallengesCacheHandler.Manupulated.DELETE.ordinal());
                 ChallengesCacheHandler.resetCache();
-//                String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeId);
-//                RouteManager.route(getView().getActivity(), applink);
+                ChallengesMoengageAnalyticsTracker.challenge_DeleteSubmission(getView().getActivity(), challengeName,
+                        submissionId, submissionId);
                 getView().getActivity().finish();
-
             }
         });
     }

@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
-import com.tokopedia.challenges.data.source.ChallengesUrl;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.R;
@@ -19,11 +17,9 @@ import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.utils.RemainingDaysFormatter;
 import com.tokopedia.challenges.view.utils.Utils;
 
-import java.util.concurrent.TimeUnit;
-
 class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
-    private final ChallengesAnalytics analytics;
+    private final ChallengesGaAnalyticsTracker analytics;
     private TextView tvTitle;
     private TextView tvHastags;
     private ImageView imgChallenge;
@@ -42,7 +38,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         tvTimeRemaining = view.findViewById(R.id.tv_time_remaining);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        analytics = new ChallengesAnalytics(context);
+        analytics = new ChallengesGaAnalyticsTracker(context);
     }
 
     void bind(Result challengesResult, boolean isPastChallenge) {
@@ -69,14 +65,14 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra("isPastChallenge", isPastChallenge);
             context.startActivity(intent);
             if (isPastChallenge) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                        ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES,
-                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         challengesResult.getTitle());
             } else {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                        ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         challengesResult.getTitle());
             }
         });
@@ -97,14 +93,14 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
 //                    challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()),
 //                    true, mediaUrl, challengesResult.getHashTag(), isVideo);
             if (isPastChallenge) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                        ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES,
-                        ChallengesAnalytics.EVENT_ACTION_SHARE,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengesResult.getTitle());
             } else {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                        ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES,
-                        ChallengesAnalytics.EVENT_ACTION_SHARE,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                         challengesResult.getTitle());
             }
         });

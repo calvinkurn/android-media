@@ -1,8 +1,13 @@
 package com.tokopedia.challenges.view.utils;
 
+import android.content.Context;
+
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+
 import java.util.HashMap;
 
 public class ChallengesCacheHandler {
+    private static final String CACHE_CHALLENGE_SUBMISSIN = "cache_challenge_submissin";
     public static boolean OPEN_CHALLENGES_LIST_CACHE;
     public static boolean MY_SUBMISSTIONS_LIST_CACHE;
     public static boolean CHALLENGES_SUBMISSTIONS_LIST_CACHE;
@@ -74,5 +79,17 @@ public class ChallengesCacheHandler {
             return Manupulated.NOTFOUND.ordinal();
         }
     }
+
+    public static String getLocalVideoPath(Context context, String submissionId){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_CHALLENGE_SUBMISSIN);
+        return localCacheHandler.getString(submissionId);
+    }
+
+    public static void saveLocalVideoPath(Context context, String submissionId , String filePath){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_CHALLENGE_SUBMISSIN);
+        localCacheHandler.putString(submissionId, filePath);
+        localCacheHandler.applyEditor();
+    }
+
 
 }

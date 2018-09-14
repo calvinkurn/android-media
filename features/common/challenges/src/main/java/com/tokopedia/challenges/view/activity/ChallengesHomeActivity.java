@@ -11,9 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.challenges.ChallengesAnalytics;
-import com.tokopedia.challenges.ChallengesModuleRouter;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
 import com.tokopedia.challenges.view.adapter.ChallengesHomeAdapter;
@@ -26,7 +24,7 @@ import com.tokopedia.design.utils.TabUtil;
 public class ChallengesHomeActivity extends BaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private ChallengesAnalytics analytics;
+    private ChallengesGaAnalyticsTracker analytics;
 
     @DeepLink({ChallengesUrl.AppLink.CHALLENGES_HOME})
     public static Intent getCallingApplinksTaskStask(Context context, Bundle extras) {
@@ -59,7 +57,7 @@ public class ChallengesHomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_home);
-        analytics = new ChallengesAnalytics(this);
+        analytics = new ChallengesGaAnalyticsTracker(this);
         tabLayout = findViewById(R.id.tab_challenges);
         viewPager = findViewById(R.id.pager);
         ChallengesHomeAdapter adapter = new ChallengesHomeAdapter(getSupportFragmentManager());
@@ -75,9 +73,9 @@ public class ChallengesHomeActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                        ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
-                        ChallengesAnalytics.EVENT_ACTION_CLICK,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                         String.valueOf(adapter.getPageTitle(position)));
             }
 

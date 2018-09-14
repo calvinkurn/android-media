@@ -32,5 +32,8 @@ public interface MySubmissionsBaseContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void getMySubmissionsList(Boolean isFirst);
+
+        void setSubmissionLike(SubmissionResult result);
     }
 }

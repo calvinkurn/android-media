@@ -33,6 +33,7 @@ import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
 import com.tokopedia.challenges.view.share.ShareInstagramBottomSheet;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.data.model.RestResponse;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
@@ -79,6 +80,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
     }
 
+    @Override
     public void postMapBranchUrl(String id, String branchUrl, String packageName, String title, boolean isChallenge) {
         postMapBranchUrlUseCase.setRequestParams(id, branchUrl);
         postMapBranchUrlUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
@@ -203,30 +205,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
 
         shareInstagramBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), ShareInstagramBottomSheet.class.getCanonicalName());
-//        String type = "image/*";
-//        //String filename = "/myVideo.mp4";
-//        //mediaPath = Environment.getExternalStorageDirectory() + filename;
-//
-//        // Create the new Intent using the 'Send' action.
-//        if (isVideo) {
-//            type = "video/*";
-//        }
-//        Intent share = new Intent(Intent.ACTION_SEND);
-//
-//        // Set the MIME type
-//        share.setType(type);
-//
-//        // Create the URI from the media
-//        // File media = new File(mediaPath);
-//        Uri uri = Uri.fromFile(media);
-//
-//        // Add the URI to the Intent.
-//        share.putExtra(Intent.EXTRA_STREAM, uri);
-//        share.putExtra(Intent.EXTRA_TITLE, title);
-//        share.putExtra(Intent.EXTRA_SUBJECT, title);
-//        share.putExtra(Intent.EXTRA_TEXT, contains);
-//        share.setPackage(PACKAGENAME_INSTAGRAM);
-//        getView().getActivity().startActivity(Intent.createChooser(share, "Share"));
+
     }
 
     private void convertHttpPathToLocalPath(String title, String contains, String mediaUrl, boolean isVideo) {
@@ -291,8 +270,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             isVideo = false;
 
         } else {
-            LocalCacheHandler localCacheHandler = new LocalCacheHandler(getView().getActivity(), "Challenge Submission");
-            String videoPath = localCacheHandler.getString(getView().getSubmissionItem().getId());
+            String videoPath = ChallengesCacheHandler.getLocalVideoPath(getView().getActivity(), getView().getSubmissionItem().getId());
             if (!TextUtils.isEmpty(videoPath)) {
                 File file = new File(videoPath);
                 if (file.exists()) {
@@ -319,5 +297,13 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             this.isVideo = isVideo;
             convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
         }
+    }
+
+    @Override
+    public boolean getParticipatedStatus(SubmissionResult submissionResult) {
+        if (submissionResult != null)
+            return (submissionResult.getMe() != null && submissionResult.getUser() != null && submissionResult.getMe().getId() != null && submissionResult.getUser().getId() != null && submissionResult.getMe().getId().equalsIgnoreCase(submissionResult.getUser().getId()));
+        else
+            return false;
     }
 }

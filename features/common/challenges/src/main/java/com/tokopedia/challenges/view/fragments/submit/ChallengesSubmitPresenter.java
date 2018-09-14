@@ -14,6 +14,7 @@ import com.tokopedia.challenges.domain.usecase.GetChallengeSettingUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
 import com.tokopedia.challenges.domain.usecase.IntializeMultiPartUseCase;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.fragments.submit.IChallengesSubmitContract.Presenter;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
@@ -106,7 +107,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
                     getView().setSnackBarErrorMessage("No Intenet Connection");
-                }else {
+                } else {
                     getView().setSnackBarErrorMessage("Image Uploaded Failed");
                 }
                 getView().hideProgress();
@@ -122,14 +123,16 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
-                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath,postId));
-                }else {
+                    getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
+                } else {
                     Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
                     intent1.putExtra("submissionId", fingerprints.getNewPostId());
                     intent1.putExtra("filePath", filePath);
                     getView().sendBroadcast(intent1);
                 }
                 ChallengesCacheHandler.resetCache();
+                ChallengesMoengageAnalyticsTracker.challengeSubmitStart(getView().getActivity(), getView().getChallengeTitle(),
+                        getView().getChallengeId(), postId);
 
             }
         });
@@ -142,17 +145,21 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(final Context context, final Intent intent) {
-            if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
-                getView().hideProgress();
-                getView().setSnackBarErrorMessage("Konten Anda diterima!");
-                if (!TextUtils.isEmpty(postId)) {
-                    getSubmissionDetail();
+            if (getView() != null) {
+                if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
+                    getView().hideProgress();
+                    getView().setSnackBarErrorMessage("Konten Anda diterima!");
+                    if (!TextUtils.isEmpty(postId)) {
+                        getSubmissionDetail();
+                        ChallengesMoengageAnalyticsTracker.challengeSubmitStart(getView().getActivity(), getView().getChallengeTitle(),
+                                getView().getChallengeId(), postId);
+                    }
+                    getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
+                } else if (intent.getAction() == ACTION_UPLOAD_FAIL) {
+                    getView().setSnackBarErrorMessage("Submission Fails!");
                 }
-                getView().saveLocalpath(intent.getStringExtra("submissionId"), intent.getStringExtra("filePath"));
-            }else if(intent.getAction() == ACTION_UPLOAD_FAIL){
-                getView().setSnackBarErrorMessage("Submission Fails!");
-             }
-            deinit();
+                deinit();
+            }
         }
     };
 

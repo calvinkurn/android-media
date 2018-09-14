@@ -77,12 +77,9 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_submissions, container, false);
         setUpVariables(view);
-//        if (fragmentCallbacks != null) {
-//            showProgressBar();
-            recyclerview.setAdapter(new SubmissionItemAdapter(submissions, this, LinearLayoutManager.VERTICAL, isPastChallenge));
-            mPresenter.setChallengeId(challengeId);
-//            hideProgressBar();
-//        }
+        recyclerview.setAdapter(new SubmissionItemAdapter(submissions, this, LinearLayoutManager.VERTICAL, isPastChallenge));
+        mPresenter.setChallengeId(challengeId);
+
         mPresenter.loadMoreItems(true);
         recyclerview.addOnScrollListener(rvOnScrollListener);
 
@@ -121,7 +118,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-       // fragmentCallbacks = (ChallengeDetailActivity) activity;
+        // fragmentCallbacks = (ChallengeDetailActivity) activity;
     }
 
     @Override

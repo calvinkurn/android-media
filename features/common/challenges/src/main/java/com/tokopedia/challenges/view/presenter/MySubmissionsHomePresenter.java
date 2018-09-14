@@ -35,6 +35,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         this.postSubmissionLikeUseCase = postSubmissionLikeUseCase;
     }
 
+    @Override
     public void getMySubmissionsList(Boolean isFirst) {
         if (isFirst) {
             getView().showProgressBarView();
@@ -77,6 +78,7 @@ public class MySubmissionsHomePresenter extends BaseDaggerPresenter<MySubmission
         });
     }
 
+    @Override
     public void setSubmissionLike(final SubmissionResult result) {
 
         RequestParams requestParams = RequestParams.create();

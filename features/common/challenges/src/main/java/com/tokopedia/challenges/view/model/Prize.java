@@ -23,7 +23,7 @@ public class Prize implements Parcelable{
     private String description;
     @SerializedName("Index")
     @Expose
-    private Integer index;
+    private int index;
 
     protected Prize(Parcel in) {
         type = in.readString();
@@ -31,7 +31,7 @@ public class Prize implements Parcelable{
         prize = in.readString();
         description = in.readString();
         if (in.readByte() == 0) {
-            index = null;
+            index = 0;
         } else {
             index = in.readInt();
         }
@@ -100,7 +100,7 @@ public class Prize implements Parcelable{
         parcel.writeString(title);
         parcel.writeString(prize);
         parcel.writeString(description);
-        if (index == null) {
+        if (index == 0) {
             parcel.writeByte((byte) 0);
         } else {
             parcel.writeByte((byte) 1);

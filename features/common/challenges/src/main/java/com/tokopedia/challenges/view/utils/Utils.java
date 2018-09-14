@@ -41,6 +41,8 @@ public class Utils {
     public static final String QUERY_PARAM_KEY_SORT_RECENT = "recent";
     public static final String QUERY_PARAM_KEY_SORT_POINTS = "points";
     public static final String QUERY_PARAM_IS_PAST_CHALLENGE = "isPastChallenge";
+    public static String QUERY_PARAM_SUBMISSION_RESULT = "submissionsResult";
+    public static String QUERY_PARAM_FROM_SUBMISSION = "fromSubmission";
     public static final String STATUS_APPROVED = "Approved";
     public static final String STATUS_REJECTED = "Rejected";
     public static final String STATUS_COMPLETED = "Completed";
@@ -48,7 +50,8 @@ public class Utils {
     public static final String STATUS_DECLINED = "Declined";
     public static final String STATUS_WAITING = "Waiting";
     public static final String STATUS_ENCODING = "Encoding";
-    public static boolean FROMNOCACHE;
+    public static final String QUERY_PARAM_IS_FROM_NOTIF = "from_notif";
+
     private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
 

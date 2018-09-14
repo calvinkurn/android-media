@@ -22,31 +22,37 @@ public class SocialTracking implements Parcelable
     @SerializedName("youtube")
     @Expose
     private Youtube youtube;
-    public final static Creator<SocialTracking> CREATOR = new Creator<SocialTracking>() {
 
+    protected SocialTracking(Parcel in) {
+        facebook = in.readParcelable(Facebook.class.getClassLoader());
+        twitter = in.readParcelable(Twitter.class.getClassLoader());
+        instagram = in.readParcelable(Instagram.class.getClassLoader());
+        youtube = in.readParcelable(Youtube.class.getClassLoader());
+    }
 
-        @SuppressWarnings({
-            "unchecked"
-        })
+    public static final Creator<SocialTracking> CREATOR = new Creator<SocialTracking>() {
+        @Override
         public SocialTracking createFromParcel(Parcel in) {
             return new SocialTracking(in);
         }
 
+        @Override
         public SocialTracking[] newArray(int size) {
-            return (new SocialTracking[size]);
+            return new SocialTracking[size];
         }
+    };
 
-    }
-    ;
-
-    protected SocialTracking(Parcel in) {
-        this.facebook = ((Facebook) in.readValue((Facebook.class.getClassLoader())));
-        this.twitter = ((Twitter) in.readValue((Twitter.class.getClassLoader())));
-        this.instagram = ((Instagram) in.readValue((Instagram.class.getClassLoader())));
-        this.youtube = ((Youtube) in.readValue((Youtube.class.getClassLoader())));
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public SocialTracking() {
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeParcelable(facebook, i);
+        parcel.writeParcelable(twitter, i);
+        parcel.writeParcelable(instagram, i);
+        parcel.writeParcelable(youtube, i);
     }
 
     public Facebook getFacebook() {
@@ -81,15 +87,7 @@ public class SocialTracking implements Parcelable
         this.youtube = youtube;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(facebook);
-        dest.writeValue(twitter);
-        dest.writeValue(instagram);
-        dest.writeValue(youtube);
+    public static Creator<SocialTracking> getCREATOR() {
+        return CREATOR;
     }
-
-    public int describeContents() {
-        return  0;
-    }
-
 }

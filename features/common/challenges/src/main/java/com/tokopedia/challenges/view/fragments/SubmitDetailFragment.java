@@ -29,16 +29,18 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
 import com.tokopedia.challenges.view.presenter.SubmitDetailPresenter;
 import com.tokopedia.challenges.view.share.ShareBottomSheet;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.Dialog;
@@ -87,7 +89,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private Menu mMenu;
     private ScrollView scrollView;
     @Inject
-    public ChallengesAnalytics analytics;
+    public ChallengesGaAnalyticsTracker analytics;
 
     public static Fragment newInstance() {
         return new SubmitDetailFragment();
@@ -138,17 +140,20 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit = view.findViewById(R.id.btn_submit);
         llShare = view.findViewById(R.id.ll_share);
         tvWinnerNumber = view.findViewById(R.id.tv_winner_number);
-        //progressBar = view.findViewById(R.id.progress_bar);
 
         scrollView = view.findViewById(R.id.submit_detail_scrollview);
 
-        isPastChallenge = getArguments().getBoolean("isPastChallenge", false);
+        isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
         setClickListeners();
-        submissionResult = getArguments().getParcelable("submissionsResult");
-        fromSubmission = getArguments().getBoolean("fromSubmission");
+        submissionResult = getArguments().getParcelable(Utils.QUERY_PARAM_SUBMISSION_RESULT);
+        fromSubmission = getArguments().getBoolean(Utils.QUERY_PARAM_FROM_SUBMISSION);
         if (submissionResult == null) {
             submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
+            if (getArguments().getBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, false)) {
+                ChallengesCacheHandler.resetCache();
+            }
             presenter.getSubmissionDetails(submissionId);
+
         } else {
             hidProgressBar();
             submissionId = submissionResult.getId();
@@ -192,22 +197,22 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
             ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult);
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                    ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
-                    ChallengesAnalytics.EVENT_ACTION_SHARE,
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                     submissionResult.getCollection().getTitle());
         });
 
         likeBtn.setOnClickListener(v -> {
             presenter.likeBtnClick(submissionResult);
-            String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+            String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
             if (submissionResult.getMe() != null) {
                 setLikes(!submissionResult.getMe().isLiked());
-                action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
             }
             if (submissionResult.getCollection() != null) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
-                        ChallengesAnalytics.EVENT_CATEGORY_SUBMISSIONS,
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
                         action, submissionResult.getCollection().getTitle());
             }
         });
@@ -232,8 +237,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     }
 
     public void setChallengeImage(String thumbnailUrl, String videoUrl) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), "Challenge Submission");
-        String videoPath = localCacheHandler.getString(submissionId);
+        String videoPath = ChallengesCacheHandler.getLocalVideoPath(getActivity(), submissionId);
         ArrayList<String> imageUrls = new ArrayList<>();
         imageUrls.add(thumbnailUrl);
 
@@ -386,12 +390,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         dialog.setTitle(title);
         dialog.setDesc(desc);
         dialog.setBtnOk("ok");
-        dialog.setOnOkClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().finish();
-            }
-        });
+        dialog.setOnOkClickListener(v -> getActivity().finish());
         dialog.show();
     }
 
@@ -463,7 +462,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_delete && submissionResult != null) {
-            showDeleteDialog(submissionResult.getId(), submissionResult.getCollection().getId());
+            showDeleteDialog();
         }
         return true;
     }
@@ -478,7 +477,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnShare.setVisibility(View.VISIBLE);
     }
 
-    private void showDeleteDialog(String submissionId, String ChallengeId) {
+    private void showDeleteDialog() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle("Are you sure!");
         dialog.setBtnOk("Ok");
@@ -487,7 +486,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.deleteSubmittedPost(submissionId, ChallengeId);
+                presenter.deleteSubmittedPost(submissionResult.getId(), submissionResult.getCollection().getId(), submissionResult.getCollection().getTitle());
                 dialog.dismiss();
             }
         });

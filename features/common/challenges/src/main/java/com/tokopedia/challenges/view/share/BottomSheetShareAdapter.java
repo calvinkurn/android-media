@@ -24,7 +24,7 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
     private final PackageManager mPackageManager;
 
     public interface OnItemClickListener {
-        void onItemClick(String packageName);
+        void onItemClick(String packageName, String title);
     }
 
     private BottomSheetShareAdapter.OnItemClickListener onItemClickListener;
@@ -68,14 +68,14 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_share_white);
             title = holder.labelView.getContext().getString(R.string.other);
             type = ShareBottomSheet.KEY_OTHER;
-        }else if (mActivities.size() > position) {
+        } else if (mActivities.size() > position) {
             final ResolveInfo activity = mActivities.get(position);
             resources = activity.loadIcon(mPackageManager);
             title = activity.loadLabel(mPackageManager);
             type = activity.activityInfo.packageName;
         }
 
-        if("direct".equalsIgnoreCase(title.toString())){
+        if ("direct".equalsIgnoreCase(title.toString())) {
             title = "Instagram";
         }
         if (resources != null)
@@ -86,7 +86,8 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
 
         final String finalType = type;
-        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(finalType));
+        final String name = title.toString();
+        holder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(finalType, name));
     }
 
     @Override

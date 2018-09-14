@@ -42,7 +42,6 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
         args.putInt(SCROLL_POSITION, postion);
         args.putStringArrayList(IMAGE_ARRAY, image_loc);
         fragment.setArguments(args);
-        Log.d(TAG, "newInstance");
         return fragment;
     }
 
@@ -58,7 +57,6 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
             SCROLL_POS = getArguments().getInt(SCROLL_POSITION);
             IMAGES_LOC = getArguments().getStringArrayList(IMAGE_ARRAY);
         }
-        Log.d(TAG, "onCreate");
     }
 
     @Override
@@ -82,7 +80,6 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
                 vpImageViewer.setAllowPageSwitching(true);
             }
         });
-        Log.d(TAG, "onCreateView");
         return contentView;
     }
 
@@ -101,25 +98,21 @@ public class ImageViewerFragment extends Fragment implements View.OnClickListene
         if (getActivity() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         }
-        Log.d(TAG, "onStop");
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        Log.d(TAG, "onAttach");
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        Log.d(TAG, "onDetach");
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Log.d(TAG, "onDestroyView");
     }
 
     @Override

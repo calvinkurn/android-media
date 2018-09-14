@@ -2,7 +2,6 @@ package com.tokopedia.challenges.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -28,7 +27,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
     private Context context;
 
     private SubmissionResult submissionsResult;
-    private ChallengesAnalytics analytics;
+    private ChallengesGaAnalyticsTracker analytics;
 
     MySubmissionsViewHolder(Context context, View view) {
         super(view);
@@ -39,7 +38,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         imgLikes = view.findViewById(R.id.img_likes);
         tvStatus = view.findViewById(R.id.tv_status);
         imgShare = view.findViewById(R.id.img_share);
-        analytics = new ChallengesAnalytics(context);
+        analytics = new ChallengesGaAnalyticsTracker(context);
     }
 
     void bind(SubmissionResult challengesResult, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
@@ -70,9 +69,9 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
             intent.putExtra("submissionsResult", submissionsResult);
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
             context.startActivity(intent);
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK,
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
@@ -87,17 +86,17 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 //            }
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(),submissionsResult);
          //   ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false, mediaUrl, submissionsResult.getCollection().getHashTag(), isVideo);
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
-                    ChallengesAnalytics.EVENT_ACTION_SHARE,
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                     challengesResult.getCollection().getTitle());
         });
         imgLikes.setOnClickListener(v -> {
-            String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+            String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
             if (submissionsResult.getMe().isLiked())
-                action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
-                    ChallengesAnalytics.EVENT_CATEGORY_MYSUBMISSIONS,
+                action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
                     action,
                     challengesResult.getCollection().getTitle());
             ISubmissionsViewHolderListner.onLikeClick(submissionsResult);

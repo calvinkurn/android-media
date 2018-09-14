@@ -9,15 +9,23 @@ import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 
 public interface SubmitDetailContract {
-     interface Presenter extends CustomerPresenter<View> {
+    interface Presenter extends CustomerPresenter<View> {
         void setDataInFields(SubmissionResult model);
 
         void likeBtnClick(SubmissionResult result);
 
+        void sendBuzzPointEvent(String submissionId);
+
+        void getSubmissionDetails(String submissionId);
+
+        void onSubmitButtonClick(String challegeId);
+
+        void deleteSubmittedPost(String submissionId, String challengeId, String challengeName);
+
         boolean getParticipatedStatus(SubmissionResult challengeResult);
     }
 
-     interface View extends CustomerView {
+    interface View extends CustomerView {
 
         void showStatusInfo(String statusMessage, boolean show);
 

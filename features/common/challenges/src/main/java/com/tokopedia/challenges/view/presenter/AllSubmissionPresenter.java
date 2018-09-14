@@ -68,6 +68,7 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         this.challengeId = challengeId;
     }
 
+    @Override
     public void loadMoreItems(boolean showProgress) {
         isLoading = true;
         setNextPageParams();

@@ -48,5 +48,6 @@ public class AllSubmissionContract {
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
 
+        void loadMoreItems(boolean showProgress);
     }
 }

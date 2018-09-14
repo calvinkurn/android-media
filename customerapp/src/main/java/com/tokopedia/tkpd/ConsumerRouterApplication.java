@@ -465,7 +465,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ChallengesModuleRouter,
         TravelCalendarRouter {
 
-    private  static final String EXTRA = "extra";
+    private static final String EXTRA = "extra";
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -733,6 +733,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     /**
      * Use {@link com.tokopedia.applink.RouteManager} or {@link ApplinkRouter#isSupportApplink(String)}
+     *
      * @param appLinks
      * @return
      */
@@ -818,7 +819,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageProduct(Context context) {
         Intent intent;
-        if(GlobalConfig.isCustomerApp()) {
+        if (GlobalConfig.isCustomerApp()) {
             intent = new Intent(context, CustomerProductManageActivity.class);
         } else {
             intent = new Intent(context, ProductManageActivity.class);
@@ -1988,7 +1989,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToPurchasePage(Activity activity) {
         activity.startActivity(PurchaseActivity.newInstance(activity));
-        if(!(activity instanceof MainParentActivity)) {
+        if (!(activity instanceof MainParentActivity)) {
             activity.finish();
         }
     }
@@ -2597,6 +2598,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getChangePhoneNumberRequestIntent(Context context) {
         return ChangePhoneNumberRequestActivity.getCallingIntent(context);
     }
+
     /**
      * Global Nav Router
      */
@@ -2694,7 +2696,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageCreditCard(Context context) {
         if (context instanceof Activity)
-        goToUserPaymentList((Activity) context);
+            goToUserPaymentList((Activity) context);
     }
 
     @Override
@@ -2754,11 +2756,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public void showHockeyAppDialog(Activity activity) {
         if (!DialogHockeyApp.isDialogShown(activity)) {
             DialogHockeyApp.createShow(activity,
-                () -> {
-                    Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
-                    activity.startActivity(intent);
-                });
+                    () -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(HockeyAppHelper.getHockeyappDownloadUrl()));
+                        activity.startActivity(intent);
+                    });
         }
     }
 
@@ -2850,7 +2852,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent createIntentProductEtalase(Context context,int etalaseId) {
+    public Intent createIntentProductEtalase(Context context, int etalaseId) {
         return EtalasePickerActivity.createInstance(context, etalaseId);
     }
 
@@ -2928,7 +2930,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getSettingBankIntent(Context context) {
-            return SettingBankActivity.Companion.createIntent(context);
+        return SettingBankActivity.Companion.createIntent(context);
     }
 
     @Override
@@ -2961,5 +2963,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void shareBranchUrlForChallenge(Activity context, String packageName, String url, String shareContents) {
         ShareSocmedHandler.ShareBranchUrl(context, packageName, "text/plain", url, shareContents);
+    }
+
+    @Override
+    public void sendMoengageEvents(String eventName, Map<String, Object> values) {
+        TrackingUtils.sendMoEngageEvents(eventName, values);
     }
 }

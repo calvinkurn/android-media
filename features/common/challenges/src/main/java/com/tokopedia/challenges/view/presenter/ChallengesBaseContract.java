@@ -28,5 +28,8 @@ public interface ChallengesBaseContract {
     }
 
     interface Presenter extends CustomerPresenter<View> {
+        void getOpenChallenges();
+
+        void getPastChallenges();
     }
 }

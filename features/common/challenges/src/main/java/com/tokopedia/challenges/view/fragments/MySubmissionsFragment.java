@@ -15,6 +15,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.MySubmissionsListAdapter;
 import com.tokopedia.challenges.view.adapter.MySubmissionsViewHolder;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.MySubmissionsBaseContract;
 import com.tokopedia.challenges.view.presenter.MySubmissionsHomePresenter;
@@ -51,13 +52,13 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(), "My Submissions");
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_submissions, container, false);
         recyclerView = view.findViewById(R.id.rv_home_submissions);
         progressBar = view.findViewById(R.id.progress_bar_layout);
@@ -66,22 +67,18 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         listAdpater = new MySubmissionsListAdapter(getActivity(), null, this);
         recyclerView.setAdapter(listAdpater);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
-        //recyclerView.addOnScrollListener(rvOnScrollListener);
         recyclerView.setVisibility(View.VISIBLE);
         mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code here
-                // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        // Stop animation (This will be after 3 seconds)
                         swipeRefreshLayout.setRefreshing(false);
                         mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
                     }
-                }, 4000); // Delay in millis
+                }, 4000);
             }
         });
         if (isFirst) {
@@ -198,7 +195,6 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
             EmptyStateViewHelper.hideEmptyState(getView());
             showProgressBarView();
             mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
-            //getActivity().onBackPressed();
         };
     }
 

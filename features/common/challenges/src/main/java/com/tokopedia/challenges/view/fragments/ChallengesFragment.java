@@ -9,16 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.adapter.ChallengesListAdapter;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.presenter.ChallengeHomePresenter;
 import com.tokopedia.challenges.view.presenter.ChallengesBaseContract;
@@ -44,7 +43,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private List<Result> openChallenges;
     private List<Result> pastChallenges;
     @Inject
-    ChallengesAnalytics analytics;
+    ChallengesGaAnalyticsTracker analytics;
     private boolean pastChallenge;
     private boolean isFirst = true;
     private boolean isFirstPastChallengeItem;
@@ -71,15 +70,17 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Active Challenges");
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK,
-                    ChallengesAnalytics.EVENT_CATEGORY_ACTIVE_CHALLENGES);
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES);
             pastChallenge = false;
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Active Challenges");
 
         });
 
@@ -87,26 +88,24 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getPastChallenges();
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
-            analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                    ChallengesAnalytics.EVENT_CATEGORY_CHALLENGES,
-                    ChallengesAnalytics.EVENT_ACTION_CLICK,
-                    ChallengesAnalytics.EVENT_CATEGORY_PAST_CHALLENGES);
+            analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
+                    ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                    ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES);
             pastChallenge = true;
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Past Challenges");
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code here
-                // To keep animation for 4 seconds
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        // Stop animation (This will be after 3 seconds)
                         swipeRefreshLayout.setRefreshing(false);
                         getChallenges();
                     }
-                }, 4000); // Delay in millis
+                }, 4000);
             }
         });
 
@@ -211,21 +210,11 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
 
     private EmptyStateViewHelper.RetryClickedListener getChallengesRetryClickedListener() {
-        return new EmptyStateViewHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                getChallenges();
-            }
-        };
+        return () -> getChallenges();
     }
 
     private NetworkErrorHelper.RetryClickedListener getChallengesRetryListener() {
-        return new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                getChallenges();
-            }
-        };
+        return () -> getChallenges();
     }
 
     @Override

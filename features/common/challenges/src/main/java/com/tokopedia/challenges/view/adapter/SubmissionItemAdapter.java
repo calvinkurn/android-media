@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
@@ -45,7 +44,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     private int orientation;
     private boolean isPastChallenge;
     private boolean isWinner;
-    private ChallengesAnalytics analytics;
+    private ChallengesGaAnalyticsTracker analytics;
 
 
     public SubmissionItemAdapter(List<SubmissionResult> categoryItems, INavigateToActivityRequest navigateToActivityRequest, int orientation, boolean isPastChallenge) {
@@ -66,7 +65,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        analytics = new ChallengesAnalytics(context);
+        analytics = new ChallengesGaAnalyticsTracker(context);
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -260,25 +259,25 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (v.getId() == R.id.iv_share) {
                 ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()));
                 if (categoryItems.get(getIndex()).getCollection() != null) {
-                    analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_SHARE,
-                            ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
-                            ChallengesAnalytics.EVENT_ACTION_SHARE,
+                    analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
+                            ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
+                            ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
                             categoryItems.get(getIndex()).getCollection().getTitle());
                 }
             } else if (v.getId() == R.id.iv_like) {
                 mPresenter.setSubmissionLike(categoryItems.get(getIndex()), getIndex());
-                String action = ChallengesAnalytics.EVENT_ACTION_LIKE;
+                String action = ChallengesGaAnalyticsTracker.EVENT_ACTION_LIKE;
                 if (categoryItems.get(getIndex()).getMe() != null) {
                     if (categoryItems.get(getIndex()).getMe().isLiked()) {
                         setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
-                        action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                        action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                     } else {
                         setLikes(!categoryItems.get(getIndex()).getMe().isLiked());
-                        action = ChallengesAnalytics.EVENT_ACTION_UNLIKE;
+                        action = ChallengesGaAnalyticsTracker.EVENT_ACTION_UNLIKE;
                     }
                     if (categoryItems.get(getIndex()).getCollection() != null) {
-                        analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_LIKE,
-                                ChallengesAnalytics.EVENT_CATEGORY_OTHER_SUBMISSION,
+                        analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_LIKE,
+                                ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,
                                 action, categoryItems.get(getIndex()).getCollection().getTitle());
                     }
                 }

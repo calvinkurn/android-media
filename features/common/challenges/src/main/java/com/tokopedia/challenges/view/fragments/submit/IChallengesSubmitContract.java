@@ -53,6 +53,8 @@ public interface IChallengesSubmitContract {
         void saveLocalpath(String newPostId, String filePath);
 
         void sendBroadcast(Intent intent1);
+
+        String getChallengeTitle();
     }
 
     interface Presenter extends CustomerPresenter<View> {

@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.BaseActivity;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -36,6 +37,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public static final String KEY_COPY = "salinlink";
     private static final String TYPE = "text/plain";
     public static final String KEY_OTHER = "lainnya";
+    private static final String PARAM_CHALLENGE_ITEM = "PARAM_CHALLENGE_ITEM";
+    private static final String PARAM_SUBMISSION_ITEM = "PARAM_SUBMISSION_ITEM";
+    private static final String PARAM_IS_CHALLENGE = "param_is_challenge";
     private RecyclerView mRecyclerView;
     @Inject
     public ShareBottomSheetPresenter presenter;
@@ -50,12 +54,12 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         if (item instanceof Result) {
-            bundle.putParcelable("challengeItem", (Result) item);
-            bundle.putBoolean("is_challenge", true);
+            bundle.putParcelable(PARAM_CHALLENGE_ITEM, (Result) item);
+            bundle.putBoolean(PARAM_IS_CHALLENGE, true);
 
         } else if (item instanceof SubmissionResult) {
-            bundle.putParcelable("submissionItem", (SubmissionResult) item);
-            bundle.putBoolean("is_challenge", false);
+            bundle.putParcelable(PARAM_SUBMISSION_ITEM, (SubmissionResult) item);
+            bundle.putBoolean(PARAM_IS_CHALLENGE, false);
 
         }
         fragment.setArguments(bundle);
@@ -73,11 +77,11 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bottomsheet_share_layout, container, false);
 
-        isChallenge = getArguments().getBoolean("is_challenge", false);
+        isChallenge = getArguments().getBoolean(PARAM_IS_CHALLENGE, false);
         if (isChallenge) {
-            challengeItem = getArguments().getParcelable("challengeItem");
+            challengeItem = getArguments().getParcelable(PARAM_CHALLENGE_ITEM);
         } else {
-            submissionItem = getArguments().getParcelable("submissionItem");
+            submissionItem = getArguments().getParcelable(PARAM_SUBMISSION_ITEM);
         }
 
         initView(view);
@@ -126,11 +130,16 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
 
     @Override
-    public void onItemClick(String packageName) {
+    public void onItemClick(String packageName, String name) {
         if (isChallenge) {
             presenter.createAndShareChallenge(packageName);
+
         } else {
             presenter.createAndShareSubmission(packageName);
+            if(submissionItem !=null && submissionItem.getCollection()!=null) {
+                ChallengesMoengageAnalyticsTracker.challengePostShared(getActivity(), submissionItem.getCollection().getTitle(),
+                        submissionItem.getCollection().getId(), submissionItem.getId(), presenter.getParticipatedStatus(submissionItem),name);
+            }
         }
     }
 

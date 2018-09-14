@@ -1,4 +1,4 @@
-package com.tokopedia.challenges;
+package com.tokopedia.challenges.view.analytics;
 
 import android.content.Context;
 
@@ -7,10 +7,11 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
-public class ChallengesAnalytics {
+public class ChallengesGaAnalyticsTracker {
 
     public static String EVENT_CLICK_CHALLENGES = "clickChallenges";
     public static String EVENT_CLICK_SHARE = "clickShare";
@@ -41,7 +42,7 @@ public class ChallengesAnalytics {
 
 
     @Inject
-    public ChallengesAnalytics(@ApplicationContext Context context) {
+    public ChallengesGaAnalyticsTracker(@ApplicationContext Context context) {
         if (context != null && context.getApplicationContext() instanceof AbstractionRouter) {
             tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
         }
@@ -51,8 +52,6 @@ public class ChallengesAnalytics {
         if (tracker == null)
             return;
         tracker.sendEventTracking(event, category, action, label);
-
     }
-
 
 }

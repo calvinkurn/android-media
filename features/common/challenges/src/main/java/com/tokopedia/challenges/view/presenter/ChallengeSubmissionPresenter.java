@@ -72,6 +72,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         getChallengeDetailsUseCase.unsubscribe();
     }
 
+    @Override
     public void getSubmissionChallenges(boolean loadFromApi, Result challengeResult) {
         if (loadFromApi) {
             getView().showProgressBar();
@@ -135,7 +136,7 @@ public class ChallengeSubmissionPresenter extends BaseDaggerPresenter<ChallengeS
         }
     }
 
-    private boolean isParticipated(Result challengeResult) {
+    public boolean isParticipated(Result challengeResult) {
         return challengeResult.getMe() != null && challengeResult.getMe().getSubmissionCounts() != null
                 && (challengeResult.getMe().getSubmissionCounts().getApproved() > 0
                 || challengeResult.getMe().getSubmissionCounts().getWaiting() > 0);

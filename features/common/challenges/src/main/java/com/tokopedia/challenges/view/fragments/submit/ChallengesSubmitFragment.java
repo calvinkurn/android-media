@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.OvershootInterpolator;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -23,13 +22,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.challenges.ChallengesAnalytics;
+import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.DaggerChallengesComponent;
-import com.tokopedia.challenges.view.customview.ExpandableTextView;
+import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
+import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
@@ -93,7 +93,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     private String channelTitle;
     private String channelDesc;
     @Inject
-    public ChallengesAnalytics analytics;
+    public ChallengesGaAnalyticsTracker analytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +104,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         this.channelDesc = getArguments().getString("channelDesc");
 
         setHasOptionsMenu(true);
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Challenge Submissions");
     }
 
     public static ChallengesSubmitFragment newInstance(Bundle extras) {
@@ -133,10 +134,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                        ChallengesAnalytics.EVENT_CATEGORY_SUBMIT_POST,
-                        ChallengesAnalytics.EVENT_ACTION_CLICK,
-                        ChallengesAnalytics.EVENT_SUBMIT);
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                        ChallengesGaAnalyticsTracker.EVENT_SUBMIT);
                 presenter.onSubmitButtonClick();
             }
         });
@@ -144,10 +145,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         mBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                analytics.sendEventChallenges(ChallengesAnalytics.EVENT_CLICK_CHALLENGES,
-                        ChallengesAnalytics.EVENT_CATEGORY_SUBMIT_POST,
-                        ChallengesAnalytics.EVENT_ACTION_CLICK,
-                        ChallengesAnalytics.EVENT_CANCEL);
+                analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
+                        ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMIT_POST,
+                        ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
+                        ChallengesGaAnalyticsTracker.EVENT_CANCEL);
                 presenter.onCancelButtonClick();
             }
         });
@@ -432,9 +433,7 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     @Override
     public void saveLocalpath(String newPostId, String filePath) {
-        LocalCacheHandler localCacheHandler = new LocalCacheHandler(getContext(), "Challenge Submission");
-        localCacheHandler.putString(newPostId, filePath);
-        localCacheHandler.applyEditor();
+        ChallengesCacheHandler.saveLocalVideoPath(getContext(),newPostId,filePath);
     }
 
     @Override
@@ -442,5 +441,9 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
         getContext().sendBroadcast(intent1);
     }
 
+    @Override
+    public String getChallengeTitle() {
+        return channelTitle;
+    }
 
 }

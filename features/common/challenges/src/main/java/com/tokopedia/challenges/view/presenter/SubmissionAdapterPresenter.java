@@ -36,6 +36,7 @@ public class SubmissionAdapterPresenter extends BaseDaggerPresenter<SubmissionAd
         postSubmissionLikeUseCase.unsubscribe();
     }
 
+    @Override
     public void setSubmissionLike(final SubmissionResult result, final int position) {
 
         RequestParams requestParams = RequestParams.create();

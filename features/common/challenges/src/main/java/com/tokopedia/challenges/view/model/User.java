@@ -24,32 +24,40 @@ public class User implements Parcelable
     @SerializedName("AuthProvider")
     @Expose
     private AuthProvider authProvider;
-    public final static Parcelable.Creator<User> CREATOR = new Creator<User>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
+    protected User(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        createDate = in.readString();
+        thumbnailImage = in.readString();
+        authProvider = in.readParcelable(AuthProvider.class.getClassLoader());
+    }
+
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
         public User createFromParcel(Parcel in) {
             return new User(in);
         }
 
+        @Override
         public User[] newArray(int size) {
-            return (new User[size]);
+            return new User[size];
         }
+    };
 
-    }
-            ;
-
-    protected User(Parcel in) {
-        this.id = ((String) in.readValue((String.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.createDate = ((String) in.readValue((String.class.getClassLoader())));
-        this.thumbnailImage = ((String) in.readValue((String.class.getClassLoader())));
-        this.authProvider = ((AuthProvider) in.readValue((AuthProvider.class.getClassLoader())));
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public User() {
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(title);
+        parcel.writeString(createDate);
+        parcel.writeString(thumbnailImage);
+        parcel.writeParcelable(authProvider, i);
     }
 
     public String getId() {
@@ -92,17 +100,7 @@ public class User implements Parcelable
         this.authProvider = authProvider;
     }
 
-
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(title);
-        dest.writeValue(createDate);
-        dest.writeValue(thumbnailImage);
-        dest.writeValue(authProvider);
+    public static Creator<User> getCREATOR() {
+        return CREATOR;
     }
-
-    public int describeContents() {
-        return 0;
-    }
-
 }

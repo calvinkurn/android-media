@@ -29,6 +29,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         this.getPastChallengesUseCase = getPastChallengesUseCase;
     }
 
+    @Override
     public void getOpenChallenges() {
         if (getView().getOpenChallenges() != null) {
             getView().setChallengeDataToUI(getView().getOpenChallenges(), false);
@@ -65,6 +66,7 @@ public class ChallengeHomePresenter extends BaseDaggerPresenter<ChallengesBaseCo
         });
     }
 
+    @Override
     public void getPastChallenges() {
         if (getView().getPastChallenges() != null) {
             getView().setChallengeDataToUI(getView().getPastChallenges(), true);

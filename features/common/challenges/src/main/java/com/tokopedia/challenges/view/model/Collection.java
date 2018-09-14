@@ -30,34 +30,45 @@ public class Collection implements Parcelable {
     @SerializedName("Me")
     @Expose
     private Me me;
-    public final static Parcelable.Creator<Collection> CREATOR = new Creator<Collection>() {
 
 
-        @SuppressWarnings({
-                "unchecked"
-        })
+    protected Collection(Parcel in) {
+        id = in.readString();
+        title = in.readString();
+        type = in.readString();
+        endDate = in.readString();
+        thumbnailImage = in.readString();
+        hashTag = in.readString();
+        me = in.readParcelable(Me.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(title);
+        dest.writeString(type);
+        dest.writeString(endDate);
+        dest.writeString(thumbnailImage);
+        dest.writeString(hashTag);
+        dest.writeParcelable(me, flags);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Collection> CREATOR = new Creator<Collection>() {
+        @Override
         public Collection createFromParcel(Parcel in) {
             return new Collection(in);
         }
 
+        @Override
         public Collection[] newArray(int size) {
-            return (new Collection[size]);
+            return new Collection[size];
         }
-
     };
-
-    protected Collection(Parcel in) {
-        this.id = ((String) in.readValue((String.class.getClassLoader())));
-        this.title = ((String) in.readValue((String.class.getClassLoader())));
-        this.type = ((String) in.readValue((String.class.getClassLoader())));
-        this.endDate = ((String) in.readValue((String.class.getClassLoader())));
-        this.thumbnailImage = ((String) in.readValue((String.class.getClassLoader())));
-        this.hashTag = ((String) in.readValue((String.class.getClassLoader())));
-        this.me = ((Me) in.readValue((Me.class.getClassLoader())));
-    }
-
-    public Collection() {
-    }
 
     public String getId() {
         return id;
@@ -115,20 +126,9 @@ public class Collection implements Parcelable {
         this.me = me;
     }
 
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(id);
-        dest.writeValue(title);
-        dest.writeValue(type);
-        dest.writeValue(endDate);
-        dest.writeValue(thumbnailImage);
-        dest.writeValue(hashTag);
-        dest.writeValue(me);
+    public static Creator<Collection> getCREATOR() {
+        return CREATOR;
     }
-
-    public int describeContents() {
-        return 0;
-    }
-
 }
 
 
