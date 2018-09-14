@@ -17,6 +17,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuTitleViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.BuyerViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
@@ -81,6 +82,7 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
             tokopediaPayViewModel.setApplinkRight(ApplinkConst.DEPOSIT);
             items.add(tokopediaPayViewModel);
         } else {
+            TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
             tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus().getTitle());
             tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
 
@@ -103,21 +105,22 @@ public class BuyerAccountMapper implements Func1<GraphqlResponse, BuyerViewModel
             }
 
             if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageHeader())) {
-                tokopediaPayViewModel.setBottomSheetTitleRight(accountModel.getVccUserStatus().getMessageHeader());
+                bsDataRight.setTitle(accountModel.getVccUserStatus().getMessageHeader());
             }
 
             if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageBody())) {
-                tokopediaPayViewModel.setBottomSheetMessageRight(accountModel.getVccUserStatus().getMessageBody());
+                bsDataRight.setBody(accountModel.getVccUserStatus().getMessageBody());
             }
 
             if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageButtonName())) {
-                tokopediaPayViewModel.setBottomSheetButtonTextRight(accountModel.getVccUserStatus().getMessageButtonName());
+                bsDataRight.setButtonText(accountModel.getVccUserStatus().getMessageButtonName());
             }
 
             if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageUrl())) {
-                tokopediaPayViewModel.setBottomSheetButtonRedirectionUrlRight(accountModel.getVccUserStatus().getMessageUrl());
+                bsDataRight.setButtonRedirectionUrl(accountModel.getVccUserStatus().getMessageUrl());
             }
 
+            tokopediaPayViewModel.setBsDataRight(bsDataRight);
             items.add(tokopediaPayViewModel);
         }
 

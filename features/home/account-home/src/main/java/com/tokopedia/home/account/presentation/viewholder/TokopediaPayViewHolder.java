@@ -41,16 +41,10 @@ public class TokopediaPayViewHolder extends AbstractViewHolder<TokopediaPayViewM
         tokopediaPayCardView.setLeftItemClickListener(v -> listener.onTokopediaPayItemClicked(
                 element.getLabelLeft(),
                 element.getApplinkLeft(),
-                element.getBottomSheetTitleLeft(),
-                element.getBottomSheetMessageRight(),
-                element.getBottomSheetButtonTextLeft(),
-                element.getBottomSheetButtonRedirectionUrlLeft()));
+                element.getBsDataLeft()));
         tokopediaPayCardView.setRightItemClickListener(v -> listener.onTokopediaPayItemClicked(
                 element.getLabelRight(),
                 element.getApplinkRight(),
-                element.getBottomSheetTitleRight(),
-                element.getBottomSheetMessageRight(),
-                element.getBottomSheetButtonTextRight(),
-                element.getBottomSheetButtonRedirectionUrlRight()));
+                element.getBsDataRight()));
     }
 }

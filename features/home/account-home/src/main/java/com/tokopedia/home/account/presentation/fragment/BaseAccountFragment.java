@@ -26,6 +26,7 @@ import com.tokopedia.home.account.presentation.viewmodel.MenuGridItemViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuGridViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.MenuListViewModel;
 import com.tokopedia.home.account.presentation.viewmodel.ShopCardViewModel;
+import com.tokopedia.home.account.presentation.viewmodel.TokopediaPayBSModel;
 
 import static com.tokopedia.home.account.AccountConstants.Analytics.AKUN_SAYA;
 import static com.tokopedia.home.account.AccountConstants.Analytics.CLICK;
@@ -169,8 +170,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     }
 
     @Override
-    public void onTokopediaPayItemClicked(String label, String applink, String bsTitle,
-                                          String bsBody, String bsBtnText, String bsRedUrl) {
+    public void onTokopediaPayItemClicked(String label, String applink, TokopediaPayBSModel bsData) {
         sendTracking(PEMBELI, getString(R.string.label_tokopedia_pay_title), label);
 
         if (applink != null && applink.startsWith("http")) {
@@ -181,27 +181,25 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
             openApplink(applink);
         } else {
             if (getContext() == null
-                    || bsTitle == null
-                    || bsTitle.trim().isEmpty()
-                    || bsBody == null
-                    || bsBody.trim().isEmpty()) {
+                    || bsData == null
+                    || bsData.isInvalid()) {
                 return;
             }
 
             BottomSheetView toolTip = new BottomSheetView(getContext());
             toolTip.renderBottomSheet(new BottomSheetView.BottomSheetField
                     .BottomSheetFieldBuilder()
-                    .setTitle(bsTitle)
-                    .setBody(bsBody)
-                    .setCloseButton(bsBtnText == null || bsBtnText.trim().isEmpty() ? getString(R.string.error_no_password_no) : bsBtnText)
+                    .setTitle(bsData.getTitle())
+                    .setBody(bsData.getBody())
+                    .setCloseButton(bsData.getButtonText() == null || bsData.getButtonText().trim().isEmpty() ? getString(R.string.error_no_password_no) : bsData.getButtonText())
                     .build());
 
-            if (URLUtil.isValidUrl(bsRedUrl)) {
+            if (URLUtil.isValidUrl(bsData.getButtonRedirectionUrl())) {
                 toolTip.setBtnCloseOnClick(dialogInterface -> {
                     toolTip.cancel();
                     openApplink(String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW,
-                            bsRedUrl));
+                            bsData.getButtonRedirectionUrl()));
                 });
             }
 

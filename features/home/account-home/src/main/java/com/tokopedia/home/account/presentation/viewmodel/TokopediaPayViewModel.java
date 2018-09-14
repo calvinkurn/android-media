@@ -17,15 +17,9 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private String applinkRight;
     private String iconUrlRight;
     private String iconUrlLeft;
-    private String bottomSheetTitleLeft;
-    private String bottomSheetMessageLeft;
-    private String bottomSheetButtonTextLeft;
-    private String bottomSheetButtonRedirectionUrlLeft;
-    private String bottomSheetTitleRight;
-    private String bottomSheetMessageRight;
-    private String bottomSheetButtonTextRight;
-    private String bottomSheetButtonRedirectionUrlRight;
     private boolean isRightImportant;
+    private TokopediaPayBSModel bsDataLeft;
+    private TokopediaPayBSModel bsDataRight;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -96,76 +90,28 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.iconUrlLeft = iconUrlLeft;
     }
 
-    public String getBottomSheetTitleLeft() {
-        return bottomSheetTitleLeft;
-    }
-
-    public void setBottomSheetTitleLeft(String bottomSheetTitleLeft) {
-        this.bottomSheetTitleLeft = bottomSheetTitleLeft;
-    }
-
-    public String getBottomSheetMessageLeft() {
-        return bottomSheetMessageLeft;
-    }
-
-    public void setBottomSheetMessageLeft(String bottomSheetMessageLeft) {
-        this.bottomSheetMessageLeft = bottomSheetMessageLeft;
-    }
-
-    public String getBottomSheetButtonTextLeft() {
-        return bottomSheetButtonTextLeft;
-    }
-
-    public void setBottomSheetButtonTextLeft(String bottomSheetButtonTextLeft) {
-        this.bottomSheetButtonTextLeft = bottomSheetButtonTextLeft;
-    }
-
-    public String getBottomSheetButtonRedirectionUrlLeft() {
-        return bottomSheetButtonRedirectionUrlLeft;
-    }
-
-    public void setBottomSheetButtonRedirectionUrlLeft(String bottomSheetButtonRedirectionUrlLeft) {
-        this.bottomSheetButtonRedirectionUrlLeft = bottomSheetButtonRedirectionUrlLeft;
-    }
-
-    public String getBottomSheetTitleRight() {
-        return bottomSheetTitleRight;
-    }
-
-    public void setBottomSheetTitleRight(String bottomSheetTitleRight) {
-        this.bottomSheetTitleRight = bottomSheetTitleRight;
-    }
-
-    public String getBottomSheetMessageRight() {
-        return bottomSheetMessageRight;
-    }
-
-    public void setBottomSheetMessageRight(String bottomSheetMessageRight) {
-        this.bottomSheetMessageRight = bottomSheetMessageRight;
-    }
-
-    public String getBottomSheetButtonTextRight() {
-        return bottomSheetButtonTextRight;
-    }
-
-    public void setBottomSheetButtonTextRight(String bottomSheetButtonTextRight) {
-        this.bottomSheetButtonTextRight = bottomSheetButtonTextRight;
-    }
-
-    public String getBottomSheetButtonRedirectionUrlRight() {
-        return bottomSheetButtonRedirectionUrlRight;
-    }
-
-    public void setBottomSheetButtonRedirectionUrlRight(String bottomSheetButtonRedirectionUrlRight) {
-        this.bottomSheetButtonRedirectionUrlRight = bottomSheetButtonRedirectionUrlRight;
-    }
-
     public boolean isRightImportant() {
         return isRightImportant;
     }
 
     public void setRightImportant(boolean rightImportant) {
         isRightImportant = rightImportant;
+    }
+
+    public TokopediaPayBSModel getBsDataLeft() {
+        return bsDataLeft;
+    }
+
+    public void setBsDataLeft(TokopediaPayBSModel bsDataLeft) {
+        this.bsDataLeft = bsDataLeft;
+    }
+
+    public TokopediaPayBSModel getBsDataRight() {
+        return bsDataRight;
+    }
+
+    public void setBsDataRight(TokopediaPayBSModel bsDataRight) {
+        this.bsDataRight = bsDataRight;
     }
 
     public TokopediaPayViewModel() {
@@ -186,15 +132,9 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeString(this.applinkRight);
         dest.writeString(this.iconUrlRight);
         dest.writeString(this.iconUrlLeft);
-        dest.writeString(this.bottomSheetTitleLeft);
-        dest.writeString(this.bottomSheetMessageLeft);
-        dest.writeString(this.bottomSheetButtonTextLeft);
-        dest.writeString(this.bottomSheetButtonRedirectionUrlLeft);
-        dest.writeString(this.bottomSheetTitleRight);
-        dest.writeString(this.bottomSheetMessageRight);
-        dest.writeString(this.bottomSheetButtonTextRight);
-        dest.writeString(this.bottomSheetButtonRedirectionUrlRight);
-        dest.writeInt(isRightImportant ? 1 : 0);
+        dest.writeByte(this.isRightImportant ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(this.bsDataLeft, flags);
+        dest.writeParcelable(this.bsDataRight, flags);
     }
 
     protected TokopediaPayViewModel(Parcel in) {
@@ -206,15 +146,9 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.applinkRight = in.readString();
         this.iconUrlRight = in.readString();
         this.iconUrlLeft = in.readString();
-        this.bottomSheetTitleLeft = in.readString();
-        this.bottomSheetMessageLeft = in.readString();
-        this.bottomSheetButtonTextLeft = in.readString();
-        this.bottomSheetButtonRedirectionUrlLeft = in.readString();
-        this.bottomSheetTitleRight = in.readString();
-        this.bottomSheetMessageRight = in.readString();
-        this.bottomSheetButtonTextRight = in.readString();
-        this.bottomSheetButtonRedirectionUrlRight = in.readString();
-        isRightImportant = in.readInt() == 1;
+        this.isRightImportant = in.readByte() != 0;
+        this.bsDataLeft = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
+        this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
     }
 
     public static final Creator<TokopediaPayViewModel> CREATOR = new Creator<TokopediaPayViewModel>() {
