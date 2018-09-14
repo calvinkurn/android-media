@@ -141,6 +141,9 @@ data class TalkCommentItem(
         @SerializedName("comment_user_image")
         val comment_user_image: String = "",
         @Expose
+        @SerializedName("comment_user_id")
+        val comment_user_id: String = "",
+        @Expose
         @SerializedName("comment_user_label")
         val comment_user_label: String = "",
         @Expose

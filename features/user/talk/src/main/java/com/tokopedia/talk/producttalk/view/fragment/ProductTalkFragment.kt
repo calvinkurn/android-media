@@ -16,6 +16,7 @@ import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
@@ -39,7 +40,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         ProductTalkThreadViewHolder.TalkItemListener,
         LoadProductTalkThreadViewHolder.LoadTalkListener,
         CommentTalkViewHolder.TalkCommentItemListener,
-        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
+        TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+        LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
     override fun getContext(): Context? {
         return activity
@@ -103,7 +105,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun setUpView(view: View) {
         setMenuVisibility(false)
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -173,7 +175,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if (allowReply) goToDetailTalk()
+        //TODO
+        if (allowReply) goToDetailTalk("", "")
         else showErrorReplyTalk()
     }
 
@@ -182,8 +185,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showRedSnackbar(view, "Error dud")
     }
 
-    private fun goToDetailTalk() {
-
+    private fun goToDetailTalk(talkId: String, shopId: String) {
+        //TODO
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -221,7 +224,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "" , "")
+            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "", "")
             startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
@@ -343,7 +346,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-       // TODO STEVEN
+        // TODO STEVEN
     }
 
     override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
@@ -368,6 +371,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
         goToReportTalk(talkId, shopId, productId)
+    }
+
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+        goToDetailTalk(talkId, shopId)
     }
 
     override fun onDestroyView() {

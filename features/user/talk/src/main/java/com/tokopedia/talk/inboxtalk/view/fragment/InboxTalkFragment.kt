@@ -14,8 +14,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
@@ -41,7 +43,8 @@ import javax.inject.Inject
 
 class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
-        .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener {
+        .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+        LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
 
     private val REQUEST_REPORT_TALK: Int = 101
@@ -93,7 +96,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
 
     private fun setupView() {
-        val adapterTypeFactory = InboxTalkTypeFactoryImpl(this, this, this)
+        val adapterTypeFactory = InboxTalkTypeFactoryImpl(this, this, this, this)
         val listTalk = ArrayList<Visitable<*>>()
         adapter = InboxTalkAdapter(adapterTypeFactory, listTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -443,6 +446,17 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         swipeToRefresh.isEnabled = true
     }
 
+    override fun onGoToPdp(productId: String) {
+
+    }
+
+    override fun onGoToUserProfile(userId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@InboxTalkFragment.startActivity(intent)
+        }
+    }
+
     override fun onNoShowTalkItemClick(talkId: String) {
         presenter.markTalkNotFraud(talkId)
     }
@@ -490,6 +504,10 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     override fun onSuccessFollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, true)
+    }
+
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+        goToDetailTalk(talkId, shopId)
     }
 
     override fun onDestroy() {

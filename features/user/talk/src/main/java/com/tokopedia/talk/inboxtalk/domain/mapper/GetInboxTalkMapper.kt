@@ -8,6 +8,7 @@ import com.tokopedia.talk.common.domain.CommentProduct
 import com.tokopedia.talk.common.domain.InboxTalkItemPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.TalkCommentItem
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.ProductHeader
@@ -55,12 +56,20 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
 
     private fun mapListThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
 
-        val listTalk = ArrayList<Visitable<*>>()
+        val listComment = ArrayList<Visitable<*>>()
+
+        val totalMoreComment = pojo.talk_total_comment.toInt() - pojo.list.size
+        if (totalMoreComment > 1) {
+            listComment.add(LoadMoreCommentTalkViewModel(totalMoreComment,
+                    pojo.talk_id,
+                    pojo.talk_shop_id))
+        }
+
         for (data: TalkCommentItem in pojo.list) {
-            listTalk.add(ProductTalkItemViewModel(
+            listComment.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
-                    data.comment_create_time,
+                    data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
@@ -73,7 +82,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                     data.comment_id,
                     pojo.talk_product_id,
                     data.comment_user_label_id,
-                    data.comment_user_label
+                    data.comment_user_label,
+                    data.comment_user_id
             ))
         }
 
@@ -94,9 +104,10 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         "",
                         pojo.talk_product_id,
                         pojo.talk_user_label_id,
-                        pojo.talk_user_label
+                        pojo.talk_user_label,
+                        pojo.talk_user_id
                 ),
-                listTalk
+                listComment
         )
     }
 
@@ -143,7 +154,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
     private fun mapProductHeader(data: InboxTalkItemPojo): ProductHeader {
         return ProductHeader(
                 data.talk_product_name,
-                data.talk_product_image
+                data.talk_product_image,
+                data.talk_product_id
         )
     }
 }

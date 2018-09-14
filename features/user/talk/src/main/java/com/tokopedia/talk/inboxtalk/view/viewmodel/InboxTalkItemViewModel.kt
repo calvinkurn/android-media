@@ -19,6 +19,7 @@ data class InboxTalkItemViewModel(
 }
 
 data class ProductHeader(
-        val productName: String,
-        val productAvatar : String
+        val productName: String = "",
+        val productAvatar: String = "",
+        val productId: String =""
 )

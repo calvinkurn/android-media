@@ -11,9 +11,10 @@ import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 /**
  * @author by nisie on 9/5/18.
  */
-class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTalkViewHolder
-.TalkCommentItemListener,
-                                 private val talkProductAttachmentItemClickListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
+class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTalkViewHolder.TalkCommentItemListener,
+                                 private val talkProductAttachmentItemClickListener:
+                                 TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+                                 private val talkCommentLoadMoreListener : LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         BaseAdapterTypeFactory(),
         ProductTalkChildThreadTypeFactory {
 
@@ -27,7 +28,7 @@ class CommentTalkTypeFactoryImpl(private val talkCommentItemListener : CommentTa
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
-            LoadMoreCommentTalkViewHolder.LAYOUT -> LoadMoreCommentTalkViewHolder(view)
+            LoadMoreCommentTalkViewHolder.LAYOUT -> LoadMoreCommentTalkViewHolder(view, talkCommentLoadMoreListener)
             CommentTalkViewHolder.LAYOUT -> CommentTalkViewHolder(view, talkCommentItemListener, talkProductAttachmentItemClickListener)
             else -> super.createViewHolder(view, viewType)
         }

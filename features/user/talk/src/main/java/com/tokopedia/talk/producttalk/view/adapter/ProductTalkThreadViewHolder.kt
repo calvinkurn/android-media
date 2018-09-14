@@ -12,6 +12,7 @@ import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import kotlinx.android.synthetic.main.reported_talk.view.*
@@ -20,7 +21,10 @@ import kotlinx.android.synthetic.main.talk_item.view.*
 class ProductTalkThreadViewHolder(val v: View,
                                   val listener: TalkItemListener,
                                   private val commentTalkListener: CommentTalkViewHolder.TalkCommentItemListener,
-                                  private val talkProductAttachmentListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
+                                  private val talkProductAttachmentListener:
+                                  TalkProductAttachmentAdapter
+                                  .ProductAttachmentItemClickListener,
+                                  private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         AbstractViewHolder<TalkThreadViewModel>(v) {
 
 
@@ -82,7 +86,8 @@ class ProductTalkThreadViewHolder(val v: View,
 
     private fun setCommentList(element: TalkThreadViewModel) {
         if (!element.listChild.isEmpty()) {
-            val typeFactoryImpl = CommentTalkTypeFactoryImpl(commentTalkListener, talkProductAttachmentListener)
+            val typeFactoryImpl = CommentTalkTypeFactoryImpl(commentTalkListener,
+                    talkProductAttachmentListener, talkCommentLoadMoreListener)
             adapter = CommentTalkAdapter(typeFactoryImpl, element.listChild)
             commentRecyclerView.layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager
                     .VERTICAL, false)
