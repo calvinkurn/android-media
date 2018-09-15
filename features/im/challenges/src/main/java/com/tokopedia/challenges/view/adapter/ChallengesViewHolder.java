@@ -61,8 +61,8 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
 
         itemView.setOnClickListener(view1 -> {
             Intent intent = new Intent(context, ChallengeDetailActivity.class);
-            intent.putExtra("challengesResult", challengesResult);
-            intent.putExtra("isPastChallenge", isPastChallenge);
+            intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, challengesResult);
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
             context.startActivity(intent);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
@@ -78,20 +78,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-//            String mediaUrl;
-//            boolean isVideo;
-//            if (TextUtils.isEmpty(challengesResult.getSharing().getAssets().getVideo())) {
-//                mediaUrl = challengesResult.getThumbnailUrl();
-//                isVideo = false;
-//            } else {
-//                mediaUrl = challengesResult.getSharing().getAssets().getVideo();
-//                isVideo = true;
-//            }
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult);
-//            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()), challengesResult.getTitle(),
-//                    challengesResult.getSharing().getMetaTags().getOgUrl(), challengesResult.getSharing().getMetaTags().getOgTitle(),
-//                    challengesResult.getSharing().getMetaTags().getOgImage(), challengesResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengesResult.getId()),
-//                    true, mediaUrl, challengesResult.getHashTag(), isVideo);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,

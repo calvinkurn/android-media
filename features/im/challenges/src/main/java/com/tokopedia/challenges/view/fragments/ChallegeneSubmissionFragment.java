@@ -133,10 +133,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         if (!TextUtils.isEmpty(getArguments().getString(Utils.QUERY_PARAM_CHALLENGE_ID))) {
             this.challengeId = getArguments().getString(Utils.QUERY_PARAM_CHALLENGE_ID);
         } else {
-            this.challengeResult = getArguments().getParcelable("challengesResult");
+            this.challengeResult = getArguments().getParcelable(Utils.QUERY_PARAM_SUBMISSION_RESULT);
         }
         this.isPastChallenge = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE);
-        isWinnerList = getArguments().getBoolean("isPastChallenge", false);
+        isWinnerList = getArguments().getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
         setHasOptionsMenu(true);
     }
 

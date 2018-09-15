@@ -118,7 +118,6 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        // fragmentCallbacks = (ChallengeDetailActivity) activity;
     }
 
     @Override
@@ -245,7 +244,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     @Override
     public void onStart() {
         super.onStart();
-        //CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE because challege details screen also call the same API
+        //CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE reset because challenge details screen also call the same API
         if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE || ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE) {
             ((SubmissionItemAdapter) recyclerview.getAdapter()).clearList();
             ((SubmissionItemAdapter) recyclerview.getAdapter()).notifyDataSetChanged();

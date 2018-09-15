@@ -221,13 +221,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (productItem.getMe() != null) {
                 setLikes(productItem.getMe().isLiked());
             }
-            // if (productItem.getPoints() > 0) {
-            // tvBuzzPoints.setVisibility(View.VISIBLE);
             tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
-//            } else {
-//                itemView.findViewById(R.id.iv_buzz_points).setVisibility(View.GONE);
-//                tvBuzzPoints.setVisibility(View.GONE);
-//            }
             if (isWinner) {
                 tvWinnerNumber.setVisibility(View.VISIBLE);
                 tvWinnerNumber.setText(String.valueOf(getIndex() + 1));
@@ -284,8 +278,8 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             } else {
                 Intent detailsIntent = new Intent(context, SubmitDetailActivity.class);
-                detailsIntent.putExtra("submissionsResult", categoryItems.get(getIndex()));
-                detailsIntent.putExtra("isPastChallenge", isPastChallenge);
+                detailsIntent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, categoryItems.get(getIndex()));
+                detailsIntent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
                 navigateToActivityRequest.onNavigateToActivityRequest(detailsIntent, ChallengeDetailActivity.REQUEST_CODE_SUBMISSIONDETAILACTIVITY, getIndex());
             }
         }

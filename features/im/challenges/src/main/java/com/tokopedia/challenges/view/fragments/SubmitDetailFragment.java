@@ -51,6 +51,9 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+/**
+ * Created by ashwanityagi on 06/08/18.
+ */
 public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View, CustomVideoPlayer.CustomVideoPlayerListener {
     private LinearLayout statusView;
     private TextView statusText;

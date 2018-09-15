@@ -51,14 +51,14 @@ public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFr
 
     @Override
     protected Fragment getNewFragment() {
-        SubmissionResult model = getIntent().getParcelableExtra("submissionsResult");
+        SubmissionResult model = getIntent().getParcelableExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT);
         String submissionId = getIntent().getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID);
         boolean isPastChallenge = getIntent().getBooleanExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, false);
-        boolean fromSubmission = getIntent().getBooleanExtra("fromSubmission", false);
+        boolean fromSubmission = getIntent().getBooleanExtra(Utils.QUERY_PARAM_FROM_SUBMISSION, false);
         Fragment fragment = SubmitDetailFragment.newInstance();
         Bundle arg = new Bundle();
-        arg.putParcelable("submissionsResult", model);
-        arg.putBoolean("fromSubmission", fromSubmission);
+        arg.putParcelable(Utils.QUERY_PARAM_SUBMISSION_RESULT, model);
+        arg.putBoolean(Utils.QUERY_PARAM_FROM_SUBMISSION, fromSubmission);
         arg.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
         arg.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
         fragment.setArguments(arg);

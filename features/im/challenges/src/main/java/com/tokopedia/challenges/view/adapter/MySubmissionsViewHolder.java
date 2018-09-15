@@ -44,8 +44,6 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
     void bind(SubmissionResult challengesResult, ISubmissionsViewHolderListner ISubmissionsViewHolderListner) {
         this.submissionsResult = challengesResult;
         tvTitle.setText(challengesResult.getTitle());
-//        Drawable img = context.getResources().getDrawable(R.drawable.ic_buzz_points);
-//        tvPoints.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
         tvPoints.setText(String.valueOf(challengesResult.getPoints()));
         ImageHandler.loadImageWithoutPlaceholder(imgChallenge, Utils.getImageUrlForSubmission(challengesResult.getThumbnailUrl()), R.color.grey_1100);
         Utils.setTextViewBackground(context, tvStatus, submissionsResult.getStatus());
@@ -66,7 +64,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(view1 -> {
 
             Intent intent = new Intent(context, SubmitDetailActivity.class);
-            intent.putExtra("submissionsResult", submissionsResult);
+            intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, submissionsResult);
             intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
             context.startActivity(intent);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
@@ -75,17 +73,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
                     challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
-//            String mediaUrl;
-//            boolean isVideo;
-//            if (TextUtils.isEmpty(submissionsResult.getSharing().getAssets().getVideo())) {
-//                mediaUrl = submissionsResult.getThumbnailUrl();
-//                isVideo = false;
-//            } else {
-//                mediaUrl = submissionsResult.getSharing().getAssets().getVideo();
-//                isVideo = true;
-//            }
             ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(),submissionsResult);
-         //   ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getTitle(), submissionsResult.getSharing().getMetaTags().getOgUrl(), submissionsResult.getSharing().getMetaTags().getOgTitle(), submissionsResult.getSharing().getMetaTags().getOgImage(), submissionsResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionsResult.getId()), false, mediaUrl, submissionsResult.getCollection().getHashTag(), isVideo);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
