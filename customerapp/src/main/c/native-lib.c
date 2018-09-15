@@ -30,7 +30,7 @@ FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
 
 
 JNIEXPORT jbyteArray JNICALL
-Java_com_kozhevin_signverification_MainActivity_bytesFromJNI(JNIEnv *env, jobject this) {
+Java_com_tokopedia_tkpd_ConsumerMainApplication_bytesFromJNI(JNIEnv *env, jobject this) {
 
     NSV_LOGI("pathHelperGetPath starts\n");
     char *path = pathHelperGetPath();
