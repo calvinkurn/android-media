@@ -10,20 +10,31 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 class TalkDetailsContract {
     interface Presenter {
         fun loadTalkDetails(id:String)
-        fun deleteTalkComment(id:String)
 //        fun sendTalkComment(id:String, attachedHeaderProduct:List<TalkDetailsHeaderProductViewModel>?, message:String)
         fun onDestroy()
         fun sendComment(talkId:String, productId: String, message:String,
-                        attachedProduct:List<TalkProductAttachmentViewModel>,
-                        userId:String)
+                        attachedProduct:List<TalkProductAttachmentViewModel>)
+
+        fun deleteTalk(shopId: String, talkId: String)
+        fun followTalk(talkId: String)
+        fun unfollowTalk(talkId: String)
+        fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
+        fun markTalkNotFraud(talkId: String)
+        fun markCommentNotFraud(talkId: String, commentId: String)
     }
     interface View:CustomerView {
         fun onError(throwable: Throwable)
         fun onSuccessLoadTalkDetails(data:ArrayList<Visitable<*>>)
         fun onSuccessDeleteTalkComment(id:String)
         fun onSuccessSendTalkComment(commentId:String)
-        fun goToReportTalkPage(id:String, shopId:String, productId: String)
+        fun goToReportTalkPage(talkId:String, shopId:String, productId: String, commentId : String)
         fun showLoadingAction()
         fun hideLoadingAction()
+        fun onSuccessDeleteTalk(talkId: String)
+        fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
+        fun onSuccessUnfollowTalk(talkId: String)
+        fun onSuccessFollowTalk(talkId: String)
+        fun onSuccessMarkTalkNotFraud(talkId: String)
+        fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
     }
 }

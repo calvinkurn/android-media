@@ -6,21 +6,22 @@ import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * Created by Hendri on 05/09/18.
  */
-class GetTalkCommentsUseCase(val api:DetailTalkApi,
-                             val mapper:GetTalkCommentsMapperNew): UseCase<InboxTalkViewModel>() {
+class GetTalkCommentsUseCase @Inject constructor(val api: DetailTalkApi,
+                                                 val mapper: GetTalkCommentsMapperNew) : UseCase<InboxTalkViewModel>() {
     override fun createObservable(requestParams: RequestParams?): Observable<InboxTalkViewModel> {
-        val parameters = requestParams?.parameters?:HashMap()
+        val parameters = requestParams?.parameters ?: HashMap()
         return api.getTalkComment(parameters).map(mapper)
     }
 
     companion object {
-        fun getParameters(talkId:String):RequestParams{
-            val requestParams:RequestParams = RequestParams.create()
-            requestParams.putString("talk_id",talkId)
+        fun getParameters(talkId: String): RequestParams {
+            val requestParams: RequestParams = RequestParams.create()
+            requestParams.putString("talk_id", talkId)
             return requestParams
         }
     }

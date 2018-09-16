@@ -75,16 +75,16 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     private fun initData(savedInstanceState: Bundle?) {
         savedInstanceState?.run {
-            talkId = savedInstanceState.getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
-            shopId = savedInstanceState.getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
-            productId = savedInstanceState.getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
-            commentId = savedInstanceState.getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+            talkId = savedInstanceState.getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+            shopId = savedInstanceState.getString(ReportTalkActivity.EXTRA_SHOP_ID, "")
+            productId = savedInstanceState.getString(ReportTalkActivity.EXTRA_PRODUCT_ID, "")
+            commentId = savedInstanceState.getString(ReportTalkActivity.EXTRA_COMMENT_ID, "")
 
         } ?: arguments?.run {
-            talkId = getString(ReportTalkActivity.EXTRA_TALK_ID) ?: ""
-            shopId = getString(ReportTalkActivity.EXTRA_SHOP_ID) ?: ""
-            productId = getString(ReportTalkActivity.EXTRA_PRODUCT_ID) ?: ""
-            commentId = getString(ReportTalkActivity.EXTRA_COMMENT_ID) ?: ""
+            talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+            shopId = getString(ReportTalkActivity.EXTRA_SHOP_ID, "")
+            productId = getString(ReportTalkActivity.EXTRA_PRODUCT_ID, "")
+            commentId = getString(ReportTalkActivity.EXTRA_COMMENT_ID, "")
 
         } ?: activity?.run {
             finish()
