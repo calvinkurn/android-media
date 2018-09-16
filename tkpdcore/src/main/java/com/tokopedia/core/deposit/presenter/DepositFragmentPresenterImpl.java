@@ -126,7 +126,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
                     GqlMerchantSaldoDetailsResponse gqlMerchantSaldoDetailsResponse =
                             graphqlResponse.getData(GqlMerchantSaldoDetailsResponse.class);
 
-                    viewListener.showSaldoPrioritasFragment(gqlMerchantSaldoDetailsResponse.getData().getSellerDetails());
+                    viewListener.showSaldoPrioritasFragment(gqlMerchantSaldoDetailsResponse.getData());
 
                 } else {
                     viewListener.hideSaldoPrioritasFragment();

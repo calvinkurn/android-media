@@ -59,5 +59,5 @@ public interface DepositFragmentView {
 
     void hideSaldoPrioritasFragment();
 
-    void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.SellerDetails sellerDetails);
+    void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails);
 }

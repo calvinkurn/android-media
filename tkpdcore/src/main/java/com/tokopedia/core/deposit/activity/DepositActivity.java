@@ -18,12 +18,14 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.deposit.presenter.DepositPresenter;
 import com.tokopedia.core.deposit.presenter.DepositPresenterImpl;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.view.fragment.MerchantSaldoPriorityFragment;
 
 /**
  * Created by Nisie on 3/30/16.
  */
 @DeepLink(Constants.Applinks.DEPOSIT)
-public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
+public class DepositActivity extends BasePresenterActivity<DepositPresenter> implements DepositFragment.DepositScreenListener {
 
     private static final String TAG = "DEPOSIT_FRAGMENT";
 
@@ -101,5 +103,15 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> {
     @Override
     protected boolean isLightToolbarThemes() {
         return true;
+    }
+
+    @Override
+    public void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("seller_details", sellerDetails);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(resId, MerchantSaldoPriorityFragment.newInstance(bundle))
+                .commit();
     }
 }

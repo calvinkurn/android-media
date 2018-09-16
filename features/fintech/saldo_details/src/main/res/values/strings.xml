@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">saldo_details</string>
+    <string name="sp_label_new">Baru</string>
 </resources>

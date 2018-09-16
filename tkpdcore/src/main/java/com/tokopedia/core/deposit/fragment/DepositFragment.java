@@ -13,14 +13,12 @@ import android.text.method.LinkMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tkpd.library.utils.SnackbarManager;
-import com.tokopedia.abstraction.AbstractionRouter;
-import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -78,6 +76,10 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
     @BindView(R2.id.topup_button)
     TextView topupButton;
 
+    @BindView(R2.id.saldo_prioritas_widget)
+    FrameLayout saldoFrameLayout;
+
+    DepositScreenListener depositScreenListener;
 
     DatePickerUtil datePicker;
     DepositAdapter adapter;
@@ -107,6 +109,13 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         setActionsEnabled(false);
         presenter.setFirstDateParameter();
         presenter.setCache();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (activity instanceof DepositScreenListener)
+            depositScreenListener = (DepositScreenListener) activity;
     }
 
     @Override
@@ -427,12 +436,20 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
 
     @Override
     public void hideSaldoPrioritasFragment() {
-
+        saldoFrameLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.SellerDetails sellerDetails) {
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
 
+        if(sellerDetails != null &&
+                sellerDetails.isIsEligible()) {
+            if (depositScreenListener != null) {
+                depositScreenListener.showSaldoFragment(R.id.saldo_prioritas_widget, sellerDetails);
+            }
+        } else {
+            hideSaldoPrioritasFragment();
+        }
     }
 
     @Override
@@ -465,5 +482,9 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         context.startActivity(
                 ((TkpdCoreRouter) context.getApplicationContext())
                         .getAddPasswordIntent(context));
+    }
+
+    public interface DepositScreenListener {
+        void showSaldoFragment(int resId, GqlMerchantSaldoDetailsResponse.Details sellerDetails);
     }
 }

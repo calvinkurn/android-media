@@ -11,9 +11,9 @@ import java.util.List;
 
 public class GqlMerchantSaldoDetailsResponse implements Parcelable {
 
-    @SerializedName("data")
+    @SerializedName("sp_getmerchantstatus")
     @Expose
-    private Data data;
+    private Details data;
     public final static Parcelable.Creator<GqlMerchantSaldoDetailsResponse> CREATOR = new Creator<GqlMerchantSaldoDetailsResponse>() {
 
 
@@ -31,21 +31,21 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
     };
 
     protected GqlMerchantSaldoDetailsResponse(Parcel in) {
-        this.data = ((Data) in.readValue((Data.class.getClassLoader())));
+        this.data = ((Details) in.readValue((Details.class.getClassLoader())));
     }
 
     public GqlMerchantSaldoDetailsResponse() {
     }
 
-    public Data getData() {
+    public Details getData() {
         return data;
     }
 
-    public void setData(Data data) {
+    public void setData(Details data) {
         this.data = data;
     }
 
-    public GqlMerchantSaldoDetailsResponse withData(Data data) {
+    public GqlMerchantSaldoDetailsResponse withData(Details data) {
         this.data = data;
         return this;
     }
@@ -179,7 +179,7 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
 
     }
 
-    public class AnchorList implements Parcelable {
+    public static class AnchorList implements Parcelable {
 
         @SerializedName("label")
         @Expose
@@ -269,9 +269,9 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
 
     public class Data implements Parcelable {
 
-        @SerializedName("seller_details")
+        @SerializedName("sp_getmerchantstatus")
         @Expose
-        private SellerDetails sellerDetails;
+        private Details sellerDetails;
         public final Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
 
 
@@ -289,21 +289,21 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
         };
 
         protected Data(Parcel in) {
-            this.sellerDetails = ((SellerDetails) in.readValue((SellerDetails.class.getClassLoader())));
+            this.sellerDetails = ((Details) in.readValue((Details.class.getClassLoader())));
         }
 
         public Data() {
         }
 
-        public SellerDetails getSellerDetails() {
+        public Details getSellerDetails() {
             return sellerDetails;
         }
 
-        public void setSellerDetails(SellerDetails sellerDetails) {
+        public void setSellerDetails(Details sellerDetails) {
             this.sellerDetails = sellerDetails;
         }
 
-        public Data withSellerDetails(SellerDetails sellerDetails) {
+        public Data withSellerDetails(Details sellerDetails) {
             this.sellerDetails = sellerDetails;
             return this;
         }
@@ -341,9 +341,39 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
         @SerializedName("box_type")
         @Expose
         private String boxType;
+
         @SerializedName("description")
         @Expose
         private String description;
+
+        @SerializedName("box_right_arrow")
+        @Expose
+        private boolean showRightArrow;
+
+        @SerializedName("box_title")
+        @Expose
+        private String boxTitle;
+
+        @SerializedName("box_desc")
+        @Expose
+        private String boxDesc;
+
+        @SerializedName("box_show_popuop")
+        @Expose
+        private boolean boxShowPopup;
+
+        @SerializedName("popup_title")
+        @Expose
+        private String popupTitle;
+
+        @SerializedName("popup_desc")
+        @Expose
+        private String popupDesc;
+
+        @SerializedName("popup_button_text")
+        @Expose
+        private String popupButtonText;
+
         @SerializedName("infoList")
         @Expose
         private List<InfoList> infoList = null;
@@ -375,6 +405,13 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
             this.showToggle = ((boolean) in.readValue((boolean.class.getClassLoader())));
             this.boxType = ((String) in.readValue((String.class.getClassLoader())));
             this.description = ((String) in.readValue((String.class.getClassLoader())));
+            this.showRightArrow = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.boxTitle = ((String) in.readValue((String.class.getClassLoader())));
+            this.boxDesc = ((String) in.readValue((String.class.getClassLoader())));
+            this.boxShowPopup = ((boolean) in.readValue((boolean.class.getClassLoader())));
+            this.popupTitle = ((String) in.readValue((String.class.getClassLoader())));
+            this.popupDesc = ((String) in.readValue((String.class.getClassLoader())));
+            this.popupButtonText = ((String) in.readValue((String.class.getClassLoader())));
             in.readList(this.infoList, (com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse.InfoList.class.getClassLoader()));
             in.readList(this.anchorList, (com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse.AnchorList.class.getClassLoader()));
         }
@@ -507,6 +544,62 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
             this.boxType = boxType;
         }
 
+        public boolean isShowRightArrow() {
+            return showRightArrow;
+        }
+
+        public void setShowRightArrow(boolean showRightArrow) {
+            this.showRightArrow = showRightArrow;
+        }
+
+        public String getBoxTitle() {
+            return boxTitle;
+        }
+
+        public void setBoxTitle(String boxTitle) {
+            this.boxTitle = boxTitle;
+        }
+
+        public String getBoxDesc() {
+            return boxDesc;
+        }
+
+        public void setBoxDesc(String boxDesc) {
+            this.boxDesc = boxDesc;
+        }
+
+        public boolean isBoxShowPopup() {
+            return boxShowPopup;
+        }
+
+        public void setBoxShowPopup(boolean boxShowPopup) {
+            this.boxShowPopup = boxShowPopup;
+        }
+
+        public String getPopupTitle() {
+            return popupTitle;
+        }
+
+        public void setPopupTitle(String popupTitle) {
+            this.popupTitle = popupTitle;
+        }
+
+        public String getPopupDesc() {
+            return popupDesc;
+        }
+
+        public void setPopupDesc(String popupDesc) {
+            this.popupDesc = popupDesc;
+        }
+
+        public String getPopupButtonText() {
+            return popupButtonText;
+        }
+
+        public void setPopupButtonText(String popupButtonText) {
+            this.popupButtonText = popupButtonText;
+        }
+
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeValue(isEligible);
             dest.writeValue(status);
@@ -516,6 +609,13 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
             dest.writeValue(showToggle);
             dest.writeValue(boxType);
             dest.writeValue(description);
+            dest.writeValue(showRightArrow);
+            dest.writeValue(boxTitle);
+            dest.writeValue(boxDesc);
+            dest.writeValue(boxShowPopup);
+            dest.writeValue(popupTitle);
+            dest.writeValue(popupDesc);
+            dest.writeValue(popupButtonText);
             dest.writeList(infoList);
             dest.writeList(anchorList);
         }
