@@ -1,6 +1,7 @@
 package com.tokopedia.talk.producttalk.view.fragment
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -14,6 +15,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
@@ -380,5 +382,12 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
+    }
+
+    override fun onGoToUserProfile(userId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@ProductTalkFragment.startActivity(intent)
+        }
     }
 }

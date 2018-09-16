@@ -56,5 +56,7 @@
     <string name="contact_seller">Atau hubungi langsung penjual</string>
     <string name="chat_seller">Chat Penjual</string>
     <string name="label_talk_seller">Penjual</string>
+    <string name="error_default_cannot_reply_talk">Maaf, diskusi sedang tidak dapat diakses. Silahkan coba kembali setelah beberapa saat.</string>
+    <string name="hint_send_discussion">Tulis Pesan..</string>
 
 </resources>

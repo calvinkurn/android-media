@@ -28,6 +28,7 @@ class CommentTalkViewHolder(val v: View,
         fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
         fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String)
         fun onNoShowTalkCommentClick(talkId: String, commentId: String)
+        fun onGoToUserProfile(userId: String)
     }
 
     private val profileAvatar: ImageView = itemView.prof_pict
@@ -118,6 +119,14 @@ class CommentTalkViewHolder(val v: View,
             profileLabel.text = element.labelString
         } else {
             profileLabel.visibility = View.GONE
+        }
+
+        profileAvatar.setOnClickListener{
+            listener.onGoToUserProfile(element.userId)
+        }
+
+        profileName.setOnClickListener {
+            listener.onGoToUserProfile(element.userId)
         }
     }
 

@@ -1,17 +1,18 @@
-package com.tokopedia.talk.inboxtalk.domain.mapper
+package com.tokopedia.talk.talkdetails.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
-import com.tokopedia.talk.common.domain.*
+import com.tokopedia.talk.common.domain.CommentProduct
+import com.tokopedia.talk.common.domain.TalkCommentItem
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
-import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.ProductHeader
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import com.tokopedia.talk.talkdetails.domain.pojo.TalkDetailsPojo
+import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailViewModel
 import retrofit2.Response
 import rx.functions.Func1
 import javax.inject.Inject
@@ -19,13 +20,12 @@ import javax.inject.Inject
 /**
  * @author by nisie on 9/3/18.
  */
-class GetTalkCommentsMapperNew @Inject constructor() : Func1<Response<DataResponse<TalkDetailsPojo>>,
-        InboxTalkViewModel> {
+class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<TalkDetailsPojo>>,
+        TalkDetailViewModel> {
 
-    private val IS_READ = 2
     private val IS_FOLLOWED = 1
 
-    override fun call(response: Response<DataResponse<TalkDetailsPojo>>): InboxTalkViewModel {
+    override fun call(response: Response<DataResponse<TalkDetailsPojo>>): TalkDetailViewModel {
         if (response.body().header == null ||
                 (response.body().header != null && response.body().header.messages.isEmpty()) ||
                 (response.body().header != null && response.body().header.messages[0].isBlank())) {
@@ -36,20 +36,14 @@ class GetTalkCommentsMapperNew @Inject constructor() : Func1<Response<DataRespon
         }
     }
 
-    private fun mapToViewModel(pojo: TalkDetailsPojo): InboxTalkViewModel {
+    private fun mapToViewModel(pojo: TalkDetailsPojo): TalkDetailViewModel {
         val listTalk = ArrayList<Visitable<*>>()
-//        listTalk.add(mapListThread(pojo))
-//        for (data: InboxTalkItemPojo in pojo.list) {
-            listTalk.add(InboxTalkItemViewModel(
-                    mapProductHeader(pojo),
-                    mapListThread(pojo)
-            ))
-//        }
-        return InboxTalkViewModel("",
-                listTalk,
-                false,
-                0,
-                UnreadCount())
+        listTalk.add(InboxTalkItemViewModel(
+                mapProductHeader(pojo),
+                mapListThread(pojo)
+        ))
+        return TalkDetailViewModel(
+                listTalk)
     }
 
     private fun mapListThread(pojo: TalkDetailsPojo): TalkThreadViewModel {
@@ -59,7 +53,7 @@ class GetTalkCommentsMapperNew @Inject constructor() : Func1<Response<DataRespon
             listTalk.add(ProductTalkItemViewModel(
                     data.comment_user_image,
                     data.comment_user_name,
-                    data.comment_create_time,
+                    data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
                     true,
@@ -70,7 +64,11 @@ class GetTalkCommentsMapperNew @Inject constructor() : Func1<Response<DataRespon
                     data.comment_shop_id,
                     data.comment_talk_id,
                     data.comment_id,
-                    pojo.talk.talk_product_id
+                    pojo.talk.talk_product_id,
+                    pojo.talk.talk_user_label_id.toInt(),
+                    pojo.talk.talk_user_label,
+                    pojo.talk.talk_user_id,
+                    false
             ))
         }
 

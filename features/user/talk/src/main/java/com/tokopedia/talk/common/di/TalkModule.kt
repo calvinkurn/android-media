@@ -21,6 +21,7 @@ import com.tokopedia.talk.inboxtalk.domain.GetInboxTalkUseCase
 import com.tokopedia.talk.inboxtalk.domain.mapper.GetInboxTalkMapper
 import com.tokopedia.talk.producttalk.domain.mapper.ProductTalkListMapper
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
+import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -109,6 +110,12 @@ class TalkModule {
 
     @TalkScope
     @Provides
+    fun provideDetailTalkApi(@TalkScope retrofit: Retrofit): DetailTalkApi {
+        return retrofit.create(DetailTalkApi::class.java)
+    }
+
+    @TalkScope
+    @Provides
     fun provideGetInboxTalkUseCase(api: TalkApi,
                                    getInboxTalkMapper: GetInboxTalkMapper): GetInboxTalkUseCase {
         return GetInboxTalkUseCase(api, getInboxTalkMapper)
@@ -134,4 +141,6 @@ class TalkModule {
                                         baseActionMapper: BaseActionMapper): DeleteCommentTalkUseCase {
         return DeleteCommentTalkUseCase(api, baseActionMapper)
     }
+
+
 }
