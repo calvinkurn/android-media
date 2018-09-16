@@ -7,11 +7,11 @@ import com.tokopedia.talk.common.domain.usecase.DeleteTalkUseCase
 import com.tokopedia.talk.common.domain.usecase.FollowUnfollowTalkUseCase
 import com.tokopedia.talk.common.domain.usecase.MarkTalkNotFraudUseCase
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel
-import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.talkdetails.data.SendCommentResponse
 import com.tokopedia.talk.talkdetails.domain.usecase.GetTalkCommentsUseCase
 import com.tokopedia.talk.talkdetails.domain.usecase.SendCommentsUseCase
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
+import com.tokopedia.talk.talkdetails.view.viewmodel.TalkDetailViewModel
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -27,11 +27,9 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
         BaseDaggerPresenter<TalkDetailsContract.View>(),
         TalkDetailsContract.Presenter {
 
-    var isRequesting: Boolean = false
-
     override fun loadTalkDetails(id: String) {
         getTalkComments.execute(GetTalkCommentsUseCase.getParameters(id),
-                object : Subscriber<InboxTalkViewModel>() {
+                object : Subscriber<TalkDetailViewModel>() {
                     override fun onCompleted() {
 
                     }
@@ -40,7 +38,7 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                         view.onError(e)
                     }
 
-                    override fun onNext(response: InboxTalkViewModel) {
+                    override fun onNext(response: TalkDetailViewModel) {
                         view.onSuccessLoadTalkDetails(response.listTalk)
                     }
                 })
@@ -69,147 +67,135 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
     }
 
     override fun deleteTalk(shopId: String, talkId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
+        view.showLoadingAction()
 
-            deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
-                    shopId,
-                    talkId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
+                shopId,
+                talkId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessDeleteTalk(talkId)
-                }
-            })
-        }
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessDeleteTalk(talkId)
+            }
+        })
     }
 
     override fun deleteCommentTalk(shopId: String, talkId: String, commentId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
-            deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
-                    shopId,
-                    talkId,
-                    commentId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        view.showLoadingAction()
+        deleteCommentTalkUseCase.execute(DeleteCommentTalkUseCase.getParam(
+                shopId,
+                talkId,
+                commentId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessDeleteCommentTalk(talkId, commentId)
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessDeleteCommentTalk(talkId, commentId)
 
-                }
-            })
-        }
+            }
+        })
     }
 
     override fun unfollowTalk(talkId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
-            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
-                    talkId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        view.showLoadingAction()
+        followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                talkId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessUnfollowTalk(talkId)
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessUnfollowTalk(talkId)
 
-                }
-            })
-        }
+            }
+        })
     }
 
     override fun followTalk(talkId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
-            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
-                    talkId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        view.showLoadingAction()
+        followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                talkId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessFollowTalk(talkId)
-                }
-            })
-        }
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessFollowTalk(talkId)
+            }
+        })
     }
 
     override fun markTalkNotFraud(talkId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
-            markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
-                    talkId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        view.showLoadingAction()
+        markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
+                talkId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessMarkTalkNotFraud(talkId)
-                }
-            })
-        }
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessMarkTalkNotFraud(talkId)
+            }
+        })
     }
 
     override fun markCommentNotFraud(talkId: String, commentId: String) {
-        if (!isRequesting) {
-            view.showLoadingAction()
-            markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
-                    talkId
-            ), object : Subscriber<BaseActionTalkViewModel>() {
-                override fun onCompleted() {
+        view.showLoadingAction()
+        markTalkNotFraudUseCase.execute(MarkTalkNotFraudUseCase.getParamTalk(
+                talkId
+        ), object : Subscriber<BaseActionTalkViewModel>() {
+            override fun onCompleted() {
 
-                }
+            }
 
-                override fun onError(e: Throwable) {
-                    view.hideLoadingAction()
-                    onError(e)
-                }
+            override fun onError(e: Throwable) {
+                view.hideLoadingAction()
+                onError(e)
+            }
 
-                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
-                    view.hideLoadingAction()
-                    view.onSuccessMarkCommentNotFraud(talkId, commentId)
-                }
-            })
-        }
+            override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                view.hideLoadingAction()
+                view.onSuccessMarkCommentNotFraud(talkId, commentId)
+            }
+        })
     }
 
 

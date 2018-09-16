@@ -36,6 +36,7 @@ import com.tokopedia.talk.talkdetails.view.adapter.AttachedProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
+import kotlinx.android.synthetic.main.fragment_talk_comments.*
 import javax.inject.Inject
 
 /**
@@ -157,17 +158,24 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun showLoadingAction() {
         progressBar.visibility = View.VISIBLE
-        talkRecyclerView.visibility = View.GONE
+        mainView.visibility = View.GONE
+
     }
 
     override fun hideLoadingAction() {
         progressBar.visibility = View.GONE
-        talkRecyclerView.visibility = View.VISIBLE
+        mainView.visibility = View.VISIBLE
     }
 
 
     private fun showErrorTalk(message: String) {
-        NetworkErrorHelper.showRedSnackbar(view, message)
+        if (adapter.itemCount == 0) {
+            NetworkErrorHelper.showEmptyState(context, view, message) {
+                loadData()
+            }
+        } else {
+            NetworkErrorHelper.showRedSnackbar(view, message)
+        }
     }
 
     //TalkDetailsContract.View
@@ -451,7 +459,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO : TO BE IMPLEMENTED
     }
 
 }
