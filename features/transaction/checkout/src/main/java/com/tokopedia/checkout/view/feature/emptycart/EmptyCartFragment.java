@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 
 /**
@@ -54,7 +55,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment {
 
     @Override
     protected int getFragmentLayout() {
-        return 0;
+        return R.layout.fragment_empty_cart;
     }
 
     @Override

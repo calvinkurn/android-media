@@ -816,7 +816,14 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         cartAdapter.checkForShipmentForm();
 
-        setVisibilityRemoveButton(true);
+        if (toolbar != null) {
+            setVisibilityRemoveButton(true);
+        } else {
+            if (getActivity() != null && !mIsMenuVisible && !cartListData.getShopGroupDataList().isEmpty()) {
+                mIsMenuVisible = true;
+                getActivity().invalidateOptionsMenu();
+            }
+        }
     }
 
     private void showErrorLayout(String message) {
@@ -1067,6 +1074,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderEmptyCartData(CartListData cartListData) {
+        // Todo : change fragment to EmptyCartFragment
         enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
         refreshHandler.finishRefresh();
