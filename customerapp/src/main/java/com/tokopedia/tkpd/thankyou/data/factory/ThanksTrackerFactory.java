@@ -54,7 +54,7 @@ public class ThanksTrackerFactory {
             if (platform.equals(ThanksTrackerConst.Platform.DIGITAL)) {
                 return new DigitalTrackerCloudSource(params, digitalTrackerApi, digitalTrackerMapper, gson, sessionHandler, gcmHandler);
             } else if (platform.equals(ThanksTrackerConst.Platform.MARKETPLACE)) {
-                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, marketplaceTrackerMapper, context);
+                return new MarketplaceTrackerCloudSource(params, marketplaceTrackerApi, sessionHandler, context);
             }
         }
 

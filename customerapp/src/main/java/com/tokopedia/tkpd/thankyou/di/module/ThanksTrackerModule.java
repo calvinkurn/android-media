@@ -69,12 +69,6 @@ public class ThanksTrackerModule {
 
     @Provides
     @ThanksTrackerScope
-    MarketplaceTrackerMapper provideMarketplaceTrackerMapper(SessionHandler sessionHandler) {
-        return new MarketplaceTrackerMapper(sessionHandler);
-    }
-
-    @Provides
-    @ThanksTrackerScope
     ThanksTrackerFactory provideThanksAnalyticsFactory(DigitalTrackerApi digitalTrackerApi,
                                                        DigitalTrackerMapper digitalTrackerMapper,
                                                        MarketplaceTrackerApi marketplaceTrackerApi,

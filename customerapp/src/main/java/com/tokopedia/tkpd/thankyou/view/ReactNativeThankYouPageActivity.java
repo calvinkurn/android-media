@@ -141,11 +141,6 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-//        try {
-//            data.setShopTypes(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(","));
-//        } catch (UnsupportedEncodingException e) {
-//            e.printStackTrace();
-//        }
         ThanksTrackerService.start(this, data);
     }
 

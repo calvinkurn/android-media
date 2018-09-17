@@ -28,11 +28,13 @@ import rx.functions.Func1;
 public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<PaymentGraphql>>, Boolean> {
 
     private SessionHandler sessionHandler;
+    private List<String> shopTypes;
 
     private PaymentData paymentData;
 
-    public MarketplaceTrackerMapper(SessionHandler sessionHandler) {
+    public MarketplaceTrackerMapper(SessionHandler sessionHandler, List<String> shopTypes) {
         this.sessionHandler = sessionHandler;
+        this.shopTypes = shopTypes;
     }
 
     @Override
@@ -59,7 +61,7 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
-//        purchase.setShopTypes(getS);
+        purchase.setShopType((shopTypes.get(position)));
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));
@@ -99,6 +101,10 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
 
         return "";
     }
+
+//    private String getShopType(){
+//
+//    }
 
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
