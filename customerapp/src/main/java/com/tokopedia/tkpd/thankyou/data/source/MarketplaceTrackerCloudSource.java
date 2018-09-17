@@ -40,7 +40,7 @@ public class MarketplaceTrackerCloudSource extends ThanksTrackerCloudSource {
 
     @Override
     public Observable<Boolean> sendAnalytics() {
-        mapper = new MarketplaceTrackerMapper(sessionHandler, (List<String>) requestParams.getObject(""));
+        mapper = new MarketplaceTrackerMapper(sessionHandler, (List<String>) requestParams.getObject(ThanksTrackerConst.Key.SHOP_TYPES));
         return marketplaceTrackerApi.getTrackingData(getRequestPayload()).map(mapper);
     }
 
