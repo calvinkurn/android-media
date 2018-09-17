@@ -279,6 +279,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
         recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
         HomePageTracking.eventClickJumpRecomendation();
+        scrollToRecommendList = false;
     }
 
     private void initTabNavigation() {
