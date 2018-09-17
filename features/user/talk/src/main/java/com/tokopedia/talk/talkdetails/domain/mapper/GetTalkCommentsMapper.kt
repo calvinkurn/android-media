@@ -24,6 +24,7 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
         TalkDetailViewModel> {
 
     private val IS_FOLLOWED = 1
+    val SELLER_LABEL_ID = 3
 
     override fun call(response: Response<DataResponse<TalkDetailsPojo>>): TalkDetailViewModel {
         if (response.body().header == null ||
@@ -51,8 +52,8 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
         val listTalk = ArrayList<Visitable<*>>()
         for (data: TalkCommentItem in pojo.list) {
             listTalk.add(ProductTalkItemViewModel(
-                    data.comment_user_image,
-                    data.comment_user_name,
+                    getCommentUserImage(data),
+                    getCommentUserName(data),
                     data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
@@ -91,6 +92,16 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                 ),
                 listTalk
         )
+    }
+
+    private fun getCommentUserName(data: TalkCommentItem): String {
+        return if (data.comment_user_label_id == SELLER_LABEL_ID) data.comment_shop_name
+        else data.comment_user_name
+    }
+
+    private fun getCommentUserImage(data: TalkCommentItem): String {
+        return if (data.comment_user_label_id == SELLER_LABEL_ID) data.comment_shop_image
+        else data.comment_user_image
     }
 
     private fun mapProductAttachment(pojo: TalkCommentItem):

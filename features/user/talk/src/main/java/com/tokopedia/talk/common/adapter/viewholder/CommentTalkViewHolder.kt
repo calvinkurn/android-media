@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
@@ -29,6 +30,8 @@ class CommentTalkViewHolder(val v: View,
         fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String)
         fun onNoShowTalkCommentClick(talkId: String, commentId: String)
         fun onGoToUserProfile(userId: String)
+        fun onGoToShopPage(shopId: String)
+
     }
 
     private val profileAvatar: ImageView = itemView.prof_pict
@@ -65,8 +68,8 @@ class CommentTalkViewHolder(val v: View,
             } else {
                 setupNormalTalk(element)
             }
-            talkContent.text = element.comment
-            if(element.isSending) itemView.setBackgroundResource(R.color.white_grey)
+            talkContent.text = MethodChecker.fromHtml(element.comment)
+            if (element.isSending) itemView.setBackgroundResource(R.color.white_grey)
             else itemView.setBackgroundResource(R.color.transparent)
 
         }
@@ -76,18 +79,18 @@ class CommentTalkViewHolder(val v: View,
     private fun setupNormalTalk(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.GONE
         talkContent.visibility = View.VISIBLE
-        talkContent.text = element.comment
+        talkContent.text = MethodChecker.fromHtml(element.comment)
     }
 
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
-        reportedMessage.text = element.comment
+        reportedMessage.text = MethodChecker.fromHtml(element.comment)
 
         if (element.isOwner) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
-            rawMessage.text = element.rawMessage
+            rawMessage.text = MethodChecker.fromHtml(element.rawMessage)
             yesReportButton.visibility = View.VISIBLE
             noReportButton.visibility = View.VISIBLE
         } else {
@@ -112,22 +115,30 @@ class CommentTalkViewHolder(val v: View,
 
     private fun setProfileHeader(element: ProductTalkItemViewModel) {
         ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.avatar)
-        profileName.text = element.name
+        profileName.text = MethodChecker.fromHtml(element.name)
         datetime.text = element.timestamp
         if (element.labelId == SELLER_LABEL_ID) {
             profileLabel.visibility = View.VISIBLE
             profileLabel.text = element.labelString
+            profileAvatar.setOnClickListener {
+                listener.onGoToShopPage(element.shopId)
+            }
+            profileName.setOnClickListener {
+                listener.onGoToShopPage(element.shopId)
+            }
         } else {
             profileLabel.visibility = View.GONE
+
+            profileAvatar.setOnClickListener {
+                listener.onGoToUserProfile(element.userId)
+            }
+
+            profileName.setOnClickListener {
+                listener.onGoToUserProfile(element.userId)
+            }
         }
 
-        profileAvatar.setOnClickListener{
-            listener.onGoToUserProfile(element.userId)
-        }
 
-        profileName.setOnClickListener {
-            listener.onGoToUserProfile(element.userId)
-        }
     }
 
     private fun setupProductAttachment(element: ProductTalkItemViewModel) {

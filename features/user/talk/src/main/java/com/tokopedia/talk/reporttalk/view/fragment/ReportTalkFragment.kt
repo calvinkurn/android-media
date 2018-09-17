@@ -19,7 +19,7 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.reporttalk.di.DaggerReportTalkComponent
-import com.tokopedia.talk.reporttalk.view.ReportTalkPresenter
+import com.tokopedia.talk.reporttalk.view.presenter.ReportTalkPresenter
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.reporttalk.view.adapter.ReportTalkAdapter
 import com.tokopedia.talk.reporttalk.view.listener.ReportTalkContract
@@ -213,6 +213,7 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
         context?.run {
             KeyboardHandler.DropKeyboard(this, view)
         }
+        presenter.detachView()
     }
 
 }

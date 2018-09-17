@@ -42,7 +42,7 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
+open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL) : BaseDaggerFragment(),
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
@@ -94,9 +94,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         super.onViewCreated(view, savedInstanceState)
         setupView()
         initData()
-
     }
-
 
     private fun setupView() {
         val adapterTypeFactory = InboxTalkTypeFactoryImpl(this, this, this, this)
@@ -196,7 +194,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
-
         context?.run {
             talkDialog.createFollowTalkDialog(
                     this,
@@ -390,7 +387,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus,
+                                         shopId: String, talkId: String, commentId: String,
+                                         productId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
                     commentId)
@@ -406,7 +405,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
 
     private fun showErrorReplyTalk() {
-        //TODO NISIE GET ERROR MESSAGE FOR REPLY TALK
         NetworkErrorHelper.showRedSnackbar(view, getString(R.string
                 .error_default_cannot_reply_talk))
     }
@@ -432,12 +430,19 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     override fun onGoToPdp(productId: String) {
-
+//TODO NISIE
     }
 
     override fun onGoToUserProfile(userId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@InboxTalkFragment.startActivity(intent)
+        }
+    }
+
+    override fun onGoToShopPage(shopId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
             this@InboxTalkFragment.startActivity(intent)
         }
     }

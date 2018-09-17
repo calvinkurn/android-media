@@ -7,6 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.CommentTalkAdapter
 import com.tokopedia.talk.common.adapter.CommentTalkTypeFactoryImpl
@@ -81,8 +82,8 @@ class ProductTalkThreadViewHolder(val v: View,
 
     private fun setHeader(element: TalkThreadViewModel) {
         ImageHandler.loadImageCircle2(avatar.context, avatar, element.headThread.avatar)
-        userName.text = element.headThread.name
-        content.text = element.headThread.comment
+        userName.text = MethodChecker.fromHtml(element.headThread.name)
+        content.text = MethodChecker.fromHtml(element.headThread.comment)
         timestamp.text = element.headThread.timestamp
     }
 
@@ -101,7 +102,7 @@ class ProductTalkThreadViewHolder(val v: View,
     }
 
     private fun setupMenuButton(element: TalkThreadViewModel) {
-        val menu : TalkState = element.headThread.menu
+        val menu: TalkState = element.headThread.menu
 
         if (menu.allowDelete || menu.allowFollow || menu.allowReport || menu.allowUnfollow) {
             menuButton.visibility = View.VISIBLE
@@ -110,35 +111,40 @@ class ProductTalkThreadViewHolder(val v: View,
         }
 
 
-        menuButton.setOnClickListener { listener.onMenuButtonClicked(menu,
-                element.headThread.shopId,
-                element.headThread.talkId,
-                element.headThread.productId)  }
+        menuButton.setOnClickListener {
+            listener.onMenuButtonClicked(menu,
+                    element.headThread.shopId,
+                    element.headThread.talkId,
+                    element.headThread.productId)
+        }
     }
-
 
 
     private fun setupMaskedMessage(element: TalkThreadViewModel) {
         reportedLayout.visibility = View.VISIBLE
         content.visibility = View.GONE
 
-        reportedMessage.text = element.headThread.comment
+        reportedMessage.text = MethodChecker.fromHtml(element.headThread.comment)
 
         if (element.headThread.isOwner) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
-            rawMessage.text = element.headThread.rawMessage
+            rawMessage.text = MethodChecker.fromHtml(element.headThread.rawMessage)
         } else {
             rawMessage.visibility = View.GONE
             separatorReport.visibility = View.GONE
         }
 
-        yesReportButton.setOnClickListener { listener.onYesReportTalkItemClick(
-                element.headThread.talkId,
-                element.headThread.shopId,
-                element.headThread.productId) }
-        noReportButton.setOnClickListener { listener.onNoShowTalkItemClick(element
-                .headThread.talkId) }
+        yesReportButton.setOnClickListener {
+            listener.onYesReportTalkItemClick(
+                    element.headThread.talkId,
+                    element.headThread.shopId,
+                    element.headThread.productId)
+        }
+        noReportButton.setOnClickListener {
+            listener.onNoShowTalkItemClick(element
+                    .headThread.talkId)
+        }
 
     }
 
@@ -147,7 +153,7 @@ class ProductTalkThreadViewHolder(val v: View,
         reportedLayout.visibility = View.GONE
 
         content.visibility = View.VISIBLE
-        content.text = element.headThread.comment
+        content.text = MethodChecker.fromHtml(element.headThread.comment)
 
     }
 }

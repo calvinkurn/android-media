@@ -27,6 +27,9 @@ interface ProductTalkContract {
         fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
         fun onSuccessMarkTalkNotFraud(talkId: String)
         fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
+        fun onSuccessFollowTalk(talkId: String)
+        fun onSuccessUnfollowTalk(talkId: String)
+        fun onSuccessDeleteTalk(talkId: String)
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -37,6 +40,9 @@ interface ProductTalkContract {
         fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
         fun markTalkNotFraud(talkId: String)
         fun markCommentNotFraud(talkId: String, commentId: String)
-        fun isLoggedIn() : Boolean
+        fun isLoggedIn(): Boolean
+        fun unfollowTalk(talkId: String)
+        fun followTalk(talkId: String)
+        fun deleteTalk(shopId: String, talkId: String)
     }
 }

@@ -297,6 +297,7 @@ import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
+import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -2551,7 +2552,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true)) {
+            context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
+        } else {
+            context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        }
     }
 
     @Override

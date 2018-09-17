@@ -49,6 +49,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         InboxTalkItemViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
+
     @Inject
     lateinit var presenter: TalkDetailsPresenter
 
@@ -283,6 +284,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
 
     private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> goToReportTalkPage(talkId, shopId, productId,
                     commentId)
@@ -460,6 +465,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onGoToUserProfile(userId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@TalkDetailsFragment.startActivity(intent)
+        }
+    }
+
+    override fun onGoToShopPage(shopId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
             this@TalkDetailsFragment.startActivity(intent)
         }
     }
