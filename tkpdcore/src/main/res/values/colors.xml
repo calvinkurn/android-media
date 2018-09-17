@@ -131,5 +131,5 @@
     <color name="clicked_green">#8ad4efd5</color>
     <color name="add_template_disabled">#26000000</color>
 
-
+    <color name="text_hint">#2e000000</color>
 </resources>
