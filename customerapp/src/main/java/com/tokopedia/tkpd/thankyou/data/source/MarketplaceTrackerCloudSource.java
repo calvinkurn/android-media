@@ -18,8 +18,6 @@ import java.util.List;
 
 import rx.Observable;
 
-import static com.bca.xco.widget.connection.httpclient.f.R;
-
 /**
  * Created by okasurya on 12/5/17.
  */
