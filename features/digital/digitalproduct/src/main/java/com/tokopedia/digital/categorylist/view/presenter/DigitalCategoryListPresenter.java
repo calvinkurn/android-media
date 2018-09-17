@@ -1,6 +1,5 @@
 package com.tokopedia.digital.categorylist.view.presenter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
@@ -37,9 +36,10 @@ public class DigitalCategoryListPresenter implements IDigitalCategoryListPresent
     }
 
     @Override
-    public void processGetDigitalCategoryList() {
+    public void processGetDigitalCategoryList(String deviceVersion) {
         digitalCategoryListView.disableSwipeRefresh();
         digitalCategoryListInteractor.getDigitalCategoryItemDataList(
+                deviceVersion,
                 getSubscriberDigitalCategoryList()
         );
     }
