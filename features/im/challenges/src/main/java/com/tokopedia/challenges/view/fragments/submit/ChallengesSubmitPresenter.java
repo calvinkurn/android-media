@@ -107,9 +107,9 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-                    getView().setSnackBarErrorMessage("No Intenet Connection");
+                    getView().setSnackBarErrorMessage("Tidak ada koneksi");
                 } else {
-                    getView().setSnackBarErrorMessage("Image Uploaded Failed");
+                    getView().setSnackBarErrorMessage("Mengunggah Gambar");
                 }
                 getView().hideProgress();
                 e.printStackTrace();
@@ -126,7 +126,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 intentFilter.addAction(ACTION_UPLOAD_FAIL);
                 getView().getContext().registerReceiver(receiver, intentFilter);
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
-                    getView().showMessage("Upload Initiated Please Wait");
+                    getView().showMessage("Proses mengunggah dimulai, mohon tunggu.");
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
                 } else {
                     Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
@@ -160,7 +160,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     }
                     getView().saveLocalpath(intent.getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID), intent.getStringExtra(Utils.QUERY_PARAM_FILE_PATH));
                 } else if (intent.getAction() == ACTION_UPLOAD_FAIL) {
-                    getView().setSnackBarErrorMessage("Submission Fails!");
+                    getView().setSnackBarErrorMessage("Gagal mengunggah!");
                 }
                 deinit();
             }

@@ -51,8 +51,8 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
                 List<SubmissionResult> submissionResultList = mainDataObject.getSubmissionResults();
                 if (submissionResultList != null && submissionResultList.size() > 0) {
 
-                    for (SubmissionResult submissionResult :
-                            submissionResultList) {
+                    for (int i = 0; i < submissionResultList.size(); i++) {
+                        SubmissionResult submissionResult = submissionResultList.get(i);
                         int value = ChallengesCacheHandler.getManipulatedValue(submissionResult.getId());
                         if (value == ChallengesCacheHandler.Manupulated.NOTFOUND.ordinal()) {
                             continue;

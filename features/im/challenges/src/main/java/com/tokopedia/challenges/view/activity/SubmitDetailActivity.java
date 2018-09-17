@@ -41,6 +41,7 @@ public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFr
 
         extras.putString(Utils.QUERY_PARAM_SUBMISSION_ID, extras.getString(Utils.QUERY_PARAM_SUBMISSION_ID));
         extras.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, extras.getBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE));
+        extras.putBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, uri.build().getBooleanQueryParameter(Utils.QUERY_PARAM_IS_FROM_NOTIF,false));
         destination = new Intent(context, SubmitDetailActivity.class)
                 .setData(uri.build())
                 .putExtras(extras);
@@ -61,6 +62,8 @@ public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFr
         arg.putBoolean(Utils.QUERY_PARAM_FROM_SUBMISSION, fromSubmission);
         arg.putString(Utils.QUERY_PARAM_SUBMISSION_ID, submissionId);
         arg.putBoolean(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, isPastChallenge);
+        arg.putBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, getIntent().getBooleanExtra(Utils.QUERY_PARAM_IS_FROM_NOTIF,false));
+
         fragment.setArguments(arg);
         return fragment;
     }
