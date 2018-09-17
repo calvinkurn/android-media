@@ -199,7 +199,7 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_CHECK_ALL = "success - check all";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
-        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - shop and product";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
     }
 
     interface ScreenName {
