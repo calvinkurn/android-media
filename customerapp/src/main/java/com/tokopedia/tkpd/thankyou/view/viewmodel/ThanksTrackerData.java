@@ -57,6 +57,9 @@ public class ThanksTrackerData implements Parcelable {
         this.shopTypes = shopTypes;
     }
 
+    public ThanksTrackerData() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,15 +70,14 @@ public class ThanksTrackerData implements Parcelable {
         dest.writeString(this.platform);
         dest.writeString(this.template);
         dest.writeString(this.id);
-    }
-
-    public ThanksTrackerData() {
+        dest.writeStringList(this.shopTypes);
     }
 
     protected ThanksTrackerData(Parcel in) {
         this.platform = in.readString();
         this.template = in.readString();
         this.id = in.readString();
+        this.shopTypes = in.createStringArrayList();
     }
 
     public static final Creator<ThanksTrackerData> CREATOR = new Creator<ThanksTrackerData>() {
