@@ -35,4 +35,5 @@ query SellerAccountHome($shop_ids:[Int!]!){
     badge
     badge_hd
   }
+
 }

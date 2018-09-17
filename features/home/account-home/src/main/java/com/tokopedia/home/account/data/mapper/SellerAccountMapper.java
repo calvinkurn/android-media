@@ -195,7 +195,7 @@ public class SellerAccountMapper implements Func1<GraphqlResponse, SellerViewMod
         infoCardViewModel.setIconRes(R.drawable.ic_personal_loan);
         infoCardViewModel.setMainText(context.getString(R.string.title_menu_loan));
         infoCardViewModel.setSecondaryText(context.getString(R.string.label_menu_loan));
-        infoCardViewModel.setApplink("");
+        infoCardViewModel.setApplink(AccountConstants.Navigation.MITRA_TOPPERS);
         items.add(infoCardViewModel);
 
         sellerViewModel.setItems(items);

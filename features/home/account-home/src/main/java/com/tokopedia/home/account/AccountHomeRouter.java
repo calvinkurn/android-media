@@ -67,4 +67,6 @@ public interface AccountHomeRouter {
     void setPromoPushPreference(Boolean newValue);
 
     Observable<WalletModel> getTokoCashAccountBalance();
+
+    Intent getMitraToppersActivityIntent(Context context);
 }
