@@ -62,7 +62,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         if (totalMoreComment > 1) {
             listComment.add(LoadMoreCommentTalkViewModel(totalMoreComment,
                     pojo.talk_id,
-                    pojo.talk_shop_id))
+                    pojo.talk_shop_id,
+                    pojo.talk_state.allow_reply))
         }
 
         for (data: TalkCommentItem in pojo.list) {

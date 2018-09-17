@@ -119,7 +119,7 @@ abstract class BaseActivity extends AppCompatActivity implements
 
     @Override
     public void onForceLogout() {
-        if (!DialogForceLogout.isDialogShown(this)) showForceLogoutDialog();
+        if (!DialogForceLogout.isDialogShown(this)) ();
     }
 
     @Override

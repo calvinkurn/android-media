@@ -83,7 +83,8 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                     LoadMoreCommentTalkViewModel((pojo.talk_total_comment.toInt()
                             - totalExistComent),
                             pojo.talk_id,
-                            pojo.talk_shop_id))
+                            pojo.talk_shop_id,
+                            pojo.talk_state.allow_reply))
         }
 
         return TalkThreadViewModel(

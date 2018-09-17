@@ -391,7 +391,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         goToReportTalk(talkId, shopId, productId)
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
         goToDetailTalk(talkId, shopId)
     }
 

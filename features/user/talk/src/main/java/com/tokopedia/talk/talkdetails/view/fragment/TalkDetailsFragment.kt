@@ -198,6 +198,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onSuccessSendTalkComment(commentId: String) {
         sendMessageEditText.setText("")
+        attachedProductListAdapter.clearAllElements()
+        attachedProductList.visibility = View.GONE
+        adapter.clearAllElements()
+        presenter.loadTalkDetails(talkId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -460,7 +464,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
         //TODO : TO BE IMPLEMENTED
     }
 

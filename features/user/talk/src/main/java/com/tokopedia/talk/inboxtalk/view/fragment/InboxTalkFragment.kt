@@ -326,8 +326,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
-        if (allowReply) goToDetailTalk(talkId, shopId)
-        else showErrorReplyTalk()
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -468,11 +467,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String) {
-        context?.run {
-            this@InboxTalkFragment.startActivityForResult(
-                    TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
-                    , REQUEST_GO_TO_DETAIL)
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+        if (allowReply) {
+            context?.run {
+                this@InboxTalkFragment.startActivityForResult(
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        , REQUEST_GO_TO_DETAIL)
+            }
+        } else {
+            showErrorReplyTalk()
         }
     }
 
@@ -492,8 +495,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         adapter.setStatusFollow(talkId, true)
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
-        goToDetailTalk(talkId, shopId)
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     override fun onDestroy() {

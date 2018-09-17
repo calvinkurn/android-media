@@ -56,7 +56,7 @@ public class AccessTokenRefresh {
                 checkShowForceLogout(tokenResponseError);
             } else if (response.body() != null) {
                 tokenResponse = response.body();
-            }else{
+            } else {
                 return "";
             }
 
