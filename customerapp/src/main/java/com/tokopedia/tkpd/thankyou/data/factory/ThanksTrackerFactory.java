@@ -32,7 +32,6 @@ public class ThanksTrackerFactory {
     public ThanksTrackerFactory(DigitalTrackerApi digitalTrackerApi,
                                 DigitalTrackerMapper digitalTrackerMapper,
                                 MarketplaceTrackerApi marketplaceTrackerApi,
-                                MarketplaceTrackerMapper marketplaceTrackerMapper,
                                 Context context,
                                 Gson gson,
                                 SessionHandler sessionHandler,
