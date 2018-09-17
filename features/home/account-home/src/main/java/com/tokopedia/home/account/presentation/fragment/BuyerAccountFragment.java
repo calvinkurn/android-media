@@ -66,6 +66,7 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         recyclerView = view.findViewById(R.id.recycler_buyer);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
     }
 
@@ -74,11 +75,15 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
         super.onViewCreated(view, savedInstanceState);
         adapter = new BuyerAccountAdapter(new AccountTypeFactory(this), new ArrayList<>());
         recyclerView.setAdapter(adapter);
+        swipeRefreshLayout.setOnRefreshListener(this::getData);
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
         if (getContext() != null) {
             GraphqlClient.init(getContext());
             getData();
-            swipeRefreshLayout.setOnRefreshListener(this::getData);
         }
     }
 
@@ -126,7 +131,9 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
         }
     }
 

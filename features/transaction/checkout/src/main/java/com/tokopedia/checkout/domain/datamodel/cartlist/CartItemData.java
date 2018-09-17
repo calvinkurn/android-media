@@ -15,6 +15,7 @@ public class CartItemData implements Parcelable {
     private UpdatedData updatedData;
     private MessageErrorData errorData;
     private boolean singleChild;
+    private boolean parentHasErrorOrWarning;
     private boolean isError;
     private boolean isWarning;
     private String warningMessageTitle;
@@ -102,6 +103,14 @@ public class CartItemData implements Parcelable {
         this.errorData = errorData;
     }
 
+    public boolean isParentHasErrorOrWarning() {
+        return parentHasErrorOrWarning;
+    }
+
+    public void setParentHasErrorOrWarning(boolean parentHasError) {
+        this.parentHasErrorOrWarning = parentHasError;
+    }
+
     public static class OriginData implements Parcelable {
         public static final int CURRENCY_IDR = 1;
         public static final int CURRENCY_USD = 2;
@@ -145,6 +154,7 @@ public class CartItemData implements Parcelable {
         private boolean officialStore;
         private boolean goldMerchant;
         private boolean wishlisted;
+        private int originalQty;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -434,6 +444,14 @@ public class CartItemData implements Parcelable {
             this.shopType = shopType;
         }
 
+        public int getOriginalQty() {
+            return originalQty;
+        }
+
+        public void setOriginalQty(int originalQty) {
+            this.originalQty = originalQty;
+        }
+
         public OriginData() {
         }
 
@@ -480,6 +498,7 @@ public class CartItemData implements Parcelable {
             dest.writeString(this.shopName);
             dest.writeString(this.shopId);
             dest.writeString(this.shopType);
+            dest.writeInt(this.originalQty);
         }
 
         protected OriginData(Parcel in) {
@@ -519,6 +538,7 @@ public class CartItemData implements Parcelable {
             this.shopName = in.readString();
             this.shopId = in.readString();
             this.shopType = in.readString();
+            this.originalQty = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
@@ -754,6 +774,8 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.errorData, flags);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.singleChild ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
         dest.writeString(this.warningMessageTitle);
         dest.writeString(this.errorMessageTitle);
     }
@@ -764,6 +786,8 @@ public class CartItemData implements Parcelable {
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.isError = in.readByte() != 0;
         this.isWarning = in.readByte() != 0;
+        this.singleChild = in.readByte() != 0;
+        this.parentHasErrorOrWarning = in.readByte() != 0;
         this.warningMessageTitle = in.readString();
         this.errorMessageTitle = in.readString();
     }

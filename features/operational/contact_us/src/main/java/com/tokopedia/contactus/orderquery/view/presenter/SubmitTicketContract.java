@@ -12,32 +12,45 @@ import java.util.ArrayList;
  */
 
 public interface SubmitTicketContract {
-    public interface View extends CustomerView {
-        public String getDescription();
-        public void setDescriptionError(String error);
-        public void setQueryTitle(String title);
-        public SubmitTicketInvoiceData getSubmitTicketInvoiceData();
-        public ArrayList<ImageUpload> getImageList();
-        public void setInvoiceNumber(String number);
-        public void setInvoiceTitle(String description);
-        public void setInvoiceImage(String imagePath);
+    interface View extends CustomerView {
+        String getDescription();
 
+        void setDescriptionError(String error);
 
-        public void addimage(ImageUpload image);
-        public void showProgress(String message);
-        public void hideProgress();
-        public void showMessage(String showToast);
-        public void finish();
+        void setQueryTitle(String title);
+
+        SubmitTicketInvoiceData getSubmitTicketInvoiceData();
+
+        ArrayList<ImageUpload> getImageList();
+
+        void setInvoiceNumber(String number);
+
+        void setInvoiceTitle(String description);
+
+        void setInvoiceImage(String imagePath);
+
+        void addimage(ImageUpload image);
+
+        void showProgress(String message);
+
+        void hideProgress();
+
+        void showMessage(String showToast);
+
+        void finish();
 
         void setSubmitButtonEnabled(boolean enabled);
 
         void setSnackBarErrorMessage(String hello);
 
         void showToolTip();
+
         void showSuccessDialog();
     }
-    public interface Presenter extends CustomerPresenter<View> {
-        public void onSendButtonClick();
-        public void onImageSelect(ImageUpload image);
+
+    interface Presenter extends CustomerPresenter<View> {
+        void onSendButtonClick();
+
+        void onImageSelect(ImageUpload image);
     }
 }

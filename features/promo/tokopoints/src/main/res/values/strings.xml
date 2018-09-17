@@ -37,4 +37,7 @@
     <string name="tp_label_wait">Tunggu beberapa saat lagi</string>
     <string name="tp_label_exchange_point">Tukar Points</string>
 
+    <string name="tp_default_empty_coupons_title">Anda tidak memiliki Kupon untuk kategori ini.</string>
+    <string name="tp_default_empty_coupons_subtitle">Tukar Points Anda dengan Kupon di halaman TokoPoints.</string>
+
 </resources>
