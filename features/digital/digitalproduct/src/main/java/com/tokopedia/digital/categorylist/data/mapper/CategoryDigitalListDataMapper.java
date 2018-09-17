@@ -14,13 +14,15 @@ import java.util.List;
  */
 
 public class CategoryDigitalListDataMapper implements ICategoryDigitalListDataMapper {
+    public static final int DEFAULT_BILL_ID = 57;
+    public static final int DEFAULT_TICKET_ID = 58;
     @Override
     public List<DigitalCategoryItemData>
     transformDigitalCategoryItemDataList(HomeCategoryMenuItem homeCategoryMenuItem)
             throws MapperDataException {
         List<DigitalCategoryItemData> digitalCategoryItemDataList = new ArrayList<>();
         for (LayoutSection layoutSection : homeCategoryMenuItem.getData().getLayoutSections()) {
-            if (layoutSection.getId() == 57 || layoutSection.getId() == 58)
+            if (layoutSection.getId() == DEFAULT_BILL_ID || layoutSection.getId() == DEFAULT_TICKET_ID)
                 for (LayoutRow layoutRow : layoutSection.getLayoutRows()) {
                     if (layoutRow.getType().equalsIgnoreCase(
                             DigitalCategoryItemData.DEFAULT_TYPE_DIGITAL
