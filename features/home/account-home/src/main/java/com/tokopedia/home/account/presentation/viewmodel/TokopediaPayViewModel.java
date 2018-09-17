@@ -1,6 +1,7 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
+import android.support.annotation.ColorRes;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
@@ -20,6 +21,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private boolean isRightImportant;
     private TokopediaPayBSModel bsDataLeft;
     private TokopediaPayBSModel bsDataRight;
+    private boolean isLinked;
 
     @Override
     public int type(AccountTypeFactory typeFactory) {
@@ -114,6 +116,14 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.bsDataRight = bsDataRight;
     }
 
+    public boolean isLinked() {
+        return isLinked;
+    }
+
+    public void setLinked(boolean linked) {
+        isLinked = linked;
+    }
+
     public TokopediaPayViewModel() {
     }
 
@@ -135,6 +145,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeByte(this.isRightImportant ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.bsDataLeft, flags);
         dest.writeParcelable(this.bsDataRight, flags);
+        dest.writeByte(this.isLinked ? (byte) 1 : (byte) 0);
     }
 
     protected TokopediaPayViewModel(Parcel in) {
@@ -149,6 +160,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.isRightImportant = in.readByte() != 0;
         this.bsDataLeft = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
+        this.isLinked = in.readByte() != 0;
     }
 
     public static final Creator<TokopediaPayViewModel> CREATOR = new Creator<TokopediaPayViewModel>() {

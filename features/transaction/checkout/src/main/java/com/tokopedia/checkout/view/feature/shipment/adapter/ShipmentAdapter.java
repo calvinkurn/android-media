@@ -640,7 +640,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void updateShipmentDestinationPinpoint(Double latitude, Double longitude) {
+    public void updateShipmentDestinationPinpoint(String latitude, String longitude) {
         if (latitude != null && longitude != null) {
             if (recipientAddressModel != null) {
                 recipientAddressModel.setLatitude(latitude);

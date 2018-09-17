@@ -121,6 +121,12 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
+    protected void onCloseButtonClick() {
+        super.onCloseButtonClick();
+        shippingCourierBottomsheetListener.onCourierShipmentRecpmmendationCloseClicked();
+    }
+
+    @Override
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition) {
         if (shippingCourierViewModel.getProductData().getError() != null) {
             if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorData.ERROR_PINPOINT_NEEDED)) {
