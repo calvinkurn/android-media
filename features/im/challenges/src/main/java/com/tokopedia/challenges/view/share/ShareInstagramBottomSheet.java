@@ -77,8 +77,6 @@ public class ShareInstagramBottomSheet extends BottomSheets {
             createInstagramIntent();
         });
         btnCancel.setOnClickListener(v -> dismiss());
-        //desc.setText(mLobDetails.getDescription());
-
 
     }
 

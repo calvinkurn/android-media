@@ -96,7 +96,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scrore: "
+            android:text="Score: "
             android:paddingRight="@dimen/dp_2"
             app:layout_constraintBottom_toBottomOf="@+id/tv_points"
             app:layout_constraintRight_toLeftOf="@+id/tv_points"

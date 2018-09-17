@@ -8,6 +8,8 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
@@ -57,22 +59,22 @@ import rx.schedulers.Schedulers;
 
 public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSheetContract.View> implements ShareBottomSheetContract.Presenter {
     PostMapBranchUrlUseCase postMapBranchUrlUseCase;
-    private static final String PACKAGENAME_WHATSAPP = "com.whatsapp.ContactPicker";
-    private static final String PACKAGENAME_FACEBOOK = "com.facebook.composer.shareintent.ImplicitShareIntentHandlerDefaultAlias";
-    private static final String PACKAGENAME_LINE = "jp.naver.line.android.activity.selectchat.SelectChatActivityLaunchActivity";
+    private static final String PACKAGENAME_WHATSAPP = "com.whatsapp";
+    private static final String PACKAGENAME_FACEBOOK = "com.facebook.katana";
+    private static final String PACKAGENAME_LINE = "jp.naver.line.android";
     //private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
-    private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus.GatewayActivityAlias";
-    private static final String PACKAGENAME_INSTAGRAM_DIRECT = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
+    private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus";
+   // private static final String PACKAGENAME_INSTAGRAM_DIRECT = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
 
-    private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM, PACKAGENAME_INSTAGRAM_DIRECT,
+    private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
     public static final String POST_SHARE_TEXT = "Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s";
     public static final String CHALLENGE_SHARE_TEXT = "Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s";
-    private String title;
-    private String shareContents;
-    private String mediaUrl;
-    private boolean isVideo;
+//    private String title;
+//    private String shareContents;
+//    private String mediaUrl;
+//    private boolean isVideo;
 
     @Inject
     public ShareBottomSheetPresenter(PostMapBranchUrlUseCase postMapBranchUrlUseCase) {
@@ -154,6 +156,27 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
                 showApplications.add(resolveInfo);
             }
         }
+        return showApplications;
+    }
+
+    public List<ResolveInfo> appInstalledOrNot() {
+        List<ResolveInfo> showApplications = new ArrayList<>();
+        PackageManager pm = getView().getActivity().getPackageManager();
+        Intent shareIntent=new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+       // mainIntent.setType("image/*");
+        List<ResolveInfo> resolveInfos = pm.queryIntentActivities(shareIntent, 0); // returns all applications which can listen to the SEND Intent
+        if (resolveInfos != null && !resolveInfos.isEmpty()) {
+            for (ResolveInfo info : resolveInfos) {
+                if (Arrays.asList(ClassNameApplications)
+                        .contains(info.activityInfo.packageName)) {
+                    showApplications.add(info);
+                }
+            }
+        }
+
+
         return showApplications;
     }
 
@@ -291,10 +314,10 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         }
 
         if (mediaUrl != null) {
-            this.title = title;
-            this.shareContents = shareContents;
-            this.mediaUrl = mediaUrl;
-            this.isVideo = isVideo;
+//            this.title = title;
+//            this.shareContents = shareContents;
+//            this.mediaUrl = mediaUrl;
+//            this.isVideo = isVideo;
             convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
         }
     }

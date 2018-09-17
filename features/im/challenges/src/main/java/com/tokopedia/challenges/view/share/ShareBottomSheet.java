@@ -107,15 +107,15 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
         List<ResolveInfo> resolvedActivities = getActivity().getPackageManager()
                 .queryIntentActivities(intent, 0);
-        if (!resolvedActivities.isEmpty()) {
-            List<ResolveInfo> showApplications = presenter.validate(resolvedActivities);
+        //if (!resolvedActivities.isEmpty()) {
+            List<ResolveInfo> showApplications = presenter.appInstalledOrNot();
 
             BottomSheetShareAdapter adapter = new BottomSheetShareAdapter(showApplications, getActivity()
                     .getPackageManager());
             mRecyclerView.setAdapter(adapter);
 
             adapter.setOnItemClickListener(this);
-        }
+       // }
     }
 
     private Intent getIntent(String contains) {

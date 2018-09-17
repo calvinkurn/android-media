@@ -9,13 +9,11 @@
 
     <string name="ch_error_msg_wrong_size">Ups! Ukuran gambar yang di-upload lebih dari 10MB</string>
     <string name="ch_error_msg_wrong_video_size">Ups! Ukuran video yang di-upload lebih dari 100MB</string>
-    <string name="ch_error_msg_wrong_title_size">Judul harus berkisar 1 sampai 50 karakter</string>
-    <string name="ch_error_msg_title_blank">Isi judul post</string>
-    <string name="ch_error_msg_desc_blank">Isi deskripsi post</string>
-    <string name="ch_error_msg_wrong_descirption_size">Deskripsi harus berkisar 1 sampai 300 karakter</string>
+    <string name="ch_error_msg_wrong_title_size">Panjang judul harus 1 - 50 karakter</string>
+    <string name="ch_error_msg_title_blank">Isi Judul</string>
+    <string name="ch_error_msg_desc_blank">Isi Deskripsi</string>
+    <string name="ch_error_msg_wrong_descirption_size">Panjang deskripsi harus 1 - 300 karakter</string>
 
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="ch_hello_blank_fragment">Hello blank fragment</string>
     <string name="ch_see_less">sembunyikan</string>
     <string name="ch_see_more">Lihat lebih</string>
@@ -72,12 +70,12 @@
     <string name="ch_submit_photo_video">Daftarkan Foto atau Video</string>
     <string name="ch_copy_to_clipboard_bhahasa">link telah disalin</string>
     <string name="ch_post_deleted_msg">unggahan telah dihapus</string>
-    <string name="ch_submitted_success">Konten Anda diterima!</string>
+    <string name="ch_submitted_success">Berhasil Mengunggah</string>
     <string name="ch_submit_fail">Challenge Submission is failed</string>
     <string name="ch_other">Lainnya</string>
-    <string name="ch_error_msg_select_image">Please Select Image</string>
-    <string name="ch_error_msg_select_video">Please Select Video</string>
-    <string name="ch_error_msg_select_image_video">Please Select Image or Video</string>
+    <string name="ch_error_msg_select_image">Pilih Gambar</string>
+    <string name="ch_error_msg_select_video">Pilih Video</string>
+    <string name="ch_error_msg_select_image_video">Pilih Gambar atau Video</string>
     <string name="ch_dialog_upload_options">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="ch_copy">salinlink</string>
 

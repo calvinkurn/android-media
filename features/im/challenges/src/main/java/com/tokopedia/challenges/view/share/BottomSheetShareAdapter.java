@@ -75,9 +75,9 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
             type = activity.activityInfo.packageName;
         }
 
-        if ("direct".equalsIgnoreCase(title.toString())) {
-            title = "Instagram";
-        }
+//        if ("direct".equalsIgnoreCase(title.toString())) {
+//            title = "Instagram";
+//        }
         if (resources != null)
             holder.iconView.setImageDrawable(resources);
 
