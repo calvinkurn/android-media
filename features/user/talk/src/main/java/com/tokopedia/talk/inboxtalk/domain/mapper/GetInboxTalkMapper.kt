@@ -135,7 +135,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 pojo.talk_state.allow_reply,
                 pojo.talk_state.reported,
                 pojo.talk_state.masked,
-                pojo.talk_follow_status == IS_FOLLOWED
+                pojo.talk_state.allow_unfollow
         )
     }
 
@@ -148,7 +148,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 pojo.comment_state.allow_reply,
                 pojo.comment_state.reported,
                 pojo.comment_state.masked,
-                false
+                pojo.comment_state.allow_unfollow
         )
     }
 

@@ -31,6 +31,7 @@ import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.product_talk.*
 import javax.inject.Inject
 
@@ -66,6 +67,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private lateinit var swiper: SwipeToRefresh
 
     val REQUEST_REPORT_TALK: Int = 123478
+    val REQUEST_GO_TO_DETAIL: Int = 102
+    val REQUEST_GO_TO_LOGIN: Int = 200
+
 
     var productId: String = ""
     var productName: String = ""
@@ -181,14 +185,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.deleteComment(talkId, commentId)
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if(presenter.isLoggedIn()){
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+        if (presenter.isLoggedIn()) {
             goToLogin()
         }
-        if (allowReply)
-            goToDetailTalk("", "")
-        else
-            showErrorReplyTalk()
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     private fun showErrorReplyTalk() {
@@ -196,14 +197,23 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showRedSnackbar(view, "Error dud")
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String) {
-        //TODO
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+        if (allowReply) {
+            context?.run {
+                this@ProductTalkFragment.startActivityForResult(
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        , REQUEST_GO_TO_DETAIL)
+            }
+        } else {
+            showErrorReplyTalk()
+        }
     }
+
 
     private fun goToLogin() {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getLoginIntent(this)
-            activity!!.startActivityForResult(intent,200)
+            activity!!.startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
         }
     }
 
@@ -392,7 +402,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
-        goToDetailTalk(talkId, shopId)
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     override fun onDestroyView() {
@@ -413,5 +423,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@ProductTalkFragment.startActivity(intent)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

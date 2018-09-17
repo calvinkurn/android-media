@@ -116,7 +116,7 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                 false,
                 pojo.talk.talk_state.reported,
                 pojo.talk.talk_state.masked,
-                pojo.talk.talk_follow_status == IS_FOLLOWED
+                pojo.talk.talk_state.allow_unfollow
         )
     }
 
@@ -129,7 +129,7 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.comment_state.allow_reply,
                 pojo.comment_state.reported,
                 pojo.comment_state.masked,
-                false
+                pojo.comment_state.allow_unfollow
         )
     }
 

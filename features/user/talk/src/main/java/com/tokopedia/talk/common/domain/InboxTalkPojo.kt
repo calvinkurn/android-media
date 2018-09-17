@@ -196,6 +196,9 @@ data class TalkState(
         @SerializedName("allow_follow")
         val allow_follow: Boolean = false,
         @Expose
+        @SerializedName("allow_unfollow")
+        val allow_unfollow: Boolean = false,
+        @Expose
         @SerializedName("allow_unmasked")
         val allow_unmasked: Boolean = false,
         @Expose
@@ -219,6 +222,9 @@ data class CommentState(
         @Expose
         @SerializedName("allow_follow")
         val allow_follow: Boolean = false,
+        @Expose
+        @SerializedName("allow_unfollow")
+        val allow_unfollow: Boolean = false,
         @Expose
         @SerializedName("allow_unmasked")
         val allow_unmasked: Boolean = false,

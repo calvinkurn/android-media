@@ -29,7 +29,7 @@ class ProductTalkThreadViewHolder(val v: View,
 
 
     interface TalkItemListener {
-        fun onReplyTalkButtonClick(allowReply: Boolean)
+        fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String)
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
@@ -71,7 +71,9 @@ class ProductTalkThreadViewHolder(val v: View,
                 setupNormalTalk(element)
             }
             replyButton.setOnClickListener {
-                listener.onReplyTalkButtonClick(element.headThread.menu.allowReply)
+                listener.onReplyTalkButtonClick(element.headThread.menu.allowReply,
+                        element.headThread.talkId,
+                        element.headThread.shopId)
             }
 
         }
