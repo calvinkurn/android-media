@@ -20,6 +20,7 @@ public class Product implements Parcelable {
 
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
+    private static final String KEY_WISHLIST = "wishlist";
     private static final String KEY_IMAGE = "image";
     private static final String KEY_URI = "uri";
     private static final String KEY_RELATIVE_URI = "relative_uri";
@@ -47,6 +48,8 @@ public class Product implements Parcelable {
     private String adId;
     @SerializedName(KEY_NAME)
     private String name;
+    @SerializedName(KEY_WISHLIST)
+    private boolean wishlist;
     @SerializedName(KEY_IMAGE)
     private ProductImage image;
     @SerializedName(KEY_URI)
@@ -98,6 +101,9 @@ public class Product implements Parcelable {
         }
         if(!object.isNull(KEY_NAME)){
             setName(object.getString(KEY_NAME));
+        }
+        if(!object.isNull(KEY_WISHLIST)){
+            setWishlist(object.getBoolean(KEY_WISHLIST));
         }
         if(!object.isNull(KEY_IMAGE)){
             setImage(new ProductImage(object.getJSONObject(KEY_IMAGE)));
@@ -178,6 +184,7 @@ public class Product implements Parcelable {
         adRefKey = in.readString();
         adId = in.readString();
         name = in.readString();
+        wishlist = in.readByte() != 0;
         image = in.readParcelable(ProductImage.class.getClassLoader());
         uri = in.readString();
         relativeUri = in.readString();
@@ -206,6 +213,7 @@ public class Product implements Parcelable {
         dest.writeString(adRefKey);
         dest.writeString(adId);
         dest.writeString(name);
+        dest.writeByte((byte) (wishlist ? 1 : 0));
         dest.writeParcelable(image, flags);
         dest.writeString(uri);
         dest.writeString(relativeUri);
@@ -244,6 +252,14 @@ public class Product implements Parcelable {
             return new Product[size];
         }
     };
+
+    public boolean isWishlist() {
+        return wishlist;
+    }
+
+    public void setWishlist(boolean wishlist) {
+        this.wishlist = wishlist;
+    }
 
     public List<String> getTopLabels() {
         return topLabels;

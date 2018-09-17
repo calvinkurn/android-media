@@ -204,6 +204,7 @@ searchProduct(params: $params) {
         product{
           id
           name
+          wishlist
           image{
             m_url
             s_url
