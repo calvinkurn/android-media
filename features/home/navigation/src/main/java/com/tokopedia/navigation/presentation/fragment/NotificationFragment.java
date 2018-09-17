@@ -207,7 +207,8 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         DrawerNotification parentItem = adapter.getItem(parent);
         if (parentItem == null)
             return;
-
+        if (parentItem.getChilds() != null)
+            return;
         DrawerNotification.ChildDrawerNotification childItem =
                 parentItem.getChilds().get(child);
         if (childItem == null)
