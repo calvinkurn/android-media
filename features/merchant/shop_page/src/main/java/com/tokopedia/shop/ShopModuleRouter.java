@@ -17,7 +17,7 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
-    Fragment getKolPostShopFragment(String shopId);
+    Fragment getKolPostShopFragment(String shopId, String createPostUrl);
 
     void goToEditShop(Context context);
 

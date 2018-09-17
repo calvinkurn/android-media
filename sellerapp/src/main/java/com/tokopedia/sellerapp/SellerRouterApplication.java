@@ -1584,8 +1584,8 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Fragment getKolPostShopFragment(String shopId) {
-        return KolPostShopFragment.newInstance(shopId);
+    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
+        return KolPostShopFragment.newInstance(shopId, createPostUrl);
     }
 
     @Override

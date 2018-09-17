@@ -30,7 +30,7 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                     }
                     return f
                 }
-                ShopPageActivity.TAB_POSITION_FEED -> router.getKolPostShopFragment(shopId);
+                ShopPageActivity.TAB_POSITION_FEED -> router.getKolPostShopFragment(shopId, shopPageActivity.createPostUrl);
                 ShopPageActivity.TAB_POSITION_INFO -> {
                     val f = ShopInfoFragment.createInstance()
                     shopPageActivity.shopInfo?.run {

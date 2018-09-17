@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.reputation.common.data.source.cloud.model.ReputationSpeed
 import com.tokopedia.shop.R
+import com.tokopedia.shop.R.id.*
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTracking
@@ -55,6 +56,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     var shopAttribution: String? = null
     var shopInfo: ShopInfo? = null
     var isShowFeed: Boolean = false
+    var createPostUrl: String = ""
 
     @Inject
     lateinit var presenter: ShopPagePresenter
@@ -391,8 +393,9 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         NetworkErrorHelper.showCloseSnackbar(this, ErrorHandler.getErrorMessage(this, e))
     }
 
-    override fun onSuccessGetFeedWhitelist(isWhitelist: Boolean) {
-        isShowFeed = isWhitelist
+    override fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
+        this.isShowFeed = isWhitelist
+        this.createPostUrl = createPostUrl
         if (isShowFeed) {
             addFeed()
         }

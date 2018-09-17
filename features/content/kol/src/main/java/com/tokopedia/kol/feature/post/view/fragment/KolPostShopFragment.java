@@ -7,7 +7,11 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyResultViewModel;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder;
 import com.tokopedia.kol.KolComponentInstance;
+import com.tokopedia.kol.R;
+import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.kol.feature.post.di.DaggerKolProfileComponent;
 import com.tokopedia.kol.feature.post.di.KolProfileModule;
 import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
@@ -23,14 +27,23 @@ import javax.inject.Inject;
 public class KolPostShopFragment extends KolPostFragment implements KolPostShopContract.View,
         KolPostShopContract.View.Like {
 
+    private static final int CREATE_POST = 888;
     private static final String PARAM_SHOP_ID = "shop_id";
+    private static final String PARAM_CREATE_POST_URL = "create_post_url";
 
+    private EmptyResultViewModel emptyResultViewModel;
     private String shopId;
+    private String createPostUrl;
 
     public static KolPostShopFragment newInstance(String shopId) {
+        return newInstance(shopId, "");
+    }
+
+    public static KolPostShopFragment newInstance(String shopId, String createPostUrl) {
         KolPostShopFragment fragment = new KolPostShopFragment();
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_SHOP_ID, shopId);
+        bundle.putString(PARAM_CREATE_POST_URL, createPostUrl);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,6 +76,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
     private void initVar() {
         shopId = getArguments().getString(PARAM_SHOP_ID);
+        createPostUrl = getArguments().getString(PARAM_CREATE_POST_URL, "");
     }
 
     @Override
@@ -81,7 +95,11 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
         presenter.updateCursor(lastCursor);
 
         if (adapter.getList().isEmpty() && visitables.isEmpty()) {
-            adapter.showEmpty();
+            if (TextUtils.equals(userSession.getShopId(), shopId)) {
+                adapter.showEmptyOwnShop(getEmptyResultViewModel());
+            } else {
+                adapter.showEmpty();
+            }
         } else {
             adapter.addList(visitables);
         }
@@ -90,5 +108,35 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
     @Override
     public void onErrorGetKolPostShop(String message) {
         adapter.showErrorNetwork(message, this::fetchData);
+    }
+
+    private EmptyResultViewModel getEmptyResultViewModel() {
+        if (emptyResultViewModel == null) {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_empty_shop_feed);
+            emptyResultViewModel.setTitle(getString(R.string.empty_own_feed_title));
+            emptyResultViewModel.setContent(getString(R.string.empty_own_feed_subtitle));
+
+            if (!TextUtils.isEmpty(createPostUrl)){
+                emptyResultViewModel.setButtonTitle(getString(R.string.empty_own_feed_button));
+                emptyResultViewModel.setCallback(new BaseEmptyViewHolder.Callback() {
+                    @Override
+                    public void onEmptyContentItemTextClicked() {
+
+                    }
+
+                    @Override
+                    public void onEmptyButtonClicked() {
+                        startActivityForResult(
+                                CreatePostImagePickerActivity.getInstance(
+                                        getActivity(),
+                                        createPostUrl),
+                                CREATE_POST
+                        );
+                    }
+                });
+            }
+        }
+        return emptyResultViewModel;
     }
 }
