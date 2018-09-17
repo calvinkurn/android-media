@@ -37,18 +37,16 @@ public class CustomSwitchPreference extends SwitchPreference {
         titleText.setTextAppearance(holder.itemView.getContext(), R.style.TextView_Small);
         TextView summaryText = holder.itemView.findViewById(android.R.id.summary);
         summaryText.setTextAppearance(holder.itemView.getContext(), R.style.TextView_Small_BlackDisabled);
+        summaryText.setVisibility(View.GONE);
         holder.itemView.setMinimumHeight((int) holder.itemView.getResources().getDimension(R.dimen.dp_64));
 
         Switch aSwitch = findSwitch(holder.itemView.findViewById(android.R.id.widget_frame));
         if (aSwitch != null){
-            aSwitch.setScaleX(0.8f);
-            aSwitch.setScaleY(0.8f);
             aSwitch.setTrackDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
                     R.drawable.bg_switch_track_selector));
 
             aSwitch.setThumbDrawable(AppCompatResources.getDrawable(holder.itemView.getContext(),
                     R.drawable.bg_switch_thumb_selector));
-            aSwitch.setSwitchMinWidth((int) holder.itemView.getResources().getDimension(R.dimen.dp_40));
         }
     }
 

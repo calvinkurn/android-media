@@ -4,6 +4,9 @@ package com.tokopedia.navigation;
  * Created by meta on 25/07/18.
  */
 public class GlobalNavConstant {
+    public static final String EXTRA_APPLINK_FROM_PUSH = "applink_from_notif";
+    public static final String FROM_APP_SHORTCUTS = "FROM_APP_SHORTCUTS" ;
+    public static final String APP_SHOW_REFERRAL_BUTTON = "app_show_referral_button";
 
     public class Analytics {
 
@@ -33,6 +36,15 @@ public class GlobalNavConstant {
         static final String LABEL_FORCE_APP_UPDATE = "Clicked Update - Force";
         static final String LABEL_OPTIONAL_CANCEL_APP_UPDATE = "Clicked Nanti";
         static final String LABEL_FORCE_CANCEL_APP_UPDATE = "Clicked Tutup";
+
+        public static final String SCREEN_NAME = "screenName";
+        public static final String EVENT = "event";
+        public static final String EVENT_CATEGORY = "eventCategory";
+        public static final String EVENT_ACTION = "eventAction";
+        public static final String EVENT_LABEL = "eventLabel";
+        public static final String CLICK_HOME_PAGE = "clickHomePage";
+        public static final String TOP_NAV = "top nav";
+        public static final String SCREEN_NAME_CHAT = "/chat";
 
     }
 
