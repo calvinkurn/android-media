@@ -14,8 +14,8 @@ public class ThanksTrackerData implements Parcelable {
     private String platform;
     private String template;
     private String id;
-    private String[] shop_types;
-    private List<String> shopType;
+//    private String[] shop_types;
+    private List<String> shopTypes;
 
     public String getPlatform() {
         return platform;
@@ -41,29 +41,21 @@ public class ThanksTrackerData implements Parcelable {
         this.id = id;
     }
 
-    public String[] getShopTypes() {
-        return shop_types;
-    }
-
-    public void setShopTypes(String[] shop_types) {
-        this.shop_types = shop_types;
-    }
-
-    public List<String> getShopType() {
-        return shopType;
-    }
-
-    public void setShopType(List<String> shopType) {
-        this.shopType = shopType;
-    }
-
-//    public ArrayList<String> getShopTypes() {
+//    public String[] getShopTypes() {
 //        return shop_types;
 //    }
 //
 //    public void setShopTypes(String[] shop_types) {
 //        this.shop_types = shop_types;
 //    }
+
+    public List<String> getShopTypes() {
+        return shopTypes;
+    }
+
+    public void setShopTypes(List<String> shopTypes) {
+        this.shopTypes = shopTypes;
+    }
 
     @Override
     public int describeContents() {

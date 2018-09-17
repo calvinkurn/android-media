@@ -136,18 +136,16 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
-//        URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")
         try {
-            data.setShopType(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+            data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        try {
-            data.setShopTypes(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(","));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-//        data.setShopTypes(initialProps.getStringArrayList(ThanksTrackerConst.Key.SHOP_TYPES) );
+//        try {
+//            data.setShopTypes(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(","));
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
         ThanksTrackerService.start(this, data);
     }
 
