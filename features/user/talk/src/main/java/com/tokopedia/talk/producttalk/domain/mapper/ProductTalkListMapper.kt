@@ -77,20 +77,22 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
             ))
         }
 
-        if (pojo.talk_total_comment.toInt() > 1) {
+        val totalMoreComment = pojo.talk_total_comment.toInt() - pojo.list.size
+        if (totalMoreComment > 1) {
             val totalExistComent: Int = listCommentTalk.size
             listCommentTalk.add(0,
                     LoadMoreCommentTalkViewModel((pojo.talk_total_comment.toInt()
                             - totalExistComent),
                             pojo.talk_id,
-                            pojo.talk_shop_id))
+                            pojo.talk_shop_id,
+                            pojo.talk_state.allow_reply))
         }
 
         return TalkThreadViewModel(
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
                         pojo.talk_user_name,
-                        pojo.talk_create_time_fmt,
+                        pojo.talk_create_time_list.date_time_android,
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
@@ -133,7 +135,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.talk_state.allow_reply,
                 pojo.talk_state.reported,
                 pojo.talk_state.masked,
-                pojo.talk_follow_status == IS_FOLLOWED
+                pojo.talk_state.allow_unfollow
         )
     }
 
@@ -146,7 +148,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.comment_state.allow_reply,
                 pojo.comment_state.reported,
                 pojo.comment_state.masked,
-                false
+                pojo.comment_state.allow_unfollow
         )
     }
 

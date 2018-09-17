@@ -20,7 +20,7 @@ class LoadMoreCommentTalkViewHolder(val v: View,
     }
 
     interface LoadMoreListener {
-        fun onLoadMoreCommentClicked(talkId: String, shopId: String)
+        fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean)
     }
 
     private val textView: TextView = itemView.textLoadPrevious
@@ -31,7 +31,7 @@ class LoadMoreCommentTalkViewHolder(val v: View,
             textView.text = v.context.getString(R.string.see_more, element.counter.toString())
 
             itemView.setOnClickListener {
-                listener.onLoadMoreCommentClicked(element.talkId, element.shopId)
+                listener.onLoadMoreCommentClicked(element.talkId, element.shopId, element.allowReply)
             }
         }
 

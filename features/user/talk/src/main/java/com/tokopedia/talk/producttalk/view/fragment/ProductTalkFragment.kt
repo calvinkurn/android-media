@@ -20,6 +20,7 @@ import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
 import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
@@ -30,6 +31,7 @@ import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.product_talk.*
 import javax.inject.Inject
 
@@ -58,6 +60,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
     @Inject
     lateinit var presenter: ProductTalkPresenter
 
+    @Inject
+    lateinit var talkDialog: TalkDialog
+
     lateinit var adapter: ProductTalkAdapter
     lateinit var linearLayoutManager: LinearLayoutManager
     private lateinit var bottomMenu: Menus
@@ -66,6 +71,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     val REQUEST_REPORT_TALK: Int = 123478
     val REQUEST_CREATE_TALK: Int = 2132
+    val REQUEST_GO_TO_DETAIL: Int = 102
+    val REQUEST_GO_TO_LOGIN: Int = 200
+
 
     var productId: String = ""
     var productName: String = ""
@@ -201,14 +209,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.deleteComment(talkId, commentId)
     }
 
-    override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        if(presenter.isLoggedIn()){
+    override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
+        if (presenter.isLoggedIn()) {
             goToLogin()
         }
-        if (allowReply)
-            goToDetailTalk("", "")
-        else
-            showErrorReplyTalk()
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     private fun showErrorReplyTalk() {
@@ -216,14 +221,23 @@ class ProductTalkFragment : BaseDaggerFragment(),
         NetworkErrorHelper.showRedSnackbar(view, "Error dud")
     }
 
-    private fun goToDetailTalk(talkId: String, shopId: String) {
-        //TODO
+    private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
+        if (allowReply) {
+            context?.run {
+                this@ProductTalkFragment.startActivityForResult(
+                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this)
+                        , REQUEST_GO_TO_DETAIL)
+            }
+        } else {
+            showErrorReplyTalk()
+        }
     }
+
 
     private fun goToLogin() {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getLoginIntent(this)
-            activity!!.startActivityForResult(intent,200)
+            activity!!.startActivityForResult(intent, REQUEST_GO_TO_LOGIN)
         }
     }
 
@@ -251,70 +265,71 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
         when (itemMenu.title) {
-            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog()
-            getString(R.string.menu_follow_talk) -> showFollowTalkDialog()
-            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog()
-            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(alertDialog, shopId,
+                    talkId)
+            getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
+            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
+            getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
         }
         bottomMenu.dismiss()
     }
 
-    private fun goToReportTalk(talkId: String, shopId: String, productId: String) {
+    private fun goToReportTalk(talkId: String, shopId: String, productId: String, commentId: String) {
         activity?.run {
-            val intent = ReportTalkActivity.createIntentReportTalk(this, "", "", "")
-            startActivityForResult(intent, REQUEST_REPORT_TALK)
+            val intent: Intent = if (commentId.isBlank()) {
+                ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
+            } else {
+                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
+                        productId, commentId)
+            }
+            this@ProductTalkFragment.startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
     }
 
-    private fun showUnfollowTalkDialog() {
-        alertDialog.setTitle(getString(R.string.unfollow_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.unfollow_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_follow_talk))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
+    private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
+        context?.run {
+            talkDialog.createUnfollowTalkDialog(
+                    this,
+                    this@ProductTalkFragment.alertDialog,
+                    View.OnClickListener {
+                        this@ProductTalkFragment.alertDialog.dismiss()
+                        presenter.unfollowTalk(talkId)
+                    }
+            ).show()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
-            alertDialog.dismiss()
-        })
-
-        alertDialog.show()
     }
 
 
-    private fun showFollowTalkDialog() {
-        alertDialog.setTitle(getString(R.string.follow_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.follow_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_unfollow_talk))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
+    private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
+        context?.run {
+            talkDialog.createFollowTalkDialog(
+                    this,
+                    this@ProductTalkFragment.alertDialog,
+                    View.OnClickListener {
+                        this@ProductTalkFragment.alertDialog.dismiss()
+                        presenter.followTalk(talkId)
+                    }
+            ).show()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
-            alertDialog.dismiss()
-        })
-
-        alertDialog.show()
     }
 
-    private fun showDeleteTalkDialog() {
+    private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
 
-        alertDialog.setTitle(getString(R.string.delete_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.delete_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_delete))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
+        context?.run {
+            talkDialog.createDeleteTalkDialog(
+                    this,
+                    this@ProductTalkFragment.alertDialog,
+                    View.OnClickListener {
+                        this@ProductTalkFragment.alertDialog.dismiss()
+                        presenter.deleteTalk(shopId, talkId)
+                    }
+            ).show()
         }
-        alertDialog.setOnOkClickListener({
-            //asd
-            alertDialog.dismiss()
-        })
-
-        alertDialog.show()
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
@@ -343,7 +358,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
         when (itemMenu.title) {
-            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId)
+            getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
+                    commentId)
             getString(R.string.menu_delete_comment) -> showDeleteCommentTalkDialog(shopId,
                     talkId, commentId)
         }
@@ -388,7 +404,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        goToReportTalk(talkId, shopId, productId, "")
     }
 
     override fun onNoShowTalkItemClick(talkId: String) {
@@ -407,12 +423,24 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
-    override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
-        goToReportTalk(talkId, shopId, productId)
+    override fun onSuccessDeleteTalk(talkId: String) {
+        adapter.deleteTalkByTalkId(talkId)
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
-        goToDetailTalk(talkId, shopId)
+    override fun onSuccessUnfollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, false)
+    }
+
+    override fun onSuccessFollowTalk(talkId: String) {
+        adapter.setStatusFollow(talkId, true)
+    }
+
+    override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {
+        goToReportTalk(talkId, shopId, productId, "")
+    }
+
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
+        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     override fun onDestroyView() {
@@ -433,5 +461,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
             this@ProductTalkFragment.startActivity(intent)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

@@ -12,6 +12,7 @@ import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
 import com.tokopedia.core.util.GlobalConfig;
@@ -26,12 +27,14 @@ import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
 public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
         implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
     private static final String ORDER_CATEGORY = "orderCategory";
+    private static final int REQUEST_CODE = 100;
     private String orderCategory = "ALL";
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -143,7 +146,12 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
-        initTabs();
+        UserSession userSession = new UserSession(getActivity());
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_CODE);
+        } else {
+            initTabs();
+        }
     }
 
     private void initTabs() {
@@ -198,4 +206,13 @@ public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInit
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            initTabs();
+        } else {
+            finish();
+        }
+    }
 }

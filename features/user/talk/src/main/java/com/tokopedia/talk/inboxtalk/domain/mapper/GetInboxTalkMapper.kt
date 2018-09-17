@@ -62,7 +62,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         if (totalMoreComment > 1) {
             listComment.add(LoadMoreCommentTalkViewModel(totalMoreComment,
                     pojo.talk_id,
-                    pojo.talk_shop_id))
+                    pojo.talk_shop_id,
+                    pojo.talk_state.allow_reply))
         }
 
         for (data: TalkCommentItem in pojo.list) {
@@ -91,7 +92,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
                         pojo.talk_user_name,
-                        pojo.talk_create_time,
+                        pojo.talk_create_time_list.date_time_android,
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,
@@ -134,7 +135,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 pojo.talk_state.allow_reply,
                 pojo.talk_state.reported,
                 pojo.talk_state.masked,
-                pojo.talk_follow_status == IS_FOLLOWED
+                pojo.talk_state.allow_unfollow
         )
     }
 
@@ -147,7 +148,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                 pojo.comment_state.allow_reply,
                 pojo.comment_state.reported,
                 pojo.comment_state.masked,
-                false
+                pojo.comment_state.allow_unfollow
         )
     }
 

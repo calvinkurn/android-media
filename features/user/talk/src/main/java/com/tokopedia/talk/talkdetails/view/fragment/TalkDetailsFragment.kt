@@ -14,6 +14,7 @@ import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -121,6 +122,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
 
+            KeyboardHandler.DropKeyboard(context, view)
             presenter.sendComment(talkId,
                     shopId,
                     sendMessageEditText.text.toString(),
@@ -196,6 +198,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onSuccessSendTalkComment(commentId: String) {
         sendMessageEditText.setText("")
+        attachedProductListAdapter.clearAllElements()
+        attachedProductList.visibility = View.GONE
+        adapter.clearAllElements()
+        presenter.loadTalkDetails(talkId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -458,7 +464,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onLoadMoreCommentClicked(talkId: String, shopId: String) {
+    override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
         //TODO : TO BE IMPLEMENTED
     }
 

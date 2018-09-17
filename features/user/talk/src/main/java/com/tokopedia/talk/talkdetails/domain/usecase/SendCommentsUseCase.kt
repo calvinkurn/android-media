@@ -24,12 +24,14 @@ class SendCommentsUseCase @Inject constructor(val api: DetailTalkApi,
                           message: String): RequestParams {
             val requestParams: RequestParams = RequestParams.create()
             requestParams.putString("talk_id", talkId)
-            requestParams.putString("talk_comment", message)
-            requestParams.putObject("product_ids", createAttachProductPayload(attachProducts))
+            requestParams.putString("text_comment", message)
+            requestParams.putString("product_ids", createAttachProductPayload(attachProducts))
             return requestParams
+
         }
 
-        private fun createAttachProductPayload(attachProducts: List<TalkProductAttachmentViewModel>): Any? {
+        private fun createAttachProductPayload(attachProducts:
+                                               List<TalkProductAttachmentViewModel>): String {
             return if (attachProducts.isEmpty()) {
                 ""
             } else {
