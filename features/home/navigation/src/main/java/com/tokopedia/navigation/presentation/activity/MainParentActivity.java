@@ -8,12 +8,17 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -62,6 +67,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -85,6 +91,12 @@ public class MainParentActivity extends AppCompatActivity implements
     public static final int ACCOUNT_MENU = 4;
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
+    public static final String DEFAULT_NO_SHOP = "0";
+
+    private static final String SHORTCUT_BELI_ID = "Beli";
+    private static final String SHORTCUT_DIGITAL_ID = "Bayar";
+    private static final String SHORTCUT_SHARE_ID = "Share";
+    private static final String SHORTCUT_SHOP_ID = "Jual";
 
     @Inject
     com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
@@ -178,6 +190,10 @@ public class MainParentActivity extends AppCompatActivity implements
         FrameLayout container = findViewById(R.id.container);
 
         bottomNavigation.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
+        bottomNavigation.setOnNavigationItemReselectedListener(item -> {
+            Fragment fragment = fragmentList.get(getPositionFragmentByMenu(item));
+            scrollToTop(fragment); // enable feature scroll to top for home & feed
+        });
 
         titles = titles();
         fragmentList = fragments();
@@ -241,9 +257,7 @@ public class MainParentActivity extends AppCompatActivity implements
         presenter.setView(this);
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Fragment fragment;
+    private int getPositionFragmentByMenu(MenuItem item) {
         int i = item.getItemId();
         int position = 0;
         if (i == R.id.menu_home) {
@@ -257,14 +271,19 @@ public class MainParentActivity extends AppCompatActivity implements
         } else if (i == R.id.menu_account) {
             position = ACCOUNT_MENU;
         }
+        return position;
+    }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int position = getPositionFragmentByMenu(item);
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
             if (!isUserLogin())
                 return false;
 
-        fragment = fragmentList.get(position);
+        Fragment fragment = fragmentList.get(position);
         if (fragment != null) {
             this.currentFragment = fragment;
             selectFragment(fragment);
@@ -293,7 +312,6 @@ public class MainParentActivity extends AppCompatActivity implements
                     ft.hide(frag); // hide all fragment
                 }
             }
-            scrollToTop(currentFrag); // enable feature scroll to top for home & feed
         } else {
             ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
         }
@@ -301,7 +319,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     private void scrollToTop(Fragment fragment) {
-        if (fragment.isVisible() && fragment instanceof FragmentListener) {
+        if (fragment.getUserVisibleHint() && fragment instanceof FragmentListener) {
             ((FragmentListener) fragment).onScrollToTop();
         }
     }
@@ -330,6 +348,8 @@ public class MainParentActivity extends AppCompatActivity implements
             reloadPage(this);
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
+
+        addShortcuts();
 
         registerBroadcastHockeyApp();
     }
@@ -384,16 +404,13 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() {
-    }
+    public void onStartLoading() { }
 
     @Override
-    public void onError(String message) {
-    }
+    public void onError(String message) { }
 
     @Override
-    public void onHideLoading() {
-    }
+    public void onHideLoading() { }
 
     @Override
     public Context getContext() {
@@ -598,7 +615,7 @@ public class MainParentActivity extends AppCompatActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
-    public static class UserSession{
+    public static class UserSession {
         public static boolean isFirstTimeUser(Context context) {
             return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
         }
@@ -612,5 +629,85 @@ public class MainParentActivity extends AppCompatActivity implements
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(MainParentPresenter presenter) {
         this.presenter = presenter;
+    }
+
+    private void addShortcuts() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            try {
+                ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+                if (shortcutManager != null) {
+                    shortcutManager.removeAllDynamicShortcuts();
+
+                    List<ShortcutInfo> shortcutInfos = new ArrayList<>();
+                    Bundle args = new Bundle();
+                    args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
+                    args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
+
+                    Intent intentHome = MainParentActivity.start(this);
+                    intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intentHome.setAction(Intent.ACTION_VIEW);
+
+                    Intent productIntent = ((GlobalNavRouter) getApplication()).gotoSearchPage(this);
+                    productIntent.setAction(Intent.ACTION_VIEW);
+
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
+                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
+                            .setIntents(new Intent[]{ intentHome, productIntent })
+                            .build();
+                    shortcutInfos.add(productShortcut);
+
+                    Intent digitalIntent = ((GlobalNavRouter) getApplication()).instanceIntentDigitalCategoryList();
+                    digitalIntent.setAction(Intent.ACTION_VIEW);
+
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                            .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
+                            .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
+                            .setIcon(Icon.createWithResource(this, R.drawable.ic_bayar))
+                            .setIntents(new Intent[]{intentHome, digitalIntent})
+                            .build();
+                    shortcutInfos.add(digitalShortcut);
+
+                    if (userSession.isLoggedIn()) {
+                        String shopID = userSession.getShopId();
+
+                        Intent shopIntent;
+                        if (shopID.equalsIgnoreCase(DEFAULT_NO_SHOP)) {
+                            shopIntent = ((GlobalNavRouter) getApplication()).getOpenShopIntent(this);
+                        } else {
+                            shopIntent = ((GlobalNavRouter) getApplication()).getShopPageIntent(this, shopID);
+                        }
+
+                        shopIntent.setAction(Intent.ACTION_VIEW);
+                        shopIntent.putExtras(args);
+
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                                .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
+                                .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
+                                .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
+                                .setIntents(new Intent[]{ intentHome, shopIntent })
+                                .build();
+                        shortcutInfos.add(shopShortcut);
+
+                        if (((GlobalNavRouter) getApplication()).getBooleanRemoteConfig(GlobalNavConstant.APP_SHOW_REFERRAL_BUTTON, false)) {
+                            Intent referralIntent = ((GlobalNavRouter) getApplication()).getReferralIntent(this);
+                            referralIntent.setAction(Intent.ACTION_VIEW);
+
+                            ShortcutInfo referralShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                                    .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                    .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
+                                    .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
+                                    .setIntents(new Intent[]{ intentHome, referralIntent })
+                                    .build();
+                            shortcutInfos.add(referralShortcut);
+                        }
+                    }
+                    shortcutManager.addDynamicShortcuts(shortcutInfos);
+                }
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
