@@ -21,6 +21,9 @@ import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
     public static final String EXTRA_TITLE = "EXTRA_TITLE";
@@ -132,7 +135,13 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
-        data.setShopTypes(initialProps.getStringArrayList(ThanksTrackerConst.Key.SHOP_TYPES) );
+//        URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")
+        try {
+            data.setShopTypes(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(","));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+//        data.setShopTypes(initialProps.getStringArrayList(ThanksTrackerConst.Key.SHOP_TYPES) );
         ThanksTrackerService.start(this, data);
     }
 
