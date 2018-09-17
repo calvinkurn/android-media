@@ -19,6 +19,7 @@ import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpd.R;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
