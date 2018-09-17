@@ -2170,7 +2170,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             LayerDrawable icon = (LayerDrawable) menuItem.getIcon();
             CountDrawable badge = new CountDrawable(context);
             if(count > 99) {
-                badge.setCount("99+");
+                badge.setCount(getString(R.string.pdp_label_cart_count_max));
             } else {
                 badge.setCount(Integer.toString(count));
             }

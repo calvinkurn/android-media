@@ -111,7 +111,7 @@ public class SeeAllView extends BottomSheets {
         gridItem = new MenuGridItemViewModel(
                 R.drawable.ic_event,
                 getContext().getString(R.string.title_menu_event),
-                ApplinkConst.EVENTS,
+                ApplinkConst.EVENTS_ORDER,
                 0,
                 PEMBELI,
                 getContext().getString(R.string.title_menu_transaction)

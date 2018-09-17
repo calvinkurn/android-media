@@ -120,13 +120,13 @@ public class SimilarSearchdAdapter extends RecyclerView.Adapter<SimilarSearchdAd
                     bundle.putParcelable(ProductDetailRouter.EXTRA_PRODUCT_ITEM, data);
                     intent.putExtras(bundle);
                     itemView.getContext().startActivity(intent);
-                    List<Object> dataLayerList = new ArrayList<>();
+                    Object productItem = null;
                     if (productsItem != null) {
                         if (productsItem.getId() != 0) {
-                            dataLayerList.add(productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId())))));
+                            productItem = productsItem.getProductAsObjectDataLayer(String.valueOf(getIndex(String.valueOf(productsItem.getId()))));
                         }
                     }
-                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),dataLayerList);
+                    SimilarSearchTracking.eventClickSimilarProduct("/searchproduct - product " + productsItem.getId(), productsItem.getOriginProductID(),productItem);
                 }
 
 

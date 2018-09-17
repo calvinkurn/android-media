@@ -10,8 +10,9 @@ import java.util.List;
 
 public interface ShippingDurationAdapterListener {
 
-    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList, int cartPosition);
+    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList, int cartPosition, String serviceName);
 
     void onAllShippingDurationItemShown();
 
+    void onDurationShipmentRecommendationShowCaseClosed();
 }

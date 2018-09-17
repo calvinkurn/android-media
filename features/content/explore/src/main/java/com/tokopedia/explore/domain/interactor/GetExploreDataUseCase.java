@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.domain.entity.GetExploreData;
+import com.tokopedia.graphql.GraphqlConstant;
+import com.tokopedia.graphql.data.model.CacheType;
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -40,13 +43,38 @@ public class GetExploreDataUseCase {
 
     public void execute(Map<String, Object> variables,
                         Subscriber<GraphqlResponse> getExploreDataSubscriber) {
-        graphqlUseCase.clearRequest();
 
+        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy
+                .Builder(CacheType.CACHE_FIRST)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
+                .setSessionIncluded(true)
+                .build();
         String query = GraphqlHelper.loadRawString(context.getResources(),
                 R.raw.query_get_explore_data);
 
         GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables);
 
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
+        graphqlUseCase.clearRequest();
+        graphqlUseCase.addRequest(request);
+        graphqlUseCase.execute(getExploreDataSubscriber);
+    }
+
+    public void executeNoCache(Map<String, Object> variables,
+                        Subscriber<GraphqlResponse> getExploreDataSubscriber) {
+
+        GraphqlCacheStrategy graphqlCacheStrategy = new GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD)
+                .setExpiryTime(GraphqlConstant.ExpiryTimes.HOUR.val())
+                .setSessionIncluded(true)
+                .build();
+        String query = GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.query_get_explore_data);
+
+        GraphqlRequest request = new GraphqlRequest(query, GetExploreData.class, variables);
+
+        graphqlUseCase.setCacheStrategy(graphqlCacheStrategy);
+        graphqlUseCase.clearRequest();
         graphqlUseCase.addRequest(request);
         graphqlUseCase.execute(getExploreDataSubscriber);
     }

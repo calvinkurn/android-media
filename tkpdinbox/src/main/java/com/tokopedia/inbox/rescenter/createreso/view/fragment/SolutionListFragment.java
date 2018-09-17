@@ -186,7 +186,8 @@ public class SolutionListFragment extends BaseDaggerFragment
                 tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage()
                         .replace(
                                 getActivity().getResources().getString(R.string.string_return_value),
-                                solutionResponseViewModel.getCurrentSolution().getAmount().getIdr()));
+                                CurrencyFormatter.formatDotRupiah(
+                                        String.valueOf(solutionResponseViewModel.getCurrentSolution().getAmount().getInteger()))));
             } else {
                 tvCurrentSolution.setText(solutionResponseViewModel.getCurrentSolution().getMessage());
             }
@@ -219,7 +220,9 @@ public class SolutionListFragment extends BaseDaggerFragment
             problemResult.quantity = data.getProblem().getQty();
             problemResult.amount = data.getProblem().getAmount().getInteger();
             problemResult.remark = data.getProblem().getRemark();
-
+            if (data.getShipping() != null) {
+                complaintResult.isChecked = data.getShipping().isChecked();
+            }
             complaintResult.problem = problemResult;
             complaintResult.order = orderResult;
             resultList.add(complaintResult);
@@ -284,14 +287,11 @@ public class SolutionListFragment extends BaseDaggerFragment
     @Override
     public void showErrorGetSolution(String error) {
         llSolution.setVisibility(View.GONE);
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                if (isEditAppeal) {
-                    presenter.initEditAppeal(editAppealSolutionModel);
-                } else {
-                    presenter.initResultViewModel(resultViewModel);
-                }
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), error, () -> {
+            if (isEditAppeal) {
+                presenter.initEditAppeal(editAppealSolutionModel);
+            } else {
+                presenter.initResultViewModel(resultViewModel);
             }
         });
     }
