@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -75,7 +76,7 @@ import javax.inject.Inject;
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends AppCompatActivity implements
+public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener, CartNotifyListener {
 
