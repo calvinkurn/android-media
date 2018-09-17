@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
-import android.view.View;
+import android.text.Html;
 import android.widget.TextView;
 
 import com.tokopedia.design.bottomsheet.BottomSheetView;
@@ -39,19 +39,14 @@ public class UserStatusInfoBottomSheet extends BottomSheetView {
         bodyTV = bottomSheetView.findViewById(R.id.body_text_view);
         actionButtonTV = bottomSheetView.findViewById(R.id.action_button_text_view);
 
-        bottomSheetView.findViewById(R.id.button_cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
+        bottomSheetView.findViewById(R.id.action_button_text_view).setOnClickListener(view -> dismiss());
     }
 
     public void setTitle(String title) {
         if (titleTV == null) {
             return;
         }
-        titleTV.setText(title);
+        titleTV.setText(Html.fromHtml(title));
     }
 
     public void setBody(String body) {
@@ -59,7 +54,7 @@ public class UserStatusInfoBottomSheet extends BottomSheetView {
             return;
         }
 
-        bodyTV.setText(body);
+        bodyTV.setText(Html.fromHtml(body));
     }
 
     public void setButtonText(String text) {
@@ -67,6 +62,6 @@ public class UserStatusInfoBottomSheet extends BottomSheetView {
             return;
         }
 
-        actionButtonTV.setText(text);
+        actionButtonTV.setText(Html.fromHtml(text));
     }
 }

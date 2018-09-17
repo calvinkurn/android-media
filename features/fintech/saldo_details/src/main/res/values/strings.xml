@@ -8,4 +8,6 @@
     <string name="sp_disable_title">Yakin Ingin Menonaktifkan Saldo Prioritas?</string>
     <string name="sp_disable_desc">Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.</string>
     <string name="sp_btn_ok_disable">Ya,Saya Yakin</string>
+    <string name="sp_disable_desc_long" >Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.\nPengembalian dana untuk pelunasan Saldo Prioritas tetap berjalan.</string>
+    <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
 </resources>

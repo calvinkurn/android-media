@@ -325,7 +325,7 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
         private boolean isEligible;
         @SerializedName("status")
         @Expose
-        private String status;
+        private int status;
         @SerializedName("is_enabled")
         @Expose
         private boolean isEnabled;
@@ -398,7 +398,7 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
 
         protected Details(Parcel in) {
             this.isEligible = ((boolean) in.readValue((boolean.class.getClassLoader())));
-            this.status = ((String) in.readValue((String.class.getClassLoader())));
+            this.status = ((int) in.readValue((Integer.class.getClassLoader())));
             this.isEnabled = ((boolean) in.readValue((boolean.class.getClassLoader())));
             this.showNewLogo = ((boolean) in.readValue((boolean.class.getClassLoader())));
             this.title = ((String) in.readValue((String.class.getClassLoader())));
@@ -432,15 +432,15 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
             return this;
         }
 
-        public String getStatus() {
+        public int getStatus() {
             return status;
         }
 
-        public void setStatus(String status) {
+        public void setStatus(int status) {
             this.status = status;
         }
 
-        public Details withStatus(String status) {
+        public Details withStatus(int status) {
             this.status = status;
             return this;
         }

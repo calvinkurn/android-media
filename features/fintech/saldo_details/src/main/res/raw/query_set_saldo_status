@@ -1,4 +1,4 @@
-mutation sp_togglesaldoprioritas ($enable: Boolean{
+mutation sp_togglesaldoprioritas ($enable: Boolean) {
     sp_togglesaldoprioritas(enable: $enable) {
         success
     }

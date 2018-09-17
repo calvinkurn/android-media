@@ -6,27 +6,34 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.Dialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract;
 import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
+import com.tokopedia.saldodetails.di.SaldoDetailsComponent;
+import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance;
+import com.tokopedia.saldodetails.presenter.SaldoDetailsPresenter;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
@@ -44,6 +51,8 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private Switch spEnableSwitchCompat;
     private ImageView spRightArrow;
     private ImageView spStatusInfoIcon;
+    private View progressBarLayout;
+    private ProgressBar progressBar;
 
     private static final String NONE = "none";
     private static final String DEFAULT = "default";
@@ -52,6 +61,9 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     GqlMerchantSaldoDetailsResponse.Details sellerDetails;
     private Context context;
+
+    @Inject
+    SaldoDetailsPresenter saldoDetailsPresenter;
 
     @Nullable
     @Override
@@ -89,42 +101,50 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         spEnableSwitchCompat = view.findViewById(R.id.sp_enable_switch);
         spRightArrow = view.findViewById(R.id.sp_right_arrow);
         spStatusInfoIcon = view.findViewById(R.id.sp_status_info_icon);
+        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
+        progressBar = view.findViewById(R.id.progress_bar);
     }
 
     private void initListeners() {
 
-        spEnableSwitchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-                dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
-                dialog.getTitleTextView().setTypeface(null, Typeface.BOLD);
-                if (isChecked) {
-                    dialog.setTitle(getResources().getString(R.string.sp_enable_title));
-                    dialog.setDesc(getResources().getString(R.string.sp_enable_desc));
-                    dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_enable));
+        spEnableSwitchCompat.setOnClickListener(view -> {
+
+            boolean isChecked = spEnableSwitchCompat.isChecked();
+
+            final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+            dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
+            dialog.getTitleTextView().setTypeface(null, Typeface.BOLD);
+            if (isChecked) {
+                dialog.setTitle(getResources().getString(R.string.sp_enable_title));
+                dialog.setDesc(getResources().getString(R.string.sp_enable_desc));
+                dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_enable));
+            } else {
+                dialog.setTitle(getResources().getString(R.string.sp_disable_title));
+                if (sellerDetails.getStatus() == 5) {
+                    dialog.setDesc(getResources().getString(R.string.sp_disable_desc_long));
                 } else {
-                    dialog.setTitle(getResources().getString(R.string.sp_disable_title));
-                    // TODO: 17/09/18 check seller state to add optional message.
-                    dialog.setDesc(getResources().getString(R.string.sp_disable_desc));
-                    dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_disable));
+                    dialog.setDesc(Html.fromHtml(getResources().getString(R.string.sp_disable_desc)));
                 }
 
-                dialog.setOnOkClickListener(v -> {
-                    // TODO: 17/09/18 call api to set saldo status
-                });
-
-                dialog.setBtnCancel(getResources().getString(R.string.sp_btn_cancel));
-                dialog.setOnCancelClickListener(v -> {
-                    dialog.dismiss();
-                });
-
-                dialog.show();
-                dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
-                dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
+                dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_disable));
             }
-        });
 
+            dialog.setOnOkClickListener(v -> {
+                dialog.dismiss();
+                saldoDetailsPresenter.updateSellerSaldoStatus(isChecked);
+            });
+
+            dialog.setBtnCancel(getResources().getString(R.string.sp_btn_cancel));
+            dialog.setOnCancelClickListener(v -> {
+                dialog.dismiss();
+                spEnableSwitchCompat.setChecked(!isChecked);
+            });
+
+            dialog.show();
+            dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
+            dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
+
+        });
         if (sellerDetails.isBoxShowPopup()) {
             spKYCStatusLayout.setOnClickListener(v -> {
                 UserStatusInfoBottomSheet userStatusInfoBottomSheet =
@@ -263,8 +283,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     @Override
     protected void initInjector() {
-
+        SaldoDetailsComponent saldoDetailsComponent =
+                SaldoDetailsComponentInstance.getComponent(getActivity().getApplication());
+        saldoDetailsComponent.inject(this);
+        saldoDetailsPresenter.attachView(this);
     }
+
 
     @Override
     protected String getScreenName() {
@@ -273,22 +297,43 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     @Override
     public void showProgressLoading() {
-
+        progressBarLayout.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideProgressLoading() {
-
+        progressBarLayout.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override
-    public void showErrorMessage() {
+    public Context getActivityContext() {
+        return context;
+    }
 
+    @Override
+    public void onSaldoStatusUpdateError(String errorMessage) {
+        boolean check = spEnableSwitchCompat.isChecked();
+        spEnableSwitchCompat.setChecked(!check);
+        NetworkErrorHelper.showRedSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void onSaldoStatusUpdateSuccess() {
+        NetworkErrorHelper.showGreenSnackbarShort(getActivity(),
+                getResources().getString(R.string.saldo_status_updated_success));
     }
 
     public static Fragment newInstance(Bundle bundle) {
         Fragment merchantSaldoPriorityFragment = new MerchantSaldoPriorityFragment();
         merchantSaldoPriorityFragment.setArguments(bundle);
         return merchantSaldoPriorityFragment;
+    }
+
+    @Override
+    public void onDestroy() {
+        saldoDetailsPresenter.onDestroyView();
+        super.onDestroy();
     }
 }

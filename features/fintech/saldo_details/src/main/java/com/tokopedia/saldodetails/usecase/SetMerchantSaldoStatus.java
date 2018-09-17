@@ -2,6 +2,7 @@ package com.tokopedia.saldodetails.usecase;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -12,6 +13,8 @@ import com.tokopedia.saldodetails.response.model.GqlSetMerchantSaldoStatus;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import rx.Subscriber;
 
 public class SetMerchantSaldoStatus {
@@ -20,7 +23,8 @@ public class SetMerchantSaldoStatus {
     private GraphqlUseCase graphqlUseCase;
     private Context context;
 
-    public SetMerchantSaldoStatus(Context context) {
+    @Inject
+    public SetMerchantSaldoStatus(@ApplicationContext Context context) {
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
     }

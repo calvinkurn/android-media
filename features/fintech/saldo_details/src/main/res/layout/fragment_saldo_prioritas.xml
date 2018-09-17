@@ -8,6 +8,22 @@
     app:cardCornerRadius="@dimen/dp_4"
     app:cardElevation="@dimen/dp_4">
 
+    <FrameLayout
+        android:id="@+id/progress_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black_12"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone">
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
     <ViewFlipper
         android:id="@+id/container_main"
         android:layout_width="match_parent"
