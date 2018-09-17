@@ -38,13 +38,14 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
     @Override
     public Boolean call(Response<GraphqlResponse<PaymentGraphql>> response) {
         if (isResponseValid(response)) {
-
             paymentData = response.body().getData().getPayment();
 
             if (paymentData.getOrders() != null) {
+                int indexOrdersData = 0;
                 for (OrderData orderData : paymentData.getOrders()) {
-                    PurchaseTracking.marketplace(getTrackignData(orderData));
+                    PurchaseTracking.marketplace(getTrackignData(orderData, indexOrdersData));
                     BranchSdkUtils.sendCommerceEvent(getTrackignBranchIOData(orderData));
+                    indexOrdersData++;
                 }
             }
             return true;
@@ -53,11 +54,12 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return false;
     }
 
-    private Purchase getTrackignData(OrderData orderData) {
+    private Purchase getTrackignData(OrderData orderData, Integer position) {
         Purchase purchase = new Purchase();
         purchase.setEvent(PurchaseTracking.TRANSACTION);
         purchase.setEventCategory(PurchaseTracking.EVENT_CATEGORY);
         purchase.setEventLabel(PurchaseTracking.EVENT_LABEL);
+//        purchase.setShopTypes(getS);
         purchase.setShopId(getShopId(orderData));
         purchase.setPaymentId(String.valueOf(paymentData.getPaymentId()));
         purchase.setPaymentType(getPaymentType(paymentData.getPaymentMethod()));

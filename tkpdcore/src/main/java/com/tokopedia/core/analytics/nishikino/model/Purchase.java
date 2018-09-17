@@ -38,6 +38,7 @@ public class Purchase {
     private String paymentStatus;
     private String eventCategory;
     private String eventLabel;
+    private List<String> shopTypes;
 
     public Purchase() {
 
@@ -49,6 +50,14 @@ public class Purchase {
 
     public void setShopId(String shopId) {
         this.shopId = shopId;
+    }
+
+    public List<String> getShopTypes() {
+        return shopTypes;
+    }
+
+    public void setShopTypes(List<String> shopTypes) {
+        this.shopTypes = shopTypes;
     }
 
     public String getPaymentId() {
