@@ -287,6 +287,10 @@ public class DigitalCheckETollBalanceNFCActivity extends BaseSimpleActivity
         isoDep = IsoDep.get(tag);
 
         try {
+            if (isoDep.isConnected()) {
+                isoDep.close();
+            }
+
             isoDep.connect();
             isoDep.setTimeout(TRANSCEIVE_TIMEOUT_IN_SEC); // 5 sec time out
 

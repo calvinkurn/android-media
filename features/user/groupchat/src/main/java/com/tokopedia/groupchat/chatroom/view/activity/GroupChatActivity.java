@@ -1013,19 +1013,14 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-        refreshTab();
-        tabAdapter.setActiveFragment(initialFragment);
-        if (currentFragmentIsChat()) {
-            refreshChat();
-        } else if (currentFragmentIsVote() && checkPollValid()) {
-            refreshVote(channelInfoViewModel.getVoteInfoViewModel());
-        } else if (currentFragmentIsVote()) {
-            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-            showFragment(CHATROOM_FRAGMENT);
-        } else if (currentFragmentIsInfo()) {
-            populateChannelInfoFragment();
-        }
-        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
+
+        presenter.logoutChannel(mChannel);
+        presenter.enterChannelAfterRefresh(userSession.getUserId(),
+                viewModel.getChannelInfoViewModel().getChannelUrl(),
+                userSession.getName(), userSession.getProfilePicture(),
+                this, channelInfoViewModel.getSendBirdToken());
+
+
     }
 
     private void refreshTab() {
@@ -1200,6 +1195,34 @@ public class GroupChatActivity extends BaseSimpleActivity
         } catch (NullPointerException e) {
             e.printStackTrace();
             onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+        }
+    }
+
+    @Override
+    public void onSuccessEnterRefreshChannel(OpenChannel openChannel) {
+
+        hideLoading();
+        mChannel = openChannel;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        if (fragment != null) {
+            ((GroupChatFragment) fragment).setChannel(mChannel);
+        }
+
+        refreshTab();
+        setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        tabAdapter.setActiveFragment(initialFragment);
+
+        if (currentFragmentIsChat()) {
+            refreshChat();
+        } else if (currentFragmentIsVote() && checkPollValid()) {
+            refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        } else if (currentFragmentIsVote()) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
+            showFragment(CHATROOM_FRAGMENT);
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
     }
 
