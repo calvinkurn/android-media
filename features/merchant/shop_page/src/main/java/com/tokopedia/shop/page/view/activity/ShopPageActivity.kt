@@ -335,22 +335,15 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     }
 
     private fun addFeed() {
-        if (isShowFeed) {
-            titles = arrayOf(
-                    getString(R.string.shop_info_title_tab_product),
-                    getString(R.string.shop_info_title_tab_feed),
-                    getString(R.string.shop_info_title_tab_info)
-            )
-        } else {
-            titles = arrayOf(
-                    getString(R.string.shop_info_title_tab_product),
-                    getString(R.string.shop_info_title_tab_info)
-            )
-        }
+        titles = arrayOf(
+                getString(R.string.shop_info_title_tab_product),
+                getString(R.string.shop_info_title_tab_feed),
+                getString(R.string.shop_info_title_tab_info)
+        )
         shopPageViewPagerAdapter.titles = titles
         shopPageViewPagerAdapter.notifyDataSetChanged()
 
-        val tabCustomView : View? = if (isShowFeed) tabItemFeed else null
+        val tabCustomView: View? = if (isShowFeed) tabItemFeed else null
         tabLayout.getTabAt(TAB_POSITION_FEED)?.setCustomView(tabCustomView)
     }
 
@@ -396,7 +389,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     override fun onSuccessGetFeedWhitelist(isWhitelist: Boolean, createPostUrl: String) {
         this.isShowFeed = isWhitelist
         this.createPostUrl = createPostUrl
-        if (isShowFeed) {
+        if (isShowFeed && (application as ShopModuleRouter).isFeedShopPageEnabled()) {
             addFeed()
         }
     }

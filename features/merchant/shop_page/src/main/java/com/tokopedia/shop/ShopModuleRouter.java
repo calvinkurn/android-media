@@ -52,4 +52,6 @@ public interface ShopModuleRouter {
     void sendScreenName(String screenName);
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    boolean isFeedShopPageEnabled();
 }

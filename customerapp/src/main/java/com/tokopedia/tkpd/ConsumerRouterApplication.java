@@ -2907,4 +2907,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public Intent getChangePasswordIntent(Context context) {
         return ChangePasswordActivity.Companion.createIntent(context);
     }
+
+    @Override
+    public boolean isFeedShopPageEnabled() {
+        return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
+    }
 }

@@ -1595,4 +1595,9 @@ public abstract class SellerRouterApplication extends MainApplication
                                                  Bundle bundle) {
         return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
     }
+
+    @Override
+    public boolean isFeedShopPageEnabled() {
+        return remoteConfig.getBoolean("sellerapp_enable_feed_shop_page", Boolean.TRUE);
+    }
 }

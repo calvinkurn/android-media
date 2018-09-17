@@ -251,4 +251,12 @@
         <key>mainapp_wallet_label_name</key>
         <value></value>
     </entry>
+    <entry>
+        <key>mainapp_enable_feed_shop_page</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_enable_feed_shop_page</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
