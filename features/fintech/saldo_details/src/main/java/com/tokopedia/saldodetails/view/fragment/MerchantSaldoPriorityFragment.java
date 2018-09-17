@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -60,7 +61,6 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         Bundle bundle = getArguments();
         sellerDetails = bundle != null ? bundle.getParcelable("seller_details") : null;
         initViews(view);
-        initListeners();
         return view;
     }
 
@@ -68,6 +68,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         populateData();
+        initListeners();
     }
 
     @Override
@@ -96,13 +97,14 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+                dialog.getTitleTextView().setTextColor(getResources().getColor(R.color.black_70));
+                dialog.getTitleTextView().setTypeface(null, Typeface.BOLD);
                 if (isChecked) {
                     dialog.setTitle(getResources().getString(R.string.sp_enable_title));
                     dialog.setDesc(getResources().getString(R.string.sp_enable_desc));
                     dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_enable));
                 } else {
                     dialog.setTitle(getResources().getString(R.string.sp_disable_title));
-
                     // TODO: 17/09/18 check seller state to add optional message.
                     dialog.setDesc(getResources().getString(R.string.sp_disable_desc));
                     dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_disable));
@@ -137,6 +139,14 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
 
     private void populateData() {
+
+        if (sellerDetails.isShowToggle()) {
+            spEnableSwitchCompat.setVisibility(View.VISIBLE);
+            spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
+            spEnableSwitchCompat.setClickable(true);
+        } else {
+            spEnableSwitchCompat.setVisibility(View.GONE);
+        }
 
         if (!TextUtils.isEmpty(sellerDetails.getTitle())) {
             spTitle.setText(sellerDetails.getTitle());
@@ -183,14 +193,6 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         if (sellerDetails.getInfoList() != null &&
                 sellerDetails.getInfoList().size() > 0) {
             populateInfolistData(sellerDetails.getInfoList());
-        }
-
-        if (sellerDetails.isShowToggle()) {
-            spEnableSwitchCompat.setVisibility(View.VISIBLE);
-            spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
-            spEnableSwitchCompat.setClickable(true);
-        } else {
-            spEnableSwitchCompat.setVisibility(View.GONE);
         }
 
         if (sellerDetails.getAnchorList() != null &&

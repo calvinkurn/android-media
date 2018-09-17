@@ -86,12 +86,14 @@
                         android:id="@+id/sp_status_info_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:src="@drawable/info_icon" />
 
                     <TextView
                         android:id="@+id/sp_kyc_short_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/dp_9"
                         android:layout_marginStart="@dimen/dp_9"
                         android:layout_toEndOf="@+id/sp_status_info_icon"

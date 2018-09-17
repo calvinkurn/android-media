@@ -358,7 +358,7 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
         @Expose
         private String boxDesc;
 
-        @SerializedName("box_show_popuop")
+        @SerializedName("box_show_popup")
         @Expose
         private boolean boxShowPopup;
 
