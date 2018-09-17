@@ -14,8 +14,8 @@ import java.util.List;
  */
 
 public class CategoryDigitalListDataMapper implements ICategoryDigitalListDataMapper {
-    public static final int DEFAULT_BILL_ID = 57;
-    public static final int DEFAULT_TICKET_ID = 58;
+    private static final int DEFAULT_BILL_ID = 57;
+    private static final int DEFAULT_TICKET_ID = 58;
     @Override
     public List<DigitalCategoryItemData>
     transformDigitalCategoryItemDataList(HomeCategoryMenuItem homeCategoryMenuItem)
