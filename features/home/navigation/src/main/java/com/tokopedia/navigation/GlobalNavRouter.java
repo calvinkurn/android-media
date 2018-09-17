@@ -34,4 +34,6 @@ public interface GlobalNavRouter {
     void setCartCount(Context context, int count);
 
     void sendAnalyticsFirstTime();
+
+    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
 }
