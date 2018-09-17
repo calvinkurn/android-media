@@ -18,7 +18,7 @@ class SettingListPaymentViewHolder(itemView : View?, val paymentSettingRouter: P
         ImageHandler.LoadImage(itemView.imageCCBackground, element?.getBackgroundAssets(paymentSettingRouter, itemView.context))
 
         itemView.cardNumber.setText(element?.maskedNumber?.getMaskedNumberSubStringPayment())
-        ImageHandler.LoadImage(itemView.cardImage, element?.getLogoAsset())
+        ImageHandler.LoadImage(itemView.cardImage, element?.cardTypeImage)
     }
 
     companion object {

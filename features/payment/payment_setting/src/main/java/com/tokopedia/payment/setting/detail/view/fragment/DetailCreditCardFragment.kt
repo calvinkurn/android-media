@@ -51,7 +51,7 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
             ImageHandler.LoadImage(view.imageCCLarge, this.getBackgroundAssetsLarge(paymentSettingRouter, activity))
             creditCardNumber.setText(this.maskedNumber?.getSpacedTextPayment())
             creditCardExpiryText.setText(this.getExpiredDate())
-            ImageHandler.LoadImage(creditCardLogo, this.getLogoAsset())
+            ImageHandler.LoadImage(creditCardLogo, cardTypeImage)
             buttonDeleteCC.setOnClickListener { showDeleteCcDialog() }
         }
     }
