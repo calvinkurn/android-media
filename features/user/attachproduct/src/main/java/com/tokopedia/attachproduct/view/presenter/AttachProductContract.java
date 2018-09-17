@@ -16,12 +16,14 @@ public interface AttachProductContract {
         void hideAllLoadingIndicator();
         void showErrorMessage(Throwable throwable);
         void updateButtonBasedOnChecked(int checkedCount);
+        void setShopName(String shopName);
     }
     interface Activity {
         boolean isSeller();
         String getShopId();
         void finishActivityWithResult(ArrayList<ResultProduct> products);
         void goToAddProduct(String shopId);
+        void setShopName(String shopName);
     }
     interface Presenter {
         void loadProductData(String query, String shopId, int page);

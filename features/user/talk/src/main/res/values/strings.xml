@@ -58,5 +58,7 @@
     <string name="chat_seller">Chat Penjual</string>
     <string name="label_talk_seller">Penjual</string>
     <string name="what_question">Apa yang ingin Anda tanyakan mengenai produk ini?</string>
+    <string name="error_default_cannot_reply_talk">Maaf, diskusi sedang tidak dapat diakses. Silahkan coba kembali setelah beberapa saat.</string>
+    <string name="hint_send_discussion">Tulis Pesan..</string>
 
 </resources>

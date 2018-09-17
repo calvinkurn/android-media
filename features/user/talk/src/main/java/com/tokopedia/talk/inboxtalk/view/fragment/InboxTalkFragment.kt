@@ -22,6 +22,7 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.domain.UnreadCount
+import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
@@ -46,7 +47,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
-
     private val REQUEST_REPORT_TALK: Int = 101
     private val REQUEST_GO_TO_DETAIL: Int = 102
 
@@ -62,6 +62,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     private lateinit var filter: String
     private lateinit var bottomMenu: Menus
     private lateinit var filterMenuList: ArrayList<Menus.ItemMenus>
+
+    @Inject
+    lateinit var talkDialog: TalkDialog
 
     @Inject
     lateinit var presenter: InboxTalkPresenter
@@ -179,65 +182,44 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    private fun showUnfollowTalkDialog(talkId: String) {
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+    private fun showUnfollowTalkDialog(alertDialog: Dialog, talkId: String) {
+        context?.run {
+            talkDialog.createUnfollowTalkDialog(
+                    this,
+                    alertDialog,
+                    View.OnClickListener {
+                        alertDialog.dismiss()
+                        presenter.unfollowTalk(talkId)
+                    }
+            ).show()
         }
-
-        alertDialog.setTitle(getString(R.string.unfollow_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.unfollow_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_unfollow_talk))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
-        }
-        alertDialog.setOnOkClickListener {
-            presenter.unfollowTalk(talkId)
-            alertDialog.dismiss()
-        }
-
-        alertDialog.show()
     }
 
+    private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
 
-    private fun showFollowTalkDialog(talkId: String) {
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        context?.run {
+            talkDialog.createFollowTalkDialog(
+                    this,
+                    alertDialog,
+                    View.OnClickListener {
+                        alertDialog.dismiss()
+                        presenter.followTalk(talkId)
+                    }
+            ).show()
         }
-
-        alertDialog.setTitle(getString(R.string.follow_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.follow_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_follow_talk))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
-        }
-        alertDialog.setOnOkClickListener {
-            presenter.followTalk(talkId)
-            alertDialog.dismiss()
-        }
-
-        alertDialog.show()
     }
 
-    private fun showDeleteTalkDialog(shopId: String, talkId: String) {
-        if (!::alertDialog.isInitialized) {
-            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+    private fun showDeleteTalkDialog(alertDialog: Dialog, shopId: String, talkId: String) {
+        context?.run {
+            talkDialog.createDeleteTalkDialog(
+                    this,
+                    alertDialog,
+                    View.OnClickListener {
+                        alertDialog.dismiss()
+                        presenter.deleteTalk(shopId, talkId)
+                    }
+            ).show()
         }
-
-        alertDialog.setTitle(getString(R.string.delete_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.delete_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_delete))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
-        }
-        alertDialog.setOnOkClickListener {
-            presenter.deleteTalk(shopId, talkId)
-            alertDialog.dismiss()
-        }
-
-        alertDialog.show()
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
@@ -246,19 +228,17 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
 
-        alertDialog.setTitle(getString(R.string.delete_comment_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.delete_comment_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_delete))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
-        }
-        alertDialog.setOnOkClickListener {
-            presenter.deleteCommentTalk(shopId, talkId, commentId)
-            alertDialog.dismiss()
+        context?.run {
+            talkDialog.createDeleteCommentTalkDialog(
+                    this,
+                    alertDialog,
+                    View.OnClickListener {
+                        alertDialog.dismiss()
+                        presenter.deleteCommentTalk(shopId, talkId, commentId)
+                    }
+            ).show()
         }
 
-        alertDialog.show()
     }
 
     override fun showLoading() {
@@ -374,10 +354,15 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
         when (itemMenu.title) {
-            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(shopId, talkId)
-            getString(R.string.menu_follow_talk) -> showFollowTalkDialog(talkId)
-            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(talkId)
+            getString(R.string.menu_delete_talk) -> showDeleteTalkDialog(alertDialog, shopId,
+                    talkId)
+            getString(R.string.menu_follow_talk) -> showFollowTalkDialog(alertDialog, talkId)
+            getString(R.string.menu_unfollow_talk) -> showUnfollowTalkDialog(alertDialog, talkId)
             getString(R.string.menu_report_talk) -> goToReportTalk(talkId, shopId, productId, "")
         }
         bottomMenu.dismiss()
@@ -423,7 +408,8 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
 
     private fun showErrorReplyTalk() {
         //TODO NISIE GET ERROR MESSAGE FOR REPLY TALK
-        NetworkErrorHelper.showRedSnackbar(view, "Error dud")
+        NetworkErrorHelper.showRedSnackbar(view, getString(R.string
+                .error_default_cannot_reply_talk))
     }
 
     override fun hideFilter() {

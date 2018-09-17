@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.talk.common.data.TalkApi
+import com.tokopedia.talk.talkdetails.data.api.DetailTalkApi
 import com.tokopedia.user.session.UserSession
 import dagger.Component
 import retrofit2.Retrofit
@@ -21,6 +22,8 @@ interface TalkComponent {
     fun getUserSession(): UserSession
 
     fun getTalkApi(): TalkApi
+
+    fun getTalkDetailsApi(): DetailTalkApi
 
     fun retrofitBuilder(): Retrofit.Builder
 

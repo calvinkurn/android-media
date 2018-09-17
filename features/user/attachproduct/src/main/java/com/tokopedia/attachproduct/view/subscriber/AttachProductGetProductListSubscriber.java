@@ -34,5 +34,8 @@ public class AttachProductGetProductListSubscriber extends Subscriber<List<Attac
         view.hideAllLoadingIndicator();
         view.addProductToList(attachProductItemViewModels,
                 (attachProductItemViewModels.size() >= DEFAULT_ROWS));
+        if(attachProductItemViewModels.size() > 0) {
+            view.setShopName(attachProductItemViewModels.get(0).getShopName());
+        }
     }
 }

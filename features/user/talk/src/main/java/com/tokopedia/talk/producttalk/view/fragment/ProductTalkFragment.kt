@@ -407,4 +407,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onChatClicked() {
         startActivity(intentChat)
     }
+
+    override fun onGoToUserProfile(userId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@ProductTalkFragment.startActivity(intent)
+        }
+    }
 }

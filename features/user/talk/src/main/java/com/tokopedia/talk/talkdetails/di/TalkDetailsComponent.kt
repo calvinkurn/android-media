@@ -1,5 +1,6 @@
 package com.tokopedia.talk.talkdetails.di
 
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.InboxTalkModule
 import com.tokopedia.talk.inboxtalk.di.InboxTalkScope
