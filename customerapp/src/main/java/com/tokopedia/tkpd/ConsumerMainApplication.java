@@ -137,7 +137,9 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initReact();
 
         checkAppSignature(this);
-        checkAppSignature();
+        if(!checkAppSignature()){
+            throw new RuntimeException("please use original tokopedia apps.");
+        }
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
@@ -428,13 +430,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             byte[] rawCertJava = info.signatures[0].toByteArray();
             byte[] rawCertNative = bytesFromJNI();
 
-            String str = "From Java:\n"+getInfoFromBytes(rawCertJava) + "From native:\n"+getInfoFromBytes(rawCertNative);
-            Log.i("REMOVE_ME", "Include this string as a value for SIGNATURE:" + str);
-
             return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
-//            tv.setText(str);
         } else {
-//            tv.setText("No data");
             return false;
         }
     }
