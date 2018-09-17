@@ -72,7 +72,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
         }
 
-        if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("android_enable_tokocard", false)
+        if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
                 || accountModel.getVccUserStatus() == null
                 || accountModel.getVccUserStatus().getStatus() == null
                 || accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.NOT_FOUND)
