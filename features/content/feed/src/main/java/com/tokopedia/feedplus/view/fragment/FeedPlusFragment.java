@@ -78,7 +78,6 @@ import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.IS_LI
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_IS_LIKED;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_COMMENTS;
 import static com.tokopedia.kol.feature.post.view.fragment.KolPostFragment.PARAM_TOTAL_LIKES;
-import static com.tokopedia.profile.view.activity.TopProfileActivity.IS_FOLLOWING_TRUE;
 
 /**
  * @author by nisie on 5/15/17.
@@ -629,8 +628,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ProfileActivity.Companion.getParamIsFollowing(),
-                                    DEFAULT_VALUE)
+                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING, DEFAULT_VALUE)
                     );
 
                     updatePostState(
@@ -648,7 +646,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(ProfileActivity.Companion.getParamIsFollowing(),
+                            data.getIntExtra(ProfileActivity.PARAM_IS_FOLLOWING,
                                     DEFAULT_VALUE)
                     );
                 }
@@ -1065,9 +1063,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
             if (isFollowing != DEFAULT_VALUE) {
                 kolViewModel.setFollowed(isFollowing
-                        == ProfileActivity.Companion.getIsFollowingTrue());
+                        == ProfileActivity.IS_FOLLOWING_TRUE);
                 kolViewModel.setTemporarilyFollowed(isFollowing
-                        == ProfileActivity.Companion.getIsFollowingTrue());
+                        == ProfileActivity.IS_FOLLOWING_TRUE);
             }
             adapter.notifyItemChanged(rowNumber);
         }
@@ -1108,7 +1106,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 recommendationViewModel.getListRecommend()
                         .get(itemRowNumber)
                         .setFollowed(isFollowing
-                                == ProfileActivity.Companion.getIsFollowingTrue());
+                                == ProfileActivity.IS_FOLLOWING_TRUE);
             }
 
             adapter.notifyItemChanged(rowNumber);

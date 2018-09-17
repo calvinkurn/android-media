@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dp_16">
+
+    <ImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/profile_avatar_header"
+        android:layout_height="@dimen/profile_avatar_header"
+        android:src="@drawable/ic_loading_image"
+        tools:src="@tools:sample/avatars" />
+
+    <View
+        android:id="@+id/avatarSeparator"
+        android:layout_width="@dimen/dp_16"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/avatar"/>
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif"
+        android:textColor="@color/font_black_primary_70"
+        android:textSize="@dimen/sp_17"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@id/avatarSeparator"
+        tools:text="Sadam Hussein" />
+</android.support.constraint.ConstraintLayout>

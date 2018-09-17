@@ -16,9 +16,9 @@ import com.tokopedia.profile.view.fragment.ProfileFragment
 class ProfileActivity : BaseSimpleActivity() {
 
     companion object {
-        fun getParamIsFollowing() = "is_following"
-        fun getIsFollowingTrue() = 1
-        fun getIsFollowingFalse() = 0
+        const val PARAM_IS_FOLLOWING = "is_following"
+        const val IS_FOLLOWING_TRUE = 1
+        const val IS_FOLLOWING_FALSE = 0
 
         private val EXTRA_PARAM_USER_ID = "user_id"
         private val EXTRA_PARAM_POST_ID = "post_id"
