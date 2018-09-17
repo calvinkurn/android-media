@@ -23,6 +23,7 @@ import com.tokopedia.tkpdreactnative.react.ReactConst;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
 
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
@@ -136,6 +137,11 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
 //        URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")
+        try {
+            data.setShopType(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         try {
             data.setShopTypes(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(","));
         } catch (UnsupportedEncodingException e) {
