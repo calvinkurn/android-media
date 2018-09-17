@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -51,8 +50,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private Switch spEnableSwitchCompat;
     private ImageView spRightArrow;
     private ImageView spStatusInfoIcon;
-    private View progressBarLayout;
-    private ProgressBar progressBar;
+    private InteractionListener interactionListener;
 
     private static final String NONE = "none";
     private static final String DEFAULT = "default";
@@ -87,6 +85,11 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+        try {
+            this.interactionListener = (InteractionListener) context;
+        } catch (Exception e) {
+
+        }
     }
 
     private void initViews(View view) {
@@ -101,8 +104,6 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         spEnableSwitchCompat = view.findViewById(R.id.sp_enable_switch);
         spRightArrow = view.findViewById(R.id.sp_right_arrow);
         spStatusInfoIcon = view.findViewById(R.id.sp_status_info_icon);
-        progressBarLayout = view.findViewById(R.id.progress_bar_layout);
-        progressBar = view.findViewById(R.id.progress_bar);
     }
 
     private void initListeners() {
@@ -297,14 +298,16 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
     @Override
     public void showProgressLoading() {
-        progressBarLayout.setVisibility(View.VISIBLE);
-        progressBar.setVisibility(View.VISIBLE);
+        if (interactionListener != null) {
+            interactionListener.showLoading();
+        }
     }
 
     @Override
     public void hideProgressLoading() {
-        progressBarLayout.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+        if (interactionListener != null) {
+            interactionListener.dismissLoading();
+        }
     }
 
     @Override
@@ -335,5 +338,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     public void onDestroy() {
         saldoDetailsPresenter.onDestroyView();
         super.onDestroy();
+    }
+
+
+    public interface InteractionListener {
+        public void showLoading();
+
+        public void dismissLoading();
     }
 }
