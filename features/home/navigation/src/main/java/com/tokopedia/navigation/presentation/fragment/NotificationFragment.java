@@ -76,8 +76,13 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter.setOnNotifClickListener((parent, child) -> {
             sendTracking(parent, child);
             DrawerNotification item = adapter.getItem(parent);
+            if (item == null)
+                return;
+            if (item.getChilds() == null)
+                return;
             DrawerNotification.ChildDrawerNotification childItem = item.getChilds().get(child);
-            RouteManager.route(getActivity(), childItem.getApplink());
+            if (getActivity() != null)
+                RouteManager.route(getActivity(), childItem.getApplink());
         });
 
         adapter.addAll(getData());
