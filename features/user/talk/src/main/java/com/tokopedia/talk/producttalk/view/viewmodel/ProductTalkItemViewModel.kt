@@ -10,10 +10,10 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
  */
 
 data class ProductTalkItemViewModel(
-        var avatar: String? = "",
-        var name: String? = "",
-        var timestamp: String? = "",
-        var comment: String? = "",
+        var avatar: String = "",
+        var name: String = "",
+        var timestamp: String = "",
+        var comment: String = "",
         var menu: TalkState,
         var isRead : Boolean = false,
         var isFollowed : Boolean = false,

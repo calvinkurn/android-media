@@ -76,7 +76,7 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                 ProductTalkItemViewModel(
                         pojo.talk.talk_user_image,
                         pojo.talk.talk_user_name,
-                        pojo.talk.talk_create_time,
+                        pojo.talk.talk_create_time_list.date_time_android,
                         pojo.talk.talk_message,
                         mapHeaderTalkState(pojo),
                         true,

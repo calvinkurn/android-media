@@ -91,7 +91,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                 ProductTalkItemViewModel(
                         pojo.talk_user_image,
                         pojo.talk_user_name,
-                        pojo.talk_create_time_fmt,
+                        pojo.talk_create_time_list.date_time_android,
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
                         pojo.talk_read_status == IS_READ,

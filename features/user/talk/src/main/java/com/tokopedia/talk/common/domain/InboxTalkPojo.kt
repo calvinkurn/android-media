@@ -30,6 +30,9 @@ data class InboxTalkItemPojo(
         @SerializedName("talk_create_time_fmt")
         val talk_create_time_fmt: String = "",
         @Expose
+        @SerializedName("talk_create_time_list")
+        val talk_create_time_list: CreateTimeList= CreateTimeList(),
+        @Expose
         @SerializedName("talk_follow_status")
         val talk_follow_status: Int = 0,
         @Expose
