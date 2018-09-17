@@ -1,6 +1,5 @@
 package com.tokopedia.checkout.view.feature.cartlist;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.IntentService;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -62,16 +59,12 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.payment.activity.TopPayActivity;
-import com.tokopedia.topads.sdk.base.Config;
-import com.tokopedia.topads.sdk.base.Endpoint;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
-import com.tokopedia.topads.sdk.view.DisplayMode;
-import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
@@ -85,8 +78,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -140,16 +131,23 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     private boolean mIsMenuVisible = false;
     private boolean isToolbarWithBackButton = true;
+    private EmptyCartListener emptyCartListener;
 
     private CartListData cartListData;
     private PromoCodeAppliedData promoCodeAppliedData;
 
-    public static CartFragment newInstance(String args) {
-        Bundle bundle = new Bundle();
+    public static CartFragment newInstance(Bundle bundle, String args) {
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
         bundle.putString(CartFragment.class.getSimpleName(), args);
         CartFragment fragment = new CartFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    public void setEmptyCartListener(EmptyCartListener emptyCartListener) {
+        this.emptyCartListener = emptyCartListener;
     }
 
     @Override
@@ -221,9 +219,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     protected void setupArguments(Bundle arguments) {
-        String args = arguments.getString(CartFragment.class.getSimpleName());
-        if (args != null && !args.isEmpty()) {
-            isToolbarWithBackButton = false;
+        if (arguments != null) {
+            String args = arguments.getString(CartFragment.class.getSimpleName());
+            if (args != null && !args.isEmpty()) {
+                isToolbarWithBackButton = false;
+            }
+
+            cartListData = arguments.getParcelable(EmptyCartListener.ARG_CART_LIST_DATA);
+            if (cartListData != null) {
+                renderInitialGetCartListDataSuccess(cartListData);
+            }
         }
     }
 
@@ -402,7 +407,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (getActivity() != null) {
             setHasOptionsMenu(true);
             getActivity().setTitle(getActivity().getString(R.string.title_activity_cart));
-            refreshHandler.startRefresh();
+            if (cartListData == null) {
+                refreshHandler.startRefresh();
+            }
         }
     }
 
@@ -1074,14 +1081,28 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderEmptyCartData(CartListData cartListData) {
-        // Todo : change fragment to EmptyCartFragment
         enableSwipeRefresh();
         sendAnalyticsOnDataCartIsEmpty();
         refreshHandler.finishRefresh();
         mIsMenuVisible = false;
         getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
+
+        // Todo : change fragment to EmptyCartFragment
+        String autoApplyMessage = null;
+        if (cartListData != null && cartListData.getAutoApplyData() != null &&
+                cartListData.getAutoApplyData().isSuccess()) {
+            autoApplyMessage = cartListData.getAutoApplyData().getTitleDescription();
+        }
+        if (emptyCartListener != null) {
+            emptyCartListener.onCartEmpty(autoApplyMessage);
+        } else {
+            if (getActivity() instanceof EmptyCartListener) {
+                ((EmptyCartListener) getActivity()).onCartEmpty(autoApplyMessage);
+            }
+        }
         showEmptyCartContainer();
+/*
         emptyCartContainer.removeAllViews();
 
 
@@ -1140,6 +1161,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         int scrollTo = ((View) tvPromoCodeEmptyCart.getParent().getParent()).getTop() + tvPromoCodeEmptyCart.getTop();
         scrollViewEmptyCart.smoothScrollTo(0, scrollTo);
 
+*/
         setVisibilityRemoveButton(false);
         notifyBottomCartParent();
     }
