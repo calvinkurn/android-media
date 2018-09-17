@@ -93,9 +93,6 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     }
 
 
-    public void sendSuccessBroadcast() {
-    }
-
     private NotificationCompat.Builder buildBaseNotification() {
 
         int largeIconRes = R.drawable.ic_big_notif_customerapp;
@@ -128,7 +125,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
         Intent intent = RouteManager.getIntent(UploadChallengeService.this, Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.SUBMISSION_DETAILS, postId));
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         builder.setContentIntent(pendingIntent);
-        Notification notification = builder.setContentText(getString(R.string.submitted_success)).build();
+        Notification notification = builder.setContentText(getString(R.string.ch_submitted_success)).build();
         notificationManager.notify(TAG, notificationID, notification);
         Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
         intent1.putExtra(Utils.QUERY_PARAM_SUBMISSION_ID, uploadFingerprints.getNewPostId());
@@ -151,7 +148,7 @@ public class UploadChallengeService extends Service implements IUploadChallengeS
     public void onProgressFail() {
         notificationManager.cancel(TAG, notificationID);
         builder = buildBaseNotification();
-        Notification notification = builder.setContentText(getString(R.string.submit_fail)).build();
+        Notification notification = builder.setContentText(getString(R.string.ch_submit_fail)).build();
         notificationManager.notify(TAG, notificationID, notification);
         sendBroadcast(new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_FAIL));
         stopSelf();

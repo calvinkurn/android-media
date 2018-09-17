@@ -21,7 +21,7 @@ public class ChallengesSubmitActivity extends BaseActivity {
     }
     @Override
     protected Fragment getNewFragment() {
-        updateTitle(getResources().getString(R.string.join_the_challenge));
+        updateTitle(getResources().getString(R.string.ch_join_the_challenge));
         return ChallengesSubmitFragment.newInstance(getIntent().getExtras());
     }
 

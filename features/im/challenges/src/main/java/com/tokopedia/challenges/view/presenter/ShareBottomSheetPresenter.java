@@ -169,7 +169,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         ClipboardManager clipboard = (ClipboardManager) getView().getActivity().getSystemService(Activity.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getView().getActivity(), R.string.copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
+        Toast.makeText(getView().getActivity(), R.string.ch_copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
     }
 
     private void shareLink(boolean isChallenge, String branchUrl, String title, String packageName) {
@@ -177,7 +177,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             copyToClipboard(getShareContents(isChallenge, branchUrl, title));
         } else if (packageName.equalsIgnoreCase(ShareBottomSheet.KEY_OTHER)) {
             Intent intent = getIntent(title, getShareContents(isChallenge, branchUrl, title));
-            getView().getActivity().startActivity(Intent.createChooser(intent, getView().getActivity().getString(R.string.other)));
+            getView().getActivity().startActivity(Intent.createChooser(intent, getView().getActivity().getString(R.string.ch_other)));
         } else if (PACKAGENAME_INSTAGRAM.equalsIgnoreCase(packageName)) {
             shareToInstagram(title, getShareContents(isChallenge, branchUrl, title), isChallenge);
         } else {

@@ -72,7 +72,7 @@ public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFr
             toolbar.setElevation(10);
         }
 
-        updateTitle(getResources().getString(R.string.post_detail));
+        updateTitle(getResources().getString(R.string.ch_post_detail));
     }
 
     @Override

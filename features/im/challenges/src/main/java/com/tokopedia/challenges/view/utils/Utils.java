@@ -208,27 +208,27 @@ public class Utils {
         tvStatus.setText(status);
         if (STATUS_APPROVED.equalsIgnoreCase(status) || STATUS_PARTICIPATED.equalsIgnoreCase(status)) {
             if (STATUS_PARTICIPATED.equalsIgnoreCase(status)) {
-                tvStatus.setText(context.getResources().getString(R.string.participated));
+                tvStatus.setText(context.getResources().getString(R.string.ch_participated));
             } else {
-                tvStatus.setText(context.getResources().getString(R.string.approved));
+                tvStatus.setText(context.getResources().getString(R.string.ch_approved));
             }
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_green_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.tkpd_main_green));
         } else if (STATUS_DECLINED.equalsIgnoreCase(status)) {
-            tvStatus.setText(context.getResources().getString(R.string.rejected));
+            tvStatus.setText(context.getResources().getString(R.string.ch_rejected));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_red_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.declined_red_textcolor));
 
         } else if (STATUS_WAITING.equalsIgnoreCase(status)) {
-            tvStatus.setText(context.getResources().getString(R.string.pending));
+            tvStatus.setText(context.getResources().getString(R.string.ch_pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
         } else if (STATUS_COMPLETED.equalsIgnoreCase(status)) {
-            tvStatus.setText(context.getResources().getString(R.string.completed));
+            tvStatus.setText(context.getResources().getString(R.string.ch_completed));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_gray_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.black_38));
         } else if (Utils.STATUS_ENCODING.equalsIgnoreCase(status)) {
-            tvStatus.setText(context.getResources().getString(R.string.pending));
+            tvStatus.setText(context.getResources().getString(R.string.ch_pending));
             tvStatus.setBackgroundResource(R.drawable.bg_round_solid_yellow_radius_huge);
             tvStatus.setTextColor(context.getResources().getColor(R.color.pending_yellow_textcolor));
         }

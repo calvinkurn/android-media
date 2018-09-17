@@ -93,7 +93,7 @@ public class ChallengesHomeActivity extends BaseActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(true);
-            getSupportActionBar().setTitle(getResources().getString(R.string.title_tokopedia_challenges));
+            getSupportActionBar().setTitle(getResources().getString(R.string.ch_title_tokopedia_challenges));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);

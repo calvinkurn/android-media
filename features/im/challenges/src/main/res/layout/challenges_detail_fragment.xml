@@ -93,6 +93,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_marginTop="@dimen/dp_16"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Show me the Slice!" />
 
@@ -202,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/description"
+                        android:text="@string/ch_description"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -240,7 +241,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:text="@string/see_more"
+                        android:text="@string/ch_see_more"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/markdownView" />
                 </LinearLayout>
@@ -272,7 +273,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/video"
+                        android:text="@string/ch_video"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider2" />
 
@@ -313,7 +314,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/awards"
+                        android:text="@string/ch_awards"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider5" />
 
@@ -358,7 +359,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/challenege_winners"
+                        android:text="@string/ch_challenege_winners"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/divider7" />
 
@@ -399,7 +400,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/recent_submissions" />
+                        android:text="@string/ch_recent_submissions" />
 
 
                     <android.support.v7.widget.RecyclerView
@@ -419,7 +420,7 @@
                         android:paddingBottom="@dimen/dp_5"
                         android:paddingLeft="@dimen/dp_16"
                         android:paddingRight="@dimen/dp_16"
-                        android:text="@string/see_all" />
+                        android:text="@string/ch_see_all" />
                 </LinearLayout>
 
 
@@ -454,7 +455,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_16"
                         android:layout_marginTop="@dimen/dp_16"
-                        android:text="@string/generate_buzz_points"
+                        android:text="@string/ch_generate_buzz_points"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <LinearLayout
@@ -475,7 +476,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_8"
-                        android:text="@string/see_more"
+                        android:text="@string/ch_see_more"
                         android:visibility="gone"
                         app:layout_constraintTop_toBottomOf="@+id/tv_how_buzz_points_text" />
                 </LinearLayout>
@@ -500,7 +501,7 @@
                     android:gravity="center_horizontal"
                     android:paddingBottom="@dimen/dp_30"
                     android:paddingTop="@dimen/dp_16"
-                    android:text="@string/terms_conditions"
+                    android:text="@string/ch_terms_conditions"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/sp_12"
                     android:visibility="gone"
@@ -535,7 +536,7 @@
             android:layout_margin="@dimen/dp_14"
             android:background="@drawable/background_submit_btn"
             android:gravity="center"
-            android:text="@string/submit_photo" />
+            android:text="@string/ch_submit_photo" />
     </android.support.v7.widget.CardView>
 
     <FrameLayout

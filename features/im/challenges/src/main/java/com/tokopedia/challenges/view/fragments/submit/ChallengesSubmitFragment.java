@@ -164,14 +164,14 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
             @Override
             public void onClick(View v) {
                 if (descriptionShort.getVisibility() == View.VISIBLE) {
-                    mShowMore.setText(R.string.see_less);
+                    mShowMore.setText(R.string.ch_see_less);
                     MarkdownProcessor m = new MarkdownProcessor();
                     String html = m.markdown(channelDesc);
                     longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
                     descriptionShort.setVisibility(View.GONE);
                     longDescription.setVisibility(View.VISIBLE);
                 } else {
-                    mShowMore.setText(R.string.see_more);
+                    mShowMore.setText(R.string.ch_see_more);
                     descriptionShort.setVisibility(View.VISIBLE);
                     longDescription.setVisibility(View.GONE);
                     scrollView.scrollTo(0, 0);
@@ -418,8 +418,8 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
 
     private void showVideoImageChooseDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(getContext().getResources().getString(R.string.dialog_upload_options));
-        builder.setPositiveButton(getContext().getResources().getString(R.string.title_video), (dialogInterface, i) -> selectVideo()).setNegativeButton(getContext().getResources().getString(R.string.title_image), new DialogInterface.OnClickListener() {
+        builder.setMessage(getContext().getResources().getString(R.string.ch_dialog_upload_options));
+        builder.setPositiveButton(getContext().getResources().getString(R.string.ch_title_video), (dialogInterface, i) -> selectVideo()).setNegativeButton(getContext().getResources().getString(R.string.ch_title_image), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 showImagePickerDialog();

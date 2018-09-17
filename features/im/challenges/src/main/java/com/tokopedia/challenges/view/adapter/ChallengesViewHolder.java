@@ -101,11 +101,11 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         long minute = daysFormatter.getRemainingMinutes();
 
         if (day > 0) {
-            return String.format(context.getResources().getString(R.string.text_remaining_days), day);
+            return String.format(context.getResources().getString(R.string.ch_text_remaining_days), day);
         } else if (hours > 0) {
-            return String.format(context.getResources().getString(R.string.text_remaining_hours), hours);
+            return String.format(context.getResources().getString(R.string.ch_text_remaining_hours), hours);
         } else if (minute < 0)
-            return String.format(context.getResources().getString(R.string.text_remaining_minutes), minute);
-        return String.format(context.getResources().getString(R.string.text_remaining_days), day);
+            return String.format(context.getResources().getString(R.string.ch_text_remaining_minutes), minute);
+        return String.format(context.getResources().getString(R.string.ch_text_remaining_days), day);
     }
 }

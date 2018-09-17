@@ -24,7 +24,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_10"
-            android:text="@string/active_challenges"
+            android:text="@string/ch_active_challenges"
             android:textColor="@color/black_56" />
 
         <TextView
@@ -38,7 +38,7 @@
             android:paddingLeft="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_10"
-            android:text="@string/completed"
+            android:text="@string/ch_completed"
             android:textColor="@color/black_56" />
     </LinearLayout>
 

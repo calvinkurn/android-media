@@ -319,10 +319,10 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         }
         if (!TextUtils.isEmpty(challengeResult.getEndDate())) {
             if (isPastChallenge) {
-                challengeDueDate.setText(String.format(getResources().getString(R.string.text_due_date),
+                challengeDueDate.setText(String.format(getResources().getString(R.string.ch_text_due_date),
                         Utils.convertUTCToString(challengeResult.getEndDate())));
             } else {
-                challengeDueDate.setText(String.format(getResources().getString(R.string.text_ended_date),
+                challengeDueDate.setText(String.format(getResources().getString(R.string.ch_text_ended_date),
                         Utils.convertUTCToString(challengeResult.getEndDate())));
             }
 
@@ -371,7 +371,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void setCountDownView(String participatedText) {
         if (TextUtils.isEmpty(participatedText)) {
-            submitPhoto.setText(R.string.submit_video_photo_text);
+            submitPhoto.setText(R.string.ch_submit_video_photo_text);
             try {
                 countDownView.setStartDuration(Utils.convertUTCToMillis(challengeResult.getEndDate()));
                 countDownView.start(timerProgressBar);
@@ -383,7 +383,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
             tvParticipated.setVisibility(View.GONE);
         } else {
             Utils.setTextViewBackground(getContext(), tvParticipated, participatedText);
-            submitPhoto.setText(R.string.view_post_text);
+            submitPhoto.setText(R.string.ch_view_post_text);
         }
     }
 
@@ -486,14 +486,14 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     public void onClick(View v) {
         if (v.getId() == R.id.seemorebutton_description) {
             if (shortDescription.getVisibility() == View.VISIBLE) {
-                seeMoreButtonDesc.setText(R.string.see_less);
+                seeMoreButtonDesc.setText(R.string.ch_see_less);
                 MarkdownProcessor m = new MarkdownProcessor();
                 String html = m.markdown(challengeResult.getDescription());
                 longDescription.loadDataWithBaseURL("fake://", html, "text/html", "UTF-8", null);
                 shortDescription.setVisibility(View.GONE);
                 longDescription.setVisibility(View.VISIBLE);
             } else {
-                seeMoreButtonDesc.setText(R.string.see_more);
+                seeMoreButtonDesc.setText(R.string.ch_see_more);
                 shortDescription.setVisibility(View.VISIBLE);
                 longDescription.setVisibility(View.GONE);
             }
@@ -508,9 +508,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         } else if (v.getId() == R.id.ll_continue) {
             mPresenter.onSubmitButtonClick();
         } else if (v.getId() == R.id.seemorebutton_buzzpoints) {
-            fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.generate_buzz_points));
+            fragmentCallbacks.replaceFragment(buzzPointText, getString(R.string.ch_generate_buzz_points));
         } else if (v.getId() == R.id.tv_tnc) {
-            fragmentCallbacks.replaceFragment(tncText, getString(R.string.terms_conditions));
+            fragmentCallbacks.replaceFragment(tncText, getString(R.string.ch_terms_conditions));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);

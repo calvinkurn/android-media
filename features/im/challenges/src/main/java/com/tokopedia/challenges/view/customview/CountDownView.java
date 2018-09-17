@@ -123,15 +123,15 @@ public class CountDownView extends FrameLayout {
             tvDays.setText(String.valueOf(day) + " hari");
         }
         if (hours < 10)
-            tvHours.setText(String.format(getResources().getString(R.string.append_0), hours));
+            tvHours.setText(String.format(getResources().getString(R.string.ch_append_0), hours));
         else
             tvHours.setText(String.valueOf(hours));
         if (minute < 10)
-            tvMins.setText(String.format(getResources().getString(R.string.append_0), minute));
+            tvMins.setText(String.format(getResources().getString(R.string.ch_append_0), minute));
         else
             tvMins.setText(String.valueOf(minute));
         if (second < 10)
-            tvSecs.setText(String.format(getResources().getString(R.string.append_0), second));
+            tvSecs.setText(String.format(getResources().getString(R.string.ch_append_0), second));
         else
             tvSecs.setText(String.valueOf(second));
     }

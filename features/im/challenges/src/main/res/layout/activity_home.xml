@@ -44,14 +44,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="@string/challenges"
+                android:text="@string/ch_challenges"
                 android:textAlignment="textStart" />
 
             <android.support.design.widget.TabItem
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:text="@string/my_submissions"
+                android:text="@string/ch_my_submissions"
                 android:textAlignment="textStart" />
         </com.tokopedia.design.component.Tabs>
     </android.support.design.widget.AppBarLayout>

@@ -52,7 +52,7 @@
                 android:paddingLeft="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"
                 android:paddingTop="@dimen/dp_8"
-                android:text="@string/most_recent"
+                android:text="@string/ch_most_recent"
                 android:textColor="@color/black_56" />
 
             <TextView
@@ -66,7 +66,7 @@
                 android:paddingLeft="@dimen/dp_12"
                 android:paddingRight="@dimen/dp_12"
                 android:paddingTop="@dimen/dp_8"
-                android:text="@string/buzz_points"
+                android:text="@string/ch_buzz_points"
                 android:textColor="@color/black_56" />
         </LinearLayout>
 

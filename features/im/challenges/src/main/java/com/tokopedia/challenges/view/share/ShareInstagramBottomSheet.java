@@ -134,7 +134,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Activity.CLIPBOARD_SERVICE);
         ClipData clip = ClipData.newPlainText("Tokopedia", contents);
         clipboard.setPrimaryClip(clip);
-        Toast.makeText(getActivity(), R.string.copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity(), R.string.ch_copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
     }
 
 }

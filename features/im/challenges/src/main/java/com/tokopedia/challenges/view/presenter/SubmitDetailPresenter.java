@@ -211,7 +211,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
                 getView().hidProgressBar();
-                Toast.makeText(getView().getActivity(), R.string.post_deleted_msg, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getView().getActivity(), R.string.ch_post_deleted_msg, Toast.LENGTH_SHORT).show();
                 ChallengesCacheHandler.addManipulatedMap(submissionId, ChallengesCacheHandler.Manupulated.DELETE.ordinal());
                 ChallengesCacheHandler.resetCache();
                 ChallengesMoengageAnalyticsTracker.challenge_DeleteSubmission(getView().getActivity(), challengeName,

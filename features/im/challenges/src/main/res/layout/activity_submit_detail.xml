@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/card_share"
             android:background="@color/white"
-            android:paddingBottom="@dimen/dp_5"
+            android:paddingBottom="@dimen/dp_16"
             android:scrollbars="none"
             android:visibility="visible">
 
@@ -219,7 +219,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/dp_8"
-                        android:text="@string/approval_wait" />
+                        android:text="@string/ch_approval_wait" />
                 </LinearLayout>
 
                 <TextView
@@ -229,7 +229,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/description"
+                    android:text="@string/ch_description"
                     android:textColor="#000000"
                     android:textSize="@dimen/sp_16"
                     app:layout_constraintTop_toBottomOf="@+id/conditional_status" />
@@ -251,7 +251,7 @@
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_16"
-                    android:text="@string/participate_in"
+                    android:text="@string/ch_participate_in"
                     android:textColor="@color/black"
                     android:textSize="@dimen/sp_16"
                     app:layout_constraintTop_toBottomOf="@+id/detail_content" />
@@ -261,13 +261,12 @@
                     style="@style/TextView.Small.FontMedium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/dp_16"
+                    android:paddingBottom="@dimen/dp_16"
                     android:layout_marginLeft="@dimen/dp_16"
                     android:layout_marginRight="@dimen/dp_16"
                     android:layout_marginTop="@dimen/dp_8"
                     android:textColor="@color/tkpd_main_green"
                     android:textSize="@dimen/sp_14"
-                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/participate_title" />
 
 
@@ -293,7 +292,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:text="@string/buzz_point_request" />
+                    android:text="@string/ch_buzz_point_request" />
 
                 <TextView
                     android:id="@+id/btn_share"
@@ -304,7 +303,7 @@
                     android:paddingLeft="@dimen/dp_32"
                     android:paddingRight="@dimen/dp_32"
                     android:paddingTop="@dimen/dp_12"
-                    android:text="@string/share_submission"
+                    android:text="@string/ch_share_submission"
                     android:textAlignment="center"
                     android:textColor="@color/white" />
 

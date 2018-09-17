@@ -72,11 +72,11 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
         if (filePath == null || filePath.isEmpty()) {
             String errorMsg = null;
             if (settings.isAllowVideos() && settings.isAllowPhotos()) {
-                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_image_video);
+                errorMsg = getView().getContext().getResources().getString(R.string.ch_error_msg_select_image_video);
             } else if (settings.isAllowPhotos()) {
-                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_image);
+                errorMsg = getView().getContext().getResources().getString(R.string.ch_error_msg_select_image);
             } else if (settings.isAllowVideos()) {
-                errorMsg = getView().getContext().getResources().getString(R.string.error_msg_select_video);
+                errorMsg = getView().getContext().getResources().getString(R.string.ch_error_msg_select_video);
             }
             getView().setSnackBarErrorMessage(errorMsg);
             return;
@@ -86,12 +86,12 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             return;
         } else if (ImageUtils.isImageType(getView().getContext(), filePath)) {
             if (!isValidateImageSize(filePath)) {
-                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_size));
+                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_wrong_size));
                 return;
             }
         } else {
             if (!isValidateVidoeSize(filePath)) {
-                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_video_size));
+                getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_wrong_video_size));
                 return;
             }
         }
@@ -121,7 +121,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 RestResponse res1 = restResponse.get(UploadFingerprints.class);
                 UploadFingerprints fingerprints = res1.getData();
                 postId = fingerprints.getNewPostId();
-                getView().getContext().registerReceiver(receiver, new IntentFilter(ACTION_UPLOAD_COMPLETE));
+                IntentFilter intentFilter =new IntentFilter();
+                intentFilter.addAction(ACTION_UPLOAD_COMPLETE);
+                intentFilter.addAction(ACTION_UPLOAD_FAIL);
+                getView().getContext().registerReceiver(receiver, intentFilter);
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
                     getView().showMessage("Upload Initiated Please Wait");
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
@@ -150,7 +153,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             if (getView() != null) {
                 getView().hideProgress();
                 if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
-                    getView().setSnackBarErrorMessage("Konten Anda diterima!");
                     if (!TextUtils.isEmpty(postId)) {
                         getSubmissionDetail();
                         ChallengesMoengageAnalyticsTracker.challengeSubmitStart(getView().getActivity(), getView().getChallengeTitle(),
@@ -178,10 +180,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     private boolean isValidateDescription(@NonNull String description) {
         if (description.length() <= 0) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_desc_blank));
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_desc_blank));
             return false;
         } else if (description.length() > 300) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_descirption_size));
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_wrong_descirption_size));
             return false;
         } else
             return true;
@@ -189,10 +191,10 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     private boolean isValidateTitle(@NonNull String title) {
         if (title.length() <= 0) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_title_blank));
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_title_blank));
             return false;
         } else if (title.length() > 50) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.error_msg_wrong_title_size));
+            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_wrong_title_size));
             return false;
         } else
             return true;
@@ -241,7 +243,6 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, submissionResult);
                     intent.putExtra(Utils.QUERY_PARAM_FROM_SUBMISSION, true);
                     getView().getActivity().startActivity(intent);
-                    // ShareBottomSheet.show(((AppCompatActivity) getView().getActivity()).getSupportFragmentManager(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getTitle(), submissionResult.getSharing().getMetaTags().getOgUrl(), submissionResult.getSharing().getMetaTags().getOgTitle(), submissionResult.getSharing().getMetaTags().getOgImage(), submissionResult.getId(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionResult.getId()), false);
                     getView().getActivity().finish();
                 }
             }
@@ -252,14 +253,14 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
     public void setSubmitButtonText() {
         settings = getView().getChallengeSettings();
         if (settings.isAllowVideos() && settings.isAllowPhotos()) {
-            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo_video));
-            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title));
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_photo_video));
+            getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title));
         } else if (settings.isAllowPhotos()) {
-            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_photo));
-            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title_photo));
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_photo));
+            getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_photo));
         } else if (settings.isAllowVideos()) {
-            getView().setSubmitButtonText(getView().getActivity().getString(R.string.submit_video));
-            getView().setChooseImageText(getView().getActivity().getString(R.string.choose_image_title_video));
+            getView().setSubmitButtonText(getView().getActivity().getString(R.string.ch_submit_video));
+            getView().setChooseImageText(getView().getActivity().getString(R.string.ch_choose_image_title_video));
         }
     }
 }

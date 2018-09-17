@@ -62,11 +62,11 @@ public class BottomSheetShareAdapter extends RecyclerView.Adapter<BottomSheetSha
 
         if (isPositionCopy(position)) {
             resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_btn_copy);
-            title = holder.labelView.getContext().getString(R.string.copy);
+            title = holder.labelView.getContext().getString(R.string.ch_copy);
             type = ShareBottomSheet.KEY_COPY;
         } else if (isPositionOther(position)) {
-            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), R.drawable.ic_share_white);
-            title = holder.labelView.getContext().getString(R.string.other);
+            resources = AppCompatResources.getDrawable(holder.iconView.getContext(), com.tokopedia.design.R.drawable.ic_btn_other);
+            title = holder.labelView.getContext().getString(R.string.ch_other);
             type = ShareBottomSheet.KEY_OTHER;
         } else if (mActivities.size() > position) {
             final ResolveInfo activity = mActivities.get(position);
