@@ -19,6 +19,7 @@ public class Data implements Parcelable {
     private static final String KEY_STICKER_ID = "sticker_id";
     private static final String KEY_STICKER_IMAGE = "sticker_image";
     private static final String KEY_PRODUCT_CLICK_URL = "product_click_url";
+    private static final String KEY_PRODUCT_WISHLIST_URL = "product_wishlist_url";
     private static final String KEY_SHOP_CLICK_URL = "shop_click_url";
     private static final String KEY_SHOP = "shop";
     private static final String KEY_PRODUCT = "product";
@@ -35,6 +36,8 @@ public class Data implements Parcelable {
     private String stickerImage;
     @SerializedName(KEY_PRODUCT_CLICK_URL)
     private String productClickUrl;
+    @SerializedName(KEY_PRODUCT_WISHLIST_URL)
+    private String productWishlistUrl;
     @SerializedName(KEY_SHOP_CLICK_URL)
     private String shopClickUrl;
     @SerializedName(KEY_SHOP)
@@ -66,6 +69,9 @@ public class Data implements Parcelable {
         if(!object.isNull(KEY_PRODUCT_CLICK_URL)) {
             setProductClickUrl(object.getString(KEY_PRODUCT_CLICK_URL));
         }
+        if(!object.isNull(KEY_PRODUCT_WISHLIST_URL)) {
+            setProductWishlistUrl(object.getString(KEY_PRODUCT_WISHLIST_URL));
+        }
         if(!object.isNull(KEY_SHOP_CLICK_URL)) {
             setShopClickUrl(object.getString(KEY_SHOP_CLICK_URL));
         }
@@ -84,6 +90,7 @@ public class Data implements Parcelable {
         stickerId = in.readString();
         stickerImage = in.readString();
         productClickUrl = in.readString();
+        productWishlistUrl = in.readString();
         shopClickUrl = in.readString();
         shop = in.readParcelable(Shop.class.getClassLoader());
         product = in.readParcelable(Product.class.getClassLoader());
@@ -99,6 +106,7 @@ public class Data implements Parcelable {
         dest.writeString(stickerId);
         dest.writeString(stickerImage);
         dest.writeString(productClickUrl);
+        dest.writeString(productWishlistUrl);
         dest.writeString(shopClickUrl);
         dest.writeParcelable(shop, flags);
         dest.writeParcelable(product, flags);
@@ -209,5 +217,13 @@ public class Data implements Parcelable {
 
     public boolean isWislished() {
         return wislished;
+    }
+
+    public String getProductWishlistUrl() {
+        return productWishlistUrl;
+    }
+
+    public void setProductWishlistUrl(String productWishlistUrl) {
+        this.productWishlistUrl = productWishlistUrl;
     }
 }
