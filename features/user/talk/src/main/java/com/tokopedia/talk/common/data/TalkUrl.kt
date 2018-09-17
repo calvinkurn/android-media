@@ -13,6 +13,7 @@ class TalkUrl {
         const val PATH_DELETE_COMMENT_TALK: String = "/talk/v2/comment/delete"
         const val PATH_FOLLOW_TALK: String = "talk/v2/follow"
         const val PATH_REPORT_TALK: String = "talk/v2/report"
+        const val PATH_CREATE_TALK: String = "talk/v2/create"
         const val PATH_MARK_TALK_NOT_FRAUD: String = "talk/v2/mark/notfraud"
     }
 }

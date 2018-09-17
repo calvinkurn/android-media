@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -15,6 +13,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
+import com.tokopedia.talk.addtalk.view.activity.AddTalkActivity
 import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
@@ -66,6 +65,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private lateinit var swiper: SwipeToRefresh
 
     val REQUEST_REPORT_TALK: Int = 123478
+    val REQUEST_CREATE_TALK: Int = 2132
 
     var productId: String = ""
     var productName: String = ""
@@ -105,13 +105,34 @@ class ProductTalkFragment : BaseDaggerFragment(),
         presenter.initProductTalk(productId)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
+        menuInflater.inflate(R.menu.product_talk, menu)
+        super.onCreateOptionsMenu(menu, menuInflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle presses on the action bar menu items
+        when (item.itemId) {
+            R.id.action_add -> {
+                goToCreateTalk(productId)
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private fun goToCreateTalk(productId: String) {
+        activity?.run {
+            val intent = AddTalkActivity.createIntent(this, productId)
+            startActivityForResult(intent, REQUEST_CREATE_TALK)
+        }
+    }
 
     private fun getProductTalk() {
         presenter.getProductTalk(productId)
     }
 
     private fun setUpView(view: View) {
-        setMenuVisibility(false)
         val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
@@ -148,7 +169,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
-        setMenuVisibility(false)
+
         adapter.showEmpty()
     }
 
@@ -157,7 +178,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
-        setMenuVisibility(true)
         adapter.setList(listThread, ProductTalkTitleViewModel(productImage, productName, productPrice))
     }
 
@@ -401,7 +421,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onAskButtonClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        goToCreateTalk(productId)
     }
 
     override fun onChatClicked() {

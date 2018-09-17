@@ -1,21 +1,37 @@
 package com.tokopedia.talk.addtalk.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.talk.addtalk.domain.usecase.CreateTalkUsecase
 import com.tokopedia.talk.addtalk.view.listener.AddTalkContract
 import com.tokopedia.talk.common.di.TalkScope
-import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
-import com.tokopedia.talk.common.domain.usecase.MarkTalkNotFraudUseCase
-import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
-import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import com.tokopedia.user.session.UserSession
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
  * @author : Steven 17/09/18
  */
 
-class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession) :
+class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
+                                           @TalkScope val createTalkUsecase: CreateTalkUsecase) :
         AddTalkContract.Presenter,
         BaseDaggerPresenter<AddTalkContract.View>() {
+
+    override fun send(productId: String, text: String) {
+        createTalkUsecase.execute(CreateTalkUsecase.getParam(userSession.userId, productId, text), object : Subscriber<TalkThreadViewModel>(){
+            override fun onNext(t: TalkThreadViewModel?) {
+                view.onSuccessCreateTalk(productId)
+            }
+
+            override fun onCompleted() {
+            }
+
+            override fun onError(e: Throwable?) {
+                view.onErrorCreateTalk()
+            }
+
+        })
+    }
 
 }

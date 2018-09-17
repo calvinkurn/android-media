@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.talk.addtalk.domain.mapper.CreateTalkMapper
+import com.tokopedia.talk.addtalk.domain.usecase.CreateTalkUsecase
 import com.tokopedia.talk.common.data.TalkApi
 import com.tokopedia.talk.common.data.TalkUrl
 import com.tokopedia.talk.common.domain.mapper.BaseActionMapper
@@ -140,6 +142,13 @@ class TalkModule {
     fun provideDeleteCommentTalkUseCase(api: TalkApi,
                                         baseActionMapper: BaseActionMapper): DeleteCommentTalkUseCase {
         return DeleteCommentTalkUseCase(api, baseActionMapper)
+    }
+
+    @TalkScope
+    @Provides
+    fun provideCreateTalkUseCase(api: TalkApi,
+                                        createTalkMapper: CreateTalkMapper): CreateTalkUsecase {
+        return CreateTalkUsecase(api, createTalkMapper)
     }
 
 

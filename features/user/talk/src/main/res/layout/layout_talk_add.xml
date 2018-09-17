@@ -36,6 +36,7 @@
             android:layout_above="@+id/send_new_talk"
             android:layout_marginBottom="@dimen/dp_16"
             android:orientation="horizontal"
+            android:visibility="gone"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager"
             tools:listitem="@layout/item_quick_reply" />
 
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <EditText
-                    android:id="@+id/message"
+                    android:id="@+id/message_talk"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@null"

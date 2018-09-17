@@ -28,22 +28,6 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.product_talk, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle presses on the action bar menu items
-        when (item.itemId) {
-            R.id.action_add -> {
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
-    }
-
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         if (intent.extras != null) {
