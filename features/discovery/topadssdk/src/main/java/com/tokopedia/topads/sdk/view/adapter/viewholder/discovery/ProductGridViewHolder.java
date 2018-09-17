@@ -146,7 +146,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
                 bottomLabelContainer.addView(label);
             }
         }
-        renderWishlistButton(data.isWislished());
+        renderWishlistButton(data.getProduct().isWishlist());
     }
 
     private int getStarCount(int rating) {

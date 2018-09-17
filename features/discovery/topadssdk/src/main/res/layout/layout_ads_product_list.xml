@@ -147,7 +147,7 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:background="@drawable/circle_wishlist"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ImageView
             android:id="@+id/wishlist_button"

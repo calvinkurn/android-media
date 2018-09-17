@@ -32,7 +32,7 @@ public class DiscoveryPresenter<T1 extends CustomerView, D2 extends View>
         extends BaseDiscoveryPresenter<T1, D2> {
 
     public static final String HEADLINE = "headline";
-    public static final String TEMPLATE_VALUE = "6";
+    public static final String TEMPLATE_VALUE = "3,4";
     public static final String ITEM_VALUE = "1";
     private GetProductUseCase getProductUseCase;
     private GetImageSearchUseCase getImageSearchUseCase;
