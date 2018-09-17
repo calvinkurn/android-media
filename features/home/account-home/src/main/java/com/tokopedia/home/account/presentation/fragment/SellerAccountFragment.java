@@ -73,6 +73,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         recyclerView = view.findViewById(R.id.recycler_seller);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
     }
 
@@ -143,7 +144,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
         }
     }
 
