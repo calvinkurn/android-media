@@ -10,6 +10,7 @@ android {
             }
         }
     }
+    buildToolsVersion '28.0.2'
 }
 
 project.ext {

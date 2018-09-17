@@ -10,3 +10,7 @@ dependencies {
     })
     testCompile rootProject.ext.testDependencies.junit
 }
+
+android {
+    buildToolsVersion '28.0.2'
+}
