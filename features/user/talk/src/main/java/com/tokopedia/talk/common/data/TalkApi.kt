@@ -1,8 +1,11 @@
 package com.tokopedia.talk.common.data
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.talk.addtalk.domain.CreateTalkPojo
 import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.pojo.BaseActionTalkPojo
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import retrofit2.Response
 import retrofit2.http.*
 import rx.Observable
@@ -44,5 +47,9 @@ interface TalkApi {
     @POST(TalkUrl.PATH_REPORT_TALK)
     fun reportTalk(@FieldMap params: HashMap<String, Any>):
             Observable<Response<DataResponse<BaseActionTalkPojo>>>
+
+    @FormUrlEncoded
+    @POST(TalkUrl.PATH_CREATE_TALK)
+    fun createTalk(@FieldMap parameters: HashMap<String, Any>): Observable<Response<DataResponse<CreateTalkPojo>>>
 
 }

@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.di.TalkScope
 import com.tokopedia.talk.common.domain.usecase.DeleteCommentTalkUseCase
+import com.tokopedia.talk.common.domain.usecase.DeleteTalkUseCase
+import com.tokopedia.talk.common.domain.usecase.FollowUnfollowTalkUseCase
 import com.tokopedia.talk.common.domain.usecase.MarkTalkNotFraudUseCase
 import com.tokopedia.talk.common.view.BaseActionTalkViewModel
 import com.tokopedia.talk.producttalk.domain.usecase.GetProductTalkUseCase
@@ -18,8 +20,10 @@ import javax.inject.Inject
  * @author by Steven
  */
 class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserSession,
+                                               private val deleteTalkUseCase: DeleteTalkUseCase,
                                                @TalkScope val getProductTalkUseCase : GetProductTalkUseCase,
                                                @TalkScope val deleteCommentTalkUseCase: DeleteCommentTalkUseCase,
+                                               private val followUnfollowTalkUseCase: FollowUnfollowTalkUseCase,
                                                private val markTalkNotFraudUseCase: MarkTalkNotFraudUseCase) :
         ProductTalkContract.Presenter,
         BaseDaggerPresenter<ProductTalkContract.View>() {
@@ -85,6 +89,79 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
             }
 
         })
+    }
+
+    override fun deleteTalk(shopId: String, talkId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+
+            deleteTalkUseCase.execute(DeleteTalkUseCase.getParam(
+                    shopId,
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.onSuccessDeleteTalk(talkId)
+                }
+            })
+        }
+    }
+
+
+    override fun unfollowTalk(talkId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.onSuccessUnfollowTalk(talkId)
+
+                }
+            })
+        }
+    }
+
+    override fun followTalk(talkId: String) {
+        if (!isRequesting) {
+            view.showLoadingAction()
+            followUnfollowTalkUseCase.execute(FollowUnfollowTalkUseCase.getParam(
+                    talkId
+            ), object : Subscriber<BaseActionTalkViewModel>() {
+                override fun onCompleted() {
+
+                }
+
+                override fun onError(e: Throwable) {
+                    view.hideLoadingAction()
+                    onErrorTalk(e)
+                }
+
+                override fun onNext(talkViewModel: BaseActionTalkViewModel) {
+                    view.hideLoadingAction()
+                    view.onSuccessFollowTalk(talkId)
+                }
+            })
+        }
     }
 
     override fun markTalkNotFraud(talkId: String) {
@@ -174,7 +251,6 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
         getProductTalkUseCase.unsubscribe()
         super.detachView()
     }
-
 
 
     override fun isLoggedIn(): Boolean {
