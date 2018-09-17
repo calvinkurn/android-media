@@ -92,7 +92,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         recyclerView.setAdapter(adapter);
 
         adapter.setOnItemClickListener((view1, position) -> {
-            Inbox inbox = inboxes.get(position);
+            Inbox inbox = adapter.getItem(position);
             if (inbox == null)
                 return;
 
