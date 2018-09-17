@@ -37,5 +37,6 @@ interface ProductTalkContract {
         fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
         fun markTalkNotFraud(talkId: String)
         fun markCommentNotFraud(talkId: String, commentId: String)
+        fun isLoggedIn() : Boolean
     }
 }

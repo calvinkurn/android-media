@@ -10,4 +10,5 @@ interface TalkRouter {
 
     fun getTopProfileIntent(context: Context, userId: String) : Intent
 
+    fun getLoginIntent(context: Context) : Intent
 }

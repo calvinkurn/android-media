@@ -23,6 +23,7 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
+import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.LoadProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
@@ -43,6 +44,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         LoadProductTalkThreadViewHolder.LoadTalkListener,
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+        EmptyProductTalkViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
 
     override fun getContext(): Context? {
@@ -69,6 +71,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var productName: String = ""
     var productPrice: String = ""
     var productImage: String = ""
+    var intentChat: Intent? = null
+
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
                 .talkComponent(getComponent(TalkComponent::class.java))
@@ -85,6 +89,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
             fragment.productPrice = extras.getString("product_price")
             fragment.productName = extras.getString("prod_name")
             fragment.productImage = extras.getString("product_image")
+            fragment.intentChat = extras.getParcelable("intent_chat")
             return fragment
         }
 
@@ -107,7 +112,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun setUpView(view: View) {
         setMenuVisibility(false)
-        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this)
+        val adapterTypeFactory = ProductTalkTypeFactoryImpl(this, this, this, this, this, this)
         val listProductTalk = ArrayList<Visitable<*>>()
         adapter = ProductTalkAdapter(adapterTypeFactory, listProductTalk)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -177,9 +182,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean) {
-        //TODO
-        if (allowReply) goToDetailTalk("", "")
-        else showErrorReplyTalk()
+        if(presenter.isLoggedIn()){
+            goToLogin()
+        }
+        if (allowReply)
+            goToDetailTalk("", "")
+        else
+            showErrorReplyTalk()
     }
 
     private fun showErrorReplyTalk() {
@@ -189,6 +198,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToDetailTalk(talkId: String, shopId: String) {
         //TODO
+    }
+
+    private fun goToLogin() {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getLoginIntent(this)
+            activity!!.startActivityForResult(intent,200)
+        }
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -382,6 +398,14 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         presenter.detachView()
+    }
+
+    override fun onAskButtonClick() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onChatClicked() {
+        startActivity(intentChat)
     }
 
     override fun onGoToUserProfile(userId: String) {
