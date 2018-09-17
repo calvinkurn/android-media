@@ -102,10 +102,6 @@ public class MarketplaceTrackerMapper implements Func1<Response<GraphqlResponse<
         return "";
     }
 
-//    private String getShopType(){
-//
-//    }
-
     private String getPaymentType(PaymentMethod paymentMethod) {
         if (paymentMethod != null && paymentMethod.getMethod() != null) {
             switch (paymentMethod.getMethod()) {
