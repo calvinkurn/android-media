@@ -1,5 +1,6 @@
 package com.tokopedia.saldodetails.view.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,16 +15,16 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.MerchantSaldoPriorityContract;
+import com.tokopedia.saldodetails.design.UserStatusInfoBottomSheet;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
@@ -49,6 +50,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     private static final String DANGER = "danger";
 
     GqlMerchantSaldoDetailsResponse.Details sellerDetails;
+    private Context context;
 
     @Nullable
     @Override
@@ -68,6 +70,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         populateData();
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     private void initViews(View view) {
         spTitle = view.findViewById(R.id.sp_title);
         spNewTitle = view.findViewById(R.id.sp_new_title);
@@ -83,28 +91,46 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     private void initListeners() {
-        spKYCStatusLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: 14/09/18 open bottom dialog
-            }
-        });
 
         spEnableSwitchCompat.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO: 14/09/18 show dialog and API pending
-                Toast.makeText(getContext(), "switch compat", Toast.LENGTH_SHORT).show();
+                final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+                if (isChecked) {
+                    dialog.setTitle(getResources().getString(R.string.sp_enable_title));
+                    dialog.setDesc(getResources().getString(R.string.sp_enable_desc));
+                    dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_enable));
+                } else {
+                    dialog.setTitle(getResources().getString(R.string.sp_disable_title));
 
+                    // TODO: 17/09/18 check seller state to add optional message.
+                    dialog.setDesc(getResources().getString(R.string.sp_disable_desc));
+                    dialog.setBtnOk(getResources().getString(R.string.sp_btn_ok_disable));
+                }
+
+                dialog.setOnOkClickListener(v -> {
+                    // TODO: 17/09/18 call api to set saldo status
+                });
+
+                dialog.setBtnCancel(getResources().getString(R.string.sp_btn_cancel));
+                dialog.setOnCancelClickListener(v -> {
+                    dialog.dismiss();
+                });
+
+                dialog.show();
+                dialog.getBtnCancel().setTextColor(getResources().getColor(R.color.black_38));
+                dialog.getBtnOk().setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
         });
 
         if (sellerDetails.isBoxShowPopup()) {
-            spKYCStatusLayout.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    // TODO: 15/09/18 show bottom dialog
-                }
+            spKYCStatusLayout.setOnClickListener(v -> {
+                UserStatusInfoBottomSheet userStatusInfoBottomSheet =
+                        new UserStatusInfoBottomSheet(context);
+                userStatusInfoBottomSheet.setBody(sellerDetails.getPopupDesc());
+                userStatusInfoBottomSheet.setTitle(sellerDetails.getPopupTitle());
+                userStatusInfoBottomSheet.setButtonText(sellerDetails.getPopupButtonText());
+                userStatusInfoBottomSheet.show();
             });
         }
     }
@@ -161,7 +187,6 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
 
         if (sellerDetails.isShowToggle()) {
             spEnableSwitchCompat.setVisibility(View.VISIBLE);
-//            spEnableSwitchCompat.setEnabled(sellerDetails.isIsEnabled());
             spEnableSwitchCompat.setChecked(sellerDetails.isIsEnabled());
             spEnableSwitchCompat.setClickable(true);
         } else {
@@ -176,24 +201,19 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
     }
 
     private void setBoxBackground() {
-
-        // TODO: 15/09/18 set status icon color
         String boxType = sellerDetails.getBoxType();
-
         if (boxType.equalsIgnoreCase(NONE)) {
-
+            spStatusInfoIcon.setVisibility(View.GONE);
         } else if (boxType.equalsIgnoreCase(DEFAULT)) {
 
-//            spStatusInfoIcon.setColorFilter(getResources().getColor(R.color.tkpd_main_green), PorterDuff.Mode.DST_ATOP);
+            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_green));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corners_green));
         } else if (boxType.equalsIgnoreCase(WARNING)) {
-
-//            spStatusInfoIcon.setColorFilter(getResources().getColor(R.color.bg_corner_red), PorterDuff.Mode.DST_ATOP);
+            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_yellow));
             spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
         } else if (boxType.equalsIgnoreCase(DANGER)) {
-
-//            spStatusInfoIcon.setColorFilter(getResources().getColor(R.color.bg_corner_red), PorterDuff.Mode.DST_ATOP);
-            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_warning));
+            spStatusInfoIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_info_icon_red));
+            spKYCStatusLayout.setBackground(getResources().getDrawable(R.drawable.bg_rounded_corner_danger));
         }
     }
 
@@ -212,17 +232,12 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             if (anchorList1.getColor().equalsIgnoreCase(COLOR_GREEN)) {
                 anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             } else if (anchorList1.getColor().equalsIgnoreCase(COLOR_GREY)) {
-                anchorLabel.setTextColor(getResources().getColor(R.color.black_70));
+                anchorLabel.setTextColor(getResources().getColor(R.color.black_38));
             }
 
-            anchorLabel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    RouteManager.route(getContext(), String.format("%s?url=%s",
-                            ApplinkConst.WEBVIEW,
-                            anchorList1.getUrl()));
-                }
-            });
+            anchorLabel.setOnClickListener(v -> RouteManager.route(context, String.format("%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    anchorList1.getUrl())));
 
             spActionListLinearLayout.addView(view);
         }
