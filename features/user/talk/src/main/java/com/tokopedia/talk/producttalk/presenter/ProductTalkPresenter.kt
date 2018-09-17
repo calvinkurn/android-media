@@ -175,4 +175,9 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
         super.detachView()
     }
 
+
+
+    override fun isLoggedIn(): Boolean {
+        return userSession.isLoggedIn
+    }
 }

@@ -22,11 +22,11 @@ class CommentTalkViewHolder(val v: View,
                             private val productListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener) :
         AbstractViewHolder<ProductTalkItemViewModel>(v) {
 
-    private val SELLER_LABEL_ID: Int = 1
+    private val SELLER_LABEL_ID: Int = 3
 
     interface TalkCommentItemListener {
         fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String)
-        fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String)
+        fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String)
         fun onNoShowTalkCommentClick(talkId: String, commentId: String)
     }
 
@@ -97,7 +97,8 @@ class CommentTalkViewHolder(val v: View,
 
         yesReportButton.setOnClickListener {
             listener.onYesReportTalkCommentClick(
-                    element.talkId, element.shopId, element.productId
+                    element.talkId, element.shopId, element.productId,
+                    element.commentId
             )
         }
         noReportButton.setOnClickListener {

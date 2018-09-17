@@ -99,6 +99,9 @@ data class TalkCommentItem(
         @SerializedName("comment_create_time_fmt")
         val comment_create_time_fmt: String = "",
         @Expose
+        @SerializedName("comment_create_time_list")
+        val comment_create_time_list: CreateTimeList= CreateTimeList(),
+        @Expose
         @SerializedName("comment_id")
         val comment_id: String = "",
         @Expose
@@ -138,6 +141,9 @@ data class TalkCommentItem(
         @SerializedName("comment_user_image")
         val comment_user_image: String = "",
         @Expose
+        @SerializedName("comment_user_id")
+        val comment_user_id: String = "",
+        @Expose
         @SerializedName("comment_user_label")
         val comment_user_label: String = "",
         @Expose
@@ -164,6 +170,15 @@ data class CommentProduct(
         @Expose
         @SerializedName("product_status")
         val product_status: Int = 0
+)
+
+data class CreateTimeList(
+        @Expose
+        @SerializedName("date_time_android")
+        val date_time_android: String = "",
+        @Expose
+        @SerializedName("date_time_ios")
+        val date_time_ios: String = ""
 )
 
 

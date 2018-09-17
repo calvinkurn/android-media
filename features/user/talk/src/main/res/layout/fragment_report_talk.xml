@@ -60,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_50"
                 android:layout_marginTop="-10dp"
+                android:focusable="false"
                 android:hint="@string/talk_hint_input_reason"
                 android:inputType="text"
                 android:paddingLeft="@dimen/dp_16"
@@ -87,9 +88,9 @@
         android:text="@string/button_send"
         android:textAllCaps="false"
         android:textColor="@color/black_12"
-        tools:visibility="visible"
         android:textSize="@dimen/sp_14"
         android:textStyle="normal"
+        tools:visibility="visible"
         />
 
     <ProgressBar

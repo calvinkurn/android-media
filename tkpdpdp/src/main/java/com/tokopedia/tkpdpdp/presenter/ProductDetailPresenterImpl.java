@@ -352,7 +352,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void processToReputlgation(@NonNull Context context, String productId, String productName) {
+    public void processToReputation(@NonNull Context context, String productId, String productName) {
         UnifyTracking.eventPDPReputation();
         if (context.getApplicationContext() instanceof PdpRouter) {
             Intent intent = ((PdpRouter) context.getApplicationContext())

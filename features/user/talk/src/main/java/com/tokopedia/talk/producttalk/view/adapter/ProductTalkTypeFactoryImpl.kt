@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.*
 import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
@@ -17,7 +18,9 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThreadViewHolder.TalkItemListener,
                                  private val listener: LoadProductTalkThreadViewHolder.LoadTalkListener,
                                  private val commentTalkListener: CommentTalkViewHolder.TalkCommentItemListener,
-                                 private val talkProductAttachmentListener: TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+                                 private val talkProductAttachmentListener:
+                                 TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+                                 private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener,
                                  private val qaTalkListener: EmptyProductTalkViewHolder.TalkItemListener) :
         BaseAdapterTypeFactory(),
         ProductTalkListTypeFactory {
@@ -43,7 +46,7 @@ class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThread
             EmptyProductTalkViewHolder.LAYOUT -> EmptyProductTalkViewHolder(view, qaTalkListener)
             ProductTalkTitleViewHolder.LAYOUT -> ProductTalkTitleViewHolder(view)
             ProductTalkThreadViewHolder.LAYOUT -> ProductTalkThreadViewHolder(view,
-                    talkItemListener, commentTalkListener, talkProductAttachmentListener)
+                    talkItemListener, commentTalkListener, talkProductAttachmentListener, talkCommentLoadMoreListener)
             LoadProductTalkThreadViewHolder.LAYOUT -> LoadProductTalkThreadViewHolder(view, listener)
             else -> super.createViewHolder(view, viewType)
         }

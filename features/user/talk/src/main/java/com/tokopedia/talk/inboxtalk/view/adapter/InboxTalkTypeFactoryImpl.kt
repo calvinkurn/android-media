@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
+import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.EmptyInboxTalkViewHolder
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
@@ -18,7 +20,8 @@ class InboxTalkTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHo
                                private val talkCommentItemListener: CommentTalkViewHolder
                                .TalkCommentItemListener,
                                private val talkAttachmentItemClickListener: TalkProductAttachmentAdapter
-                               .ProductAttachmentItemClickListener) :
+                               .ProductAttachmentItemClickListener,
+                               private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         BaseAdapterTypeFactory(),
         InboxTalkTypeFactory {
 
@@ -33,7 +36,7 @@ class InboxTalkTypeFactoryImpl(private val talkItemListener: InboxTalkItemViewHo
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
             InboxTalkItemViewHolder.LAYOUT -> InboxTalkItemViewHolder(view, talkItemListener,
-                    talkCommentItemListener, talkAttachmentItemClickListener)
+                    talkCommentItemListener, talkAttachmentItemClickListener, talkCommentLoadMoreListener)
             EmptyInboxTalkViewHolder.LAYOUT -> EmptyInboxTalkViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }

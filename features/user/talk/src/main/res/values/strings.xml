@@ -53,8 +53,10 @@
     <string name="any_question">Ada pertanyaan?</string>
     <string name="discuss_seller">Diskusikan dengan penjual atau pengguna lain</string>
     <string name="write_question">Tulis Pertanyaan</string>
+    <string name="write_new_talk">Tulis Diskusi Baru</string>
     <string name="contact_seller">Atau hubungi langsung penjual</string>
     <string name="chat_seller">Chat Penjual</string>
     <string name="label_talk_seller">Penjual</string>
+    <string name="what_question">Apa yang ingin Anda tanyakan mengenai produk ini?</string>
 
 </resources>
