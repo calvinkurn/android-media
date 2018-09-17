@@ -479,7 +479,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public String getDefaultCartErrorMessage() {
-        return getString(R.string.cart_error_message_no_count);
+        if (isAdded()) {
+            return getString(R.string.cart_error_message_no_count);
+        } else {
+            return "";
+        }
     }
 
     @Override

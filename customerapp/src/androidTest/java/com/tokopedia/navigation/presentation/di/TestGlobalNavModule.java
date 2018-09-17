@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.navigation.GlobalNavRouter;
@@ -32,8 +33,8 @@ public class TestGlobalNavModule {
     private GetDrawerNotificationUseCase getDrawerNotificationUseCase;
 
     @Provides
-    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase) {
-        return mainParentPresenter == null ? mainParentPresenter = new MainParentPresenter(getNotificationUseCase) : mainParentPresenter;
+    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase, UserSession userSession) {
+        return mainParentPresenter == null ? mainParentPresenter = new MainParentPresenter(getNotificationUseCase, userSession) : mainParentPresenter;
     }
 
     @Provides
