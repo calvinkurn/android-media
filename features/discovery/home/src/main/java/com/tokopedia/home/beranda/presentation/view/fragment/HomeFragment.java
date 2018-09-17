@@ -513,9 +513,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         bottomSheetDialogTokoCash.show();
     }
 
+    boolean isShow = true;
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (mShowTokopointNative) {
+            isShow = !isShow;
             RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
         } else {
             if (TextUtils.isEmpty(pageTitle))

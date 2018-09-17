@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 public class CouponUsesEntity {
     @Expose
     @SerializedName(value = "activeCountdown", alternate = {"active_count_down"})
-    private int activeCountDown;
+    private long activeCountDown;
 
     @Expose
     @SerializedName(value = "buttonUsage", alternate = {"btn_usage"})
@@ -14,7 +14,7 @@ public class CouponUsesEntity {
 
     @Expose
     @SerializedName(value = "expiredCountdown", alternate = {"expired_count_down"})
-    private int expiredCountDown;
+    private long expiredCountDown;
 
     @Expose
     @SerializedName("text")
@@ -24,11 +24,11 @@ public class CouponUsesEntity {
     @SerializedName(value = "usageStr", alternate = {"usage_str"})
     private String usageStr;
 
-    public int getActiveCountDown() {
+    public long getActiveCountDown() {
         return activeCountDown;
     }
 
-    public void setActiveCountDown(int activeCountDown) {
+    public void setActiveCountDown(long activeCountDown) {
         this.activeCountDown = activeCountDown;
     }
 
@@ -40,11 +40,11 @@ public class CouponUsesEntity {
         this.btnUsage = btnUsage;
     }
 
-    public int getExpiredCountDown() {
+    public long getExpiredCountDown() {
         return expiredCountDown;
     }
 
-    public void setExpiredCountDown(int expiredCountDown) {
+    public void setExpiredCountDown(long expiredCountDown) {
         this.expiredCountDown = expiredCountDown;
     }
 

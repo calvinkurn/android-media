@@ -1,6 +1,7 @@
 package com.tokopedia.tokopoints.view.adapter;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.tokopedia.tokopoints.view.util.CommonConstant;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.ViewHolder> {
@@ -35,6 +37,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         TextView description, label, value, btnContinue;
         ImageView imgBanner, imgLabel;
         public boolean isVisited = false;
+        /*This section is exclusively for handling timer*/
+        public CountDownTimer timer;
 
         public ViewHolder(View view) {
             super(view);
@@ -56,6 +60,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         this.mItems = items;
         this.mPresenter = presenter;
         this.mIsLimitEnable = isLimitEnable;
+
     }
 
     @Override
@@ -108,6 +113,61 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                     AnalyticsTrackerUtil.ActionKeys.CLICK_BACK_ARROW,
                     AnalyticsTrackerUtil.EventKeys.BACK_ARROW_LABEL);
         });
+
+
+        /*This section is exclusively for handling flash-sale timer*/
+        if (holder.timer != null) {
+            holder.timer.cancel();
+        }
+
+        if (item.getUsage().getActiveCountDown() < 1) {
+            if (item.getUsage().getExpiredCountDown() > 0
+                    && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        item.getUsage().setExpiredCountDown(l / 1000);
+                        int seconds = (int) (l / 1000) % 60;
+                        int minutes = (int) ((l / (1000 * 60)) % 60);
+                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                        holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        holder.value.setText("00:00:00");
+                        holder.btnContinue.setText("Expired");
+                        holder.btnContinue.setEnabled(false);
+                        holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
+                    }
+                }.start();
+            } else {
+                holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                holder.btnContinue.setEnabled(true);
+                holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+            }
+        } else {
+            if (item.getUsage().getActiveCountDown() > 0
+                    && item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                holder.timer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        item.getUsage().setActiveCountDown(l / 1000);
+                        int seconds = (int) (l / 1000) % 60;
+                        int minutes = (int) ((l / (1000 * 60)) % 60);
+                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                        holder.btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                    }
+                }.start();
+            } else {
+                holder.btnContinue.setText(item.getUsage().getUsageStr());
+            }
+        }
     }
 
     @Override

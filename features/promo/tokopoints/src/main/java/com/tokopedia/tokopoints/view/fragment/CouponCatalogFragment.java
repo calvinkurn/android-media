@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -44,6 +46,7 @@ import com.tokopedia.tokopoints.view.util.ImageUtil;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -63,6 +66,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     private int mRefreshRepeatCount = 0;
     private String mCouponRealCode;
     private String mCouponName;
+    public CountDownTimer mTimer;
 
     @Inject
     public CouponCatalogPresenter mPresenter;
@@ -711,6 +715,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         value.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.medium_green));
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
+        addCountDownTimer(data, value, btnAction2);
         btnAction2.setOnClickListener(v -> {
             if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
                 mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
@@ -815,5 +820,60 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
         bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
         startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
+    }
+
+    private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+
+        if (item.getUsage().getActiveCountDown() < 1) {
+            if (item.getUsage().getExpiredCountDown() > 0
+                    && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                mTimer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        item.getUsage().setExpiredCountDown(l / 1000);
+                        int seconds = (int) (l / 1000) % 60;
+                        int minutes = (int) ((l / (1000 * 60)) % 60);
+                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                        label.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        label.setText("00:00:00");
+                        btnContinue.setText("Expired");
+                        btnContinue.setEnabled(false);
+                        btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));
+                    }
+                }.start();
+            } else {
+                btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                btnContinue.setEnabled(true);
+                btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
+            }
+        } else {
+            if (item.getUsage().getActiveCountDown() > 0
+                    && item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
+                    @Override
+                    public void onTick(long l) {
+                        item.getUsage().setActiveCountDown(l / 1000);
+                        int seconds = (int) (l / 1000) % 60;
+                        int minutes = (int) ((l / (1000 * 60)) % 60);
+                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                        btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                    }
+                }.start();
+            } else {
+                btnContinue.setText(item.getUsage().getUsageStr());
+            }
+        }
     }
 }
