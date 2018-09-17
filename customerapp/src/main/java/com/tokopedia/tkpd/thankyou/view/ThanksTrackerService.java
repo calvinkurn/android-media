@@ -52,7 +52,7 @@ public class ThanksTrackerService extends IntentService {
                 && data.getPlatform() != null
                 && !data.getPlatform().isEmpty()
                 && data.getShopTypes() != null
-                && data.getShopTypes().length != 0;
+                && data.getShopTypes().isEmpty();
     }
 
     private void initInjection() {
