@@ -66,8 +66,10 @@ public class BaseAdapterTypeFactory implements AdapterTypeFactory {
             creatViewHolder = new EmptyResultViewHolder(parent);
         } else if (type == EmptyViewHolder.LAYOUT) {
             creatViewHolder = new EmptyViewHolder(parent);
-        } else {
+        } else if (type == HideViewHolder.LAYOUT){
             creatViewHolder = new HideViewHolder(parent);
+        } else {
+            throw TypeNotSupportedException.create("Layout not supported");
         }
         return creatViewHolder;
     }
