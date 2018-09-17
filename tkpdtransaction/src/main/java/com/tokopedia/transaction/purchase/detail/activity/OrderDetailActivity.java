@@ -366,7 +366,9 @@ public class OrderDetailActivity extends TActivity
     private void setShopInfo(OrderDetailData data) {
         ViewGroup descriptionSellerLayout = findViewById(R.id.seller_description_layout);
         TextView descriptionShopName = findViewById(R.id.description_shop_name);
-        descriptionShopName.setText(data.getShopName());
+        descriptionShopName.setText(
+                MethodChecker.fromHtml(data.getShopName())
+        );
         descriptionSellerLayout.setVisibility(View.VISIBLE);
     }
 
