@@ -160,4 +160,10 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }
