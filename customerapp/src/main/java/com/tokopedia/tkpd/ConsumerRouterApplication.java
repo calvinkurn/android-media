@@ -278,7 +278,7 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbycat.Product
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
 import com.tokopedia.product.manage.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.ProfileModuleRouter;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -909,7 +909,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
         context.startActivity(intent);
     }
-       
+
     @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
@@ -1142,17 +1142,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent getProfileCompletionIntent(Context context) {
-        Intent intent = new Intent(context, ProfileCompletionActivity.class);
-        return intent;
-    }
-
-    @Override
-    public Intent getManagePeopleIntent(Context context) {
-        return new Intent(context, AccountSettingActivity.class);
-    }
-
-    @Override
     public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
@@ -1197,14 +1186,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getReferralIntent(Context context) {
         return ReferralActivity.getCallingIntent(context);
-    }
-
-    @Override
-    public BaseDaggerFragment getKolPostFragment(String userId,
-                                                 int postId,
-                                                 Intent resultIntent,
-                                                 Bundle bundle) {
-        return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
     }
 
     @Override
@@ -2591,7 +2572,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent getTopProfileIntent(Context context, String userId) {
-        return TopProfileActivity.newInstance(context, userId);
+        return ProfileActivity.Companion.createIntent(context, userId);
     }
 
     @Override

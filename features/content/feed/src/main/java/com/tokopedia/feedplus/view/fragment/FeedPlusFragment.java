@@ -60,7 +60,7 @@ import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
-import com.tokopedia.profile.view.activity.TopProfileActivity;
+import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -629,7 +629,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                 if (resultCode == Activity.RESULT_OK) {
                     onSuccessFollowUnfollowFromProfile(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                            data.getIntExtra(ProfileActivity.Companion.getParamIsFollowing(),
+                                    DEFAULT_VALUE)
                     );
 
                     updatePostState(
@@ -647,7 +648,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
                     onSuccessFollowUnfollowFromProfileRecommendation(
                             data.getIntExtra(ARGS_ROW_NUMBER, DEFAULT_VALUE),
                             data.getIntExtra(ARGS_ITEM_ROW_NUMBER, DEFAULT_VALUE),
-                            data.getIntExtra(TopProfileActivity.EXTRA_IS_FOLLOWING, DEFAULT_VALUE)
+                            data.getIntExtra(ProfileActivity.Companion.getParamIsFollowing(),
+                                    DEFAULT_VALUE)
                     );
                 }
             default:
@@ -862,7 +864,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfileFromRecommendation(int position, int itemPosition, String userId) {
         if (getContext() != null) {
-            Intent profileIntent = TopProfileActivity.newInstance(getContext(), userId)
+            Intent profileIntent = ProfileActivity.Companion.createIntent(getContext(), userId)
                     .putExtra(ARGS_ROW_NUMBER, position)
                     .putExtra(ARGS_ITEM_ROW_NUMBER, itemPosition);
 
@@ -873,7 +875,7 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void onGoToKolProfile(int rowNumber, String userId, int postId) {
         if (getContext() != null) {
-            Intent profileIntent = TopProfileActivity.newInstanceFromFeed(getContext(), userId, postId)
+            Intent profileIntent = ProfileActivity.Companion.createIntentFromFeed(getContext(), userId, postId)
                     .putExtra(ARGS_ROW_NUMBER, rowNumber);
             startActivityForResult(profileIntent, OPEN_KOL_PROFILE);
         }
@@ -1062,8 +1064,10 @@ public class FeedPlusFragment extends BaseDaggerFragment
             KolPostViewModel kolViewModel = (KolPostViewModel) adapter.getlist().get(rowNumber);
 
             if (isFollowing != DEFAULT_VALUE) {
-                kolViewModel.setFollowed(isFollowing == IS_FOLLOWING_TRUE);
-                kolViewModel.setTemporarilyFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                kolViewModel.setFollowed(isFollowing
+                        == ProfileActivity.Companion.getIsFollowingTrue());
+                kolViewModel.setTemporarilyFollowed(isFollowing
+                        == ProfileActivity.Companion.getIsFollowingTrue());
             }
             adapter.notifyItemChanged(rowNumber);
         }
@@ -1103,7 +1107,8 @@ public class FeedPlusFragment extends BaseDaggerFragment
             if (isFollowing != DEFAULT_VALUE) {
                 recommendationViewModel.getListRecommend()
                         .get(itemRowNumber)
-                        .setFollowed(isFollowing == IS_FOLLOWING_TRUE);
+                        .setFollowed(isFollowing
+                                == ProfileActivity.Companion.getIsFollowingTrue());
             }
 
             adapter.notifyItemChanged(rowNumber);
