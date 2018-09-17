@@ -64,7 +64,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
         sendScreenAnalytics();
 
         registerForceLogoutReceiver();
-//        checkIfForceLogoutMustShow();
+        checkIfForceLogoutMustShow();
         registerShake();
     }
 
