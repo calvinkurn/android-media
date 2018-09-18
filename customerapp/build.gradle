@@ -274,6 +274,8 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.notifCenter)
+
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)
