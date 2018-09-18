@@ -674,6 +674,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
             return;
         }
 
+        getView().findViewById(R.id.layout_point).setVisibility(View.GONE);
+
         mCouponName = data.getTitle();
         TextView description = getView().findViewById(R.id.text_description);
         TextView label = getView().findViewById(R.id.text_time_label);
