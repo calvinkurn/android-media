@@ -160,14 +160,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(BerandaComponent component){
+    public void reInitInjector(BerandaComponent component) {
         component.inject(this);
         component.inject(presenter);
         presenter.attachView(this);
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public HomePresenter getPresenter(){ return presenter; }
+    public HomePresenter getPresenter() {
+        return presenter;
+    }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
     public void setPresenter(HomePresenter presenter) {
@@ -175,7 +177,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void clearAll(){
+    public void clearAll() {
         adapter.clearItems();
         adapter.notifyDataSetChanged();
     }
@@ -513,11 +515,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         bottomSheetDialogTokoCash.show();
     }
 
-    boolean isShow = true;
     @Override
     public void actionTokoPointClicked(String tokoPointUrl, String pageTitle) {
         if (mShowTokopointNative) {
-            isShow = !isShow;
             RouterUtils.getDefaultRouter().actionAppLink(getContext(), ApplinkConstant.HOMEPAGE);
         } else {
             if (TextUtils.isEmpty(pageTitle))
@@ -632,7 +632,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar =  NetworkErrorHelper.createSnackbarWithAction(
+                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(
                             root, getString(com.tokopedia.core.R.string.msg_network_error),
                             () -> onRefresh()
                     );
@@ -917,7 +917,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public Observable<TokoPointDrawerData> getTokopoint() {
-        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter){
+        if (getActivity() != null && getActivity().getApplication() instanceof LoyaltyRouter) {
             return ((LoyaltyRouter) getActivity().getApplication()).getTokopointUseCase();
         }
         return null;
@@ -960,9 +960,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     public void startShopInfo(String shopId) {
-        if(getActivity() != null
+        if (getActivity() != null
                 && getActivity().getApplication() != null
-                && getActivity().getApplication() instanceof IHomeRouter){
+                && getActivity().getApplication() instanceof IHomeRouter) {
             IHomeRouter homeRouter = (IHomeRouter) getActivity().getApplication();
             startActivity(homeRouter.getShopPageIntent(getActivity(), shopId));
         }
@@ -970,7 +970,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     @Override
     public void startDeeplinkShopInfo(String url) {
-        if(getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
+        if (getActivity() != null) DeepLinkChecker.openProduct(url, getActivity());
     }
 
     private ArrayList<ShowCaseObject> buildShowCase() {
