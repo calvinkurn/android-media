@@ -1,5 +1,6 @@
 package com.tokopedia.talk.shoptalk.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -418,6 +419,43 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ShopTalkActivity.EXTRA_SHOP_ID, shopId)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
+            data?.extras?.run {
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+                onSuccessReportTalk(talkId)
+
+            }
+        } else if (requestCode == REQUEST_GO_TO_DETAIL) {
+            //TODO UPDATE TALK
+
+            data?.run {
+                when (resultCode) {
+                    else -> {
+                    }
+                }
+            }
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+    private fun onSuccessReportTalk(talkId: String) {
+        activity?.run {
+            NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
+        }
+
+        context?.run {
+            if (!talkId.isBlank()) {
+                adapter.updateReportTalk(talkId, this)
+            } else {
+                onRefreshData()
+            }
+        }
+
     }
 
 }

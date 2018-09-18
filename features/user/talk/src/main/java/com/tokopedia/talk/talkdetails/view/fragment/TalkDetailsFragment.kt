@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -34,7 +33,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.di.DaggerTalkDetailsComponent
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
-import com.tokopedia.talk.talkdetails.view.adapter.AttachedProductListAdapter
+import com.tokopedia.talk.talkdetails.view.adapter.AttachingProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
@@ -50,7 +49,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         InboxTalkItemViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener,
-        AttachedProductListAdapter.ProductAttachmentItemClickListener {
+        AttachingProductListAdapter.ProductAttachingItemClickListener {
 
     @Inject
     lateinit var presenter: TalkDetailsPresenter
@@ -62,8 +61,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     lateinit var sendMessageEditText: EditText
     lateinit var attachedProductList: RecyclerView
     lateinit var progressBar: ProgressBar
-    private var attachedProductListAdapter: AttachedProductListAdapter =
-            AttachedProductListAdapter(ArrayList(), this)
+    private var attachedProductListAdapter: AttachingProductListAdapter =
+            AttachingProductListAdapter(ArrayList(), this)
 
     private lateinit var bottomMenu: Menus
     private lateinit var alertDialog: Dialog
@@ -234,9 +233,12 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        if (!talkId.isBlank()) {
-            adapter.updateReportTalk(talkId)
+        context?.run {
+            if (!talkId.isBlank()) {
+                adapter.updateReportTalk(talkId, this)
+            }
         }
+
     }
 
     private fun goToAttachProductScreen() {
@@ -308,6 +310,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         onGoToPdp(attachProduct.productId.toString())
+    }
+
+    override fun onDeleteAttachProduct(element: TalkProductAttachmentViewModel) {
+        attachedProductListAdapter.remove(element)
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {

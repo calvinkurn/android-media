@@ -1,5 +1,6 @@
 package com.tokopedia.talk.inboxtalk.view.adapter
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
@@ -122,13 +123,14 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
-    fun updateReportTalk(talkId: String) {
+    fun updateReportTalk(talkId: String, context: Context) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 talk.talkThread.headThread.menu.isReported = true
                 talk.talkThread.headThread.menu.allowReport = false
                 talk.talkThread.headThread.menu.allowUnmasked = false
+                talk.talkThread.headThread.comment = context.getString(R.string.success_report_talk_masked_message)
                 notifyItemChanged(position)
             }
         }
@@ -170,4 +172,15 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
             }
         }
     }
+
+    fun getItemById(talkId: String?): InboxTalkItemViewModel? {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                return talk
+            }
+        }
+
+        return null
+    }
+
 }

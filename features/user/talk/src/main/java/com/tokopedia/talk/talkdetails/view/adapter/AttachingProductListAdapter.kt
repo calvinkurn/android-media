@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 
-class AttachedProductListAdapter(var data: ArrayList<TalkProductAttachmentViewModel>,
-                                 var listener: ProductAttachmentItemClickListener) :
+class AttachingProductListAdapter(var data: ArrayList<TalkProductAttachmentViewModel>,
+                                  var listener: ProductAttachingItemClickListener) :
         RecyclerView.Adapter<AttachedProductViewHolder>() {
 
-    interface ProductAttachmentItemClickListener {
-        fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel)
+    interface ProductAttachingItemClickListener {
+        fun onDeleteAttachProduct(element: TalkProductAttachmentViewModel)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedProductViewHolder {
@@ -36,22 +36,29 @@ class AttachedProductListAdapter(var data: ArrayList<TalkProductAttachmentViewMo
         data.clear()
         notifyDataSetChanged()
     }
+
+    fun remove(element: TalkProductAttachmentViewModel) {
+        val position = data.indexOf(element)
+        data.remove(element)
+        notifyItemRemoved(position)
+    }
 }
 
 class AttachedProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     val image = itemView.findViewById<ImageView>(R.id.attach_product_chat_image)
     val name = itemView.findViewById<TextView>(R.id.attach_product_chat_name)
     val price = itemView.findViewById<TextView>(R.id.attach_product_chat_price)
+    val deleteButton = itemView.findViewById<ImageView>(R.id.delete_button)
 
     fun bind(element: TalkProductAttachmentViewModel,
-             listener: AttachedProductListAdapter.ProductAttachmentItemClickListener) {
+             listener: AttachingProductListAdapter.ProductAttachingItemClickListener) {
         ImageHandler.loadImageRounded2(itemView.context, image, element.productImage)
         name.text = element.productName
         name.maxLines = 1
         price.text = element.productPrice
 
-        itemView.setOnClickListener {
-            listener.onClickProductAttachment(element)
+        deleteButton.setOnClickListener {
+            listener.onDeleteAttachProduct(element)
         }
     }
 }

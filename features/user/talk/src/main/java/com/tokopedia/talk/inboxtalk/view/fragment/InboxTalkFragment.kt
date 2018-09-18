@@ -250,6 +250,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         adapter.hideEmpty()
         adapter.addList(talkViewModel.listTalk)
 
+        viewModel.unreadNotification = talkViewModel.unreadNotification
         setNotificationTab(talkViewModel.unreadNotification)
     }
 
@@ -318,7 +319,25 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     private fun updateReadStatusTalk(data: Intent) {
         val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
         if (!talkId.isEmpty()) {
-            adapter.updateReadStatus(talkId)
+
+            adapter.getItemById(talkId)?.run {
+                val shouldDecreaseNotifCount = !this.talkThread.headThread.isRead
+                if (shouldDecreaseNotifCount) {
+                    adapter.updateReadStatus(talkId)
+
+                    when (nav) {
+                        InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
+                        InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
+                        InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1
+                        else -> {
+                        }
+                    }
+
+                    setNotificationTab(viewModel.unreadNotification)
+
+                }
+            }
+
         } else {
             onRefreshData()
         }
@@ -329,11 +348,14 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        if (!talkId.isBlank()) {
-            adapter.updateReportTalk(talkId)
-        } else {
-            onRefreshData()
+        context?.run {
+            if (!talkId.isBlank()) {
+                adapter.updateReportTalk(talkId, this)
+            } else {
+                onRefreshData()
+            }
         }
+
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
