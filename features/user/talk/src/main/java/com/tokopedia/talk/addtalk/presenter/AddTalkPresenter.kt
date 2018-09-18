@@ -36,7 +36,7 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
 
             override fun onError(e: Throwable?) {
                 isRequesting = false
-                view.onErrorCreateTalk()
+                view.onErrorCreateTalk(e.toString())
             }
 
         })

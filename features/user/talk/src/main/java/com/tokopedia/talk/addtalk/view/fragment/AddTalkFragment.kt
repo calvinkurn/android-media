@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.talk.R
@@ -104,9 +103,9 @@ class AddTalkFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onErrorCreateTalk() {
+    override fun onErrorCreateTalk(toString: String) {
         send_progress.visibility = View.GONE
-        ToasterError.make(view, activity?.getString(R.string.failed_send_talk)).show()
+        ToasterError.make(view, toString).show()
     }
 
     override fun onSuccessCreateTalk(productId: String) {

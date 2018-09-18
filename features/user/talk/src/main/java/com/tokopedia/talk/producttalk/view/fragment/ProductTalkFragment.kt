@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.addtalk.view.activity.AddTalkActivity
@@ -496,6 +498,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         } else if (requestCode == REQUEST_CREATE_TALK) {
             if(resultCode == Activity.RESULT_OK){
                 onRefreshData()
+                ToasterNormal.make(view, activity!!.getString(R.string.success_send_talk), Snackbar.LENGTH_LONG).show()
             }
         }
     }
