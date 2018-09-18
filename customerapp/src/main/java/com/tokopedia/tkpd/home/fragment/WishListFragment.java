@@ -47,7 +47,6 @@ import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
 import com.tokopedia.tkpd.home.presenter.WishListView;
 import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
-import com.tokopedia.tkpd.home.wishlist.domain.SearchWishlistUsecase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
