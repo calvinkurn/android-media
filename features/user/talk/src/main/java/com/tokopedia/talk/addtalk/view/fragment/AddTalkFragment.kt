@@ -104,6 +104,6 @@ class AddTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessCreateTalk(productId: String) {
-
+        activity?.finish()
     }
 }
