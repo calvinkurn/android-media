@@ -110,7 +110,7 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
                         TimeConverter.generateTime(view.getContext(), post.getCreateTime()): "",
                 post.getInteraction() != null && post.getInteraction().isShowComment(),
                 post.getInteraction() != null && post.getInteraction().isShowLike(),
-                content != null && content.getuRL() != null ? content.getuRL() : "",
+                content != null && content.getUrl() != null ? content.getUrl() : "",
                 tag != null ? tag.getId() : 0,
                 "",
                 tag != null && tag.getType() != null ? tag.getType() : "",

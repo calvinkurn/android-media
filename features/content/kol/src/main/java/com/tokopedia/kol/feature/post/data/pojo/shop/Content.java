@@ -12,7 +12,7 @@ public class Content {
     private String type;
     @SerializedName("URL")
     @Expose
-    private String uRL;
+    private String url;
     @SerializedName("tags")
     @Expose
     private List<Tag> tags = null;
@@ -25,12 +25,12 @@ public class Content {
         this.type = type;
     }
 
-    public String getuRL() {
-        return uRL;
+    public String getUrl() {
+        return url;
     }
 
-    public void setuRL(String uRL) {
-        this.uRL = uRL;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public List<Tag> getTags() {
