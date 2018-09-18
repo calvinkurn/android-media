@@ -2,7 +2,6 @@ package com.tokopedia.browse.homepage.domain.subscriber;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseMarketplaceViewModel;
 
 import rx.Subscriber;
@@ -28,8 +27,9 @@ public class GetMarketplaceSubscriber extends Subscriber<DigitalBrowseMarketplac
 
     @Override
     public void onError(Throwable throwable) {
-        marketplaceActionListener.onErrorGetMarketplace(
-                ErrorHandler.getErrorMessage(context, throwable));
+        /*marketplaceActionListener.onErrorGetMarketplace(
+                ErrorHandler.getErrorMessage(context, throwable));*/
+        marketplaceActionListener.onErrorGetMarketplace(throwable);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class GetMarketplaceSubscriber extends Subscriber<DigitalBrowseMarketplac
 
     public interface MarketplaceActionListener {
 
-        void onErrorGetMarketplace(String errorMessage);
+        void onErrorGetMarketplace(Throwable throwable);
 
         void onSuccessGetMarketplace(DigitalBrowseMarketplaceViewModel digitalBrowseMarketplaceData);
 

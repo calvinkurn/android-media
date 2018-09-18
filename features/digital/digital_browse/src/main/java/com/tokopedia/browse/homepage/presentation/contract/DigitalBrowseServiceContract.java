@@ -3,6 +3,7 @@ package com.tokopedia.browse.homepage.presentation.contract;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 import com.tokopedia.browse.homepage.presentation.model.IndexPositionModel;
 
@@ -27,6 +28,10 @@ public interface DigitalBrowseServiceContract {
         void addTab(String key);
 
         void renderTab();
+
+        void showGetDataError(Throwable e);
+
+        int getItemCount();
     }
 
     interface Presenter {
@@ -36,6 +41,8 @@ public interface DigitalBrowseServiceContract {
         void getDigitalCategoryCloud();
 
         void processTabData(Map<String, IndexPositionModel> titleMap);
+
+        DigitalBrowseServiceAnalyticsModel getItemPositionInGroup(Map<String, IndexPositionModel> titleMap, int itemPositionInList);
 
     }
 }

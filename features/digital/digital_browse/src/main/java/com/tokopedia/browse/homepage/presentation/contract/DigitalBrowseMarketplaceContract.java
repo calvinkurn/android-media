@@ -17,6 +17,10 @@ public interface DigitalBrowseMarketplaceContract {
 
         void renderData(DigitalBrowseMarketplaceViewModel marketplaceData);
 
+        void showGetDataError(Throwable e);
+
+        int getCategoryItemCount();
+
     }
 
     interface Presenter {

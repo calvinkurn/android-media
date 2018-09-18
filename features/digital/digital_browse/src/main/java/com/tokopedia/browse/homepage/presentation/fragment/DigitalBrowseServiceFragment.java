@@ -8,14 +8,19 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.R;
+import com.tokopedia.browse.common.DigitalBrowseRouter;
+import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
+import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAdapter;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseServiceAdapterTypeFactory;
@@ -43,11 +48,14 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
 
     @Inject
     DigitalBrowseServicePresenter presenter;
+    @Inject
+    DigitalBrowseAnalytics digitalBrowseAnalytics;
 
     private TabLayout tabLayout;
     private RecyclerView rvCategory;
     private LinearSmoothScroller smoothScroller;
     private GridLayoutManager layoutManager;
+    private LinearLayout containerData;
 
     private RecyclerView.OnScrollListener scrollSelected;
     private TabLayout.OnTabSelectedListener tabSelectedListener;
@@ -76,6 +84,7 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_digital_browse_service, container, false);
 
+        containerData = view.findViewById(R.id.container_data);
         tabLayout = view.findViewById(R.id.tab_layout);
         rvCategory = view.findViewById(R.id.recycler_view);
 
@@ -141,6 +150,8 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if (!tab.getText().equals("")) {
+                    digitalBrowseAnalytics.eventClickHeaderTabLayanan(tab.getText().toString());
+
                     rvCategory.removeOnScrollListener(scrollSelected);
 
                     oldTitlePosition = currentTitlePosition = currentScrollIndex =
@@ -149,8 +160,6 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
                     smoothScroller.setTargetPosition(viewModel.getTitleMap().get(tab.getText())
                             .getIndexPositionInList());
                     layoutManager.startSmoothScroll(smoothScroller);
-
-                    Log.i("DIGITAL BROWSE DITAB", "Title : " + tab.getText() + ", scroll index : " + currentScrollIndex);
                 }
             }
 
@@ -210,6 +219,27 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
     @Override
     public void renderTab() {
         tabLayout.addOnTabSelectedListener(tabSelectedListener);
+    }
+
+    @Override
+    public void showGetDataError(Throwable e) {
+        serviceAdapter.hideLoading();
+        containerData.setVisibility(View.GONE);
+        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().getWindow().getDecorView().getRootView(),
+                ErrorHandler.getErrorMessage(getContext(), e),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        containerData.setVisibility(View.VISIBLE);
+                        serviceAdapter.showLoading();
+                        presenter.getDigitalCategoryCloud();
+                    }
+                });
+    }
+
+    @Override
+    public int getItemCount() {
+        return serviceAdapter.getItemCount();
     }
 
     private void setRecyclerViewListener() {
@@ -279,7 +309,30 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCategoryItemClicked(DigitalBrowseServiceCategoryViewModel viewModel) {
-        RouteManager.route(getContext(), viewModel.getAppLinks());
+    public void onCategoryItemClicked(DigitalBrowseServiceCategoryViewModel viewModel, int itemPosition) {
+        DigitalBrowseServiceAnalyticsModel analyticsModel = presenter.getItemPositionInGroup(this.viewModel.getTitleMap(), itemPosition);
+        analyticsModel.setIconName(viewModel.getName());
+
+        digitalBrowseAnalytics.eventClickIconLayanan(analyticsModel);
+
+        if (viewModel.getAppLinks() != null &&
+                RouteManager.isSupportApplink(getContext(), viewModel.getAppLinks())) {
+            RouteManager.route(getContext(), viewModel.getAppLinks());
+        } else {
+            if (getActivity().getApplication() instanceof DigitalBrowseRouter
+                    && ((DigitalBrowseRouter) getActivity().getApplication())
+                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
+                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
+            }
+        }
+    }
+
+    @Override
+    public void sendImpressionAnalytics(DigitalBrowseServiceCategoryViewModel viewModel, int itemPosition) {
+        DigitalBrowseServiceAnalyticsModel analyticsModel = presenter.getItemPositionInGroup(this.viewModel.getTitleMap(), itemPosition);
+        analyticsModel.setIconName(viewModel.getName());
+
+        digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel);
     }
 }

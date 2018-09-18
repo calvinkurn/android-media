@@ -1,10 +1,9 @@
 package com.tokopedia.browse.homepage.presentation.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.browse.R;
+import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.domain.subscriber.GetMarketplaceSubscriber;
 import com.tokopedia.browse.homepage.domain.usecase.DigitalBrowseMarketplaceUseCase;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseMarketplaceContract;
@@ -25,10 +24,13 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
 
     private DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase;
     private CompositeSubscription compositeSubscription;
+    private DigitalBrowseAnalytics digitalBrowseAnalytics;
 
     @Inject
-    public DigitalBrowseMarketplacePresenter(DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase) {
+    public DigitalBrowseMarketplacePresenter(DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase,
+                                             DigitalBrowseAnalytics digitalBrowseAnalytics) {
         this.digitalBrowseMarketplaceUseCase = digitalBrowseMarketplaceUseCase;
+        this.digitalBrowseAnalytics = digitalBrowseAnalytics;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -45,8 +47,7 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new GetMarketplaceSubscriber(new GetMarketplaceSubscriber.MarketplaceActionListener() {
                             @Override
-                            public void onErrorGetMarketplace(String errorMessage) {
-                                Log.e("ERROR", errorMessage);
+                            public void onErrorGetMarketplace(Throwable throwable) {
                                 getMarketplaceDataCloud();
                             }
 
@@ -79,8 +80,12 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
     }
 
     @Override
-    public void onErrorGetMarketplace(String errorMessage) {
-        Log.e("ERROR", errorMessage);
+    public void onErrorGetMarketplace(Throwable throwable) {
+        if (isViewAttached()) {
+            if (getView().getCategoryItemCount() < 2) {
+                getView().showGetDataError(throwable);
+            }
+        }
     }
 
     @Override

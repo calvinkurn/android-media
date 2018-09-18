@@ -1,7 +1,5 @@
 package com.tokopedia.browse.homepage.domain.usecase;
 
-import com.tokopedia.browse.homepage.data.entity.DigitalBrowseCategoryGroupEntity;
-import com.tokopedia.browse.homepage.data.entity.DigitalBrowseDynamicHomeIcon;
 import com.tokopedia.browse.homepage.data.entity.DigitalBrowseMarketplaceData;
 import com.tokopedia.browse.homepage.data.source.cache.DigitalBrowseServiceCacheSource;
 import com.tokopedia.browse.homepage.domain.mapper.ServiceViewModelMapper;
@@ -11,9 +9,7 @@ import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.usecase.RequestParams;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -79,26 +75,9 @@ public class DigitalBrowseServiceUseCase extends GraphqlUseCase {
                             return Observable.just(serviceViewModelMapper.transform(
                                     digitalBrowseMarketplaceData));
                         } else {
-                            return Observable.just(serviceViewModelMapper.transform(
-                                    getEmptyCacheData()));
+                            return Observable.just(null);
                         }
                     }
                 });
-    }
-
-    private DigitalBrowseMarketplaceData getEmptyCacheData() {
-        DigitalBrowseCategoryGroupEntity categoryGroupEntity = new DigitalBrowseCategoryGroupEntity();
-        categoryGroupEntity.setCategoryRow(new ArrayList<>());
-
-        List<DigitalBrowseCategoryGroupEntity> list = new ArrayList<>();
-        list.add(categoryGroupEntity);
-
-        DigitalBrowseDynamicHomeIcon digitalBrowseDynamicHomeIcon = new DigitalBrowseDynamicHomeIcon();
-        digitalBrowseDynamicHomeIcon.setDynamicHomeCategoryGroupEntities(list);
-
-        DigitalBrowseMarketplaceData data = new DigitalBrowseMarketplaceData();
-        data.setCategoryGroups(digitalBrowseDynamicHomeIcon);
-
-        return data;
     }
 }

@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dp_8"
-    android:paddingBottom="@dimen/dp_8">
+    android:paddingBottom="@dimen/dp_8"
+    android:paddingTop="@dimen/dp_8">
 
     <LinearLayout
+        android:id="@+id/container_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground"
@@ -22,6 +23,7 @@
             android:id="@+id/iv_product"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
+            android:layout_marginBottom="@dimen/dp_8"
             android:duplicateParentState="true"
             tools:src="@drawable/status_no_result" />
 
@@ -40,4 +42,20 @@
 
 
     </LinearLayout>
-</LinearLayout>
+
+    <com.tokopedia.design.component.TextViewCompat
+        android:id="@+id/tv_new_label"
+        style="@style/TextView.Micro.WhitePrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/bg_digital_browser_baru_label"
+        android:paddingLeft="@dimen/dp_5"
+        android:paddingRight="@dimen/dp_5"
+        android:text="@string/digital_browse_new_label"
+        android:textSize="@dimen/sp_8"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible" />
+</RelativeLayout>

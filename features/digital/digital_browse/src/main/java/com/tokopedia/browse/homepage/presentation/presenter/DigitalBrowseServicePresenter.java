@@ -1,10 +1,9 @@
 package com.tokopedia.browse.homepage.presentation.presenter;
 
-import android.util.Log;
-
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.browse.R;
+import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
 import com.tokopedia.browse.homepage.domain.subscriber.GetDigitalCategorySubscriber;
 import com.tokopedia.browse.homepage.domain.usecase.DigitalBrowseServiceUseCase;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceContract;
@@ -78,8 +77,33 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
     }
 
     @Override
-    public void onErrorGetDigitalCategory(String errorMessage) {
-        Log.e("Error", errorMessage);
+    public DigitalBrowseServiceAnalyticsModel getItemPositionInGroup(Map<String, IndexPositionModel> titleMap, int itemPositionInList) {
+        DigitalBrowseServiceAnalyticsModel model = new DigitalBrowseServiceAnalyticsModel();
+        int lastTitlePosition = 0;
+
+        for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
+            if (lastTitlePosition < entry.getValue().getIndexPositionInList() &&
+                    entry.getValue().getIndexPositionInList() < itemPositionInList) {
+
+                lastTitlePosition = entry.getValue().getIndexPositionInList();
+
+                model.setHeaderName(entry.getKey());
+                model.setHeaderPosition(entry.getValue().getIndexPositionInTab() + 1);
+            }
+        }
+
+        model.setIconPosition(itemPositionInList - lastTitlePosition + 1);
+
+        return model;
+    }
+
+    @Override
+    public void onErrorGetDigitalCategory(Throwable throwable) {
+        if (isViewAttached()) {
+            if (getView().getItemCount() < 2) {
+                getView().showGetDataError(throwable);
+            }
+        }
     }
 
     @Override
@@ -95,8 +119,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new GetDigitalCategorySubscriber(new GetDigitalCategorySubscriber.DigitalCategoryActionListener() {
                             @Override
-                            public void onErrorGetDigitalCategory(String errorMessage) {
-                                Log.e("ERROR", errorMessage);
+                            public void onErrorGetDigitalCategory(Throwable throwable) {
                                 getDigitalCategoryCloud();
                             }
 

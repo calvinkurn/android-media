@@ -2,7 +2,6 @@ package com.tokopedia.browse.homepage.domain.subscriber;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 
 import rx.Subscriber;
@@ -28,8 +27,7 @@ public class GetDigitalCategorySubscriber extends Subscriber<DigitalBrowseServic
 
     @Override
     public void onError(Throwable throwable) {
-        digitalCategoryActionListener.onErrorGetDigitalCategory(
-                ErrorHandler.getErrorMessage(context, throwable));
+        digitalCategoryActionListener.onErrorGetDigitalCategory(throwable);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class GetDigitalCategorySubscriber extends Subscriber<DigitalBrowseServic
 
     public interface DigitalCategoryActionListener {
 
-        void onErrorGetDigitalCategory(String errorMessage);
+        void onErrorGetDigitalCategory(Throwable throwable);
 
         void onSuccessGetDigitalCategory(DigitalBrowseServiceViewModel digitalBrowseServiceViewModel);
 

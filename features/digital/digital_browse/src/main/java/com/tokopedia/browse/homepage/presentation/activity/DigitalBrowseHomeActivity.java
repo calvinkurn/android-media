@@ -11,11 +11,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.browse.common.applink.ApplinkConstant;
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils;
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity;
+import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.di.DaggerDigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment;
 import com.tokopedia.graphql.data.GraphqlClient;
+
+import javax.inject.Inject;
 
 public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity implements HasComponent<DigitalBrowseHomeComponent> {
 
@@ -30,6 +33,11 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
     private static final String TITLE_LAYANAN = "Semua Layanan";
 
     private static DigitalBrowseHomeComponent digitalBrowseHomeComponent;
+
+    @Inject
+    DigitalBrowseAnalytics digitalBrowseAnalytics;
+
+    private Fragment fragment;
 
     @DeepLink({ApplinkConstant.DIGITAL_BROWSE })
     public static Intent getCallingIntent(Context context, Bundle extras) {
@@ -70,7 +78,6 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
 
     @Override
     protected Fragment getNewFragment() {
-        Fragment fragment = null;
 
         if (Integer.parseInt(getIntent().getStringExtra(EXTRA_TYPE)) == TYPE_BELANJA) {
             fragment = DigitalBrowseMarketplaceFragment.getFragmentInstance();
@@ -90,6 +97,18 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
         toolbar.setContentInsetStartWithNavigation(0);
         String title = getIntent().getStringExtra(EXTRA_TITLE);
         updateTitle(title);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (fragment != null) {
+            if (fragment instanceof DigitalBrowseMarketplaceFragment) {
+                digitalBrowseAnalytics.eventClickBackOnBelanjaPage();
+            } else if (fragment instanceof DigitalBrowseServiceFragment) {
+                digitalBrowseAnalytics.eventClickBackOnLayananPage();
+            }
+        }
+        super.onBackPressed();
     }
 }
 

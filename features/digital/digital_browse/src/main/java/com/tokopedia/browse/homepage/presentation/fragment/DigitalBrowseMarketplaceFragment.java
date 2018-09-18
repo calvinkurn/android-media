@@ -13,8 +13,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.R;
+import com.tokopedia.browse.common.DigitalBrowseRouter;
+import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapter;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapterTypeFactory;
@@ -46,6 +50,8 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
 
     @Inject
     DigitalBrowseMarketplacePresenter presenter;
+    @Inject
+    DigitalBrowseAnalytics digitalBrowseAnalytics;
 
     private LinearLayout containerPopularBrand;
     private TextViewCompat tvAllPopularBrand;
@@ -78,6 +84,7 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
         tvAllPopularBrand.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                digitalBrowseAnalytics.eventClickViewAllOnBelanjaPage();
                 RouteManager.route(getContext(), OFFICIAL_STORES);
             }
         });
@@ -131,6 +138,25 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
 
         renderCategory(marketplaceData.getRowViewModelList());
         renderPopularBrands(marketplaceData.getPopularBrandsList());
+    }
+
+    @Override
+    public void showGetDataError(Throwable e) {
+        categoryAdapter.hideLoading();
+        NetworkErrorHelper.showEmptyState(getActivity(), getActivity().getWindow().getDecorView().getRootView(),
+                ErrorHandler.getErrorMessage(getContext(), e),
+                new NetworkErrorHelper.RetryClickedListener() {
+                    @Override
+                    public void onRetryClicked() {
+                        categoryAdapter.showLoading();
+                        presenter.getMarketplaceDataCloud();
+                    }
+                });
+    }
+
+    @Override
+    public int getCategoryItemCount() {
+        return categoryAdapter.getItemCount();
     }
 
     private void initializeCategoryView() {
@@ -197,11 +223,38 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
 
     @Override
     public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel) {
-        RouteManager.route(getContext(), viewModel.getUrl());
+        if (viewModel.getUrl() != null &&
+                RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
+            RouteManager.route(getContext(), viewModel.getUrl());
+        } else {
+            if (getActivity().getApplication() instanceof DigitalBrowseRouter
+                    && ((DigitalBrowseRouter) getActivity().getApplication())
+                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
+                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
+            }
+        }
     }
 
     @Override
-    public void onCategoryItemClicked(DigitalBrowseRowViewModel viewModel) {
-        RouteManager.route(getContext(), viewModel.getAppLinks());
+    public void onCategoryItemClicked(DigitalBrowseRowViewModel viewModel, int itemPosition) {
+
+        digitalBrowseAnalytics.eventClickOnCategoryBelanja(viewModel.getName(), itemPosition+1);
+
+        if (RouteManager.isSupportApplink(getContext(), viewModel.getAppLinks())) {
+            RouteManager.route(getContext(), viewModel.getAppLinks());
+        } else {
+            if (getActivity().getApplication() instanceof DigitalBrowseRouter
+                    && ((DigitalBrowseRouter) getActivity().getApplication())
+                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
+                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
+                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
+            }
+        }
+    }
+
+    @Override
+    public void sendImpressionAnalytics(String iconName, int iconPosition) {
+        digitalBrowseAnalytics.eventImpressionHomePage(iconName, iconPosition);
     }
 }

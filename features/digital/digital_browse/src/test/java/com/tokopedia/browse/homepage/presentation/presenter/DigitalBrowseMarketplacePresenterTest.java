@@ -34,7 +34,7 @@ public class DigitalBrowseMarketplacePresenterTest {
         RxJavaTestPlugins.setImmediateScheduler();
         RxAndroidTestPlugins.setImmediateScheduler();
 
-        presenter = new DigitalBrowseMarketplacePresenter(marketplaceUseCase);
+        presenter = new DigitalBrowseMarketplacePresenter(marketplaceUseCase, );
         presenter.attachView(view);
 
         presenterSpy = Mockito.spy(presenter);
