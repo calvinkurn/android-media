@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import com.tokopedia.navigation_common.model.DepositModel;
+import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.ReputationShop;
 import com.tokopedia.navigation_common.model.TokopointsSumCoupon;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -45,6 +46,9 @@ public class AccountModel {
     @SerializedName("tokopointsSumCoupon")
     @Expose
     private TokopointsSumCoupon tokopointsSumCoupon;
+    @SerializedName("le_preapprove")
+    @Expose
+    private LePreapproveModel lePreapprove;
 
     public Integer getIsAuthenticated() {
         return isAuthenticated;
@@ -116,5 +120,13 @@ public class AccountModel {
 
     public void setTokopointsSumCoupon(TokopointsSumCoupon tokopointsSumCoupon) {
         this.tokopointsSumCoupon = tokopointsSumCoupon;
+    }
+
+    public LePreapproveModel getLePreapprove() {
+        return lePreapprove;
+    }
+
+    public void setLePreapprove(LePreapproveModel lePreapprove) {
+        this.lePreapprove = lePreapprove;
     }
 }

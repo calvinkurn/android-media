@@ -1,4 +1,4 @@
-query SellerAccountHome($shop_ids:[Int!]!){
+query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
   isAuthenticated
   saldo {
     deposit
@@ -35,5 +35,14 @@ query SellerAccountHome($shop_ids:[Int!]!){
     badge
     badge_hd
   }
-
+  le_preapprove(merchantID: $merchantID) {
+    fieldData {
+        preApp {
+            valid
+            partnerName
+            partnerMaxLoan
+            partnerMinRate
+        }
+    }
+  }
 }
