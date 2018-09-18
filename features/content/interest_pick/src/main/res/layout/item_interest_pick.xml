@@ -36,7 +36,7 @@
             android:fontFamily="sans-serif"
             android:foregroundGravity="center"
             android:gravity="center_horizontal"
-            android:maxLines="2"
+            android:maxLines="3"
             android:paddingLeft="@dimen/dp_4"
             android:paddingRight="@dimen/dp_4"
             android:textAlignment="center"
