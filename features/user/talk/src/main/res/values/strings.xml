@@ -63,6 +63,7 @@
     <string name="success_report_talk_masked_message">Diskusi ini telah anda laporkan sebagai
         konten yang tidak relevan dan sedang dalam proses peninjauan.</string>
     <string name="failed_send_talk">Diskusi gagal dikirim</string>
+    <string name="success_send_talk">Diskusi berhasil dikirim</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

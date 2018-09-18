@@ -54,7 +54,7 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
 
     fun deleteTalkByTalkId(talkId: String) {
         for (talk in visitables) {
-            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 this.visitables.remove(talk)
                 notifyItemRemoved(position)
@@ -105,11 +105,11 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
 
     fun setStatusFollow(talkId: String, isFollowing: Boolean) {
         for (talk in visitables) {
-            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
 
-                talk.talkThread.headThread.menu.allowUnfollow = isFollowing
-                talk.talkThread.headThread.menu.allowFollow = !isFollowing
+                talk.headThread.menu.allowUnfollow = isFollowing
+                talk.headThread.menu.allowFollow = !isFollowing
 
                 notifyItemChanged(position)
             }
@@ -118,11 +118,11 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
 
     fun updateReportTalk(talkId: String) {
         for (talk in visitables) {
-            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                talk.talkThread.headThread.menu.isReported = true
-                talk.talkThread.headThread.menu.allowReport = false
-                talk.talkThread.headThread.menu.allowUnmasked = false
+                talk.headThread.menu.isReported = true
+                talk.headThread.menu.allowReport = false
+                talk.headThread.menu.allowUnmasked = false
                 notifyItemChanged(position)
             }
         }
