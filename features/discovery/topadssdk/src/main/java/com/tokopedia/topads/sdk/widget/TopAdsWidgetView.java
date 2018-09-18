@@ -15,6 +15,7 @@ import com.tokopedia.topads.sdk.domain.interactor.OpenTopAdsUseCase;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.utils.ImpresionTask;
@@ -123,7 +124,19 @@ public class TopAdsWidgetView extends LinearLayout implements LocalAdsClickListe
     @Override
     public void onAddWishLish(int position, Data data) {
         if(data.getProductWishlistUrl()!=null) {
-            new ImpresionTask().execute(data.getProductWishlistUrl());
+            new ImpresionTask(new ImpressionListener() {
+                @Override
+                public void onSuccess() {
+                    data.getProduct().setWishlist(true);
+                    notifyDataChange();
+                }
+
+                @Override
+                public void onFailed() {
+                    data.getProduct().setWishlist(false);
+                    notifyDataChange();
+                }
+            }).execute(data.getProductWishlistUrl());
         }
     }
 
