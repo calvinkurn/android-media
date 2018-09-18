@@ -30,7 +30,9 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                     }
                     return f
                 }
-                ShopPageActivity.TAB_POSITION_FEED -> router.getKolPostShopFragment(shopId, shopPageActivity.createPostUrl);
+                ShopPageActivity.TAB_POSITION_FEED -> {
+                    router.getKolPostShopFragment(shopId, shopPageActivity.createPostUrl);
+                }
                 ShopPageActivity.TAB_POSITION_INFO -> {
                     val f = ShopInfoFragment.createInstance()
                     shopPageActivity.shopInfo?.run {
@@ -40,10 +42,22 @@ class ShopPageViewPagerAdapter(val fragmentManager: FragmentManager,
                 }
                 else -> Fragment()
             }
-        }else{
+        } else {
             return when (position) {
-                0 -> ShopProductListLimitedFragment.createInstance(shopAttribution)
-                1 -> ShopInfoFragment.createInstance()
+                0 -> {
+                    val f = ShopProductListLimitedFragment.createInstance(shopAttribution)
+                    shopPageActivity.shopInfo?.run {
+                        f.setShopInfo(this)
+                    }
+                    return f
+                }
+                1 -> {
+                    val f = ShopInfoFragment.createInstance()
+                    shopPageActivity.shopInfo?.run {
+                        f.shopInfo = this
+                    }
+                    return f
+                }
                 else -> Fragment()
             }
         }
