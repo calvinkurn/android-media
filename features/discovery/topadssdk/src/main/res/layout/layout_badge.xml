@@ -9,6 +9,6 @@
         android:id="@+id/badge"
         android:layout_width="18dp"
         android:layout_height="18dp"
-        app:srcCompat="@drawable/ic_official"/>
+        android:src="@drawable/ic_official"/>
 
 </RelativeLayout>

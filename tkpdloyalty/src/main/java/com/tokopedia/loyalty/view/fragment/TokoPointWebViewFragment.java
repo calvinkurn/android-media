@@ -19,7 +19,7 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.app.TkpdCoreRouter;
+import com.tokopedia.applink.ApplinkRouter;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -82,10 +82,10 @@ public class TokoPointWebViewFragment extends Fragment {
                             .actionNavigateByApplinksUrl(getActivity(), url, new Bundle());
                     return true;
                 } else if (Uri.parse(url).getScheme().equalsIgnoreCase(Constants.APPLINK_CUSTOMER_SCHEME)) {
-                    if (getActivity().getApplication() instanceof TkpdCoreRouter &&
-                            (((TkpdCoreRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
+                    if (getActivity().getApplication() instanceof ApplinkRouter &&
+                            (((ApplinkRouter) getActivity().getApplication()).getApplinkUnsupported(getActivity()) != null)) {
 
-                        ((TkpdCoreRouter) getActivity().getApplication())
+                        ((ApplinkRouter) getActivity().getApplication())
                                 .getApplinkUnsupported(getActivity())
                                 .showAndCheckApplinkUnsupported();
                         return true;

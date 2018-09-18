@@ -26,4 +26,6 @@
 
     <include layout="@layout/layout_tp_network_error_large" />
 
+    <include layout="@layout/layout_tp_empty_catalog" />
+
 </ViewFlipper>

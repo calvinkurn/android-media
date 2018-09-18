@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -415,7 +417,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
-                )) && tokoCashBalanceData != null && tokoCashBalanceData.getLink() != TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
             WalletRouterUtil.navigateWallet(
                     getActivity().getApplication(),
                     this,
@@ -474,7 +476,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         switch (data.getTypeMenu()) {
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
-                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                    RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
                     break;
                 }
             default:

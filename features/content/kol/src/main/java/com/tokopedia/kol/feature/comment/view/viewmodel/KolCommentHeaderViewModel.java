@@ -14,36 +14,14 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
         Visitable<KolCommentTypeFactory>, Parcelable {
     private boolean canLoadMore;
     private boolean isLoading;
+    private String tagsLink;
 
     public KolCommentHeaderViewModel(String avatarUrl, String name, String review, String time,
-                                     String userId) {
+                                     String userId, String tagsLink) {
         super("0", userId, avatarUrl, name, review, time, true, false);
         this.canLoadMore = false;
         this.isLoading = false;
-
-    }
-
-    protected KolCommentHeaderViewModel(Parcel in) {
-        super(in);
-        canLoadMore = in.readByte() != 0;
-        isLoading = in.readByte() != 0;
-    }
-
-    public static final Creator<KolCommentHeaderViewModel> CREATOR = new Creator<KolCommentHeaderViewModel>() {
-        @Override
-        public KolCommentHeaderViewModel createFromParcel(Parcel in) {
-            return new KolCommentHeaderViewModel(in);
-        }
-
-        @Override
-        public KolCommentHeaderViewModel[] newArray(int size) {
-            return new KolCommentHeaderViewModel[size];
-        }
-    };
-
-    @Override
-    public int type(KolCommentTypeFactory typeFactory) {
-        return typeFactory.type(this);
+        this.tagsLink = tagsLink;
     }
 
     public boolean isCanLoadMore() {
@@ -62,6 +40,19 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
         isLoading = loading;
     }
 
+    public String getTagsLink() {
+        return tagsLink;
+    }
+
+    public void setTagsLink(String tagsLink) {
+        this.tagsLink = tagsLink;
+    }
+
+    @Override
+    public int type(KolCommentTypeFactory typeFactory) {
+        return typeFactory.type(this);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -70,7 +61,28 @@ public class KolCommentHeaderViewModel extends KolCommentViewModel implements
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeByte((byte) (canLoadMore ? 1 : 0));
-        dest.writeByte((byte) (isLoading ? 1 : 0));
+        dest.writeByte(this.canLoadMore ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isLoading ? (byte) 1 : (byte) 0);
+        dest.writeString(this.tagsLink);
     }
+
+    protected KolCommentHeaderViewModel(Parcel in) {
+        super(in);
+        this.canLoadMore = in.readByte() != 0;
+        this.isLoading = in.readByte() != 0;
+        this.tagsLink = in.readString();
+    }
+
+    public static final Creator<KolCommentHeaderViewModel> CREATOR = new
+            Creator<KolCommentHeaderViewModel>() {
+        @Override
+        public KolCommentHeaderViewModel createFromParcel(Parcel source) {
+            return new KolCommentHeaderViewModel(source);
+        }
+
+        @Override
+        public KolCommentHeaderViewModel[] newArray(int size) {
+            return new KolCommentHeaderViewModel[size];
+        }
+    };
 }

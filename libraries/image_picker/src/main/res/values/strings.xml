@@ -49,4 +49,5 @@
     <string name="retake_image">Ulangi</string>
     <string name="instagram_label_not_logged_in">Anda belum terhubung dengan akun instagram.</string>
     <string name="instagram_label_login_ig">Login</string>
+    <string name="image_picker_label_cancel">Batal</string>
 </resources>

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.appsflyer.AFInAppEventParameterName;
@@ -73,6 +74,14 @@ public class TrackingUtils extends TrackingConfig {
         } else {
             return ConnectivityUtils.CONN_UNKNOWN;
         }
+    }
+
+    public static void setMoEUserAttributes(Context context, @Nullable CustomerWrapper customerWrapper) {
+        if(customerWrapper != null) {
+            getMoEngine().setUserData(customerWrapper, "GRAPHQL");
+        }
+        if (!TextUtils.isEmpty(FCMCacheManager.getRegistrationId(context.getApplicationContext())))
+                PushManager.getInstance().refreshToken(context.getApplicationContext(), FCMCacheManager.getRegistrationId(context.getApplicationContext()));
     }
 
     public static void setMoEUserAttributes(UserData profileData) {
@@ -179,7 +188,7 @@ public class TrackingUtils extends TrackingConfig {
         getMoEngine().logoutEvent();
     }
 
-    private static String extractFirstSegment(String inputString, String separator) {
+    public static String extractFirstSegment(String inputString, String separator) {
         String firstSegment = "";
         if (!TextUtils.isEmpty(inputString)) {
             String token[] = inputString.split(separator);
@@ -205,7 +214,7 @@ public class TrackingUtils extends TrackingConfig {
         return firstName;
     }
 
-    private static String normalizePhoneNumber(String phoneNum) {
+    public static String normalizePhoneNumber(String phoneNum) {
         if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else

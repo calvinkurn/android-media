@@ -25,6 +25,11 @@ public class RedirectCreateShopActivity extends TActivity {
     }
 
     @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_redirect_create_shop);

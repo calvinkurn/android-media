@@ -28,6 +28,7 @@
     <dimen name="dp_30">30dp</dimen> <!-- not recommended -->
     <dimen name="dp_32">32dp</dimen>
     <dimen name="dp_35">35dp</dimen> <!-- not recommended -->
+    <dimen name="dp_39">39dp</dimen>
     <dimen name="dp_36">36dp</dimen>
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_44">44dp</dimen> <!-- not recommended -->
@@ -81,10 +82,5 @@
     <dimen name="sp_34">34sp</dimen> <!-- not recommended -->
     <dimen name="sp_45">45sp</dimen> <!-- not recommended -->
     <dimen name="sp_56">56sp</dimen>
-
     <integer name="int_3">3</integer>
-
-
-
-
 </resources>

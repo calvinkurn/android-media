@@ -24,8 +24,6 @@ import com.tokopedia.feedplus.domain.model.officialstore.BadgeDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.LabelDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreDomain;
 import com.tokopedia.feedplus.domain.model.officialstore.OfficialStoreProductDomain;
-import com.tokopedia.feedplus.domain.model.recentview.RecentViewBadgeDomain;
-import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking;
 import com.tokopedia.feedplus.view.listener.FeedPlus;
 import com.tokopedia.feedplus.view.viewmodel.FavoriteCtaViewModel;
@@ -46,9 +44,6 @@ import com.tokopedia.feedplus.view.viewmodel.officialstore.OfficialStoreViewMode
 import com.tokopedia.feedplus.view.viewmodel.product.ActivityCardViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductCardHeaderViewModel;
 import com.tokopedia.feedplus.view.viewmodel.product.ProductFeedViewModel;
-import com.tokopedia.feedplus.view.viewmodel.recentview.BadgeViewModel;
-import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewProductViewModel;
-import com.tokopedia.feedplus.view.viewmodel.recentview.RecentViewViewModel;
 import com.tokopedia.feedplus.view.viewmodel.topads.FeedTopAdsViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
@@ -135,14 +130,8 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
         if (feedDomain.getWhitelist() != null && feedDomain.getWhitelist().isWhitelist()) {
             addWhitelistData(listFeedView, feedDomain.getWhitelist());
         }
-        if (hasRecentView(feedDomain) && hasFeed(feedDomain)) {
-            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
+        if (hasFeed(feedDomain)) {
             addMainData(listFeedView, feedDomain, feedResult);
-        } else if (!hasRecentView(feedDomain) && hasFeed(feedDomain)) {
-            addMainData(listFeedView, feedDomain, feedResult);
-        } else if (hasRecentView(feedDomain) && !hasFeed(feedDomain)) {
-            addRecentViewData(listFeedView, feedDomain.getRecentProduct());
-            viewListener.onShowEmptyWithRecentView(listFeedView);
         } else
             viewListener.onShowEmpty();
 
@@ -188,53 +177,9 @@ public class GetFirstPageFeedsSubscriber extends Subscriber<FeedResult> {
                 && feedDomain.getListFeed().get(0).getContent().getType() != null;
     }
 
-    private boolean hasRecentView(FeedDomain feedDomain) {
-        return feedDomain.getRecentProduct() != null && !feedDomain.getRecentProduct().isEmpty();
-    }
-
-    private void addRecentViewData(ArrayList<Visitable> listFeedView,
-                                   List<RecentViewProductDomain> recentProduct) {
-        listFeedView.add(new RecentViewViewModel(convertToRecentViewModelItem(recentProduct)));
-    }
-
     private void addWhitelistData(ArrayList<Visitable> listFeedView,
                                   WhitelistDomain whitelistDomain) {
         listFeedView.add(new WhitelistViewModel(whitelistDomain));
-    }
-
-    private ArrayList<RecentViewProductViewModel> convertToRecentViewModelItem(
-            List<RecentViewProductDomain> domains) {
-        ArrayList<RecentViewProductViewModel> listProduct = new ArrayList<>();
-        for (RecentViewProductDomain domain : domains) {
-            RecentViewProductViewModel model = convertToRecentProductViewModel(domain);
-            listProduct.add(model);
-        }
-        return listProduct;
-    }
-
-    private RecentViewProductViewModel convertToRecentProductViewModel(
-            RecentViewProductDomain domain) {
-        return new RecentViewProductViewModel(domain.getId(),
-                domain.getName(),
-                domain.getPrice(),
-                domain.getShop().getName(),
-                domain.getImgUri(),
-                Integer.parseInt(domain.getShop().getId()),
-                domain.getPreorder(),
-                domain.getWholesale(),
-                convertToBadgeViewModel(domain.getBadges()),
-                domain.getFreeReturn(),
-                domain.getWishlist(),
-                domain.getIsGold()
-        );
-    }
-
-    private List<BadgeViewModel> convertToBadgeViewModel(List<RecentViewBadgeDomain> badges) {
-        List<BadgeViewModel> badgeList = new ArrayList<>();
-        for (RecentViewBadgeDomain badgeResponse : badges) {
-            badgeList.add(new BadgeViewModel(badgeResponse.getTitle(), badgeResponse.getImageUrl()));
-        }
-        return badgeList;
     }
 
     private void addFeedData(ArrayList<Visitable> listFeedView,

@@ -58,6 +58,11 @@
             android:name=".DinkSuccessActivity"
             android:screenOrientation="portrait" />
 
+        <activity android:name=".estimasiongkir.presentation.activity.RatesEstimationDetailActivity"
+            android:label="@string/label_rates_estimation_detail"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
+
     </application>
 
 </manifest>

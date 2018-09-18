@@ -194,6 +194,9 @@ public class FragmentBannerWebView extends Fragment implements GeneralWebView {
             }
         }
 
+        if (TextUtils.isEmpty(url) || TextUtils.isEmpty(Uri.parse(url).getHost())) {
+            return false;
+        }
         if (((Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.WEB_DOMAIN).getHost()))
                 || Uri.parse(url).getHost().contains(Uri.parse(TkpdBaseURL.MOBILE_DOMAIN).getHost()))
                 && !(Uri.parse(url).getLastPathSegment() != null && Uri.parse(url).getLastPathSegment().endsWith(".pl"))
@@ -288,7 +291,7 @@ public class FragmentBannerWebView extends Fragment implements GeneralWebView {
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
         return view;
