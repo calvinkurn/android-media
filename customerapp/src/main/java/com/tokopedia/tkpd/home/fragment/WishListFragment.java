@@ -23,12 +23,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
@@ -49,6 +46,7 @@ import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
 import com.tokopedia.tkpd.home.presenter.WishList;
 import com.tokopedia.tkpd.home.presenter.WishListImpl;
 import com.tokopedia.tkpd.home.presenter.WishListView;
+import com.tokopedia.tkpd.home.wishlist.analytics.WishlistAnalytics;
 import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
@@ -72,6 +70,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
+    private WishlistAnalytics wishlistAnalytics;
 
     public WishListFragment() {
     }
@@ -165,6 +164,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     private void initView(View view) {
         checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -172,7 +172,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     private AnalyticTracker getAnalyticTracker() {
-        if (getActivity().getApplication() instanceof AbstractionRouter) {
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
             return ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
         }
         return null;
@@ -324,7 +324,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
             builder.setPositiveButton(R.string.title_delete, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    UnifyTracking.eventRemoveWishlist();
+                    wishlistAnalytics.eventRemoveWishlist();
                     wishList.deleteWishlist(getActivity(), productId, position);
                     isDeleteDialogShown = false;
                 }
@@ -408,6 +408,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     message.replace("\n", " "),
                     BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
                         if (getActivity().getApplication() != null) {
+                            wishlistAnalytics.eventClickCartWishlist();
                             getActivity().startActivity(((PdpRouter) getActivity().getApplication())
                                     .getCartIntent(getActivity()));
                         }
@@ -452,7 +453,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void findProduct() {
-        UnifyTracking.eventClickCariEmptyWishlist();
+        wishlistAnalytics.eventClickCariEmptyWishlist();
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
@@ -555,7 +556,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-        UnifyTracking.eventClickCariWishlist(query);
+        wishlistAnalytics.eventClickCariWishlist(query);
         wishList.searchWishlist(query);
         sendSearchGTM(query);
         return false;
@@ -564,7 +565,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     private void sendSearchGTM(String keyword) {
         if (keyword != null &&
                 !TextUtils.isEmpty(keyword)) {
-            UnifyTracking.eventSearchWishlist(keyword);
+            wishlistAnalytics.eventSearchWishlist(keyword);
         }
     }
 
