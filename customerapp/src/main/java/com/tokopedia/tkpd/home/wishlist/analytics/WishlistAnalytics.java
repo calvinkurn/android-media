@@ -64,7 +64,7 @@ public class WishlistAnalytics {
     public void eventClickCartWishlist() {
         if (analyticTracker != null) {
             analyticTracker.sendEventTracking(
-                    "",
+                    AppEventTracking.Event.WISHLIST,
                     WISHLIST_PAGE,
                     CLICK_CART_WISHLIST,
                     ""
