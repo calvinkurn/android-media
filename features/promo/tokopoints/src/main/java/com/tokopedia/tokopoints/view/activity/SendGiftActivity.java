@@ -25,7 +25,6 @@ public class SendGiftActivity extends BaseSimpleActivity implements HasComponent
         super.onCreate(savedInstanceState);
         updateTitle("Kirim Kupon");
         toolbar.setNavigationIcon(R.drawable.navigation_cancel);
-        GraphqlClient.init(getApplicationContext());
     }
 
     @Override

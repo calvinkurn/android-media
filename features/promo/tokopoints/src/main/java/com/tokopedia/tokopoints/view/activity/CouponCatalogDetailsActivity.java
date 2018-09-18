@@ -26,7 +26,6 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_tokopoints));
-        GraphqlClient.init(getApplicationContext());
     }
 
     @Override
