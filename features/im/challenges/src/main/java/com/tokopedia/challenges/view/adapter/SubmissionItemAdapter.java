@@ -251,7 +251,7 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_share) {
-                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()));
+                ShareBottomSheet.show(((AppCompatActivity) getActivity()).getSupportFragmentManager(), categoryItems.get(getIndex()), false);
                 if (categoryItems.get(getIndex()).getCollection() != null) {
                     analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                             ChallengesGaAnalyticsTracker.EVENT_CATEGORY_OTHER_SUBMISSION,

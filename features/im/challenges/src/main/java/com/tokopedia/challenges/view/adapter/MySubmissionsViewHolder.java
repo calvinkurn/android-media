@@ -65,7 +65,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
 
             Intent intent = new Intent(context, SubmitDetailActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_SUBMISSION_RESULT, submissionsResult);
-            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE,Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
+            intent.putExtra(Utils.QUERY_PARAM_IS_PAST_CHALLENGE, Utils.checkIsPastChallenge(submissionsResult.getCollection().getEndDate()));
             context.startActivity(intent);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
@@ -73,7 +73,7 @@ public class MySubmissionsViewHolder extends RecyclerView.ViewHolder {
                     challengesResult.getCollection().getTitle());
         });
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(),submissionsResult);
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), submissionsResult, false);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_MYSUBMISSIONS,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,

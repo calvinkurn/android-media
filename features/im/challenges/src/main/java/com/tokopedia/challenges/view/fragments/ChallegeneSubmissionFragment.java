@@ -515,7 +515,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK, ChallengesGaAnalyticsTracker.EVENT_TNC);
         } else if (v.getId() == R.id.fab_share) {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), challengeResult,false);
         }
     }
 

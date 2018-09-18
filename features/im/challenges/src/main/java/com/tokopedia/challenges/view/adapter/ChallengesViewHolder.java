@@ -78,7 +78,7 @@ class ChallengesViewHolder extends RecyclerView.ViewHolder {
         });
 
         imgShare.setOnClickListener(v -> {
-            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult);
+            ShareBottomSheet.show(((AppCompatActivity) context).getSupportFragmentManager(), challengesResult, false);
             if (isPastChallenge) {
                 analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                         ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES,

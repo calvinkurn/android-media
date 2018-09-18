@@ -4,6 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/tv_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:gravity="left"
+        android:visibility="gone"
+        android:text="Share Your content on social media &amp; get more Buzz Points to win!"
+        android:textColor="@color/black_70" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"
@@ -17,8 +27,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="sans-serif-medium"
         android:gravity="center_horizontal"
-        android:text="tutup"
         android:padding="@dimen/dp_25"
+        android:text="tutup"
         android:textColor="@color/tkpd_main_green" />
 
 </LinearLayout>

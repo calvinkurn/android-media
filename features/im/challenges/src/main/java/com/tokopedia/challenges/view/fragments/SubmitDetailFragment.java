@@ -162,7 +162,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             submissionId = submissionResult.getId();
             presenter.setDataInFields(submissionResult);
             if (fromSubmission) {
-                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult);
+                ShareBottomSheet.show(getActivity().getSupportFragmentManager(), submissionResult, true);
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -199,7 +199,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void setClickListeners() {
         btnShare.setOnClickListener(v -> {
-            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult);
+            ShareBottomSheet.show((getActivity()).getSupportFragmentManager(), submissionResult, false);
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_SHARE,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_SUBMISSIONS,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_SHARE,
@@ -482,9 +482,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     private void showDeleteDialog() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle("Are you sure!");
-        dialog.setBtnOk("Ok");
-        dialog.setBtnCancel("Cancel");
+        dialog.setTitle(getString(R.string.ch_delete_warning_msg));
+        dialog.setBtnOk("Hapus");
+        dialog.setBtnCancel("Batal");
         dialog.show();
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -493,12 +493,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
                 dialog.dismiss();
             }
         });
-        dialog.setOnCancelClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        dialog.setOnCancelClickListener(v -> dialog.dismiss());
 
     }
 }

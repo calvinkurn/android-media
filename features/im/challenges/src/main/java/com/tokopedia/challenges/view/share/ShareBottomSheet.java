@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
@@ -40,35 +41,39 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private static final String PARAM_CHALLENGE_ITEM = "PARAM_CHALLENGE_ITEM";
     private static final String PARAM_SUBMISSION_ITEM = "PARAM_SUBMISSION_ITEM";
     private static final String PARAM_IS_CHALLENGE = "param_is_challenge";
+    private static final String PARAM_IS_SHOW_HEADING = "param_is_show_heading";
     private RecyclerView mRecyclerView;
     @Inject
     public ShareBottomSheetPresenter presenter;
     private ChallengesComponent challengesComponent;
     private ProgressDialog progress;
     private View closeButton;
+    private TextView tvHeading;
     private SubmissionResult submissionItem;
     private Result challengeItem;
     private boolean isChallenge;
+    private boolean showHeading;
 
-    private static ShareBottomSheet newInstance(Object item) {
+    private static ShareBottomSheet newInstance(Object item, boolean showHeading) {
         ShareBottomSheet fragment = new ShareBottomSheet();
         Bundle bundle = new Bundle();
         if (item instanceof Result) {
             bundle.putParcelable(PARAM_CHALLENGE_ITEM, (Result) item);
             bundle.putBoolean(PARAM_IS_CHALLENGE, true);
+            bundle.putBoolean(PARAM_IS_SHOW_HEADING, showHeading);
 
         } else if (item instanceof SubmissionResult) {
             bundle.putParcelable(PARAM_SUBMISSION_ITEM, (SubmissionResult) item);
             bundle.putBoolean(PARAM_IS_CHALLENGE, false);
-
+            bundle.putBoolean(PARAM_IS_SHOW_HEADING, showHeading);
         }
         fragment.setArguments(bundle);
         return fragment;
     }
 
 
-    public static void show(FragmentManager fragmentManager, Object item) {
-        newInstance(item).show(fragmentManager, "");
+    public static void show(FragmentManager fragmentManager, Object item, boolean showHeading) {
+        newInstance(item, showHeading).show(fragmentManager, "");
     }
 
 
@@ -83,14 +88,20 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         } else {
             submissionItem = getArguments().getParcelable(PARAM_SUBMISSION_ITEM);
         }
+        showHeading = getArguments().getBoolean(PARAM_IS_SHOW_HEADING, false);
 
         initView(view);
+        tvHeading = view.findViewById(R.id.tv_heading);
         closeButton = view.findViewById(R.id.item_close);
         closeButton.setOnClickListener(v -> dismiss());
+        if (showHeading) {
+            tvHeading.setVisibility(View.VISIBLE);
+        } else {
+            tvHeading.setVisibility(View.GONE);
 
+        }getDialog().setTitle("Tokopedia Challenge");
         return view;
     }
-
 
     public void initView(View view) {
         challengesComponent = ((BaseActivity) getActivity()).getComponent();
@@ -108,14 +119,14 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         List<ResolveInfo> resolvedActivities = getActivity().getPackageManager()
                 .queryIntentActivities(intent, 0);
         //if (!resolvedActivities.isEmpty()) {
-            List<ResolveInfo> showApplications = presenter.appInstalledOrNot();
+        List<ResolveInfo> showApplications = presenter.appInstalledOrNot();
 
-            BottomSheetShareAdapter adapter = new BottomSheetShareAdapter(showApplications, getActivity()
-                    .getPackageManager());
-            mRecyclerView.setAdapter(adapter);
+        BottomSheetShareAdapter adapter = new BottomSheetShareAdapter(showApplications, getActivity()
+                .getPackageManager());
+        mRecyclerView.setAdapter(adapter);
 
-            adapter.setOnItemClickListener(this);
-       // }
+        adapter.setOnItemClickListener(this);
+        // }
     }
 
     private Intent getIntent(String contains) {
@@ -136,9 +147,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
         } else {
             presenter.createAndShareSubmission(packageName);
-            if(submissionItem !=null && submissionItem.getCollection()!=null) {
+            if (submissionItem != null && submissionItem.getCollection() != null) {
                 ChallengesMoengageAnalyticsTracker.challengePostShared(getActivity(), submissionItem.getCollection().getTitle(),
-                        submissionItem.getCollection().getId(), submissionItem.getId(), presenter.getParticipatedStatus(submissionItem),name);
+                        submissionItem.getCollection().getId(), submissionItem.getId(), presenter.getParticipatedStatus(submissionItem), name);
             }
         }
     }

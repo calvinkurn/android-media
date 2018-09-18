@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/img_share"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_200"
-        android:scaleType="centerCrop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/tv_title"
@@ -23,12 +21,9 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="left"
-        android:textColor="@color/black_70"
         android:text="Bagikan ke Instagram"
-        android:textStyle="bold"
-
-        app:layout_constraintTop_toBottomOf="@+id/img_share"
-        app:layout_constraintWidth_default="wrap" />
+        android:textColor="@color/black_70"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/tv_desc"
@@ -38,10 +33,7 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="left"
-        android:paddingLeft="@dimen/dp_8"
-        android:text="Silakan unggah konten ke Instagram dengan cara manual."
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
-        app:layout_constraintWidth_default="wrap" />
+        android:text="Silakan unggah konten ke Instagram dengan cara manual." />
 
     <TextView
         android:id="@+id/tv_desc2"
@@ -51,36 +43,27 @@
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginTop="@dimen/dp_16"
         android:gravity="left"
-        android:paddingLeft="@dimen/dp_8"
-        android:text="Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan."
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc"
-        app:layout_constraintWidth_default="wrap" />
+        android:text="Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan." />
 
 
     <TextView
         android:id="@+id/btn_copy"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/bg_button_green"
         android:gravity="center"
         android:padding="@dimen/dp_16"
         android:text="ok"
-        android:textColor="@color/white"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_desc2" />
+        android:textColor="@color/white" />
 
     <TextView
         android:id="@+id/btn_cancel"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
         android:background="@drawable/rounded_rectangle_grey_border"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="@string/close"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_copy" />
-</android.support.constraint.ConstraintLayout>
+        android:text="@string/close" />
+</LinearLayout>

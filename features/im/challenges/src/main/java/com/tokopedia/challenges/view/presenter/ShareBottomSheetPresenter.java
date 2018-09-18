@@ -289,7 +289,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         String mediaUrl = null;
         boolean isVideo = false;
         if (isChallenge) {
-            mediaUrl = getView().getChallengeItem().getSharing().getAssets().getImage();
+            mediaUrl = getView().getChallengeItem().getThumbnailUrl();
             isVideo = false;
 
         } else {
