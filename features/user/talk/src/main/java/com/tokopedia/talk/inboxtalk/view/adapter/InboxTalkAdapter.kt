@@ -164,7 +164,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
-    fun updateReadStatus(talkId: String?) {
+    fun updateReadStatus(talkId: String) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
@@ -174,13 +174,27 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
-    fun getItemById(talkId: String?): InboxTalkItemViewModel? {
+    fun getItemById(talkId: String): InboxTalkItemViewModel? {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 return talk
             }
         }
 
+        return null
+    }
+
+    fun getCommentById(talkId: String, commentId: String): ProductTalkItemViewModel? {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.talkThread.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        return comment
+                    }
+                }
+            }
+        }
         return null
     }
 

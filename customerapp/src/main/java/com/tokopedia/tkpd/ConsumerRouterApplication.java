@@ -2787,7 +2787,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Boolean getBooleanRemoteConfig(String key, Boolean defaultValue) {
+    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
         return remoteConfig.getBoolean(key, defaultValue);
     }
 

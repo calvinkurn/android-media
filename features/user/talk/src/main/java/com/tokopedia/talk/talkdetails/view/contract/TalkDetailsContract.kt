@@ -25,8 +25,7 @@ class TalkDetailsContract {
     interface View:CustomerView {
         fun onError(throwable: Throwable)
         fun onSuccessLoadTalkDetails(data:ArrayList<Visitable<*>>)
-        fun onSuccessDeleteTalkComment(id:String)
-        fun onSuccessSendTalkComment(commentId:String)
+        fun onSuccessSendTalkComment(talkId : String, commentId:String)
         fun goToReportTalkPage(talkId:String, shopId:String, productId: String, commentId : String)
         fun showLoadingAction()
         fun hideLoadingAction()

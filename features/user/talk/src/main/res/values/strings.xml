@@ -60,9 +60,6 @@
     <string name="what_question">Apa yang ingin Anda tanyakan mengenai produk ini?</string>
     <string name="error_default_cannot_reply_talk">Maaf, diskusi sedang tidak dapat diakses. Silahkan coba kembali setelah beberapa saat.</string>
     <string name="hint_send_discussion">Tulis Pesan..</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="success_report_talk_masked_message">Diskusi ini telah anda laporkan sebagai
         konten yang tidak relevan dan sedang dalam proses peninjauan.</string>
 </resources>

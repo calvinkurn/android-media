@@ -28,9 +28,15 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     companion object {
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
+        const val COMMENT_ID= "COMMENT_ID"
         const val SHOP_ID = "SHOP_ID"
 
+        const val RESULT_OK_REFRESH_TALK = 200
         const val RESULT_OK_READ = 201
+        const val RESULT_OK_DELETE_COMMENT = 202
+        const val RESULT_OK_DELETE_TALK = 203
+
+
 
         @JvmStatic
         fun getCallingIntent(threadId: String, shopId: String, context: Context): Intent {

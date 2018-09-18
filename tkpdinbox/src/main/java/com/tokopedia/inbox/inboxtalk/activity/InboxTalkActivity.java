@@ -68,25 +68,6 @@ public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
     private Boolean fromNotif = false;
     private Boolean forceUnread;
 
-    @DeepLink(Constants.Applinks.TALK)
-    public static TaskStackBuilder getCallingTaskStack(Context context, Bundle extras) {
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        Intent homeIntent = null;
-        if (GlobalConfig.isSellerApp()) {
-            homeIntent = SellerAppRouter.getSellerHomeActivity(context);
-        } else {
-            homeIntent = HomeRouter.getHomeActivity(context);
-        }
-
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        Intent destination = new Intent(context, InboxTalkActivity.class)
-                .setData(uri.build())
-                .putExtras(extras);
-        taskStackBuilder.addNextIntent(homeIntent);
-        taskStackBuilder.addNextIntent(destination);
-        return taskStackBuilder;
-    }
-
     public static Intent getCallingIntent(Context context) {
         return new Intent(context, InboxTalkActivity.class);
     }

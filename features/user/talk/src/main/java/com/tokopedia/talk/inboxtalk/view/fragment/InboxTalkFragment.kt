@@ -23,6 +23,7 @@ import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.domain.UnreadCount
 import com.tokopedia.talk.common.view.TalkDialog
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
@@ -31,9 +32,11 @@ import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHol
 import com.tokopedia.talk.inboxtalk.view.listener.GetUnreadNotificationListener
 import com.tokopedia.talk.inboxtalk.view.listener.InboxTalkContract
 import com.tokopedia.talk.inboxtalk.view.presenter.InboxTalkPresenter
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
+import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject
@@ -70,7 +73,13 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     lateinit var presenter: InboxTalkPresenter
 
     companion object {
-        fun newInstance(nav: String) = InboxTalkFragment(nav)
+        fun newInstance(nav: String): InboxTalkFragment {
+            val fragment = InboxTalkFragment()
+            val bundle = Bundle()
+            bundle.putString(InboxTalkActivity.NAVIGATION, nav)
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     override fun getScreenName(): String {
@@ -92,6 +101,18 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var nav: String = ""
+        savedInstanceState?.run {
+            nav = savedInstanceState.getString(InboxTalkActivity.NAVIGATION, "")
+        } ?: arguments?.run {
+            nav = getString(InboxTalkActivity.NAVIGATION, "")
+        } ?: activity?.run {
+            finish()
+        }
+
+        viewModel = InboxTalkViewModel(nav)
+
         setupView()
         initData()
     }
@@ -118,9 +139,6 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     }
 
     private fun initData() {
-        activity?.intent?.extras?.run {
-            viewModel = InboxTalkViewModel(nav)
-        }
 
         filter = "all"
         presenter.getInboxTalk(filter, nav)
@@ -303,17 +321,87 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
             }
         } else if (requestCode == REQUEST_GO_TO_DETAIL) {
-            //TODO UPDATE TALK
-
             data?.run {
                 when (resultCode) {
                     TalkDetailsActivity.RESULT_OK_READ -> updateReadStatusTalk(data)
+                    TalkDetailsActivity.RESULT_OK_DELETE_TALK -> updateDeleteTalk(data)
+                    TalkDetailsActivity.RESULT_OK_DELETE_COMMENT -> updateDeleteComment(data)
+                    TalkDetailsActivity.RESULT_OK_REFRESH_TALK -> onRefreshData()
                     else -> {
                     }
                 }
             }
 
         }
+    }
+
+    private fun updateDeleteTalk(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+
+        if (!talkId.isEmpty()) {
+            adapter.getItemById(talkId)?.run {
+                val shouldDecreaseNotifCount = !this.talkThread.headThread.isRead
+                if (shouldDecreaseNotifCount) {
+                    adapter.updateReadStatus(talkId)
+
+                    when (nav) {
+                        InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
+                        InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
+                        InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1
+                        else -> {
+                        }
+                    }
+
+                    setNotificationTab(viewModel.unreadNotification)
+                }
+
+                adapter.deleteTalkByTalkId(talkId)
+            }
+
+        } else {
+            onRefreshData()
+        }
+    }
+
+    private fun updateDeleteComment(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+        val commentId = data.getStringExtra(TalkDetailsActivity.COMMENT_ID)
+
+        if (!talkId.isEmpty() && !commentId.isEmpty()) {
+
+            if (adapter.getCommentById(talkId, commentId) != null
+                    && adapter.getItemById(talkId) != null) {
+
+                val shouldDecreaseNotifCount = !(adapter.getItemById(talkId) as InboxTalkItemViewModel)
+                        .talkThread.headThread.isRead
+                if (shouldDecreaseNotifCount) {
+                    adapter.updateReadStatus(talkId)
+
+                    when (nav) {
+                        InboxTalkActivity.INBOX_ALL -> viewModel.unreadNotification.all -= 1
+                        InboxTalkActivity.FOLLOWING -> viewModel.unreadNotification.following -= 1
+                        InboxTalkActivity.MY_PRODUCT -> viewModel.unreadNotification.my_product -= 1
+                        else -> {
+                        }
+                    }
+
+                    setNotificationTab(viewModel.unreadNotification)
+                }
+                adapter.deleteComment(talkId, commentId)
+            } else if (adapter.getItemById(talkId) != null
+                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
+                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
+                ((adapter.getItemById(talkId) as
+                        InboxTalkItemViewModel).talkThread.listChild[0] as
+                        LoadMoreCommentTalkViewModel).counter -= 1
+
+                adapter.updateReadStatus(talkId)
+            }
+
+        } else {
+            onRefreshData()
+        }
+
     }
 
     private fun updateReadStatusTalk(data: Intent) {
