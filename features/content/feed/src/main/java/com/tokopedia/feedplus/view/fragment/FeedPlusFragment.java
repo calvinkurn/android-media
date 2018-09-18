@@ -795,17 +795,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null
-                && !isLoadedOnce) {
+                && getActivity()!= null && presenter != null) {
+            if (!isLoadedOnce) {
+                presenter.fetchFirstPage();
+                if (trace != null)
+                    trace.stop();
 
-            presenter.fetchFirstPage();
-            if (trace != null)
-                trace.stop();
+                presenter.checkNewFeed(firstCursor);
 
-            presenter.checkNewFeed(firstCursor);
+                isLoadedOnce = !isLoadedOnce;
+            }
+
             ScreenTracking.screen(getScreenName());
-
-            isLoadedOnce = !isLoadedOnce;
         }
     }
 
