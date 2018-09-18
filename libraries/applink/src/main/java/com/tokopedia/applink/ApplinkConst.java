@@ -161,6 +161,10 @@ public interface ApplinkConst {
     String CHANGE_PASSWORD = "tokopedia://settings/changepassword";
     String SETTING_BANK = "tokopedia://settings/bankaccount";
 
+    String AFFILIATE_CREATE_POST = "tokopedia://affiliate/create_post/{product_id}";
+    String AFFILIATE_DASHBOARD = "tokopedia://affiliate/dashboard";
+    String AFFILIATE_ONBOARDING = "tokopedia://affiliate/onboarding";
+
     String CHALLENGE = "tokopedia://challenges";
 
     interface SellerApp {

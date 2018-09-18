@@ -101,15 +101,7 @@
                     android:layout_marginLeft="@dimen/dp_4"
                     android:textColor="@color/font_black_disabled_38"
                     android:textSize="@dimen/sp_12"
-                    tools:text="20"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textColor="@color/font_black_disabled_38"
-                    android:textSize="@dimen/sp_12"
-                    android:text="@string/text_af_click"/>
+                    tools:text="20 klik"/>
 
                 <ImageView
                     android:layout_width="@dimen/dp_18"
@@ -124,15 +116,7 @@
                     android:layout_marginLeft="@dimen/dp_4"
                     android:textColor="@color/font_black_disabled_38"
                     android:textSize="@dimen/sp_12"
-                    tools:text="20"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_4"
-                    android:textColor="@color/font_black_disabled_38"
-                    android:textSize="@dimen/sp_12"
-                    android:text="@string/text_af_buy"/>
+                    tools:text="20 dibeli"/>
 
             </LinearLayout>
         </LinearLayout>
