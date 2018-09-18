@@ -5,21 +5,59 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Interaction {
-
     @SerializedName("isLiked")
     @Expose
-    public boolean isLiked;
+    private boolean isLiked;
     @SerializedName("commentCount")
     @Expose
-    public int commentCount;
+    private int commentCount;
     @SerializedName("likeCount")
     @Expose
-    public int likeCount;
+    private int likeCount;
     @SerializedName("showComment")
     @Expose
-    public boolean showComment;
+    private boolean showComment;
     @SerializedName("showLike")
     @Expose
-    public boolean showLike;
+    private boolean showLike;
 
+    public boolean isLiked() {
+        return isLiked;
+    }
+
+    public void setLiked(boolean liked) {
+        isLiked = liked;
+    }
+
+    public int getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
+    }
+
+    public int getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(int likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public boolean isShowComment() {
+        return showComment;
+    }
+
+    public void setShowComment(boolean showComment) {
+        this.showComment = showComment;
+    }
+
+    public boolean isShowLike() {
+        return showLike;
+    }
+
+    public void setShowLike(boolean showLike) {
+        this.showLike = showLike;
+    }
 }

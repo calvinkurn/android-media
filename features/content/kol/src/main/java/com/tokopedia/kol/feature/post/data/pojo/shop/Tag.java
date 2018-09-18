@@ -5,21 +5,59 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Tag {
-
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("type")
     @Expose
-    public String type;
+    private String type;
     @SerializedName("link")
     @Expose
-    public String link;
+    private String link;
     @SerializedName("captionEng")
     @Expose
-    public String captionEng;
+    private String captionEng;
     @SerializedName("captionInd")
     @Expose
-    public String captionInd;
+    private String captionInd;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getCaptionEng() {
+        return captionEng;
+    }
+
+    public void setCaptionEng(String captionEng) {
+        this.captionEng = captionEng;
+    }
+
+    public String getCaptionInd() {
+        return captionInd;
+    }
+
+    public void setCaptionInd(String captionInd) {
+        this.captionInd = captionInd;
+    }
 }

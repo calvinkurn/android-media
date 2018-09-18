@@ -1,20 +1,43 @@
 
 package com.tokopedia.kol.feature.post.data.pojo.shop;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class FeedContentPost {
+import java.util.List;
 
+public class FeedContentPost {
     @SerializedName("posts")
     @Expose
-    public List<Post> posts = null;
+    private List<Post> posts = null;
     @SerializedName("lastCursor")
     @Expose
-    public String lastCursor;
+    private String lastCursor;
     @SerializedName("error")
     @Expose
-    public String error;
+    private String error;
 
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
+
+    public String getLastCursor() {
+        return lastCursor;
+    }
+
+    public void setLastCursor(String lastCursor) {
+        this.lastCursor = lastCursor;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
 }

@@ -1,20 +1,43 @@
 
 package com.tokopedia.kol.feature.post.data.pojo.shop;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Content {
+import java.util.List;
 
+public class Content {
     @SerializedName("type")
     @Expose
-    public String type;
+    private String type;
     @SerializedName("URL")
     @Expose
-    public String uRL;
+    private String uRL;
     @SerializedName("tags")
     @Expose
-    public List<Tag> tags = null;
+    private List<Tag> tags = null;
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getuRL() {
+        return uRL;
+    }
+
+    public void setuRL(String uRL) {
+        this.uRL = uRL;
+    }
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
 }

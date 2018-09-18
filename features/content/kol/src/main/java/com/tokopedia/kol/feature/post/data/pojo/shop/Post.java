@@ -1,29 +1,76 @@
 
 package com.tokopedia.kol.feature.post.data.pojo.shop;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Post {
+import java.util.List;
 
+public class Post {
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("createTime")
     @Expose
-    public String createTime;
+    private String createTime;
     @SerializedName("description")
     @Expose
-    public String description;
+    private String description;
     @SerializedName("content")
     @Expose
-    public List<Content> content = null;
+    private List<Content> content = null;
     @SerializedName("author")
     @Expose
-    public Author author;
+    private Author author;
     @SerializedName("interaction")
     @Expose
-    public Interaction interaction;
+    private Interaction interaction;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Content> getContent() {
+        return content;
+    }
+
+    public void setContent(List<Content> content) {
+        this.content = content;
+    }
+
+    public Author getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public Interaction getInteraction() {
+        return interaction;
+    }
+
+    public void setInteraction(Interaction interaction) {
+        this.interaction = interaction;
+    }
 }

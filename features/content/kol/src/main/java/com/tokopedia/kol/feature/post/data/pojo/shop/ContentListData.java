@@ -5,9 +5,15 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class ContentListData {
-
     @SerializedName("feed_content_post")
     @Expose
-    public FeedContentPost feedContentPost;
+    private FeedContentPost feedContentPost;
 
+    public FeedContentPost getFeedContentPost() {
+        return feedContentPost;
+    }
+
+    public void setFeedContentPost(FeedContentPost feedContentPost) {
+        this.feedContentPost = feedContentPost;
+    }
 }

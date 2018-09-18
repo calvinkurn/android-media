@@ -53,16 +53,16 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
         view.hideLoading();
         ContentListData data = graphqlResponse.getData(ContentListData.class);
         FeedContentPost feedContentPost = getFeedContentPost(data);
-        List<Visitable> visitables = convertToVisitableList(feedContentPost.posts);
-        view.onSuccessGetKolPostShop(visitables, feedContentPost.lastCursor);
+        List<Visitable> visitables = convertToVisitableList(feedContentPost.getPosts());
+        view.onSuccessGetKolPostShop(visitables, feedContentPost.getLastCursor());
     }
 
     private FeedContentPost getFeedContentPost(ContentListData data) {
-        if (data != null && data.feedContentPost != null) {
-            if (TextUtils.isEmpty(data.feedContentPost.error)) {
-                return data.feedContentPost;
+        if (data != null && data.getFeedContentPost() != null) {
+            if (TextUtils.isEmpty(data.getFeedContentPost().getError())) {
+                return data.getFeedContentPost();
             } else {
-                throw new GraphqlErrorException(data.feedContentPost.error);
+                throw new GraphqlErrorException(data.getFeedContentPost().getError());
             }
         } else {
             throw new RuntimeException();
@@ -74,7 +74,7 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
         for (Post post : postList) {
             Visitable visitable;
             Content content = getContent(post);
-            String type =  content != null && content.type != null ? content.type : "";
+            String type =  content != null && content.getType() != null ? content.getType() : "";
             switch (type) {
                 case TYPE_IMAGE:
                     visitable = convertToKolPostViewModel(post);
@@ -92,44 +92,44 @@ public class GetKolPostShopSubscriber extends Subscriber<GraphqlResponse> {
         Content content = getContent(post);
         Tag tag = getTag(content);
         return new KolPostViewModel(
-                post.author != null ? post.author.id : 0,
+                post.getAuthor() != null ? post.getAuthor().getId() : 0,
                 "",
                 "",
-                post.author != null && post.author.name != null ? post.author.name : "",
-                post.author != null && post.author.thumbnail != null ? post.author.thumbnail : "",
+                post.getAuthor() != null && post.getAuthor().getName() != null ? post.getAuthor().getName() : "",
+                post.getAuthor() != null && post.getAuthor().getThumbnail() != null ? post.getAuthor().getThumbnail() : "",
                 "",
-                post.author != null && post.author.url != null ? post.author.url : "",
+                post.getAuthor() != null && post.getAuthor().getUrl() != null ? post.getAuthor().getUrl() : "",
                 true,
-                post.description != null ? post.description : "",
-                post.interaction != null && post.interaction.isLiked,
-                post.interaction != null ? post.interaction.likeCount : 0,
-                post.interaction != null ? post.interaction.commentCount : 0,
+                post.getDescription() != null ? post.getDescription() : "",
+                post.getInteraction() != null && post.getInteraction().isLiked(),
+                post.getInteraction() != null ? post.getInteraction().getLikeCount() : 0,
+                post.getInteraction() != null ? post.getInteraction().getCommentCount() : 0,
                 0,
-                post.id,
-                post.createTime != null ?
-                        TimeConverter.generateTime(view.getContext(), post.createTime): "",
-                post.interaction != null && post.interaction.showComment,
-                post.interaction != null && post.interaction.showLike,
-                content != null && content.uRL != null ? content.uRL : "",
-                tag != null ? tag.id : 0,
+                post.getId(),
+                post.getCreateTime() != null ?
+                        TimeConverter.generateTime(view.getContext(), post.getCreateTime()): "",
+                post.getInteraction() != null && post.getInteraction().isShowComment(),
+                post.getInteraction() != null && post.getInteraction().isShowLike(),
+                content != null && content.getuRL() != null ? content.getuRL() : "",
+                tag != null ? tag.getId() : 0,
                 "",
-                tag != null && tag.type != null ? tag.type : "",
-                tag != null && tag.captionInd != null ? tag.captionInd : "",
-                tag != null && tag.link != null ? tag.link : ""
+                tag != null && tag.getType() != null ? tag.getType() : "",
+                tag != null && tag.getCaptionInd() != null ? tag.getCaptionInd() : "",
+                tag != null && tag.getLink() != null ? tag.getLink() : ""
         );
     }
 
     private Content getContent(Post post) {
-        if (post.content != null && !post.content.isEmpty()) {
-            return post.content.get(0);
+        if (post.getContent() != null && !post.getContent().isEmpty()) {
+            return post.getContent().get(0);
         } else {
             return null;
         }
     }
 
     private Tag getTag(Content content) {
-        if (content.tags != null && !content.tags.isEmpty()) {
-            return content.tags.get(0);
+        if (content.getTags() != null && !content.getTags().isEmpty()) {
+            return content.getTags().get(0);
         } else {
             return null;
         }

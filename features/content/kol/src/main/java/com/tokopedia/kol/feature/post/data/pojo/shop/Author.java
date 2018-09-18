@@ -5,18 +5,48 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Author {
-
     @SerializedName("id")
     @Expose
-    public int id;
+    private int id;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("thumbnail")
     @Expose
-    public String thumbnail;
+    private String thumbnail;
     @SerializedName("url")
     @Expose
-    public String url;
+    private String url;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
