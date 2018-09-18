@@ -34,12 +34,15 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
+import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
@@ -363,13 +366,17 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void onSuccessDeleteWishlist(String searchTerm, int position) {
-        SnackbarManager.make(getActivity(),
-                MainApplication.getAppContext().getString(R.string.msg_delete_wishlist_success),
-                Snackbar.LENGTH_SHORT)
-                .show();
-        displayPull(false);
-        adapter.notifyItemRemoved(position);
-        adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+        if (getActivity() != null  && getView() != null) {
+            ToasterNormal.make(getView(),
+                    getActivity().getString(R.string.msg_delete_wishlist_success),
+                    BaseToaster.LENGTH_SHORT).show();
+            displayPull(false);
+
+            if (adapter != null) {
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, adapter.getItemCount());
+            }
+        }
     }
 
     @Override
@@ -393,17 +400,18 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void showAddToCartMessage(String message) {
-        if (getView() != null) {
+        if (getActivity() != null && getView() != null) {
             if (TextUtils.isEmpty(message)) {
                 message = getString(R.string.default_request_error_unknown_short);
             }
-            Snackbar snackbar = Snackbar.make(getView(),
+            ToasterNormal.make(getView(),
                     message.replace("\n", " "),
-                    Snackbar.LENGTH_LONG);
-            View snackbarView = snackbar.getView();
-            TextView tv = snackbarView.findViewById(android.support.design.R.id.snackbar_text);
-            tv.setMaxLines(7);
-            snackbar.show();
+                    BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
+                        if (getActivity().getApplication() != null) {
+                            getActivity().startActivity(((PdpRouter) getActivity().getApplication())
+                                    .getCartIntent(getActivity()));
+                        }
+                    }).show();
         }
     }
 
