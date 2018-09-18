@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressModel;
@@ -1456,6 +1457,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (getActivity() != null) {
             shippingCourierBottomsheet.show(getActivity().getSupportFragmentManager(), null);
+        }
+    }
+
+    @Override
+    public void hideSoftKeyboard() {
+        if (getActivity() != null) {
+            KeyboardHandler.hideSoftKeyboard(getActivity());
         }
     }
 }

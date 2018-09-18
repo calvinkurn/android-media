@@ -18,7 +18,6 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -33,10 +32,10 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
-import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
-import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
+import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
@@ -620,6 +619,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    mActionListener.hideSoftKeyboard();
                     if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
                         ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
                         etShipperName.setText("");
