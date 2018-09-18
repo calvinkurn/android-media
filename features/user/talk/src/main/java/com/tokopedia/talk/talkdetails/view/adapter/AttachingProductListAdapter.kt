@@ -57,6 +57,7 @@ class AttachedProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
         name.maxLines = 1
         price.text = element.productPrice
 
+        deleteButton.visibility = View.VISIBLE
         deleteButton.setOnClickListener {
             listener.onDeleteAttachProduct(element)
         }

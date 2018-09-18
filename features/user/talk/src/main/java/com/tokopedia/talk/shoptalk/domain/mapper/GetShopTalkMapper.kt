@@ -1,4 +1,4 @@
-package com.tokopedia.talk.inboxtalk.domain.mapper
+package com.tokopedia.talk.shoptalk.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
@@ -20,9 +20,10 @@ import rx.functions.Func1
 import javax.inject.Inject
 
 /**
- * @author by nisie on 9/3/18.
+ * @author by nisie on 9/18/18.
  */
-class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<InboxTalkPojo>>,
+
+class GetShopTalkMapper @Inject constructor() : Func1<Response<DataResponse<InboxTalkPojo>>,
         InboxTalkViewModel> {
 
     private val IS_READ = 2
@@ -97,7 +98,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                         pojo.talk_create_time_list.date_time_android,
                         pojo.talk_message,
                         mapHeaderTalkState(pojo),
-                        pojo.talk_read_status == IS_READ,
+                        true,
                         pojo.talk_follow_status == IS_FOLLOWED,
                         ArrayList(),
                         pojo.talk_raw_message,
