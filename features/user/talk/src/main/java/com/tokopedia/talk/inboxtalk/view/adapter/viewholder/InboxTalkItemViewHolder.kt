@@ -1,6 +1,5 @@
 package com.tokopedia.talk.inboxtalk.view.adapter.viewholder
 
-import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -55,7 +54,6 @@ open class InboxTalkItemViewHolder(val v: View,
     protected val menuButton: ImageView = itemView.menu
     protected val talkContent: TextView = itemView.talk_content
     protected val listComment: RecyclerView = itemView.list_child
-    protected val replyButton: TextView = itemView.replyButton
     protected val separatorChild: View = itemView.separatorChild
 
     protected val reportedLayout: View = itemView.layout_reported
@@ -88,7 +86,7 @@ open class InboxTalkItemViewHolder(val v: View,
                 setupNormalTalk(element)
             }
 
-            replyButton.setOnClickListener {
+            itemView.replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(
                         element.talkThread.headThread.menu.allowReply,
                         element.talkThread.headThread.talkId,

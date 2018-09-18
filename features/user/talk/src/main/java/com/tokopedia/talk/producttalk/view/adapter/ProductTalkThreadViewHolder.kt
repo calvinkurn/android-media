@@ -17,6 +17,7 @@ import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
+import kotlinx.android.synthetic.main.product_talk_item.view.*
 import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 
@@ -48,7 +49,6 @@ class ProductTalkThreadViewHolder(val v: View,
     val menu: View = thread.findViewById(R.id.menu)
     val content: TextView = thread.findViewById(R.id.talk_content)
     val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.list_child)
-    val replyButton: View = itemView.findViewById(R.id.replyButton)
     val menuButton: ImageView = itemView.menu
 
     private val reportedLayout: View = itemView.layout_reported
@@ -72,7 +72,7 @@ class ProductTalkThreadViewHolder(val v: View,
             } else {
                 setupNormalTalk(element)
             }
-            replyButton.setOnClickListener {
+            itemView.replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(element.headThread.menu.allowReply,
                         element.headThread.talkId,
                         element.headThread.shopId)
