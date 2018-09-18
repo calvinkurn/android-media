@@ -1,8 +1,10 @@
 package com.tokopedia.talk.inboxtalk.view.adapter.viewholder
 
+import android.graphics.Color
 import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -143,6 +145,7 @@ open class InboxTalkItemViewHolder(val v: View,
 
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.talkThread.headThread.comment)
+        talkContent.movementMethod = LinkMovementMethod.getInstance()
     }
 
     protected fun setProfileHeader(element: InboxTalkItemViewModel) {

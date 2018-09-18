@@ -2,6 +2,7 @@ package com.tokopedia.talk.producttalk.view.adapter
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -85,6 +86,8 @@ class ProductTalkThreadViewHolder(val v: View,
         userName.text = MethodChecker.fromHtml(element.headThread.name)
         content.text = MethodChecker.fromHtml(element.headThread.comment)
         timestamp.text = element.headThread.timestamp
+        content.movementMethod = LinkMovementMethod.getInstance()
+
     }
 
     private fun setCommentList(element: TalkThreadViewModel) {
