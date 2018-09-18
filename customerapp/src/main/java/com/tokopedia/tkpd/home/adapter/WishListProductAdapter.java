@@ -28,6 +28,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
+import com.tokopedia.discovery.newdiscovery.analytics.WishlistViewTracking;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;
@@ -341,7 +342,9 @@ public class WishListProductAdapter extends BaseRecyclerViewAdapter {
             public void onClick(View view) {
                 if (data.get(position) instanceof ProductItem) {
                     ProductItem product = (ProductItem) data.get(position);
+
                     UnifyTracking.eventWishlistView(product.getName());
+                    WishlistViewTracking.trackEventClickOnProductWishlist(context, String.valueOf(position+1), product.getProductAsObjectDataLayerForWishlistClick(position+1));
 
                     Bundle bundle = new Bundle();
                     Intent intent = new Intent(context, ProductInfoActivity.class);

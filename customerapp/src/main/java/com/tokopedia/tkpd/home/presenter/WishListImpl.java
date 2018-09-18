@@ -230,6 +230,7 @@ public class WishListImpl implements WishList {
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                     GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
+                    wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList());
                     setData(gqlWishListDataResponse.getGqlWishList());
                 } else {
                     setData();

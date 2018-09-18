@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
@@ -33,6 +34,7 @@ import com.tokopedia.core.app.TkpdBaseV4Fragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.network.entity.wishlist.GqlWishListDataResponse;
 import com.tokopedia.core.network.entity.wishlist.Wishlist;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
@@ -40,6 +42,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.newdiscovery.analytics.WishlistViewTracking;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
@@ -55,7 +58,10 @@ import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceProductCartMapData;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * Created by m.normansyah on 01/12/2015.
@@ -582,6 +588,26 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 }
             }
         };
+    }
+
+    @Override
+    public void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData) {
+        WishlistViewTracking.trackEventImpressionOnProductWishlist(getActivity(), getProductAsObjectDataLayerForWishlistImpression(wishListData.getWishlistDataList()));
+    }
+
+    public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList) {
+        List<Object> objects = new ArrayList<>();
+        for (int i = 0; i<wishlistDataList.size() ; i++){
+            Wishlist wishlist = (Wishlist) wishlistDataList.get(i);
+            objects.add(DataLayer.mapOf(
+                    "name", wishlist.getName(),
+                    "id", wishlist.getId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(wishlist.getPrice()))),
+                    "list", "/wishlist",
+                    "position", Integer.toString(i+1)
+            ));
+        }
+        return objects;
     }
 
 }
