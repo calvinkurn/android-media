@@ -39,6 +39,7 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.design.base.BaseToaster;
+import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
@@ -393,6 +394,17 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     getView(),
                     getRetryListener());
 
+        }
+    }
+
+    @Override
+    public void showAddToCartErrorMessage(String message) {
+        if (getActivity() != null && getView() != null) {
+            if (TextUtils.isEmpty(message)) {
+                message = getString(R.string.default_request_error_unknown_short);
+            }
+            ToasterError.make(getView(),
+                    message.replace("\n", " "), BaseToaster.LENGTH_LONG).show();
         }
     }
 
