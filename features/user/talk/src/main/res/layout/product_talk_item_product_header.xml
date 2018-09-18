@@ -5,7 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/card_shadow_top_bottom">
+    android:background="@drawable/card_shadow_top_bottom"
+    android:layout_marginLeft="@dimen/dp_16"
+    android:layout_marginRight="@dimen/dp_16">
 
     <ImageView
         android:id="@+id/talkProductAvatar"
@@ -13,14 +15,13 @@
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/bg_round_corner"
         tools:src="@color/red_100"/>
 
     <TextView
         android:id="@+id/talkProductName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/talkProductAvatar"
         android:layout_toRightOf="@id/talkProductAvatar"
@@ -30,7 +31,8 @@
         android:textColor="@color/black_70"
         android:textSize="@dimen/sp_13"
         android:textStyle="bold"
-        tools:text="Iphone X - Space Gray, 256 GB" />
+        android:maxLines="1"
+        tools:text="Iphone X - Space Gray, 256 GB\njdifjdijf" />
 
     <TextView
         android:id="@+id/talkProductPrice"

@@ -20,6 +20,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
 import kotlinx.android.synthetic.main.product_talk_item.view.*
 import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
+import kotlinx.android.synthetic.main.thread_talk.view.*
 
 class ProductTalkThreadViewHolder(val v: View,
                                   val listener: TalkItemListener,
@@ -50,6 +51,7 @@ class ProductTalkThreadViewHolder(val v: View,
     val content: TextView = thread.findViewById(R.id.talk_content)
     val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.list_child)
     val menuButton: ImageView = itemView.menu
+    protected val separatorChild: View = itemView.separatorChild
 
     private val reportedLayout: View = itemView.layout_reported
     private val reportedMessage: TextView = itemView.reportedMessage
@@ -99,8 +101,11 @@ class ProductTalkThreadViewHolder(val v: View,
                     .VERTICAL, false)
             commentRecyclerView.adapter = adapter
             commentRecyclerView.visibility = View.VISIBLE
+            separatorChild.visibility = View.VISIBLE
+
         } else {
             commentRecyclerView.visibility = View.GONE
+            separatorChild.visibility = View.GONE
         }
     }
 
