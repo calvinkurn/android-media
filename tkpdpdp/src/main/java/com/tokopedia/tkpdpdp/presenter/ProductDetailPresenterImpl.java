@@ -172,7 +172,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(GetWishlistCountUseCase.PRODUCT_ID_PARAM, productId);
 
-        getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber());
+        getWishlistCountUseCase.execute(requestParams, new WishlistCountSubscriber(viewListener));
     }
 
     @Override
@@ -1380,27 +1380,5 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
         }
     }
 
-    private class WishlistCountSubscriber extends Subscriber<Response<WishlistCountResponse>> {
-        @Override
-        public void onCompleted() {
 
-        }
-
-        @Override
-        public void onError(Throwable e) {
-            viewListener.onWishlistCountLoaded("-");
-        }
-
-        @Override
-        public void onNext(Response<WishlistCountResponse> wishlistCountResponseResponse) {
-            String wishlistCountText = "0";
-
-            if(wishlistCountResponseResponse.body().getData() != null){
-                int wishlistCount = wishlistCountResponseResponse.body().getData().getCount();
-                wishlistCountText = String.valueOf(wishlistCount);
-            }
-
-            viewListener.onWishlistCountLoaded(wishlistCountText);
-        }
-    }
 }
