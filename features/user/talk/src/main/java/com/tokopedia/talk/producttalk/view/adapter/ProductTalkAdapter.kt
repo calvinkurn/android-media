@@ -103,16 +103,6 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
         }
     }
 
-    fun deleteTalkByTalkId(talkId: String) {
-        for (talk in visitables) {
-            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
-                val position = this.visitables.indexOf(talk)
-                this.visitables.remove(talk)
-                notifyItemRemoved(position)
-            }
-        }
-    }
-
     fun setStatusFollow(talkId: String, isFollowing: Boolean) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
