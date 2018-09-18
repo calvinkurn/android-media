@@ -118,12 +118,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         loadData();
@@ -195,6 +189,7 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void loadData() {
         if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null
                 && !hasLoadedOnce) {
+            abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
             presenter.getExploreData(true);
             hasLoadedOnce = !hasLoadedOnce;
         }
