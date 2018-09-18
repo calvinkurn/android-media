@@ -96,7 +96,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        wishList = new WishListImpl(getActivity(), this, new SearchWishlistUsecase());
+        wishList = new WishListImpl(getActivity(), this);
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -368,9 +368,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     @Override
     public void onSuccessDeleteWishlist(String searchTerm, int position) {
         if (getActivity() != null  && getView() != null) {
-            ToasterNormal.make(getView(),
-                    getActivity().getString(R.string.msg_delete_wishlist_success),
-                    BaseToaster.LENGTH_SHORT).show();
+            ToasterNormal.make(getView(), getActivity().getString(R.string.msg_delete_wishlist_success), BaseToaster.LENGTH_SHORT).show();
             displayPull(false);
 
             if (adapter != null) {
@@ -406,8 +404,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                 message = getString(R.string.default_request_error_unknown_short);
             }
             ToasterNormal.make(getView(),
-                    message.replace("\n", " "),
-                    BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
+                    message.replace("\n", " "), BaseToaster.LENGTH_LONG).setAction(getString(R.string.wishlist_check_cart),v -> {
                         if (getActivity().getApplication() != null) {
                             wishlistAnalytics.eventClickCartWishlist();
                             getActivity().startActivity(((PdpRouter) getActivity().getApplication())
