@@ -187,11 +187,12 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     private void loadData() {
-        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null
-                && !hasLoadedOnce) {
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null) {
+            if (!hasLoadedOnce) {
+                presenter.getExploreData(true);
+                hasLoadedOnce = !hasLoadedOnce;
+            }
             abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
-            presenter.getExploreData(true);
-            hasLoadedOnce = !hasLoadedOnce;
         }
     }
 
