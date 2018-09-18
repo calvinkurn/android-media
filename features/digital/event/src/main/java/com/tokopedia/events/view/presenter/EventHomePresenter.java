@@ -61,9 +61,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetUserLikesUseCase getUserLikesUseCase;
     private GetProductRatingUseCase getProductRatingUseCase;
-    private CheckScanOptionUseCase checkScanOptionUseCase;
     private CategoryViewModel carousel;
-    private UserSession userSession;
     private List<CategoryViewModel> categoryViewModels;
     private List<CategoryItemsViewModel> likedEvents;
     private TouchViewPager mTouchViewPager;
@@ -78,13 +76,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     public EventHomePresenter(GetEventsListRequestUseCase getEventsListRequestUsecase,
                               PostUpdateEventLikesUseCase eventLikesUseCase,
                               GetUserLikesUseCase likesUseCase,
-                              GetProductRatingUseCase ratingUseCase, CheckScanOptionUseCase checkScanOptionUseCase, UserSession userSession) {
+                              GetProductRatingUseCase ratingUseCase) {
         this.getEventsListRequestUsecase = getEventsListRequestUsecase;
         this.postUpdateEventLikesUseCase = eventLikesUseCase;
         this.getUserLikesUseCase = likesUseCase;
         this.getProductRatingUseCase = ratingUseCase;
-        this.checkScanOptionUseCase = checkScanOptionUseCase;
-        this.userSession = userSession;
         adapterCallbacks = new ArrayList<>();
     }
 
@@ -148,10 +144,6 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        RequestParams params = RequestParams.create();
-        params.putString("user_id", userSession.getUserId());
-        params.putString("email", userSession.getEmail());
-        checkScanOptionUseCase.setRequestParams(params);
         if (id == R.id.action_menu_search) {
             ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
                     .getTopEvents();

@@ -1,12 +1,14 @@
 package com.tokopedia.events.domain.scanTicketUsecase;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.common.network.data.model.RequestType;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
+import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.events.data.source.EventsUrl;
 import com.tokopedia.events.domain.model.scanticket.CheckScanOption;
-import com.tokopedia.network.constant.TkpdBaseURL;
 import com.tokopedia.usecase.RequestParams;
 
 import java.lang.reflect.Type;
@@ -35,7 +37,8 @@ public class CheckScanOptionUseCase extends RestRequestUseCase {
         }.getType();
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
-                .setQueryParams(params.getParameters())
+                .setBody(new Gson().toJson(params.getParameters()))
+                .setRequestType(RequestType.POST)
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;

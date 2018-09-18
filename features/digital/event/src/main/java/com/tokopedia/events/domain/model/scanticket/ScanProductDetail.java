@@ -1,9 +1,12 @@
 package com.tokopedia.events.domain.model.scanticket;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ScanProductDetail {
+public class ScanProductDetail implements Parcelable {
 
 
     @SerializedName("id")
@@ -87,6 +90,48 @@ public class ScanProductDetail {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+
+    protected ScanProductDetail(Parcel in) {
+        id = in.readInt();
+        brandId = in.readInt();
+        categoryId = in.readInt();
+        providerId = in.readInt();
+        providerProductId = in.readString();
+        providerProductName = in.readString();
+        displayName = in.readString();
+        url = in.readString();
+        seoUrl = in.readString();
+        imageWeb = in.readString();
+        thumbnailWeb = in.readString();
+        tnc = in.readString();
+        shortDesc = in.readString();
+        longRichDesc = in.readString();
+        searchTags = in.readString();
+        quantity = in.readInt();
+        soldQuantity = in.readInt();
+        sellRate = in.readInt();
+        thumbsUp = in.readInt();
+        thumbsDown = in.readInt();
+        rating = in.readInt();
+        minStartDate = in.readInt();
+        maxEndDate = in.readInt();
+        saleStartDate = in.readInt();
+        saleEndDate = in.readInt();
+        createdAt = in.readString();
+        updatedAt = in.readString();
+    }
+
+    public static final Creator<ScanProductDetail> CREATOR = new Creator<ScanProductDetail>() {
+        @Override
+        public ScanProductDetail createFromParcel(Parcel in) {
+            return new ScanProductDetail(in);
+        }
+
+        @Override
+        public ScanProductDetail[] newArray(int size) {
+            return new ScanProductDetail[size];
+        }
+    };
 
     public int getId() {
         return id;
@@ -305,4 +350,39 @@ public class ScanProductDetail {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(id);
+        parcel.writeInt(brandId);
+        parcel.writeInt(categoryId);
+        parcel.writeInt(providerId);
+        parcel.writeString(providerProductId);
+        parcel.writeString(providerProductName);
+        parcel.writeString(displayName);
+        parcel.writeString(url);
+        parcel.writeString(seoUrl);
+        parcel.writeString(imageWeb);
+        parcel.writeString(thumbnailWeb);
+        parcel.writeString(tnc);
+        parcel.writeString(shortDesc);
+        parcel.writeString(longRichDesc);
+        parcel.writeString(searchTags);
+        parcel.writeInt(quantity);
+        parcel.writeInt(soldQuantity);
+        parcel.writeInt(sellRate);
+        parcel.writeInt(thumbsUp);
+        parcel.writeInt(thumbsDown);
+        parcel.writeInt(rating);
+        parcel.writeInt(minStartDate);
+        parcel.writeInt(maxEndDate);
+        parcel.writeInt(saleStartDate);
+        parcel.writeInt(saleEndDate);
+        parcel.writeString(createdAt);
+        parcel.writeString(updatedAt);
+    }
 }

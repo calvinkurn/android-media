@@ -1,9 +1,12 @@
 package com.tokopedia.events.domain.model.scanticket;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Action {
+public class Action implements Parcelable {
 
 @SerializedName("label")
 @Expose
@@ -30,7 +33,29 @@ private String color;
 @Expose
 private String textColor;
 
-public String getLabel() {
+    protected Action(Parcel in) {
+        label = in.readString();
+        name = in.readString();
+        uiControl = in.readString();
+        buttonType = in.readString();
+        weight = in.readInt();
+        color = in.readString();
+        textColor = in.readString();
+    }
+
+    public static final Creator<Action> CREATOR = new Creator<Action>() {
+        @Override
+        public Action createFromParcel(Parcel in) {
+            return new Action(in);
+        }
+
+        @Override
+        public Action[] newArray(int size) {
+            return new Action[size];
+        }
+    };
+
+    public String getLabel() {
 return label;
 }
 
@@ -94,4 +119,19 @@ public void setTextColor(String textColor) {
 this.textColor = textColor;
 }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(label);
+        parcel.writeString(name);
+        parcel.writeString(uiControl);
+        parcel.writeString(buttonType);
+        parcel.writeInt(weight);
+        parcel.writeString(color);
+        parcel.writeString(textColor);
+    }
 }

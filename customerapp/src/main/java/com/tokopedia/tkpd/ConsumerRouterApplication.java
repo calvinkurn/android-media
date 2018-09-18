@@ -2595,9 +2595,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage() {
-        return QrScannerActivity.newInstance(this);
+        return gotoQrScannerPage(false);
     }
-
+    @Override
+    public Intent gotoQrScannerPage(boolean needResult) {
+        return QrScannerActivity.newInstance(this, needResult);
+    }
 
     @Override
     public Fragment getHomeFragment() {

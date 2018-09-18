@@ -1,11 +1,14 @@
 package com.tokopedia.events.domain.model.scanticket;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ScanTicketResponse {
+public class ScanTicketResponse implements Parcelable {
 
     @SerializedName("product")
     @Expose
@@ -19,6 +22,22 @@ public class ScanTicketResponse {
     @SerializedName("action")
     @Expose
     private List<Action> action = null;
+
+    protected ScanTicketResponse(Parcel in) {
+        action = in.createTypedArrayList(Action.CREATOR);
+    }
+
+    public static final Creator<ScanTicketResponse> CREATOR = new Creator<ScanTicketResponse>() {
+        @Override
+        public ScanTicketResponse createFromParcel(Parcel in) {
+            return new ScanTicketResponse(in);
+        }
+
+        @Override
+        public ScanTicketResponse[] newArray(int size) {
+            return new ScanTicketResponse[size];
+        }
+    };
 
     public ScanProductDetail getProduct() {
         return product;
@@ -53,5 +72,14 @@ public class ScanTicketResponse {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeTypedList(action);
+    }
 }
 
