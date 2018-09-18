@@ -210,18 +210,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.deleteComment(talkId, commentId)
     }
 
-    override fun onSuccessDeleteTalk(talkId: String) {
-        adapter.deleteTalkByTalkId(talkId)
-    }
-
-    override fun onSuccessUnfollowTalk(talkId: String) {
-        adapter.setStatusFollow(talkId, false)
-    }
-
-    override fun onSuccessFollowTalk(talkId: String) {
-        adapter.setStatusFollow(talkId, true)
-    }
-
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
         if (presenter.isLoggedIn()) {
             goToLogin()
