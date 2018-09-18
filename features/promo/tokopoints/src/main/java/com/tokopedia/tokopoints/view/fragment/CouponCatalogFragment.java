@@ -696,6 +696,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         if (data.getUsage() != null) {
             imgLabel.setImageResource(R.drawable.ic_tp_time);
             label.setVisibility(View.VISIBLE);
+            label.setText(data.getUsage().getText());
             value.setVisibility(View.VISIBLE);
             imgLabel.setVisibility(View.VISIBLE);
             btnAction2.setVisibility(View.VISIBLE);
@@ -820,26 +821,35 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
     }
 
     private void addCountDownTimer(CouponValueEntity item, TextView label, TextView btnContinue) {
-        if (mTimer != null) {
+        if (mTimer != null || getView() == null) {
             mTimer.cancel();
         }
 
         if (item.getUsage().getActiveCountDown() < 1) {
             if (item.getUsage().getExpiredCountDown() > 0
                     && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                ProgressBar progressBar = getView().findViewById(R.id.progress_timer);
+                progressBar.setVisibility(View.VISIBLE);
+                progressBar.setMax((int)CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                 mTimer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
+                        label.setPadding(getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
                         item.getUsage().setExpiredCountDown(l / 1000);
                         int seconds = (int) (l / 1000) % 60;
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
                         label.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                        progressBar.setProgress((int) l / 1000);
                     }
 
                     @Override
                     public void onFinish() {
-                        label.setText("00:00:00");
+                        progressBar.setVisibility(View.GONE);
+                        label.setText("00 : 00 : 00");
                         btnContinue.setText("Expired");
                         btnContinue.setEnabled(false);
                         btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.black_12));

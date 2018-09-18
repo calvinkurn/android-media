@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -39,6 +40,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         public boolean isVisited = false;
         /*This section is exclusively for handling timer*/
         public CountDownTimer timer;
+        public ProgressBar progressTimer;
 
         public ViewHolder(View view) {
             super(view);
@@ -48,6 +50,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             btnContinue = view.findViewById(R.id.button_continue);
             imgBanner = view.findViewById(R.id.img_banner);
             imgLabel = view.findViewById(R.id.img_time);
+            progressTimer = view.findViewById(R.id.progress_timer);
         }
     }
 
@@ -83,6 +86,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             holder.value.setVisibility(View.VISIBLE);
             holder.imgLabel.setVisibility(View.VISIBLE);
             holder.value.setText(item.getUsage().getUsageStr());
+            holder.label.setText(item.getUsage().getText());
             if (item.getUsage().getBtnUsage() != null) {
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
             }
@@ -123,6 +127,8 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         if (item.getUsage().getActiveCountDown() < 1) {
             if (item.getUsage().getExpiredCountDown() > 0
                     && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                holder.progressTimer.setMax((int)CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                holder.progressTimer.setVisibility(View.VISIBLE);
                 holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -131,17 +137,23 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                         int minutes = (int) ((l / (1000 * 60)) % 60);
                         int hours = (int) ((l / (1000 * 60 * 60)) % 24);
                         holder.value.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                        holder.progressTimer.setProgress((int) l / 1000);
+                        holder.value.setPadding(holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall),
+                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_regular),
+                                holder.label.getResources().getDimensionPixelSize(R.dimen.tp_padding_xsmall));
                     }
 
                     @Override
                     public void onFinish() {
-                        holder.value.setText("00:00:00");
+                        holder.value.setText("00 : 00 : 00");
                         holder.btnContinue.setText("Expired");
                         holder.btnContinue.setEnabled(false);
                         holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
                     }
                 }.start();
             } else {
+                holder.progressTimer.setVisibility(View.GONE);
                 holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
                 holder.btnContinue.setEnabled(true);
                 holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
@@ -166,6 +178,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                 }.start();
             } else {
                 holder.btnContinue.setText(item.getUsage().getUsageStr());
+                holder.progressTimer.setVisibility(View.GONE);
             }
         }
     }

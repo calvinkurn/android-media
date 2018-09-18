@@ -203,6 +203,19 @@
                     app:layout_constraintStart_toEndOf="@+id/img_time"
                     app:layout_constraintTop_toTopOf="@+id/img_time" />
 
+                <ProgressBar
+                    android:id="@+id/progress_timer"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:indeterminate="false"
+                    android:progressDrawable="@drawable/bg_tp_timer_bg"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_time_value"
+                    app:layout_constraintLeft_toLeftOf="@+id/text_time_value"
+                    app:layout_constraintRight_toRightOf="@+id/text_time_value"
+                    app:layout_constraintTop_toTopOf="@+id/text_time_value" />
+
                 <TextView
                     android:id="@+id/text_time_value"
                     android:layout_width="wrap_content"
@@ -216,6 +229,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/img_time"
                     app:layout_constraintStart_toEndOf="@+id/text_time_label"
                     app:layout_constraintTop_toTopOf="@+id/img_time" />
+
 
                 <TextView
                     android:id="@+id/text_disabled_error"

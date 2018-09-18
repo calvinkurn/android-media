@@ -23,7 +23,7 @@ public class SendGiftActivity extends BaseSimpleActivity implements HasComponent
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle("Kirim Kupon");
+        updateTitle(getString(R.string.tp_title_send_coupon));
         toolbar.setNavigationIcon(R.drawable.navigation_cancel);
     }
 

@@ -25,7 +25,7 @@ public class CouponCatalogDetailsActivity extends BaseSimpleActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        updateTitle(getString(R.string.tp_title_tokopoints));
+        updateTitle(getString(R.string.tp_title_detail));
     }
 
     @Override
