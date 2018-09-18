@@ -181,8 +181,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            ((AccountHomeRouter) getContext().getApplicationContext()).
-                    goToGMSubscribe(getContext());
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountConstants.Url.GOLD_MERCHANT));
         }
     }
 
