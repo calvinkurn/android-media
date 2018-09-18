@@ -8,10 +8,12 @@ import android.content.Intent
  */
 interface TalkRouter {
 
-    fun getTopProfileIntent(context: Context, userId: String) : Intent
+    fun getTopProfileIntent(context: Context, userId: String): Intent
 
-    fun getLoginIntent(context: Context) : Intent
+    fun getLoginIntent(context: Context): Intent
 
     fun getShopPageIntent(context: Context, shopId: String): Intent
+
+    fun goToProductDetailById(activity: Context, productId: String)
 
 }

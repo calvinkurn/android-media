@@ -307,14 +307,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        openRedirectUrl(attachProduct.productUrl)
-    }
-
-    private fun openRedirectUrl(redirectUrl: String) {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, redirectUrl)
-            this@TalkDetailsFragment.startActivity(intent)
-        }
+        onGoToPdp(attachProduct.productId.toString())
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -449,8 +442,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         //There should not be reply button
     }
 
-    override fun onGoToPdp(productApplink: String) {
-        openRedirectUrl(productApplink)
+    override fun onGoToPdp(productId: String) {
+        activity?.applicationContext?.run {
+            (this as TalkRouter).goToProductDetailById(this, productId)
+        }
     }
 
 

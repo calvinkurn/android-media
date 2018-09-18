@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -415,7 +414,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        onGoToPdp(attachProduct.productUrl)
+        onGoToPdp(attachProduct.productId.toString())
     }
 
 
@@ -444,10 +443,9 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onGoToPdp(productApplink: String) {
+    override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
-            this@InboxTalkFragment.startActivity(intent)
+            (this as TalkRouter).goToProductDetailById(this, productId)
         }
     }
 

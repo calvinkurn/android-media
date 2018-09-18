@@ -303,10 +303,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onGoToPdp(productApplink: String) {
+    override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
-            this@ShopTalkFragment.startActivity(intent)
+            (this as TalkRouter).goToProductDetailById(this, productId)
         }
     }
 
@@ -368,7 +367,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        onGoToPdp(attachProduct.productUrl)
+        onGoToPdp(attachProduct.productId.toString())
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
