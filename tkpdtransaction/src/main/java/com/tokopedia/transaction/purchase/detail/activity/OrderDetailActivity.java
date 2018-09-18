@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.ImageHandler;
 import com.tokopedia.applink.ApplinkConst;
@@ -42,6 +43,7 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
+import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
@@ -84,6 +86,7 @@ public class OrderDetailActivity extends TActivity
     private static final String REJECT_ORDER_FRAGMENT_TAG = "reject_order_fragment_teg";
     private static final String EXTRA_ORDER_ID = "EXTRA_ORDER_ID";
     private static final String EXTRA_USER_MODE = "EXTRA_USER_MODE";
+    private static final String PARAM_ORDER_ID = "order_id";
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
@@ -94,6 +97,12 @@ public class OrderDetailActivity extends TActivity
     private TkpdProgressDialog mainProgressDialog;
 
     private TkpdProgressDialog smallProgressDialog;
+
+    @DeepLink({ApplinkConst.PURCHASE_ORDER_DETAIL})
+    public static Intent createInstance(Context context, Bundle bundle) {
+        String orderId = bundle.getString(PARAM_ORDER_ID, "0");
+        return createInstance(context, orderId);
+    }
 
     public static Intent createInstance(Context context, String orderId) {
         Intent intent = new Intent(context, OrderDetailActivity.class);
@@ -366,7 +375,9 @@ public class OrderDetailActivity extends TActivity
     private void setShopInfo(OrderDetailData data) {
         ViewGroup descriptionSellerLayout = findViewById(R.id.seller_description_layout);
         TextView descriptionShopName = findViewById(R.id.description_shop_name);
-        descriptionShopName.setText(data.getShopName());
+        descriptionShopName.setText(
+                MethodChecker.fromHtml(data.getShopName())
+        );
         descriptionSellerLayout.setVisibility(View.VISIBLE);
     }
 

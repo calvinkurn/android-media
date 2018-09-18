@@ -216,6 +216,10 @@
         <value>false</value>
     </entry>
     <entry>
+        <key>mainapp_enable_notif_center</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>indicator_groupchat</key>
         <value>false</value>
     </entry>
