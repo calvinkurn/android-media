@@ -241,7 +241,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_message">Chat</string>
     <string name="shipping_status">Status Pengiriman</string>
     <string name="shipping_confirm">Konfirmasi Pengiriman</string>
-    <string name="new_order">Order Baru</string>
+    <string name="new_order">Pesanan Baru</string>
     <string name="order_status">Status Pemesanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
     <string name="delivery_confirm">Konfirmasi Penerimaan</string>
@@ -907,7 +907,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_transaction_list">Transaksi</string>
     <string name="msg_confirm_order">Apakah anda ingin memproses pesanan ini?</string>
     <string name="title_shipping_confirmation">Pengiriman</string>
-    <string name="title_tab_new_order">Order Baru</string>
+    <string name="title_tab_new_order">Pesanan Baru</string>
     <string name="title_additional_cost">Biaya Tambahan</string>
     <string name="title_grand_total">Grand Total</string>
     <string name="title_buyer">Pembeli</string>
@@ -926,8 +926,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_track">Track</string>
     <string name="title_status">Status</string>
     <string name="item_all_stats">Semua Status</string>
-    <string name="item_on_shipping">Dalam Pengiriman</string>
-    <string name="item_delivered">Transaksi Terkirim</string>
+    <string name="item_on_shipping">Sedang Dikirim</string>
+    <string name="item_delivered">Sampai Tujuan</string>
     <string name="item_finished">Transaksi Selesai</string>
     <string name="item_cancel">Transaksi Dibatalkan</string>
     <string name="title_city">Kota</string>
@@ -2102,7 +2102,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_new_reso_as_buyer">Sebagai Pembeli</string>
     <string name="drawer_title_new_reso_as_seller">Sebagai Penjual</string>
     <string name="drawer_title_new_reso_seller">Komplain Pembeli</string>
-    <string name="drawer_title_new_order">Order Baru</string>
+    <string name="drawer_title_new_order">Pesanan Baru</string>
     <string name="drawer_title_shipping_status">Status Pengiriman</string>
     <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
     <string name="drawer_title_help">Bantuan</string>

@@ -610,7 +610,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 getView().showToastError(e.getMessage());
                                             } else {
                                                 getView().showToastError(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
-                                            }                                        }
+                                            }
+                                        }
 
                                         @Override
                                         public void onNext(CartShipmentAddressFormData cartShipmentAddressFormData) {
@@ -1081,11 +1082,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                         if (response != null && statusSuccess) {
                                             if (recipientAddressModel != null) {
-                                                recipientAddressModel.setLatitude(Double.parseDouble(latitude));
-                                                recipientAddressModel.setLongitude(Double.parseDouble(longitude));
+                                                recipientAddressModel.setLatitude(latitude);
+                                                recipientAddressModel.setLongitude(longitude);
                                             } else {
-                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(Double.parseDouble(latitude));
-                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(Double.parseDouble(longitude));
+                                                shipmentCartItemModel.getRecipientAddressModel().setLatitude(latitude);
+                                                shipmentCartItemModel.getRecipientAddressModel().setLongitude(longitude);
                                             }
                                             getView().renderEditAddressSuccess(latitude, longitude);
                                         } else {

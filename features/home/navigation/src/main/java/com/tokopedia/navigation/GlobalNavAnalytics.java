@@ -5,6 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import static com.tokopedia.navigation.GlobalNavConstant.Analytics.*;
@@ -55,6 +58,20 @@ public class GlobalNavAnalytics {
                 String.format("%s - %s", CLICK, item),
                 ""
         );
+    }
+
+    public void eventTrackingNotification() {
+        if (analyticTracker == null)
+            return;
+
+        Map<String, Object> eventTracking = new HashMap<>();
+        eventTracking.put(SCREEN_NAME, SCREEN_NAME_CHAT);
+        eventTracking.put(EVENT, CLICK_HOME_PAGE);
+        eventTracking.put(EVENT_CATEGORY, TOP_NAV);
+        eventTracking.put(EVENT_ACTION, String.format("%s %s", CLICK, NOTIFICATION));
+        eventTracking.put(EVENT_LABEL, "");
+
+        analyticTracker.sendEventTracking(eventTracking);
     }
 
     public void eventImpressionAppUpdate(boolean isForceUpdate) {

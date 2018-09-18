@@ -455,7 +455,7 @@ public class CustomerAppSellerTransactionActivity extends BaseTabActivity
     }
 
     public Fragment getFragmentMainPager(int position) {
-        ActivitySellingTransaction.SectionsPagerAdapter fragmentStatePagerAdapter = (ActivitySellingTransaction.SectionsPagerAdapter) mViewPager.getAdapter();
+        CustomerAppSellerTransactionActivity.SectionsPagerAdapter fragmentStatePagerAdapter = (CustomerAppSellerTransactionActivity.SectionsPagerAdapter) mViewPager.getAdapter();
         Fragment fragment = (Fragment) fragmentStatePagerAdapter.instantiateItem(mViewPager, position);
         return fragment;
     }

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -77,7 +76,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterF
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
-import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubscriber;
 import com.tokopedia.home.beranda.presentation.view.viewmodel.InspirationViewModel;
 import com.tokopedia.home.widget.FloatingTextButton;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -114,7 +112,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Inject
     HomePresenter presenter;
     private RecyclerView recyclerView;
-    private AppBarLayout appBarLayout;
     private TabLayout tabLayout;
     private CoordinatorLayout root;
     private SectionContainer tabContainer;
@@ -203,7 +200,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         mainToolbar = view.findViewById(R.id.toolbar);
-        appBarLayout = view.findViewById(R.id.app_bar_layout);
         recyclerView = view.findViewById(R.id.list);
         refreshLayout = view.findViewById(R.id.sw_refresh_layout);
         tabLayout = view.findViewById(R.id.tabs);
@@ -391,7 +387,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = new LinearLayoutManagerWithSmoothScroller(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.getItemAnimator().setChangeDuration(0);
-        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getFragmentManager(), this, this, this);
+        HomeAdapterFactory adapterFactory = new HomeAdapterFactory(getChildFragmentManager(), this, this, this);
         adapter = new HomeRecycleAdapter(adapterFactory, new ArrayList<Visitable>());
         recyclerView.setAdapter(adapter);
     }
@@ -537,6 +533,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         } else {
             openWebViewURL(slidesModel.getRedirectUrl(), getContext());
         }
+        presenter.onBannerClicked(slidesModel);
     }
 
     @Override
@@ -627,12 +624,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         if (isAdded() && getActivity() != null) {
             if (adapter.getItemCount() > 0) {
                 if (messageSnackbar == null) {
-                    messageSnackbar = NetworkErrorHelper.createSnackbarWithAction(getActivity(), new NetworkErrorHelper.RetryClickedListener() {
-                        @Override
-                        public void onRetryClicked() {
-                            onRefresh();
-                        }
-                    });
+                    messageSnackbar =  NetworkErrorHelper.createSnackbarWithAction(
+                            root, getString(com.tokopedia.core.R.string.msg_network_error),
+                            () -> onRefresh()
+                    );
                 }
                 messageSnackbar.showRetrySnackbar();
             } else {
@@ -859,6 +854,11 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     }
 
     @Override
+    public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
+        presenter.hitBannerImpression(bannerSlidesModel);
+    }
+
+    @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         trackScreen(isVisibleToUser);
@@ -891,7 +891,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     @Override
     public void onScrollToTop() {
         if (recyclerView != null) recyclerView.scrollToPosition(0);
-        if (appBarLayout != null) appBarLayout.setExpanded(true);
     }
 
     /**
