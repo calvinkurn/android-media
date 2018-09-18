@@ -98,6 +98,7 @@ import com.tokopedia.core.onboarding.NewOnboardingActivity;
 import com.tokopedia.core.onboarding.OnboardingActivity;
 import com.tokopedia.core.product.model.share.ShareData;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
+import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.router.CustomerRouter;
@@ -293,6 +294,7 @@ import com.tokopedia.settingbank.BankRouter;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.open.ShopOpenRouter;
+import com.tokopedia.shop.open.view.activity.ShopOpenDomainActivity;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
@@ -1128,6 +1130,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getHomeIntent(Context context) {
         return MainParentActivity.start(context);
+    }
+
+    @Override
+    public Intent getReferralIntent(Context context) {
+        return ReferralActivity.getCallingIntent(context);
     }
 
     @Override
@@ -2164,6 +2171,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getInstantLoanIntent(Context context) {
         return InstantLoanActivity.createIntent(context);
+    }
+
+    public Intent getOpenShopIntent(Context context) {
+        return ShopOpenDomainActivity.getIntent(context);
     }
 
     public void showForceHockeyAppDialog() {
