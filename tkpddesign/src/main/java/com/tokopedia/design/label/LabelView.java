@@ -158,7 +158,6 @@ public class LabelView extends BaseCustomView {
         DisplayMetrics dm = new DisplayMetrics();
         ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
 
-        rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
         contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
         rightArrow.setVisibility(isArrowShown ? VISIBLE : GONE);
         contentTextView.setMaxWidth((int)(dm.widthPixels * contentMaxWidthPercentage));
