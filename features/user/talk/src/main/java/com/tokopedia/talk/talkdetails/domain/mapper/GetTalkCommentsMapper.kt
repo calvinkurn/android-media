@@ -66,9 +66,9 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_talk_id,
                     data.comment_id,
                     pojo.talk.talk_product_id,
-                    pojo.talk.talk_user_label_id.toInt(),
-                    pojo.talk.talk_user_label,
-                    pojo.talk.talk_user_id,
+                    data.comment_user_label_id,
+                    data.comment_user_label,
+                    data.comment_user_id,
                     false
             ))
         }

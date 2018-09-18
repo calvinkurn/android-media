@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -301,12 +302,26 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
                 onSuccessReportTalk(talkId)
 
             }
-        } else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK) {
-            //TODO UPDATE NOTIFICATION READ
+        } else if (requestCode == REQUEST_GO_TO_DETAIL) {
+            //TODO UPDATE TALK
+
             data?.run {
-                //                val talkThread : ProductTalkItemViewModel = data.getParcelableExtra<ProductTalkItemViewModel>()
+                when (resultCode) {
+                    TalkDetailsActivity.RESULT_OK_READ -> updateReadStatusTalk(data)
+                    else -> {
+                    }
+                }
             }
 
+        }
+    }
+
+    private fun updateReadStatusTalk(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+        if (!talkId.isEmpty()) {
+            adapter.updateReadStatus(talkId)
+        } else {
+            onRefreshData()
         }
     }
 
@@ -400,7 +415,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        //TODO NISIE GO TO PDP
+        onGoToPdp(attachProduct.productUrl)
     }
 
 
@@ -429,8 +444,11 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onGoToPdp(productId: String) {
-//TODO NISIE
+    override fun onGoToPdp(productApplink: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
+            this@InboxTalkFragment.startActivity(intent)
+        }
     }
 
     override fun onGoToUserProfile(userId: String) {

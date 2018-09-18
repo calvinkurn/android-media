@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -302,8 +303,11 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onGoToPdp(productId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGoToPdp(productApplink: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
+            this@ShopTalkFragment.startActivity(intent)
+        }
     }
 
     override fun onGoToUserProfile(userId: String) {
@@ -364,7 +368,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        onGoToPdp(attachProduct.productUrl)
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {

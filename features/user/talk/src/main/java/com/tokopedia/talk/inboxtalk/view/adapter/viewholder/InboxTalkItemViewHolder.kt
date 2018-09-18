@@ -40,7 +40,7 @@ open class InboxTalkItemViewHolder(val v: View,
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
-        fun onGoToPdp(productId: String)
+        fun onGoToPdp(productApplink: String)
         fun onGoToUserProfile(userId: String)
     }
 
@@ -167,10 +167,10 @@ open class InboxTalkItemViewHolder(val v: View,
                 element.productHeader.productAvatar)
 
         productName.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdp(element.productHeader.productApplink)
         }
         productAvatar.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdp(element.productHeader.productApplink)
         }
     }
 

@@ -27,6 +27,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
 
     private val IS_READ = 2
     private val IS_FOLLOWED = 1
+    private val SELLER_LABEL_ID = 3
+
 
     override fun call(response: Response<DataResponse<InboxTalkPojo>>): InboxTalkViewModel {
         if (response.body().header == null ||
@@ -68,8 +70,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
 
         for (data: TalkCommentItem in pojo.list) {
             listComment.add(ProductTalkItemViewModel(
-                    data.comment_user_image,
-                    data.comment_user_name,
+                    getCommentUserImage(data),
+                    getCommentUserName(data),
                     data.comment_create_time_list.date_time_android,
                     data.comment_message,
                     mapCommentTalkState(data),
@@ -112,6 +114,17 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         )
     }
 
+    private fun getCommentUserName(data: TalkCommentItem): String {
+        return if (data.comment_user_label_id == SELLER_LABEL_ID) data.comment_shop_name
+        else data.comment_user_name
+    }
+
+    private fun getCommentUserImage(data: TalkCommentItem): String {
+        return if (data.comment_user_label_id == SELLER_LABEL_ID) data.comment_shop_image
+        else data.comment_user_image
+    }
+
+
     private fun mapProductAttachment(pojo: TalkCommentItem):
             ArrayList<TalkProductAttachmentViewModel> {
         val listProduct = ArrayList<TalkProductAttachmentViewModel>()
@@ -120,7 +133,8 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
                     data.product_name,
                     data.product_id,
                     data.product_image,
-                    data.product_price
+                    data.product_price,
+                    data.product_url
             ))
         }
         return listProduct
@@ -156,7 +170,7 @@ class GetInboxTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inb
         return ProductHeader(
                 data.talk_product_name,
                 data.talk_product_image,
-                data.talk_product_id
-        )
+                data.talk_product_id,
+                data.talk_product_url)
     }
 }

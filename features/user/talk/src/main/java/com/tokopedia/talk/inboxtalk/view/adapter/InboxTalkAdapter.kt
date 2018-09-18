@@ -9,7 +9,6 @@ import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHol
 import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
-import kotlin.system.measureTimeMillis
 
 /**
  * @author by nisie on 8/29/18.
@@ -115,6 +114,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                     if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
                         comment.menu.isMasked = false
                         comment.comment = comment.rawMessage
+                        talk.talkThread.headThread.menu.allowUnmasked = false
                     }
                 }
                 notifyItemChanged(position)
@@ -128,12 +128,13 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 val position = this.visitables.indexOf(talk)
                 talk.talkThread.headThread.menu.isReported = true
                 talk.talkThread.headThread.menu.allowReport = false
+                talk.talkThread.headThread.menu.allowUnmasked = false
                 notifyItemChanged(position)
             }
         }
     }
 
-    fun addComment(talkId:String, commentData:ProductTalkItemViewModel) {
+    fun addComment(talkId: String, commentData: ProductTalkItemViewModel) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
@@ -143,19 +144,29 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
         }
     }
 
-    fun updateLastCommentWithId(talkId: String, commentId: String){
+    fun updateLastCommentWithId(talkId: String, commentId: String) {
         for (talk in visitables) {
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 val lastItem = talk.talkThread.listChild.last()
                 val lastIndex = talk.talkThread.listChild.indexOf(lastItem)
-                if( lastItem is ProductTalkItemViewModel) {
+                if (lastItem is ProductTalkItemViewModel) {
                     lastItem.commentId = commentId
                     lastItem.isSending = false
                     talk.talkThread.listChild.removeAt(lastIndex)
-                    talk.talkThread.listChild.add(lastIndex,lastItem)
+                    talk.talkThread.listChild.add(lastIndex, lastItem)
                     notifyItemChanged(position)
                 }
+            }
+        }
+    }
+
+    fun updateReadStatus(talkId: String?) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                talk.talkThread.headThread.isRead = true
+                notifyItemChanged(position)
             }
         }
     }
