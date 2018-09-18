@@ -10,8 +10,13 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 
-class AttachedProductListAdapter(var data: ArrayList<TalkProductAttachmentViewModel>) : RecyclerView
-.Adapter<AttachedProductViewHolder>() {
+class AttachedProductListAdapter(var data: ArrayList<TalkProductAttachmentViewModel>,
+                                 var listener: ProductAttachmentItemClickListener) :
+        RecyclerView.Adapter<AttachedProductViewHolder>() {
+
+    interface ProductAttachmentItemClickListener {
+        fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedProductViewHolder {
         val itemView = LayoutInflater.from(parent.context)
@@ -24,7 +29,7 @@ class AttachedProductListAdapter(var data: ArrayList<TalkProductAttachmentViewMo
     }
 
     override fun onBindViewHolder(holder: AttachedProductViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(data[position], listener)
     }
 
     fun clearAllElements() {
@@ -38,10 +43,15 @@ class AttachedProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemVi
     val name = itemView.findViewById<TextView>(R.id.attach_product_chat_name)
     val price = itemView.findViewById<TextView>(R.id.attach_product_chat_price)
 
-    fun bind(element: TalkProductAttachmentViewModel) {
+    fun bind(element: TalkProductAttachmentViewModel,
+             listener: AttachedProductListAdapter.ProductAttachmentItemClickListener) {
         ImageHandler.loadImageRounded2(itemView.context, image, element.productImage)
         name.text = element.productName
         name.maxLines = 1
         price.text = element.productPrice
+
+        itemView.setOnClickListener {
+            listener.onClickProductAttachment(element)
+        }
     }
 }

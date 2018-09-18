@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -48,7 +49,9 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         CommentTalkViewHolder.TalkCommentItemListener,
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         InboxTalkItemViewHolder.TalkItemListener,
-        LoadMoreCommentTalkViewHolder.LoadMoreListener {
+        LoadMoreCommentTalkViewHolder.LoadMoreListener,
+        AttachedProductListAdapter.ProductAttachmentItemClickListener {
+
     @Inject
     lateinit var presenter: TalkDetailsPresenter
 
@@ -60,7 +63,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     lateinit var attachedProductList: RecyclerView
     lateinit var progressBar: ProgressBar
     private var attachedProductListAdapter: AttachedProductListAdapter =
-            AttachedProductListAdapter(ArrayList())
+            AttachedProductListAdapter(ArrayList(), this)
 
     private lateinit var bottomMenu: Menus
     private lateinit var alertDialog: Dialog
@@ -189,6 +192,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onSuccessLoadTalkDetails(data: ArrayList<Visitable<*>>) {
         hideLoadingAction()
         adapter.setList(data)
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_READ, intent)
+        }
     }
 
     override fun onSuccessDeleteTalkComment(id: String) {
@@ -283,6 +293,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
 
     private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+        if (!::alertDialog.isInitialized) {
+            alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
+        }
+
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> goToReportTalkPage(talkId, shopId, productId,
                     commentId)
@@ -293,7 +307,14 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        openRedirectUrl(attachProduct.productUrl)
+    }
+
+    private fun openRedirectUrl(redirectUrl: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, redirectUrl)
+            this@TalkDetailsFragment.startActivity(intent)
+        }
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -428,8 +449,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         //There should not be reply button
     }
 
-    override fun onGoToPdp(productId: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onGoToPdp(productApplink: String) {
+        openRedirectUrl(productApplink)
     }
 
 
@@ -460,6 +481,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onGoToUserProfile(userId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@TalkDetailsFragment.startActivity(intent)
+        }
+    }
+
+    override fun onGoToShopPage(shopId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
             this@TalkDetailsFragment.startActivity(intent)
         }
     }

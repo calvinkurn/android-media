@@ -19,6 +19,7 @@ import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
+import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
@@ -54,7 +55,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return TalkAnalytics.SCREEN_NAME_PRODUCT_TALK
     }
 
     @Inject
@@ -217,8 +218,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun showErrorReplyTalk() {
-        //TODO
-        NetworkErrorHelper.showRedSnackbar(view, "Error dud")
+        NetworkErrorHelper.showRedSnackbar(view, getString(R.string.error_default_cannot_reply_talk))
     }
 
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
@@ -257,7 +257,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
             bottomMenu.itemMenuList = listMenu
             bottomMenu.setActionText(getString(R.string.button_cancel))
             bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, pos ->
+            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                 onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
             }
             bottomMenu.show()
@@ -279,7 +279,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
         bottomMenu.dismiss()
     }
 
-    private fun goToReportTalk(talkId: String, shopId: String, productId: String, commentId: String) {
+    private fun goToReportTalk(talkId: String, shopId: String, productId: String, commentId:
+    String) {
         activity?.run {
             val intent: Intent = if (commentId.isBlank()) {
                 ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
@@ -367,24 +368,20 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun showDeleteCommentTalkDialog(shopId: String, talkId: String, commentId: String) {
-
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
 
-        alertDialog.setTitle(getString(R.string.delete_comment_talk_dialog_title))
-        alertDialog.setDesc(getString(R.string.delete_comment_talk_dialog_desc))
-        alertDialog.setBtnCancel(getString(R.string.button_cancel))
-        alertDialog.setBtnOk(getString(R.string.button_delete))
-        alertDialog.setOnCancelClickListener {
-            alertDialog.dismiss()
+        context?.run {
+            talkDialog.createDeleteCommentTalkDialog(
+                    this,
+                    alertDialog,
+                    View.OnClickListener {
+                        alertDialog.dismiss()
+                        presenter.deleteCommentTalk(shopId, talkId, commentId)
+                    }
+            ).show()
         }
-        alertDialog.setOnOkClickListener {
-            presenter.deleteCommentTalk(shopId, talkId, commentId)
-            alertDialog.dismiss()
-        }
-
-        alertDialog.show()
     }
 
     override fun showLoadingAction() {
@@ -404,7 +401,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {
-        goToReportTalk(talkId, shopId, productId, "")
+        goToReportTalk(talkId, shopId, productId, commentId)
     }
 
     override fun onNoShowTalkItemClick(talkId: String) {
@@ -462,6 +459,14 @@ class ProductTalkFragment : BaseDaggerFragment(),
             this@ProductTalkFragment.startActivity(intent)
         }
     }
+
+    override fun onGoToShopPage(shopId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
+            this@ProductTalkFragment.startActivity(intent)
+        }
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

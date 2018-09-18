@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
@@ -40,7 +41,6 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.gcm.NotificationModHandler;
 import com.tokopedia.core.gcm.model.NotificationPass;
@@ -172,7 +172,7 @@ import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
-import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
+import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -1388,7 +1388,11 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToShopDiscussion(Context context, String shopId) {
-        context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true)) {
+            context.startActivity(ShopTalkActivity.Companion.createIntent(context, shopId));
+        } else {
+            context.startActivity(ShopDiscussionActivity.createIntent(context, shopId));
+        }
     }
 
     @Override

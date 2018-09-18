@@ -30,6 +30,8 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
         const val SHOP_ID = "SHOP_ID"
 
+        const val RESULT_OK_READ = 201
+
         @JvmStatic
         fun getCallingIntent(threadId: String, shopId: String, context: Context): Intent {
             val intent = Intent(context, TalkDetailsActivity::class.java)

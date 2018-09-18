@@ -28,11 +28,11 @@ import kotlinx.android.synthetic.main.thread_talk.view.*
  */
 
 open class InboxTalkItemViewHolder(val v: View,
-                              val listener: TalkItemListener,
-                              private val talkCommentListener: CommentTalkViewHolder.TalkCommentItemListener,
-                              private val talkProductAttachmentItemClickListener:
-                              TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
-                              private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
+                                   val listener: TalkItemListener,
+                                   private val talkCommentListener: CommentTalkViewHolder.TalkCommentItemListener,
+                                   private val talkProductAttachmentItemClickListener:
+                                   TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
+                                   private val talkCommentLoadMoreListener: LoadMoreCommentTalkViewHolder.LoadMoreListener) :
         AbstractViewHolder<InboxTalkItemViewModel>(v) {
 
     interface TalkItemListener {
@@ -40,7 +40,7 @@ open class InboxTalkItemViewHolder(val v: View,
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
-        fun onGoToPdp(productId: String)
+        fun onGoToPdp(productApplink: String)
         fun onGoToUserProfile(userId: String)
     }
 
@@ -62,8 +62,8 @@ open class InboxTalkItemViewHolder(val v: View,
     protected val noReportButton: TextView = itemView.reportNo
     protected val rawMessage: TextView = itemView.rawMessage
     protected val separatorReport: View = itemView.separatorReport
-    protected val containerView:View = itemView.container_view
-    protected val itemSeparator:View = itemView.item_separator
+    protected val containerView: View = itemView.container_view
+    protected val itemSeparator: View = itemView.item_separator
 
     protected lateinit var adapter: CommentTalkAdapter
 
@@ -110,12 +110,12 @@ open class InboxTalkItemViewHolder(val v: View,
         reportedLayout.visibility = View.VISIBLE
         talkContent.visibility = View.GONE
 
-        reportedMessage.text = element.talkThread.headThread.comment
+        reportedMessage.text = MethodChecker.fromHtml(element.talkThread.headThread.comment)
 
         if (element.talkThread.headThread.menu.allowUnmasked) {
             rawMessage.visibility = View.VISIBLE
             separatorReport.visibility = View.VISIBLE
-            rawMessage.text = element.talkThread.headThread.rawMessage
+            rawMessage.text = MethodChecker.fromHtml(element.talkThread.headThread.rawMessage)
             yesReportButton.visibility = View.VISIBLE
             noReportButton.visibility = View.VISIBLE
         } else {
@@ -142,14 +142,13 @@ open class InboxTalkItemViewHolder(val v: View,
         reportedLayout.visibility = View.GONE
 
         talkContent.visibility = View.VISIBLE
-        talkContent.text = element.talkThread.headThread.comment
-
+        talkContent.text = MethodChecker.fromHtml(element.talkThread.headThread.comment)
     }
 
     protected fun setProfileHeader(element: InboxTalkItemViewModel) {
         ImageHandler.loadImageCircle2(profileAvatar.context, profileAvatar, element.talkThread
                 .headThread.avatar)
-        profileName.text = element.talkThread.headThread.name
+        profileName.text = MethodChecker.fromHtml(element.talkThread.headThread.name)
 
         timestamp.text = element.talkThread.headThread.timestamp
 
@@ -168,10 +167,10 @@ open class InboxTalkItemViewHolder(val v: View,
                 element.productHeader.productAvatar)
 
         productName.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdp(element.productHeader.productApplink)
         }
         productAvatar.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productId)
+            listener.onGoToPdp(element.productHeader.productApplink)
         }
     }
 

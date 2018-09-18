@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -42,7 +43,7 @@ import javax.inject.Inject
  * @author by nisie on 8/27/18.
  */
 
-class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDaggerFragment(),
+open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL) : BaseDaggerFragment(),
         InboxTalkContract.View, InboxTalkItemViewHolder.TalkItemListener, CommentTalkViewHolder
         .TalkCommentItemListener, TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener {
@@ -94,9 +95,7 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         super.onViewCreated(view, savedInstanceState)
         setupView()
         initData()
-
     }
-
 
     private fun setupView() {
         val adapterTypeFactory = InboxTalkTypeFactoryImpl(this, this, this, this)
@@ -196,7 +195,6 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     private fun showFollowTalkDialog(alertDialog: Dialog, talkId: String) {
-
         context?.run {
             talkDialog.createFollowTalkDialog(
                     this,
@@ -304,12 +302,26 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
                 onSuccessReportTalk(talkId)
 
             }
-        } else if (requestCode == REQUEST_GO_TO_DETAIL && resultCode == Activity.RESULT_OK) {
-            //TODO UPDATE NOTIFICATION READ
+        } else if (requestCode == REQUEST_GO_TO_DETAIL) {
+            //TODO UPDATE TALK
+
             data?.run {
-                //                val talkThread : ProductTalkItemViewModel = data.getParcelableExtra<ProductTalkItemViewModel>()
+                when (resultCode) {
+                    TalkDetailsActivity.RESULT_OK_READ -> updateReadStatusTalk(data)
+                    else -> {
+                    }
+                }
             }
 
+        }
+    }
+
+    private fun updateReadStatusTalk(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+        if (!talkId.isEmpty()) {
+            adapter.updateReadStatus(talkId)
+        } else {
+            onRefreshData()
         }
     }
 
@@ -390,7 +402,9 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         }
     }
 
-    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, commentId: String, productId: String) {
+    private fun onCommentMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus,
+                                         shopId: String, talkId: String, commentId: String,
+                                         productId: String) {
         when (itemMenu.title) {
             getString(R.string.menu_report_comment) -> goToReportTalk(talkId, shopId, productId,
                     commentId)
@@ -401,12 +415,11 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        //TODO NISIE GO TO PDP
+        onGoToPdp(attachProduct.productUrl)
     }
 
 
     private fun showErrorReplyTalk() {
-        //TODO NISIE GET ERROR MESSAGE FOR REPLY TALK
         NetworkErrorHelper.showRedSnackbar(view, getString(R.string
                 .error_default_cannot_reply_talk))
     }
@@ -431,13 +444,23 @@ class InboxTalkFragment(val nav: String = InboxTalkActivity.FOLLOWING) : BaseDag
         swipeToRefresh.isEnabled = true
     }
 
-    override fun onGoToPdp(productId: String) {
-
+    override fun onGoToPdp(productApplink: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
+            this@InboxTalkFragment.startActivity(intent)
+        }
     }
 
     override fun onGoToUserProfile(userId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
+            this@InboxTalkFragment.startActivity(intent)
+        }
+    }
+
+    override fun onGoToShopPage(shopId: String) {
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
             this@InboxTalkFragment.startActivity(intent)
         }
     }

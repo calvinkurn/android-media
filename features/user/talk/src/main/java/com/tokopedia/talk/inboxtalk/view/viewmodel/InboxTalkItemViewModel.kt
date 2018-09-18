@@ -10,7 +10,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
  */
 data class InboxTalkItemViewModel(
         var productHeader: ProductHeader,
-        var talkThread : TalkThreadViewModel
+        var talkThread: TalkThreadViewModel
 ) : Visitable<InboxTalkTypeFactory> {
 
     override fun type(typeFactory: InboxTalkTypeFactory): Int {
@@ -21,5 +21,6 @@ data class InboxTalkItemViewModel(
 data class ProductHeader(
         val productName: String = "",
         val productAvatar: String = "",
-        val productId: String =""
+        val productId: String = "",
+        val productApplink: String = ""
 )

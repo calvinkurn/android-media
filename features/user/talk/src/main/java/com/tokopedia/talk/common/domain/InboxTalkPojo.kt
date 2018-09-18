@@ -51,6 +51,9 @@ data class InboxTalkItemPojo(
         @SerializedName("talk_product_id")
         val talk_product_id: String = "",
         @Expose
+        @SerializedName("talk_product_url")
+        val talk_product_url: String = "",
+        @Expose
         @SerializedName("talk_product_image")
         val talk_product_image: String = "",
         @Expose
@@ -172,7 +175,10 @@ data class CommentProduct(
         val product_price: String = "",
         @Expose
         @SerializedName("product_status")
-        val product_status: Int = 0
+        val product_status: Int = 0,
+        @Expose
+        @SerializedName("product_url")
+        val product_url: String = ""
 )
 
 data class CreateTimeList(

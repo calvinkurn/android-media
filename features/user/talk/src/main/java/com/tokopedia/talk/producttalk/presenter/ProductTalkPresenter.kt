@@ -56,17 +56,17 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
     fun getProductTalk(productId: String, reset: Boolean) {
         isRequesting = true
         getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1, productId)
-                , object : Subscriber<ProductTalkViewModel>(){
+                , object : Subscriber<ProductTalkViewModel>() {
             override fun onNext(viewModel: ProductTalkViewModel) {
                 isRequesting = false
                 view.hideLoadingFull()
                 if (viewModel.listThread.isEmpty()) {
                     view.onEmptyTalk()
                 } else {
-                    if(reset){
+                    if (reset) {
                         view.hideRefresh()
                         view.onSuccessResetTalk(viewModel.listThread)
-                    }else {
+                    } else {
                         view.onSuccessGetTalks(viewModel.listThread)
                     }
                     if (viewModel.hasNextPage) {
@@ -247,13 +247,16 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
         }
     }
 
-    override fun detachView() {
-        getProductTalkUseCase.unsubscribe()
-        super.detachView()
-    }
-
-
     override fun isLoggedIn(): Boolean {
         return userSession.isLoggedIn
+    }
+
+    override fun detachView() {
+        getProductTalkUseCase.unsubscribe()
+        deleteTalkUseCase.unsubscribe()
+        deleteCommentTalkUseCase.unsubscribe()
+        markTalkNotFraudUseCase.unsubscribe()
+        followUnfollowTalkUseCase.unsubscribe()
+        super.detachView()
     }
 }

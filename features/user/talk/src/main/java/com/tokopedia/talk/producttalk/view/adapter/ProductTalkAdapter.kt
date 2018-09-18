@@ -77,19 +77,6 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
     }
 
 
-    fun setStatusFollow(talkId: Any, isFollowing: Boolean) {
-        for (talk in visitables) {
-            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
-                val position = this.visitables.indexOf(talk)
-
-                talk.talkThread.headThread.menu.allowUnfollow = isFollowing
-                talk.talkThread.headThread.menu.allowFollow = !isFollowing
-
-                notifyItemChanged(position)
-            }
-        }
-    }
-
     fun showReportedTalk(talkId: String) {
         for (talk in visitables) {
             if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
@@ -111,6 +98,19 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
                         comment.comment = comment.rawMessage
                     }
                 }
+                notifyItemChanged(position)
+            }
+        }
+    }
+
+    fun setStatusFollow(talkId: String, isFollowing: Boolean) {
+        for (talk in visitables) {
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+
+                talk.talkThread.headThread.menu.allowUnfollow = isFollowing
+                talk.talkThread.headThread.menu.allowFollow = !isFollowing
+
                 notifyItemChanged(position)
             }
         }
