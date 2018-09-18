@@ -68,4 +68,15 @@
             tools:text="Rp 2.099.000"
             />
     </RelativeLayout>
+    
+    <ImageView
+        android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@drawable/ic_action_x"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:padding="@dimen/dp_8"
+        android:visibility="gone"
+        />
 </RelativeLayout>

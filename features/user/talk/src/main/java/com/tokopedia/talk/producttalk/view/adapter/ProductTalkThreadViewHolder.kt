@@ -2,6 +2,7 @@ package com.tokopedia.talk.producttalk.view.adapter
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,6 +17,7 @@ import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
+import kotlinx.android.synthetic.main.product_talk_item.view.*
 import kotlinx.android.synthetic.main.reported_talk.view.*
 import kotlinx.android.synthetic.main.talk_item.view.*
 import kotlinx.android.synthetic.main.thread_talk.view.*
@@ -48,7 +50,6 @@ class ProductTalkThreadViewHolder(val v: View,
     val menu: View = thread.findViewById(R.id.menu)
     val content: TextView = thread.findViewById(R.id.talk_content)
     val commentRecyclerView: RecyclerView = itemView.findViewById(R.id.list_child)
-    val replyButton: View = itemView.findViewById(R.id.replyButton)
     val menuButton: ImageView = itemView.menu
     protected val separatorChild: View = itemView.separatorChild
 
@@ -73,7 +74,7 @@ class ProductTalkThreadViewHolder(val v: View,
             } else {
                 setupNormalTalk(element)
             }
-            replyButton.setOnClickListener {
+            itemView.replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(element.headThread.menu.allowReply,
                         element.headThread.talkId,
                         element.headThread.shopId)
@@ -87,6 +88,8 @@ class ProductTalkThreadViewHolder(val v: View,
         userName.text = MethodChecker.fromHtml(element.headThread.name)
         content.text = MethodChecker.fromHtml(element.headThread.comment)
         timestamp.text = element.headThread.timestamp
+        content.movementMethod = LinkMovementMethod.getInstance()
+
     }
 
     private fun setCommentList(element: TalkThreadViewModel) {

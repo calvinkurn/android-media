@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
+import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent
@@ -41,6 +42,8 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
 
     companion object {
 
+        val NAVIGATION = "nav"
+
         val INBOX_ALL = "inbox-talk"
         val MY_PRODUCT = "inbox-talk-my-product"
         val FOLLOWING = "inbox-talk-following"
@@ -54,8 +57,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         @JvmStatic
         @DeepLink(ApplinkConst.TALK)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return Intent(context, InboxTalkActivity::class.java)
-                    .putExtras(extras)
+            return (context.applicationContext as TalkRouter).getTalkIntent(context)
         }
 
     }

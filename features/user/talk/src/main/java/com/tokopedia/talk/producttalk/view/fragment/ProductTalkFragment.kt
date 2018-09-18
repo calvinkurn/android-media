@@ -412,7 +412,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        // TODO STEVEN
+        activity?.applicationContext?.run {
+            (this as TalkRouter).goToProductDetailById(this, attachProduct.productId.toString())
+        }
     }
 
     override fun onYesReportTalkCommentClick(talkId: String, shopId: String, productId: String, commentId: String) {

@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
@@ -34,7 +33,7 @@ import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.di.DaggerTalkDetailsComponent
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
-import com.tokopedia.talk.talkdetails.view.adapter.AttachedProductListAdapter
+import com.tokopedia.talk.talkdetails.view.adapter.AttachingProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
@@ -50,7 +49,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         TalkProductAttachmentAdapter.ProductAttachmentItemClickListener,
         InboxTalkItemViewHolder.TalkItemListener,
         LoadMoreCommentTalkViewHolder.LoadMoreListener,
-        AttachedProductListAdapter.ProductAttachmentItemClickListener {
+        AttachingProductListAdapter.ProductAttachingItemClickListener {
 
     @Inject
     lateinit var presenter: TalkDetailsPresenter
@@ -62,8 +61,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     lateinit var sendMessageEditText: EditText
     lateinit var attachedProductList: RecyclerView
     lateinit var progressBar: ProgressBar
-    private var attachedProductListAdapter: AttachedProductListAdapter =
-            AttachedProductListAdapter(ArrayList(), this)
+    private var attachedProductListAdapter: AttachingProductListAdapter =
+            AttachingProductListAdapter(ArrayList(), this)
 
     private lateinit var bottomMenu: Menus
     private lateinit var alertDialog: Dialog
@@ -201,32 +200,22 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSuccessDeleteTalkComment(id: String) {
-        hideLoadingAction()
-        adapter.deleteComment(id, id)
-    }
-
-    override fun onSuccessSendTalkComment(commentId: String) {
+    override fun onSuccessSendTalkComment(talkId: String, commentId: String) {
         sendMessageEditText.setText("")
         attachedProductListAdapter.clearAllElements()
         attachedProductList.visibility = View.GONE
         adapter.clearAllElements()
         presenter.loadTalkDetails(talkId)
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == GO_TO_ATTACH_PRODUCT_REQ_CODE &&
-                resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
-            val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity
-                    .TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)!!
-            setAttachedProduct(convertAttachProduct(products))
-        } else if (requestCode == GO_TO_REPORT_TALK_REQ_CODE
-                && resultCode == Activity.RESULT_OK) {
-            data?.extras?.run {
-                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
-                onSuccessReportTalk(talkId)
-            }
-        } else super.onActivityResult(requestCode, resultCode, data)
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            bundle.putString(TalkDetailsActivity.COMMENT_ID, commentId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
+        }
+
     }
 
     private fun onSuccessReportTalk(talkId: String) {
@@ -234,9 +223,21 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        if (!talkId.isBlank()) {
-            adapter.updateReportTalk(talkId)
+        context?.run {
+            if (!talkId.isBlank()) {
+                adapter.updateReportTalk(talkId, this)
+            }
         }
+
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
+        }
+
+
     }
 
     private fun goToAttachProductScreen() {
@@ -307,14 +308,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        openRedirectUrl(attachProduct.productUrl)
+        onGoToPdp(attachProduct.productId.toString())
     }
 
-    private fun openRedirectUrl(redirectUrl: String) {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, redirectUrl)
-            this@TalkDetailsFragment.startActivity(intent)
-        }
+    override fun onDeleteAttachProduct(element: TalkProductAttachmentViewModel) {
+        attachedProductListAdapter.remove(element)
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
@@ -449,32 +447,85 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         //There should not be reply button
     }
 
-    override fun onGoToPdp(productApplink: String) {
-        openRedirectUrl(productApplink)
+    override fun onGoToPdp(productId: String) {
+        activity?.applicationContext?.run {
+            (this as TalkRouter).goToProductDetailById(this, productId)
+        }
     }
 
 
     override fun onSuccessDeleteTalk(talkId: String) {
         adapter.deleteTalkByTalkId(talkId)
+
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_DELETE_TALK, intent)
+        }
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
+
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            bundle.putString(TalkDetailsActivity.COMMENT_ID, commentId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_DELETE_COMMENT, intent)
+        }
+
         adapter.deleteComment(talkId, commentId)
+
     }
 
     override fun onSuccessUnfollowTalk(talkId: String) {
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_DELETE_TALK, intent)
+        }
+
         adapter.setStatusFollow(talkId, false)
     }
 
     override fun onSuccessFollowTalk(talkId: String) {
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
+        }
+
         adapter.setStatusFollow(talkId, true)
     }
 
     override fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String) {
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
+        }
+
         adapter.showReportedCommentTalk(talkId, commentId)
     }
 
     override fun onSuccessMarkTalkNotFraud(talkId: String) {
+        activity?.run {
+            val intent = Intent()
+            val bundle = Bundle()
+            bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
+            intent.putExtras(bundle)
+            setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
+        }
+
         adapter.showReportedTalk(talkId)
     }
 
@@ -496,4 +547,18 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         //TODO : TO BE IMPLEMENTED
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == GO_TO_ATTACH_PRODUCT_REQ_CODE &&
+                resultCode == AttachProductActivity.TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK) {
+            val products = data?.getParcelableArrayListExtra<ResultProduct>(AttachProductActivity
+                    .TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY)!!
+            setAttachedProduct(convertAttachProduct(products))
+        } else if (requestCode == GO_TO_REPORT_TALK_REQ_CODE
+                && resultCode == Activity.RESULT_OK) {
+            data?.extras?.run {
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+                onSuccessReportTalk(talkId)
+            }
+        } else super.onActivityResult(requestCode, resultCode, data)
+    }
 }

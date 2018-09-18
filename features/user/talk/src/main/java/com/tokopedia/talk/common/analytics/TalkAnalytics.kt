@@ -16,5 +16,7 @@ class TalkAnalytics(val tracker: AnalyticTracker) {
         val SCREEN_NAME_REPORT_TALK: String = "Report Talk Page"
         val SCREEN_NAME_SHOP_TALK: String = "Shop Talk Page"
         val SCREEN_NAME_PRODUCT_TALK: String = "Product Talk Page"
+        val SCREEN_NAME_ADD_TALK: String = "Add Talk Page"
+
     }
 }

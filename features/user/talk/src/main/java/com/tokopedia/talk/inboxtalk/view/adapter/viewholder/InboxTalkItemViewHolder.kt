@@ -3,6 +3,7 @@ package com.tokopedia.talk.inboxtalk.view.adapter.viewholder
 import android.graphics.Typeface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -40,7 +41,7 @@ open class InboxTalkItemViewHolder(val v: View,
         fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String)
         fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String)
         fun onNoShowTalkItemClick(talkId: String)
-        fun onGoToPdp(productApplink: String)
+        fun onGoToPdp(productId: String)
         fun onGoToUserProfile(userId: String)
     }
 
@@ -53,7 +54,6 @@ open class InboxTalkItemViewHolder(val v: View,
     protected val menuButton: ImageView = itemView.menu
     protected val talkContent: TextView = itemView.talk_content
     protected val listComment: RecyclerView = itemView.list_child
-    protected val replyButton: TextView = itemView.replyButton
     protected val separatorChild: View = itemView.separatorChild
 
     protected val reportedLayout: View = itemView.layout_reported
@@ -86,7 +86,7 @@ open class InboxTalkItemViewHolder(val v: View,
                 setupNormalTalk(element)
             }
 
-            replyButton.setOnClickListener {
+            itemView.replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(
                         element.talkThread.headThread.menu.allowReply,
                         element.talkThread.headThread.talkId,
@@ -143,6 +143,7 @@ open class InboxTalkItemViewHolder(val v: View,
 
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.talkThread.headThread.comment)
+        talkContent.movementMethod = LinkMovementMethod.getInstance()
     }
 
     protected fun setProfileHeader(element: InboxTalkItemViewModel) {
@@ -167,10 +168,10 @@ open class InboxTalkItemViewHolder(val v: View,
                 element.productHeader.productAvatar)
 
         productName.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productApplink)
+            listener.onGoToPdp(element.productHeader.productId)
         }
         productAvatar.setOnClickListener {
-            listener.onGoToPdp(element.productHeader.productApplink)
+            listener.onGoToPdp(element.productHeader.productId)
         }
     }
 

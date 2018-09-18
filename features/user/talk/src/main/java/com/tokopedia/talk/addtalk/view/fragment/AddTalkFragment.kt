@@ -19,6 +19,7 @@ import com.tokopedia.talk.addtalk.view.adapter.QuickReplyAdapter
 import com.tokopedia.talk.addtalk.view.adapter.QuickReplyTalkViewHolder
 import com.tokopedia.talk.addtalk.view.adapter.QuickReplyTypeFactoryImpl
 import com.tokopedia.talk.addtalk.view.listener.AddTalkContract
+import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import kotlinx.android.synthetic.main.layout_talk_add.*
 import javax.inject.Inject
@@ -51,7 +52,7 @@ class AddTalkFragment : BaseDaggerFragment(),
     }
 
     override fun getScreenName(): String {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return TalkAnalytics.SCREEN_NAME_ADD_TALK
     }
 
     companion object {

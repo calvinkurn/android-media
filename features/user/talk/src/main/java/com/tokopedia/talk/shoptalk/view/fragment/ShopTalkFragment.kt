@@ -1,5 +1,6 @@
 package com.tokopedia.talk.shoptalk.view.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -22,9 +23,12 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
@@ -303,10 +307,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         presenter.markTalkNotFraud(talkId)
     }
 
-    override fun onGoToPdp(productApplink: String) {
+    override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            val intent: Intent = (this as ApplinkRouter).getApplinkIntent(this, productApplink)
-            this@ShopTalkFragment.startActivity(intent)
+            (this as TalkRouter).goToProductDetailById(this, productId)
         }
     }
 
@@ -368,7 +371,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
-        onGoToPdp(attachProduct.productUrl)
+        onGoToPdp(attachProduct.productId.toString())
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {
@@ -419,6 +422,83 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ShopTalkActivity.EXTRA_SHOP_ID, shopId)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
+            data?.extras?.run {
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+                onSuccessReportTalk(talkId)
+
+            }
+        } else if (requestCode == REQUEST_GO_TO_DETAIL) {
+            data?.run {
+                when (resultCode) {
+                    TalkDetailsActivity.RESULT_OK_DELETE_TALK -> updateDeleteTalk(data)
+                    TalkDetailsActivity.RESULT_OK_DELETE_COMMENT -> updateDeleteComment(data)
+                    TalkDetailsActivity.RESULT_OK_REFRESH_TALK -> onRefreshData()
+                    else -> {
+                    }
+                }
+            }
+
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+    }
+
+
+    private fun updateDeleteTalk(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+
+        if (!talkId.isEmpty()) {
+            adapter.getItemById(talkId)?.run {
+                adapter.deleteTalkByTalkId(talkId)
+            }
+
+        } else {
+            onRefreshData()
+        }
+    }
+
+    private fun updateDeleteComment(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+        val commentId = data.getStringExtra(TalkDetailsActivity.COMMENT_ID)
+
+        if (!talkId.isEmpty() && !commentId.isEmpty()) {
+
+            if (adapter.getCommentById(talkId, commentId) != null) {
+                adapter.deleteComment(talkId, commentId)
+            } else if (adapter.getItemById(talkId) != null
+                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
+                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
+                ((adapter.getItemById(talkId) as
+                        InboxTalkItemViewModel).talkThread.listChild[0] as
+                        LoadMoreCommentTalkViewModel).counter -= 1
+
+                //TODO : Actually just need to update this item
+                adapter.updateReadStatus(talkId)
+            }
+
+        } else {
+            onRefreshData()
+        }
+
+    }
+
+    private fun onSuccessReportTalk(talkId: String) {
+        activity?.run {
+            NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
+        }
+
+        context?.run {
+            if (!talkId.isBlank()) {
+                adapter.updateReportTalk(talkId, this)
+            } else {
+                onRefreshData()
+            }
+        }
+
     }
 
 }

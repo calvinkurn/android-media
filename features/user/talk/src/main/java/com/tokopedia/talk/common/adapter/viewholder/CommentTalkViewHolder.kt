@@ -2,6 +2,7 @@ package com.tokopedia.talk.common.adapter.viewholder
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -80,6 +81,7 @@ class CommentTalkViewHolder(val v: View,
         reportedLayout.visibility = View.GONE
         talkContent.visibility = View.VISIBLE
         talkContent.text = MethodChecker.fromHtml(element.comment)
+        talkContent.movementMethod = LinkMovementMethod.getInstance()
     }
 
     private fun setupMaskedMessage(element: ProductTalkItemViewModel) {

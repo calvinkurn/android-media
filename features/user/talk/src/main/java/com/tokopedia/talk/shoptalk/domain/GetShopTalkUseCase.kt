@@ -1,8 +1,8 @@
 package com.tokopedia.talk.shoptalk.domain
 
 import com.tokopedia.talk.common.data.TalkApi
-import com.tokopedia.talk.inboxtalk.domain.mapper.GetInboxTalkMapper
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
+import com.tokopedia.talk.shoptalk.domain.mapper.GetShopTalkMapper
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 
 class GetShopTalkUseCase @Inject constructor(val api: TalkApi,
-                                             val mapper: GetInboxTalkMapper) :
+                                             val mapper: GetShopTalkMapper) :
         UseCase<InboxTalkViewModel>() {
     override fun createObservable(requestParams: RequestParams): Observable<InboxTalkViewModel> {
         return api.getShopTalk(requestParams.parameters).map(mapper)

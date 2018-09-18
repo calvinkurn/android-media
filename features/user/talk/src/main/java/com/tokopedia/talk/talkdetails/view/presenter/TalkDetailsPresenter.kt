@@ -61,7 +61,7 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                     }
 
                     override fun onNext(response: SendCommentResponse) {
-                        view.onSuccessSendTalkComment(response.comment_id)
+                        view.onSuccessSendTalkComment(talkId, response.comment_id)
                     }
                 })
     }

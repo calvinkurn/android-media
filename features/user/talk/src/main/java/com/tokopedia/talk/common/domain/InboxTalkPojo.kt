@@ -258,11 +258,11 @@ data class Paging(
 data class UnreadCount(
         @Expose
         @SerializedName("all")
-        val all: Int = 0,
+        var all: Int = 0,
         @Expose
         @SerializedName("my_product")
-        val my_product: Int = 0,
+        var my_product: Int = 0,
         @Expose
         @SerializedName("following")
-        val following: Int = 0
+        var following: Int = 0
 )
