@@ -8,6 +8,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.talk.R
 import com.tokopedia.talk.addtalk.di.DaggerAddTalkComponent
 import com.tokopedia.talk.addtalk.presenter.AddTalkPresenter
@@ -77,6 +80,7 @@ class AddTalkFragment : BaseDaggerFragment(),
                 .resources.getDimension(R.dimen.dp_16).toInt())
         list_template.addItemDecoration(quickReplyItemDecoration)
         send_new_talk.setOnClickListener {
+            send_progress.visibility = View.VISIBLE
             presenter.send(productId, message_talk.text.toString())
         }
     }
@@ -100,10 +104,20 @@ class AddTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onErrorCreateTalk() {
-
+        send_progress.visibility = View.GONE
+        ToasterError.make(view, activity?.getString(R.string.failed_send_talk)).show()
     }
 
     override fun onSuccessCreateTalk(productId: String) {
-        activity?.finish()
+        send_progress.visibility = View.GONE
+        activity?.run {
+            this.setResult(android.app.Activity.RESULT_OK)
+            this.finish()
+        }
+    }
+
+    override fun onDestroyView() {
+        KeyboardHandler.hideSoftKeyboard(activity)
+        super.onDestroyView()
     }
 }
