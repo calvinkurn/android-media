@@ -134,7 +134,9 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
         subtitleTextView.text = subtitleSpan
         subtitleTextView.movementMethod = LinkMovementMethod.getInstance()
         subtitleTextView.visibility = View.VISIBLE
+        saveInterest.text = getString(R.string.interest_check_feed_now)
         saveInterest.setOnClickListener {
+            RouteManager.route(context, ApplinkConst.FEED)
             activity?.finish()
         }
     }
