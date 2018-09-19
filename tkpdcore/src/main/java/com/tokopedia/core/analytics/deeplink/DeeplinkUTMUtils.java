@@ -97,8 +97,6 @@ public class DeeplinkUTMUtils {
 
         if (uri == null) {
 
-            Toast.makeText(activity, "campaign uri null", Toast.LENGTH_LONG).show();
-
             campaign.setUtmSource("direct");
             campaign.setUtmMedium("none");
             campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -122,8 +120,6 @@ public class DeeplinkUTMUtils {
                         host.equals("www.google.co.in") ||
                         host.equals("www.google.co.id")) {
 
-                    Toast.makeText(activity, "campaign event from google", Toast.LENGTH_LONG).show();
-
                     campaign.setUtmSource("google.com");
                     campaign.setUtmMedium("organic");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -138,7 +134,6 @@ public class DeeplinkUTMUtils {
 
                 } else if (host.equalsIgnoreCase("m-tokopedia-com.cdn.ampproject.org")) {
 
-                    Toast.makeText(activity, "campaign event from APM pages", Toast.LENGTH_LONG).show();
                     campaign.setUtmSource("amp");
                     campaign.setUtmMedium("organic");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -153,7 +148,6 @@ public class DeeplinkUTMUtils {
 
                 } else {
 
-                    Toast.makeText(activity, "campaign event not google", Toast.LENGTH_LONG).show();
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
                     campaign.setUtmMedium("referral");
@@ -177,8 +171,6 @@ public class DeeplinkUTMUtils {
                 if (QUICK_SEARCH_BOX.equals(referrerPackage)) {
                     // App was opened from the Google app
 
-                    Toast.makeText(activity, "campaign event google_app", Toast.LENGTH_LONG).show();
-
                     campaign.setUtmSource("google_app");
                     campaign.setUtmMedium("organic");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
@@ -194,8 +186,6 @@ public class DeeplinkUTMUtils {
                 } else if (!APP_CRAWLER.equals(referrerPackage)) {
                     // App was deep linked into from another app (excl. Google crawler)
 //
-                    Toast.makeText(activity, "campaign event not google_app", Toast.LENGTH_LONG).show();
-
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                             maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
                     campaign.setUtmMedium("referral");
@@ -213,8 +203,6 @@ public class DeeplinkUTMUtils {
                 }
 
             } else if (isValidCampaignUrl(uri1)) {
-
-                Toast.makeText(activity, "campaign event default", Toast.LENGTH_LONG).show();
 
                 campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
                         maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
