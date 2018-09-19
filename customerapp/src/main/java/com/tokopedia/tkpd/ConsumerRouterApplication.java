@@ -222,6 +222,8 @@ import com.tokopedia.loyalty.view.activity.PromoListActivity;
 import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.loyalty.view.data.VoucherViewModel;
 import com.tokopedia.loyalty.view.fragment.LoyaltyNotifFragmentDialog;
+import com.tokopedia.mitratoppers.MitraToppersRouter;
+import com.tokopedia.mitratoppers.MitraToppersRouterInternal;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
@@ -461,6 +463,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ProductEditModuleRouter,
         EventModuleRouter,
         TravelCalendarRouter,
+        MitraToppersRouter,
         PaymentSettingRouter {
 
     private  static final String EXTRA = "extra";
@@ -2914,6 +2917,15 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getMitraToppersActivityIntent(Context context) {
+        return MitraToppersRouterInternal.getMitraToppersActivityIntent(context);
+    }
+
+    @Override
+    public void sendEventTrackingWithShopInfo(String event, String category, String action, String label, String shopId, boolean isGoldMerchant, boolean isOfficialStore) {
+        // ignore
+    }
+          
     public boolean isFeedShopPageEnabled() {
         return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
     }
