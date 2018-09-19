@@ -124,10 +124,11 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
             holder.timer.cancel();
         }
 
+        holder.btnContinue.setEnabled(true);
         if (item.getUsage().getActiveCountDown() < 1) {
             if (item.getUsage().getExpiredCountDown() > 0
                     && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
-                holder.progressTimer.setMax((int)CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                holder.progressTimer.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                 holder.progressTimer.setVisibility(View.VISIBLE);
                 holder.timer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                     @Override
@@ -161,6 +162,7 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
         } else {
             if (item.getUsage().getActiveCountDown() > 0
                     && item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                holder.btnContinue.setEnabled(false);
                 holder.timer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -174,10 +176,12 @@ public class CouponListAdapter extends RecyclerView.Adapter<CouponListAdapter.Vi
                     @Override
                     public void onFinish() {
                         holder.btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                        holder.btnContinue.setEnabled(true);
                     }
                 }.start();
             } else {
                 holder.btnContinue.setText(item.getUsage().getUsageStr());
+                holder.btnContinue.setEnabled(true);
                 holder.progressTimer.setVisibility(View.GONE);
             }
         }

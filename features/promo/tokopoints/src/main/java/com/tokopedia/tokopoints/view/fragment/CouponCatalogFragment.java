@@ -832,7 +832,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                     && item.getUsage().getExpiredCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
                 ProgressBar progressBar = getView().findViewById(R.id.progress_timer);
                 progressBar.setVisibility(View.VISIBLE);
-                progressBar.setMax((int)CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
+                progressBar.setMax((int) CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S);
                 mTimer = new CountDownTimer(item.getUsage().getExpiredCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -865,6 +865,7 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         } else {
             if (item.getUsage().getActiveCountDown() > 0
                     && item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                btnContinue.setEnabled(false);
                 mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
                     @Override
                     public void onTick(long l) {
@@ -877,11 +878,13 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
 
                     @Override
                     public void onFinish() {
+                        btnContinue.setEnabled(true);
                         btnContinue.setText(item.getUsage().getBtnUsage().getText());
                     }
                 }.start();
             } else {
                 btnContinue.setText(item.getUsage().getUsageStr());
+                btnContinue.setEnabled(true);
             }
         }
     }
