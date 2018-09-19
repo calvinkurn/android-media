@@ -241,6 +241,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             @Override
             public void onClick(View view) {
                 scrollToRecommendList();
+                HomePageTracking.eventClickJumpRecomendation();
             }
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -278,7 +279,6 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     private void scrollToRecommendList() {
 
         recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
-        HomePageTracking.eventClickJumpRecomendation();
         scrollToRecommendList = false;
     }
 

@@ -222,8 +222,6 @@ public class MainParentActivity extends AppCompatActivity implements
         if (getIntent().getExtras() != null) {
             int tabPosition = getIntent().getExtras().getInt(ARGS_TAB_POSITION, HOME_MENU);
             switch (tabPosition) {
-
-
                 case FEED_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
@@ -381,7 +379,11 @@ public class MainParentActivity extends AppCompatActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
+            if(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)) {
+                fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).gotoRecommendationList());
+            }else {
+                fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
+            }
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
