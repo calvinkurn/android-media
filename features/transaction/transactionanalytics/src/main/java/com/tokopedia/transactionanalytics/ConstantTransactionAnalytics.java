@@ -174,6 +174,8 @@ public interface ConstantTransactionAnalytics {
         String CLICK_UBAH_KURIR = "click ubah kurir";
         String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
 
+        String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+
         //ROBINHOOD
         String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
         String CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman";
@@ -200,6 +202,9 @@ public interface ConstantTransactionAnalytics {
         String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
         String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
         String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
+
+        String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
+        String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
     }
 
     interface ScreenName {
