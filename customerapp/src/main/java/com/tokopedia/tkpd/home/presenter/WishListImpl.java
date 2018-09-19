@@ -228,7 +228,6 @@ public class WishListImpl implements WishList {
             public void onNext(GraphqlResponse graphqlResponse) {
                 if (graphqlResponse != null && graphqlResponse.getData(GqlWishListDataResponse.class) != null) {
                     GqlWishListDataResponse gqlWishListDataResponse = graphqlResponse.getData(GqlWishListDataResponse.class);
-                    wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList());
                     setData(gqlWishListDataResponse.getGqlWishList());
                 } else {
                     setData();
@@ -307,10 +306,10 @@ public class WishListImpl implements WishList {
                 wishListView.setSearchNotFound();
         }
         wishListView.displayPull(false);
-        dataWishlist.addAll(wishlistData.getWishlistDataList());
 
         wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
 
+        dataWishlist.addAll(wishlistData.getWishlistDataList());
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
 

@@ -104,6 +104,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         wishList = new WishListImpl(getActivity(), this);
+        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
+        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
         progressDialog = new TkpdProgressDialog(getContext(), TkpdProgressDialog.NORMAL_PROGRESS);
         progressDialog.setCancelable(false);
         wishList.fetchSavedsInstance(savedInstanceState);
@@ -171,8 +173,6 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     private void initView(View view) {
-        checkoutAnalyticsAddToCart = new CheckoutAnalyticsAddToCart(getAnalyticTracker());
-        wishlistAnalytics = new WishlistAnalytics(getAnalyticTracker());
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.recycler_view);
         progressBar = view.findViewById(R.id.progress_bar);
@@ -614,16 +614,16 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList, int currentSize) {
-        int totalSize = currentSize + wishlistDataList.size();
+        int position = currentSize+1;
         List<Object> objects = new ArrayList<>();
-        for (int i = currentSize; i<totalSize ; i++){
+        for (int i = 0; i<wishlistDataList.size() ; i++){
             Wishlist wishlist = wishlistDataList.get(i);
             objects.add(DataLayer.mapOf(
                     "name", wishlist.getName(),
                     "id", wishlist.getId(),
                     "price", Integer.toString(convertRupiahToInt(String.valueOf(wishlist.getPrice()))),
                     "list", "/wishlist",
-                    "position", Integer.toString(i+1)
+                    "position", Integer.toString(position++)
             ));
         }
         return objects;
