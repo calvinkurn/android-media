@@ -2625,8 +2625,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
 
     @Override
-    public Fragment getHomeFragment() {
-        return new HomeFragment();
+    public Fragment getHomeFragment(boolean scrollToRecommendList) {
+        return HomeFragment.newInstance(scrollToRecommendList);
     }
 
     @Override
