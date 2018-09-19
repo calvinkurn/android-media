@@ -75,19 +75,25 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
     @Override
     public void changeListView() {
         super.changeListView();
-        topAdsSwitcher.switchDisplay(DisplayMode.LIST);
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.LIST);
+        }
     }
 
     @Override
     public void changeDoubleGridView() {
         super.changeDoubleGridView();
-        topAdsSwitcher.switchDisplay(DisplayMode.GRID);
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.GRID);
+        }
     }
 
     @Override
     public void changeSingleGridView() {
         super.changeSingleGridView();
-        topAdsSwitcher.switchDisplay(DisplayMode.BIG);
+        if(topAdsSwitcher!=null) {
+            topAdsSwitcher.switchDisplay(DisplayMode.BIG);
+        }
     }
 
     @Override
