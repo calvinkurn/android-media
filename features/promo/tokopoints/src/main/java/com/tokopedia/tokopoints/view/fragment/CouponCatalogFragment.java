@@ -863,25 +863,26 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                 btnContinue.setTextColor(ContextCompat.getColor(btnContinue.getContext(), R.color.white));
             }
         } else {
-            if (item.getUsage().getActiveCountDown() > 0
-                    && item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+            if (item.getUsage().getActiveCountDown() > 0) {
                 btnContinue.setEnabled(false);
-                mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
-                    @Override
-                    public void onTick(long l) {
-                        item.getUsage().setActiveCountDown(l / 1000);
-                        int seconds = (int) (l / 1000) % 60;
-                        int minutes = (int) ((l / (1000 * 60)) % 60);
-                        int hours = (int) ((l / (1000 * 60 * 60)) % 24);
-                        btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
-                    }
+                if (item.getUsage().getActiveCountDown() <= CommonConstant.COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S) {
+                    mTimer = new CountDownTimer(item.getUsage().getActiveCountDown() * 1000, 1000) {
+                        @Override
+                        public void onTick(long l) {
+                            item.getUsage().setActiveCountDown(l / 1000);
+                            int seconds = (int) (l / 1000) % 60;
+                            int minutes = (int) ((l / (1000 * 60)) % 60);
+                            int hours = (int) ((l / (1000 * 60 * 60)) % 24);
+                            btnContinue.setText(String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds));
+                        }
 
-                    @Override
-                    public void onFinish() {
-                        btnContinue.setEnabled(true);
-                        btnContinue.setText(item.getUsage().getBtnUsage().getText());
-                    }
-                }.start();
+                        @Override
+                        public void onFinish() {
+                            btnContinue.setEnabled(true);
+                            btnContinue.setText(item.getUsage().getBtnUsage().getText());
+                        }
+                    }.start();
+                }
             } else {
                 btnContinue.setText(item.getUsage().getUsageStr());
                 btnContinue.setEnabled(true);
