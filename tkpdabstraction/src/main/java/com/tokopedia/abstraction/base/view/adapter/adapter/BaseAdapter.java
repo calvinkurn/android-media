@@ -1,6 +1,5 @@
 package com.tokopedia.abstraction.base.view.adapter.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -189,6 +188,7 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     public void clearAllElements() {
         visitables.clear();
+        notifyDataSetChanged();
     }
 
     public void addMoreData(List<? extends Visitable> data) {

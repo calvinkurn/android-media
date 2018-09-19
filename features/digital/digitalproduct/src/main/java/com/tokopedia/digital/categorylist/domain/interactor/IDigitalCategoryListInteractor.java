@@ -15,7 +15,7 @@ import rx.Subscriber;
 
 public interface IDigitalCategoryListInteractor {
 
-    void getDigitalCategoryItemDataList(Subscriber<List<DigitalCategoryItemData>> subscriber);
+    void getDigitalCategoryItemDataList(String deviceVersion, Subscriber<List<DigitalCategoryItemData>> subscriber);
 
     void getTokoCashData(Subscriber<TokoCashData> subscriber, Context context);
 }

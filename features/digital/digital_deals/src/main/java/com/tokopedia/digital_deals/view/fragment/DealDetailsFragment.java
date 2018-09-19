@@ -67,7 +67,6 @@ import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -485,7 +484,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         requestParams.putString(DealDetailsPresenter.TAG, url);
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         if (location != null) {
-            requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
+            requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, Utils.getSingletonInstance().getLocation(getActivity()).getId());
         }
         return requestParams;
     }
