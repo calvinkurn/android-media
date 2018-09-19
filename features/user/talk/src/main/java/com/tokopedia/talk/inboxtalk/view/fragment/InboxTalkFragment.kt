@@ -436,13 +436,13 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        context?.run {
-            if (!talkId.isBlank()) {
-                adapter.updateReportTalk(talkId, this)
-            } else {
-                onRefreshData()
-            }
-        }
+//        context?.run {
+//            if (!talkId.isBlank()) {
+//                adapter.updateReportTalk(talkId, this)
+//            } else {
+//                onRefreshData()
+//            }
+//        }
 
     }
 

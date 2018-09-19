@@ -131,6 +131,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 talk.talkThread.headThread.menu.isReported = true
                 talk.talkThread.headThread.menu.allowReport = false
                 talk.talkThread.headThread.menu.allowUnmasked = false
+                talk.talkThread.headThread.menu.isMasked = true
                 talk.talkThread.headThread.comment = context.getString(R.string.success_report_talk_masked_message)
                 notifyItemChanged(position)
             }

@@ -491,13 +491,13 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        context?.run {
-            if (!talkId.isBlank()) {
-                adapter.updateReportTalk(talkId, this)
-            } else {
-                onRefreshData()
-            }
-        }
+//        context?.run {
+//            if (!talkId.isBlank()) {
+//                adapter.updateReportTalk(talkId, this)
+//            } else {
+//                onRefreshData()
+//            }
+//        }
 
     }
 

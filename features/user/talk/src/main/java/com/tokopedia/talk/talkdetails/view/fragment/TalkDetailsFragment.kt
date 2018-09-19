@@ -200,12 +200,17 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
     }
 
+    override fun onSuccessRefreshTalkAfterSendTalk(data: ArrayList<Visitable<*>>) {
+        hideLoadingAction()
+        adapter.setList(data)
+    }
+
     override fun onSuccessSendTalkComment(talkId: String, commentId: String) {
         sendMessageEditText.setText("")
         attachedProductListAdapter.clearAllElements()
         attachedProductList.visibility = View.GONE
         adapter.clearAllElements()
-        presenter.loadTalkDetails(talkId)
+        presenter.refreshTalkAfterSendComment(talkId)
 
         activity?.run {
             val intent = Intent()
@@ -223,11 +228,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        context?.run {
-            if (!talkId.isBlank()) {
-                adapter.updateReportTalk(talkId, this)
-            }
-        }
+//        context?.run {
+//            if (!talkId.isBlank()) {
+//                adapter.updateReportTalk(talkId, this)
+//            }
+//        }
 
         activity?.run {
             val intent = Intent()

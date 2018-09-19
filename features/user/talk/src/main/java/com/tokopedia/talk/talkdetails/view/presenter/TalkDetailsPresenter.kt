@@ -44,6 +44,22 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                 })
     }
 
+    override fun refreshTalkAfterSendComment(talkId: String) {
+        getTalkComments.execute(GetTalkCommentsUseCase.getParameters(talkId),
+                object : Subscriber<TalkDetailViewModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.onError(e)
+                    }
+
+                    override fun onNext(response: TalkDetailViewModel) {
+                        view.onSuccessRefreshTalkAfterSendTalk(response.listTalk)
+                    }
+                }) }
+
     override fun sendComment(talkId: String, productId: String, message: String,
                              attachedProduct: List<TalkProductAttachmentViewModel>) {
         view.showLoadingAction()

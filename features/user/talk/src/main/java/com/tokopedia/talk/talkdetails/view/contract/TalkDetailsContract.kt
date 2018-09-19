@@ -21,10 +21,12 @@ class TalkDetailsContract {
         fun deleteCommentTalk(shopId: String, talkId: String, commentId: String)
         fun markTalkNotFraud(talkId: String)
         fun markCommentNotFraud(talkId: String, commentId: String)
+        fun refreshTalkAfterSendComment(talkId: String)
     }
     interface View:CustomerView {
         fun onError(throwable: Throwable)
         fun onSuccessLoadTalkDetails(data:ArrayList<Visitable<*>>)
+        fun onSuccessRefreshTalkAfterSendTalk(data:ArrayList<Visitable<*>>)
         fun onSuccessSendTalkComment(talkId : String, commentId:String)
         fun goToReportTalkPage(talkId:String, shopId:String, productId: String, commentId : String)
         fun showLoadingAction()
