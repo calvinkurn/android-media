@@ -1,6 +1,7 @@
 package com.tokopedia.browse.homepage.di;
 
 import com.tokopedia.browse.common.di.DigitalBrowseComponent;
+import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseMarketplaceFragment;
 import com.tokopedia.browse.homepage.presentation.fragment.DigitalBrowseServiceFragment;
 
@@ -18,4 +19,5 @@ public interface DigitalBrowseHomeComponent {
 
     void inject(DigitalBrowseServiceFragment digitalBrowseServiceFragment);
 
+    void inject(DigitalBrowseHomeActivity digitalBrowseHomeActivity);
 }

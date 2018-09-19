@@ -175,7 +175,7 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
         };
 
         rvCategory.setLayoutManager(layoutManager);
-        rvCategory.setHasFixedSize(false);
+        rvCategory.setHasFixedSize(true);
         rvCategory.setAdapter(serviceAdapter);
 
         serviceAdapter.showLoading();
@@ -318,13 +318,11 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
         if (viewModel.getAppLinks() != null &&
                 RouteManager.isSupportApplink(getContext(), viewModel.getAppLinks())) {
             RouteManager.route(getContext(), viewModel.getAppLinks());
-        } else {
-            if (getActivity().getApplication() instanceof DigitalBrowseRouter
-                    && ((DigitalBrowseRouter) getActivity().getApplication())
-                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
-                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
-            }
+        } else if (RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
+            RouteManager.route(getContext(), viewModel.getUrl());
+        } else if (getActivity().getApplication() instanceof DigitalBrowseRouter) {
+            ((DigitalBrowseRouter) getActivity().getApplication())
+                    .goToWebview(getActivity(), viewModel.getUrl());
         }
     }
 

@@ -3,7 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginLeft="@dimen/dp_4"
+    android:layout_marginRight="@dimen/dp_4"
+    android:layout_marginTop="@dimen/dp_8"
     android:background="@drawable/bg_digital_browser_item"
     android:clickable="true"
     android:elevation="@dimen/dp_2"
@@ -13,8 +16,8 @@
     android:paddingRight="@dimen/dp_8">
 
     <LinearLayout
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_80"
         android:background="?attr/selectableItemBackground"
         android:gravity="center"
         android:orientation="vertical">
@@ -26,6 +29,5 @@
             tools:src="@drawable/status_no_result" />
 
     </LinearLayout>
-
 
 </LinearLayout>

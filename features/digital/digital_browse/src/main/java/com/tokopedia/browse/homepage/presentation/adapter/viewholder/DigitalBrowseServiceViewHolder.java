@@ -7,7 +7,6 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -30,6 +29,7 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
     private TextViewCompat tvProduct;
     private TextViewCompat tvNewLabel;
     private CategoryListener categoryListener;
+    private LinearLayout containerItem;
     private DigitalBrowseServiceCategoryViewModel item;
 
     public DigitalBrowseServiceViewHolder(View itemView, CategoryListener categoryListener) {
@@ -37,14 +37,13 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
 
         this.categoryListener = categoryListener;
 
+        containerItem = itemView.findViewById(R.id.container_item);
         ivProduct = itemView.findViewById(R.id.iv_product);
         tvProduct = itemView.findViewById(R.id.tv_product);
         tvNewLabel = itemView.findViewById(R.id.tv_new_label);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tvNewLabel.setLetterSpacing(DEFAULT_LETTER_SPACING);
-        } else {
-            tvNewLabel.setTextScaleX(DEFAULT_LETTER_SPACING);
         }
 
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -63,20 +62,20 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
         if (element.isTitle()) {
             ivProduct.setVisibility(View.GONE);
             tvProduct.setTextAppearance(ivProduct.getContext(), R.style.TextView_Title_Bold);
-            tvProduct.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-            ((RelativeLayout) itemView).setGravity(Gravity.LEFT);
+            containerItem.setGravity(Gravity.LEFT);
             tvNewLabel.setVisibility(View.GONE);
             itemView.setClickable(false);
             itemView.setPadding(0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_16), 0, 0);
+            itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         } else {
             setItemView();
 
             itemView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            categoryListener.sendImpressionAnalytics(element, getAdapterPosition());
         }
 
         tvProduct.setText(element.getName());
-
-        categoryListener.sendImpressionAnalytics(element, getAdapterPosition());
     }
 
     public void bindLastItem(DigitalBrowseServiceCategoryViewModel element) {
@@ -96,7 +95,7 @@ public class DigitalBrowseServiceViewHolder extends AbstractViewHolder<DigitalBr
         ImageHandler.loadImageWithoutPlaceholder(ivProduct, DigitalBrowseServiceViewHolder.this.item.getImageUrl(),
                 R.drawable.status_no_result);
         tvProduct.setTextAppearance(ivProduct.getContext(), R.style.TextView_Micro);
-        ((RelativeLayout) itemView).setGravity(Gravity.CENTER_HORIZONTAL);
+        containerItem.setGravity(Gravity.CENTER_HORIZONTAL);
         itemView.setClickable(true);
         itemView.setPadding(0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_8), 0, itemView.getResources().getDimensionPixelSize(R.dimen.dp_8));
 

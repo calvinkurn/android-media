@@ -181,7 +181,7 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
         });
 
         rvCategory.setLayoutManager(layoutManager);
-        rvCategory.setHasFixedSize(false);
+        rvCategory.setHasFixedSize(true);
         rvCategory.setAdapter(categoryAdapter);
 
         categoryAdapter.showLoading();
@@ -222,34 +222,41 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel) {
+    public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
+        digitalBrowseAnalytics.eventPromoClickPopularBrand(viewModel.getId(),
+                viewModel.getName(), position + 1);
+
         if (viewModel.getUrl() != null &&
                 RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
             RouteManager.route(getContext(), viewModel.getUrl());
         } else {
             if (getActivity().getApplication() instanceof DigitalBrowseRouter
-                    && ((DigitalBrowseRouter) getActivity().getApplication())
-                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
-                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
+                    ) {
+                ((DigitalBrowseRouter) getActivity().getApplication())
+                        .goToWebview(getActivity(), viewModel.getUrl());
             }
         }
     }
 
     @Override
+    public void sendImpressionAnalytics(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
+        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(viewModel.getId(),
+                viewModel.getName(), position + 1);
+    }
+
+    @Override
     public void onCategoryItemClicked(DigitalBrowseRowViewModel viewModel, int itemPosition) {
 
-        digitalBrowseAnalytics.eventClickOnCategoryBelanja(viewModel.getName(), itemPosition+1);
+        digitalBrowseAnalytics.eventClickOnCategoryBelanja(viewModel.getName(), itemPosition + 1);
 
-        if (RouteManager.isSupportApplink(getContext(), viewModel.getAppLinks())) {
+        if (viewModel.getAppLinks() != null &&
+                RouteManager.isSupportApplink(getContext(), viewModel.getAppLinks())) {
             RouteManager.route(getContext(), viewModel.getAppLinks());
-        } else {
-            if (getActivity().getApplication() instanceof DigitalBrowseRouter
-                    && ((DigitalBrowseRouter) getActivity().getApplication())
-                    .getWebviewActivity(getActivity(), viewModel.getUrl()) != null) {
-                startActivity(((DigitalBrowseRouter) getActivity().getApplication())
-                        .getWebviewActivity(getActivity(), viewModel.getUrl()));
-            }
+        } else if (RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
+            RouteManager.route(getContext(), viewModel.getUrl());
+        } else if (getActivity().getApplication() instanceof DigitalBrowseRouter) {
+            ((DigitalBrowseRouter) getActivity().getApplication())
+                    .goToWebview(getActivity(), viewModel.getUrl());
         }
     }
 

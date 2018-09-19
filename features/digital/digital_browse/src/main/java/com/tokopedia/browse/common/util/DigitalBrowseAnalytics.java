@@ -1,7 +1,11 @@
 package com.tokopedia.browse.common.util;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -39,12 +43,56 @@ public class DigitalBrowseAnalytics {
                 "");
     }
 
-    public void eventPromoImpressionPopularBrand() {
+    public void eventPromoImpressionPopularBrand(long bannerId,
+                                                 String creativeName,
+                                                 int position) {
+        Object promotion = DataLayer.mapOf(
+                "id", bannerId,
+                "name", "/belanja - Brand Pilihan",
+                "creative", creativeName,
+                "position", position);
 
+        List<Object> promotions = new ArrayList<>();
+        promotions.add(promotion);
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", Event.IMPRESSION_PROMO,
+                        "eventCategory", GENERIC_CATEGORY,
+                        "eventAction", Action.IMPRESSION_BRAND_BELANJA,
+                        "eventLabel", "",
+                        "ecommerce", DataLayer.mapOf(
+                                "promoView", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(promotions.toArray()))
+                        )
+                )
+        );
     }
 
-    public void eventPromoClickPopularBrand() {
+    public void eventPromoClickPopularBrand(long bannerId,
+                                            String creativeName,
+                                            int position) {
+        Object promotion = DataLayer.mapOf(
+                "id", bannerId,
+                "name", "/belanja - Brand Pilihan",
+                "creative", creativeName,
+                "position", position);
 
+        List<Object> promotions = new ArrayList<>();
+        promotions.add(promotion);
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf(
+                        "event", Event.CLICK_PROMO,
+                        "eventCategory", GENERIC_CATEGORY,
+                        "eventAction", Action.CLICK_BRAND_BELANJA,
+                        "eventLabel", creativeName,
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick", DataLayer.mapOf(
+                                        "promotions", DataLayer.listOf(promotions.toArray()))
+                        )
+                )
+        );
     }
 
     public void eventImpressionHomePage(String iconName, int iconPosition) {

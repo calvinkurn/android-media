@@ -26,7 +26,7 @@ public class DigitalBrowseCategoryRowEntity {
     @SerializedName("categoryId")
     @Expose
     private int categoryId;
-    @SerializedName("appLinks")
+    @SerializedName("applinks")
     @Expose
     private String appLinks;
     @SerializedName("categoryLabel")

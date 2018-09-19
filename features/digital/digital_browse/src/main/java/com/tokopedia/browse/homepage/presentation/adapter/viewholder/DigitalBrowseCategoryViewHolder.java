@@ -38,8 +38,6 @@ public class DigitalBrowseCategoryViewHolder extends AbstractViewHolder<DigitalB
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tvNewLabel.setLetterSpacing(DEFAULT_LETTER_SPACING);
-        } else {
-            tvNewLabel.setTextScaleX(DEFAULT_LETTER_SPACING);
         }
     }
 

@@ -25,8 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -59,8 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -93,8 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -127,153 +124,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                app:corners="30"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_2"
-                app:use_gradient="true" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_5"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                app:corners="30"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_2"
-                app:use_gradient="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                app:corners="30"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_2"
-                app:use_gradient="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_8">
-
-            <com.elyeproj.loaderviewlibrary.LoaderImageView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_25"
-                app:corners="30"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_10"
-                app:use_gradient="true" />
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:layout_width="@dimen/dp_25"
-                android:layout_height="@dimen/dp_10"
-                android:layout_marginTop="@dimen/dp_2"
-                app:use_gradient="true" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -315,8 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -349,8 +199,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -383,8 +232,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -417,8 +265,148 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                app:corners="30"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2"
+                app:use_gradient="true" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_5"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1" 
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                app:corners="30"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2"
+                app:use_gradient="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1" 
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                app:corners="30"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2"
+                app:use_gradient="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1" 
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_16"
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_8">
+
+            <com.elyeproj.loaderviewlibrary.LoaderImageView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_25"
+                app:corners="30"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                app:use_gradient="true" />
+
+            <com.elyeproj.loaderviewlibrary.LoaderTextView
+                android:layout_width="@dimen/dp_25"
+                android:layout_height="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_2"
+                app:use_gradient="true" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dp_4"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -467,8 +455,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -501,8 +488,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -535,8 +521,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -569,8 +554,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -619,8 +603,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -653,8 +636,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -687,8 +669,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"
@@ -721,8 +702,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dp_4"
-            android:layout_weight="1"
-            android:background="@drawable/bg_digital_browser_item"
+            android:layout_weight="1" 
             android:gravity="center"
             android:orientation="vertical"
             android:paddingBottom="@dimen/dp_8"

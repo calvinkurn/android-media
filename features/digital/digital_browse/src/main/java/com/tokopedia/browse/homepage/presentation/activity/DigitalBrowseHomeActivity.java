@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.browse.DigitalBrowseComponentInstance;
 import com.tokopedia.browse.common.applink.ApplinkConstant;
 import com.tokopedia.browse.common.di.utils.DigitalBrowseComponentUtils;
 import com.tokopedia.browse.common.presentation.DigitalBrowseBaseActivity;
@@ -30,7 +33,7 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
     private static final int TYPE_LAYANAN = 2;
 
     private static final String TITLE_BELANJA = "Belanja di Tokopedia";
-    private static final String TITLE_LAYANAN = "Semua Layanan";
+    private static final String TITLE_LAYANAN = "Lainnya";
 
     private static DigitalBrowseHomeComponent digitalBrowseHomeComponent;
 
@@ -64,6 +67,11 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
         }
 
         GraphqlClient.init(this);
+
+        DaggerDigitalBrowseHomeComponent.builder()
+                .digitalBrowseComponent(DigitalBrowseComponentInstance.getDigitalBrowseComponent(getApplication()))
+                .build()
+                .inject(this);
     }
 
     @Override
@@ -96,11 +104,16 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
     private void setupToolbar() {
         toolbar.setContentInsetStartWithNavigation(0);
         String title = getIntent().getStringExtra(EXTRA_TITLE);
-        updateTitle(title);
+        SpannableStringBuilder titleStr = new SpannableStringBuilder(title);
+        titleStr.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD),
+                0, title.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        getSupportActionBar().setTitle(titleStr);
     }
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
+
         if (fragment != null) {
             if (fragment instanceof DigitalBrowseMarketplaceFragment) {
                 digitalBrowseAnalytics.eventClickBackOnBelanjaPage();
@@ -108,7 +121,6 @@ public class DigitalBrowseHomeActivity extends DigitalBrowseBaseActivity impleme
                 digitalBrowseAnalytics.eventClickBackOnLayananPage();
             }
         }
-        super.onBackPressed();
     }
 }
 

@@ -43,6 +43,9 @@
             android:id="@+id/rv_popular_brand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingLeft="@dimen/dp_12"
+            android:paddingStart="@dimen/dp_12"
             android:visibility="gone"
             tools:visibility="visible" />
 
@@ -52,8 +55,8 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"/>
+            android:paddingRight="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16" />
 
     </LinearLayout>
 
