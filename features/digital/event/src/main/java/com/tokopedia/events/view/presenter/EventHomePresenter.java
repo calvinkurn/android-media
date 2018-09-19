@@ -247,8 +247,11 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
 
     @Override
     public void onClickEventCalendar() {
+        ArrayList<CategoryItemsViewModel> searchViewModelList = (ArrayList<CategoryItemsViewModel>) Utils.getSingletonInstance()
+                .getTopEvents();
         Intent searchIntent = EventSearchActivity.getCallingIntent(getView().getActivity());
         searchIntent.putExtra(EXTRA_EVENT_CALENDAR, true);
+        searchIntent.putParcelableArrayListExtra("TOPEVENTS", searchViewModelList);
         getView().navigateToActivityRequest(searchIntent, 1010);
     }
 

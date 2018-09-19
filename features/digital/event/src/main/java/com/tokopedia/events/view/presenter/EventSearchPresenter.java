@@ -120,10 +120,10 @@ public class EventSearchPresenter
     public void initialize() {
         isEventCalendar = getView().getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
+        mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
         if (isEventCalendar) {
             searchSubmitted("");
         } else {
-            mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
             getView().setTopEvents(mTopEvents);
         }
     }
