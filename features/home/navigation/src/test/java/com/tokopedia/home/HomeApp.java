@@ -144,6 +144,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
     }
 
     @Override
+    public Boolean getBooleanRemoteConfig(String key, Boolean defaultValue) {
+        return false;
+    }
+
+    @Override
     public Intent getTrainOrderListIntent(Context context) {
         return null;
     }
@@ -155,6 +160,11 @@ public class HomeApp extends BaseMainApplication implements AccountHomeRouter, G
 
     @Override
     public void goToCreateMerchantRedirect(Context context) {
+
+    }
+
+    @Override
+    public void setPromoPushPreference(Boolean newValue) {
 
     }
 

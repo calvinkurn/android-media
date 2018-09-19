@@ -19,6 +19,7 @@ import okhttp3.RequestBody;
 import rx.Observable;
 
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.ID;
+import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.IMAGE_UPLOAD_URL;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.PARAM_FILE_TO_UPLOAD;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.RESOLUTION;
 import static com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.SERVER_ID;
@@ -38,9 +39,9 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
 
     @Override
     public Observable<UploadImageModel> createObservable(com.tokopedia.core.base.domain.RequestParams requestParams) {
-        String url = UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE + "upload/attachment";
+        String uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment";
 
-        return uploadImageRepository.uploadImage(url,
+        return uploadImageRepository.uploadImage(uploadUrl,
                 generateRequestBody(requestParams),
                 getUploadImageFile(requestParams)
         );
@@ -50,10 +51,10 @@ public class UploadImageUseCase extends UseCase<UploadImageModel> {
         Map<String, String> requestBodyMap = new HashMap<>();
         requestBodyMap.put(USERID, requestParams.getString(USERID, ""));
         requestBodyMap.put(ID,
-                requestBodyMap.put(USERID, ""));
-        requestBodyMap.put(SERVER_ID, requestParams.getString(SERVER_ID, ""));
+                requestParams.getString(USERID, ""));
+        requestBodyMap.put(SERVER_ID, requestParams.getString(SERVER_ID, "49"));
         requestBodyMap.put(TOKEN, requestParams.getString(TOKEN, ""));
-        requestBodyMap.put(RESOLUTION, requestParams.getString(RESOLUTION, ""));
+        requestBodyMap.put(RESOLUTION, requestParams.getString(RESOLUTION, "215"));
 
         return requestBodyMap;
     }

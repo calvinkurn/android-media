@@ -109,10 +109,10 @@ public class MainParentActivity extends AppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
-    private List<Fragment> fragmentList;
+    List<Fragment> fragmentList;
     private List<String> titles;
     private Notification notification;
-    private Fragment currentFragment;
+    Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
@@ -280,7 +280,7 @@ public class MainParentActivity extends AppCompatActivity implements
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
-            if (!isUserLogin())
+            if (!presenter.isUserLogin())
                 return false;
 
         Fragment fragment = fragmentList.get(position);
@@ -324,7 +324,7 @@ public class MainParentActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean isUserLogin() {
+    public boolean isUserLogin() {
         if (!userSession.isLoggedIn())
             RouteManager.route(this, ApplinkConst.LOGIN);
         return userSession.isLoggedIn();
