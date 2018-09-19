@@ -42,8 +42,6 @@ public class AccessTokenRefresh {
         params.put(ACCESS_TOKEN, SessionHandler.getAccessToken());
         params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context)));
 
-        sessionHandler.clearToken();
-
         Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;
@@ -51,11 +49,18 @@ public class AccessTokenRefresh {
         try {
             Response<String> response = responseCall.clone().execute();
 
-            tokenResponseError = response.errorBody().string();
-            checkShowForceLogout(tokenResponseError);
+            if (response.errorBody() != null) {
+                tokenResponseError = response.errorBody().string();
+                checkShowForceLogout(tokenResponseError);
+            } else if (response.body() != null) {
+                tokenResponse = response.body();
+            } else {
+                return "";
+            }
 
-            tokenResponse = response.body();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
