@@ -33,9 +33,9 @@ public interface RecentView {
 
         void onEmptyGetRecentView();
 
-        void sendRecentViewImpressionTracking(List<RecentViewProductDomain> recentViewProductDomains);
+        void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel);
 
-        void sendRecentViewClickTracking(RecentViewDetailProductViewModel element, int position);
+        void sendRecentViewClickTracking(RecentViewDetailProductViewModel element);
 
 
         Context getContext();

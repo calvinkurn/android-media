@@ -49,8 +49,6 @@ public class RecentViewFragment extends BaseDaggerFragment
     private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
 
-    private int itemSize = 0;
-
     @Inject
     RecentViewPresenter presenter;
 
@@ -182,32 +180,29 @@ public class RecentViewFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element, int position) {
+    public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element) {
         RecentViewTracking.trackEventClickOnProductRecentView(getActivity(),
-                element.getRecentViewAsObjectDataLayerForClick(position)
+                element.getRecentViewAsObjectDataLayerForClick()
                 );
     }
 
     @Override
-    public void sendRecentViewImpressionTracking(List<RecentViewProductDomain> recentViewProductDomains) {
+    public void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel) {
         RecentViewTracking.trackEventImpressionOnProductRecentView(getActivity(),
-                getRecentViewAsDataLayerForImpression(recentViewProductDomains));
+                getRecentViewAsDataLayerForImpression(recentViewModel));
     }
 
-    public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewProductDomain> recentViewProductDomains) {
+    public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewDetailProductViewModel> recentViewModel) {
         List<Object> objects = new ArrayList<>();
-        int totalSize = itemSize + recentViewProductDomains.size();
-        for (int i = itemSize; i<totalSize ; i++){
-            RecentViewProductDomain domain = recentViewProductDomains.get(i);
+        for(RecentViewDetailProductViewModel model : recentViewModel){
             objects.add(DataLayer.mapOf(
-                    "name", domain.getName(),
-                    "id", domain.getId(),
-                    "price", Integer.toString(convertRupiahToInt(String.valueOf(domain.getPrice()))),
+                    "name", model.getName(),
+                    "id", model.getProductId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(model.getPrice()))),
                     "list", "/recent",
-                    "position", Integer.toString(i+1)
+                    "position", String.valueOf(model.getPosition())
             ));
         }
-        itemSize = objects.size();
         return objects;
     }
 

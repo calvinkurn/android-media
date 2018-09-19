@@ -26,6 +26,7 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     private final String shopName;
     private final String shopLocation;
     private List<LabelsViewModel> labels;
+    private int positionForRecentViewTracking;
 
     public RecentViewDetailProductViewModel(Integer productId,
                                             String name,
@@ -38,7 +39,8 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
                                             boolean isGold,
                                             boolean isOfficial,
                                             String shopName,
-                                            String shopLocation) {
+                                            String shopLocation,
+                                            int positionForRecentViewTracking) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -51,6 +53,15 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
         this.isOfficial = isOfficial;
         this.shopName = shopName;
         this.shopLocation = shopLocation;
+        this.positionForRecentViewTracking = positionForRecentViewTracking;
+    }
+
+    public int getPositionForRecentViewTracking() {
+        return positionForRecentViewTracking;
+    }
+
+    public void setPositionForRecentViewTracking(int position) {
+        this.positionForRecentViewTracking = position;
     }
 
     public String getName() {
@@ -106,12 +117,12 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
         return labels;
     }
 
-    public Object getRecentViewAsObjectDataLayerForClick(int position) {
+    public Object getRecentViewAsObjectDataLayerForClick() {
         return DataLayer.mapOf(
                 "name", getName(),
                 "id", getProductId(),
                 "price", Integer.toString(convertRupiahToInt(getPrice())),
-                "position", Integer.toString(position)
+                "position", Integer.toString(getPositionForRecentViewTracking())
         );
     }
 }
