@@ -58,7 +58,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                     override fun onNext(response: TalkDetailViewModel) {
                         view.onSuccessRefreshTalkAfterSendTalk(response.listTalk)
                     }
-                }) }
+                })
+    }
 
     override fun sendComment(talkId: String, productId: String, message: String,
                              attachedProduct: List<TalkProductAttachmentViewModel>) {
@@ -94,8 +95,7 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -117,8 +117,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
+
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -139,8 +139,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
+
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -161,8 +161,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
+
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -182,8 +182,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
+
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -203,8 +203,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
             }
 
             override fun onError(e: Throwable) {
-                view.hideLoadingAction()
-                onError(e)
+                view.onErrorActionTalk(e)
+
             }
 
             override fun onNext(talkViewModel: BaseActionTalkViewModel) {

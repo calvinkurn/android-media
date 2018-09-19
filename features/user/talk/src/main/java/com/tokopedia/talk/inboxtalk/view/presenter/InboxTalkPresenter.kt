@@ -48,7 +48,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onError(e: Throwable) {
                     view.hideLoading()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: InboxTalkViewModel) {
@@ -75,6 +75,8 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
             })
         }
     }
+
+
 
     override fun getInboxTalkWithFilter(filter: String, nav: String) {
         if (!isRequesting) {
@@ -107,7 +109,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                     if (page == 1 && talkViewModel.listTalk.isEmpty()) {
                         view.onEmptyTalk()
                     } else if (!talkViewModel.listTalk.isEmpty()) {
-                        view.onSuccessGetListFirstPage(talkViewModel.listTalk)
+                        view.onSuccessGetListFirstPage(talkViewModel)
                     }
 
                     if (talkViewModel.hasNextPage) {
@@ -155,7 +157,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                     if (talkViewModel.listTalk.isEmpty()) {
                         view.onEmptyTalk()
                     } else {
-                        view.onSuccessGetListFirstPage(talkViewModel.listTalk)
+                        view.onSuccessGetListFirstPage(talkViewModel)
                         if (talkViewModel.hasNextPage) {
                             page += 1
                             page_id = talkViewModel.page_id
@@ -188,6 +190,17 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
         }
     }
 
+    private fun onErrorActionTalk(e: Throwable) {
+        view.showFilter()
+        isRequesting = false
+
+        if (e is MessageErrorException) {
+            view.onErrorActionTalk(e.message ?: "")
+        } else {
+            view.onErrorActionTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
+        }
+    }
+
     override fun deleteTalk(shopId: String, talkId: String) {
         if (!isRequesting) {
             view.showLoadingAction()
@@ -204,7 +217,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -232,7 +245,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -259,7 +272,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -286,7 +299,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -312,7 +325,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -338,7 +351,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
                     view.showFilter()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {

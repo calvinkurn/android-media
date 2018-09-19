@@ -29,6 +29,7 @@ interface ShopTalkContract {
         fun onSuccessFollowTalk(talkId: String)
         fun onSuccessDeleteTalk(talkId: String)
         fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
+        fun onErrorActionTalk(errorMessage: String)
 
     }
 

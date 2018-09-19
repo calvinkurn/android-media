@@ -1596,4 +1596,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getManagePeopleIntent(Context context) {
         return null;
     }
+
+    @Override
+    public Intent getProductPageIntent(Context context, String productId) {
+        return ProductInfoActivity.createInstance(context, productId);
+    }
 }

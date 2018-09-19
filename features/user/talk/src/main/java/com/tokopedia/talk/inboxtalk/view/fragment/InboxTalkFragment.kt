@@ -36,7 +36,6 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
-import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import kotlinx.android.synthetic.main.fragment_talk_inbox.*
 import javax.inject.Inject
@@ -268,11 +267,12 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         adapter.hideEmpty()
         adapter.addList(talkViewModel.listTalk)
 
-        viewModel.unreadNotification = talkViewModel.unreadNotification
         setNotificationTab(talkViewModel.unreadNotification)
     }
 
     private fun setNotificationTab(unreadNotification: UnreadCount) {
+        viewModel.unreadNotification = unreadNotification
+
         if (activity is GetUnreadNotificationListener) {
             val notifCount: Int = when (nav) {
                 InboxTalkActivity.INBOX_ALL -> unreadNotification.all
@@ -296,6 +296,10 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         }
     }
 
+    override fun onErrorActionTalk(errorMessage: String) {
+        NetworkErrorHelper.showRedSnackbar(view, errorMessage)
+    }
+
     override fun hideRefreshLoad() {
         swipeToRefresh.isRefreshing = false
     }
@@ -303,13 +307,17 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
     override fun onEmptyTalk() {
         adapter.clearAllElements()
         adapter.showEmpty()
+
         setNotificationTab(UnreadCount())
 
     }
 
-    override fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>) {
+    override fun onSuccessGetListFirstPage(talkViewModel: InboxTalkViewModel) {
         adapter.clearAllElements()
-        adapter.setList(listTalk)
+        adapter.setList(talkViewModel.listTalk)
+
+        setNotificationTab(talkViewModel.unreadNotification)
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -547,7 +555,8 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
     override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            (this as TalkRouter).goToProductDetailById(this, productId)
+            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            this@InboxTalkFragment.startActivity(intent)
         }
     }
 

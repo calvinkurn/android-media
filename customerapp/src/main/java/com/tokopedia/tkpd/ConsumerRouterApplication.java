@@ -79,8 +79,6 @@ import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.manage.people.address.activity.ChooseAddressActivity;
 import com.tokopedia.core.manage.people.address.activity.ManagePeopleAddressActivity;
-import com.tokopedia.core.manage.people.bank.activity.ManagePeopleBankActivity;
-import com.tokopedia.core.manage.people.password.activity.ManagePasswordActivity;
 import com.tokopedia.core.manage.people.profile.activity.ManagePeopleProfileActivity;
 import com.tokopedia.core.myproduct.utils.FileUtils;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
@@ -223,7 +221,6 @@ import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.navigation.presentation.activity.NotificationActivity;
 import com.tokopedia.navigation_common.model.WalletModel;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.network.service.AccountsService;
@@ -363,13 +360,11 @@ import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
-import com.tokopedia.transaction.pickuppoint.view.activity.PickupPointActivity;
 import com.tokopedia.transaction.purchase.activity.PurchaseActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderDetailActivity;
 import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 import com.tokopedia.transaction.wallet.WalletActivity;
-import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.travelcalendar.domain.TravelCalendarRouter;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.withdraw.WithdrawRouter;
@@ -391,16 +386,6 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Converter;
 import rx.Observable;
 import rx.functions.Func1;
-
-import javax.inject.Inject;
-
-import java.io.File;
-import java.io.IOException;
-import java.security.PublicKey;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.*;
@@ -2084,6 +2069,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent getProductPageIntent(Context context, String productId) {
+        return ProductInfoActivity.createInstance(context, productId);
+    }
+
+    @Override
     public void goToChatSeller(Context context, String shopId, String shopName, String avatar) {
         if (getSession().isLoggedIn()) {
             UnifyTracking.eventShopSendChat();
@@ -2214,6 +2204,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         Intent intent = ProductInfoActivity.createInstance(context, productPass);
         return intent;
     }
+
 
     @Override
     public void startAddProduct(Activity activity, String shopId) {
