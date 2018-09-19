@@ -255,7 +255,7 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             index = position;
 
             String rp = "Rp %s";
-            String hyphen = "$1%s - $2%s";
+            String hyphen = "%1$s - %2$s";
             eventTitle.setText(getBoldTitle(data.getDisplayName()));
             eventPrice.setText(String.format(rp, CurrencyUtil.convertToCurrencyString(data.getSalesPrice())));
             eventLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_ic_putih, 0, 0, 0);

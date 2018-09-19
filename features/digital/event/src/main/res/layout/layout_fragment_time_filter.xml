@@ -2,7 +2,8 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/tv_rektang_waktu"
@@ -16,7 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_jan_mar"
+        android:id="@+id/tv_today"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -25,14 +26,14 @@
         android:background="@drawable/ellipse_white_grey_br"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="Jan - Mar"
+        android:text="Hari Ini"
         android:textColor="@color/black_56"
-        app:layout_constraintEnd_toStartOf="@+id/tv_apr_jun"
+        app:layout_constraintEnd_toStartOf="@+id/tv_tomorrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_rektang_waktu" />
 
     <TextView
-        android:id="@+id/tv_apr_jun"
+        android:id="@+id/tv_tomorrow"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
@@ -42,14 +43,14 @@
         android:background="@drawable/ellipse_white_grey_br"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="Apr - Jun"
+        android:text="Besok"
         android:textColor="@color/black_56"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_jan_mar"
+        app:layout_constraintStart_toEndOf="@+id/tv_today"
         app:layout_constraintTop_toBottomOf="@+id/tv_rektang_waktu" />
 
     <TextView
-        android:id="@+id/tv_jul_sep"
+        android:id="@+id/tv_next_week"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_16"
@@ -58,14 +59,14 @@
         android:background="@drawable/ellipse_white_grey_br"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="Jul - Sep"
+        android:text="Minggu Depan"
         android:textColor="@color/black_56"
-        app:layout_constraintEnd_toStartOf="@+id/tv_oct_dec"
+        app:layout_constraintEnd_toStartOf="@+id/tv_next_month"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_jan_mar" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_today" />
 
     <TextView
-        android:id="@+id/tv_oct_dec"
+        android:id="@+id/tv_next_month"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
@@ -75,11 +76,11 @@
         android:background="@drawable/ellipse_white_grey_br"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="Oct - Dec"
+        android:text="Bulan Depan"
         android:textColor="@color/black_56"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/tv_jul_sep"
-        app:layout_constraintTop_toBottomOf="@+id/tv_apr_jun" />
+        app:layout_constraintStart_toEndOf="@+id/tv_next_week"
+        app:layout_constraintTop_toBottomOf="@+id/tv_tomorrow" />
 
     <TextView
         android:id="@+id/tv_everyday"
@@ -92,11 +93,11 @@
         android:background="@drawable/ellipse_white_grey_br"
         android:gravity="center"
         android:padding="@dimen/dp_16"
-        android:text="@string/everyday"
+        android:text="@string/all_time"
         android:textColor="@color/black_56"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_oct_dec" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_next_month" />
 
     <View
         android:id="@+id/divider2"
@@ -106,5 +107,70 @@
         android:background="@color/grey_300"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_everyday" />
+
+    <TextView
+        android:id="@+id/tv_mulai_tangal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:fontFamily="sans-serif"
+        android:lineSpacingExtra="4sp"
+        android:text="Mulai Dari Tanggal"
+        android:textColor="@color/black_56"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider2" />
+
+    <TextView
+        android:id="@+id/tv_from_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/date_hint"
+        android:textColor="@color/black_24"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_mulai_tangal" />
+
+    <View
+        android:id="@+id/text_underline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:background="@color/grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_from_date" />
+
+    <View
+        android:id="@+id/divider3"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@color/grey_300"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_underline" />
+
+    <TextView
+        android:id="@+id/tv_simpan"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dp_16"
+        android:background="@drawable/rounded_rectangle_green_solid"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_16"
+        android:text="Simpan"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -235,6 +235,12 @@ public class Utils {
         return sdf.format(date);
     }
 
+    public static String convertLongEpoch(long epoch) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd'/'MM'/'yy", new Locale("in", "ID", ""));
+        Date date = new Date(epoch);
+        return sdf.format(date);
+    }
+
     public void setTopEvents(List<CategoryItemsViewModel> topEvents) {
         this.topEvents = topEvents;
     }

@@ -1,8 +1,6 @@
 package com.tokopedia.events.view.presenter;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
@@ -16,13 +14,11 @@ import com.tokopedia.events.domain.GetSearchEventsListRequestUseCase;
 import com.tokopedia.events.domain.GetSearchNextUseCase;
 import com.tokopedia.events.domain.model.LikeUpdateResultDomain;
 import com.tokopedia.events.domain.model.searchdomainmodel.SearchDomainModel;
-import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
 import com.tokopedia.events.domain.postusecase.PostUpdateEventLikesUseCase;
 import com.tokopedia.events.view.activity.EventDetailsActivity;
-import com.tokopedia.events.view.adapter.FiltersAdapter;
+import com.tokopedia.events.view.activity.EventFilterActivity;
 import com.tokopedia.events.view.contractor.EventSearchContract;
 import com.tokopedia.events.view.contractor.EventsContract;
-import com.tokopedia.events.view.fragment.FilterFragment;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
@@ -35,6 +31,12 @@ import javax.inject.Inject;
 
 import rx.Subscriber;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY;
+import static com.tokopedia.events.view.contractor.EventFilterContract.REQ_OPEN_FILTER;
+import static com.tokopedia.events.view.contractor.EventFilterContract.START_DATE;
+import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_RANGE;
+
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
@@ -46,17 +48,18 @@ public class EventSearchPresenter
     private GetSearchEventsListRequestUseCase getSearchEventsListRequestUseCase;
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
-    private String FRAGMENT_TAG = "FILTERFRAGMENT";
     private ArrayList<CategoryItemsViewModel> mTopEvents;
     private SearchDomainModel mSearchData;
-    private ValuesItemDomain selectedTime;
-    private String catgoryFilters;
-    private String timeFilter;
+    private String catgoryFilter = "";
+    private String timeFilter = "";
+    private long startDate = 0;
     private String highlight;
+    private String previousSearch = "";
     private boolean isLoading;
     private boolean isLastPage;
     private boolean showCards;
     private final int PAGE_SIZE = 20;
+    private boolean isEventCalendar;
     private String searchTag;
     private List<EventsContract.AdapterCallbacks> adapterCallbacks;
     private RequestParams searchNextParams = RequestParams.create();
@@ -73,8 +76,15 @@ public class EventSearchPresenter
 
     private void getEventsListBySearch(String searchText) {
         highlight = searchText;
+        previousSearch = searchText;
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(getSearchEventsListRequestUseCase.TAG, searchText);
+        requestParams.putString(getSearchEventsListRequestUseCase.CATEGORY_ID, catgoryFilter);
+        requestParams.putString(getSearchEventsListRequestUseCase.TIME, timeFilter);
+        if (startDate > 0) {
+            long start = startDate / 1000;
+            requestParams.putString(getSearchEventsListRequestUseCase.START_DATE, String.valueOf(start));
+        }
         getView().showProgressBar();
         getSearchEventsListRequestUseCase.execute(requestParams, new Subscriber<SearchDomainModel>() {
             @Override
@@ -108,7 +118,7 @@ public class EventSearchPresenter
 
     @Override
     public void initialize() {
-        boolean isEventCalendar = getView().getActivity().getIntent().
+        isEventCalendar = getView().getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
         if (isEventCalendar) {
             searchSubmitted("");
@@ -180,48 +190,12 @@ public class EventSearchPresenter
     @Override
     public boolean onOptionMenuClick(int id) {
         if (id == R.id.action_filter) {
-            FragmentManager fragmentManager = getView().getFragmentManagerInstance();
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            FilterFragment fragment = FilterFragment.newInstance(100);
-            fragment.setData(mSearchData.getFilters(), this);
-            transaction.add(R.id.main_content, fragment, FRAGMENT_TAG);
-            transaction.addToBackStack(FRAGMENT_TAG);
-            transaction.commit();
+
         } else {
             getView().getActivity().onBackPressed();
             return true;
         }
         return true;
-    }
-
-    @Override
-    public void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder) {
-        if (!filterItem.isMulti()) {
-            if (!filterItem.getIsSelected()) {
-                if (selectedTime != null)
-                    selectedTime.setIsSelected(false);
-                filterItem.setIsSelected(true);
-                selectedTime = filterItem;
-                timeFilter = selectedTime.getName();
-            } else {
-                filterItem.setIsSelected(false);
-                selectedTime = null;
-                timeFilter = "";
-            }
-
-        } else {
-            if (!filterItem.getIsSelected()) {
-                filterItem.setIsSelected(true);
-                if (catgoryFilters != null && catgoryFilters.length() == 0) {
-                    catgoryFilters.concat(",").concat(filterItem.getName());
-                } else {
-                    catgoryFilters = filterItem.getName();
-                }
-            } else {
-                filterItem.setIsSelected(false);
-                catgoryFilters.replace("," + filterItem.getName(), "");
-            }
-        }
     }
 
     @Override
@@ -254,6 +228,40 @@ public class EventSearchPresenter
     @Override
     public String getSCREEN_NAME() {
         return EventsGAConst.EVENTS_SEARCHPAGE;
+    }
+
+    @Override
+    public void openFilters() {
+        Intent filterIntent = EventFilterActivity.getCallingIntent(getView().getActivity());
+        filterIntent.putExtra(TIME_RANGE, timeFilter);
+        filterIntent.putExtra(START_DATE, startDate);
+        filterIntent.putExtra(CATEGORY, catgoryFilter);
+        getView().navigateToActivityRequest(filterIntent, REQ_OPEN_FILTER);
+    }
+
+    @Override
+    public void onActivityResult(int requestcode, int resultcode, Intent data) {
+        if (requestcode == REQ_OPEN_FILTER) {
+            if (resultcode == RESULT_OK) {
+                String time;
+                long date;
+                String category;
+                time = data.getStringExtra(TIME_RANGE);
+                date = data.getLongExtra(START_DATE, 0);
+                category = data.getStringExtra(CATEGORY);
+                if (!category.isEmpty() || date != 0 || !time.isEmpty()) {
+                    getView().setFilterActive();
+                } else
+                    getView().setFilterInactive();
+                if (!category.equals(catgoryFilter) || date != startDate || !time.equals(timeFilter)) {
+                    catgoryFilter = category;
+                    startDate = date;
+                    timeFilter = time;
+                    if (!previousSearch.isEmpty() || isEventCalendar || showCards)
+                        getEventsListBySearch(previousSearch);
+                }
+            }
+        }
     }
 
     private void loadMoreItems() {

@@ -36,6 +36,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
+import static com.tokopedia.events.view.contractor.EventFilterContract.REQ_OPEN_FILTER;
+
 /**
  * Created by pranaymohapatra on 10/01/18.
  */
@@ -114,7 +116,7 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void navigateToActivityRequest(Intent intent, int requestCode) {
-
+        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -175,6 +177,7 @@ public class EventSearchActivity extends TActivity implements
             rvSearchResults.setVisibility(View.GONE);
             noResults.setVisibility(View.GONE);
         } else {
+            tvTopevents.setVisibility(View.GONE);
             rvSearchResults.setVisibility(View.GONE);
             rvTopEventSuggestions.setVisibility(View.GONE);
             noResults.setVisibility(View.VISIBLE);
@@ -201,6 +204,18 @@ public class EventSearchActivity extends TActivity implements
     @Override
     public LinearLayoutManager getLayoutManager() {
         return layoutManager;
+    }
+
+    @Override
+    public void setFilterActive() {
+        TextView tvFilter = findViewById(R.id.tv_filter);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, R.drawable.oval_3, 0);
+    }
+
+    @Override
+    public void setFilterInactive() {
+        TextView tvFilter = findViewById(R.id.tv_filter);
+        tvFilter.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_filter_list, 0, 0, 0);
     }
 
     private void executeInjector() {
@@ -247,5 +262,16 @@ public class EventSearchActivity extends TActivity implements
     @OnClick(R2.id.iv_finish)
     void clickFinish() {
         finish();
+    }
+
+    @OnClick(R2.id.btn_filter)
+    void onClickFilter() {
+        mPresenter.openFilters();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
     }
 }

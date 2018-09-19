@@ -8,8 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
-import com.tokopedia.events.domain.model.searchdomainmodel.ValuesItemDomain;
-import com.tokopedia.events.view.adapter.FiltersAdapter;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
@@ -49,6 +47,10 @@ public class EventSearchContract {
         void addEvents(List<CategoryItemsViewModel> searchViewModels);
 
         LinearLayoutManager getLayoutManager();
+
+        void setFilterActive();
+
+        void setFilterInactive();
     }
 
     public interface IEventSearchPresenter extends CustomerPresenter<IEventSearchView> {
@@ -67,12 +69,16 @@ public class EventSearchContract {
 
         boolean onOptionMenuClick(int id);
 
-        void onClickFilterItem(ValuesItemDomain filterItem, FiltersAdapter.FilterViewHolder viewHolder);
-
         void onSearchResultClick(SearchViewModel searchViewModel, int position);
 
         void onRecyclerViewScrolled(LinearLayoutManager layoutManager);
 
-        public String getSCREEN_NAME();
+        String getSCREEN_NAME();
+
+        void openFilters();
+
+        void onActivityResult(int requestcode, int resultcode, Intent data);
+
+
     }
 }
