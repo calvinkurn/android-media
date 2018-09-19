@@ -15,10 +15,9 @@ import kotlinx.android.synthetic.main.item_setting_list_payment.view.*
 class SettingListPaymentViewHolder(itemView : View?, val paymentSettingRouter: PaymentSettingRouter) : AbstractViewHolder<SettingListPaymentModel>(itemView) {
 
     override fun bind(element: SettingListPaymentModel?) {
-        ImageHandler.LoadImage(itemView.imageCCBackground, element?.getBackgroundAssets(paymentSettingRouter, itemView.context))
+        ImageHandler.LoadImage(itemView.imageCCBackground, element?.smallBackgroundImage)
 
         itemView.cardNumber.setText(element?.maskedNumber?.getMaskedNumberSubStringPayment())
-        ImageHandler.LoadImage(itemView.cardImage, element?.cardTypeImage)
     }
 
     companion object {

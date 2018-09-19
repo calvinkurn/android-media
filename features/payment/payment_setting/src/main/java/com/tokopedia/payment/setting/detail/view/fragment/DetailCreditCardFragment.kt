@@ -48,10 +48,9 @@ class DetailCreditCardFragment : BaseDaggerFragment(), DetailCreditCardContract.
 
         progressDialog.setMessage(getString(R.string.title_loading))
         settingListPaymentModel?.run {
-            ImageHandler.LoadImage(view.imageCCLarge, this.getBackgroundAssetsLarge(paymentSettingRouter, activity))
+            ImageHandler.LoadImage(view.imageCCBackground, this.backgroundImage)
             creditCardNumber.setText(this.maskedNumber?.getSpacedTextPayment())
             creditCardExpiryText.setText(this.getExpiredDate())
-            ImageHandler.LoadImage(creditCardLogo, cardTypeImage)
             buttonDeleteCC.setOnClickListener { showDeleteCcDialog() }
         }
     }

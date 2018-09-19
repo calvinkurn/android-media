@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/credit_card_detail_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,70 +9,51 @@
     android:orientation="vertical"
     android:padding="@dimen/dp_45">
 
-    <android.support.constraint.ConstraintLayout
+    <RelativeLayout
         android:id="@+id/layoutCC"
         android:layout_width="match_parent"
         android:layout_height="190dp">
 
         <ImageView
-            android:id="@+id/imageCCLarge"
+            android:id="@+id/imageCCBackground"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription" />=
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="bottom"
-            android:layout_margin="@dimen/dp_20">
 
-            <ImageView
-                android:id="@+id/imageChipCC"
-                app:srcCompat="@drawable/ic_chip_thumb_bright"
-                android:layout_width="@dimen/dp_45"
-                android:layout_height="@dimen/dp_45"
-                android:layout_marginTop="@dimen/dp_10"
-                tools:ignore="ContentDescription" />
+        <LinearLayout
+            android:layout_margin="@dimen/dp_22"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
             <TextView
-                style="@style/TextView.Title.White"
+                android:layout_marginBottom="@dimen/dp_16"
                 android:id="@+id/creditCardNumber"
-                android:layout_below="@+id/imageChipCC"
-                android:layout_marginTop="@dimen/dp_20"
-                android:gravity="center_horizontal"
+                style="@style/TextView.Title.White"
                 tools:text="1 2 3 4   5 6 7 8  1 1 2 2   3 3 3 3" />
 
             <TextView
-                style="@style/TextView.Title.White"
                 android:id="@+id/creditCardExpiryLabel"
-                android:layout_alignParentBottom="true"
-                tools:text="01/20" />
+                style="@style/TextView.Micro.WhitePrimary"
+                android:text="@string/payment_label_month_year" />
 
             <TextView
-                style="@style/TextView.Micro.WhitePrimary"
                 android:id="@+id/creditCardExpiryText"
-                android:layout_above="@+id/creditCardExpiryLabel"
-                android:gravity="start"
-                android:text="@string/payment_label_month_year"/>
+                style="@style/TextView.Title.White"
+                tools:text="01/20" />
+        </LinearLayout>
 
-            <ImageView
-                android:id="@+id/creditCardLogo"
-                android:layout_width="@dimen/dp_50"
-                android:layout_height="@dimen/dp_22"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                tools:ignore="ContentDescription" />
 
-        </RelativeLayout>
-
-    </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
     <Button
-        android:layout_marginTop="@dimen/dp_16"
         android:id="@+id/buttonDeleteCC"
         style="@style/Button.Submit.White.Border.Full"
-        android:text="@string/payment_label_delete_card"/>
+        android:layout_marginTop="@dimen/dp_16"
+        android:text="@string/payment_label_delete_card" />
 
 </LinearLayout>
