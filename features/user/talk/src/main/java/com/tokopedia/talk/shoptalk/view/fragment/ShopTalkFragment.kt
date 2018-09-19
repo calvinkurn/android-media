@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
 import com.tokopedia.talk.R
@@ -24,7 +23,6 @@ import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkTypeFactoryImpl
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
@@ -166,6 +164,10 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
                 presenter.getShopTalk(shopId)
             }.showRetrySnackbar()
         }
+    }
+
+    override fun onErrorActionTalk(errorMessage: String) {
+        NetworkErrorHelper.showRedSnackbar(view, errorMessage)
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {

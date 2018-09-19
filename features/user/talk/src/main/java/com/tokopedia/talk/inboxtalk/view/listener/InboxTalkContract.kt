@@ -1,7 +1,6 @@
 package com.tokopedia.talk.inboxtalk.view.listener
 
 import android.content.Context
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
@@ -23,7 +22,7 @@ interface InboxTalkContract {
         fun hideFilter()
         fun showFilter()
         fun showLoadingAction()
-        fun onSuccessGetListFirstPage(listTalk: ArrayList<Visitable<*>>)
+        fun onSuccessGetListFirstPage(talkViewModel: InboxTalkViewModel)
         fun hideLoadingAction()
         fun onSuccessDeleteTalk(talkId: String)
         fun onSuccessDeleteCommentTalk(talkId: String, commentId: String)
@@ -31,6 +30,7 @@ interface InboxTalkContract {
         fun onSuccessFollowTalk(talkId: String)
         fun onSuccessMarkTalkNotFraud(talkId: String)
         fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
+        fun onErrorActionTalk(errorMessage: String)
     }
 
     interface Presenter : CustomerPresenter<View> {

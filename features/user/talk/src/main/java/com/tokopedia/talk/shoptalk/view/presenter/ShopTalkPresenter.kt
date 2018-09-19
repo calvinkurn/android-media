@@ -135,7 +135,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -158,7 +158,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -181,7 +181,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -205,7 +205,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -230,7 +230,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -255,7 +255,7 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
 
                 override fun onError(e: Throwable) {
                     view.hideLoadingAction()
-                    onErrorTalk(e)
+                    onErrorActionTalk(e)
                 }
 
                 override fun onNext(talkViewModel: BaseActionTalkViewModel) {
@@ -277,6 +277,15 @@ class ShopTalkPresenter @Inject constructor(private val getShopTalkUseCase: GetS
         }
     }
 
+    private fun onErrorActionTalk(e: Throwable) {
+        isRequesting = false
+
+        if (e is MessageErrorException) {
+            view.onErrorActionTalk(e.message ?: "")
+        } else {
+            view.onErrorActionTalk(ErrorHandler.getErrorMessage(view.getContext(), e))
+        }
+    }
 
     override fun detachView() {
         super.detachView()

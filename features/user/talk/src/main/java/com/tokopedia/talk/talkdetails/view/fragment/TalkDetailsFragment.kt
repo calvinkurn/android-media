@@ -13,12 +13,14 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.attachproduct.resultmodel.ResultProduct
 import com.tokopedia.attachproduct.view.activity.AttachProductActivity
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
@@ -185,7 +187,23 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     //TalkDetailsContract.View
     override fun onError(throwable: Throwable) {
         hideLoadingAction()
-        showErrorTalk(throwable.message ?: "Unknown Error")
+
+        if (throwable is MessageErrorException) {
+            showErrorTalk(throwable.message ?: "")
+        } else {
+            showErrorTalk(ErrorHandler.getErrorMessage(context, throwable) ?: "")
+        }
+    }
+
+    override fun onErrorActionTalk(throwable: Throwable) {
+        hideLoadingAction()
+
+        if (throwable is MessageErrorException) {
+            NetworkErrorHelper.showRedSnackbar(view, throwable.message ?: "")
+        } else {
+            NetworkErrorHelper.showRedSnackbar(view, ErrorHandler.getErrorMessage(context, throwable)
+                    ?: "")
+        }
     }
 
     override fun onSuccessLoadTalkDetails(data: ArrayList<Visitable<*>>) {

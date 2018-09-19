@@ -36,5 +36,6 @@ class TalkDetailsContract {
         fun onSuccessFollowTalk(talkId: String)
         fun onSuccessMarkTalkNotFraud(talkId: String)
         fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String)
+        fun onErrorActionTalk(throwable: Throwable)
     }
 }
