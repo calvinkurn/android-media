@@ -71,6 +71,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdVoteVersion = '2.22'
+    tkpdNotifCenterVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
