@@ -155,7 +155,7 @@ public class DeeplinkUTMUtils {
 
                     Toast.makeText(activity, "campaign event not google", Toast.LENGTH_LONG).show();
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : host);
                     campaign.setUtmMedium("referral");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
