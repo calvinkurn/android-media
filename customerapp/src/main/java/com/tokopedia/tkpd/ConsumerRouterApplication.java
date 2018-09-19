@@ -2888,6 +2888,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public boolean isEnableInterestPick() {
+        return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
+    }
+
+    @Override
     public Intent getSettingBankIntent(Context context) {
             return SettingBankActivity.Companion.createIntent(context);
     }

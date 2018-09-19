@@ -577,7 +577,9 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     @Override
     public void showInterestPick() {
-        RouteManager.route(getContext(), ApplinkConst.INTEREST_PICK);
+        if (getContext() != null && feedModuleRouter.isEnableInterestPick()) {
+            RouteManager.route(getContext(), ApplinkConst.INTEREST_PICK);
+        }
     }
 
     @Override
