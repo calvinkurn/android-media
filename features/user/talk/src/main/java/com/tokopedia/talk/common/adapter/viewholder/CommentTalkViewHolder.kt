@@ -73,6 +73,9 @@ class CommentTalkViewHolder(val v: View,
             if (element.isSending) itemView.setBackgroundResource(R.color.white_grey)
             else itemView.setBackgroundResource(R.color.transparent)
 
+            if(element.hasSeparator) itemView.commentSeparator.visibility = View.VISIBLE
+            else itemView.commentSeparator.visibility = View.GONE
+
         }
 
     }

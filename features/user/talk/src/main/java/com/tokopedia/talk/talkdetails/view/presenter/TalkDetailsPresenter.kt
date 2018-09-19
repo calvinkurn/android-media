@@ -44,6 +44,22 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                 })
     }
 
+    override fun refreshTalkAfterSendComment(talkId: String) {
+        getTalkComments.execute(GetTalkCommentsUseCase.getParameters(talkId),
+                object : Subscriber<TalkDetailViewModel>() {
+                    override fun onCompleted() {
+
+                    }
+
+                    override fun onError(e: Throwable) {
+                        view.onError(e)
+                    }
+
+                    override fun onNext(response: TalkDetailViewModel) {
+                        view.onSuccessRefreshTalkAfterSendTalk(response.listTalk)
+                    }
+                }) }
+
     override fun sendComment(talkId: String, productId: String, message: String,
                              attachedProduct: List<TalkProductAttachmentViewModel>) {
         view.showLoadingAction()
@@ -198,8 +214,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
         })
     }
 
-
-    override fun onDestroy() {
+    override fun detachView() {
+        super.detachView()
         getTalkComments.unsubscribe()
         sendCommentsUseCase.unsubscribe()
         deleteTalkUseCase.unsubscribe()
@@ -207,4 +223,5 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
         followUnfollowTalkUseCase.unsubscribe()
         markTalkNotFraudUseCase.unsubscribe()
     }
+
 }
