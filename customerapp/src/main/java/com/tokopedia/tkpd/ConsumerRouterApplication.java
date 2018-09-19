@@ -205,6 +205,7 @@ import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -240,6 +241,8 @@ import com.tokopedia.otp.phoneverification.view.activity.RidePhoneNumberVerifica
 import com.tokopedia.payment.activity.TopPayActivity;
 import com.tokopedia.payment.model.PaymentPassData;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
+import com.tokopedia.payment.setting.list.view.activity.SettingListPaymentActivity;
+import com.tokopedia.payment.setting.util.PaymentSettingRouter;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -457,7 +460,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         NotifCenterRouter,
         ProductEditModuleRouter,
         EventModuleRouter,
-        TravelCalendarRouter {
+        TravelCalendarRouter,
+        PaymentSettingRouter {
 
     private  static final String EXTRA = "extra";
 
@@ -1246,7 +1250,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        Intent intent = new Intent(activity, ListPaymentTypeActivity.class);
+        Intent intent = new Intent(activity, SettingListPaymentActivity.class);
         activity.startActivity(intent);
     }
 
@@ -2029,6 +2033,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Fragment getShopTalkFragment() {
         return ShopTalkLimitedFragment.createInstance();
+    }
+
+    @Override
+    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
+        return KolPostShopFragment.newInstance(shopId, createPostUrl);
     }
 
     @Override
@@ -2902,5 +2911,20 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getChangePasswordIntent(Context context) {
         return ChangePasswordActivity.Companion.createIntent(context);
+    }
+
+    @Override
+    public boolean isFeedShopPageEnabled() {
+        return remoteConfig.getBoolean("mainapp_enable_feed_shop_page", Boolean.TRUE);
+    }
+
+    @Override
+    public String getResourceUrlAssetPayment() {
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getApplicationContext());
+        String baseUrl = remoteConfig.getString(TkpdCache.RemoteConfigKey.IMAGE_HOST,
+                TkpdBaseURL.Payment.DEFAULT_HOST);
+
+        final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
+        return resourceUrl;
     }
 }
