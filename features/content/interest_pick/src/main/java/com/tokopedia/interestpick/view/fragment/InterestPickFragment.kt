@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.interestpick.R
+import com.tokopedia.interestpick.R.id.*
 import com.tokopedia.interestpick.di.DaggerInterestPickComponent
 import com.tokopedia.interestpick.view.adapter.InterestPickAdapter
 import com.tokopedia.interestpick.view.listener.InterestPickContract
@@ -40,6 +41,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     lateinit var presenter: InterestPickContract.Presenter
     lateinit var adapter: InterestPickAdapter
     var selectedCount = 0
+    var isSaved = false
 
     override fun getScreenName() = null
 
@@ -139,6 +141,7 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
             RouteManager.route(context, ApplinkConst.FEED)
             activity?.finish()
         }
+        isSaved = true
     }
 
     override fun onErrorUpdateInterest(message: String) {
@@ -146,7 +149,9 @@ class InterestPickFragment : BaseDaggerFragment(), InterestPickContract.View {
     }
 
     override fun onBackPressed() {
-        presenter.onBackPressed()
+        if (!isSaved) {
+            presenter.onBackPressed()
+        }
     }
 
     override fun onItemSelected(isSelected: Boolean) {
