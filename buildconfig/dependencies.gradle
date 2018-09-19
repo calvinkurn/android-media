@@ -61,6 +61,7 @@ ext {
     tkpdTokocashVersion = '2.22'
     tkpdEventVersion = '2.22'
     tkpdWishlistVersion = '2.22'
+    tkpdFlashsaleManagementVersion = '2.22'
     tkpdHomeVersion = '2.22'
     tkpdMitraToppersVersion = '2.22'
     tkpdDistrictRecommendationVersion = '2.22'
@@ -248,6 +249,7 @@ ext {
             reputation            : "com.tokopedia.reputation:reputation:${tkpdReputationVersion}",
             reputationCommon      : "com.tokopedia.reputation:reputation-common:${tkpdReputationVersion}",
             wishListCommon        : "com.tokopedia.wishlist:wishlist-common:${tkpdWishlistVersion}",
+            flashsaleManagement   : "com.tokopedia.flashsale:flash-management:${tkpdFlashsaleManagementVersion}",
             tokocash              : "com.tokopedia.tokocash:tokocash:${tkpdTokocashVersion}",
             events                : "com.tokopedia.events:events:${tkpdEventVersion}",
             groupchat             : "com.tokopedia.groupchat:groupchat:${tkpdGroupchatVersion}",
@@ -300,6 +302,7 @@ ext {
             seller                : ":tkpdseller",
             payment               : ":features:payment:payment",
             wishlistCommon        : ":features:discovery:wishlist_common",
+            flashsaleManagement   : ":features:discovery:flashsale_management",
             districtRecommendation: ":features:logistic:district_recommendation",
             goldMerchantCommon    : ":features:merchant:gold_merchant_common",
             goldMerchant          : ":features:merchant:gold_merchant",
