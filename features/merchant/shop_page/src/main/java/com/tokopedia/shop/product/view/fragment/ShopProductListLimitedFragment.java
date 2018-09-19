@@ -34,7 +34,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
-import com.tokopedia.shop.common.util.TextApiUtils;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.shop.etalase.view.activity.ShopEtalaseActivity;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent;
@@ -203,6 +203,10 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public void displayProduct(ShopInfo shopInfo) {
         this.shopInfo = shopInfo;
         loadInitialData();
+    }
+
+    public void setShopInfo(ShopInfo shopInfo) {
+        this.shopInfo = shopInfo;
     }
 
     // load data promo/featured/etalase

@@ -1,14 +1,14 @@
 package com.tokopedia.feedplus.domain.usecase;
 
-import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
+import android.text.TextUtils;
+
 import com.tokopedia.feedplus.data.repository.FeedRepository;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain;
-import com.tokopedia.feedplus.domain.model.recentview.RecentViewProductDomain;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
+import com.tokopedia.kolcommon.domain.usecase.GetWhitelistUseCase;
 import com.tokopedia.usecase.RequestParams;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -20,27 +20,31 @@ import rx.Observable;
 
 public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
 
-    private GetRecentViewUseCase getRecentProductUseCase;
     private GetWhitelistUseCase getWhitelistUseCase;
+    private GetWhitelistUseCase getWhitelistInterestUseCase;
 
     @Inject
     public GetFirstPageFeedsCloudUseCase(FeedRepository feedRepository,
-                                         GetRecentViewUseCase getRecentProductUseCase,
-                                         GetWhitelistUseCase getWhitelistUseCase) {
+                                         GetWhitelistUseCase getWhitelistUseCase,
+                                         GetWhitelistUseCase getWhitelistInterestUseCase) {
         super(feedRepository);
-        this.getRecentProductUseCase = getRecentProductUseCase;
         this.getWhitelistUseCase = getWhitelistUseCase;
+        this.getWhitelistInterestUseCase = getWhitelistInterestUseCase;
     }
 
     @Override
     public Observable<FeedResult> createObservable(final RequestParams requestParams) {
         return Observable.zip(
                 getFeedPlus(requestParams),
-                getRecentView(requestParams),
                 getWhitelist(),
-                (feedResult, recentViewProductDomains, response) -> {
-                    feedResult.getFeedDomain().setRecentProduct(recentViewProductDomains);
-                    feedResult.getFeedDomain().setWhitelist(response != null ? mappingWhitelist(response) : null);
+                getInterestWhitelist(),
+                (feedResult, response, interestResponse) -> {
+                    feedResult.getFeedDomain().setWhitelist(response != null
+                            ? mappingWhitelist(response)
+                            : null);
+                    feedResult.getFeedDomain().setInterestWhitelist(interestResponse != null
+                            ? mapInterestWhitelist(interestResponse)
+                            : false);
                     return feedResult;
                 }
         );
@@ -50,18 +54,28 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
         return feedRepository.getFirstPageFeedsFromCloud(requestParams);
     }
 
-    private Observable<List<RecentViewProductDomain>> getRecentView(RequestParams requestParams) {
-        return getRecentProductUseCase.createObservable(requestParams);
-    }
-
     private Observable<GraphqlResponse> getWhitelist() {
         getWhitelistUseCase.clearRequest();
-        getWhitelistUseCase.setRequest(getWhitelistUseCase.getRequest());
+        getWhitelistUseCase.addRequest(getWhitelistUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_CONTENT_USER))
+        );
         return getWhitelistUseCase.createObservable(RequestParams.EMPTY);
     }
 
-    private WhitelistDomain mappingWhitelist(GraphqlResponse response) {
+    private Observable<GraphqlResponse> getInterestWhitelist() {
+        getWhitelistInterestUseCase.clearRequest();
+        getWhitelistInterestUseCase.addRequest(getWhitelistInterestUseCase.getRequest(
+                GetWhitelistUseCase.createRequestParams(GetWhitelistUseCase.WHITELIST_INTEREST))
+        );
+        return getWhitelistInterestUseCase.createObservable(RequestParams.EMPTY);
+    }
+
+    private static WhitelistDomain mappingWhitelist(GraphqlResponse response) {
         WhitelistQuery query = response.getData(WhitelistQuery.class);
+        return getWhitelistDomain(query);
+    }
+
+    public static WhitelistDomain getWhitelistDomain(WhitelistQuery query) {
         if (query == null) return null;
         else {
             WhitelistDomain domain = new WhitelistDomain();
@@ -89,5 +103,12 @@ public class GetFirstPageFeedsCloudUseCase extends GetFeedsUseCase {
                     "");
             return domain;
         }
+    }
+
+    private static Boolean mapInterestWhitelist(GraphqlResponse response) {
+        WhitelistQuery whitelistQuery = response.getData(WhitelistQuery.class);
+        return whitelistQuery != null && whitelistQuery.getWhitelist() != null
+                && TextUtils.isEmpty(whitelistQuery.getWhitelist().getError())
+                && whitelistQuery.getWhitelist().isWhitelist();
     }
 }

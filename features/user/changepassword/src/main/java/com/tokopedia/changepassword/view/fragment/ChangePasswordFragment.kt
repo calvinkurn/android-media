@@ -1,7 +1,5 @@
 package com.tokopedia.changepassword.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -46,8 +44,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view: View = inflater.inflate(R.layout.fragment_change_password, container, false)
-        return view
+        return inflater.inflate(R.layout.fragment_change_password, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,9 +53,9 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
             onSubmitClicked()
         }
 
-        forgot_pass_tv.setOnClickListener({
+        forgot_pass_tv.setOnClickListener {
             onGoToForgotPass()
-        })
+        }
         prepareHint()
         disableSubmitButton()
     }
@@ -66,8 +63,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
     private fun onGoToForgotPass() {
         if (activity != null && activity!!.applicationContext != null) {
             val intent = (activity!!.applicationContext as ChangePasswordRouter)
-                    .getForgotPasswordIntent(activity!!,
-                            presenter.userSession.email)
+                    .getForgotPasswordIntent(activity!!, presenter.userSession.email)
             startActivity(intent)
             activity!!.finish()
         }
@@ -254,7 +250,7 @@ class ChangePasswordFragment : ChangePasswordContract.View, BaseDaggerFragment()
                         ChangePasswordRouter) {
             (context!!.applicationContext as ChangePasswordRouter)
                     .logoutToHome(activity!!)
-        }else{
+        } else {
             activity!!.finish()
         }
     }

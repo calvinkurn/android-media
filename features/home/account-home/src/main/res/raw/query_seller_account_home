@@ -1,0 +1,48 @@
+query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
+  isAuthenticated
+  saldo {
+    deposit
+    deposit_fmt
+  }
+  userShopInfo {
+    info {
+      shop_name
+      shop_avatar
+      shop_id
+      shop_domain
+      shop_is_official
+    }
+    owner {
+      is_gold_merchant
+    }
+  }
+  notifications{
+    resolutionAs {
+      seller
+    }
+    sellerInfo {
+      notification
+    }
+    userSatisfactionSurvey
+    sellerOrderStatus {
+      newOrder
+      readyToShip
+      shipped
+      arriveAtDestination
+    }
+  }
+  reputation_shops(shop_ids: $shop_ids) {
+    badge
+    badge_hd
+  }
+  le_preapprove(merchantID: $merchantID) {
+    fieldData {
+        preApp {
+            valid
+            partnerName
+            partnerMaxLoan
+            partnerMinRate
+        }
+    }
+  }
+}

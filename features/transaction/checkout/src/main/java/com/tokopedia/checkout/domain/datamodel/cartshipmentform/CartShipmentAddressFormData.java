@@ -22,6 +22,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
+    private boolean useCourierRecommendation;
 
     public boolean isHasError() {
         return hasError;
@@ -103,6 +104,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.donation = donation;
     }
 
+    public boolean isUseCourierRecommendation() {
+        return useCourierRecommendation;
+    }
+
+    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
+        this.useCourierRecommendation = useCourierRecommendation;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -117,6 +126,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroDiscomToken = in.readString();
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
+        useCourierRecommendation = in.readByte() != 0;
     }
 
     @Override
@@ -131,6 +141,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeString(keroDiscomToken);
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
+        dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
     }
 
     @Override

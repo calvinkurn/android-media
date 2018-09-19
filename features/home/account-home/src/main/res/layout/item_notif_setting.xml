@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/dp_64"
+    android:foreground="?android:attr/selectableItemBackground">
+
+    <TextView style="@style/TextView.Small"
+        android:id="@+id/title"
+        android:layout_width="0dp"
+        tools:text="@string/title_shake_setting"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/switchWidget"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/subtitle"
+        app:layout_constraintVertical_chainStyle="packed"/>
+
+    <TextView style="@style/TextView.Small.BlackDisabled"
+        android:id="@+id/subtitle"
+        android:layout_width="0dp"
+        android:maxLines="3"
+        tools:text="@string/subtitle_shake_setting"
+        android:layout_marginBottom="@dimen/dp_16"
+        app:layout_constraintStart_toStartOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="@+id/title"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <Switch style="@style/Switch"
+        android:id="@+id/switchWidget"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:focusable="false"
+        android:clickable="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</android.support.constraint.ConstraintLayout>

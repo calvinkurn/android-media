@@ -9,13 +9,14 @@ import android.view.MotionEvent;
 import com.tokopedia.abstraction.R;
 
 public class TouchViewPager extends ViewPager {
+
     private boolean allowPageSwitching = true;
 
     public TouchViewPager(Context context) {
         super(context);
     }
 
-    public TouchViewPager(Context context, AttributeSet attrs){
+    public TouchViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
         applyAttrs(attrs);
     }
@@ -29,8 +30,8 @@ public class TouchViewPager extends ViewPager {
         }
     }
 
-    public void SetAllowPageSwitching(boolean permission){
-        allowPageSwitching = permission;
+    public void setAllowPageSwitching(boolean allowPageSwitching) {
+        this.allowPageSwitching = allowPageSwitching;
     }
 
     @Override
@@ -39,7 +40,7 @@ public class TouchViewPager extends ViewPager {
         try {
             // Never allow swiping to switch between pages
             return allowPageSwitching && !(getCurrentItem() == 0 && getChildCount() == 0) && super.onInterceptTouchEvent(arg0);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
 
@@ -51,9 +52,8 @@ public class TouchViewPager extends ViewPager {
         try {
             // Never allow swiping to switch between pages
             return allowPageSwitching && !(getCurrentItem() == 0 && getChildCount() == 0) && super.onTouchEvent(arg0);
-        }catch (Exception e) {
+        } catch (Exception e) {
             return false;
         }
     }
-
 }

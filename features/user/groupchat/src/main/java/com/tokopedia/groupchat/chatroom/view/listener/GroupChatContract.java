@@ -76,6 +76,8 @@ public interface GroupChatContract {
         ExitMessage getExitMessage();
 
         void logoutChannel(OpenChannel openChannel);
+
+        void onSuccessEnterRefreshChannel(OpenChannel openChannel);
     }
 
     interface Presenter extends CustomerPresenter<GroupChatContract.View> {

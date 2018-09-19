@@ -25,7 +25,7 @@ public class ConsumerAppBaseUrl {
     public static final String BASE_JAHE_DOMAIN = "https://jahe-staging.tokopedia.com/";
     public static final String BASE_PULSA_WEB_DOMAIN = "https://pulsa-staging.tokopedia.com";
     public static final String BASE_GOLD_MERCHANT_DOMAIN = "https://goldmerchant-staging.tokopedia.com";
-    public static final String BASE_WEB_DOMAIN = "https://www.staging.tokopedia.com/";
+    public static final String BASE_WEB_DOMAIN = "https://staging.tokopedia.com/";
     public static final String BASE_MOBILE_DOMAIN = "https://m-staging.tokopedia.com/";
     public static final String BASE_RIDE_DOMAIN = "https://ride-staging.tokopedia.com/";
     public static final String BASE_TOKO_CASH_DOMAIN = "https://wallet-staging.tokopedia.id/";
@@ -55,4 +55,5 @@ public class ConsumerAppBaseUrl {
     public static final String DEALS_DOMAIN = "https://booking-staging.tokopedia.com/";
     public static final String CHANGE_PHONE_DOMAIN = "https://13-feature-m-staging.tokopedia.com";
     public static final String KAI_WEB_DOMAIN = "https://tiket-staging.tokopedia.com/";
+    public static final String TOKOCARD_BASE_DOMAIN = "https://staging.tokopedia.com/tokocard/";
 }

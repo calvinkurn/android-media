@@ -52,6 +52,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -202,7 +203,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                     if (data != null) {
                         boolean isLocationUpdated = data.getBooleanExtra(SelectLocationFragment.EXTRA_CALLBACK_LOCATION, true);
                         if (isLocationUpdated) {
-                            Utils.getSingletonInstance().setSnackBarLocationChange(location.getName(), getActivity(), mainContent);
+                            Utils.getSingletonInstance().showSnackBarDeals(location.getName(), getActivity(), mainContent, true);
                         }
                         mPresenter.getDealsList(true);
                     }
@@ -259,15 +260,19 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (top.getItems() != null && top.getItems().size() > 0) {
             rvTrendingDeals.setVisibility(View.VISIBLE);
             noContent.setVisibility(View.GONE);
-            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(top.getItems(), this, IS_SHORT_LAYOUT);
+            DealsCategoryAdapter categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
             rvTrendingDeals.setAdapter(categoryAdapter);
+            categoryAdapter.addAll(top.getItems(), false);
+            categoryAdapter.notifyDataSetChanged();
         } else {
+            mPresenter.sendEventView(DealsAnalytics.EVENT_NO_DEALS_AVAILABLE_ON_YOUR_LOCATION,
+                    tvLocationName.getText().toString());
             rvTrendingDeals.setVisibility(View.GONE);
             noContent.setVisibility(View.VISIBLE);
         }
         if (carousel.getItems() != null && carousel.getItems().size() > 0) {
             clBanners.setVisibility(View.VISIBLE);
-            setViewPagerListener(new SlidingImageAdapter(mPresenter.getCarouselImages(carousel.getItems()), mPresenter));
+            setViewPagerListener(new SlidingImageAdapter(carousel.getItems(), mPresenter));
             circlePageIndicator.setViewPager(viewPager);
             mPresenter.startBannerSlide(viewPager);
         } else {
@@ -283,7 +288,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderBrandList(List<Brand> brandList) {
         if (brandList != null) {
             clBrands.setVisibility(View.VISIBLE);
-            rvBrandItems.setAdapter(new DealsBrandAdapter(brandList, true));
+            DealsBrandAdapter dealsBrandAdapter = new DealsBrandAdapter(brandList, true);
+            dealsBrandAdapter.setPopularBrands(true);
+            rvBrandItems.setAdapter(dealsBrandAdapter);
+
         } else {
             clBrands.setVisibility(View.GONE);
         }
@@ -347,11 +355,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             @Override
             public void onPageSelected(int arg0) {
                 mPresenter.onBannerSlide(arg0);
+
             }
 
             @Override
             public void onPageScrolled(int arg0, float arg1, int arg2) {
-
             }
 
             @Override
@@ -376,7 +384,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 
@@ -440,7 +448,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
 
     @Override
     public void onClick(View v) {
-        ;
         mPresenter.onOptionMenuClick(v.getId());
     }
 

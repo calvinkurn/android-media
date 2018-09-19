@@ -15,11 +15,4 @@
         android:padding="@dimen/search_suggestion_padding"
         tools:text="Menampilkan hasil untuk “samsungkl”. \nApakah yang Anda maksud “smasungkl” ?" />
 
-    <TextView
-        android:id="@+id/result_count_text_view"
-        style="@style/TextView.Small.BlackSecondary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/result_count_padding"
-        tools:text="7.828.192 Produk" />
 </LinearLayout>

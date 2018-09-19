@@ -50,12 +50,15 @@ public class Utils {
     private static Location location;
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
-    public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
-    public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
+    public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
+    public static String QUERY_PARAM_CITY_ID = "cities";
     public static final String NEXT_URL = "nexturl";
     private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
     private static final float MIN_RADIUS = 0.0f;
+    public static Locale locale = new Locale("in", "ID");
+    public static final String RUPIAH_FORMAT = "Rp %s";
+
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -78,6 +81,7 @@ public class Utils {
                 category.setCount(categoryItem.getCount());
                 category.setName(categoryItem.getName());
                 category.setMediaUrl(categoryItem.getMediaUrl());
+                category.setCategoryUrl(categoryItem.getCategoryUrl());
                 category.setUrl(categoryItem.getUrl());
                 category.setItems(categoryItem.getItems());
 
@@ -138,7 +142,7 @@ public class Utils {
                         && !TextUtils.isEmpty(location.getSearchName())
                         && outlet.getSearchName().equalsIgnoreCase(location.getSearchName()))
                     outlets1.add(outlet);
-                else{
+                else {
                     outlets2.add(outlet);
                 }
             }
@@ -193,15 +197,6 @@ public class Utils {
         return false;
     }
 
-    private static boolean isNullOrEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
-
-    public static boolean isNotNullOrEmpty(String string) {
-        return !isNullOrEmpty(string);
-    }
-
-
     public static String convertEpochToString(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
@@ -209,13 +204,6 @@ public class Utils {
         Date date = new Date(epochTime);
         String dateString = sdf.format(date);
         return dateString;
-    }
-
-    public static Locale locale = new Locale("in", "ID");
-    public static final String RUPIAH_FORMAT = "Rp %s";
-
-    public static String convertToCurrencyString(Integer value) {
-        return String.format(RUPIAH_FORMAT, NumberFormat.getNumberInstance(locale).format(value.longValue()));
     }
 
     public static String convertToCurrencyString(long value) {
@@ -256,8 +244,8 @@ public class Utils {
         }
     }
 
-    public void setSnackBarLocationChange(String locationName, Context context, ViewGroup coordinatorLayout) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, locationName, Snackbar.LENGTH_LONG);
+    public void showSnackBarDeals(String text, Context context, ViewGroup coordinatorLayout, boolean locationToast) {
+        final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
         Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
 
         TextView textView = layout.findViewById(android.support.design.R.id.snackbar_text);
@@ -265,8 +253,16 @@ public class Utils {
 
         LayoutInflater inflater = LayoutInflater.from(context);
         View snackView = inflater.inflate(R.layout.custom_location_change_snackbar, null);
-        TextView tv = snackView.findViewById(R.id.tv_location_ame);
-        tv.setText(locationName.toUpperCase());
+        TextView tvlcn = snackView.findViewById(R.id.tv_location_name);
+        TextView tvmsg = snackView.findViewById(R.id.tv_msg);
+        if (locationToast) {
+            tvmsg.setText(context.getResources().getString(R.string.location_changed_to));
+            tvlcn.setText(text.toUpperCase());
+        } else {
+            tvmsg.setText(text);
+            tvlcn.setVisibility(View.GONE);
+        }
+
         TextView okbtn = snackView.findViewById(R.id.snack_ok);
         okbtn.setOnClickListener(new View.OnClickListener() {
             @Override

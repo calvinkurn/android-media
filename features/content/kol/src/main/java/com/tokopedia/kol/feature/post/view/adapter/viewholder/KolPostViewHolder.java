@@ -3,7 +3,9 @@ package com.tokopedia.kol.feature.post.view.adapter.viewholder;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.LayoutRes;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.style.ClickableSpan;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -74,9 +76,7 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
     @Override
     public void bind(KolPostViewModel element) {
-        baseKolView.bind(element);
-
-        if (type == Type.PROFILE && getAdapterPosition() == 0) {
+        if (element.isShowTopShadow() && getAdapterPosition() == 0) {
             topShadow.setVisibility(View.VISIBLE);
         } else {
             topShadow.setVisibility(View.GONE);
@@ -123,9 +123,12 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
         } else {
             tooltipClickArea.setVisibility(View.VISIBLE);
             tooltip.setText(element.getTagsCaption());
+            element.setReviewUrlClickableSpan(getUrlClickableSpan(element));
         }
 
         setListener(element);
+
+        baseKolView.bind(element);
         baseKolView.setViewListener(this, element);
     }
 
@@ -335,5 +338,21 @@ public class KolPostViewHolder extends AbstractViewHolder<KolPostViewModel>
 
         String campaignType = type + KolEventTracking.EventLabel.FEED_CAMPAIGN_TYPE_SUFFIX;
         return contentType + " - " + campaignType;
+    }
+
+    private ClickableSpan getUrlClickableSpan(KolPostViewModel element) {
+        return new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                tooltipAreaClicked(element);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+                ds.setColor(MethodChecker.getColor(context, R.color.tkpd_main_green));
+            }
+        };
     }
 }

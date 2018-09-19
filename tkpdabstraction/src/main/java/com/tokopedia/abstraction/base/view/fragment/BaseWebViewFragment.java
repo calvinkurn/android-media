@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -173,12 +174,17 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
         webView.setWebViewClient(new WebViewClient());
         webView.setWebChromeClient(new MyWebViewClient());
         webView.loadAuthUrl(getUrl(), getUserIdForHeader(), getAccessToken());
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(getWebviewClient());
+    }
+
+    @NonNull
+    protected WebViewClient getWebviewClient() {
+        return new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return BaseWebViewFragment.this.shouldOverrideUrlLoading(view, url);
             }
-        });
+        };
     }
 
     protected boolean shouldOverrideUrlLoading(WebView webView, String url) {

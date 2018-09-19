@@ -25,7 +25,7 @@ import com.moengage.pushbase.push.MoEPushCallBacks;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.TkpdCacheApiGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.TkpdSellerGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ProductDraftGeneratedDatabaseHolder;
 import com.sendbird.android.SendBird;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.constant.AbstractionBaseURL;
@@ -50,20 +50,23 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
 import com.tokopedia.kol.common.network.KolUrl;
 import com.tokopedia.logisticdata.data.constant.LogisticDataConstantUrl;
+import com.tokopedia.logout.data.LogoutUrl;
 import com.tokopedia.network.SessionUrl;
 import com.tokopedia.oms.data.source.OmsUrl;
 import com.tokopedia.otp.cotp.data.CotpUrl;
 import com.tokopedia.otp.cotp.data.SQLoginUrl;
 import com.tokopedia.payment.fingerprint.util.PaymentFingerprintConstant;
+import com.tokopedia.payment.setting.util.PaymentSettingUrlKt;
 import com.tokopedia.profile.data.network.ProfileUrl;
 import com.tokopedia.pushnotif.PushNotification;
 import com.tokopedia.reputation.common.constant.ReputationCommonUrl;
-import com.tokopedia.seller.product.imagepicker.util.CatalogConstant;
+import com.tokopedia.product.manage.item.imagepicker.util.CatalogConstant;
 import com.tokopedia.settingbank.banklist.data.SettingBankUrl;
 import com.tokopedia.settingbank.choosebank.data.BankListUrl;
 import com.tokopedia.shop.common.constant.ShopCommonUrl;
@@ -82,6 +85,7 @@ import com.tokopedia.train.common.util.TrainDatabase;
 import com.tokopedia.transaction.network.TransactionUrl;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
 import com.tokopedia.transactiondata.constant.TransactionDataApiUrl;
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.vote.data.VoteUrl;
 import com.tokopedia.travelcalendar.network.TravelCalendarUrl;
 
@@ -213,6 +217,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        UpdateInactivePhoneURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -241,6 +246,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         SessionUrl.CHANGE_PHONE_DOMAIN = ConsumerAppBaseUrl.CHANGE_PHONE_DOMAIN;
         GraphqlUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         ImageUploaderUrl.BASE_URL = ConsumerAppBaseUrl.BASE_DOMAIN;
+        LogoutUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_DOMAIN);
         ResolutionUrl.BASE_URL = ConsumerAppBaseUrl.BASE_API_DOMAIN;
         ResolutionUrl.BASE_URL_IMAGE_SERVICE = ConsumerAppBaseUrl.BASE_DOMAIN;
         SettingBankUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.ACCOUNTS_DOMAIN);
@@ -251,6 +257,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
+        PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
+        AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
@@ -306,7 +314,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public void initializeDatabase() {
         FlowManager.init(new FlowConfig.Builder(this)
-                .addDatabaseHolder(TkpdSellerGeneratedDatabaseHolder.class)
+                .addDatabaseHolder(ProductDraftGeneratedDatabaseHolder.class)
                 .build());
         FlowManager.init(new FlowConfig.Builder(this)
                 .addDatabaseHolder(TkpdCacheApiGeneratedDatabaseHolder.class)

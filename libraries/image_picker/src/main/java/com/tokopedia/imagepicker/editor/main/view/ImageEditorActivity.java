@@ -21,13 +21,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
 import com.tokopedia.imagepicker.common.presenter.ImageRatioCropPresenter;
 import com.tokopedia.imagepicker.common.util.ImageUtils;
-import com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager;
 import com.tokopedia.imagepicker.editor.adapter.ImageEditorViewPagerAdapter;
 import com.tokopedia.imagepicker.editor.widget.ImageEditActionMainWidget;
 import com.tokopedia.imagepicker.editor.widget.ImageEditCropListWidget;
@@ -101,7 +101,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
     private ImageRatioCropPresenter imageRatioCropPresenter;
 
     private View vgContentContainer;
-    private NonSwipeableViewPager viewPager;
+    private TouchViewPager viewPager;
 
     private ImageEditorViewPagerAdapter imageEditorViewPagerAdapter;
     private ImageEditThumbnailListWidget imageEditThumbnailListWidget;
@@ -468,7 +468,7 @@ public class ImageEditorActivity extends BaseSimpleActivity implements ImagePick
         this.isInEditMode = isInEditMode;
         this.currentEditActionType = editActionType;
 
-        viewPager.setCanSwipe(!isInEditMode);
+        viewPager.setAllowPageSwitching(!isInEditMode);
         ImageEditPreviewFragment fragment = getCurrentFragment();
         if (isInEditMode) {
             editorMainView.setVisibility(View.GONE);
