@@ -157,9 +157,7 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_MEMBERSHIP,
                     mValueMembershipDescription);
-        } else if (source.getId() == R.id.text_my_points_label
-                || source.getId() == R.id.img_points_stack
-                || source.getId() == R.id.text_my_points_value) {
+        } else if (source.getId() == R.id.view_point_saya) {
             openWebView(CommonConstant.WebLink.HISTORY);
 
             AnalyticsTrackerUtil.sendEvent(getContext(),
@@ -167,9 +165,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
                     AnalyticsTrackerUtil.ActionKeys.CLICK_POINT_SAYA,
                     "");
-        } else if (source.getId() == R.id.img_loyalty_stack
-                || source.getId() == R.id.text_loyalty_label
-                || source.getId() == R.id.text_loyalty_value) {
+        } else if (source.getId() == R.id.view_loyalty_saya) {
+            openWebView(CommonConstant.WebLink.HISTORY);
+
             AnalyticsTrackerUtil.sendEvent(getContext(),
                     AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
                     AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
@@ -196,13 +194,9 @@ public class HomepageFragment extends BaseDaggerFragment implements HomepageCont
         }
 
         getView().findViewById(R.id.text_see_membership_status).setOnClickListener(this);
-        getView().findViewById(R.id.text_my_points_label).setOnClickListener(this);
-        getView().findViewById(R.id.img_points_stack).setOnClickListener(this);
-        getView().findViewById(R.id.text_my_points_value).setOnClickListener(this);
-        getView().findViewById(R.id.img_loyalty_stack).setOnClickListener(this);
-        getView().findViewById(R.id.text_loyalty_label).setOnClickListener(this);
-        getView().findViewById(R.id.text_loyalty_value).setOnClickListener(this);
         getView().findViewById(R.id.text_failed_action).setOnClickListener(this);
+        getView().findViewById(R.id.view_point_saya).setOnClickListener(this);
+        getView().findViewById(R.id.view_loyalty_saya).setOnClickListener(this);
     }
 
     @Override
