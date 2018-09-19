@@ -11,11 +11,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.flashsale.management.R
 import com.tokopedia.flashsale.management.view.fragment.TokopediaCampaignFragment
 
-class FlashsaleManagementActivity : BaseTabActivity(){
+class CampaignActivity : BaseTabActivity(){
 
     companion object {
+        @JvmStatic
         fun createIntent(context: Context): Intent {
-            return Intent(context, FlashsaleManagementActivity::class.java)
+            return Intent(context, CampaignActivity::class.java)
         }
     }
 
