@@ -443,9 +443,6 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
 
     @Override
     public void sendCampaignGTM(Activity activity, String campaignUri, String screenName) {
-        /*if (!DeeplinkUTMUtils.isValidCampaignUrl(Uri.parse(campaignUri))) {
-            return;
-        }*/
         Campaign campaign = DeeplinkUTMUtils.convertUrlCampaign(activity, Uri.parse(campaignUri));
         campaign.setScreenName(screenName);
         UnifyTracking.eventCampaign(campaign);
