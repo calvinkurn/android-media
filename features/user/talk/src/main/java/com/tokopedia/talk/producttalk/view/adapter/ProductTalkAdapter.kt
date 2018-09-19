@@ -2,7 +2,9 @@ package com.tokopedia.talk.producttalk.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
+import com.tokopedia.talk.inboxtalk.view.viewmodel.EmptyInboxTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.*
 
@@ -15,11 +17,18 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
     : BaseAdapter<ProductTalkTypeFactoryImpl>(adapterTypeFactory, listProductTalk) {
 
     var emptyModel = EmptyProductTalkViewModel()
+    var emptyTalkModel = EmptyInboxTalkViewModel()
     var loadModel = LoadProductTalkThreadViewModel()
 
-    fun showEmpty() {
+    fun showEmpty(myShop: Boolean) {
         this.visitables.clear()
-        this.visitables.add(emptyModel)
+        this.visitables.add(EmptyProductTalkViewModel(myShop))
+        this.notifyDataSetChanged()
+    }
+
+    fun showEmptyTalk() {
+        this.visitables.clear()
+        this.visitables.add(emptyTalkModel)
         this.notifyDataSetChanged()
     }
 
@@ -162,6 +171,12 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
             }
         }
         return null
+    }
+
+    fun checkCanLoadMore(index: Int): Boolean {
+        return if (index == itemCount - 1) {
+            visitables[index] is LoadingMoreModel
+        } else false
     }
 }
 

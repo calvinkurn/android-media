@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.talk.common.adapter.TalkProductAttachmentAdapter
 import com.tokopedia.talk.common.adapter.viewholder.CommentTalkViewHolder
 import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolder
+import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.EmptyInboxTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.*
-import com.tokopedia.talk.producttalk.view.viewmodel.EmptyProductTalkViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.LoadProductTalkThreadViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.*
 
 /**
  * @author by nisie on 6/12/18.
@@ -25,7 +23,11 @@ class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThread
         BaseAdapterTypeFactory(),
         ProductTalkListTypeFactory {
     override fun type(emptyProductTalkViewModel: EmptyProductTalkViewModel): Int {
-        return EmptyProductTalkViewHolder.LAYOUT
+        return if(emptyProductTalkViewModel.isMyShop){
+            EmptyTalksViewHolder.LAYOUT
+        }else {
+            EmptyProductTalkViewHolder.LAYOUT
+        }
     }
 
     override fun type(viewModel: ProductTalkTitleViewModel): Int {
@@ -43,6 +45,7 @@ class ProductTalkTypeFactoryImpl(private val talkItemListener: ProductTalkThread
 
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<*> {
         return when (viewType) {
+            EmptyTalksViewHolder.LAYOUT -> EmptyTalksViewHolder(view)
             EmptyProductTalkViewHolder.LAYOUT -> EmptyProductTalkViewHolder(view, qaTalkListener)
             ProductTalkTitleViewHolder.LAYOUT -> ProductTalkTitleViewHolder(view)
             ProductTalkThreadViewHolder.LAYOUT -> ProductTalkThreadViewHolder(view,

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -28,7 +29,6 @@ import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
-import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
@@ -84,6 +84,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     val REQUEST_GO_TO_LOGIN: Int = 200
 
 
+    var shopId: String = ""
     var productId: String = ""
     var productName: String = ""
     var productPrice: String = ""
@@ -102,6 +103,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
+            fragment.shopId = extras.getString("shop_id")
             fragment.productId = extras.getString("product_id")
             fragment.productPrice = extras.getString("product_price")
             fragment.productName = extras.getString("prod_name")
@@ -134,7 +136,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_add).isVisible = true
+        menu.findItem(R.id.action_add).isVisible = !presenter.isMyShop(shopId)
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -167,6 +169,16 @@ class ProductTalkFragment : BaseDaggerFragment(),
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         list_thread.layoutManager = linearLayoutManager
         list_thread.adapter = adapter
+        list_thread.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val index = linearLayoutManager.findLastVisibleItemPosition()
+                if (index != -1 && adapter.checkCanLoadMore(index)) {
+                    presenter.getProductTalk(productId)
+                }
+            }
+
+        })
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -198,11 +210,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onEmptyTalk() {
         setHasOptionsMenu(false)
-        adapter.showEmpty()
+        adapter.showEmpty(presenter.isMyShop(shopId))
     }
 
     override fun setCanLoad() {
-        adapter.setLoadModel()
+        adapter.showLoading()
     }
 
     override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
@@ -210,7 +222,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
-        setHasOptionsMenu(true)
         adapter.hideLoading()
         adapter.addList(listThread)
     }
