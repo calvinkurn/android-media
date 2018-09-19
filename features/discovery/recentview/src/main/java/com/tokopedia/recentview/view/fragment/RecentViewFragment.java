@@ -1,7 +1,5 @@
 package com.tokopedia.recentview.view.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
-import com.tokopedia.recentview.analytic.RecentViewTracking;
+import com.tokopedia.recentview.analytics.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
 import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
@@ -50,9 +48,6 @@ public class RecentViewFragment extends BaseDaggerFragment
     private RecentViewDetailAdapter adapter;
     private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
-
-    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
-    private static final String LOGIN_ID = "LOGIN_ID";
 
     private int itemSize = 0;
 
@@ -189,16 +184,14 @@ public class RecentViewFragment extends BaseDaggerFragment
     @Override
     public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element, int position) {
         RecentViewTracking.trackEventClickOnProductRecentView(getActivity(),
-                element.getRecentViewAsObjectDataLayerForClick(position),
-                getLoginID(getActivity())
+                element.getRecentViewAsObjectDataLayerForClick(position)
                 );
     }
 
     @Override
     public void sendRecentViewImpressionTracking(List<RecentViewProductDomain> recentViewProductDomains) {
         RecentViewTracking.trackEventImpressionOnProductRecentView(getActivity(),
-                getRecentViewAsDataLayerForImpression(recentViewProductDomains),
-                getLoginID(getActivity()));
+                getRecentViewAsDataLayerForImpression(recentViewProductDomains));
     }
 
     public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewProductDomain> recentViewProductDomains) {
@@ -210,21 +203,13 @@ public class RecentViewFragment extends BaseDaggerFragment
                     "name", domain.getName(),
                     "id", domain.getId(),
                     "price", Integer.toString(convertRupiahToInt(String.valueOf(domain.getPrice()))),
-                    "list", "/recent view",
+                    "list", "/recent",
                     "position", Integer.toString(i+1)
             ));
         }
         itemSize = objects.size();
         return objects;
     }
-
-    public static String getLoginID(Context context) {
-        String u_id;
-        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
-        u_id = sharedPrefs.getString(LOGIN_ID, "");
-        return u_id;
-    }
-
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {

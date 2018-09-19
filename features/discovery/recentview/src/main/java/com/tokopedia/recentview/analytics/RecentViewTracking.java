@@ -1,20 +1,21 @@
-package com.tokopedia.recentview.analytic;
+package com.tokopedia.recentview.analytics;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.analytics.UnifyTracking;
 
 import java.util.List;
-import java.util.Map;
 
 public class RecentViewTracking {
 
+    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
+    private static final String LOGIN_ID = "LOGIN_ID";
+
     public static void trackEventClickOnProductRecentView(Context context,
-                                                          Object dataItem,
-                                                          String userId) {
+                                                          Object dataItem) {
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
@@ -32,14 +33,13 @@ public class RecentViewTracking {
                                         "products", DataLayer.listOf(dataItem)
                                 )
                         ),
-                        "userId", userId
+                        "userId", getLoginID(context)
                 )
         );
     }
 
     public static void trackEventImpressionOnProductRecentView(Context context,
-                                                         List<Object> dataItemList,
-                                                         String userId) {
+                                                         List<Object> dataItemList) {
         if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
             return;
         }
@@ -56,8 +56,15 @@ public class RecentViewTracking {
                                 "impressions", DataLayer.listOf(
                                         dataItemList.toArray(new Object[dataItemList.size()])
                                 )),
-                        "userId", userId
+                        "userId", getLoginID(context)
                 )
         );
+    }
+
+    public static String getLoginID(Context context) {
+        String u_id;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        u_id = sharedPrefs.getString(LOGIN_ID, "");
+        return u_id;
     }
 }
