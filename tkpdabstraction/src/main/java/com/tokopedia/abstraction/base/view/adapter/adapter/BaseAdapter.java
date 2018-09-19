@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,12 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
 
     @Override
     public AbstractViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        View view = LayoutInflater.from(context).inflate(viewType, parent, false);
+        View view = onCreateViewItem(parent, viewType);
         return adapterTypeFactory.createViewHolder(view, viewType);
+    }
+
+    protected View onCreateViewItem(ViewGroup parent, int viewType) {
+        return LayoutInflater.from(parent.getContext()).inflate(viewType, parent, false);
     }
 
     @SuppressWarnings("unchecked")
@@ -58,39 +62,58 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
+        if (position < 0 || position >= visitables.size()) {
+            return HideViewHolder.LAYOUT;
+        }
         return visitables.get(position).type(adapterTypeFactory);
     }
 
     public boolean isLoading() {
-        //use last index for performance since loading is in the last item position
-        return visitables.lastIndexOf(loadingModel) != -1;
+        int lastIndex = getLastIndex();
+        if (lastIndex > -1) {
+            return visitables.get(lastIndex) instanceof LoadingModel ||
+                    visitables.get(lastIndex) instanceof LoadingMoreModel;
+        } else {
+            return false;
+        }
     }
 
     public void showLoading() {
-        //use last index for performance since loading is in the last item position
-        // note: do not use flag, because loading model can be removed from anywhere
-        if (visitables.lastIndexOf(loadingModel) == -1) {
-            if (visitables.size() == 0) {
-                visitables.add(loadingModel);
-            } else {
+        if (!isLoading()) {
+            if (isShowLoadingMore()) {
                 visitables.add(loadingMoreModel);
+            } else {
+                visitables.add(loadingModel);
             }
             notifyItemInserted(visitables.size());
         }
     }
 
-    public void hideLoading() {
-        //use last index for performance since loading is in the last item position
-        // note: do not use flag, because loading model can be removed from anywhere
-        int indexLoading = visitables.lastIndexOf(loadingModel);
-        if (indexLoading != -1) {
-            visitables.remove(indexLoading);
-            notifyItemRemoved(indexLoading);
+    protected boolean isShowLoadingMore(){
+        return visitables.size() > 0;
+    }
+
+    public int getFirstIndex() {
+        int size = visitables.size();
+        if (size > 0) {
+            return 0;
         }
-        int indexLoadMore = visitables.lastIndexOf(loadingMoreModel);
-        if (indexLoadMore != -1) {
-            visitables.remove(indexLoadMore);
-            notifyItemRemoved(indexLoadMore);
+        return -1;
+    }
+
+    public int getLastIndex() {
+        int size = visitables.size();
+        if (size > 0) {
+            return size - 1;
+        }
+        return -1;
+    }
+
+    public void hideLoading() {
+        if (isLoading()) {
+            int lastIndex = getLastIndex();
+            visitables.remove(getLastIndex());
+            notifyItemRemoved(lastIndex);
         }
     }
 
@@ -137,8 +160,8 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
         notifyDataSetChanged();
     }
 
-    public void setElements(int position, List<? extends Visitable> data) {
-        visitables.addAll(position, data);
+    public void setElements( List< Visitable> data) {
+        visitables = data;
         notifyDataSetChanged();
     }
 

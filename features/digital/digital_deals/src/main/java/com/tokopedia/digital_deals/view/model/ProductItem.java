@@ -130,6 +130,7 @@ public class ProductItem implements Parcelable {
     private Catalog catalog;
     @SerializedName("is_liked")
     private boolean isLiked;
+    private boolean isTrack = false;
 
 
 
@@ -176,6 +177,7 @@ public class ProductItem implements Parcelable {
         brand = in.readParcelable(Brand.class.getClassLoader());
         catalog = in.readParcelable(Catalog.class.getClassLoader());
         isLiked = in.readByte() != 0;
+        this.isTrack = in.readByte() != 0;
     }
 
     public static final Creator<ProductItem> CREATOR = new Creator<ProductItem>() {
@@ -455,6 +457,13 @@ public class ProductItem implements Parcelable {
         this.id = id;
     }
 
+    public boolean isTrack() {
+        return isTrack;
+    }
+
+    public void setTrack(boolean track) {
+        isTrack = track;
+    }
 
     public void writeToParcel(Parcel dest, int flags) {
 
@@ -496,6 +505,7 @@ public class ProductItem implements Parcelable {
         dest.writeParcelable(brand, flags);
         dest.writeParcelable(catalog, flags);
         dest.writeByte((byte) (isLiked ? 1 : 0));
+        dest.writeByte(this.isTrack ? (byte) 1 : (byte) 0);
     }
 
     public int describeContents() {

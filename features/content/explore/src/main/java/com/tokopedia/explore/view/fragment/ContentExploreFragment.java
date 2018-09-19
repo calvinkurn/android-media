@@ -25,7 +25,6 @@ import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.explore.R;
 import com.tokopedia.explore.analytics.ContentExloreEventTracking;
 import com.tokopedia.explore.di.DaggerExploreComponent;
-import com.tokopedia.explore.view.activity.ContentExploreActivity;
 import com.tokopedia.explore.view.adapter.ExploreCategoryAdapter;
 import com.tokopedia.explore.view.adapter.ExploreImageAdapter;
 import com.tokopedia.explore.view.adapter.factory.ExploreImageTypeFactory;
@@ -51,30 +50,29 @@ public class ContentExploreFragment extends BaseDaggerFragment
         implements ContentExploreContract.View, SearchInputView.Listener,
         SearchInputView.ResetListener, SwipeToRefresh.OnRefreshListener {
 
+    public static String PARAM_CATEGORY_ID = "category_id";
+    public static String DEFAULT_CATEGORY = "0";
+    public static int CATEGORY_POSITION_NONE = -1;
+
     private static final int IMAGE_SPAN_COUNT = 3;
     private static final int IMAGE_SPAN_SINGLE = 1;
     private static final int LOAD_MORE_THRESHOLD = 2;
-
+    @Inject
+    ContentExploreContract.Presenter presenter;
+    @Inject
+    ExploreCategoryAdapter categoryAdapter;
+    @Inject
+    ExploreImageAdapter imageAdapter;
     private SearchInputView searchInspiration;
     private RecyclerView exploreCategoryRv;
     private RecyclerView exploreImageRv;
     private SwipeToRefresh swipeToRefresh;
-    private View tabFeed;
     private View appBarLayout;
-
-    @Inject
-    ContentExploreContract.Presenter presenter;
-
-    @Inject
-    ExploreCategoryAdapter categoryAdapter;
-
-    @Inject
-    ExploreImageAdapter imageAdapter;
-
     private AbstractionRouter abstractionRouter;
     private RecyclerView.OnScrollListener scrollListener;
     private int categoryId;
     private boolean canLoadMore;
+    private boolean hasLoadedOnce;
 
     public static ContentExploreFragment newInstance(Bundle bundle) {
         ContentExploreFragment fragment = new ContentExploreFragment();
@@ -106,7 +104,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
         exploreCategoryRv = view.findViewById(R.id.explore_category_rv);
         exploreImageRv = view.findViewById(R.id.explore_image_rv);
         swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout);
-        tabFeed = view.findViewById(R.id.tab_feed);
         appBarLayout = view.findViewById(R.id.app_bar_layout);
         return view;
     }
@@ -115,16 +112,21 @@ public class ContentExploreFragment extends BaseDaggerFragment
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         GraphqlClient.init(getContext());
-        initView();
         initVar();
+        initView();
         presenter.attachView(this);
-        presenter.getExploreData(true);
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+    public void onResume() {
+        super.onResume();
+        loadData();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        loadData();
     }
 
     private void initView() {
@@ -170,8 +172,8 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void initVar() {
         if (getArguments() != null) {
             categoryId = Integer.valueOf(getArguments().getString(
-                    ContentExploreActivity.PARAM_CATEGORY_ID,
-                    ContentExploreActivity.DEFAULT_CATEGORY)
+                    PARAM_CATEGORY_ID,
+                    DEFAULT_CATEGORY)
             );
             presenter.updateCategoryId(categoryId);
         }
@@ -184,6 +186,16 @@ public class ContentExploreFragment extends BaseDaggerFragment
         }
     }
 
+    private void loadData() {
+        if (getUserVisibleHint() && isAdded() && getActivity() != null && presenter != null) {
+            if (!hasLoadedOnce) {
+                presenter.getExploreData(true);
+                hasLoadedOnce = !hasLoadedOnce;
+            }
+            abstractionRouter.getAnalyticTracker().sendScreen(getActivity(), getScreenName());
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -191,26 +203,35 @@ public class ContentExploreFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel) {
-        loadImageData(exploreViewModel.getExploreImageViewModelList());
+    public void onSuccessGetExploreData(ExploreViewModel exploreViewModel, boolean clearData) {
+        if (!exploreViewModel.getExploreImageViewModelList().isEmpty()) {
+            loadImageData(exploreViewModel.getExploreImageViewModelList());
+        } else if (clearData) {
+            showEmpty();
+        }
 
         if (categoryAdapter.getList().isEmpty()) {
             loadTagData(exploreViewModel.getTagViewModelList());
         }
 
+        boolean isCategoryExist = false;
         for (int i = 0; i < categoryAdapter.getList().size(); i++) {
             ExploreCategoryViewModel categoryViewModel = categoryAdapter.getList().get(i);
             if (categoryViewModel.getId() == categoryId) {
                 categoryViewModel.setActive(true);
                 categoryAdapter.notifyItemChanged(i);
                 exploreCategoryRv.scrollToPosition(i);
+                isCategoryExist = true;
                 break;
             }
+        }
+        if (!isCategoryExist && categoryId != Integer.valueOf(DEFAULT_CATEGORY)) {
+            onCategoryReset();
         }
     }
 
     @Override
-    public void onErrorGetExploreDataFirstPage() {
+    public void onErrorGetExploreDataFirstPage(String message) {
         NetworkErrorHelper.showEmptyState(getContext(), getView(), () -> {
             presenter.getExploreData(true);
         });
@@ -276,6 +297,16 @@ public class ContentExploreFragment extends BaseDaggerFragment
             }
         }
         presenter.getExploreData(true);
+    }
+
+    @Override
+    public void onCategoryReset() {
+        onCategoryClicked(CATEGORY_POSITION_NONE, Integer.valueOf(DEFAULT_CATEGORY), "");
+    }
+
+    @Override
+    public void showRefreshing() {
+        swipeToRefresh.setRefreshing(true);
     }
 
     @Override
@@ -362,6 +393,20 @@ public class ContentExploreFragment extends BaseDaggerFragment
         KeyboardHandler.DropKeyboard(getActivity(), getView());
     }
 
+    @Override
+    public void scrollToTop() {
+        if (exploreImageRv != null) {
+            exploreImageRv.scrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void resetDataParam() {
+        updateSearch("");
+        updateCursor("");
+        updateCategoryId(0);
+    }
+
     private void loadImageData(List<ExploreImageViewModel> exploreImageViewModelList) {
         imageAdapter.addList(new ArrayList<>(exploreImageViewModelList));
     }
@@ -378,12 +423,6 @@ public class ContentExploreFragment extends BaseDaggerFragment
     private void clearSearch() {
         searchInspiration.getSearchTextView().setText("");
         dropKeyboard();
-    }
-
-    private void resetDataParam() {
-        updateSearch("");
-        updateCursor("");
-        updateCategoryId(0);
     }
 
     private void setAllCategoriesInactive() {

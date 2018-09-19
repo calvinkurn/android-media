@@ -189,6 +189,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         if (!isWishlist) {
             presenter.addToWishlist(adapterPosition, String.valueOf(productId));
             UnifyTracking.eventFeedClickProduct(
+                    getScreenName(),
                     String.valueOf(productId),
                     getArguments().getString(FeedPlusDetailActivity
                             .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
@@ -197,6 +198,7 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         } else {
             presenter.removeFromWishlist(adapterPosition, String.valueOf(productId));
             UnifyTracking.eventFeedClickProduct(
+                    getScreenName(),
                     String.valueOf(productId),
                     getArguments().getString(FeedPlusDetailActivity
                             .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
@@ -208,7 +210,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     @Override
     public void onGoToShopDetail(Integer shopId) {
         goToShopDetail(shopId);
-        UnifyTracking.eventFeedViewShop(String.valueOf(shopId),
+        UnifyTracking.eventFeedViewShop(
+                getScreenName(),
+                String.valueOf(shopId),
                 getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                         + FeedTrackingEventLabel.View.PRODUCTLIST_SHOP);
 
@@ -301,15 +305,14 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
     }
 
     private View.OnClickListener onGoToShopDetailFromButton(final Integer shopId) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToShopDetail(shopId);
-                UnifyTracking.eventFeedClickShop(String.valueOf(shopId),
-                        getArguments().getString(FeedPlusDetailActivity
-                                .EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                                + FeedTrackingEventLabel.Click.VISIT_SHOP);
-            }
+        return v -> {
+            goToShopDetail(shopId);
+            UnifyTracking.eventFeedClickShop(
+                    getScreenName(),
+                    String.valueOf(shopId),
+                    getArguments().getString(
+                            FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
+                            + FeedTrackingEventLabel.Click.VISIT_SHOP);
         };
     }
 
@@ -404,7 +407,9 @@ public class FeedPlusDetailFragment extends BaseDaggerFragment
         if (getActivity().getApplication() instanceof PdpRouter) {
             ((PdpRouter) getActivity().getApplication()).goToProductDetailForResult(this,
                     productId, adapterPosition, REQUEST_OPEN_PDP);
-            UnifyTracking.eventFeedViewProduct(productId,
+            UnifyTracking.eventFeedViewProduct(
+                    getScreenName(),
+                    productId,
                     getArguments().getString(FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
                             + FeedTrackingEventLabel.View.PRODUCTLIST_PDP);
         }

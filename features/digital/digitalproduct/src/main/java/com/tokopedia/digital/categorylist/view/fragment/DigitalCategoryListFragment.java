@@ -14,6 +14,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.MainApplication;
@@ -227,7 +229,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_TRANSACTION_LIST)
-                        .resIconId(R.drawable.ic_header_digital_category_my_transaction)
+                        .resIconId(R.drawable.ic_digital_homepage_header_my_transaction)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.TRANSACTION)
                         .build()
         );
@@ -239,7 +241,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
                                 + TkpdBaseURL.DigitalWebsite.PATH_FAVORITE_NUMBER)
-                        .resIconId(R.drawable.ic_header_digital_category_favorit_number)
+                        .resIconId(R.drawable.ic_digital_homepage_header_fav_number)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.FAVORITE_NUMBER)
                         .build()
         );
@@ -250,8 +252,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                                 R.string.title_header_menu_digital_categories_subscription_digital_module
                         ))
                         .siteUrl(TkpdBaseURL.DIGITAL_WEBSITE_DOMAIN
-                                + TkpdBaseURL.DigitalWebsite.PATH_SUBSCRIPTIONS)
-                        .resIconId(R.drawable.ic_header_digital_category_subscription)
+                                + TkpdBaseURL.DigitalWebsite.PATH_MY_BILLS)
+                        .resIconId(R.drawable.ic_digital_homepage_header_mybills)
                         .typeMenu(DigitalCategoryItemHeader.TypeMenu.SUBSCRIPTION)
                         .build()
         );
@@ -415,7 +417,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         UnifyTracking.eventClickProductOnDigitalHomepage(itemData.getName());
         if (itemData.getCategoryId().equalsIgnoreCase(
                 String.valueOf(DigitalCategoryItemData.DEFAULT_TOKOCASH_CATEGORY_ID
-                )) && tokoCashBalanceData != null && tokoCashBalanceData.getLink() != TokoCashTypeDef.TOKOCASH_ACTIVE) {
+                )) && tokoCashBalanceData != null && !tokoCashBalanceData.getLink()) {
             WalletRouterUtil.navigateWallet(
                     getActivity().getApplication(),
                     this,
@@ -474,7 +476,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         switch (data.getTypeMenu()) {
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
-                    startActivity(((IDigitalModuleRouter) getActivity().getApplication()).getOrderListIntent(getActivity()));
+                    RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
                     break;
                 }
             default:
@@ -488,7 +490,6 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     }
 
     private void showCouponAppliedTicker() {
-        separatorForTicker.setVisibility(View.VISIBLE);
         ArrayList<String> messages = new ArrayList<>();
         messages.add(getString(R.string.digital_coupon_applied_ticker_message));
         tickerView.setVisibility(View.INVISIBLE);
@@ -508,6 +509,8 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
                 tickerView.setItemTextAppearance(R.style.TextView_Micro);
             }
         }, DEFAULT_DELAY_TIME);
+
+        separatorForTicker.setVisibility(View.VISIBLE);
     }
 
     private void hideCouponAppliedTicker() {

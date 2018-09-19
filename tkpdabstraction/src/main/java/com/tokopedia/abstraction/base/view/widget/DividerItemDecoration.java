@@ -30,12 +30,17 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
 
         int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
+
+            if (i == (childCount - 1)) {
+                continue;
+            }
+
             View child = parent.getChildAt(i);
 
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
 
             int top = child.getBottom() + params.bottomMargin;
-            int bottom = top + mDivider.getIntrinsicHeight();
+            int bottom = top + parent.getContext().getResources().getDimensionPixelSize(R.dimen.dp_half);
 
             mDivider.setBounds(left, top, right, bottom);
             mDivider.draw(c);

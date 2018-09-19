@@ -37,7 +37,7 @@ import com.tokopedia.contactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.List;
@@ -118,7 +118,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
             ContactUsTracking.eventInboxClick();
-            startActivity(new Intent(getContext(), InboxTicketActivity.class));
+            startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -6,9 +6,8 @@ import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateResoW
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateSubmitResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.createreso.CreateValidateResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.productproblem.ProductProblemListResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.AppealSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponse;
-import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditSolutionResponseResponse;
+import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.EditAppealSolutionResponseResponse;
 import com.tokopedia.inbox.rescenter.createreso.data.pojo.solution.SolutionResponseResponse;
 
 import java.util.HashMap;
@@ -18,8 +17,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.FieldMap;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
@@ -79,28 +76,39 @@ public interface ResolutionApi {
     postCreateResolution(@Path(PATH_ORDER_ID) String orderId,
                          @Body Object object);
 
+    @GET(ResolutionUrl.GET_RESOLUTION_RECOMPLAINT_STEP_1)
+    Observable<Response<ResolutionResponse<ProductProblemListResponse>>>
+    getProductProblemListRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
+                          @QueryMap HashMap<String, Object> params);
+
+    @POST(ResolutionUrl.POST_RESOLUTION_RECOMPLAINT_STEP_2_3)
+    Observable<Response<ResolutionResponse<SolutionResponseResponse>>>
+    getSolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
+                @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateResoWithoutAttachmentResponse>>>
+    postCreateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
+                         @Body Object object);
+
     @GET(ResolutionUrl.GET_RESOLUTION_EDIT)
-    Observable<Response<ResolutionResponse<EditSolutionResponseResponse>>>
+    Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getEditSolution(@Path(PATH_RESOLUTION_ID) String resoId);
 
 
     @GET(ResolutionUrl.GET_RESOLUTION_APPEAL)
-    Observable<Response<ResolutionResponse<AppealSolutionResponseResponse>>>
+    Observable<Response<ResolutionResponse<EditAppealSolutionResponseResponse>>>
     getAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId);
 
-
-    @FormUrlEncoded
     @POST(ResolutionUrl.POST_RESOLUTION_EDIT)
     Observable<Response<ResolutionResponse<EditAppealSolutionResponse>>>
     postEditSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                     @FieldMap HashMap<String, Object> params);
+                     @Body Object object);
 
-
-    @FormUrlEncoded
     @POST(ResolutionUrl.POST_RESOLUTION_APPEAL)
     Observable<Response<ResolutionResponse<EditAppealSolutionResponse>>>
     postAppealSolution(@Path(PATH_RESOLUTION_ID) String resoId,
-                       @FieldMap HashMap<String, Object> params);
+                       @Body Object object);
 
 
     @POST(ResolutionUrl.BASE_RESOLUTION_VALIDATE)
@@ -111,6 +119,16 @@ public interface ResolutionApi {
     @POST(ResolutionUrl.BASE_RESOLUTION_SUBMIT)
     Observable<Response<ResolutionResponse<CreateSubmitResponse>>>
     postCreateSubmitResolution(@Path(PATH_ORDER_ID) String orderId,
+                               @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateValidateResponse>>>
+    postCreateValidateResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
+                                 @Body Object object);
+
+    @POST(ResolutionUrl.BASE_RESOLUTION_RECOMPLAINT)
+    Observable<Response<ResolutionResponse<CreateSubmitResponse>>>
+    postCreateSubmitResolutionRecomplaint(@Path(PATH_RESOLUTION_ID) String resolutionId,
                                @Body Object object);
 
     //END of create section

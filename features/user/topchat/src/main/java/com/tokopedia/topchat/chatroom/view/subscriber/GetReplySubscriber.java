@@ -42,6 +42,12 @@ public class GetReplySubscriber extends Subscriber<ChatRoomViewModel> {
         presenter.finishRequest();
         if(!view.isChatBot()) {
             presenter.getUserStatus(model.getInterlocutorId(), model.getInterlocutorRole());
+            if(model.getInterlocutorRole() != null &&
+                    model.getInterlocutorRole().equalsIgnoreCase(ChatRoomPresenter.SELLER)) {
+                presenter.getFollowStatus(model.getInterlocutorId());
+            } else {
+                view.setMenuVisible(true);
+            }
         }
     }
 }

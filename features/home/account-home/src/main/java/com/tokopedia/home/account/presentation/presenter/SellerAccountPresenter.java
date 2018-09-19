@@ -1,0 +1,71 @@
+package com.tokopedia.home.account.presentation.presenter;
+
+import android.text.TextUtils;
+
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.home.account.domain.GetSellerAccountUseCase;
+import com.tokopedia.home.account.presentation.SellerAccount;
+import com.tokopedia.home.account.presentation.subscriber.GetSellerAccountSubscriber;
+import com.tokopedia.home.account.presentation.viewmodel.base.SellerViewModel;
+import com.tokopedia.usecase.RequestParams;
+
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import rx.Subscriber;
+
+import static com.tokopedia.home.account.AccountConstants.QUERY;
+import static com.tokopedia.home.account.AccountConstants.VARIABLES;
+
+/**
+ * @author by alvinatin on 10/08/18.
+ */
+
+public class SellerAccountPresenter extends BaseDaggerPresenter<SellerAccount.View>
+        implements SellerAccount.Presenter{
+
+    private GetSellerAccountUseCase getSellerAccountUseCase;
+    private UserSession userSession;
+    private SellerAccount.View view;
+
+    @Inject
+    public SellerAccountPresenter(GetSellerAccountUseCase getSellerAccountUseCase,
+                                  UserSession userSession) {
+        this.getSellerAccountUseCase = getSellerAccountUseCase;
+        this.userSession = userSession;
+    }
+
+    @Override
+    public void attachView(SellerAccount.View view) {
+        this.view = view;
+    }
+
+    @Override
+    public void detachView() {
+        getSellerAccountUseCase.unsubscribe();
+        view = null;
+    }
+
+    @Override
+    public void getSellerData(String query) {
+        view.showLoading();
+        RequestParams requestParams = RequestParams.create();
+
+        requestParams.putString(QUERY, query);
+        Map<String, Object> variables = new HashMap<>();
+        int[] shopId = new int[1];
+        if(!TextUtils.isEmpty(userSession.getShopId())) {
+            shopId[0] = Integer.parseInt(userSession.getShopId());
+        }
+        variables.put("shop_ids", shopId);
+        requestParams.putObject(VARIABLES, variables);
+
+        getSellerAccountUseCase.execute(requestParams, new GetSellerAccountSubscriber(view));
+    }
+
+
+}

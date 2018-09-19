@@ -16,6 +16,7 @@ import com.google.gson.GsonBuilder;
 import com.tkpd.library.ui.utilities.NoResultHandler;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TActivity;
@@ -453,7 +454,11 @@ public class ManageShopAddress extends TActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.manage_shop_address, menu);
+        if(GlobalConfig.isCustomerApp()) {
+            getMenuInflater().inflate(R.menu.manage_shop_address_dark, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.manage_shop_address, menu);
+        }
         return true;
     }
 

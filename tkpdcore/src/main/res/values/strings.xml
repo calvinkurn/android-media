@@ -238,10 +238,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_add_product">TAMBAH PRODUK</string>
     <string name="title_add_product_lowercase">Tambah Produk</string>
     <string name="prompt_search">Cari</string>
-    <string name="title_message">Pesan</string>
+    <string name="title_message">Chat</string>
     <string name="shipping_status">Status Pengiriman</string>
     <string name="shipping_confirm">Konfirmasi Pengiriman</string>
-    <string name="new_order">Order Baru</string>
+    <string name="new_order">Pesanan Baru</string>
     <string name="order_status">Status Pemesanan</string>
     <string name="payment_confirm">Konfirmasi Pembayaran</string>
     <string name="delivery_confirm">Konfirmasi Penerimaan</string>
@@ -283,11 +283,6 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     </string-array>
     <!-- End of Strings related Inbox Ticket -->
 
-
-    <!-- Strings related Navigation Drawer -->
-    <!-- end of Strings related Navigation Drawer -->
-
-
     <!-- Strings related Navigation Drawer -->
     <string name="title_myshop">Toko Saya</string>
     <string name="title_create_shop">Buka Toko</string>
@@ -298,9 +293,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_customer_care">Layanan Pengguna</string>
     <string name="verified_account">Verified Account</string>
     <string name="online">Online</string>
-
     <!-- Strings related Navigation Drawer -->
-
 
     <!-- Strings related to product info -->
     <string name="title_viewed">Dilihat</string>
@@ -374,7 +367,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related shop info -->
     <string name="title_favorite">Favorit</string>
     <string name="title_product">Produk</string>
-    <string name="title_menu_all">SEMUA</string>
+    <string name="title_menu_all">Semua</string>
     <string name="title_comment">Komentar</string>
     <string name="title_prod_quality">Kualitas</string>
     <string name="title_prod_accuracy">Ketepatan</string>
@@ -548,13 +541,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <!-- Strings related Manage People -->
     <string name="error_phone_too_short">Nomor mobile terlalu pendek, minimum 6 karakter</string>
     <string name="title_null">null</string>
-    <string name="title_newsletter">Newsletter</string>
-    <string name="title_newsletter_desc">Setiap promosi, tips dan trik, update informasi tentang Tokopedia</string>
-    <string name="title_message_from_admin">Pesan Pribadi dari Admin</string>
-    <string name="title_review_desc">Setiap Ulasan dan Komentar</string>
-    <string name="title_talk_desc">Setiap Diskusi Produk dan Komentar</string>
-    <string name="title_message_desc">Setiap Pesan Pribadi</string>
-    <string name="title_message_from_admin_desc">Setiap Pesan Pribadi yang saya terima dari Admin</string>
+    <string name="title_newsletter">Buletin Tokopedia</string>
+    <string name="title_newsletter_desc">Setiap promo, tips &amp; trik, informasi terbaru seputar Tokopedia</string>
+    <string name="title_message_from_admin">Chat Tokopedia Administrator</string>
+    <string name="title_review_desc">Setiap ulasan dan komentar yang saya terima</string>
+    <string name="title_talk_desc">Setiap pertanyaan dan komentar diskusi yang saya terima</string>
+    <string name="title_message_desc">Setiap chat yang saya terima</string>
+    <string name="title_message_from_admin_desc">Setiap chat dari Tokopedia Administrator yang saya terima</string>
     <string name="title_show_mobile">Tampilkan Mobile</string>
     <string name="title_show_birth">Tampilkan Tanggal Lahir</string>
     <string name="title_show_messenger">Tampilkan Messenger</string>
@@ -602,7 +595,7 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="error_no_password_yes">Buat kata sandi</string>
     <string name="error_changeemail_no_password_title">Anda tidak memiliki kata sandi</string>
     <string name="error_changeemail_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk mengubah email.</string>
-    <!-- Strings related Manage People -->
+ <!-- Strings related Manage People -->
 
 
     <!-- Strings related to browse category -->
@@ -674,16 +667,16 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="hint_type_postal_code">Silakan ketik kode pos Anda jika tidak tercantum di sini</string>
 
     <!-- Strings related to inbox -->
-    <string name="title_my_product_seller">ULASAN PEMBELI</string>
-    <string name="title_my_product">PRODUK SAYA</string>
+    <string name="title_my_product_seller">Ulasan Pembeli</string>
+    <string name="title_my_product">Produk Saya</string>
     <string name="title_inbox_message">Pesan</string>
     <string name="title_inbox_chat">Chat</string>
-    <string name="title_inbox_chat_all">CHAT</string>
-    <string name="title_inbox_message_all">INBOX</string>
-    <string name="title_inbox_sent">TERKIRIM</string>
-    <string name="title_inbox_archive">ARSIP</string>
-    <string name="title_inbox_trash">SAMPAH</string>
-    <string name="title_following">MENGIKUTI</string>
+    <string name="title_inbox_chat_all">Chat</string>
+    <string name="title_inbox_message_all">Inbox</string>
+    <string name="title_inbox_sent">Terkirim</string>
+    <string name="title_inbox_archive">Arsip</string>
+    <string name="title_inbox_trash">Sampah</string>
+    <string name="title_following">Mengikuti</string>
     <string name="message_undo_to_archive">Sukses memindahkan ke Arsip</string>
     <string name="message_undo_to_inbox">Sukses memindahkan ke Kotak Masuk</string>
     <string name="message_undo_to_trash">Sukses memindahkan ke Sampah</string>
@@ -911,10 +904,10 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_manage">Pengaturan</string>
 
     <!-- Strings related to shop transaction -->
-    <string name="title_transaction_list">TRANSAKSI</string>
+    <string name="title_transaction_list">Transaksi</string>
     <string name="msg_confirm_order">Apakah anda ingin memproses pesanan ini?</string>
-    <string name="title_shipping_confirmation">PENGIRIMAN</string>
-    <string name="title_tab_new_order">ORDER BARU</string>
+    <string name="title_shipping_confirmation">Pengiriman</string>
+    <string name="title_tab_new_order">Pesanan Baru</string>
     <string name="title_additional_cost">Biaya Tambahan</string>
     <string name="title_grand_total">Grand Total</string>
     <string name="title_buyer">Pembeli</string>
@@ -928,13 +921,13 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="title_save_button">Simpan</string>
     <string name="title_confirm_button">Konfirmasi</string>
     <string name="title_transaction_value">Jumlah transaksi</string>
-    <string name="title_shipping_status">STATUS</string>
+    <string name="title_shipping_status">Status</string>
     <string name="title_edit_ref">Ubah Nomor Resi</string>
     <string name="title_track">Track</string>
     <string name="title_status">Status</string>
     <string name="item_all_stats">Semua Status</string>
-    <string name="item_on_shipping">Dalam Pengiriman</string>
-    <string name="item_delivered">Transaksi Terkirim</string>
+    <string name="item_on_shipping">Sedang Dikirim</string>
+    <string name="item_delivered">Sampai Tujuan</string>
     <string name="item_finished">Transaksi Selesai</string>
     <string name="item_cancel">Transaksi Dibatalkan</string>
     <string name="title_city">Kota</string>
@@ -1158,6 +1151,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
 
     <string name="title_activity_settings_notification">Atur nada dan getar</string>
     <string name="title_change_ring">Atur nada dan getar</string>
+    <string name="notification_setting_text">Setiap notifikasi yang Anda aktifkan, akan Anda terima melalui email.</string>
     <string name="title_select_agency_error">Kurir harus dipilih</string>
     <string name="title_index_prod_shop">Feed</string>
     <string name="title_index_hot_list">Hot List</string>
@@ -1179,7 +1173,7 @@ Pilih “Komplain” jika pesanan Anda bermasalah.
     <string name="hint_fill_ref">Isi nomor resi</string>
     <string name="title_extra_cost">Biaya Tambahan</string>
     <string name="title_dashboard_purchase">PEMBELIAN</string>
-    <string name="title_dashboard_sell">PENJUALAN</string>
+    <string name="title_dashboard_sell">Penjualan</string>
     <string name="title_detail">Detil</string>
     <string name="title_item">Barang</string>
     <string name="payment_confirm_desc">Segera lakukan pembayaran</string>
@@ -2108,7 +2102,7 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_title_new_reso_as_buyer">Sebagai Pembeli</string>
     <string name="drawer_title_new_reso_as_seller">Sebagai Penjual</string>
     <string name="drawer_title_new_reso_seller">Komplain Pembeli</string>
-    <string name="drawer_title_new_order">Order Baru</string>
+    <string name="drawer_title_new_order">Pesanan Baru</string>
     <string name="drawer_title_shipping_status">Status Pengiriman</string>
     <string name="drawer_title_activity_contact_us">Hubungi Kami</string>
     <string name="drawer_title_help">Bantuan</string>
@@ -2128,9 +2122,6 @@ di Tokopedia Sekarang!</string>
     <string name="drawer_loading">Loading..</string>
     <string name="album_name_all">Semua Media</string>
     <string name="error_no_media_storage">Penyimpanan Media Kosong</string>
-    <string name="appupdate_update">Update</string>
-    <string name="appupdate_later">Nanti</string>
-    <string name="appupdate_close">Tutup</string>
     <string name="webview_home_navigation_text">Home</string>
     <string name="webview_help_menu_text">Bantuan</string>
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
@@ -2230,5 +2221,7 @@ di Tokopedia Sekarang!</string>
     <string name="referral_percent_label">Rp 0 / Rp 1.000.000</string>
     <string name="referral_count_label">0 teman diajak</string>
     <string name="message_success_change_password">Kata sandi berhasil diubah</string>
+    <string name="label_tokocard">TokoCard</string>
+    <string name="react_native_developer_mode">React Native Developer Mode</string>
 
 </resources>
