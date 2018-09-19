@@ -31,8 +31,11 @@ import com.tokopedia.core.deposit.presenter.DepositFragmentPresenterImpl;
 import com.tokopedia.core.loyaltysystem.LoyaltyDetail;
 import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
+import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
 
 import butterknife.BindView;
@@ -257,7 +260,14 @@ public class DepositFragment extends BasePresenterFragment<DepositFragmentPresen
         listViewBalance.setLayoutManager(linearLayoutManager);
         listViewBalance.setAdapter(adapter);
 
-        presenter.getMerchantSaldoDetails();
+        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
+        if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.SALDO_PRIORITAS_NATIVE_ANDROID,
+                true)) {
+            presenter.getMerchantSaldoDetails();
+        } else {
+            hideSaldoPrioritasFragment();
+        }
+
     }
 
     @Override
