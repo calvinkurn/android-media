@@ -40,9 +40,9 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
         browser.getSettings().setJavaScriptEnabled(true);
 
         if (position == 0) {
-            browser.loadData(mTnC, "text/html", "UTF-8");
+            browser.loadData(getFormattedHtml(mTnC), "text/html", "UTF-8");
         } else {
-            browser.loadData(mInfo, "text/html", "UTF-8");
+            browser.loadData(getFormattedHtml(mInfo), "text/html", "UTF-8");
         }
         view.setTag(position);
         container.addView(view);
@@ -65,5 +65,9 @@ public class CouponCatalogInfoPagerAdapter extends PagerAdapter {
     public void destroyItem(@NonNull ViewGroup container, int position, Object object) {
         View view = (View) object;
         container.removeView(view);
+    }
+
+    private String getFormattedHtml(String content) {
+        return "<html><head><style>li{ font-size: 10pt; color: 8A000000; }</style></head><body>" + content + "</body></html>";
     }
 }
