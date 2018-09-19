@@ -50,6 +50,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -255,6 +256,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_URL = ConsumerAppBaseUrl.GRAPHQL_DOMAIN;
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
+        AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
 
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();

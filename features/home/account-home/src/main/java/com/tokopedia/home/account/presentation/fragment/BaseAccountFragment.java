@@ -11,6 +11,7 @@ import com.tokopedia.applink.RouteManager;
 
 import com.tokopedia.home.account.AccountConstants;
 
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.AccountHomeRouter;
@@ -181,7 +182,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     @Override
     public void onGMInfoClicked() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountConstants.Url.GOLD_MERCHANT));
+            openApplink(String.format("%s?url=%s", ApplinkConst.WEBVIEW, AccountHomeUrl.GOLD_MERCHANT));
         }
     }
 
@@ -202,7 +203,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements
     public void onLearnMoreSellerClicked() {
         openApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.MORE_SELLER));
+                AccountHomeUrl.MORE_SELLER));
     }
 
     private void sendTracking(String title, String section, String item) {
