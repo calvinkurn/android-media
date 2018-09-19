@@ -27,6 +27,9 @@ import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewMode
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
+import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
+import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
 import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
@@ -488,6 +491,45 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
 
+    private fun updateDeleteTalk(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+
+        if (!talkId.isEmpty()) {
+            adapter.getItemById(talkId)?.run {
+                adapter.deleteTalkByTalkId(talkId)
+            }
+
+        } else {
+            onRefreshData()
+        }
+    }
+
+    private fun updateDeleteComment(data: Intent) {
+        val talkId = data.getStringExtra(TalkDetailsActivity.THREAD_TALK_ID)
+        val commentId = data.getStringExtra(TalkDetailsActivity.COMMENT_ID)
+
+        if (!talkId.isEmpty() && !commentId.isEmpty()) {
+
+            if (adapter.getCommentById(talkId, commentId) != null
+                    && adapter.getItemById(talkId) != null) {
+                adapter.deleteComment(talkId, commentId)
+            } else if (adapter.getItemById(talkId) != null
+                    && (adapter.getItemById(talkId) as InboxTalkItemViewModel)
+                            .talkThread.listChild[0] is LoadMoreCommentTalkViewModel) {
+                ((adapter.getItemById(talkId) as
+                        InboxTalkItemViewModel).talkThread.listChild[0] as
+                        LoadMoreCommentTalkViewModel).counter -= 1
+
+            }
+
+        } else {
+            onRefreshData()
+        }
+
+    }
+
+
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
@@ -501,6 +543,17 @@ class ProductTalkFragment : BaseDaggerFragment(),
                 onRefreshData()
                 ToasterNormal.make(view, activity!!.getString(R.string.success_send_talk), Snackbar.LENGTH_LONG).show()
             }
+        } else if (requestCode == REQUEST_GO_TO_DETAIL) {
+            data?.run {
+                when (resultCode) {
+                    TalkDetailsActivity.RESULT_OK_DELETE_TALK -> updateDeleteTalk(data)
+                    TalkDetailsActivity.RESULT_OK_DELETE_COMMENT -> updateDeleteComment(data)
+                    TalkDetailsActivity.RESULT_OK_REFRESH_TALK -> onRefreshData()
+                    else -> {
+                    }
+                }
+            }
+
         }
     }
 
