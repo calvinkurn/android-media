@@ -1,16 +1,21 @@
 package com.tokopedia.talk.producttalk.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
+import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.talk.ProductTalkTypeFactoryImpl
 import com.tokopedia.talk.R
 import com.tokopedia.talk.addtalk.view.activity.AddTalkActivity
@@ -70,7 +75,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private lateinit var alertDialog: Dialog
     private lateinit var swiper: SwipeToRefresh
 
-    val REQUEST_REPORT_TALK: Int = 123478
+    val REQUEST_REPORT_TALK: Int = 18
     val REQUEST_CREATE_TALK: Int = 2132
     val REQUEST_GO_TO_DETAIL: Int = 102
     val REQUEST_GO_TO_LOGIN: Int = 200
@@ -97,7 +102,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
             fragment.productId = extras.getString("product_id")
             fragment.productPrice = extras.getString("product_price")
             fragment.productName = extras.getString("prod_name")
-            fragment.productImage = extras.getString("product_image")
+            fragment.productImage = MethodChecker.fromHtml(extras.getString("product_image")).toString()
             fragment.intentChat = extras.getParcelable("intent_chat")
             return fragment
         }
@@ -105,6 +110,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.product_talk, container, false)
     }
 
@@ -114,9 +120,19 @@ class ProductTalkFragment : BaseDaggerFragment(),
         presenter.initProductTalk(productId)
     }
 
+    override fun onResume() {
+        super.onResume()
+        KeyboardHandler.hideSoftKeyboard(activity)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu, menuInflater: MenuInflater) {
         menuInflater.inflate(R.menu.product_talk, menu)
         super.onCreateOptionsMenu(menu, menuInflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.findItem(R.id.action_add).isVisible = true
+        super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -178,7 +194,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onEmptyTalk() {
-
+        setHasOptionsMenu(false)
         adapter.showEmpty()
     }
 
@@ -211,10 +227,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
-        if (presenter.isLoggedIn()) {
+        if (!presenter.isLoggedIn()) {
             goToLogin()
+        }else {
+            goToDetailTalk(talkId, shopId, allowReply)
         }
-        goToDetailTalk(talkId, shopId, allowReply)
     }
 
     private fun showErrorReplyTalk() {
@@ -472,5 +489,31 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_REPORT_TALK && resultCode == Activity.RESULT_OK) {
+            data?.extras?.run {
+                val talkId = getString(ReportTalkActivity.EXTRA_TALK_ID, "")
+                onSuccessReportTalk(talkId)
+
+            }
+        } else if (requestCode == REQUEST_CREATE_TALK) {
+            if(resultCode == Activity.RESULT_OK){
+                onRefreshData()
+                ToasterNormal.make(view, activity!!.getString(R.string.success_send_talk), Snackbar.LENGTH_LONG).show()
+            }
+        }
     }
+
+    private fun onSuccessReportTalk(talkId: String) {
+        activity?.run {
+            NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
+        }
+
+        if (!talkId.isBlank()) {
+            adapter.updateReportTalk(talkId)
+        } else {
+            onRefreshData()
+        }
+    }
+
+
 }

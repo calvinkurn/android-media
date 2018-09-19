@@ -18,9 +18,16 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
         AddTalkContract.Presenter,
         BaseDaggerPresenter<AddTalkContract.View>() {
 
+    var isRequesting: Boolean = false
+
     override fun send(productId: String, text: String) {
+        if(isRequesting){
+            return
+        }
+        isRequesting = true
         createTalkUsecase.execute(CreateTalkUsecase.getParam(userSession.userId, productId, text), object : Subscriber<TalkThreadViewModel>(){
             override fun onNext(t: TalkThreadViewModel?) {
+                isRequesting = false
                 view.onSuccessCreateTalk(productId)
             }
 
@@ -28,7 +35,8 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
             }
 
             override fun onError(e: Throwable?) {
-                view.onErrorCreateTalk()
+                isRequesting = false
+                view.onErrorCreateTalk(e.toString())
             }
 
         })
