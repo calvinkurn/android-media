@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.AccountHomeRouter;
 
@@ -82,11 +83,11 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     private String getBackgroundImageUri() {
-        String imageUrl = AccountConstants.Url.IMAGE_URL;
+        String imageUrl = AccountHomeUrl.IMAGE_URL;
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
-                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL);
-            imageUrl = imageUrl + AccountConstants.Url.CDN_IMAGE_PATH;
+                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+            imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
         }
 
         return imageUrl + TOKOPEDIA_PAY_BG_NAME;

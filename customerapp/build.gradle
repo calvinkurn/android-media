@@ -224,6 +224,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
@@ -274,6 +275,8 @@ dependencies {
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.explore)
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.notifCenter)
+
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
     implementation project(rootProject.ext.features.navigationCommon)

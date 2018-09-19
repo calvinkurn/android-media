@@ -1,8 +1,8 @@
 package com.tokopedia.kol.feature.postdetail.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
-import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.subscriber.LikeKolPostSubscriber;
 import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;

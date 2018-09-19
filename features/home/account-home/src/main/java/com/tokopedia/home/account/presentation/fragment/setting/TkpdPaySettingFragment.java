@@ -17,6 +17,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.analytics.AccountAnalytics;
 import com.tokopedia.home.account.constant.SettingConstant;
@@ -132,7 +133,7 @@ public class TkpdPaySettingFragment extends BaseGeneralSettingFragment {
                 case SettingConstant.SETTING_TOKOCARD_ID:
                     RouteManager.route(getActivity(), String.format("%s?url=%s",
                             ApplinkConst.WEBVIEW,
-                            AccountConstants.Url.TOKOCARD_URL));
+                            AccountHomeUrl.WEB_DOMAIN + AccountHomeUrl.TOKOCARD_URL));
                     break;
                 default:
                     break;

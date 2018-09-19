@@ -1,6 +1,7 @@
 package com.tokopedia.updateinactivephone.data.network.service;
 
 import com.tokopedia.core.network.retrofit.services.AuthService;
+import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL;
 import com.tokopedia.updateinactivephone.data.network.api.UploadImageApi;
 
 import javax.inject.Inject;
@@ -21,7 +22,7 @@ public class UploadImageService extends AuthService<UploadImageApi> {
 
     @Override
     protected String getBaseUrl() {
-        return "https://up-staging.tokopedia.net/upload/attachment/";
+        return UpdateInactivePhoneURL.ACCOUNTS_DOMAIN;
     }
 
     @Override

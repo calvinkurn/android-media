@@ -38,4 +38,7 @@ query {
     }
     total_notif
   }
+  notifcenter_unread {
+    notif_unread
+  }
 }
