@@ -27,8 +27,6 @@ public class GetMarketplaceSubscriber extends Subscriber<DigitalBrowseMarketplac
 
     @Override
     public void onError(Throwable throwable) {
-        /*marketplaceActionListener.onErrorGetMarketplace(
-                ErrorHandler.getErrorMessage(context, throwable));*/
         marketplaceActionListener.onErrorGetMarketplace(throwable);
     }
 
