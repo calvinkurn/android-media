@@ -4,15 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.domain.DefaultSubscriber;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.discovery.R;
-import com.tokopedia.discovery.newdiscovery.base.DiscoveryPresenter;
 import com.tokopedia.discovery.newdiscovery.di.component.DaggerSearchComponent;
 import com.tokopedia.discovery.newdiscovery.di.component.SearchComponent;
 import com.tokopedia.discovery.newdiscovery.domain.gql.SearchProductGqlResponse;
@@ -20,8 +17,8 @@ import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterUseCa
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetDynamicFilterV4UseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetProductUseCase;
 import com.tokopedia.discovery.newdiscovery.domain.usecase.GetSearchGuideUseCase;
+import com.tokopedia.discovery.newdiscovery.domain.usecase.ProductWishlistUrlUseCase;
 import com.tokopedia.discovery.newdiscovery.helper.GqlSearchHelper;
-import com.tokopedia.discovery.newdiscovery.helper.UrlParamHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenterImpl;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.helper.ProductViewModelHelper;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.HeaderViewModel;
@@ -29,10 +26,8 @@ import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.Pr
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductViewModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.discovery.newdiscovery.util.SearchParameter;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase;
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
@@ -40,10 +35,10 @@ import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
 
+import retrofit2.Response;
 import rx.Subscriber;
 
 
@@ -52,6 +47,8 @@ import rx.Subscriber;
  */
 
 public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl<ProductListFragmentView> implements ProductListPresenter {
+
+    private static final String TAG = ProductListPresenterImpl.class.getSimpleName();
 
     @Inject
     GetProductUseCase getProductUseCase;
@@ -65,6 +62,8 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     GetDynamicFilterUseCase getDynamicFilterUseCase;
     @Inject
     GetDynamicFilterV4UseCase getDynamicFilterV4UseCase;
+    @Inject
+    ProductWishlistUrlUseCase productWishlistUrlUseCase;
     private WishListActionListener wishlistActionListener;
     GraphqlUseCase graphqlUseCase;
     private Context context;
@@ -100,6 +99,24 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             } else {
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
+            com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+            params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
+            productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
+                @Override
+                public void onCompleted() {
+
+                }
+
+                @Override
+                public void onError(Throwable e) {
+                    Log.e(TAG, e.getLocalizedMessage());
+                }
+
+                @Override
+                public void onNext(Response<String> stringResponse) {
+                    Log.d(TAG, stringResponse.body());
+                }
+            });
         } else {
             launchLoginActivity(productItem.getProductID());
         }

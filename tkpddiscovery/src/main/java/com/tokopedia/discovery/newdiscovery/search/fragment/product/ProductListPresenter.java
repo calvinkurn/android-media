@@ -22,6 +22,7 @@ public interface ProductListPresenter extends SearchSectionFragmentPresenter<Pro
     void attachView(ProductListFragmentView viewListener, WishListActionListener wishlistActionListener);
 
     void setIsUsingFilterV4(boolean isUsingFilterV4);
+
 }
 
 

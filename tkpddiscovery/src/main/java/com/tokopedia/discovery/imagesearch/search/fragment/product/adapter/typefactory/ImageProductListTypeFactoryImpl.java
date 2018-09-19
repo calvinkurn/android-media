@@ -87,7 +87,7 @@ public class ImageProductListTypeFactoryImpl extends SearchSectionTypeFactoryImp
         } else if (type == GuidedSearchViewHolder.LAYOUT) {
             viewHolder = new GuidedSearchViewHolder(view, itemClickListener);
         } else if (type == TopAdsViewHolder.LAYOUT) {
-            viewHolder = new TopAdsViewHolder(view);
+            viewHolder = new TopAdsViewHolder(view, itemClickListener);
         } else {
             viewHolder = super.createViewHolder(view, type);
         }

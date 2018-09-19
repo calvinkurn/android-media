@@ -14,6 +14,7 @@ import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.ItemClickListener;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.adapter.listener.TopAdsSwitcher;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.TopAdsViewModel;
 import com.tokopedia.topads.sdk.domain.model.Data;
@@ -30,10 +31,12 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
 
     private TopAdsWidgetView adsWidgetView;
     private Context context;
+    private ItemClickListener itemClickListener;
 
-    public TopAdsViewHolder(View itemView) {
+    public TopAdsViewHolder(View itemView, ItemClickListener itemClickListener) {
         super(itemView);
         this.context = itemView.getContext();
+        this.itemClickListener = itemClickListener;
         adsWidgetView = itemView.findViewById(R.id.topads_view);
         adsWidgetView.setItemClickListener(this);
         adsWidgetView.setDisplayMode(DisplayMode.GRID);
@@ -101,6 +104,16 @@ public class TopAdsViewHolder extends AbstractViewHolder<TopAdsViewModel> implem
     }
 
     @Override
-    public void onAddWishList(int position, Data data) { }
+    public void onAddWishList(int position, Data data) {
+        if(itemClickListener!=null){
+            com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem
+                    productItem = new com.tokopedia.discovery.newdiscovery.search.
+                    fragment.product.viewmodel.ProductItem();
+            productItem.setProductID(data.getProduct().getId());
+            productItem.setWishlisted(data.getProduct().isWishlist());
+            productItem.setProductWishlistUrl(data.getProductWishlistUrl());
+            itemClickListener.onWishlistButtonClicked(productItem);
+        }
+    }
 
 }
