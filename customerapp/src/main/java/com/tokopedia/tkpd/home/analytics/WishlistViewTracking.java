@@ -1,4 +1,4 @@
-package com.tokopedia.discovery.newdiscovery.analytics;
+package com.tokopedia.tkpd.home.analytics;
 
 import android.content.Context;
 

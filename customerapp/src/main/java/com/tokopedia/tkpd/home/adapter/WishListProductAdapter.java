@@ -28,7 +28,7 @@ import com.tokopedia.core.loyaltysystem.util.LuckyShopImage;
 import com.tokopedia.core.network.entity.home.recentView.RecentView;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
-import com.tokopedia.discovery.newdiscovery.analytics.WishlistViewTracking;
+import com.tokopedia.tkpd.home.analytics.WishlistViewTracking;
 import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.Badge;

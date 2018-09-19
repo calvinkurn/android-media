@@ -42,7 +42,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.discovery.newdiscovery.analytics.WishlistViewTracking;
+import com.tokopedia.tkpd.home.analytics.WishlistViewTracking;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.adapter.WishListProductAdapter;
 import com.tokopedia.tkpd.home.feed.data.source.cloud.AddFavoriteShopService;
