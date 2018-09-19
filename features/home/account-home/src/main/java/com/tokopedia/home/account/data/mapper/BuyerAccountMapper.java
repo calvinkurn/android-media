@@ -233,27 +233,6 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
 
-//        will be implemented on next sprint
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountHomeUrl.Pulsa.PULSA_SUBSCRIBE));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
-//
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountHomeUrl.Pulsa.PULSA_FAV_NUMBER));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
-
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();
             infoCard.setIconRes(R.drawable.ic_tokocash_big);
