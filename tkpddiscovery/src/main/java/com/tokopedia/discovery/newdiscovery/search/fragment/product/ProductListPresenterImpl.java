@@ -103,19 +103,13 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
             params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
             productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
                 @Override
-                public void onCompleted() {
-
-                }
+                public void onCompleted() {}
 
                 @Override
-                public void onError(Throwable e) {
-                    Log.e(TAG, e.getLocalizedMessage());
-                }
+                public void onError(Throwable e) {}
 
                 @Override
-                public void onNext(Response<String> stringResponse) {
-                    Log.d(TAG, stringResponse.body());
-                }
+                public void onNext(Response<String> stringResponse) {}
             });
         } else {
             launchLoginActivity(productItem.getProductID());
