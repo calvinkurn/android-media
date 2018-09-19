@@ -128,6 +128,7 @@ public class EventFilterActivity
     public void onFragmentInteraction(String timerange, long startdate) {
         if (startdate > 0) {
             itemCalendar.setText(Utils.convertLongEpoch(startdate));
+            selectedTime.setVisibility(View.VISIBLE);
         } else {
             int index = -1;
             for (int i = 0; i < TIME_ID.length; i++) {
