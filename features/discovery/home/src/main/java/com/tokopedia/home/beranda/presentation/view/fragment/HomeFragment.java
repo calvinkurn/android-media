@@ -130,11 +130,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private MainToolbar mainToolbar;
 
-    public static HomeFragment newInstance() {
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
-        Bundle args = new Bundle();
 
+
+    private boolean scrollToRecommendList = false;
+
+    public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -206,7 +211,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-
+        if(SessionHandler.isV4Login(getActivity())) {
+            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
@@ -233,7 +240,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+                scrollToRecommendList();
                 HomePageTracking.eventClickJumpRecomendation();
             }
         });
@@ -267,6 +274,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
+    }
+
+    private void scrollToRecommendList() {
+
+        recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+        scrollToRecommendList = false;
     }
 
     private void initTabNavigation() {
@@ -604,6 +617,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
+        if(scrollToRecommendList) {
+            presenter.fetchNextPageFeed();
+        }
     }
 
     @Override
@@ -768,6 +784,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
+        if(scrollToRecommendList) {
+            scrollToRecommendList();
+        }
+
     }
 
     @Override
