@@ -51,6 +51,7 @@
 /features/user/bankdb/                  @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
+/features/content/kol_common/           @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
 /features/content/interest_pick/        @tokopedia/minion-kevin
 /features/payment/withdraw/             @tokopedia/minion-kevin
