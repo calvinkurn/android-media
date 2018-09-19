@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.AddProductViewModel;
@@ -247,7 +248,7 @@ private static final String NO_SHOP = "-1";
         menuList.setMenuDescription(context.getString(R.string.label_menu_mybills));
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.MYBILLS));
+                AccountHomeUrl.Pulsa.MYBILLS));
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);

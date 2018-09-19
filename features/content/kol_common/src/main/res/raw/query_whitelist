@@ -1,5 +1,5 @@
-query WhitelistQuery($type: String) {
-    feed_check_whitelist(type: $type) {
+query WhitelistQuery($type: String, $ID: String) {
+    feed_check_whitelist(type: $type, ID: $ID) {
         __typename
         iswhitelist
         url

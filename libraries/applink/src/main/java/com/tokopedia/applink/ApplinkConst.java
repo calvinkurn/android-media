@@ -102,6 +102,7 @@ public interface ApplinkConst {
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
 
+    String BUYER_INFO = "tokopedia://buyerinfo";
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
@@ -140,6 +141,7 @@ public interface ApplinkConst {
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
+    String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
     String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
     String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";

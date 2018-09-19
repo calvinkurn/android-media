@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 28
+    compileSdkVersion = 27
     minSdkVersion = 16
-    targetSdkVersion = 28
-    buildToolsVersion = "28.0.2"
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -357,6 +357,7 @@ ext {
             bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
+            notifCenter           : ":features:user:notifcenter",
             contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",

@@ -68,6 +68,11 @@ import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
+import com.tokopedia.kol.KolRouter;
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
+import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
+import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity;
@@ -220,7 +225,8 @@ public abstract class SellerRouterApplication extends MainApplication
         ReputationRouter, LogisticRouter, SessionRouter, ProfileModuleRouter,
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
-        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, WithdrawRouter, ProductEditModuleRouter {
+        NetworkRouter, TopChatRouter, BankRouter, ChangePasswordRouter, KolRouter, WithdrawRouter,
+        ProductEditModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -451,14 +457,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getChangeNameIntent(Context context) {
         return ChangeNameActivity.newInstance(context);
-    }
-
-    @Override
-    public BaseDaggerFragment getKolPostFragment(String userId,
-                                                 int postId,
-                                                 Intent resultIntent,
-                                                 Bundle bundle) {
-        return null;
     }
 
     @Override
@@ -1573,5 +1571,33 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getManagePeopleIntent(Context context) {
         return null;
+    }
+
+    @Override
+    public String getKolCommentArgsPosition() {
+        return KolCommentActivity.ARGS_POSITION;
+    }
+
+    @Override
+    public String getKolCommentArgsTotalComment() {
+        return KolCommentFragment.ARGS_TOTAL_COMMENT;
+    }
+
+    @Override
+    public Fragment getKolPostShopFragment(String shopId, String createPostUrl) {
+        return KolPostShopFragment.newInstance(shopId, createPostUrl);
+    }
+
+    @Override
+    public BaseDaggerFragment getKolPostFragment(String userId,
+                                                 int postId,
+                                                 Intent resultIntent,
+                                                 Bundle bundle) {
+        return KolPostFragment.newInstanceFromFeed(userId, postId, resultIntent, bundle);
+    }
+
+    @Override
+    public boolean isFeedShopPageEnabled() {
+        return remoteConfig.getBoolean("sellerapp_enable_feed_shop_page", Boolean.TRUE);
     }
 }
