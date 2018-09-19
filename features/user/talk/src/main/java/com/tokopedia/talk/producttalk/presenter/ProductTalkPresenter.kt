@@ -251,6 +251,11 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
         return userSession.isLoggedIn
     }
 
+    override fun isMyShop(shopId: String): Boolean{
+        return userSession.shopId == shopId
+    }
+
+
     override fun detachView() {
         getProductTalkUseCase.unsubscribe()
         deleteTalkUseCase.unsubscribe()
