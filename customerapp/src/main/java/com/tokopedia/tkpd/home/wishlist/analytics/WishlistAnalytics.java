@@ -13,9 +13,26 @@ public class WishlistAnalytics {
 
     private static final String WISHLIST_PAGE = "wishlist page";
     private static final String CLICK_CART_WISHLIST = "click - cek keranjang on wishlist";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     private AnalyticTracker analyticTracker;
 
+    public void trackEventAddToCardProductWishlist(Object dataItem) {
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", "addToCart",
+                        "eventCategory", "wishlist page",
+                        "eventAction", "click - beli on wishlist",
+                        "eventLabel", DEFAULT_VALUE_NONE_OTHER,
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add",
+                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/wishlist"),
+                                        "products", DataLayer.listOf(dataItem)
+                                )
+                        )
+                )
+        );
+    }
     public void trackEventClickOnProductWishlist(String position,
                                                         Object dataItem) {
         analyticTracker.sendEnhancedEcommerce(

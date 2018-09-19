@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -40,7 +39,6 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
-import com.tokopedia.tkpd.home.analytics.WishlistViewTracking;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
@@ -74,6 +72,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     private static final String SHOP_TYPE_OFFICIAL_STORE = "official_store";
     private static final String SHOP_TYPE_GOLD_MERCHANT = "gold_merchant";
     private static final String SHOP_TYPE_REGULER = "reguler";
+
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
@@ -250,28 +250,24 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     @Override
     public void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult) {
-        EnhancedECommerceProductCartMapData enhancedECommerceProductCartMapData =
-                new EnhancedECommerceProductCartMapData();
-        enhancedECommerceProductCartMapData.setProductName(dataDetail.getName());
-        enhancedECommerceProductCartMapData.setProductID(String.valueOf(dataDetail.getId()));
-        enhancedECommerceProductCartMapData.setPrice(String.valueOf(dataDetail.getPrice()));
-        enhancedECommerceProductCartMapData.setBrand(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setCartId(addToCartResult.getCartId());
-        enhancedECommerceProductCartMapData.setCategory(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setVariant(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setQty(String.valueOf(dataDetail.getMinimumOrder()));
-        enhancedECommerceProductCartMapData.setShopId(dataDetail.getShop().getId());
-        enhancedECommerceProductCartMapData.setShopType(generateShopType(dataDetail.getShop()));
-        enhancedECommerceProductCartMapData.setShopName(dataDetail.getShop().getName());
-        enhancedECommerceProductCartMapData.setCategoryId(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setAttribution(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        enhancedECommerceProductCartMapData.setListName(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-        EnhancedECommerceCartMapData enhancedECommerceCartMapData = new EnhancedECommerceCartMapData();
-        enhancedECommerceCartMapData.addProduct(enhancedECommerceProductCartMapData.getProduct());
-        enhancedECommerceCartMapData.setCurrencyCode(EnhancedECommerceCartMapData.VALUE_CURRENCY_IDR);
-        enhancedECommerceCartMapData.setAction(EnhancedECommerceCartMapData.ADD_ACTION);
-        checkoutAnalyticsAddToCart.enhancedECommerceAddToCartClickBeli(
-                enhancedECommerceCartMapData.getCartMap(), dataDetail.getName());
+        Object object = DataLayer.mapOf(
+                "name", dataDetail.getName(),
+                "id", dataDetail.getId(),
+                "price", convertRupiahToInt(String.valueOf(dataDetail.getPrice())),
+                "brand", DEFAULT_VALUE_NONE_OTHER,
+                "category", DEFAULT_VALUE_NONE_OTHER,
+                "variant", DEFAULT_VALUE_NONE_OTHER,
+                "quantity", dataDetail.getMinimumOrder(),
+                "shop_id", dataDetail.getShop().getId(),
+                "shop_type", generateShopType(dataDetail.getShop()),
+                "shop_name", dataDetail.getShop(),
+                "picture", dataDetail.getImageUrl(),
+                "url", dataDetail.getUrl(),
+                "category_id", DEFAULT_VALUE_NONE_OTHER,
+                "cart_id", addToCartResult.getCartId(),
+                "dimension{XX}", DEFAULT_VALUE_NONE_OTHER
+        );
+        wishlistAnalytics.trackEventAddToCardProductWishlist(object);
     }
 
     private String generateShopType(com.tokopedia.core.network.entity.wishlist.Shop shop) {

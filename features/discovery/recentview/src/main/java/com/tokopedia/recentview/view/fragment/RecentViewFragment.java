@@ -200,7 +200,7 @@ public class RecentViewFragment extends BaseDaggerFragment
                     "id", model.getProductId(),
                     "price", Integer.toString(convertRupiahToInt(String.valueOf(model.getPrice()))),
                     "list", "/recent",
-                    "position", String.valueOf(model.getPosition())
+                    "position", String.valueOf(model.getPositionForRecentViewTracking())
             ));
         }
         return objects;
