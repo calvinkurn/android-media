@@ -472,7 +472,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            (this as TalkRouter).goToProductDetailById(this, productId)
+            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            this@TalkDetailsFragment.startActivity(intent)
         }
     }
 

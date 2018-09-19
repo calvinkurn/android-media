@@ -230,7 +230,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
         if (!presenter.isLoggedIn()) {
             goToLogin()
-        }else {
+        } else {
             goToDetailTalk(talkId, shopId, allowReply)
         }
     }
@@ -416,7 +416,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onClickProductAttachment(attachProduct: TalkProductAttachmentViewModel) {
         activity?.applicationContext?.run {
-            (this as TalkRouter).goToProductDetailById(this, attachProduct.productId.toString())
+            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, attachProduct
+                    .productId.toString())
+            this@ProductTalkFragment.startActivity(intent)
         }
     }
 
@@ -497,7 +499,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
             }
         } else if (requestCode == REQUEST_CREATE_TALK) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 onRefreshData()
                 ToasterNormal.make(view, activity!!.getString(R.string.success_send_talk), Snackbar.LENGTH_LONG).show()
             }

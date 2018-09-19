@@ -311,7 +311,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
-            (this as TalkRouter).goToProductDetailById(this, productId)
+            val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
+            this@ShopTalkFragment.startActivity(intent)
         }
     }
 
