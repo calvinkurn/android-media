@@ -106,11 +106,13 @@ public interface WishListView {
 
     void showAddToCartMessage(String message);
 
+    void showAddToCartErrorMessage(String message);
+
     String getUserId();
 
     void clearSearchView();
 
     void sendAddToCartAnalytics(Wishlist dataDetail, AddToCartResult addToCartResult);
 
-    void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData);
+    void sendWishlistImpressionAnalysis(GqlWishListDataResponse.GqlWishList wishListData, int currentSize);
 }

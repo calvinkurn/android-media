@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.domain.interactor;
+package com.tokopedia.kol.feature.post.domain.usecase;
 
 import com.tokopedia.kol.feature.post.data.source.GetKolPostSourceCloud;
 import com.tokopedia.kol.feature.post.domain.model.KolProfileModel;

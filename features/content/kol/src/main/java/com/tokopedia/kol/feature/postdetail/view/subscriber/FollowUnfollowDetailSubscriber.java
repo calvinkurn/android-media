@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.kol.R;
 import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.domain.model.FollowKolDomain;
 import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
 

@@ -308,6 +308,9 @@ public class WishListImpl implements WishList {
         }
         wishListView.displayPull(false);
         dataWishlist.addAll(wishlistData.getWishlistDataList());
+
+        wishListView.sendWishlistImpressionAnalysis(wishlistData, dataWishlist.size());
+
         data.addAll(convertToProductItemList(wishlistData.getWishlistDataList()));
         mPaging.setPagination(wishlistData.getPagination());
 
@@ -593,6 +596,10 @@ public class WishListImpl implements WishList {
                         wishListView.setSearchNotFound();
                 }
                 gqlWishListDataResponse.getGqlWishList().getPagination().setNextUrl("search");
+
+                wishListView.sendWishlistImpressionAnalysis(gqlWishListDataResponse.getGqlWishList()
+                        , dataWishlist.size());
+
                 dataWishlist.addAll(gqlWishListDataResponse.getGqlWishList().getWishlistDataList());
                 data.addAll(convertToProductItemList(gqlWishListDataResponse.getGqlWishList().getWishlistDataList()));
                 mPaging.setPagination(gqlWishListDataResponse.getGqlWishList().getPagination());
@@ -638,33 +645,37 @@ public class WishListImpl implements WishList {
                 e.printStackTrace();
                 if (e instanceof UnknownHostException) {
                     /* Ini kalau ga ada internet */
-                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
+                    wishListView.showAddToCartErrorMessage(ErrorNetMessage.MESSAGE_ERROR_NO_CONNECTION_FULL);
                 } else if (e instanceof SocketTimeoutException || e instanceof ConnectException) {
                     /* Ini kalau timeout */
-                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
+                    wishListView.showAddToCartErrorMessage(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT);
                 } else if (e instanceof ResponseErrorException) {
                     /* Ini kalau error dari API kasih message error */
-                    wishListView.showAddToCartMessage(e.getMessage());
+                    wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else if (e instanceof ResponseDataNullException) {
                     /* Dari Api data null => "data":{}, tapi ga ada message error apa apa */
-                    wishListView.showAddToCartMessage(e.getMessage());
+                    wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else if (e instanceof HttpErrorException) {
                     /* Ini Http error, misal 403, 500, 404,
                      code http errornya bisa diambil
                      e.getErrorCode */
-                    wishListView.showAddToCartMessage(e.getMessage());
+                    wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else if (e instanceof ResponseCartApiErrorException) {
-                    wishListView.showAddToCartMessage(e.getMessage());
+                    wishListView.showAddToCartErrorMessage(e.getMessage());
                 } else {
                     /* Ini diluar dari segalanya hahahaha */
-                    wishListView.showAddToCartMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
+                    wishListView.showAddToCartErrorMessage(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
             }
 
             @Override
             public void onNext(AddToCartResult addToCartResult) {
                 wishListView.dismissProgressDialog();
-                wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                if (addToCartResult.getCartId().isEmpty()) {
+                    wishListView.showAddToCartErrorMessage(addToCartResult.getMessage());
+                } else {
+                    wishListView.showAddToCartMessage(addToCartResult.getMessage());
+                }
                 wishListView.sendAddToCartAnalytics(dataDetail, addToCartResult);
             }
         };

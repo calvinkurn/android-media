@@ -14,6 +14,9 @@ import android.util.Log;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.mapper.CartMapper;
+import com.tokopedia.checkout.domain.mapper.MapperUtil;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.module.TestAppModule;
@@ -31,7 +34,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
-import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
+import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;

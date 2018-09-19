@@ -12,53 +12,6 @@ public class WishlistViewTracking {
 
     public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
-    public static void trackEventClickOnProductWishlist(Context context,
-                                                    String position,
-                                                    Object dataItem) {
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        tracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", "productClick",
-                        "eventCategory", "wishlist page",
-                        "eventAction", "click product",
-                        "eventLabel", position,
-                        "ecommerce",
-                        DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "click",
-                                DataLayer.mapOf("actionField", DataLayer.mapOf("list", "/wishlist"),
-                                        "products", DataLayer.listOf(dataItem)
-                                )
-                        )
-                )
-        );
-    }
-
-    public static void trackEventImpressionOnProductWishlist(Context context,
-                                                         List<Object> dataItemList) {
-        if (context == null || !(context.getApplicationContext() instanceof AbstractionRouter)) {
-            return;
-        }
-        AnalyticTracker tracker = ((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker();
-
-        tracker.sendEnhancedEcommerce(
-                DataLayer.mapOf("event", "productView",
-                        "eventCategory", "wishlist page",
-                        "eventAction", "product impressions",
-                        "eventLabel", "",
-                        "ecommerce",
-                        DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        dataItemList.toArray(new Object[dataItemList.size()])
-                                ))
-                )
-        );
-    }
-
 
     public static void trackEventAddToCardProductWishlist(Context context,
                                                           Object dataItem) {

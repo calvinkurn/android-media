@@ -62,6 +62,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
 
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
+    public static final int BYTES_IN_KB = 1024;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
@@ -83,6 +84,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         boolean isMaxImageReached();
 
         ArrayList<String> getImagePath();
+
+        long getMaxFileSize();
     }
 
     @SuppressLint("MissingPermission")
@@ -135,7 +138,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         labelViewAlbum.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String albumItemId = selectedAlbumItem== null? AlbumItem.ALBUM_ID_ALL :selectedAlbumItem.getmId();
+                String albumItemId = selectedAlbumItem == null ? AlbumItem.ALBUM_ID_ALL : selectedAlbumItem.getmId();
                 Intent intent = AlbumPickerActivity.getIntent(getActivity(), albumItemId, galleryType);
                 startActivityForResult(intent, ALBUM_REQUEST_CODE);
             }
@@ -221,7 +224,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
-                    if(isAdded()){
+                    if (isAdded()) {
                         if (cursor.isClosed()) {
                             return;
                         }
@@ -269,7 +272,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public boolean canAddMoreImage() {
+    public boolean canAddMoreMedia() {
         //check the image number allowed.
         if (onImagePickerGalleryFragmentListener.isMaxImageReached()) {
             return false;
@@ -278,16 +281,31 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public boolean isImageValid(MediaItem item) {
+    public boolean isMediaValid(MediaItem item) {
         // check if file exists
-        if (!new File(item.getRealPath()).exists()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_not_found));
+        File file = new File(item.getRealPath());
+        if (!file.exists()) {
+            NetworkErrorHelper.showRedCloseSnackbar(getView(),
+                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+                            getString(R.string.image_not_found));
             return false;
         }
         //check image resolution
-        if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
-            return false;
+        if (item.isVideo() && item.getDuration() > 0) { // it is video
+            int minVideoResolution = item.getMinimumVideoResolution();
+            if (minVideoResolution < minImageResolution) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.video_under_resolution, item.getVideoResolution()));
+                return false;
+            }
+            if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                return false;
+            }
+        } else {
+            if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
+                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+                return false;
+            }
         }
         return true;
     }
