@@ -1,6 +1,7 @@
 package com.tokopedia.saldodetails.view.fragment;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,8 +38,6 @@ import javax.inject.Inject;
 public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         MerchantSaldoPriorityContract.View {
 
-    private static final String COLOR_GREEN = "green";
-    private static final String COLOR_GREY = "grey";
     private TextView spTitle;
     private TextView spNewTitle;
     private TextView spDescription;
@@ -252,10 +251,10 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
             anchorLabel.setText(anchorList1.getLabel());
             anchorLabel.setTag(anchorList1.getUrl());
 
-            if (anchorList1.getColor().equalsIgnoreCase(COLOR_GREEN)) {
+            try {
+                anchorLabel.setTextColor(Color.parseColor(anchorList1.getColor()));
+            } catch (Exception e) {
                 anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
-            } else if (anchorList1.getColor().equalsIgnoreCase(COLOR_GREY)) {
-                anchorLabel.setTextColor(getResources().getColor(R.color.black_38));
             }
 
             anchorLabel.setOnClickListener(v -> RouteManager.route(context, String.format("%s?url=%s",
