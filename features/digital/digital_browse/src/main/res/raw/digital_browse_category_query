@@ -1,5 +1,4 @@
 query dynamicHomeIcon($type: Int!) {
-    status
     dynamicHomeIcon {
         categoryGroup(types:$type){
           id

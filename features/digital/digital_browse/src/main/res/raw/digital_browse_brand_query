@@ -1,5 +1,4 @@
 query officialStoreBrands($lang: String!, $source: String!, $total: Int!) {
-    status
     officialStoreBrands(device: android, lang: $lang, source: $source, total: $total) {
       data: shops {
         id
