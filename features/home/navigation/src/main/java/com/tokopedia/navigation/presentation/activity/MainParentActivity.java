@@ -379,11 +379,7 @@ public class MainParentActivity extends AppCompatActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            if(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)) {
-                fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).gotoRecommendationList());
-            }else {
-                fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
-            }
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
