@@ -182,7 +182,7 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         }
 
         if (!TextUtils.isEmpty(sellerDetails.getDescription())) {
-            spDescription.setText(sellerDetails.getDescription());
+            spDescription.setText(Html.fromHtml(sellerDetails.getDescription()));
             spDescription.setVisibility(View.VISIBLE);
         } else {
             spDescription.setVisibility(View.GONE);
@@ -191,11 +191,11 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         if (!TextUtils.isEmpty(sellerDetails.getBoxTitle())) {
             spKYCStatusLayout.setVisibility(View.VISIBLE);
             spKYCShortDesc.setVisibility(View.VISIBLE);
-            spKYCShortDesc.setText(sellerDetails.getBoxTitle());
+            spKYCShortDesc.setText(Html.fromHtml(sellerDetails.getBoxTitle()));
 
             if (!TextUtils.isEmpty(sellerDetails.getBoxDesc())) {
                 spKYCLongDesc.setVisibility(View.VISIBLE);
-                spKYCLongDesc.setText(sellerDetails.getBoxDesc());
+                spKYCLongDesc.setText(Html.fromHtml(sellerDetails.getBoxDesc()));
             } else {
                 spKYCLongDesc.setVisibility(View.GONE);
             }

@@ -151,8 +151,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1.5dp"
                 android:layout_below="@id/sp_detail_list"
-                android:layout_marginBottom="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_4"
+                android:layout_marginTop="@dimen/dp_4"
                 android:background="@color/greyish_bg" />
 
             <LinearLayout
