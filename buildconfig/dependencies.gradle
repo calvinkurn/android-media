@@ -57,6 +57,7 @@ ext {
     tkpdKolVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
+    tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
