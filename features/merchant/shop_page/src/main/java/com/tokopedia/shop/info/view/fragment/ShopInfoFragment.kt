@@ -1,7 +1,6 @@
 package com.tokopedia.shop.info.view.fragment
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -43,12 +42,12 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
         ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
-        @JvmStatic fun createInstance(): Fragment = ShopInfoFragment()
+        @JvmStatic fun createInstance(): ShopInfoFragment = ShopInfoFragment()
     }
 
     @Inject lateinit var presenter: ShopInfoPresenter
     @Inject lateinit var shopPageTracking: ShopPageTracking
-    lateinit var shopInfo: ShopInfo
+    var shopInfo: ShopInfo? = null
     private val noteAdapter by lazy {
         BaseListAdapter<ShopNoteViewModel, ShopNoteAdapterTypeFactory>(ShopNoteAdapterTypeFactory(this))
     }
@@ -72,6 +71,8 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
         recyclerViewLogistic.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recyclerViewLogistic.setHasFixedSize(true)
         recyclerViewLogistic.addItemDecoration(DividerItemDecoration(activity))
+
+        shopInfo?.run { updateShopInfo(this) }
     }
 
     override fun onDestroy() {
@@ -142,9 +143,9 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
 
     private fun gotoShopDiscussion() {
         if (activity?.application is ShopModuleRouter){
-            shopInfo.run {
+            shopInfo?.run {
                 shopPageTracking.eventClickDiscussion(shopId,
-                        presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+                        presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo?.info))
             }
             (activity?.application as ShopModuleRouter).goToShopDiscussion(activity, shopId)
         }
@@ -229,9 +230,9 @@ class ShopInfoFragment: BaseDaggerFragment(), ShopInfoView, BaseEmptyViewHolder.
     }
 
     override fun onNoteClicked(position: Long, shopNoteViewModel: ShopNoteViewModel) {
-        shopInfo.run {
+        shopInfo?.run {
             shopPageTracking.eventClickNoteList(position, shopId,
-                    presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo.info))
+                    presenter.isMyshop(shopId), ShopPageTracking.getShopType(shopInfo?.info))
         }
 
         startActivity(ShopNoteDetailActivity.createIntent(activity, shopNoteViewModel.getShopNoteId().toString()))

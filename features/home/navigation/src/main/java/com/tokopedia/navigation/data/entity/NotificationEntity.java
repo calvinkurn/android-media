@@ -2,6 +2,7 @@ package com.tokopedia.navigation.data.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 import com.tokopedia.navigation_common.model.UserShopInfoModel;
 
@@ -18,11 +19,19 @@ public class NotificationEntity {
     @Expose
     private NotificationsModel notifications;
 
+    @SerializedName("notifcenter_unread")
+    @Expose
+    private NotifcenterUnread notifcenterUnread;
+
     public NotificationsModel getNotifications() {
         return notifications;
     }
 
     public UserShopInfoModel getShopInfo() {
         return shopInfo;
+    }
+
+    public NotifcenterUnread getNotifcenterUnread() {
+        return notifcenterUnread;
     }
 }
