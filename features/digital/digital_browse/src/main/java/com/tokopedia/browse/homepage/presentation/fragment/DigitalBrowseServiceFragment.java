@@ -106,7 +106,8 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
             viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA);
         }
 
-        if (getArguments().containsKey(EXTRA_CATEGORY_ID)) {
+        if (getArguments() != null &&
+                getArguments().containsKey(EXTRA_CATEGORY_ID)) {
             selectedCategoryId = getArguments().getInt(EXTRA_CATEGORY_ID);
         }
     }
