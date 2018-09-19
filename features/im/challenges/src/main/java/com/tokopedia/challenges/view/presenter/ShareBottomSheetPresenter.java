@@ -71,10 +71,6 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
     public static final String POST_SHARE_TEXT = "Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s";
     public static final String CHALLENGE_SHARE_TEXT = "Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s";
-//    private String title;
-//    private String shareContents;
-//    private String mediaUrl;
-//    private boolean isVideo;
 
     @Inject
     public ShareBottomSheetPresenter(PostMapBranchUrlUseCase postMapBranchUrlUseCase) {
@@ -314,10 +310,6 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
         }
 
         if (mediaUrl != null) {
-//            this.title = title;
-//            this.shareContents = shareContents;
-//            this.mediaUrl = mediaUrl;
-//            this.isVideo = isVideo;
             convertHttpPathToLocalPath(title, shareContents, mediaUrl, isVideo);
         }
     }

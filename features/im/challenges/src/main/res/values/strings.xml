@@ -79,6 +79,15 @@
     <string name="ch_dialog_upload_options">Bagaimana Anda ingin mengatur gambar Anda ?</string>
     <string name="ch_copy">salin link</string>
     <string name="ch_delete_warning_msg">Konten yang dihapus tidak dapat dipulihkan dan akan menghilangkan kesempatan Anda untuk menang. Yakin ingin menghapus konten?</string>
-
+    <string name="ch_active_challenges_label">Active Challenges</string>
+    <string name="ch_past_challenges_label">Past Challenges</string>
+    <string name="ch_delete_label">Hapus</string>
+    <string name="ch_unknown_host_exp_error_msg">Tidak ada koneksi</string>
+    <string name="ch_uploading_start_msg">Proses mengunggah dimulai, mohon tunggu.</string>
+    <string name="ch_uploading_failed"> Gagal mengunggah!</string>
+    <string name="ch_no_past_challenge_msg">Challenge tidak tersedia. Coba beberapa saat lagi.</string>
+    <string name="ch_no_challenge_msg">Challenge tidak tersedia. Coba beberapa saat lagi.</string>
+    <string name="ch_network_error_msg">Oops! Terjadi kesalahan saat mengunggah foto atau video. Silahkan coba lagi.</string>
+    <string name="ch_must_approved_msg">Semua postingan dari peserta harus disetujui oleh Tokopedia</string>
 
 </resources>

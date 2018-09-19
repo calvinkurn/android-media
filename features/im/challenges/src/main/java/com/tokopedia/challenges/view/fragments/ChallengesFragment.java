@@ -44,7 +44,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     private List<Result> pastChallenges;
     @Inject
     ChallengesGaAnalyticsTracker analytics;
-    private boolean pastChallenge;
+    private boolean isPastChallenge;
     private boolean isFirst = true;
     private boolean isFirstPastChallengeItem;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -70,7 +70,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
         tvPastChallenges = view.findViewById(R.id.tv_past_challenges);
         progressBar = view.findViewById(R.id.progress_bar_layout);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
-        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Active Challenges");
+        ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_active_challenges_label));
         tvActiveChallenges.setOnClickListener(v -> {
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
@@ -79,8 +79,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_ACTIVE_CHALLENGES);
-            pastChallenge = false;
-            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Active Challenges");
+            isPastChallenge = false;
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_active_challenges_label));
 
         });
 
@@ -92,8 +92,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_PAST_CHALLENGES);
-            pastChallenge = true;
-            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Past Challenges");
+            isPastChallenge = true;
+            ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),getString(R.string.ch_past_challenges_label));
         });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -130,7 +130,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
-        pastChallenge = isPastChallenge;
+        this.isPastChallenge = isPastChallenge;
         recyclerView.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             pastChallenges = resultList;
@@ -169,9 +169,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     public void showErrorNetwork(String errorMessage) {
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
-                "Oops!",
-                "There are no challenges available.\n" +
-                        "Please check again later.",
+                "",
+                getString(R.string.ch_network_error_msg),
                 "Coba lagi", R.drawable.ic_offline2,
                 getChallengesRetryListener()
         );
@@ -180,11 +179,16 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public void renderEmptyList() {
         recyclerView.setVisibility(View.GONE);
+        String error_msg;
+        if(isPastChallenge){
+            error_msg= getString(R.string.ch_no_past_challenge_msg);
+        }else {
+            error_msg= getString(R.string.ch_no_challenge_msg);
+        }
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
                 "Oops!",
-                "There are no challenges available.\n" +
-                        "Please check again later.",
+                error_msg,
                 null, R.drawable.empty_challenge_active,
                 getChallengesRetryClickedListener()
         );
@@ -228,7 +232,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     }
 
     private void getChallenges() {
-        if (pastChallenge) {
+        if (isPastChallenge) {
             challengeHomePresenter.getPastChallenges();
         } else {
             challengeHomePresenter.getOpenChallenges();

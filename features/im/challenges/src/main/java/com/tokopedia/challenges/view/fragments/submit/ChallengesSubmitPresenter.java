@@ -107,7 +107,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
             @Override
             public void onError(Throwable e) {
                 if (e instanceof UnknownHostException) {
-                    getView().setSnackBarErrorMessage("Tidak ada koneksi");
+                    getView().setSnackBarErrorMessage(getView().getActivity().getString(R.string.ch_unknown_host_exp_error_msg));
                 } else {
                     getView().setSnackBarErrorMessage("Mengunggah Gambar");
                 }
@@ -126,7 +126,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 intentFilter.addAction(ACTION_UPLOAD_FAIL);
                 getView().getContext().registerReceiver(receiver, intentFilter);
                 if (fingerprints.getTotalParts() > fingerprints.getPartsCompleted()) {
-                    getView().showMessage("Proses mengunggah dimulai, mohon tunggu.");
+                    getView().showMessage(getView().getActivity().getString(R.string.ch_uploading_start_msg));
                     getView().getContext().startService(UploadChallengeService.getIntent(getView().getContext(), fingerprints, getView().getChallengeId(), filePath, postId));
                 } else {
                     Intent intent1 = new Intent(ChallengesSubmitPresenter.ACTION_UPLOAD_COMPLETE);
@@ -160,7 +160,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                     }
                     getView().saveLocalpath(intent.getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID), intent.getStringExtra(Utils.QUERY_PARAM_FILE_PATH));
                 } else if (intent.getAction() == ACTION_UPLOAD_FAIL) {
-                    getView().setSnackBarErrorMessage("Gagal mengunggah!");
+                    getView().setSnackBarErrorMessage(getView().getActivity().getResources().getString(R.string.ch_uploading_failed));
                 }
                 deinit();
             }
@@ -180,7 +180,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
 
     private boolean isValidateDescription(@NonNull String description) {
         if (description.length() <= 0) {
-            getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_desc_blank));
+            getView().setSnackBarErrorMessage(getView().getActivity().getResources().getString(R.string.ch_error_msg_desc_blank));
             return false;
         } else if (description.length() > 300) {
             getView().setSnackBarErrorMessage(getView().getContext().getResources().getString(R.string.ch_error_msg_wrong_descirption_size));

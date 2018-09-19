@@ -314,9 +314,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         }
 
         this.participateTitle.setText(participateTitle);
-        // String applink = Utils.getApplinkPathWithPrefix(ChallengesUrl.AppLink.CHALLENGES_DETAILS, submissionResult.getCollection().getId());
 
-        // this.participateTitle.setOnClickListener(view -> RouteManager.route(getContext(), applink));
         this.participateTitle.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ChallengeDetailActivity.class);
             intent.putExtra(Utils.QUERY_PARAM_CHALLENGE_ID, submissionResult.getCollection().getId());
@@ -483,8 +481,8 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private void showDeleteDialog() {
         Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.ch_delete_warning_msg));
-        dialog.setBtnOk("Hapus");
-        dialog.setBtnCancel("Batal");
+        dialog.setBtnOk(getString(R.string.ch_delete_label));
+        dialog.setBtnCancel(getString(R.string.ch_cancel));
         dialog.show();
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override

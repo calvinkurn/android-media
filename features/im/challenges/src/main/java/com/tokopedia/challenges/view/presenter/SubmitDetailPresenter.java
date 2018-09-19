@@ -152,7 +152,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
                     getView().setSubmittResult(submissionResult);
                     setDataInFields(submissionResult);
                 } else {
-                    getView().showDialogInfo("Under Review", "All submissions from participants of the challenge must approved by Tokopedia");
+                    getView().showDialogInfo("Under Review", getView().getActivity().getString(R.string.ch_must_approved_msg));
                 }
             }
         });
