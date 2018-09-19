@@ -1,4 +1,4 @@
-package com.tokopedia.tkpdpdp.presenter;
+package com.tokopedia.tkpdpdp.presenter.subscriber;
 
 import com.tokopedia.core.network.entity.wishlistCount.WishlistCountResponse;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
