@@ -715,7 +715,6 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
         value.setTextColor(ContextCompat.getColor(btnAction2.getContext(), R.color.medium_green));
         imgLabel.setVisibility(View.VISIBLE);
         imgLabel.setImageResource(R.drawable.bg_tp_time_greeen);
-        addCountDownTimer(data, value, btnAction2);
         btnAction2.setOnClickListener(v -> {
             if (btnAction2.getText().toString().equalsIgnoreCase(getString(R.string.tp_label_use))) {
                 mPresenter.showRedeemCouponDialog(data.getCta(), mCouponRealCode, data.getTitle());
@@ -756,6 +755,8 @@ public class CouponCatalogFragment extends BaseDaggerFragment implements CouponC
                         }
                     });
         }
+
+        addCountDownTimer(data, value, btnAction2);
 
         //Coupon impression ga
         AnalyticsTrackerUtil.sendEvent(getContext(),
