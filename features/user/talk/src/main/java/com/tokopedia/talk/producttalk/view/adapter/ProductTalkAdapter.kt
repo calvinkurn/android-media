@@ -53,10 +53,13 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
     }
 
     fun deleteTalkByTalkId(talkId: String) {
-        for (talk in visitables) {
+        val iterator = visitables.iterator()
+
+        while(iterator.hasNext()) {
+            val talk = iterator.next()
             if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                this.visitables.remove(talk)
+                iterator.remove()
                 notifyItemRemoved(position)
             }
         }

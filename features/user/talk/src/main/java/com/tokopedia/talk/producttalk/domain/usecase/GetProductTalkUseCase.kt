@@ -37,7 +37,7 @@ class GetProductTalkUseCase @Inject constructor(val api: TalkApi,
             requestParams.putString(PARAM_USER_ID, userId)
             requestParams.putString(PARAM_PRODUCT_ID, productId)
             requestParams.putString(PARAM_TYPE, "p")
-            requestParams.putInt(PARAM_COMMENT_ENABLED, 0)
+            requestParams.putInt(PARAM_COMMENT_ENABLED, 1)
 
             return requestParams
         }
