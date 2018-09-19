@@ -53,27 +53,39 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
     }
 
     fun deleteTalkByTalkId(talkId: String) {
-        for (talk in visitables) {
+        val iterator = visitables.iterator()
+
+        while(iterator.hasNext()) {
+            val talk = iterator.next()
             if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                this.visitables.remove(talk)
+                iterator.remove()
                 notifyItemRemoved(position)
             }
         }
     }
 
     fun deleteComment(talkId: String, commentId: String) {
-        for (talk in visitables) {
-            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+        val iter = visitables.iterator()
+
+        while (iter.hasNext()) {
+            val talk = iter.next()
+            if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                for (comment in talk.listChild) {
+                val iterComment = talk.talkThread.listChild.iterator()
+
+                while (iterComment.hasNext()) {
+                    val comment = iterComment.next()
                     if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
-                        talk.listChild.remove(comment)
+                        talk.talkThread.listChild.remove(comment)
+                        break
                     }
                 }
                 notifyItemChanged(position)
+                break
             }
         }
+
     }
 
 

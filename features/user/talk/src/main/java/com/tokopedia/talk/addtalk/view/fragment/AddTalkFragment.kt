@@ -1,5 +1,6 @@
 package com.tokopedia.talk.addtalk.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
@@ -111,8 +112,8 @@ class AddTalkFragment : BaseDaggerFragment(),
     override fun onSuccessCreateTalk(productId: String) {
         send_progress.visibility = View.GONE
         activity?.run {
-            this.setResult(android.app.Activity.RESULT_OK)
-            this.finish()
+            setResult(Activity.RESULT_OK, intent)
+            finish()
         }
     }
 
