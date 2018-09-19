@@ -105,6 +105,8 @@ public interface WishListView {
 
     void showAddToCartMessage(String message);
 
+    void showAddToCartErrorMessage(String message);
+
     String getUserId();
 
     void clearSearchView();

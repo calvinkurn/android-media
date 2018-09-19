@@ -21,10 +21,10 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-import static com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase.KOL_POST_LIMIT;
-import static com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase.PARAM_CURSOR;
-import static com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase.PARAM_LIMIT;
-import static com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase.PARAM_USER_ID;
+import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.KOL_POST_LIMIT;
+import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.PARAM_CURSOR;
+import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.PARAM_LIMIT;
+import static com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase.PARAM_USER_ID;
 
 /**
  * @author by milhamj on 20/02/18.

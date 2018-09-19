@@ -1,4 +1,4 @@
-package com.tokopedia.kol.feature.post.domain.interactor;
+package com.tokopedia.kol.feature.post.domain.usecase;
 
 import android.content.Context;
 
@@ -11,8 +11,6 @@ import com.tokopedia.kol.feature.post.data.pojo.FollowKolQuery;
 import com.tokopedia.usecase.RequestParams;
 
 import javax.inject.Inject;
-
-import rx.Observable;
 
 /**
  * @author by yfsx on 11/7/18.
