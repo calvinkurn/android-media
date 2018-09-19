@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
@@ -118,6 +120,7 @@ import io.branch.referral.BranchError;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
@@ -165,6 +168,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
                 new TrainApplinkModuleLoader(),
+                new DigitalBrowseApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
