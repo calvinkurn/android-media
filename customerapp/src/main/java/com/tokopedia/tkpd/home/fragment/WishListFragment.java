@@ -75,6 +75,7 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
 
     public static final String FRAGMENT_TAG = "WishListFragment";
     private CheckoutAnalyticsAddToCart checkoutAnalyticsAddToCart;
+    private int itemSize = 0;
 
     public WishListFragment() {
     }
@@ -595,9 +596,10 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
     }
 
     public List<Object> getProductAsObjectDataLayerForWishlistImpression(List<Wishlist> wishlistDataList) {
+        int totalSize = itemSize + wishlistDataList.size();
         List<Object> objects = new ArrayList<>();
-        for (int i = 0; i<wishlistDataList.size() ; i++){
-            Wishlist wishlist = (Wishlist) wishlistDataList.get(i);
+        for (int i = itemSize; i<totalSize ; i++){
+            Wishlist wishlist = wishlistDataList.get(i);
             objects.add(DataLayer.mapOf(
                     "name", wishlist.getName(),
                     "id", wishlist.getId(),
@@ -606,6 +608,8 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     "position", Integer.toString(i+1)
             ));
         }
+        itemSize = totalSize;
+
         return objects;
     }
 
