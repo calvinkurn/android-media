@@ -1,9 +1,12 @@
 package com.tokopedia.recentview.view.viewmodel;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 
 import java.util.List;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * @author by nisie on 7/4/17.
@@ -101,5 +104,14 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
 
     public List<LabelsViewModel> getLabels() {
         return labels;
+    }
+
+    public Object getRecentViewAsObjectDataLayerForClick(int position) {
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getProductId(),
+                "price", Integer.toString(convertRupiahToInt(getPrice())),
+                "position", Integer.toString(position)
+        );
     }
 }

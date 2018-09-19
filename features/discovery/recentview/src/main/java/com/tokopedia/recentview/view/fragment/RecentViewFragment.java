@@ -1,5 +1,7 @@
 package com.tokopedia.recentview.view.fragment;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DividerItemDecoration;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
@@ -17,18 +20,24 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.core.router.productdetail.PdpRouter;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.recentview.R;
+import com.tokopedia.recentview.analytic.RecentViewTracking;
 import com.tokopedia.recentview.di.DaggerRecentViewComponent;
+import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
 import com.tokopedia.recentview.view.adapter.RecentViewDetailAdapter;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactoryImpl;
 import com.tokopedia.recentview.view.listener.RecentView;
 import com.tokopedia.recentview.view.presenter.RecentViewPresenter;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 import com.tokopedia.recentview.view.viewmodel.RecentViewProductViewModel;
 import com.tokopedia.wishlist.common.listener.WishListActionListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * @author by nisie on 7/4/17.
@@ -41,6 +50,11 @@ public class RecentViewFragment extends BaseDaggerFragment
     private RecentViewDetailAdapter adapter;
     private TkpdProgressDialog progressDialog;
     private LinearLayoutManager layoutManager;
+
+    protected static final String LOGIN_SESSION = "LOGIN_SESSION";
+    private static final String LOGIN_ID = "LOGIN_ID";
+
+    private int itemSize = 0;
 
     @Inject
     RecentViewPresenter presenter;
@@ -171,6 +185,46 @@ public class RecentViewFragment extends BaseDaggerFragment
         adapter.dismissLoading();
         adapter.showEmpty();
     }
+
+    @Override
+    public void sendRecentViewClickTracking(RecentViewDetailProductViewModel element, int position) {
+        RecentViewTracking.trackEventClickOnProductRecentView(getActivity(),
+                element.getRecentViewAsObjectDataLayerForClick(position),
+                getLoginID(getActivity())
+                );
+    }
+
+    @Override
+    public void sendRecentViewImpressionTracking(List<RecentViewProductDomain> recentViewProductDomains) {
+        RecentViewTracking.trackEventImpressionOnProductRecentView(getActivity(),
+                getRecentViewAsDataLayerForImpression(recentViewProductDomains),
+                getLoginID(getActivity()));
+    }
+
+    public List<Object> getRecentViewAsDataLayerForImpression(List<RecentViewProductDomain> recentViewProductDomains) {
+        List<Object> objects = new ArrayList<>();
+        int totalSize = itemSize + recentViewProductDomains.size();
+        for (int i = itemSize; i<totalSize ; i++){
+            RecentViewProductDomain domain = recentViewProductDomains.get(i);
+            objects.add(DataLayer.mapOf(
+                    "name", domain.getName(),
+                    "id", domain.getId(),
+                    "price", Integer.toString(convertRupiahToInt(String.valueOf(domain.getPrice()))),
+                    "list", "/recent view",
+                    "position", Integer.toString(i+1)
+            ));
+        }
+        itemSize = objects.size();
+        return objects;
+    }
+
+    public static String getLoginID(Context context) {
+        String u_id;
+        SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
+        u_id = sharedPrefs.getString(LOGIN_ID, "");
+        return u_id;
+    }
+
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {

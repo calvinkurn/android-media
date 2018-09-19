@@ -43,6 +43,7 @@ public class RecentViewSubscriber extends Subscriber<List<RecentViewProductDomai
     @Override
     public void onNext(List<RecentViewProductDomain> recentViewProductDomains) {
         if (!recentViewProductDomains.isEmpty()) {
+            viewListener.sendRecentViewImpressionTracking(recentViewProductDomains);
             viewListener.onSuccessGetRecentView(convertToViewModel(recentViewProductDomains));
         } else {
             viewListener.onEmptyGetRecentView()
