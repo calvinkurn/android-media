@@ -49,25 +49,37 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
     }
 
     fun deleteTalkByTalkId(talkId: String) {
-        for (talk in visitables) {
+        val iter = visitables.iterator()
+
+        while (iter.hasNext()) {
+            val talk = iter.next()
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
                 this.visitables.remove(talk)
                 notifyItemRemoved(position)
+                break
             }
         }
     }
 
     fun deleteComment(talkId: String, commentId: String) {
-        for (talk in visitables) {
+        val iter = visitables.iterator()
+
+        while (iter.hasNext()) {
+            val talk = iter.next()
             if (talk is InboxTalkItemViewModel && talk.talkThread.headThread.talkId == talkId) {
                 val position = this.visitables.indexOf(talk)
-                for (comment in talk.talkThread.listChild) {
+                val iterComment = talk.talkThread.listChild.iterator()
+
+                while (iterComment.hasNext()) {
+                    val comment = iterComment.next()
                     if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
                         talk.talkThread.listChild.remove(comment)
+                        break
                     }
                 }
                 notifyItemChanged(position)
+                break
             }
         }
 
@@ -92,6 +104,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 talk.talkThread.headThread.menu.allowFollow = !isFollowing
 
                 notifyItemChanged(position)
+                break
             }
         }
     }
@@ -104,6 +117,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 talk.talkThread.headThread.menu.isMasked = false
                 talk.talkThread.headThread.comment = talk.talkThread.headThread.rawMessage
                 notifyItemChanged(position)
+                break
             }
         }
     }
@@ -120,6 +134,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                     }
                 }
                 notifyItemChanged(position)
+                break
             }
         }
     }
@@ -134,6 +149,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 talk.talkThread.headThread.menu.isMasked = true
                 talk.talkThread.headThread.comment = context.getString(R.string.success_report_talk_masked_message)
                 notifyItemChanged(position)
+                break
             }
         }
     }
@@ -144,6 +160,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 val position = this.visitables.indexOf(talk)
                 talk.talkThread.listChild.add(commentData)
                 notifyItemChanged(position)
+                break
             }
         }
     }
@@ -160,6 +177,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                     talk.talkThread.listChild.removeAt(lastIndex)
                     talk.talkThread.listChild.add(lastIndex, lastItem)
                     notifyItemChanged(position)
+                    break
                 }
             }
         }
@@ -171,6 +189,7 @@ class InboxTalkAdapter(adapterTypeFactory: InboxTalkTypeFactoryImpl,
                 val position = this.visitables.indexOf(talk)
                 talk.talkThread.headThread.isRead = true
                 notifyItemChanged(position)
+                break
             }
         }
     }

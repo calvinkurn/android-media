@@ -436,14 +436,6 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-//        context?.run {
-//            if (!talkId.isBlank()) {
-//                adapter.updateReportTalk(talkId, this)
-//            } else {
-//                onRefreshData()
-//            }
-//        }
-
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {

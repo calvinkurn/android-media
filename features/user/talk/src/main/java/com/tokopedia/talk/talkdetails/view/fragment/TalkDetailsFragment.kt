@@ -566,4 +566,9 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             }
         } else super.onActivityResult(requestCode, resultCode, data)
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
 }

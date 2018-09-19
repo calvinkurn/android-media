@@ -11,7 +11,6 @@ class TalkDetailsContract {
     interface Presenter {
         fun loadTalkDetails(id:String)
 //        fun sendTalkComment(id:String, attachedHeaderProduct:List<TalkDetailsHeaderProductViewModel>?, message:String)
-        fun onDestroy()
         fun sendComment(talkId:String, productId: String, message:String,
                         attachedProduct:List<TalkProductAttachmentViewModel>)
 

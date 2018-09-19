@@ -69,7 +69,8 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                     data.comment_user_label_id,
                     data.comment_user_label,
                     data.comment_user_id,
-                    false
+                    false,
+                    true
             ))
         }
 
@@ -88,7 +89,12 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
                         pojo.talk.talk_shop_id,
                         pojo.talk.talk_id,
                         "",
-                        pojo.talk.talk_product_id
+                        pojo.talk.talk_product_id,
+                        pojo.talk.talk_user_label_id.toInt(),
+                        pojo.talk.talk_user_label,
+                        pojo.talk.talk_user_id,
+                        false,
+                        true
                 ),
                 listTalk
         )

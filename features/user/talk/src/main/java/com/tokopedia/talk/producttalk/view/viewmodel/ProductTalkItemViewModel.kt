@@ -27,7 +27,8 @@ data class ProductTalkItemViewModel(
         var labelId : Int = 0,
         var labelString : String = "",
         var userId : String = "",
-        var isSending : Boolean = false ):
+        var isSending : Boolean = false,
+        val hasSeparator : Boolean = false):
         Visitable<ProductTalkChildThreadTypeFactory>{
 
     override fun type(typeFactory: ProductTalkChildThreadTypeFactory): Int {

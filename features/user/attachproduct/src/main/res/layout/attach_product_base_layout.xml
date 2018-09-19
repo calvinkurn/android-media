@@ -39,6 +39,7 @@
         android:layout_toEndOf="@id/attach_product_chat_image_layout"
         android:layout_toRightOf="@id/attach_product_chat_image_layout"
         android:maxWidth="172dp"
+        android:layout_toLeftOf="@+id/delete_button"
         >
 
         <TextView
@@ -53,7 +54,7 @@
             android:textColor="@color/black_70"
             android:textSize="14sp"
             android:textStyle="normal"
-            tools:text="Nama Produk"/>
+            tools:text="Nama Produk YANG PANJAAAANG ASLKDAJLSKDJALSKJD"/>
 
         <TextView
             android:id="@+id/attach_product_chat_price"
@@ -77,6 +78,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:padding="@dimen/dp_8"
+        tools:visibility="visible"
         android:visibility="gone"
         />
 </RelativeLayout>

@@ -214,8 +214,8 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
         })
     }
 
-
-    override fun onDestroy() {
+    override fun detachView() {
+        super.detachView()
         getTalkComments.unsubscribe()
         sendCommentsUseCase.unsubscribe()
         deleteTalkUseCase.unsubscribe()
@@ -223,4 +223,5 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
         followUnfollowTalkUseCase.unsubscribe()
         markTalkNotFraudUseCase.unsubscribe()
     }
+
 }

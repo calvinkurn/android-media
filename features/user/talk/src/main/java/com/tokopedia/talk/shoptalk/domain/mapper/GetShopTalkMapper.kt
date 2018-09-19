@@ -87,7 +87,9 @@ class GetShopTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inbo
                     pojo.talk_product_id,
                     data.comment_user_label_id,
                     data.comment_user_label,
-                    data.comment_user_id
+                    data.comment_user_id,
+                    false,
+                    false
             ))
         }
 
@@ -109,7 +111,9 @@ class GetShopTalkMapper @Inject constructor() : Func1<Response<DataResponse<Inbo
                         pojo.talk_product_id,
                         pojo.talk_user_label_id,
                         pojo.talk_user_label,
-                        pojo.talk_user_id
+                        pojo.talk_user_id,
+                        false,
+                        false
                 ),
                 listComment
         )
