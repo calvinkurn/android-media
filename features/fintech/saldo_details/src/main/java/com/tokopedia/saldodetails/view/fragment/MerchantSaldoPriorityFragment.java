@@ -243,23 +243,24 @@ public class MerchantSaldoPriorityFragment extends BaseDaggerFragment implements
         LayoutInflater layoutInflater = getLayoutInflater();
         spActionListLinearLayout.removeAllViews();
 
-        for (GqlMerchantSaldoDetailsResponse.AnchorList anchorList1 : anchorList) {
-
+        int list_size = anchorList.size();
+        for (int i = list_size - 1; i >= 0; i--) {
             View view = layoutInflater.inflate(R.layout.layout_anchor_list, null);
             TextView anchorLabel = view.findViewById(R.id.anchor_label);
 
-            anchorLabel.setText(anchorList1.getLabel());
-            anchorLabel.setTag(anchorList1.getUrl());
+            anchorLabel.setText(anchorList.get(i).getLabel());
+            anchorLabel.setTag(anchorList.get(i).getUrl());
 
             try {
-                anchorLabel.setTextColor(Color.parseColor(anchorList1.getColor()));
+                anchorLabel.setTextColor(Color.parseColor(anchorList.get(i).getColor()));
             } catch (Exception e) {
                 anchorLabel.setTextColor(getResources().getColor(R.color.tkpd_main_green));
             }
 
+            int finalI = i;
             anchorLabel.setOnClickListener(v -> RouteManager.route(context, String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW,
-                    anchorList1.getUrl())));
+                    anchorList.get(finalI).getUrl())));
 
             spActionListLinearLayout.addView(view);
         }
