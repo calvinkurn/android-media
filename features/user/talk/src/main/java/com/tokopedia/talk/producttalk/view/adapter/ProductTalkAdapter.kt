@@ -139,6 +139,30 @@ class ProductTalkAdapter(adapterTypeFactory: ProductTalkTypeFactoryImpl,
             }
         }
     }
+
+    fun getItemById(talkId: String): TalkThreadViewModel? {
+        for (talk in visitables) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+                return talk
+            }
+        }
+
+        return null
+    }
+
+    fun getCommentById(talkId: String, commentId: String): ProductTalkItemViewModel? {
+        for (talk in visitables) {
+            if (talk is TalkThreadViewModel && talk.headThread.talkId == talkId) {
+                val position = this.visitables.indexOf(talk)
+                for (comment in talk.listChild) {
+                    if (comment is ProductTalkItemViewModel && comment.commentId == commentId) {
+                        return comment
+                    }
+                }
+            }
+        }
+        return null
+    }
 }
 
 
