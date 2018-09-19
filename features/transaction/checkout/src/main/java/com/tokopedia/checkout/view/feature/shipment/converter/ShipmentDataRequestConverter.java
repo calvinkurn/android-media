@@ -118,7 +118,7 @@ public class ShipmentDataRequestConverter {
                     .shopId(shipmentCartItemModel.getShopId())
                     .productData(convertToProductDataCheckout(shipmentCartItemModel.getCartItemModels()));
 
-            if (shipmentDetailData.getUseDropshipper()) {
+            if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckoutBuilder.isDropship(1)
                         .dropshipData(new DropshipDataCheckoutRequest.Builder()
                                 .name(shipmentDetailData.getDropshipperName())
@@ -152,7 +152,7 @@ public class ShipmentDataRequestConverter {
                                     .spId(courierItemData.getShipperProductId())
                                     .build());
 
-            if (shipmentDetailData.getUseDropshipper()) {
+            if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
                 shopProductCheckPromoBuilder.dropshipData(new CheckPromoCodeCartShipmentRequest.DropshipData.Builder()
                         .name(shipmentDetailData.getDropshipperName())
                         .telpNo(shipmentDetailData.getDropshipperPhone())

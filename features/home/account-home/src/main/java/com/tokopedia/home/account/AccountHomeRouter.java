@@ -68,4 +68,6 @@ public interface AccountHomeRouter {
     Observable<WalletModel> getTokoCashAccountBalance();
 
     boolean isEnableInterestPick();
+  
+    Intent getMitraToppersActivityIntent(Context context);
 }

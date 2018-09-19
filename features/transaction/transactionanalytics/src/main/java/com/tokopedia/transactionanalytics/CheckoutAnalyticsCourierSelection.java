@@ -491,4 +491,23 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_UBAH_DURASI
         );
     }
+
+    public void eventViewPromoAutoApply() {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                EventLabel.CHECKOUT_COUPON_AUTO_APPLY
+        );
+    }
+
+    public void eventViewPromoManualApply(String type) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                String.format(EventLabel.CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY, type)
+        );
+    }
+
 }

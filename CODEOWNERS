@@ -30,8 +30,11 @@
 /features/digital/flight/               @tokopedia/minion-mark
 /features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
+/features/digital/digital_browse/         @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
+/features/payment/payment_setting/              @tokopedia/minion-bob
+/features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
@@ -77,4 +80,5 @@
 /features/digital/digital_deals         @tokopedia/india-android-team
 /features/fintech/instant_loan          @tokopedia/india-android-team
 /features/user/updateinactivephone      @tokopedia/india-android-team
+/features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
