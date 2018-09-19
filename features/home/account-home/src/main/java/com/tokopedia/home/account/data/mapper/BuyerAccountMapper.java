@@ -7,6 +7,7 @@ import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.home.account.AccountConstants;
 import com.tokopedia.home.account.AccountHomeRouter;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.data.model.AccountModel;
 import com.tokopedia.home.account.presentation.viewmodel.BuyerCardViewModel;
@@ -227,31 +228,10 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel>{
         menuList.setMenuDescription(context.getString(R.string.label_menu_mybills));
         menuList.setApplink(String.format("%s?url=%s",
                 ApplinkConst.WEBVIEW,
-                AccountConstants.Url.Pulsa.MYBILLS));
+                AccountHomeUrl.Pulsa.MYBILLS));
         menuList.setTitleTrack(PEMBELI);
         menuList.setSectionTrack(context.getString(R.string.title_menu_mybills));
         items.add(menuList);
-
-//        will be implemented on next sprint
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_bill_subscription));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_bill_subscription));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountConstants.Url.Pulsa.PULSA_SUBSCRIBE));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
-//
-//        menuList = new MenuListViewModel();
-//        menuList.setMenu(context.getString(R.string.title_menu_top_up_numbers));
-//        menuList.setMenuDescription(context.getString(R.string.label_menu_top_up_numbers));
-//        menuList.setApplink(String.format("%s?url=%s",
-//                ApplinkConst.WEBVIEW,
-//                AccountConstants.Url.Pulsa.PULSA_FAV_NUMBER));
-//        menuList.setTitleTrack(PEMBELI);
-//        menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
-//        items.add(menuList);
 
         if (((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("app_show_referral_button", false)) {
             InfoCardViewModel infoCard = new InfoCardViewModel();

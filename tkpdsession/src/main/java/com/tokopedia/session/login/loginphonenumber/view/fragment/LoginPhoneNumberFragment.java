@@ -166,22 +166,8 @@ public class LoginPhoneNumberFragment extends BaseDaggerFragment
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
                 Intent intent;
-
-                RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-                if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_ENABLE_UPDATE_INACTIVE_PHONE,
-                        true)) {
-                    intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
-
-                } else {
-                    intent = ChangeInactivePhoneNumberWebView.
-                            getIntentWithTitle(
-                                    getContext(),
-                                    SessionUrl.ChangePhone.PATH_WEBVIEW_CHANGE_PHONE_NUMBER,
-                                    getString(R.string.title_change_inactive_phone_number));
-                }
-
+                intent = ChangeInactivePhoneActivity.getChangeInactivePhoneIntent(getContext());
                 startActivity(intent);
             }
 

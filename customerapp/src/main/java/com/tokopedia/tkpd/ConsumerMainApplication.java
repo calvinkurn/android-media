@@ -50,6 +50,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
 import com.tokopedia.groupchat.common.data.GroupChatUrl;
 import com.tokopedia.groupchat.common.data.SendbirdKey;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.imageuploader.data.ImageUploaderUrl;
 import com.tokopedia.inbox.rescenter.network.ResolutionUrl;
 import com.tokopedia.instantloan.network.InstantLoanUrl;
@@ -216,6 +217,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         WalletUrl.BaseUrl.WALLET_DOMAIN = ConsumerAppBaseUrl.BASE_WALLET;
         WalletUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
+        UpdateInactivePhoneURL.ACCOUNTS_DOMAIN = ConsumerAppBaseUrl.BASE_ACCOUNTS_DOMAIN;
         InstantLoanUrl.BaseUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         SessionUrl.BASE_DOMAIN = ConsumerAppBaseUrl.BASE_DOMAIN;
         ShopUrl.BASE_ACE_URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
@@ -256,8 +258,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.BASE_WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         PaymentSettingUrlKt.setPAYMENT_SETTING_URL(ConsumerAppBaseUrl.PAYMENT_DOMAIN);
+        AccountHomeUrl.WEB_DOMAIN = ConsumerAppBaseUrl.BASE_WEB_DOMAIN;
 
-        UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE = ConsumerAppBaseUrl.UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD;
         generateTransactionDataModuleBaseUrl();
         generateLogisticDataModuleBaseUrl();
     }

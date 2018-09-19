@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 28
+    compileSdkVersion = 27
     minSdkVersion = 16
-    targetSdkVersion = 28
-    buildToolsVersion = "28.0.2"
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -55,6 +55,7 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdKolCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
@@ -260,6 +261,7 @@ ext {
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
             explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
@@ -310,6 +312,7 @@ ext {
             nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             kol                   : ":features:content:kol",
+            kolCommon             : ":features:content:kol_common",
             explore               : ":features:content:explore",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
@@ -354,6 +357,7 @@ ext {
             bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
+            notifCenter           : ":features:user:notifcenter",
             contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",

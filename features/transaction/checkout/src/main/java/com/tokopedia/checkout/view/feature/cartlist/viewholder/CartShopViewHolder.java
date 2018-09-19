@@ -19,6 +19,9 @@ import com.tokopedia.checkout.view.feature.cartlist.adapter.CartItemAdapter;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData;
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 
+import java.util.List;
+import java.util.Map;
+
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -32,7 +35,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout llWarningAndError;
     private FrameLayout flShopItemContainer;
     private LinearLayout llShopContainer;
-    private RelativeLayout rlShopHeader;
     private CheckBox cbSelectShop;
     private TextView tvShopName;
     private ImageView imgShopBadge;
@@ -48,19 +50,21 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CartItemAdapter.ActionListener cartItemAdapterListener;
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
+    private RecyclerView.RecycledViewPool viewPool;
 
     public CartShopViewHolder(View itemView, CartAdapter.ActionListener cartAdapterListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
-                              CompositeSubscription compositeSubscription) {
+                              CompositeSubscription compositeSubscription,
+                              RecyclerView.RecycledViewPool viewPool) {
         super(itemView);
         this.cartAdapterListener = cartAdapterListener;
         this.cartItemAdapterListener = cartItemAdapterListener;
         this.compositeSubscription = compositeSubscription;
+        this.viewPool = viewPool;
 
         llWarningAndError = itemView.findViewById(R.id.ll_warning_and_error);
         flShopItemContainer = itemView.findViewById(R.id.fl_shop_item_container);
         llShopContainer = itemView.findViewById(R.id.ll_shop_container);
-        rlShopHeader = itemView.findViewById(R.id.rl_shop_header);
         cbSelectShop = itemView.findViewById(R.id.cb_select_shop);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
         imgShopBadge = itemView.findViewById(R.id.img_shop_badge);
@@ -73,7 +77,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
     }
 
-    public void bindData(CartShopHolderData cartShopHolderData) {
+    public void bindData(CartShopHolderData cartShopHolderData, Map<Integer, Boolean> checkedItemState) {
         if (cartShopHolderData.getShopGroupData().isError() || cartShopHolderData.getShopGroupData().isWarning()) {
             llWarningAndError.setVisibility(View.VISIBLE);
         } else {
@@ -97,14 +101,16 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
 
         cartItemAdapter = new CartItemAdapter(cartItemAdapterListener, compositeSubscription, getAdapterPosition());
         cartItemAdapter.addDataList(cartShopHolderData.getShopGroupData().getCartItemDataList());
-        rvCartItem.setLayoutManager(new LinearLayoutManager(rvCartItem.getContext()));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(rvCartItem.getContext());
+        rvCartItem.setLayoutManager(linearLayoutManager);
+//        rvCartItem.setRecycledViewPool(viewPool);
+//        linearLayoutManager.setInitialPrefetchItemCount(1);
         rvCartItem.setAdapter(cartItemAdapter);
         ((SimpleItemAnimator) rvCartItem.getItemAnimator()).setSupportsChangeAnimations(false);
 
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupData().isError());
-        cbSelectShop.setChecked(cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected());
+        cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
-        rlShopHeader.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
     }
 
     private void renderErrorItemHeader(CartShopHolderData data) {

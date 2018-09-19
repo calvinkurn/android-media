@@ -291,7 +291,7 @@ public class FragmentBannerWebView extends Fragment implements GeneralWebView {
         WebSettings webSettings = webview.getSettings();
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
         return view;
