@@ -63,6 +63,8 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
     private int oldTitlePosition = 0, currentTitlePosition = 0;
     private int currentScrollIndex = 0;
 
+    private int selectedCategoryId = -1;
+
     private DigitalBrowseServiceViewModel viewModel;
     private DigitalBrowseServiceAdapter serviceAdapter;
 
@@ -102,6 +104,10 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
 
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(KEY_SERVICE_DATA);
+        }
+
+        if (getArguments().containsKey(EXTRA_CATEGORY_ID)) {
+            selectedCategoryId = getArguments().getInt(EXTRA_CATEGORY_ID);
         }
     }
 
@@ -191,7 +197,7 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
 
         serviceAdapter.hideLoading();
 
-        presenter.processTabData(viewModel.getTitleMap());
+        presenter.processTabData(viewModel.getTitleMap(), viewModel, selectedCategoryId);
 
         renderDataList(viewModel.getCategoryViewModelList());
         setRecyclerViewListener();
@@ -217,8 +223,9 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void renderTab() {
+    public void renderTab(int selectedTabIndex) {
         tabLayout.addOnTabSelectedListener(tabSelectedListener);
+        tabLayout.getTabAt(selectedTabIndex).select();
     }
 
     @Override
@@ -332,5 +339,11 @@ public class DigitalBrowseServiceFragment extends BaseDaggerFragment
         analyticsModel.setIconName(viewModel.getName());
 
         digitalBrowseAnalytics.eventImpressionIconLayanan(analyticsModel);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
     }
 }

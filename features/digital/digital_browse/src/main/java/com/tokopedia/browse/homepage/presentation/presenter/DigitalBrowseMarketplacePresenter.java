@@ -3,7 +3,6 @@ package com.tokopedia.browse.homepage.presentation.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.browse.R;
-import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.domain.subscriber.GetMarketplaceSubscriber;
 import com.tokopedia.browse.homepage.domain.usecase.DigitalBrowseMarketplaceUseCase;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseMarketplaceContract;
@@ -24,13 +23,10 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
 
     private DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase;
     private CompositeSubscription compositeSubscription;
-    private DigitalBrowseAnalytics digitalBrowseAnalytics;
 
     @Inject
-    public DigitalBrowseMarketplacePresenter(DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase,
-                                             DigitalBrowseAnalytics digitalBrowseAnalytics) {
+    public DigitalBrowseMarketplacePresenter(DigitalBrowseMarketplaceUseCase digitalBrowseMarketplaceUseCase) {
         this.digitalBrowseMarketplaceUseCase = digitalBrowseMarketplaceUseCase;
-        this.digitalBrowseAnalytics = digitalBrowseAnalytics;
         this.compositeSubscription = new CompositeSubscription();
     }
 
@@ -77,6 +73,15 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new GetMarketplaceSubscriber(this, getView().getContext()))
         );
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        detachView();
     }
 
     @Override

@@ -27,7 +27,7 @@ public interface DigitalBrowseServiceContract {
 
         void addTab(String key);
 
-        void renderTab();
+        void renderTab(int selectedTabIndex);
 
         void showGetDataError(Throwable e);
 
@@ -40,9 +40,11 @@ public interface DigitalBrowseServiceContract {
 
         void getDigitalCategoryCloud();
 
-        void processTabData(Map<String, IndexPositionModel> titleMap);
+        void processTabData(Map<String, IndexPositionModel> titleMap, DigitalBrowseServiceViewModel viewModel, int categoryId);
 
         DigitalBrowseServiceAnalyticsModel getItemPositionInGroup(Map<String, IndexPositionModel> titleMap, int itemPositionInList);
+
+        void onDestroyView();
 
     }
 }

@@ -29,6 +29,8 @@ public interface DigitalBrowseMarketplaceContract {
 
         void getMarketplaceDataCloud();
 
+        void onDestroyView();
+
     }
 
 }

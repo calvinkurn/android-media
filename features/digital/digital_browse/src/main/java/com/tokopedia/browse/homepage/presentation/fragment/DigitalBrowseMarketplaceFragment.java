@@ -264,4 +264,10 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
     public void sendImpressionAnalytics(String iconName, int iconPosition) {
         digitalBrowseAnalytics.eventImpressionHomePage(iconName, iconPosition);
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroyView();
+    }
 }

@@ -7,6 +7,7 @@ import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
 import com.tokopedia.browse.homepage.domain.subscriber.GetDigitalCategorySubscriber;
 import com.tokopedia.browse.homepage.domain.usecase.DigitalBrowseServiceUseCase;
 import com.tokopedia.browse.homepage.presentation.contract.DigitalBrowseServiceContract;
+import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceCategoryViewModel;
 import com.tokopedia.browse.homepage.presentation.model.DigitalBrowseServiceViewModel;
 import com.tokopedia.browse.homepage.presentation.model.IndexPositionModel;
 
@@ -55,8 +56,17 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
     }
 
     @Override
-    public void processTabData(Map<String, IndexPositionModel> titleMap) {
+    public void processTabData(Map<String, IndexPositionModel> titleMap, DigitalBrowseServiceViewModel viewModel, int categoryId) {
         getView().showTab();
+
+        String selectedTab = "";
+        int selectedTabIndex = 0;
+
+        for (DigitalBrowseServiceCategoryViewModel item : viewModel.getCategoryViewModelList()) {
+            if (item.getId() == categoryId) {
+                selectedTab = item.getName();
+            }
+        }
 
         List<String> titleList = new ArrayList<>();
         for (int i = 0; i < titleMap.size(); i++) {
@@ -65,6 +75,10 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
 
         for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
             titleList.set(entry.getValue().getIndexPositionInTab(), entry.getKey());
+
+            if (entry.getKey().equals(selectedTab)) {
+                selectedTabIndex = entry.getValue().getIndexPositionInTab();
+            }
         }
 
         for (String title : titleList) {
@@ -73,7 +87,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
             }
         }
 
-        getView().renderTab();
+        getView().renderTab(selectedTabIndex);
     }
 
     @Override
@@ -135,5 +149,14 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
                             }
                         }, getView().getContext()))
         );
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (compositeSubscription.hasSubscriptions()) {
+            compositeSubscription.unsubscribe();
+        }
+
+        detachView();
     }
 }
