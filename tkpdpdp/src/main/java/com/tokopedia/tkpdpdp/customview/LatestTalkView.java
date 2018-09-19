@@ -133,6 +133,7 @@ public class LatestTalkView extends BaseView<ProductDetailData, ProductDetailVie
             bundle.putString("prod_name", data.getInfo().getProductName());
             bundle.putString("is_owner", String.valueOf(data.getShopInfo().getShopIsOwner()));
             bundle.putString("product_image", data.getProductImages().get(0).getImageSrc300());
+            bundle.putString("product_price", data.getInfo().getProductPrice());
             listener.onProductTalkClicked(bundle);
         }
     }

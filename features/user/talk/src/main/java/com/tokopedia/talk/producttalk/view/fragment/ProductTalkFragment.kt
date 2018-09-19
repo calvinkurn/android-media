@@ -149,7 +149,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     private fun goToCreateTalk(productId: String) {
         activity?.run {
             val intent = AddTalkActivity.createIntent(this, productId)
-            startActivityForResult(intent, REQUEST_CREATE_TALK)
+            this@ProductTalkFragment.startActivityForResult(intent, REQUEST_CREATE_TALK)
         }
     }
 
@@ -207,6 +207,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
+        setHasOptionsMenu(true)
         adapter.hideLoading()
         adapter.addList(listThread)
     }
