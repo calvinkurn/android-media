@@ -1,6 +1,8 @@
 package com.tokopedia.talk.addtalk.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.addtalk.domain.usecase.CreateTalkUsecase
 import com.tokopedia.talk.addtalk.view.listener.AddTalkContract
 import com.tokopedia.talk.common.di.TalkScope
@@ -36,7 +38,8 @@ class AddTalkPresenter @Inject constructor(@TalkScope val userSession: UserSessi
 
             override fun onError(e: Throwable?) {
                 isRequesting = false
-                view.onErrorCreateTalk(e.toString())
+
+                view.onErrorCreateTalk(e)
             }
 
         })

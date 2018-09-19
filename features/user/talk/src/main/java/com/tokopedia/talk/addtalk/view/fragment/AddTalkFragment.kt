@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.ToasterError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.R
 import com.tokopedia.talk.addtalk.di.DaggerAddTalkComponent
 import com.tokopedia.talk.addtalk.presenter.AddTalkPresenter
@@ -29,7 +31,7 @@ import javax.inject.Inject
  */
 
 class AddTalkFragment : BaseDaggerFragment(),
-                 AddTalkContract.View, QuickReplyTalkViewHolder.PasteTemplateListener   {
+        AddTalkContract.View, QuickReplyTalkViewHolder.PasteTemplateListener {
 
     @Inject
     lateinit var presenter: AddTalkPresenter
@@ -104,9 +106,15 @@ class AddTalkFragment : BaseDaggerFragment(),
 
     }
 
-    override fun onErrorCreateTalk(toString: String) {
+    override fun onErrorCreateTalk(throwable: Throwable?) {
         send_progress.visibility = View.GONE
-        ToasterError.make(view, toString).show()
+
+        if (throwable is MessageErrorException) {
+            ToasterError.make(view, throwable.message).show()
+        } else {
+            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable) ?: "").show()
+        }
+
     }
 
     override fun onSuccessCreateTalk(productId: String) {

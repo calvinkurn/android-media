@@ -12,7 +12,7 @@ interface AddTalkContract {
 
     interface View : CustomerView {
         fun getContext(): Context?
-        fun onErrorCreateTalk(toString: String)
+        fun onErrorCreateTalk(throwable: Throwable?)
         fun onSuccessCreateTalk(productId: String)
     }
 

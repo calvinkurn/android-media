@@ -511,11 +511,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
             NetworkErrorHelper.showGreenSnackbar(this, getString(R.string.success_report_talk))
         }
 
-        if (!talkId.isBlank()) {
-            adapter.updateReportTalk(talkId)
-        } else {
-            onRefreshData()
-        }
+        onRefreshData()
+
     }
 
 
