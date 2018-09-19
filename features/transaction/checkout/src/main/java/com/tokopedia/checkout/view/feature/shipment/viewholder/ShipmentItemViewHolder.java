@@ -601,147 +601,149 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void renderDropshipper() {
-        ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition());
-        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+        if (shipmentDataList != null) {
+            ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition());
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                    shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
 
-            if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper()) {
-                llDropshipper.setVisibility(View.GONE);
-                llDropshipperInfo.setVisibility(View.GONE);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                etShipperName.setText("");
-                etShipperPhone.setText("");
-            } else {
-                llDropshipper.setVisibility(View.VISIBLE);
-            }
+                if (!shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().isAllowDropshiper()) {
+                    llDropshipper.setVisibility(View.GONE);
+                    llDropshipperInfo.setVisibility(View.GONE);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
+                    etShipperName.setText("");
+                    etShipperPhone.setText("");
+                } else {
+                    llDropshipper.setVisibility(View.VISIBLE);
+                }
 
-            cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    mActionListener.hideSoftKeyboard();
-                    if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
-                        ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+                cbDropshipper.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                        mActionListener.hideSoftKeyboard();
+                        if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
+                            ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+                            etShipperName.setText("");
+                            etShipperPhone.setText("");
+                            data.getSelectedShipmentDetailData().setUseDropshipper(checked);
+                            if (checked) {
+                                llDropshipperInfo.setVisibility(View.VISIBLE);
+                                mActionListener.onDropshipCheckedForTrackingAnalytics();
+                            } else {
+                                llDropshipperInfo.setVisibility(View.GONE);
+                                data.setStateDropshipperHasError(false);
+                            }
+                            mActionListener.onNeedUpdateViewItem(getAdapterPosition());
+                            mActionListener.onNeedUpdateRequestData();
+                        }
+                    }
+                });
+
+                Boolean useDropshipper = shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper();
+                if (useDropshipper != null) {
+                    cbDropshipper.setChecked(useDropshipper);
+                    if (useDropshipper) {
+                        llDropshipperInfo.setVisibility(View.VISIBLE);
+                    } else {
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
                         etShipperName.setText("");
                         etShipperPhone.setText("");
-                        data.getSelectedShipmentDetailData().setUseDropshipper(checked);
-                        if (checked) {
-                            llDropshipperInfo.setVisibility(View.VISIBLE);
-                            mActionListener.onDropshipCheckedForTrackingAnalytics();
-                        } else {
-                            llDropshipperInfo.setVisibility(View.GONE);
-                            data.setStateDropshipperHasError(false);
-                        }
-                        mActionListener.onNeedUpdateViewItem(getAdapterPosition());
-                        mActionListener.onNeedUpdateRequestData();
+                        llDropshipperInfo.setVisibility(View.GONE);
                     }
-                }
-            });
-
-            Boolean useDropshipper = shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper();
-            if (useDropshipper != null) {
-                cbDropshipper.setChecked(useDropshipper);
-                if (useDropshipper) {
-                    llDropshipperInfo.setVisibility(View.VISIBLE);
                 } else {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
                     shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
                     etShipperName.setText("");
                     etShipperPhone.setText("");
+                    cbDropshipper.setChecked(false);
                     llDropshipperInfo.setVisibility(View.GONE);
                 }
-            } else {
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
-                shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                etShipperName.setText("");
-                etShipperPhone.setText("");
-                cbDropshipper.setChecked(false);
-                llDropshipperInfo.setVisibility(View.GONE);
-            }
 
-            llDropshipper.setOnClickListener(getDropshipperClickListener());
-            imgDropshipperInfo.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showBottomSheet(imgDropshipperInfo.getContext(),
-                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
-                            imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
-                            R.drawable.ic_dropshipper);
-                }
-            });
+                llDropshipper.setOnClickListener(getDropshipperClickListener());
+                imgDropshipperInfo.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        showBottomSheet(imgDropshipperInfo.getContext(),
+                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_new),
+                                imgDropshipperInfo.getContext().getString(R.string.label_dropshipper_info),
+                                R.drawable.ic_dropshipper);
+                    }
+                });
 
-            etShipperName.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                etShipperName.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                }
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
-                        ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-                        if (data.getSelectedShipmentDetailData() != null) {
-                            if (!TextUtils.isEmpty(charSequence)) {
-                                data.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
-                                validateDropshipperName(data, charSequence, true);
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
+                            ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+                            if (data.getSelectedShipmentDetailData() != null) {
+                                if (!TextUtils.isEmpty(charSequence)) {
+                                    data.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
+                                    validateDropshipperName(data, charSequence, true);
+                                }
                             }
                         }
                     }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())) {
+                    etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
+                } else {
+                    etShipperName.setText("");
                 }
-
-                @Override
-                public void afterTextChanged(Editable editable) {
-
+                if (shipmentCartItemModel.isStateDropshipperHasError()) {
+                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), true);
+                } else {
+                    validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), false);
                 }
-            });
-            if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())) {
-                etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
-            } else {
-                etShipperName.setText("");
-            }
-            if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), true);
-            } else {
-                validateDropshipperName(shipmentCartItemModel, etShipperName.getText(), false);
-            }
-            etShipperName.setSelection(etShipperName.length());
+                etShipperName.setSelection(etShipperName.length());
 
-            Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
-            etShipperPhone.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                Pattern pattern = Pattern.compile(PHONE_NUMBER_REGEX_PATTERN);
+                etShipperPhone.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                }
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
-                        ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-                        if (data.getSelectedShipmentDetailData() != null) {
-                            if (!TextUtils.isEmpty(charSequence)) {
-                                data.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
-                                validateDropshipperPhone(data, charSequence, pattern, true);
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
+                            ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
+                            if (data.getSelectedShipmentDetailData() != null) {
+                                if (!TextUtils.isEmpty(charSequence)) {
+                                    data.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
+                                    validateDropshipperPhone(data, charSequence, pattern, true);
+                                }
                             }
                         }
                     }
-                }
 
-                @Override
-                public void afterTextChanged(Editable editable) {
+                    @Override
+                    public void afterTextChanged(Editable editable) {
 
+                    }
+                });
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())) {
+                    etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
+                } else {
+                    etShipperPhone.setText("");
                 }
-            });
-            if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())) {
-                etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
-            } else {
-                etShipperPhone.setText("");
+                if (shipmentCartItemModel.isStateDropshipperHasError()) {
+                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), pattern, true);
+                } else {
+                    validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), pattern, false);
+                }
+                etShipperPhone.setSelection(etShipperPhone.length());
             }
-            if (shipmentCartItemModel.isStateDropshipperHasError()) {
-                validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), pattern, true);
-            } else {
-                validateDropshipperPhone(shipmentCartItemModel, etShipperPhone.getText(), pattern, false);
-            }
-            etShipperPhone.setSelection(etShipperPhone.length());
         }
     }
 
