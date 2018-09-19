@@ -57,6 +57,7 @@ ext {
     tkpdKolVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
+    tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -70,6 +71,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdVoteVersion = '2.22'
+    tkpdNotifCenterVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
@@ -314,6 +316,7 @@ ext {
             kol                   : ":features:content:kol",
             kolCommon             : ":features:content:kol_common",
             explore               : ":features:content:explore",
+            interestPick          : ":features:content:interest_pick",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
             inbox                 : ":tkpdinbox",

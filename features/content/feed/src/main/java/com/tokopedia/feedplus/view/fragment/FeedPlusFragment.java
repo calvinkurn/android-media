@@ -30,6 +30,8 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -571,6 +573,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     @Override
     public void finishLoading() {
         swipeToRefresh.setRefreshing(false);
+    }
+
+    @Override
+    public void showInterestPick() {
+        if (getContext() != null && feedModuleRouter.isEnableInterestPick()) {
+            RouteManager.route(getContext(), ApplinkConst.INTEREST_PICK);
+        }
     }
 
     @Override

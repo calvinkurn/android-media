@@ -130,6 +130,13 @@ public class MainParentActivity extends AppCompatActivity implements
         return intent;
     }
 
+    @DeepLink({ApplinkConst.HOME_ACCOUNT})
+    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        return intent;
+    }
+
     public static Intent getApplinkFeedIntent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
@@ -225,6 +232,10 @@ public class MainParentActivity extends AppCompatActivity implements
                 case FEED_MENU:
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
+                    break;
+                case ACCOUNT_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
                     break;
                 case RECOMENDATION_LIST:
                 case HOME_MENU:

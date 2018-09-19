@@ -232,6 +232,10 @@
         <value>true</value>
     </entry>
     <entry>
+        <key>mainapp_enable_interest_pick</key>
+        <value>true</value>
+    </entry>
+    <entry>
         <key>mainapp_is_enabled_new_withdraw</key>
         <value>true</value>
     </entry>

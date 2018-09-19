@@ -101,6 +101,8 @@
     <string name="label_menu_seller_complain">Lihat status komplain</string>
     <string name="title_menu_other_transaction">Transaksi Lainnya</string>
     <string name="title_menu_favorites">Favorit Saya</string>
+    <string name="title_menu_favorite_topic">Topik Favorit</string>
+    <string name="label_menu_favorite_topic">Atur topik favorit Anda</string>
     <string name="title_menu_last_seen">Terakhir Dilihat</string>
     <string name="label_menu_last_seen">Cek Produk terakhir yang dilihat</string>
     <string name="title_menu_favorite_shops">Toko Favorit</string>

@@ -34,7 +34,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.pojo.FeedQuery;
-import com.tokopedia.kolcommon.data.pojo.WhitelistQuery;
+import com.tokopedia.feedplus.data.pojo.WhitelistQuery;
 import com.tokopedia.feedplus.domain.model.feed.FeedResult;
 import com.tokopedia.feedplus.domain.usecase.GetFirstPageFeedsCloudUseCase;
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter;

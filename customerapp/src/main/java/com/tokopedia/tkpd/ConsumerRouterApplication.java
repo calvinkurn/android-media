@@ -197,6 +197,7 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
+import com.tokopedia.interestpick.view.activity.InterestPickActivity;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -2900,6 +2901,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
             startActivity(intent);
             AppWidgetUtil.sendBroadcastToAppWidget(activity);
         }
+    }
+
+    @Override
+    public boolean isEnableInterestPick() {
+        return remoteConfig.getBoolean("mainapp_enable_interest_pick", Boolean.TRUE);
     }
 
     @Override

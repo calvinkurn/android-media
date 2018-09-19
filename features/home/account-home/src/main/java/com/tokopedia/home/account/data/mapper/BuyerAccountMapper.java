@@ -250,6 +250,17 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         menuTitle.setTitle(context.getString(R.string.title_menu_favorites));
         items.add(menuTitle);
 
+        if (context.getApplicationContext() instanceof AccountHomeRouter
+                && ((AccountHomeRouter) context.getApplicationContext()).isEnableInterestPick()){
+            menuList = new MenuListViewModel();
+            menuList.setMenu(context.getString(R.string.title_menu_favorite_topic));
+            menuList.setMenuDescription(context.getString(R.string.label_menu_favorite_topic));
+            menuList.setApplink(ApplinkConst.INTEREST_PICK);
+            menuList.setTitleTrack(PEMBELI);
+            menuList.setSectionTrack(context.getString(R.string.title_menu_favorites));
+            items.add(menuList);
+        }
+
         menuList = new MenuListViewModel();
         menuList.setMenu(context.getString(R.string.title_menu_last_seen));
         menuList.setMenuDescription(context.getString(R.string.label_menu_last_seen));
