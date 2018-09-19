@@ -1,9 +1,12 @@
 package com.tokopedia.recentview.view.viewmodel;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.recentview.view.adapter.typefactory.RecentViewTypeFactory;
 
 import java.util.List;
+
+import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt;
 
 /**
  * @author by nisie on 7/4/17.
@@ -23,6 +26,7 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
     private final String shopName;
     private final String shopLocation;
     private List<LabelsViewModel> labels;
+    private int positionForRecentViewTracking;
 
     public RecentViewDetailProductViewModel(Integer productId,
                                             String name,
@@ -35,7 +39,8 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
                                             boolean isGold,
                                             boolean isOfficial,
                                             String shopName,
-                                            String shopLocation) {
+                                            String shopLocation,
+                                            int positionForRecentViewTracking) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -48,6 +53,15 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
         this.isOfficial = isOfficial;
         this.shopName = shopName;
         this.shopLocation = shopLocation;
+        this.positionForRecentViewTracking = positionForRecentViewTracking;
+    }
+
+    public int getPositionForRecentViewTracking() {
+        return positionForRecentViewTracking;
+    }
+
+    public void setPositionForRecentViewTracking(int position) {
+        this.positionForRecentViewTracking = position;
     }
 
     public String getName() {
@@ -101,5 +115,14 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
 
     public List<LabelsViewModel> getLabels() {
         return labels;
+    }
+
+    public Object getRecentViewAsObjectDataLayerForClick() {
+        return DataLayer.mapOf(
+                "name", getName(),
+                "id", getProductId(),
+                "price", Integer.toString(convertRupiahToInt(getPrice())),
+                "position", Integer.toString(getPositionForRecentViewTracking())
+        );
     }
 }
