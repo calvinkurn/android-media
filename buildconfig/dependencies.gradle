@@ -380,7 +380,8 @@ ext {
             train                 : ":features:digital:train",
             updateinactivephone   : ":features:user:updateinactivephone",
             paymentSetting        : ":features:payment:payment_setting",
-            browse                : ":features:digital:digital_browse"
+            browse                : ":features:digital:digital_browse",
+            saldodetails            : ":features:fintech:saldo_details"
     ]
 
     libraries = [
