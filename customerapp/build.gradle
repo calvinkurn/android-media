@@ -224,6 +224,7 @@ dependencies {
     implementation project(rootProject.ext.features.contactUs)
     implementation project(rootProject.ext.features.gamification)
     implementation project(rootProject.ext.features.kol)
+    implementation project(rootProject.ext.features.kolCommon)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
@@ -281,6 +282,7 @@ dependencies {
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
+    implementation project(rootProject.ext.features.mitraToppers)
 
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
@@ -312,6 +314,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.perfMon
     implementation project(rootProject.ext.features.train)
+    implementation project(rootProject.ext.features.paymentSetting)
 
     implementation (rootProject.ext.debugToolsDependencies.chuck) {
         exclude group: 'com.squareup.okhttp3'

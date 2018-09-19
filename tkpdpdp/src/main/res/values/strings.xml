@@ -75,4 +75,5 @@
     <string name="rates_est_min">Ongkos Kirim %1$s</string>
     <string name="title_activity_product_modal">Detail Produk</string>
     <string name="pdp_label_cart_count_max">99+</string>
+    <string name="title_wishlist_pdp">Wishlist</string>
 </resources>

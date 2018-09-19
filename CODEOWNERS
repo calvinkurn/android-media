@@ -33,6 +33,8 @@
 /features/digital/digital_browse/         @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
+/features/payment/payment_setting/              @tokopedia/minion-bob
+/features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
