@@ -39,11 +39,12 @@
 
             <TextView
                 android:id="@+id/title"
-                style="@style/TextView.Small.BlackPrimary"
+                style="@style/TextView.Small.Bold"
                 android:layout_width="match_parent"
                 android:ellipsize="end"
                 android:lineSpacingExtra="5sp"
                 android:lines="2"
+                android:textColor="@color/font_black_primary_70"
                 tools:text="@string/app_name" />
 
             <include
