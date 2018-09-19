@@ -187,7 +187,7 @@ public class DeeplinkUTMUtils {
                     // App was deep linked into from another app (excl. Google crawler)
 //
                     campaign.setUtmSource(maps.get(AppEventTracking.GTM.UTM_SOURCE) != null ?
-                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : "");
+                            maps.get(AppEventTracking.GTM.UTM_SOURCE) : "android-app");
                     campaign.setUtmMedium("referral");
                     campaign.setUtmCampaign(maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) != null ?
                             maps.get(AppEventTracking.GTM.UTM_CAMPAIGN) : "none");
