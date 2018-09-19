@@ -50,6 +50,12 @@ public class AccountModel {
     @Expose
     private LePreapproveModel lePreapprove;
 
+    @SerializedName("vcc_user_status")
+    private VccUserStatus vccUserStatus;
+
+    @SerializedName("vcc_user_balance")
+    private VccUserBalance vccUserBalance;
+
     public Integer getIsAuthenticated() {
         return isAuthenticated;
     }
@@ -128,5 +134,21 @@ public class AccountModel {
 
     public void setLePreapprove(LePreapproveModel lePreapprove) {
         this.lePreapprove = lePreapprove;
+    }
+  
+    public VccUserStatus getVccUserStatus() {
+        return vccUserStatus;
+    }
+
+    public void setVccUserStatus(VccUserStatus vccUserStatus) {
+        this.vccUserStatus = vccUserStatus;
+    }
+
+    public VccUserBalance getVccUserBalance() {
+        return vccUserBalance;
+    }
+
+    public void setVccUserBalance(VccUserBalance vccUserBalance) {
+        this.vccUserBalance = vccUserBalance;
     }
 }

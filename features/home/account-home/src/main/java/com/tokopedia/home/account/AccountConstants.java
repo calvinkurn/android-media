@@ -77,4 +77,16 @@ public class AccountConstants {
         public static final String TOP_NAV = "top nav";
         public static final String SCREEN_NAME_ACCOUNT = "/account";
     }
+
+    public interface VccStatus {
+        String ELIGIBLE = "eligible";
+        String NOT_ELIGIBLE = "not_eligible";
+        String HOLD = "hold";
+        String ACTIVE = "active";
+        String BLOCKED = "blocked";
+        String KYC_PENDING = "kyc pending";
+        String NOT_FOUND = "not_found";
+        String REJECTED = "rejected";
+        String DEACTIVATED = "deactivated";
+    }
 }

@@ -10,6 +10,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.URLUtil;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,6 +40,7 @@ public class TokopediaPayCardView extends BaseCustomView {
     private LinearLayout layoutLeft;
     private LinearLayout layoutRight;
     private View container;
+    private ImageView iconLeft, iconRight;
 
     public TokopediaPayCardView(@NonNull Context context) {
         super(context);
@@ -65,6 +68,8 @@ public class TokopediaPayCardView extends BaseCustomView {
         textDesctRight = view.findViewById(R.id.text_desc_right);
         layoutLeft = view.findViewById(R.id.layout_left);
         layoutRight = view.findViewById(R.id.layout_right);
+        iconLeft = view.findViewById(R.id.card_icon_left);
+        iconRight = view.findViewById(R.id.card_icon_right);
 
         ImageHandler.loadImageBitmap2(getContext(),
                 getBackgroundImageUri(),
@@ -79,7 +84,7 @@ public class TokopediaPayCardView extends BaseCustomView {
 
     private String getBackgroundImageUri() {
         String imageUrl = AccountHomeUrl.IMAGE_URL;
-        if(getContext().getApplicationContext() instanceof AccountHomeRouter) {
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
                     .getStringRemoteConfig(KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
             imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
@@ -105,11 +110,38 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     public void setTextAmountRight(@NonNull String text) {
+        setTextAmountRight(text, false);
+    }
+
+    public void setTextAmountRight(@NonNull String text, boolean isImportant) {
+        if (isImportant) {
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        } else {
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
+        }
+
         this.textAmountRight.setText(text);
     }
 
     public void setTextDesctRight(@NonNull String text) {
         textDesctRight.setText(text);
+    }
+
+    public void setIconLeft(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconLeft.getContext(), iconLeft, url);
+    }
+
+    public void setIconRight(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            iconRight.setImageResource(R.drawable.ic_saldo_circle);
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconRight.getContext(), iconRight, url);
     }
 
     public void setActionTextClickListener(View.OnClickListener listener) {
