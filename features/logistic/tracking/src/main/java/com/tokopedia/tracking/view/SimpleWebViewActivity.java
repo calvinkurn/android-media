@@ -26,6 +26,6 @@ public class SimpleWebViewActivity extends BaseWebViewActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return BaseSessionWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL));
+        return SimpleWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL));
     }
 }
