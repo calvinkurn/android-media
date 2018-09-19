@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.data.pojo;
+package com.tokopedia.kolcommon.data.pojo;
 
 import com.google.gson.annotations.SerializedName;
 
