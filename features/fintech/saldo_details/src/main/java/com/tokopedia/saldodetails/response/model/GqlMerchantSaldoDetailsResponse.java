@@ -128,57 +128,6 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
 
     }
 
-    public class SellerDetails implements Parcelable {
-
-        @SerializedName("details")
-        @Expose
-        private Details details;
-        public final Parcelable.Creator<SellerDetails> CREATOR = new Creator<SellerDetails>() {
-
-
-            @SuppressWarnings({
-                    "unchecked"
-            })
-            public SellerDetails createFromParcel(Parcel in) {
-                return new SellerDetails(in);
-            }
-
-            public SellerDetails[] newArray(int size) {
-                return (new SellerDetails[size]);
-            }
-
-        };
-
-        protected SellerDetails(Parcel in) {
-            this.details = ((Details) in.readValue((Details.class.getClassLoader())));
-        }
-
-        public SellerDetails() {
-        }
-
-        public Details getDetails() {
-            return details;
-        }
-
-        public void setDetails(Details details) {
-            this.details = details;
-        }
-
-        public SellerDetails withDetails(Details details) {
-            this.details = details;
-            return this;
-        }
-
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeValue(details);
-        }
-
-        public int describeContents() {
-            return 0;
-        }
-
-    }
-
     public static class AnchorList implements Parcelable {
 
         @SerializedName("label")
@@ -258,58 +207,6 @@ public class GqlMerchantSaldoDetailsResponse implements Parcelable {
             dest.writeValue(label);
             dest.writeValue(url);
             dest.writeValue(color);
-        }
-
-        public int describeContents() {
-            return 0;
-        }
-
-    }
-
-
-    public class Data implements Parcelable {
-
-        @SerializedName("sp_getmerchantstatus")
-        @Expose
-        private Details sellerDetails;
-        public final Parcelable.Creator<Data> CREATOR = new Creator<Data>() {
-
-
-            @SuppressWarnings({
-                    "unchecked"
-            })
-            public Data createFromParcel(Parcel in) {
-                return new Data(in);
-            }
-
-            public Data[] newArray(int size) {
-                return (new Data[size]);
-            }
-
-        };
-
-        protected Data(Parcel in) {
-            this.sellerDetails = ((Details) in.readValue((Details.class.getClassLoader())));
-        }
-
-        public Data() {
-        }
-
-        public Details getSellerDetails() {
-            return sellerDetails;
-        }
-
-        public void setSellerDetails(Details sellerDetails) {
-            this.sellerDetails = sellerDetails;
-        }
-
-        public Data withSellerDetails(Details sellerDetails) {
-            this.sellerDetails = sellerDetails;
-            return this;
-        }
-
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeValue(sellerDetails);
         }
 
         public int describeContents() {
