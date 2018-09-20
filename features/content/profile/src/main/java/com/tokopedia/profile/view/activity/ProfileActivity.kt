@@ -12,7 +12,6 @@ import com.tokopedia.profile.view.fragment.ProfileFragment
 /**
  * @author by milhamj on 17/09/18.
  */
-
 class ProfileActivity : BaseSimpleActivity() {
 
     companion object {
