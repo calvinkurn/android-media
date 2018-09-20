@@ -2,9 +2,12 @@ package com.tokopedia.events.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -12,6 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.contractor.EventFilterContract;
+import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.fragment.CategoryFilterFragment;
 import com.tokopedia.events.view.fragment.TimeFilterFragment;
 import com.tokopedia.events.view.utils.Utils;
@@ -27,7 +31,7 @@ import static com.tokopedia.events.view.contractor.EventFilterContract.TIME_VALU
 public class EventFilterActivity
         extends EventBaseActivity
         implements EventFilterContract.EventFilterView,
-        CategoryFilterFragment.CategorySelectedListener, TimeFilterFragment.OnSelectTimeFilterListener {
+        CategoryFilterFragment.CategorySelectedListener, TimeFilterFragment.OnSelectTimeFilterListener, ICloseFragement {
     @BindView(R2.id.iv_close_filter)
     ImageView ivCloseFilter;
     @BindView(R2.id.tv_filter_calendar)
@@ -86,6 +90,17 @@ public class EventFilterActivity
     }
 
     @Override
+    protected void setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            }
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white));
+        }
+    }
+
+    @Override
     protected int getLayoutRes() {
         return R.layout.layout_fragment_filter;
     }
@@ -104,12 +119,16 @@ public class EventFilterActivity
                 break;
             }
         }
-        selectedCategory.setVisibility(View.VISIBLE);
+        if (category.isEmpty())
+            selectedCategory.setVisibility(View.GONE);
+        else
+            selectedCategory.setVisibility(View.VISIBLE);
     }
 
     @OnClick({R2.id.delete_calendar,
             R2.id.delete_category,
-            R2.id.tv_reset})
+            R2.id.tv_reset,
+            R2.id.iv_close_filter})
     void onClickListener(View v) {
         int id = v.getId();
         if (id == R.id.delete_calendar) {
@@ -122,6 +141,8 @@ public class EventFilterActivity
             selectedCategory.setVisibility(View.GONE);
         } else if (id == R.id.tv_reset)
             filterPresenter.onClickResetFilter();
+        else if (id == R.id.iv_close_filter)
+            onBackPressed();
     }
 
     @Override
@@ -160,5 +181,10 @@ public class EventFilterActivity
             filterPresenter.onClickCalendar();
         else
             filterPresenter.onClickCategory();
+    }
+
+    @Override
+    public void closeFragmentSelf() {
+        getSupportFragmentManager().popBackStack();
     }
 }

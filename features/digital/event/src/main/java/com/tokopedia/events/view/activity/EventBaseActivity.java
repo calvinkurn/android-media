@@ -33,15 +33,6 @@ public abstract class EventBaseActivity extends BaseSimpleActivity implements Ev
     EventBaseContract.EventBasePresenter mPresenter;
     EventComponent eventComponent;
 
-
-    @Override
-    protected void setupStatusBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, com.tokopedia.abstraction.R.color.white));
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

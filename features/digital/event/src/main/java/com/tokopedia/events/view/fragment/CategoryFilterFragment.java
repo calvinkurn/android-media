@@ -1,9 +1,12 @@
 package com.tokopedia.events.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatRadioButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.RadioButton;
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
 import com.tokopedia.events.view.activity.EventFilterActivity;
+import com.tokopedia.events.view.contractor.ICloseFragement;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,6 +25,7 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.tokopedia.events.view.contractor.EventFilterContract.CATEGORY_ID;
+import static com.tokopedia.events.view.contractor.EventFilterContract.EVERYDAY;
 
 /**
  * Created by pranaymohapatra on 16/01/18.
@@ -36,29 +41,30 @@ public class CategoryFilterFragment extends Fragment {
 
     Unbinder unbinder;
     private CategorySelectedListener listener;
+    private ICloseFragement closeSelf;
 
     private static final String INDEX_CATEGORY = "index_category";
     @BindView(R2.id.rb_musik)
-    RadioButton rbMusik;
+    AppCompatRadioButton rbMusik;
     @BindView(R2.id.rb_seminar)
-    RadioButton rbSeminar;
+    AppCompatRadioButton rbSeminar;
     @BindView(R2.id.rb_olahraga)
-    RadioButton rbOlahraga;
+    AppCompatRadioButton rbOlahraga;
     @BindView(R2.id.rb_teater)
-    RadioButton rbTeater;
+    AppCompatRadioButton rbTeater;
     @BindView(R2.id.rb_hiburan)
-    RadioButton rbHiburan;
+    AppCompatRadioButton rbHiburan;
     @BindView(R2.id.rb_aktivitas)
-    RadioButton rbAktivitas;
+    AppCompatRadioButton rbAktivitas;
     @BindView(R2.id.rb_internasional)
-    RadioButton rbInternasional;
+    AppCompatRadioButton rbInternasional;
     @BindView(R2.id.rb_opentrip)
-    RadioButton rbOpentrip;
+    AppCompatRadioButton rbOpentrip;
 
     private RadioButton currentToggled;
 
-    private int mCategory;
-    private String selectedCategoryId;
+    private int mCategory = -1;
+    private String selectedCategoryId = "";
 
 
     public CategoryFilterFragment() {
@@ -81,11 +87,37 @@ public class CategoryFilterFragment extends Fragment {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View maincontent = inflater.inflate(R.layout.layout_fragment_filter_category, container, false);
         unbinder = ButterKnife.bind(this, maincontent);
+        rbMusik.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbSeminar.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbOpentrip.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbOlahraga.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbInternasional.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbHiburan.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbTeater.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+        rbAktivitas.setSupportButtonTintList(
+                ContextCompat.getColorStateList(getActivity(),
+                        R.color.color_state_list_radio));
+
         switch (mCategory) {
             case 0:
                 rbHiburan.setChecked(true);
@@ -137,6 +169,7 @@ public class CategoryFilterFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         listener = (EventFilterActivity) context;
+        closeSelf = (EventFilterActivity) context;
 
     }
 
@@ -172,6 +205,18 @@ public class CategoryFilterFragment extends Fragment {
                 selectedCategoryId = CATEGORY_ID[6];
             else if (id == R.id.rb_opentrip)
                 selectedCategoryId = CATEGORY_ID[7];
+        }
+    }
+
+    @OnClick({R2.id.iv_close_filter,
+            R2.id.tv_reset})
+    void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.iv_close_filter) {
+            closeSelf.closeFragmentSelf();
+        } else if (id == R.id.tv_reset) {
+            selectedCategoryId = "";
+            listener.setCategory(selectedCategoryId);
         }
     }
 

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.tokopedia.events.R;
 import com.tokopedia.events.R2;
+import com.tokopedia.events.view.contractor.ICloseFragement;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.travelcalendar.view.TravelCalendarActivity;
 
@@ -49,50 +50,13 @@ public class TimeFilterFragment extends Fragment {
     TextView tvSimpan;
     Unbinder unbinder;
 
-    @OnClick({R2.id.tv_today,
-            R2.id.tv_tomorrow,
-            R2.id.tv_next_week,
-            R2.id.tv_next_month,
-            R2.id.tv_everyday,
-            R2.id.tv_from_date
-    })
-    void onClick(View v) {
-        int id = v.getId();
-        if (id == R.id.tv_today) {
-            selectButton(tvToday);
-            timeRange = TIME_ID[1];
-            resetStartDate();
-        } else if (id == R.id.tv_tomorrow) {
-            selectButton(tvTomorrow);
-            timeRange = TIME_ID[0];
-            resetStartDate();
-        } else if (id == R.id.tv_next_month) {
-            selectButton(tvNextMonth);
-            timeRange = TIME_ID[2];
-            resetStartDate();
-        } else if (id == R.id.tv_next_week) {
-            selectButton(tvNextWeek);
-            timeRange = TIME_ID[3];
-            resetStartDate();
-        } else if (id == R.id.tv_everyday) {
-            selectButton(tvEveryday);
-            timeRange = EVERYDAY;
-            resetStartDate();
-        } else {
-            Calendar now = Calendar.getInstance();
-            now.add(Calendar.DAY_OF_MONTH, 90);
-            Intent calendarIntent = TravelCalendarActivity.newInstance(getContext(), new Date(), new Date(), now.getTime(), 0);
-            startActivityForResult(calendarIntent, REQ_OPEN_CALENDAR);
-        }
-    }
-
     private TextView selectedButton;
 
-    // TODO: Rename and change types of parameters
     private String timeRange;
     private long startDate;
 
     private OnSelectTimeFilterListener mListener;
+    private ICloseFragement closeSelf;
 
     public TimeFilterFragment() {
     }
@@ -145,6 +109,51 @@ public class TimeFilterFragment extends Fragment {
         }
     }
 
+    @OnClick({R2.id.tv_today,
+            R2.id.tv_tomorrow,
+            R2.id.tv_next_week,
+            R2.id.tv_next_month,
+            R2.id.tv_everyday,
+            R2.id.tv_from_date,
+            R2.id.iv_close_filter,
+            R2.id.tv_reset
+    })
+    void onClick(View v) {
+        int id = v.getId();
+        if (id == R.id.tv_today) {
+            selectButton(tvToday);
+            timeRange = TIME_ID[1];
+            resetStartDate();
+        } else if (id == R.id.tv_tomorrow) {
+            selectButton(tvTomorrow);
+            timeRange = TIME_ID[0];
+            resetStartDate();
+        } else if (id == R.id.tv_next_month) {
+            selectButton(tvNextMonth);
+            timeRange = TIME_ID[2];
+            resetStartDate();
+        } else if (id == R.id.tv_next_week) {
+            selectButton(tvNextWeek);
+            timeRange = TIME_ID[3];
+            resetStartDate();
+        } else if (id == R.id.tv_everyday) {
+            selectButton(tvEveryday);
+            timeRange = EVERYDAY;
+            resetStartDate();
+        } else if (id == R.id.tv_from_date) {
+            Calendar now = Calendar.getInstance();
+            now.add(Calendar.DAY_OF_MONTH, 90);
+            Intent calendarIntent = TravelCalendarActivity.newInstance(getContext(), new Date(), new Date(), now.getTime(), 0);
+            startActivityForResult(calendarIntent, REQ_OPEN_CALENDAR);
+        } else if (id == R.id.iv_close_filter) {
+            closeSelf.closeFragmentSelf();
+        } else if (id == R.id.tv_reset) {
+            timeRange = EVERYDAY;
+            startDate = 0;
+            mListener.onFragmentInteraction(timeRange, startDate);
+        }
+    }
+
 
     @Override
     public void onAttach(Context context) {
@@ -154,6 +163,13 @@ public class TimeFilterFragment extends Fragment {
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnSelectTimeFilterListener");
+        }
+
+        if (context instanceof ICloseFragement) {
+            closeSelf = (ICloseFragement) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement ICloseFragement");
         }
     }
 
