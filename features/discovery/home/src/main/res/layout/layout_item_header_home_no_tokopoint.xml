@@ -82,7 +82,7 @@
                         android:id="@+id/info_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:srcCompat="@drawable/ic_info"
+                        app:srcCompat="@drawable/ic_tokocash_info"
                         android:layout_alignTop="@+id/tv_balance_tokocash"
                         android:layout_alignBottom="@+id/tv_balance_tokocash"
                         android:layout_toRightOf="@+id/tv_balance_tokocash"

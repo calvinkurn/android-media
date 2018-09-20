@@ -5,10 +5,8 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
-import com.tokopedia.tokocash.historytokocash.presentation.Util;
 import com.tokopedia.tokocash.network.api.WalletApi;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,9 +42,7 @@ public class CloudWalletDataSource implements WalletDataSource {
     @Deprecated
     @Override
     public Observable<List<HelpHistoryTokoCashEntity>> getHelpHistoryData() {
-        String helpHistoryList = Util.loadJSONFromAsset("help_history_tokocash_2.json");
-        return Observable.just(Arrays.asList((HelpHistoryTokoCashEntity[]) gson.fromJson(helpHistoryList,
-                HelpHistoryTokoCashEntity[].class)));
+        return null;
     }
 
     @Deprecated

@@ -11,20 +11,21 @@ import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
+import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tkpd.deeplink.DeepLinkDelegate;
 import com.tokopedia.tkpd.deeplink.DeeplinkHandlerActivity;
-import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import java.net.ConnectException;
@@ -55,7 +56,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     protected boolean isFirstShake;
     private RemoteConfig remoteConfig;
     public static final String FIREBASE_DOUBLE_SHAKE_CONFIG_KEY = "app_double_shake_enabled";
-    public static final String SHAKE_SHAKE_ERROR ="Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
+    public static final String SHAKE_SHAKE_ERROR = "Oops! Kejutannya masih dibungkus. Yuk, shake lagi handphone-mu";
 
     public final static int SHAKE_SHAKE_WAIT_TIME_SEC = 5;
     Subscription subscription = null;
@@ -72,28 +73,28 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private boolean isDoubleShakeShakeEnable() {
-        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY,true);
+        return remoteConfig.getBoolean(FIREBASE_DOUBLE_SHAKE_CONFIG_KEY, true);
 
     }
 
     volatile boolean secondShakeHappen = false;
+
     @Override
     public void onShakeDetect() {
-        if(getView().isLongShakeTriggered()) {
+        if (getView().isLongShakeTriggered()) {
             getView().setInvisibleCounter();
             getView().showDisableShakeShakeVisible();
             vibrate();
             return;
-        }
-        else if (!isFirstShake && isDoubleShakeShakeEnable()) {
+        } else if (!isFirstShake && isDoubleShakeShakeEnable()) {
             isFirstShake = true;
             waitForSecondShake();
             vibrate();
 
         } else {
-            if(shakeUseCase != null)
+            if (shakeUseCase != null)
                 shakeUseCase.unsubscribe();
-            if(isFirstShake) {
+            if (isFirstShake) {
                 isFirstShake = false;
                 secondShakeHappen = true;
             }
@@ -133,7 +134,24 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                     } else if (e instanceof HttpErrorException) {
                         getView().showErrorNetwork(e.getMessage());
                     } else if (e instanceof ServerErrorException) {
-                        ServerErrorHandlerUtil.handleError(e);
+                        // this is from server error handler util (tokocash)
+                        if (e instanceof ServerErrorRequestDeniedException) {
+                            ServerErrorHandler.sendForceLogoutAnalytics(
+                                    ((ServerErrorRequestDeniedException) e).getUrl()
+                            );
+                            ServerErrorHandler.showForceLogoutDialog();
+                        } else if (e instanceof ServerErrorMaintenanceException) {
+                            ServerErrorHandler.showMaintenancePage();
+                        } else if (e instanceof ServerErrorTimeZoneException) {
+                            ServerErrorHandler.showTimezoneErrorSnackbar();
+                        } else {
+                            if (((ServerErrorException) e).getErrorCode() >= 500)
+                                ServerErrorHandler.sendErrorNetworkAnalytics(
+                                        ((ServerErrorException) e).getUrl(),
+                                        ((ServerErrorException) e).getErrorCode()
+                                );
+                            ServerErrorHandler.showServerErrorSnackbar();
+                        }
                     } else {
                         getView().showErrorGetInfo(SHAKE_SHAKE_ERROR);
                         return;
@@ -148,8 +166,8 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
 
                 @Override
                 public void onNext(final CampaignResponseEntity s) {
-                    if((s.getMessage()) != null && !s.getMessage().isEmpty() &&
-                            s.getUrl() != null && s.getUrl().isEmpty()){
+                    if ((s.getMessage()) != null && !s.getMessage().isEmpty() &&
+                            s.getUrl() != null && s.getUrl().isEmpty()) {
                         getView().showMessage(s.getMessage());
                         return;
                     }
@@ -175,36 +193,36 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     }
 
     private void waitForSecondShake() {
-        subscription = Observable.interval(0,1,  TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
+        subscription = Observable.interval(0, 1, TimeUnit.SECONDS).subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(new Subscriber<Long>() {
-            @Override
-            public void onCompleted() {
+                    @Override
+                    public void onCompleted() {
 
-            }
+                    }
 
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
 
-            @Override
-            public void onNext(Long l) {
-                if(l==SHAKE_SHAKE_WAIT_TIME_SEC && !secondShakeHappen) {
-                    finishShake();
-                    return;
-                }
+                    @Override
+                    public void onNext(Long l) {
+                        if (l == SHAKE_SHAKE_WAIT_TIME_SEC && !secondShakeHappen) {
+                            finishShake();
+                            return;
+                        }
 
 
-
-            }
-        });
+                    }
+                });
     }
+
     void finishShake() {
-        if(subscription != null)
+        if (subscription != null)
             subscription.unsubscribe();
         getView().setInvisibleCounter();
         isFirstShake = false;
-        if(shakeUseCase != null)
+        if (shakeUseCase != null)
             shakeUseCase.unsubscribe();
         getView().finish();
     }
@@ -223,10 +241,10 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
     public void onDisableShakeShake() {
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
-        if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
+        if (SessionHandler.isV4Login(getView().getCurrentActivity())) {
             getView().getCurrentActivity().startActivity(ManageGeneral.getCallingIntent(getView().getCurrentActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
             getView().finish();
-        }else {
+        } else {
             getView().makeInvisibleShakeShakeDisableView();
             getView().setSnackBarErrorMessage();
         }

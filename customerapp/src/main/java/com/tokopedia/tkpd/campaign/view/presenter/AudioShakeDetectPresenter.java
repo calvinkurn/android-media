@@ -2,24 +2,24 @@ package com.tokopedia.tkpd.campaign.view.presenter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
 import com.tokopedia.core.network.exception.ServerErrorException;
+import com.tokopedia.core.network.exception.ServerErrorRequestDeniedException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorMaintenanceException;
+import com.tokopedia.core.network.retrofit.exception.ServerErrorTimeZoneException;
 import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
+import com.tokopedia.core.network.retrofit.utils.ServerErrorHandler;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.configuration.WavRecorder;
 import com.tokopedia.tkpd.campaign.data.entity.CampaignResponseEntity;
 import com.tokopedia.tkpd.campaign.data.model.CampaignException;
 import com.tokopedia.tkpd.campaign.domain.audio.PostAudioDataUseCase;
-import com.tokopedia.tkpd.campaign.domain.shake.ShakeUseCase;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
-import com.tokopedia.tokocash.historytokocash.presentation.ServerErrorHandlerUtil;
 import com.tokopedia.usecase.RequestParams;
 
 import java.io.IOException;
@@ -103,13 +103,30 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
                 } else if (e instanceof HttpErrorException) {
                     getView().showErrorNetwork(e.getMessage());
                 } else if (e instanceof ServerErrorException) {
-                    ServerErrorHandlerUtil.handleError(e);
+                    // this is from server error handler util (tokocash)
+                    if (e instanceof ServerErrorRequestDeniedException) {
+                        ServerErrorHandler.sendForceLogoutAnalytics(
+                                ((ServerErrorRequestDeniedException) e).getUrl()
+                        );
+                        ServerErrorHandler.showForceLogoutDialog();
+                    } else if (e instanceof ServerErrorMaintenanceException) {
+                        ServerErrorHandler.showMaintenancePage();
+                    } else if (e instanceof ServerErrorTimeZoneException) {
+                        ServerErrorHandler.showTimezoneErrorSnackbar();
+                    } else {
+                        if (((ServerErrorException) e).getErrorCode() >= 500)
+                            ServerErrorHandler.sendErrorNetworkAnalytics(
+                                    ((ServerErrorException) e).getUrl(),
+                                    ((ServerErrorException) e).getErrorCode()
+                            );
+                        ServerErrorHandler.showServerErrorSnackbar();
+                    }
                 } else {
                     getView().showErrorNetwork(ErrorNetMessage.MESSAGE_ERROR_DEFAULT);
                 }
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                intent.putExtra("isSuccess",false);
+                intent.putExtra("isSuccess", false);
                 getView().sendBroadcast(intent);
                 v.vibrate(VIBRATION_PERIOD);
                 getView().finish();
@@ -119,8 +136,8 @@ public class AudioShakeDetectPresenter extends ShakeDetectPresenter implements W
             public void onNext(final CampaignResponseEntity s) {
 
                 Intent intent = new Intent(ShakeDetectManager.ACTION_SHAKE_SHAKE_SYNCED);
-                intent.putExtra("isSuccess",true);
-                intent.putExtra("data",s.getUrl());
+                intent.putExtra("isSuccess", true);
+                intent.putExtra("data", s.getUrl());
                 Vibrator v = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(VIBRATION_PERIOD);
                 getView().sendBroadcast(intent);

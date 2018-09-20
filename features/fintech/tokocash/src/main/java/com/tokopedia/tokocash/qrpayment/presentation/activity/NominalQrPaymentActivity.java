@@ -193,7 +193,7 @@ public class NominalQrPaymentActivity extends BaseSimpleActivity implements QrPa
             } else {
                 separatorNominal.setBackgroundColor(getColorNominal(R.color.separator_green));
                 tokocashValue.setTextColor(getColorNominal(R.color.separator_green));
-                payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.orange_button_rounded));
+                payButton.setBackground(ContextCompat.getDrawable(getApplicationContext(), R.drawable.bg_button_orange));
                 payButton.setTextColor(getColorNominal(R.color.white));
                 payButton.setEnabled(true);
             }

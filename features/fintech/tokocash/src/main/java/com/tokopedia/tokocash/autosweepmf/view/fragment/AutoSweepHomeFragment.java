@@ -27,11 +27,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
-import com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
+import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.activity.SetAutoSweepLimitActivity;
 import com.tokopedia.tokocash.autosweepmf.view.contract.AutoSweepHomeContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepDetail;
@@ -328,7 +328,7 @@ public class AutoSweepHomeFragment extends BaseDaggerFragment implements AutoSwe
 
     @Override
     public void openWebView(String url) {
-        Intent intent = SimpleWebViewWithFilePickerActivity.getIntent(getActivityContext(), url);
+        Intent intent = ((TokoCashRouter) getActivity()).getWebviewActivityWithIntent(getActivityContext(), url);
         startActivity(intent);
     }
 

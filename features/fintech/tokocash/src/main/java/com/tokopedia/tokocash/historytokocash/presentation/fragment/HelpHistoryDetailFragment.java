@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -149,7 +148,7 @@ public class HelpHistoryDetailFragment extends BaseDaggerFragment implements Hel
             sendHelp.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         } else {
             sendHelp.setEnabled(false);
-            sendHelp.setTextColor(ContextCompat.getColor(getActivity(), R.color.digital_voucher_notes));
+            sendHelp.setTextColor(ContextCompat.getColor(getActivity(), R.color.font_black_disabled_38));
         }
     }
 

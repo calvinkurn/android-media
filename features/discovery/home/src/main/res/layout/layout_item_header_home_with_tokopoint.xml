@@ -77,7 +77,7 @@
                         android:layout_alignTop="@+id/tv_balance_tokocash"
                         android:layout_toRightOf="@+id/tv_balance_tokocash"
                         android:visibility="gone"
-                        app:srcCompat="@drawable/ic_info" />
+                        app:srcCompat="@drawable/ic_tokocash_info" />
 
                 </RelativeLayout>
 
