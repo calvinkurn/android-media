@@ -1,5 +1,6 @@
 package com.tokopedia.home.account.data.model;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.home.account.AccountConstants;
 
@@ -80,7 +81,8 @@ public class VccUserStatus {
     }
 
     public String getIcon() {
-        return icon;
+        VccImageIcon vccImageIcon = new Gson().fromJson(icon, VccImageIcon.class);
+        return vccImageIcon.getAndroid() == null ? "" : vccImageIcon.getAndroid();
     }
 
     public void setIcon(String icon) {
