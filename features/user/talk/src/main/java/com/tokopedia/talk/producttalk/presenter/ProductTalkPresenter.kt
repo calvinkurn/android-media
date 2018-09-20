@@ -55,7 +55,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
 
     fun getProductTalk(productId: String, reset: Boolean) {
         isRequesting = true
-        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, 1, productId)
+        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, page, productId)
                 , object : Subscriber<ProductTalkViewModel>() {
             override fun onNext(viewModel: ProductTalkViewModel) {
                 isRequesting = false
