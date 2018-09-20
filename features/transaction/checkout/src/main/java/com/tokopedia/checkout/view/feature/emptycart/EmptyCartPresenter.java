@@ -5,8 +5,12 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.view.feature.emptycart.subscriber.CancelAutoApplySubscriber;
+import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetCartListSubscriber;
+import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetWishlistSubscriber;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,16 +30,19 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
         implements EmptyCartContract.Presenter {
 
     private final GetCartListUseCase getCartListUseCase;
+    private final GetWishlistUseCase getWishlistUseCase;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CompositeSubscription compositeSubscription;
 
     @Inject
     public EmptyCartPresenter(GetCartListUseCase getCartListUseCase,
+                              GetWishlistUseCase getWishlistUseCase,
                               CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                               CartApiRequestParamGenerator cartApiRequestParamGenerator,
                               CompositeSubscription compositeSubscription) {
         this.getCartListUseCase = getCartListUseCase;
+        this.getWishlistUseCase = getWishlistUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.cartApiRequestParamGenerator = cartApiRequestParamGenerator;
         this.compositeSubscription = compositeSubscription;
@@ -45,6 +52,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     public void detachView() {
         super.detachView();
         compositeSubscription.unsubscribe();
+        getWishlistUseCase.unsubscribe();
     }
 
     @Override
@@ -59,38 +67,18 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<CartListData>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        if (getView() != null) {
-                            getView().hideLoading();
-                            getView().showErrorToast(ErrorHandler.getErrorMessage(getView().getContext(), e));
-                        }
-                    }
-
-                    @Override
-                    public void onNext(CartListData cartListData) {
-                        if (getView() != null) {
-                            getView().hideLoading();
-                            if (!cartListData.getShopGroupDataList().isEmpty()) {
-                                getView().navigateToCartFragment(cartListData);
-                            }
-                        } else {
-                            String autoApplyMessage = null;
-                            if (cartListData != null && cartListData.getAutoApplyData() != null &&
-                                    cartListData.getAutoApplyData().isSuccess()) {
-                                autoApplyMessage = cartListData.getAutoApplyData().getTitleDescription();
-                            }
-                            getView().renderEmptyCart(autoApplyMessage);
-                        }
-                    }
-                })
+                .subscribe(new GetCartListSubscriber(getView()))
         );
+    }
+
+    @Override
+    public void processGetWishlistData() {
+        getWishlistUseCase.createObservable(new GetWishlistSubscriber(getView()));
+    }
+
+    @Override
+    public void processGetrecentViewdata() {
+
     }
 
     @Override
@@ -99,40 +87,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                        if (getView() != null) {
-                            getView().showErrorToast(ErrorHandler.getErrorMessage(getView().getContext(), e));
-                        }
-                    }
-
-                    @Override
-                    public void onNext(String stringResponse) {
-                        if (getView() != null) {
-                            boolean resultSuccess = false;
-                            try {
-                                JSONObject jsonObject = new JSONObject(stringResponse);
-                                resultSuccess = jsonObject.getJSONObject(CancelAutoApplyCouponUseCase.RESPONSE_DATA)
-                                        .getBoolean(CancelAutoApplyCouponUseCase.RESPONSE_SUCCESS);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                            if (resultSuccess) {
-                                getView().renderCancelAutoApplyCouponSuccess();
-                            } else {
-                                getView().showErrorToast(null);
-                            }
-                        }
-                    }
-                })
+                .subscribe(new CancelAutoApplySubscriber(getView()))
         );
 
     }

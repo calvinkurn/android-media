@@ -38,6 +38,9 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -87,7 +90,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     protected void initInjector() {
         EmptyCartComponent component = DaggerEmptyCartComponent.builder()
                 .cartComponent(CartComponentInjector.newInstance(getActivity().getApplication()).getCartApiServiceComponent())
-                .emptyCartModule(new EmptyCartModule())
+                .emptyCartModule(new EmptyCartModule(this))
                 .trackingAnalyticsModule(new TrackingAnalyticsModule())
                 .build();
         component.inject(this);
@@ -171,6 +174,16 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void renderEmptyCart(String autoApplyMessage) {
         renderAutoApplyPromo(autoApplyMessage);
         renderTopAds();
+    }
+
+    @Override
+    public void renderHasWishlist(List<Wishlist> wishlistData) {
+        // Todo : bind to RV
+    }
+
+    @Override
+    public void renderHasNoWishlist() {
+
     }
 
     private void renderAutoApplyPromo(String autoApplyMessage) {
