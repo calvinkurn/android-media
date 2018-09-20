@@ -9,6 +9,8 @@ package com.tokopedia.applink;
 public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
+    String HOME_ACCOUNT = "tokopedia://home/account";
+    String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -93,7 +95,6 @@ public interface ApplinkConst {
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
@@ -110,6 +111,8 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String INTEREST_PICK ="tokopedia://interestpick";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
 
     String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";

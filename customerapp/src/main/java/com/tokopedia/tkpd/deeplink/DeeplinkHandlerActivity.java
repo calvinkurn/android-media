@@ -12,6 +12,8 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
+import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModuleLoader;
 import com.tokopedia.checkout.applink.CheckoutAppLinkModule;
@@ -53,6 +55,8 @@ import com.tokopedia.inbox.deeplink.InboxDeeplinkModule;
 import com.tokopedia.inbox.deeplink.InboxDeeplinkModuleLoader;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModule;
 import com.tokopedia.instantloan.deeplink.InstantLoanAppLinkModuleLoader;
+import com.tokopedia.interestpick.applink.InterestPickApplinkModule;
+import com.tokopedia.interestpick.applink.InterestPickApplinkModuleLoader;
 import com.tokopedia.kol.applink.KolApplinkModule;
 import com.tokopedia.kol.applink.KolApplinkModuleLoader;
 import com.tokopedia.loyalty.applink.LoyaltyAppLinkModule;
@@ -118,6 +122,7 @@ import io.branch.referral.BranchError;
         FeedDeeplinkModule.class,
         FlightApplinkModule.class,
         TrainApplinkModule.class,
+        DigitalBrowseApplinkModule.class,
         ReputationApplinkModule.class,
         TokoCashApplinkModule.class,
         EventsDeepLinkModule.class,
@@ -129,6 +134,7 @@ import io.branch.referral.BranchError;
         ProfileApplinkModule.class,
         KolApplinkModule.class,
         ExploreApplinkModule.class,
+        InterestPickApplinkModule.class,
         TrackingAppLinkModule.class,
         CheckoutAppLinkModule.class,
         HowtopayApplinkModule.class,
@@ -165,6 +171,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new FeedDeeplinkModuleLoader(),
                 new FlightApplinkModuleLoader(),
                 new TrainApplinkModuleLoader(),
+                new DigitalBrowseApplinkModuleLoader(),
                 new ReputationApplinkModuleLoader(),
                 new TokoCashApplinkModuleLoader(),
                 new EventsDeepLinkModuleLoader(),
@@ -176,6 +183,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new ProfileApplinkModuleLoader(),
                 new KolApplinkModuleLoader(),
                 new ExploreApplinkModuleLoader(),
+                new InterestPickApplinkModuleLoader(),
                 new TrackingAppLinkModuleLoader(),
                 new CheckoutAppLinkModuleLoader(),
                 new HowtopayApplinkModuleLoader(),
@@ -205,7 +213,7 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Intent intent = getIntent();
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri applink = Uri.parse(intent.getData().toString().replaceAll("%", "%25"));
-            presenter.processUTM(applink);
+            presenter.processUTM(this, applink);
             Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());

@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,9 @@ public class BaseAdapter<F extends AdapterTypeFactory> extends RecyclerView.Adap
     @SuppressWarnings("unchecked")
     @Override
     public int getItemViewType(int position) {
+        if (position < 0 || position >= visitables.size()) {
+            return HideViewHolder.LAYOUT;
+        }
         return visitables.get(position).type(adapterTypeFactory);
     }
 

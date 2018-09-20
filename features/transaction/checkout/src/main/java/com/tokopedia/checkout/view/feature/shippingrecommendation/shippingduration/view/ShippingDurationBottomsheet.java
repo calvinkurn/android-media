@@ -120,7 +120,9 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     protected void onCloseButtonClick() {
-        shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationButtonCloseClicked();
+        }
         dismiss();
     }
 
@@ -201,9 +203,11 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 }
             }
         }
-        shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
-                presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationChoosen(
+                    shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
+                    presenter.getRecipientAddressModel(), cartPosition, selectedServiceId, serviceName, flagNeedToSetPinpoint);
+        }
         dismiss();
     }
 
@@ -227,6 +231,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
 
     @Override
     public void onDurationShipmentRecommendationShowCaseClosed() {
-        shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
+        if (shippingDurationBottomsheetListener != null) {
+            shippingDurationBottomsheetListener.onShippingDurationButtonShowCaseDoneClicked();
+        }
     }
 }

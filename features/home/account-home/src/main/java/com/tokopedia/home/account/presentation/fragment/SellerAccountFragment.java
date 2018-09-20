@@ -100,8 +100,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void getData() {
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .query_seller_account_home));
+        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home));
     }
 
     @Override
@@ -159,5 +158,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onScrollToTop() {
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

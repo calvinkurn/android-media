@@ -86,6 +86,7 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 import com.tokopedia.tokopoints.ApplinkConstant;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -127,11 +128,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
 
     private MainToolbar mainToolbar;
 
-    public static HomeFragment newInstance() {
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
-        Bundle args = new Bundle();
 
+
+    private boolean scrollToRecommendList = false;
+
+    public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -205,7 +211,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-
+        if(SessionHandler.isV4Login(getActivity())) {
+            scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
+        }
         presenter.attachView(this);
         presenter.setFeedListener(this);
         return view;
@@ -231,7 +239,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+                scrollToRecommendList();
                 HomePageTracking.eventClickJumpRecomendation();
             }
         });
@@ -265,6 +273,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                 floatingTextButton.resetState();
             }
         });
+    }
+
+    private void scrollToRecommendList() {
+
+        recyclerView.smoothScrollToPosition(adapter.findFirstInspirationPosition());
+        scrollToRecommendList = false;
     }
 
     private void initTabNavigation() {
@@ -519,6 +533,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             else
                 startActivity(TokoPointWebviewActivity.getIntentWithTitle(getActivity(), tokoPointUrl, pageTitle));
         }
+
+        AnalyticsTrackerUtil.sendEvent(getContext(),
+                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                AnalyticsTrackerUtil.CategoryKeys.HOMEPAGE,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_POINT,
+                AnalyticsTrackerUtil.EventKeys.TOKOPOINTS_LABEL);
     }
 
     @Override
@@ -601,6 +621,9 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
+        if(scrollToRecommendList) {
+            presenter.fetchNextPageFeed();
+        }
     }
 
     @Override
@@ -765,6 +788,10 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
+        if(scrollToRecommendList) {
+            scrollToRecommendList();
+        }
+
     }
 
     @Override

@@ -31,6 +31,7 @@ import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.TabUtil;
 
@@ -169,6 +170,27 @@ public class CatalogListingFragment extends BaseDaggerFragment implements Catalo
         hideLoader();
         //Setting up sort types tabs
         mViewPagerAdapter = new CatalogSortTypePagerAdapter(getChildFragmentManager(), filters.getSortType(), mPresenter);
+
+        mPagerSortType.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                AnalyticsTrackerUtil.sendEvent(getContext(),
+                        AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                        AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                        "click " + filters.getSortType().get(position).getText(),
+                        mPresenter.getCategoryName(filters.getCategories(), mPresenter.getSelectedCategoryId()));
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         mPagerSortType.setAdapter(mViewPagerAdapter);
         mTabSortType.setupWithViewPager(mPagerSortType);
 

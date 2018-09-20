@@ -28,14 +28,17 @@
 /libraries/product_draft_database/                      @tokopedia/minion-stuart
 
 /features/digital/flight/               @tokopedia/minion-mark
-/features/digital/train/                @tokopedia/minion-mark
+/features/digital/train/               @tokopedia/minion-mark
 /features/digital/flight_no_op/         @tokopedia/minion-mark
+/features/digital/digital_browse/         @tokopedia/minion-mark
 /features/digital/digitalproduct        @tokopedia/minion-mark
 /featires/digital/common_travel         @tokopedia/minion-mark
 /features/fintech/tokocash              @tokopedia/minion-mark
 /libraries/travel_calendar              @tokopedia/minion-mark
 
 /features/payment/payment/                      @tokopedia/minion-bob
+/features/payment/payment_setting/              @tokopedia/minion-bob
+/features/payment/pms/                          @tokopedia/minion-bob
 /features/transaction/checkout/                 @tokopedia/minion-bob
 /features/transaction/transactionanalytics/     @tokopedia/minion-bob
 /features/transaction/transactiondata/          @tokopedia/minion-bob
@@ -56,7 +59,9 @@
 /features/user/notifcenter/             @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
+/features/content/kol_common/           @tokopedia/minion-kevin
 /features/content/explore/              @tokopedia/minion-kevin
+/features/content/interest_pick/        @tokopedia/minion-kevin
 /features/payment/withdraw/             @tokopedia/minion-kevin
 
 /libraries/applink/                     @tokopedia/core-team
@@ -79,4 +84,5 @@
 /features/digital/digital_deals         @tokopedia/india-android-team
 /features/fintech/instant_loan          @tokopedia/india-android-team
 /features/user/updateinactivephone      @tokopedia/india-android-team
+/features/fintech/saldo_details          @tokopedia/india-android-team
 /libraries/oms                          @naveengoyal87
