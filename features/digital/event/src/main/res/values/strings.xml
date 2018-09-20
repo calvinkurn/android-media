@@ -90,6 +90,14 @@
     <string name="biaya_layanan">Biaya Layanan</string>
     <string name="total_diskon">Total Diskon</string>
     <string name="discount">- Rp %1$d</string>
+    <string name="owner_profile">Data Pemilik Tiket</string>
+    <string name="userName">Nama Lengkap</string>
+    <string name="userGender">Jenis Kelamin</string>
+    <string name="userDob">Tanggal Lahir</string>
+    <string name="userIdentity">No. Identitas</string>
+    <string name="btn_redeem_ticket">Redeem Tiket</string>
+    <string name="btn_ticket_redeemed">Tutup</string>
+    <string name="ticket_close">Kembali</string>
 
 
     <!-- need to changed -->
