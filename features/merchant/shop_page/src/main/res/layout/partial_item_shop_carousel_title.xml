@@ -11,7 +11,6 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         style="@style/TextView.Title.Bold"
-        android:textSize="@dimen/sp_17"
         android:singleLine="true"
         android:ellipsize="end"
         tools:text="@string/shop_page_label_featured_product"/>
