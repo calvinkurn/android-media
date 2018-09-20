@@ -211,5 +211,6 @@
     <string name="label_shipping_duration">Durasi Pengiriman</string>
     <string name="label_shipment_address">Alamat Pengiriman</string>
     <string name="label_ellipsize">...</string>
+    <string name="checkout_empty_cart_sub_message">Wujudkan Impian di Wishlist Kamu</string>
 
 </resources>

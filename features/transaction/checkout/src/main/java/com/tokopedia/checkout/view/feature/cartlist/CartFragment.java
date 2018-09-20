@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -1160,9 +1161,8 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
         int scrollTo = ((View) tvPromoCodeEmptyCart.getParent().getParent()).getTop() + tvPromoCodeEmptyCart.getTop();
         scrollViewEmptyCart.smoothScrollTo(0, scrollTo);
-
-*/
         setVisibilityRemoveButton(false);
+*/
         notifyBottomCartParent();
     }
 
@@ -1171,13 +1171,18 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
+            refreshHandler.setRefreshing(true);
             if (dPresenter.getCartListData() == null) {
-                dPresenter.processInitialGetCartData(true);
+                if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
+                    dPresenter.processInitialGetCartData(true);
+                }
             } else {
                 if (dPresenter.dataHasChanged()) {
                     dPresenter.processToUpdateAndReloadCartData();
                 } else {
-                    dPresenter.processInitialGetCartData(false);
+                    if (getArguments() == null || getArguments().getParcelable(EmptyCartListener.ARG_CART_LIST_DATA) == null) {
+                        dPresenter.processInitialGetCartData(false);
+                    }
                 }
             }
         } else {
@@ -1252,6 +1257,9 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
 
     @Override
     public void renderLoadGetCartDataFinish() {
+        if (refreshHandler.isRefreshing()) {
+            refreshHandler.setRefreshing(false);
+        }
         cartAdapter.resetData();
         showMainContainer();
         onContentAvailabilityChanged(true);

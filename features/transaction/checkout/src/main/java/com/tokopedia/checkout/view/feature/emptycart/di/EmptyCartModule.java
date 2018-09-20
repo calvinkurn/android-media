@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.feature.emptycart.di;
 
+import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
@@ -27,9 +28,10 @@ public class EmptyCartModule {
     @Provides
     @EmptyCartScope
     EmptyCartContract.Presenter provideShipmentPresenter(GetCartListUseCase getCartListUseCase,
+                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                          CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                          CompositeSubscription compositeSubscription) {
-        return new EmptyCartPresenter(getCartListUseCase, cartApiRequestParamGenerator, compositeSubscription);
+        return new EmptyCartPresenter(getCartListUseCase, cancelAutoApplyCouponUseCase, cartApiRequestParamGenerator, compositeSubscription);
     }
 
 }
