@@ -22,10 +22,11 @@ public class WeightFormatterUtil {
             weightTotal = bigDecimal.doubleValue();
             weighTotalFormatted = String.valueOf(weightTotal) + " " + LABEL_KILOGRAM;
         } else {
-            weighTotalFormatted = ((int) weightTotal) + " " + LABEL_GRAM;
+            weighTotalFormatted = ((int) weightTotal) + LABEL_GRAM;
         }
 
-        return weighTotalFormatted.replace(".0 ", "");
+        return weighTotalFormatted.replace(".0 ", "")
+                .replace("  ", " ");
     }
 
 }
