@@ -54,41 +54,43 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
     }
 
     fun getProductTalk(productId: String, reset: Boolean) {
-        isRequesting = true
-        getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, page, productId)
-                , object : Subscriber<ProductTalkViewModel>() {
-            override fun onNext(viewModel: ProductTalkViewModel) {
-                isRequesting = false
-                view.hideLoadingFull()
-                if (viewModel.listThread.isEmpty()) {
-                    view.onEmptyTalk()
-                } else {
-                    if (reset) {
-                        view.hideRefresh()
-                        view.onSuccessResetTalk(viewModel.listThread)
+        if(!isRequesting){
+            isRequesting = true
+            getProductTalkUseCase.execute(GetProductTalkUseCase.getParam(userSession.userId, page, productId)
+                    , object : Subscriber<ProductTalkViewModel>() {
+                override fun onNext(viewModel: ProductTalkViewModel) {
+                    isRequesting = false
+                    view.hideLoadingFull()
+                    if (viewModel.listThread.isEmpty()) {
+                        view.onEmptyTalk()
                     } else {
-                        view.onSuccessGetTalks(viewModel.listThread)
-                    }
-                    if (viewModel.hasNextPage) {
-                        view.setCanLoad()
-                        page += 1
-                        pageId = viewModel.page_id
+                        if (reset) {
+                            view.hideRefresh()
+                            view.onSuccessResetTalk(viewModel.listThread)
+                        } else {
+                            view.onSuccessGetTalks(viewModel.listThread)
+                        }
+                        if (viewModel.hasNextPage) {
+                            view.setCanLoad()
+                            page += 1
+                            pageId = viewModel.page_id
+                        }
                     }
                 }
-            }
 
-            override fun onCompleted() {
+                override fun onCompleted() {
 
-            }
+                }
 
-            override fun onError(e: Throwable) {
-                isRequesting = false
-                view.hideRefresh()
-                view.hideLoadingFull()
-                onErrorTalk(e)
-            }
+                override fun onError(e: Throwable) {
+                    isRequesting = false
+                    view.hideRefresh()
+                    view.hideLoadingFull()
+                    onErrorTalk(e)
+                }
 
-        })
+            })
+        }
     }
 
     override fun deleteTalk(shopId: String, talkId: String) {
