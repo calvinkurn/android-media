@@ -6,13 +6,13 @@ import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactory
 /**
  * @author by milhamj on 9/20/18.
  */
-data class ProfileHeaderViewModel(
+class ProfilePostViewModel(
         val name: String = "",
         val avatar: String = "",
-        val followers: Int = 0,
-        val following: Int = 0,
-        val isKol: Boolean = false,
-        val isFollowed: Boolean = false) : Visitable<ProfileTypeFactory> {
+        val time: String = "",
+        val productId: Int = 0,
+        val images: List<String> = ArrayList(),
+        val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
 
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

@@ -1,33 +1,29 @@
 package com.tokopedia.profile.view.fragment
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.profile.R
+import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileContract
 
 /**
  * @author by milhamj on 9/17/18.
  */
-class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(), ProfileContract.View {
+class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
+        ProfileContract.View {
 
     companion object {
         fun createInstance() = ProfileFragment()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return LayoutInflater.from(context).inflate(R.layout.profile_fragment, container, false)
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
+//    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+//                              savedInstanceState: Bundle?): View? {
+//        return LayoutInflater.from(context).inflate(R.layout.profile_fragment, container, false)
+//    }
+//
+//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+//        super.onViewCreated(view, savedInstanceState)
+//    }
 
     override fun getScreenName(): String? = null
 
@@ -35,8 +31,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     }
 
-    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory? {
-        return null
+    override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
+        return ProfileTypeFactoryImpl(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {

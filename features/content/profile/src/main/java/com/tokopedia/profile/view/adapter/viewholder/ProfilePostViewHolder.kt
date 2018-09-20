@@ -8,10 +8,10 @@ import com.tokopedia.profile.view.viewmodel.ProfileHeaderViewModel
 /**
  * @author by milhamj on 9/20/18.
  */
-class ProfileHeaderViewHolder(val v: View) : AbstractViewHolder<ProfileHeaderViewModel>(v) {
+class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfileHeaderViewModel>(v) {
 
     companion object {
-        val LAYOUT = R.layout.item_profile_header
+        val LAYOUT = R.layout.item_affiliate_post
     }
 
     override fun bind(element: ProfileHeaderViewModel) {
