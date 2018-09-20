@@ -1,5 +1,5 @@
-query shopShowcasesByShopID($shopID:String!, $hideNoCount:Boolean!, $hideShowcaseGroup:Boolean!, $isOwner:Boolean!) {
-  shopShowcasesByShopID(shopId:$shopID, hideNoCount:$hideNoCount, hideShowcaseGroup:$hideShowcaseGroup, isOwner:$isOwner) {
+query shopShowcasesByShopID($shopId:String!, $hideNoCount:Boolean, $hideShowcaseGroup:Boolean, $isOwner:Boolean) {
+  shopShowcasesByShopID(shopId:$shopId, hideNoCount:$hideNoCount, hideShowcaseGroup:$hideShowcaseGroup, isOwner:$isOwner) {
       result {
           id
           name

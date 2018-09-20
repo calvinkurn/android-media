@@ -12,7 +12,7 @@ import java.util.ArrayList
  * Created by hendry on 08/08/18.
  */
 
-data class ShopEtalaseByShopQuery(@SerializedName("shopShowcasesByID")
+data class ShopEtalaseByShopQuery(@SerializedName("shopShowcasesByShopID")
                             @Expose
                             override var result: GraphQLResult<ArrayList<ShopEtalaseModel>>? = null)
     : HasGraphQLResult<ArrayList<ShopEtalaseModel>> {
