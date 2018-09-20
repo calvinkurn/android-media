@@ -10,6 +10,7 @@ public interface WalletUrl {
         public static String ACCOUNTS_DOMAIN = "https://accounts.tokopedia.com/";
         public static String WALLET_DOMAIN = "https://www.tokocash.com/";
         public static String WEB_DOMAIN = "https://www.tokpedia.com/";
+        public static String GQL_TOKOCASH_DOMAIN = "https://gql.tokopedia.com/";
     }
 
     class KeyHmac {

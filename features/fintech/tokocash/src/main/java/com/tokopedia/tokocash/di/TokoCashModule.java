@@ -5,10 +5,7 @@ import android.text.InputFilter;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
-import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.WalletUserSession;
 import com.tokopedia.tokocash.accountsetting.data.AccountSettingRepository;
@@ -37,6 +34,7 @@ import com.tokopedia.tokocash.network.interceptor.TokoCashAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.TokoCashErrorResponseInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletAuthInterceptor;
 import com.tokopedia.tokocash.network.interceptor.WalletErrorResponseInterceptor;
+import com.tokopedia.tokocash.network.interceptor.WalletGqlAuthInterceptor;
 import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.WalletErrorResponse;
@@ -45,6 +43,7 @@ import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.domain.PostQrPaymentUseCase;
+import com.tokopedia.user.session.UserSession;
 
 import dagger.Module;
 import dagger.Provides;
@@ -212,13 +211,47 @@ public class TokoCashModule {
     }
 
     @Provides
-    WalletBalanceApi provideWalletBalanceApi() {
-        Retrofit retrofit = RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.HOME_DATA_BASE_URL)
-                .client(OkHttpFactory.create()
-                        .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
-                        .buildClientDefaultAuth())
-                .build();
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
 
+    @Provides
+    public NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        if (context instanceof NetworkRouter) {
+            return ((NetworkRouter) context);
+        }
+        throw new RuntimeException("Application must implement " + NetworkRouter.class.getCanonicalName());
+    }
+
+    @Provides
+    public WalletGqlAuthInterceptor provideWalletGqlAuthInterceptor(@ApplicationContext Context context,
+                                                                    NetworkRouter networkRouter,
+                                                                    UserSession userSession) {
+        return new WalletGqlAuthInterceptor(context, networkRouter, userSession);
+    }
+
+    @Provides
+    @OkHttpGqlTokocashQualifier
+    OkHttpClient provideOkHttpGqlClientWallet(@TokoCashChuckQualifier Interceptor chuckIntereptor,
+                                              WalletGqlAuthInterceptor walletGqlAuthInterceptor) {
+        return new OkHttpClient.Builder()
+                .addInterceptor(walletGqlAuthInterceptor)
+                .addInterceptor(chuckIntereptor).build();
+    }
+
+    @Provides
+    @RetrofitGqlTokocashQualifier
+    Retrofit provideRetrofitGqlWallet(Retrofit.Builder retrofitBuilder, Gson gson,
+                                      @OkHttpGqlTokocashQualifier OkHttpClient okHttpClient) {
+        return retrofitBuilder.baseUrl(WalletUrl.BaseUrl.GQL_TOKOCASH_DOMAIN)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .client(okHttpClient)
+                .build();
+    }
+
+    @Provides
+    WalletBalanceApi provideWalletBalanceApi(@RetrofitGqlTokocashQualifier Retrofit retrofit) {
         return retrofit.create(WalletBalanceApi.class);
     }
 
@@ -228,12 +261,7 @@ public class TokoCashModule {
     }
 
     @Provides
-    AutoSweepApi provideAutoSweepApi() {
-        Retrofit retrofit = RetrofitFactory.createRetrofitDefaultConfig(TkpdBaseURL.HOME_DATA_BASE_URL)
-                .client(OkHttpFactory.create()
-                        .addOkHttpRetryPolicy(OkHttpRetryPolicy.createdDefaultOkHttpRetryPolicy())
-                        .buildClientDefaultAuth())
-                .build();
+    AutoSweepApi provideAutoSweepApi(@RetrofitGqlTokocashQualifier Retrofit retrofit) {
         return retrofit.create(AutoSweepApi.class);
     }
 
