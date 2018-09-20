@@ -47,6 +47,7 @@ public class ProductSolutionViewHolder extends AbstractViewHolder<ProductSolutio
         tvTitle.setText(model.getProduct().getName());
         tvQty.setText(String.valueOf(model.getProblem().getQty()));
         solutionRefundView.bind(model.getProblem(), mainView, mainView.getComplaintResult(model.getOrder()));
+        mainView.initCheckedItem();
     }
 
     private void initViewListener(ProductSolutionModel model) {

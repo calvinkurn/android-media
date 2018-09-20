@@ -450,9 +450,9 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
-    public void eventClickCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
+    public void eventViewCourierCourierSelectionViewPreselectedCourierOption(String eventLabelPreselectedCourierPartner) {
         sendEventCategoryActionLabel(
-                EventName.CLICK_COURIER,
+                EventName.VIEW_COURIER,
                 EventCategory.COURIER_SELECTION,
                 EventAction.VIEW_PRESELECTED_COURIER_OPTION,
                 eventLabelPreselectedCourierPartner
@@ -491,4 +491,23 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
                 EventAction.CLICK_UBAH_DURASI
         );
     }
+
+    public void eventViewPromoAutoApply() {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                EventLabel.CHECKOUT_COUPON_AUTO_APPLY
+        );
+    }
+
+    public void eventViewPromoManualApply(String type) {
+        sendEventCategoryActionLabel(
+                EventName.VIEW_PROMO,
+                EventCategory.COURIER_SELECTION,
+                EventAction.VIEW_PROMO_ELIGBLE_APPLY,
+                String.format(EventLabel.CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY, type)
+        );
+    }
+
 }

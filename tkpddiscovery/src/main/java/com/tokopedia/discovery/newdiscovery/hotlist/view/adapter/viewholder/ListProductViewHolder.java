@@ -88,7 +88,7 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
 
         renderWishlistButton(element.isWishlist());
         renderShopLocation(element);
-        renderProductImage(element.getImageUrl());
+        renderProductImage(element);
         renderBadges(element.getBadgesList());
         renderRating(element.getRating(), element.getCountReview());
 
@@ -139,8 +139,8 @@ public class ListProductViewHolder extends AbstractViewHolder<HotlistProductView
         }
     }
 
-    protected void renderProductImage(String imageUrl) {
-        ImageHandler.loadImageSourceSize(context, productImage, imageUrl);
+    protected void renderProductImage(HotlistProductViewModel productItem) {
+        ImageHandler.loadImageSourceSize(context, productImage, productItem.getImageUrl());
     }
 
     protected void renderShopLocation(HotlistProductViewModel element) {

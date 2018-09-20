@@ -59,7 +59,7 @@ public class AlbumPickerActivity extends BaseSimpleActivity implements LoaderMan
 
         super.onCreate(savedInstanceState);
 
-        albumAdapter = new AlbumAdapter(this, this);
+        albumAdapter = new AlbumAdapter(this, this, galleryType);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,

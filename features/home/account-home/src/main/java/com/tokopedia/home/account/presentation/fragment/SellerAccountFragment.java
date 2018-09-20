@@ -73,6 +73,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
         recyclerView = view.findViewById(R.id.recycler_seller);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager
                 .VERTICAL, false));
+        swipeRefreshLayout.setColorSchemeResources(R.color.tkpd_main_green);
         return view;
     }
 
@@ -99,8 +100,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     }
 
     private void getData() {
-        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw
-                .query_seller_account_home));
+        presenter.getSellerData(GraphqlHelper.loadRawString(getContext().getResources(), R.raw.query_seller_account_home));
     }
 
     @Override
@@ -143,7 +143,9 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void showError(String message) {
         if (getView() != null) {
-            ToasterError.make(getView(), message, ToasterError.LENGTH_SHORT).show();
+            ToasterError.make(getView(), message)
+                    .setAction(getString(R.string.title_try_again), view -> getData())
+                    .show();
         }
     }
 
@@ -156,5 +158,11 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     public void onScrollToTop() {
         if (recyclerView != null)
             recyclerView.scrollToPosition(0);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
     }
 }

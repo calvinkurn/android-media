@@ -23,7 +23,6 @@ public class MyCouponListingActivity extends BaseSimpleActivity implements HasCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_label_my_coupon));
-        GraphqlClient.init(getApplicationContext());
     }
 
     @Override

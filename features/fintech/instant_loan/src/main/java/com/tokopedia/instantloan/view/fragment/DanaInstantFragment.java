@@ -176,8 +176,8 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
     @Override
     public void onErrorPhoneDataUploaded(String errorMessage) {
-        hideIntroDialog();
         hideLoaderIntroDialog();
+        hideIntroDialog();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -321,8 +321,16 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
 
         mDialogIntro.getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                 WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
-                .findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
+
+        if (mDialogIntro.findViewById(R.id.view_pager_il_intro) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                        .findViewById(R.id.progress_bar_status) != null) {
+
+            mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                    .findViewById(R.id.progress_bar_status).setVisibility(View.VISIBLE);
+
+        }
     }
 
     @Override
@@ -332,8 +340,16 @@ public class DanaInstantFragment extends BaseDaggerFragment implements InstantLo
         }
 
         mDialogIntro.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-        mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
-                .findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+
+        if (mDialogIntro.findViewById(R.id.view_pager_il_intro) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2) != null &&
+                mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                        .findViewById(R.id.progress_bar_status) != null) {
+
+            mDialogIntro.findViewById(R.id.view_pager_il_intro).findViewWithTag(2)
+                    .findViewById(R.id.progress_bar_status).setVisibility(View.INVISIBLE);
+
+        }
     }
 
     @Override

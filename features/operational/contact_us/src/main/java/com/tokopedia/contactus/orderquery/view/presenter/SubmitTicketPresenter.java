@@ -33,7 +33,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
     private static final int MESSAGE_WRONG_DIMENSION = 0;
     private static final int MESSAGE_WRONG_FILE_SIZE = 1;
     private Context context;
-    private ContactUsRetrofitInteractorImpl networkInteractor;
     private SubmitTicketUseCase submitTicketUseCase;
 
     @Inject
@@ -56,7 +55,6 @@ public class SubmitTicketPresenter extends BaseDaggerPresenter<SubmitTicketContr
 
     @Override
     public void onSendButtonClick() {
-        this.networkInteractor = new ContactUsRetrofitInteractorImpl();
         if (isTicketValid() && isUploadImageValid()) {
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject("submitTicket", getSendTicketParam());
