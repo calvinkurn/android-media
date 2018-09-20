@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subsc
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.gm.subscribe.membership.analytic.GmSubscribeMembershipTracking
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
 import kotlinx.android.synthetic.main.fragment_gm_subscribe_membership.*
@@ -27,7 +28,11 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
     @Inject
     lateinit var presenter: GmMembershipPresenterImpl
 
+    @Inject
+    lateinit var gmSubscribeMembershipTracking: GmSubscribeMembershipTracking
+
     private var subscriptionTypeSelected = DEFAULT_SUBSCRIPTION_TYPE
+    private lateinit var subscriptionNameSelected : String
 
     private val tvSave : TextView by lazy { activity?.findViewById(R.id.tvSave) as TextView}
 
@@ -69,15 +74,22 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
             }}
 
 
-        swAutoExtend.setOnCheckedChangeListener { _, bool ->
-            showAutoExtendLayout(bool)
+        swAutoExtend.setOnCheckedChangeListener { _, bool -> showAutoExtendLayout(bool) }
+
+        swAutoExtend.setOnClickListener {
+            val action = if(swAutoExtend.isChecked) TOGGLE_ON else TOGGLE_OFF
+            gmSubscribeMembershipTracking.eventClickToggleAutoExtend(action)
         }
 
-        btnExtend.setOnClickListener { goToProductPage() }
+        btnExtend.setOnClickListener {
+            gmSubscribeMembershipTracking.eventClickExtend(subscriptionNameSelected)
+            goToProductPage()
+        }
 
         labelExtendPacket.setOnClickListener { goToProductPage() }
 
         tvInfoAutoExtend.setOnClickListener {
+            gmSubscribeMembershipTracking.eventClickInformation()
             goToInfoGmPage()
         }
 
@@ -122,6 +134,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         swAutoExtend.isChecked = (membershipData.auto_extend == 1)
 
         subscriptionTypeSelected = membershipData.subscription.subscription_type
+        subscriptionNameSelected = membershipData.subscription.name
 
         val expiredDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.expired_date)
         val autoWithdrawalDate = DateFormatUtils.formatDate(FORMAT_DATE_API, DEFAULT_VIEW_FORMAT, membershipData.auto_withdrawal_date)
@@ -160,8 +173,11 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
                 data?.getStringExtra(EXTRA_SUBSCRIPTION_PRICE)?.run {
                     packageName = packageName + " " + this
                 }
-                if(packageName.isNotEmpty())
+                if(packageName.isNotEmpty()) {
+                    subscriptionNameSelected = packageName
                     labelExtendPacket.setContent(packageName)
+                }
+                gmSubscribeMembershipTracking.eventClickSubscribe(subscriptionNameSelected)
             }
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -172,6 +188,9 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         const val DEFAULT_SUBSCRIPTION_TYPE = 0
         private const val FORMAT_DATE_API = "yyyy-MM-dd'T'HH:mm:ss'Z'"
         private const val DEFAULT_VIEW_FORMAT = "dd MMM yyyy"
+
+        private const val TOGGLE_ON = "on"
+        private const val TOGGLE_OFF = "off"
 
         private const val EXTRA_MEMBERSHIP_PACKAGE = 200
 
