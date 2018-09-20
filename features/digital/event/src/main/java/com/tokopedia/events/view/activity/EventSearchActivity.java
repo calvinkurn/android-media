@@ -67,6 +67,8 @@ public class EventSearchActivity extends TActivity implements
     RecyclerView rvTopEventSuggestions;
     @BindView(R2.id.tv_topevents)
     TextView tvTopevents;
+    @BindView(R2.id.btn_filter)
+    View filterBtn;
 
     LinearLayoutManager layoutManager;
 
@@ -94,12 +96,13 @@ public class EventSearchActivity extends TActivity implements
 
     @Override
     public void onSearchSubmitted(String text) {
+        filterBtn.setVisibility(View.VISIBLE);
         mPresenter.searchSubmitted(text);
     }
 
     @Override
     public void onSearchTextChanged(String text) {
-
+        filterBtn.setVisibility(View.GONE);
         mPresenter.searchTextChanged(text);
 
     }

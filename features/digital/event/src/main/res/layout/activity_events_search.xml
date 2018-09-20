@@ -154,7 +154,7 @@
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginBottom="@dimen/dp_16"
             android:background="@color/green_nob"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="@dimen/dp_22"
             app:cardElevation="@dimen/dp_4"
             app:contentPaddingBottom="@dimen/dp_12"
