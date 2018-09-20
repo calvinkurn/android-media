@@ -2,6 +2,7 @@ package com.tokopedia.feedplus.domain.model.feed;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -20,6 +21,9 @@ public class FeedDomain {
 
     @Nullable
     private WhitelistDomain whitelist;
+
+    @Nonnull
+    private Boolean isInterestWhitelist = false;
 
     public FeedDomain(@Nullable List<DataFeedDomain> listFeed,
                       boolean hasNext) {
@@ -52,5 +56,14 @@ public class FeedDomain {
 
     public void setWhitelist(@Nullable WhitelistDomain whitelist) {
         this.whitelist = whitelist;
+    }
+
+    @Nonnull
+    public Boolean getInterestWhitelist() {
+        return isInterestWhitelist;
+    }
+
+    public void setInterestWhitelist(@Nonnull Boolean interestWhitelist) {
+        isInterestWhitelist = interestWhitelist;
     }
 }

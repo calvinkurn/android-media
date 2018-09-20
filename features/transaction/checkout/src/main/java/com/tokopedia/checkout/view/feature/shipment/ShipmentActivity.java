@@ -29,6 +29,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static final String EXTRA_CART_PROMO_SUGGESTION = "EXTRA_CART_PROMO_SUGGESTION";
     public static final String EXTRA_PROMO_CODE_APPLIED_DATA = "EXTRA_PROMO_CODE_APPLIED_DATA";
     public static final String EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB = "EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB";
+    public static final String EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED = "EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED";
 
     private CheckoutAnalyticsCourierSelection checkoutAnalyticsCourierSelection;
 
@@ -36,11 +37,13 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     public static Intent createInstance(Context context,
                                         PromoCodeAppliedData promoCodeCartListData,
                                         CartPromoSuggestion cartPromoSuggestion,
-                                        String defaultSelectedTabPromo) {
+                                        String defaultSelectedTabPromo,
+                                        boolean isAutoApplyPromoCodeApplied) {
         Intent intent = new Intent(context, ShipmentActivity.class);
         intent.putExtra(EXTRA_PROMO_CODE_APPLIED_DATA, promoCodeCartListData);
         intent.putExtra(EXTRA_CART_PROMO_SUGGESTION, cartPromoSuggestion);
         intent.putExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB, defaultSelectedTabPromo);
+        intent.putExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, isAutoApplyPromoCodeApplied);
         return intent;
     }
 
@@ -92,7 +95,8 @@ public class ShipmentActivity extends BaseCheckoutActivity {
         return ShipmentFragment.newInstance(
                 getIntent().getParcelableExtra(EXTRA_PROMO_CODE_APPLIED_DATA),
                 getIntent().getParcelableExtra(EXTRA_CART_PROMO_SUGGESTION),
-                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB)
+                getIntent().getStringExtra(EXTRA_PROMO_CODE_COUPON_DEFAULT_SELECTED_TAB),
+                getIntent().getBooleanExtra(EXTRA_AUTO_APPLY_PROMO_CODE_APPLIED, false)
         );
     }
 
@@ -115,6 +119,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
                         .eventClickAtcCourierSelectionClickKembaliDanHapusPerubahanFromBackArrow();
                 setResult(RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT);
                 finish();
+                dialog.dismiss();
             }
         });
         dialog.setOnOkClickListener(new View.OnClickListener() {

@@ -11,4 +11,6 @@ public interface ShippingCourierBottomsheetListener {
 
     void onCourierChoosen(CourierItemData courierItemData, RecipientAddressModel recipientAddressModel, int cartPosition);
 
+    void onCourierShipmentRecpmmendationCloseClicked();
+
 }

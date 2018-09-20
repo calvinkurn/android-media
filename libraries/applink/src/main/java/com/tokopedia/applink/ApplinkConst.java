@@ -9,6 +9,8 @@ package com.tokopedia.applink;
 public interface ApplinkConst {
     String HOME = "tokopedia://home";
     String HOME_FEED = "tokopedia://home/feed";
+    String HOME_ACCOUNT = "tokopedia://home/account";
+    String HOME_RECOMMENDATION = "tokopedia://home/recommendation";
     String FEED = "tokopedia://feed";
     String FEED_DETAILS = "tokopedia://feedcommunicationdetail/{extra_detail_id}";
     String HOME_CATEGORY = "tokopedia://home/category";
@@ -93,7 +95,6 @@ public interface ApplinkConst {
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
     String EVENTS_DETAILS = "tokopedia://events/{event}";
     String REFERRAL_WELCOME = "tokopedia://referral/{code}/{owner}";
-    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
     String PROMO_LIST = "tokopedia://promoNative";
     String EXPLORE = "tokopedia://jump/{section}";
 
@@ -102,6 +103,7 @@ public interface ApplinkConst {
     String DEALS_ORDER = "tokopedia://deals/order";
     String FLIGHT_ORDER = "tokopedia://pesawat/order";
 
+    String BUYER_INFO = "tokopedia://buyerinfo";
     String SELLER_INFO = "tokopedia://sellerinfo";
     String SELLER_INFO_DETAIL = "tokopedia://sellerinfo/detail";
 
@@ -109,6 +111,8 @@ public interface ApplinkConst {
 
     String CONTENT_EXPLORE = "tokopedia://content/explore/{tab_name}/{category_id}";
     String CONTENT_DETAIL ="tokopedia://content/{post_id}";
+    String INTEREST_PICK ="tokopedia://interestpick";
+    String KOL_COMMENT = "tokopedia://kolcomment/{id}";
 
     String PLAY_NOTIFICATION_VIDEO ="tokopedia://play-notif-video";
     String INBOX_TICKET = "tokopedia://customercare";
@@ -138,6 +142,7 @@ public interface ApplinkConst {
     String NOTIFICATION = "tokopedia://notification";
     String PMS = "tokopedia://buyer/payment";
     String PURCHASE_ORDER = "tokopedia://buyer/order";
+    String PURCHASE_ORDER_DETAIL = "tokopedia://buyer/order/{order_id}";
     String PURCHASE_CONFIRMED = "tokopedia://buyer/confirmed";
     String PURCHASE_PROCESSED = "tokopedia://buyer/processed";
     String PURCHASE_SHIPPING_CONFIRM = "tokopedia://buyer/shipping-confirm";
