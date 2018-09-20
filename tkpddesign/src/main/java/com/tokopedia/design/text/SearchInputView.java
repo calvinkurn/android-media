@@ -184,7 +184,11 @@ public class SearchInputView extends BaseCustomView {
         requestLayout();
     }
 
-
+    public void setSearchText(String searchText) {
+        this.searchText = searchText;
+        searchTextView.setText(searchText);
+    }
+  
     public ImageView getSearchImageView() {
         return searchImageView;
     }
@@ -230,8 +234,4 @@ public class SearchInputView extends BaseCustomView {
         return R.layout.widget_search_input_view;
     }
 
-    public void setSearchText(String searchText) {
-        this.searchText = searchText;
-        searchTextView.setText(searchText);
-    }
 }
