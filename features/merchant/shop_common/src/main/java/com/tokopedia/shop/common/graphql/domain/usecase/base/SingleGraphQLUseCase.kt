@@ -74,7 +74,7 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
             return null
         } else {
             return GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).apply {
-                setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
+                setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`())
                 setSessionIncluded(true)
             }.build();
         }
