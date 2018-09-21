@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.data
+package com.tokopedia.merchantvoucher.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

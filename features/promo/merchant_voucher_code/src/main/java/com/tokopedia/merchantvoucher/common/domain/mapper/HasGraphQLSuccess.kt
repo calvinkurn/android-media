@@ -1,6 +1,6 @@
-package com.tokopedia.mvc.common.domain.mapper
+package com.tokopedia.merchantvoucher.common.domain.mapper
 
-import com.tokopedia.mvc.common.data.GraphQLSuccessMessage
+import com.tokopedia.merchantvoucher.common.data.GraphQLSuccessMessage
 
 
 /**

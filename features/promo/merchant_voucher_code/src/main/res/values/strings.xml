@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Shop Common</string>
+    <string name="merchant_voucher_code">Kode Voucher Toko</string>
 </resources>

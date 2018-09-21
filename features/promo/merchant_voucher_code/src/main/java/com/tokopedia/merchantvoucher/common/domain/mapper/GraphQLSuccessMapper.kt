@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.domain.mapper
+package com.tokopedia.merchantvoucher.common.domain.mapper
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLSuccess

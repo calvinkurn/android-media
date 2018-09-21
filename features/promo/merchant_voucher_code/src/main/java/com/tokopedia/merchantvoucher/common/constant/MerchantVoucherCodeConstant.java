@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.constant;
+package com.tokopedia.merchantvoucher.common.constant;
 
 /**
  * Created by nathan on 2/15/18.

@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.constant;
+package com.tokopedia.merchantvoucher.common.constant;
 
 import android.support.annotation.IntDef;
 

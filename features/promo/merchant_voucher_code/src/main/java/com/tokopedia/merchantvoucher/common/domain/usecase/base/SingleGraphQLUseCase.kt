@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.domain.usecase.base
+package com.tokopedia.merchantvoucher.common.domain.usecase.base
 
 import android.content.Context
 import android.text.TextUtils

@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.common.data
+package com.tokopedia.merchantvoucher.common.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -7,10 +7,7 @@ import com.google.gson.annotations.SerializedName
  * Created by hendry on 08/08/18.
  */
 
-data class GraphQLSuccessMessage(
-        @SerializedName("success")
-        @Expose
-        val isSuccess: Boolean = false,
+data class GraphQLDataError(
         @SerializedName("message")
         @Expose
         val message: String? = null) {
