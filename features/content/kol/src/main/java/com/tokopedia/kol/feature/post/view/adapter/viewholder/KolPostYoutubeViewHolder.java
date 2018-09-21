@@ -9,13 +9,10 @@ import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
-import com.project.youtubeutils.common.YoutubeInitializer;
-import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -28,6 +25,8 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
+import com.tokopedia.youtubeutils.common.YoutubeInitializer;
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +74,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
         topShadow = itemView.findViewById(R.id.top_shadow);
         baseKolView = itemView.findViewById(R.id.base_kol_view);
         View view = baseKolView.inflateContentLayout(R.layout.kol_post_content_youtube);
-        RelativeLayout mainView = view.findViewById(R.id.main_view);
+        View mainView = view.findViewById(R.id.main_view);
         ivPlay = view.findViewById(R.id.iv_play);
         loadingBar = view.findViewById(R.id.progress_bar);
         thumbnailView = view.findViewById(R.id.view_youtube_thumbnail);
@@ -111,6 +110,7 @@ public class KolPostYoutubeViewHolder extends AbstractViewHolder<KolPostYoutubeV
                         public void onErrorInitializeThumbnail(String error) {
                             destroyReleaseProcess();
                             ivPlay.setVisibility(VISIBLE);
+                            ivPlay.setOnClickListener(onYoutubeThumbnailClickedListener(element));
                             loadingBar.setVisibility(GONE);
                         }
                     }));
