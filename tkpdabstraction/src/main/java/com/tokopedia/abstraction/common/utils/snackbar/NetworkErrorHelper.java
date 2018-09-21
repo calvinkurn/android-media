@@ -120,6 +120,10 @@ public class NetworkErrorHelper {
         }
     }
 
+    /**
+     * use ToasterError instead
+     */
+    @Deprecated
     @SuppressWarnings("Range")
     public static void showRedCloseSnackbar(View view, String message) {
         SnackbarManager.makeRed(view, message, Snackbar.LENGTH_LONG).setAction(

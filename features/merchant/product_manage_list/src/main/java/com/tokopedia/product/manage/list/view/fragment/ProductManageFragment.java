@@ -243,7 +243,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
         hasNextPage = false;
 
         userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
-        //productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
     }
 
     @Override
@@ -429,6 +429,7 @@ public class ProductManageFragment extends BaseSearchListFragment<ProductManageP
 
     @Override
     protected void onPullToRefresh() {
+        productManagePresenter.getFreeClaim(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit), userSession.getShopId());
         goldMerchant = null;
         ((ProductManageListAdapter) adapter).setFeaturedProduct(null);
         super.onPullToRefresh();
