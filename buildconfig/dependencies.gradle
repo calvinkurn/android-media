@@ -342,7 +342,9 @@ ext {
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
             digitalDeals          : ":features:digital:digital_deals",
-            productDraftDatabase  : ":features:merchant:product_draft_database"
+            productDraftDatabase  : ":features:merchant:product_draft_database",
+            broadcastMessage      : ":features:communication:broadcast_message",
+            broadcastMessageCommon   : ":features:communication:bm_common"
     ]
 
     libraries = [

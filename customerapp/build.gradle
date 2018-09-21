@@ -299,6 +299,8 @@ dependencies {
     implementation project(rootProject.ext.features.tokopoints)
     implementation project(rootProject.ext.features.productManageItem)
     implementation project(rootProject.ext.features.productManageList)
+    implementation project(rootProject.ext.features.broadcastMessage)
+    implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)

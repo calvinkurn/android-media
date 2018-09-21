@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.broadcast.message.view.activity.BroadcastMessageListActivity;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -91,6 +92,7 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
+import com.tokopedia.hadi.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;
@@ -211,7 +213,7 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter,ProductEditModuleRouter, TopAdsWebViewRouter,
-        ShopSettingRouter{
+        ShopSettingRouter, BroadcastMessageRouter{
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1515,5 +1517,14 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getDistrictRecommendationIntent(@NonNull Activity activity) {
         return DistrictRecommendationShopSettingsActivity.createInstance(activity);
+    }
+
+    @Override
+    public void gotoBroadcastMessageList(@NonNull Context context, Fragment fragment) {
+        if (fragment == null){
+            context.startActivity(BroadcastMessageListActivity.createIntent(context));
+        } else {
+            fragment.startActivity(BroadcastMessageListActivity.createIntent(context));
+        }
     }
 }

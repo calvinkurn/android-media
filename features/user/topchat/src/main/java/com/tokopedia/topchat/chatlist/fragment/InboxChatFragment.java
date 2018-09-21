@@ -33,6 +33,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
+import com.tokopedia.hadi.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
@@ -97,6 +98,7 @@ public class InboxChatFragment extends BaseDaggerFragment
     ActionMode.Callback callbackContext;
     ActionMode contextMenu;
     private View notifier;
+    private TextView sendBroadcast;
 
     @Override
     protected String getScreenName() {
@@ -165,7 +167,13 @@ public class InboxChatFragment extends BaseDaggerFragment
         progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
-
+        sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
+        parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
+        sendBroadcast.setOnClickListener(v -> {
+            if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
+                ((BroadcastMessageRouter) getActivity().getApplication()).gotoBroadcastMessageList(getContext(), this);
+            }
+        });
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
 
