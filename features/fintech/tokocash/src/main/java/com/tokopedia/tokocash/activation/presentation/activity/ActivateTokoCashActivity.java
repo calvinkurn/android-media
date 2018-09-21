@@ -43,10 +43,20 @@ public class ActivateTokoCashActivity extends BaseSimpleActivity
 
     @Override
     public void directToSuccessActivateTokoCashPage() {
+        sendBroadcastTokocash();
         startActivity(SuccessActivateTokoCashActivity.newInstance(getApplicationContext()));
         setResult(RESULT_OK);
         finish();
     }
+
+    private void sendBroadcastTokocash() {
+        Intent intent = new Intent("Broadcast Wallet");
+        Bundle extras = new Bundle();
+        extras.putString("Broadcast Wallet", "Broadcast Wallet");
+        intent.putExtras(extras);
+        sendBroadcast(intent);
+    }
+
 
     @Override
     public void directPageToOTPWallet() {

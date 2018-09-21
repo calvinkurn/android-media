@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
@@ -235,6 +237,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         initRefreshLayout();
         initFeedLoadMoreTriggerListener();
         initEggTokenScrollListener();
+        registerBroadcastReceiverTokoCash();
         fetchRemoteConfig();
         floatingTextButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +319,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         layoutManager = null;
         feedLoadMoreTriggerListener = null;
         presenter = null;
+        unRegisterBroadcastReceiverTokoCash();
     }
 
     private void initRefreshLayout() {
@@ -943,6 +947,36 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         }
         return null;
     }
+
+    protected void registerBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().registerReceiver(
+                tokoCashBroadcaseReceiver,
+                new IntentFilter("Broadcast Wallet")
+        );
+    }
+
+    protected void unRegisterBroadcastReceiverTokoCash() {
+        if (getActivity() == null)
+            return;
+
+        getActivity().unregisterReceiver(tokoCashBroadcaseReceiver);
+    }
+
+    private BroadcastReceiver tokoCashBroadcaseReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+            if (extras != null) {
+                String data = extras.getString("Broadcast Wallet");
+                if (data != null && !data.isEmpty())
+                    presenter.getHeaderData(false); // update header data
+            }
+        }
+    };
+
 
     @Override
     public void onNotifyBadgeNotification(int number) {

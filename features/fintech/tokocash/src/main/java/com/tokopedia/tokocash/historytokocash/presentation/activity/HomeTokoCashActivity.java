@@ -86,6 +86,7 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
                 if (resultCode == Activity.RESULT_OK && data != null &&
                         data.hasExtra(AccountSettingActivity.KEY_INTENT_RESULT)) {
                     setResult(RESULT_OK);
+                    sendBroadcastTokocash();
                     finish();
                 }
                 break;
@@ -96,4 +97,13 @@ public class HomeTokoCashActivity extends BaseSimpleActivity
     public void setTitle(String title) {
         updateTitle(title);
     }
+
+    private void sendBroadcastTokocash() {
+        Intent intent = new Intent("Broadcast Wallet");
+        Bundle extras = new Bundle();
+        extras.putString("Broadcast Wallet", "Broadcast Wallet");
+        intent.putExtras(extras);
+        sendBroadcast(intent);
+    }
+
 }
