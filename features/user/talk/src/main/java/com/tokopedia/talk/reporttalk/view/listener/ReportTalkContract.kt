@@ -24,5 +24,9 @@ interface ReportTalkContract {
         fun reportTalk(talkId: String, shopId: String, productId: String, otherReason: String,
                        selectedOption: TalkReportOptionViewModel)
 
+        fun reportCommentTalk(talkId: String, shopId: String, productId: String,
+                              commentId: String, otherReason: String,
+                              selectedOption: TalkReportOptionViewModel)
+
     }
 }

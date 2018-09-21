@@ -19,10 +19,10 @@ import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.reporttalk.di.DaggerReportTalkComponent
-import com.tokopedia.talk.reporttalk.view.presenter.ReportTalkPresenter
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.reporttalk.view.adapter.ReportTalkAdapter
 import com.tokopedia.talk.reporttalk.view.listener.ReportTalkContract
+import com.tokopedia.talk.reporttalk.view.presenter.ReportTalkPresenter
 import com.tokopedia.talk.reporttalk.view.viewmodel.TalkReportOptionViewModel
 import kotlinx.android.synthetic.main.fragment_report_talk.*
 import javax.inject.Inject
@@ -115,7 +115,9 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
         sendButton.setOnClickListener {
 
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
+            reportTalk(talkId, shopId, productId, commentId, reason.text.toString(),
+                    reportTalkAdapter.getSelectedOption())
+
         }
 
         reason.addTextChangedListener(object : TextWatcher {
@@ -185,8 +187,20 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     override fun onErrorReportTalk(errorMessage: String) {
         NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
-            presenter.reportTalk(talkId, shopId, productId, reason.text.toString(), reportTalkAdapter.getSelectedOption())
+            reportTalk(talkId, shopId, productId, commentId, reason.text.toString(),
+                    reportTalkAdapter.getSelectedOption())
         }.showRetrySnackbar()
+    }
+
+    private fun reportTalk(talkId: String, shopId: String, productId: String, commentId: String,
+                           otherReason: String, selectedOption: TalkReportOptionViewModel) {
+
+        if (commentId.isBlank()) {
+            presenter.reportTalk(talkId, shopId, productId, otherReason, selectedOption)
+        } else {
+            presenter.reportCommentTalk(talkId, shopId, productId, commentId, otherReason,
+                    selectedOption)
+        }
     }
 
     override fun onSuccessReportTalk() {
