@@ -29,7 +29,7 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileContract.View)
             ProfileHeaderViewHolder.LAYOUT ->
                 ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfilePostViewHolder.LAYOUT ->
-                ProfilePostViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+                ProfilePostViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)
         }
     }

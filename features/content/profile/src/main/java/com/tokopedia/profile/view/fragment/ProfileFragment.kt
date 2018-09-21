@@ -84,6 +84,16 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         Toast.makeText(context, "Follow? ".plus(follow).plus("~"), Toast.LENGTH_SHORT).show()
     }
 
+    override fun goToProduct(productId: Int) {
+        //TODO milhamj
+        Toast.makeText(context, "Going to product~", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun addImages(productId: Int) {
+        //TODO milhamj
+        Toast.makeText(context, "Adding more images", Toast.LENGTH_SHORT).show()
+    }
+
     override fun updateCursor(cursor: String) {
         presenter.cursor = cursor
     }

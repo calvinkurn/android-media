@@ -7,13 +7,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.adapter.PostImageAdapter
+import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfilePostViewModel
+import com.tokopedia.profile.view.widget.WrapContentViewPager
 import kotlinx.android.synthetic.main.item_affiliate_post.view.*
 
 /**
  * @author by milhamj on 9/20/18.
  */
-class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfilePostViewModel>(v) {
+class ProfilePostViewHolder(val v: View, val viewListener: ProfileContract.View) :
+        AbstractViewHolder<ProfilePostViewModel>(v) {
 
     companion object {
         @LayoutRes
@@ -35,11 +38,14 @@ class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfilePostViewMod
 
         itemView.goToProductBtn.setOnClickListener {
             //TODO milhamj
+            viewListener.goToProduct(element.productId)
+
         }
 
         if (element.isOwner) {
             itemView.addImageBtn.setOnClickListener {
                 //TODO milhamj
+                viewListener.addImages(element.productId)
             }
             itemView.addImageBtn.visibility = View.VISIBLE
         } else {
@@ -51,8 +57,9 @@ class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfilePostViewMod
 
     private fun setUpViewPager(element: ProfilePostViewModel) {
         val adapter = PostImageAdapter()
+        val viewPager = itemView.findViewById<WrapContentViewPager>(R.id.imageViewPager)
         adapter.setList(ArrayList(element.images))
-        itemView.imageViewPager.setAdapter(adapter)
-        itemView.tabLayout.setupWithViewPager(itemView.imageViewPager)
+        viewPager.setAdapter(adapter)
+        itemView.tabLayout.setupWithViewPager(viewPager)
     }
 }

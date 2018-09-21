@@ -108,43 +108,50 @@
             android:textStyle="normal"
             tools:text="Periode Komisi telah berakhir" />
 
-        <TextView
-            android:id="@+id/goToProductBtn"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
             android:layout_below="@id/imageViewPager"
-            android:layout_centerVertical="true"
-            android:fontFamily="sans-serif-medium"
-            android:paddingLeft="@dimen/dp_4"
-            android:paddingStart="@dimen/dp_4"
-            android:text="@string/profile_go_to_product"
-            android:textColor="@color/medium_green"
-            android:textSize="@dimen/sp_12"
-            android:textStyle="normal"
-            tools:ignore="RtlSymmetry" />
+            android:layout_marginBottom="@dimen/dp_8"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <com.tokopedia.design.component.ButtonCompat
-            android:id="@+id/addImageBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_below="@id/imageViewPager"
-            android:layout_centerVertical="true"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:text="@string/profile_add_image"
-            android:textAllCaps="false"
-            android:visibility="gone"
-            app:buttonCompatSize="medium"
-            app:buttonCompatType="secondary"
-            tools:visibility="visible" />
+            <TextView
+                android:id="@+id/goToProductBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:paddingBottom="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_4"
+                android:paddingStart="@dimen/dp_4"
+                android:paddingTop="@dimen/dp_8"
+                android:text="@string/profile_go_to_product"
+                android:textColor="@color/medium_green"
+                android:textSize="@dimen/sp_12"
+                android:textStyle="normal"
+                tools:ignore="RtlSymmetry" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/profile_footer_space"
+                android:layout_weight="1" />
+
+            <com.tokopedia.design.component.ButtonCompat
+                android:id="@+id/addImageBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:elevation="@dimen/dp_0"
+                android:paddingLeft="@dimen/dp_16"
+                android:paddingRight="@dimen/dp_16"
+                android:text="@string/profile_add_image"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                app:buttonCompatSize="medium"
+                app:buttonCompatType="secondary"
+                tools:targetApi="lollipop"
+                tools:visibility="visible" />
+
+        </LinearLayout>
     </RelativeLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_10" />
 
 </LinearLayout>

@@ -1,11 +1,16 @@
 package com.tokopedia.profile.view.adapter
 
+import android.app.Fragment
 import android.graphics.Bitmap
+import android.support.constraint.ConstraintLayout
 import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
+import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.FrameLayout
 import android.widget.ImageView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
@@ -29,19 +34,26 @@ class PostImageAdapter: PagerAdapter() {
                 false
         )
         val imageView = view.findViewById<ImageView>(R.id.image)
+        val imageCardView = view.findViewById<CardView>(R.id.imageCardView)
         val imageUrl = imageList[position]
 
-//        imageView.viewTreeObserver.addOnGlobalLayoutListener(
-//                object : ViewTreeObserver.OnGlobalLayoutListener {
-//                    override fun onGlobalLayout() {
-//                        val viewTreeObserver = imageView.getViewTreeObserver()
-//                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-//
-//                        imageView.setMaxHeight(imageView.getWidth())
-//                        imageView.requestLayout()
-//                    }
-//                }
-//        )
+        imageView.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        val viewTreeObserver = imageView.getViewTreeObserver()
+                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                        imageView.maxHeight = imageView.width
+                        imageView.requestLayout()
+
+                        imageCardView.layoutParams= ConstraintLayout.LayoutParams(
+                                imageView.width,
+                                imageView.height
+                        )
+                        imageCardView.requestLayout()
+                    }
+                }
+        )
         ImageHandler.loadImageWithTarget(
                 container.context, imageUrl,
                 object : SimpleTarget<Bitmap>() {
