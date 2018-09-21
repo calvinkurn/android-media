@@ -4,10 +4,12 @@ import android.support.annotation.LayoutRes
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
+import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.profile.R
 import com.tokopedia.profile.view.listener.ProfileContract
@@ -27,11 +29,13 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
 
     override fun bind(element: ProfileHeaderViewModel) {
         ImageHandler.loadImageCircle2(itemView.context, itemView.avatar, element.avatar)
-        itemView.kolBadge.visibility = if (element.isKol) View.VISIBLE else View.GONE
         itemView.name.text = element.name
 
         if (element.isKol) {
-            setFollowersText(element)
+            itemView.kolBadge.visibility = View.VISIBLE
+            itemView.followers.visibility = View.VISIBLE
+            itemView.followers.text = getFollowersText(element)
+            itemView.followers.movementMethod = LinkMovementMethod.getInstance()
 
             if (element.isOwner) {
                 itemView.followBtn.visibility = View.VISIBLE
@@ -42,10 +46,13 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             } else {
                 itemView.followBtn.visibility = View.GONE
             }
+        } else {
+            itemView.kolBadge.visibility = View.GONE
+            itemView.followers.visibility = View.GONE
         }
     }
 
-    private fun setFollowersText(element: ProfileHeaderViewModel) {
+    private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
         val followers = String.format(
                 getString(R.string.profile_followers_number),
                 element.followers
@@ -68,6 +75,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             override fun updateDrawState(ds: TextPaint?) {
                 super.updateDrawState(ds)
                 ds?.setUnderlineText(false)
+                ds?.color = MethodChecker.getColor(itemView.context, R.color.black_54)
             }
         }
         spannableString.setSpan(
@@ -75,6 +83,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
                 spannableString.indexOf(following),
                 spannableString.indexOf(following) + following.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableString
     }
 
     private fun updateButtonState(isFollowed: Boolean) {

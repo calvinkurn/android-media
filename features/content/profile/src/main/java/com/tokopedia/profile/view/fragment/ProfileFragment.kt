@@ -76,12 +76,12 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun goToFollowing(userId: Int) {
         //TODO milhamj
-        Toast.makeText(context, "Going to following~", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Going to following~", Toast.LENGTH_SHORT).show()
     }
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
         //TODO milhamj
-        Toast.makeText(context, "Follow? ".plus(follow), Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Follow? ".plus(follow), Toast.LENGTH_SHORT).show()
     }
 
     override fun updateCursor(cursor: String) {
