@@ -4,9 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.talkdetails.view.fragment.TalkDetailsFragment
@@ -28,14 +31,13 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
 
     companion object {
         const val THREAD_TALK_ID = "THREAD_TALK_ID"
-        const val COMMENT_ID= "COMMENT_ID"
+        const val COMMENT_ID = "COMMENT_ID"
         const val SHOP_ID = "SHOP_ID"
 
         const val RESULT_OK_REFRESH_TALK = 200
         const val RESULT_OK_READ = 201
         const val RESULT_OK_DELETE_COMMENT = 202
         const val RESULT_OK_DELETE_TALK = 203
-
 
 
         @JvmStatic
@@ -45,6 +47,22 @@ class TalkDetailsActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             intent.putExtra(SHOP_ID, shopId)
             return intent
         }
+    }
+
+    object DeepLinkIntents {
+        const val TALK_ID = "talk_id"
+        const val SHOP_ID = "shop_id"
+
+        @JvmStatic
+        @DeepLink(ApplinkConst.TALK_DETAIL)
+        fun getCallingIntent(context: Context, extras: Bundle): Intent {
+            val talkId = extras.getString(TALK_ID, "")
+            val shopId = extras.getString(SHOP_ID, "")
+
+            return (context.applicationContext as TalkRouter).getTalkDetailIntent(context,
+                    talkId, shopId).putExtras(extras)
+        }
+
     }
 
     override fun getComponent(): TalkComponent {

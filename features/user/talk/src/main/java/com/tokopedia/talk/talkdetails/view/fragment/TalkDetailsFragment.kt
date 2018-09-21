@@ -128,7 +128,6 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
             KeyboardHandler.DropKeyboard(context, view)
             presenter.sendComment(talkId,
-                    shopId,
                     sendMessageEditText.text.toString(),
                     attachedProductListAdapter.data)
         }
@@ -155,6 +154,12 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         val linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         talkRecyclerView.layoutManager = linearLayoutManager
         talkRecyclerView.adapter = adapter
+
+        if(shopId.isBlank()){
+            attachProductButton.visibility = View.GONE
+        }else{
+            attachProductButton.visibility = View.VISIBLE
+        }
     }
 
     fun loadData() {

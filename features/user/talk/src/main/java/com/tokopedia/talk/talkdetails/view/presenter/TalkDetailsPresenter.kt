@@ -61,7 +61,7 @@ class TalkDetailsPresenter @Inject constructor(private val getTalkComments: GetT
                 })
     }
 
-    override fun sendComment(talkId: String, productId: String, message: String,
+    override fun sendComment(talkId: String, message: String,
                              attachedProduct: List<TalkProductAttachmentViewModel>) {
         view.showLoadingAction()
         sendCommentsUseCase.execute(SendCommentsUseCase.getParameters(

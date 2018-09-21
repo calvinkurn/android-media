@@ -121,6 +121,7 @@ import com.tokopedia.core.router.wallet.WalletRouterUtil;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
+import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.BranchSdkUtils;
@@ -296,6 +297,7 @@ import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.applink.AppLinkWebsiteActivity;
 import com.tokopedia.tkpd.applink.ApplinkUnsupportedImpl;
 import com.tokopedia.tkpd.campaign.view.ShakeDetectManager;
@@ -2940,8 +2942,21 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true))
             return ShopTalkActivity.Companion.createIntent(context, shopId);
         else {
-
             return ShopDiscussionActivity.createIntent(context, shopId);
+        }
+    }
+
+    @Override
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
+
+        if (remoteConfig.getBoolean("mainapp_is_enabled_new_talk", true))
+            return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+        else {
+            Intent intent = new Intent(context, TalkViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("from", TalkViewActivity.INBOX_TALK);
+            intent.putExtras(bundle);
+            return intent;
 
         }
     }

@@ -22,4 +22,6 @@ interface TalkRouter {
 
     fun getShopTalkIntent(context: Context, shopId: String): Intent
 
+    fun getTalkDetailIntent(context: Context, talkId : String, shopId : String): Intent
+
 }

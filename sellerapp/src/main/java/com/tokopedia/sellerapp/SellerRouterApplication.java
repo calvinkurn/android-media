@@ -74,6 +74,7 @@ import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
 import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
+import com.tokopedia.core.talkview.activity.TalkViewActivity;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -175,6 +176,7 @@ import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
+import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -1562,8 +1564,29 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getShopTalkIntent(Context context, String shopId) {
-        return ShopTalkActivity.Companion.createIntent(context, shopId);
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return ShopTalkActivity.Companion.createIntent(context, shopId);
+        else {
 
+            return ShopDiscussionActivity.createIntent(context, shopId);
+
+        }
+
+    }
+
+    @Override
+    public Intent getTalkDetailIntent(Context context, String talkId, String shopId) {
+
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", true))
+            return TalkDetailsActivity.Companion.getCallingIntent(talkId, shopId, context);
+        else {
+            Intent intent = new Intent(context, TalkViewActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putString("from", TalkViewActivity.INBOX_TALK);
+            intent.putExtras(bundle);
+            return intent;
+
+        }
     }
 
     @Override
