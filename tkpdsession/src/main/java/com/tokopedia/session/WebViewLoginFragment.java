@@ -136,7 +136,7 @@ public class WebViewLoginFragment extends DialogFragment {
                 Intent intent = new Intent();
                 intent.putExtra("bundle", bundle);
 //            getTargetFragment().onActivityResult(getTargetRequestCode(), Activity.RESULT_OK, intent);
-                dismiss();
+                dismissAllowingStateLoss();
                 if (getActivity() != null)
                     NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler
                             .getDefaultErrorCodeMessage(ErrorCode.WEBVIEW_ERROR));

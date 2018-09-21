@@ -6,6 +6,7 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.LayoutInflater;
@@ -27,14 +28,18 @@ class TickerViewAdapter extends PagerAdapter {
     private ArrayList<String> listMessage;
     private ArrayList<Integer> listBackGroundColor;
     private ArrayList<Integer> listTextColor;
+    private int defaultLinkColor;
     private TickerView.OnPartialTextClickListener listener;
+    private boolean isUnderlinedLink = true;
 
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              ArrayList<Integer> listBackGroundColor,
+                             int defaultLinkColor,
                              ArrayList<String> listMessage,
                              TickerView.OnPartialTextClickListener listener) {
         this.listTextColor = listTextColor;
         this.listBackGroundColor = listBackGroundColor;
+        this.defaultLinkColor = defaultLinkColor;
         this.listMessage = listMessage;
         this.listener = listener;
     }
@@ -48,11 +53,11 @@ class TickerViewAdapter extends PagerAdapter {
 
         tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
         tickerMessage.setTextColor(listTextColor.get(position));
-
+        tickerMessage.setLinkTextColor(defaultLinkColor);
         tickerMessage.setMovementMethod(new SelectableSpannedMovementMethod());
 
         Spannable sp = (Spannable) fromHtml(listMessage.get(position));
-        URLSpan[] urls = sp.getSpans(0, fromHtml(listMessage.get(position)).length(), URLSpan.class);
+        URLSpan[] urls = sp.getSpans(0, sp.length(), URLSpan.class);
         SpannableStringBuilder style = new SpannableStringBuilder(fromHtml(listMessage.get(position)));
         style.clearSpans();
 
@@ -64,6 +69,12 @@ class TickerViewAdapter extends PagerAdapter {
                     if (listener != null) {
                         listener.onClick(widget, messageClickAble);
                     }
+                }
+
+                @Override
+                public void updateDrawState(TextPaint ds) {
+                    super.updateDrawState(ds);
+                    ds.setUnderlineText(isUnderlinedLink);
                 }
             }, sp.getSpanStart(url), sp.getSpanEnd(url), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
@@ -107,6 +118,10 @@ class TickerViewAdapter extends PagerAdapter {
         this.listTextColor = listTextColor;
     }
 
+    public void setDefaultLinkColor(int defaultLinkColor) {
+        this.defaultLinkColor = defaultLinkColor;
+    }
+
     public void setListener(TickerView.OnPartialTextClickListener listener) {
         this.listener = listener;
     }
@@ -120,5 +135,9 @@ class TickerViewAdapter extends PagerAdapter {
             result = Html.fromHtml(text);
         }
         return result;
+    }
+
+    public void setIsUnderlinedLink(boolean isUnderlinedLink) {
+        this.isUnderlinedLink = isUnderlinedLink;
     }
 }
