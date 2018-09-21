@@ -21,13 +21,13 @@ class ProfileTypeFactoryImpl(val viewListener : ProfileContract.View)
     }
 
     override fun type(viewModel: ProfilePostViewModel): Int {
-        return 0
+        return ProfilePostViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when(type) {
             ProfileHeaderViewHolder.LAYOUT ->
-                ProfileHeaderViewHolder(parent) as AbstractViewHolder<Visitable<*>>
+                ProfileHeaderViewHolder(parent, viewListener) as AbstractViewHolder<Visitable<*>>
             ProfilePostViewHolder.LAYOUT ->
                 ProfilePostViewHolder(parent) as AbstractViewHolder<Visitable<*>>
             else -> super.createViewHolder(parent, type)

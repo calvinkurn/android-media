@@ -10,18 +10,23 @@
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/profile_avatar_header"
-        android:layout_height="@dimen/profile_avatar_header"
+        android:layout_height="0dp"
         android:src="@drawable/ic_loading_image"
+        app:layout_constraintBottom_toTopOf="@+id/bottomSpace"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
     <View
         android:id="@+id/avatarSeparator"
         android:layout_width="@dimen/dp_16"
         android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@+id/avatar" />
+        app:layout_constraintBottom_toTopOf="@id/bottomSpace"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/kol_badge"
+        android:id="@+id/kolBadge"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_16"
         android:paddingEnd="@dimen/dp_4"
@@ -31,6 +36,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/name"
         app:layout_constraintStart_toEndOf="@+id/avatarSeparator"
         app:layout_constraintTop_toTopOf="@+id/name"
+        tools:ignore="RtlSymmetry"
         tools:visibility="visible" />
 
     <TextView
@@ -42,7 +48,7 @@
         android:textSize="@dimen/sp_17"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/followers"
-        app:layout_constraintStart_toEndOf="@+id/kol_badge"
+        app:layout_constraintStart_toEndOf="@+id/kolBadge"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
         tools:text="Sadam Hussein" />
@@ -57,14 +63,31 @@
         android:textSize="@dimen/sp_12"
         android:textStyle="normal"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/followBtn"
         app:layout_constraintStart_toEndOf="@+id/avatarSeparator"
         app:layout_constraintTop_toBottomOf="@+id/name"
         tools:text="0 Followers • 10 Following"
         tools:visibility="visible" />
 
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/followBtn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:text="@string/profile_follow"
+        android:textAllCaps="false"
+        app:buttonCompatSize="small"
+        app:buttonCompatType="primary"
+        app:layout_constraintBottom_toTopOf="@id/bottomSpace"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/avatarSeparator"
+        app:layout_constraintTop_toBottomOf="@+id/followers"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
     <View
+        android:id="@+id/bottomSpace"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_10"
-        app:layout_constraintTop_toBottomOf="@+id/avatar" />
+        app:layout_constraintBottom_toBottomOf="parent" />
 </android.support.constraint.ConstraintLayout>
