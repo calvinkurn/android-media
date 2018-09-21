@@ -76,7 +76,7 @@ public class DigitalBrowseAnalytics {
                 "id", Long.toString(promotionItem.getBannerId()),
                 "name", "/belanja - Brand Pilihan",
                 "creative", promotionItem.getBrandName(),
-                "position", Integer.toString(promotionItem.getPosition()));
+                "position", Integer.toString(promotionItem.getPosition()) );
 
         List<Object> promotions = new ArrayList<>();
         promotions.add(promotion);
