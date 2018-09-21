@@ -49,10 +49,10 @@ public class DigitalBrowseAnalytics {
 
         for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
             Object promotion = DataLayer.mapOf(
-                    "id", promotionItem.getBannerId(),
+                    "id", Long.toString(promotionItem.getBannerId()),
                     "name", "/belanja - Brand Pilihan",
                     "creative", promotionItem.getBrandName(),
-                    "position", promotionItem.getPosition());
+                    "position", Integer.toString(promotionItem.getPosition()));
 
             promotions.add(promotion);
         }
@@ -73,10 +73,10 @@ public class DigitalBrowseAnalytics {
 
     public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
         Object promotion = DataLayer.mapOf(
-                "id", promotionItem.getBannerId(),
+                "id", Long.toString(promotionItem.getBannerId()),
                 "name", "/belanja - Brand Pilihan",
                 "creative", promotionItem.getBrandName(),
-                "position", promotionItem.getPosition());
+                "position", Integer.toString(promotionItem.getPosition()));
 
         List<Object> promotions = new ArrayList<>();
         promotions.add(promotion);
