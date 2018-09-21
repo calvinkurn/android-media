@@ -134,18 +134,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Override
     public void showSuccessWithdraw() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
-                .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
-                .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 }
