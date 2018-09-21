@@ -24,6 +24,7 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
 
     public static final int PRODUCT_ITEM_TYPE = 192_012;
     public static final String CASHBACK = "cashback";
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
 
     @SerializedName("product_id")
     @Expose
@@ -526,6 +527,9 @@ public class ProductItem extends RecyclerViewItem implements Serializable, Parce
                 "name", getName(),
                 "id", getId(),
                 "price", Integer.toString(convertRupiahToInt(getPrice())),
+                "brand", DEFAULT_VALUE_NONE_OTHER,
+                "category", DEFAULT_VALUE_NONE_OTHER,
+                "variant", DEFAULT_VALUE_NONE_OTHER,
                 "position", Integer.toString(position)
         );
     }

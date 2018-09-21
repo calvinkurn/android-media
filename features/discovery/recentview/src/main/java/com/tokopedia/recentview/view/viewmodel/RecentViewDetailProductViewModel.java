@@ -14,6 +14,8 @@ import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt
 
 public class RecentViewDetailProductViewModel implements Visitable<RecentViewTypeFactory> {
 
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
+
     private String name;
     private String price;
     private String imageSource;
@@ -122,6 +124,8 @@ public class RecentViewDetailProductViewModel implements Visitable<RecentViewTyp
                 "name", getName(),
                 "id", getProductId(),
                 "price", Integer.toString(convertRupiahToInt(getPrice())),
+                "brand", DEFAULT_VALUE_NONE_OTHER,
+                "category", "",
                 "position", Integer.toString(getPositionForRecentViewTracking())
         );
     }

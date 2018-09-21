@@ -44,6 +44,8 @@ import static com.tokopedia.design.utils.CurrencyFormatHelper.convertRupiahToInt
 public class RecentViewFragment extends BaseDaggerFragment
         implements RecentView.View, WishListActionListener {
 
+    public static final String DEFAULT_VALUE_NONE_OTHER = "none / other";
+
     private RecyclerView recyclerView;
     private RecentViewDetailAdapter adapter;
     private TkpdProgressDialog progressDialog;
@@ -200,6 +202,8 @@ public class RecentViewFragment extends BaseDaggerFragment
                     "id", model.getProductId(),
                     "price", Integer.toString(convertRupiahToInt(String.valueOf(model.getPrice()))),
                     "list", "/recent",
+                    "brand", DEFAULT_VALUE_NONE_OTHER,
+                    "category", "",
                     "position", String.valueOf(model.getPositionForRecentViewTracking())
             ));
         }

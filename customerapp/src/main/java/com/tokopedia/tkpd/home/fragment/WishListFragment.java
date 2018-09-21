@@ -618,6 +618,9 @@ public class WishListFragment extends TkpdBaseV4Fragment implements WishListView
                     "name", wishlist.getName(),
                     "id", wishlist.getId(),
                     "price", Integer.toString(convertRupiahToInt(String.valueOf(wishlist.getPrice()))),
+                    "brand", DEFAULT_VALUE_NONE_OTHER,
+                    "category", DEFAULT_VALUE_NONE_OTHER,
+                    "variant", DEFAULT_VALUE_NONE_OTHER,
                     "list", "/wishlist",
                     "position", Integer.toString(position++)
             ));
