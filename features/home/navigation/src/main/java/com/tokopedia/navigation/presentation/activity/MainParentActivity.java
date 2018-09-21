@@ -32,6 +32,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -75,7 +76,7 @@ import javax.inject.Inject;
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends AppCompatActivity implements
+public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
         MainParentView, ShowCaseListener, CartNotifyListener {
 
@@ -89,6 +90,7 @@ public class MainParentActivity extends AppCompatActivity implements
     public static final int INBOX_MENU = 2;
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
+    public static final int RECOMENDATION_LIST = 5;
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
@@ -109,10 +111,10 @@ public class MainParentActivity extends AppCompatActivity implements
 
     private BottomNavigation bottomNavigation;
     private ShowCaseDialog showCaseDialog;
-    private List<Fragment> fragmentList;
+    List<Fragment> fragmentList;
     private List<String> titles;
     private Notification notification;
-    private Fragment currentFragment;
+    Fragment currentFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
@@ -129,9 +131,24 @@ public class MainParentActivity extends AppCompatActivity implements
         return intent;
     }
 
+    @DeepLink({ApplinkConst.HOME_ACCOUNT})
+    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        return intent;
+    }
+
     public static Intent getApplinkFeedIntent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        return intent;
+    }
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
+    @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
+    public static Intent getApplinkRecommendationEvent(Context context) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
+        intent.putExtra(SCROLL_RECOMMEND_LIST,true);
         return intent;
     }
 
@@ -217,6 +234,11 @@ public class MainParentActivity extends AppCompatActivity implements
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
                     break;
+                case ACCOUNT_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
+                    break;
+                case RECOMENDATION_LIST:
                 case HOME_MENU:
                 default:
                     bottomNavigation.getMenu().findItem(R.id.menu_home).setChecked(true);
@@ -280,7 +302,7 @@ public class MainParentActivity extends AppCompatActivity implements
         globalNavAnalytics.eventBottomNavigation(titles.get(position)); // push analytics
 
         if (position == INBOX_MENU || position == CART_MENU || position == ACCOUNT_MENU)
-            if (!isUserLogin())
+            if (!presenter.isUserLogin())
                 return false;
 
         Fragment fragment = fragmentList.get(position);
@@ -324,7 +346,7 @@ public class MainParentActivity extends AppCompatActivity implements
         }
     }
 
-    private boolean isUserLogin() {
+    public boolean isUserLogin() {
         if (!userSession.isLoggedIn())
             RouteManager.route(this, ApplinkConst.LOGIN);
         return userSession.isLoggedIn();
@@ -369,7 +391,7 @@ public class MainParentActivity extends AppCompatActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
