@@ -263,7 +263,7 @@ ext {
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
-            merchantVoucher       : "com.tokopedia.merchantvoucher:merchant-voucher:${tkpdMerchantVoucherCodeVersion}",
+            merchantVoucher       : "com.tokopedia.merchantvoucher:merchant-voucher:${tkpdMerchantVoucherVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
