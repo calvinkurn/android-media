@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import java.util.List;
@@ -30,9 +32,9 @@ public interface EmptyCartContract {
 
         void renderEmptyCart(String autoApplyMessage);
 
-        void renderHasWishlist(List<Wishlist> wishlistData);
+        void renderHasWishList();
 
-        void renderHasNoWishlist();
+        void renderHasNoWishList();
 
         TKPDMapParam<String, String> getGeneratedAuthParamNetwork(
                 TKPDMapParam<String, String> originParams
@@ -48,9 +50,15 @@ public interface EmptyCartContract {
 
         void processGetWishlistData();
 
-        void processGetrecentViewdata();
+        void processGetRecentViewdata();
 
         void processCancelAutoApply();
+
+        void setWishListViewModels(List<Wishlist> wishLists);
+
+        List<WishlistViewModel> getWishlistViewModels();
+
+        ProductPass generateProductPassProductDetailPage(Wishlist wishlist);
 
     }
 

@@ -2,18 +2,25 @@ package com.tokopedia.checkout.view.feature.emptycart;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.checkout.domain.datamodel.cartlist.CartItemData;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.CancelAutoApplySubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetCartListSubscriber;
 import com.tokopedia.checkout.view.feature.emptycart.subscriber.GetWishlistSubscriber;
+import com.tokopedia.checkout.view.feature.emptycart.viewmodel.WishlistViewModel;
+import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.transactiondata.utils.CartApiRequestParamGenerator;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,6 +41,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final CartApiRequestParamGenerator cartApiRequestParamGenerator;
     private final CompositeSubscription compositeSubscription;
+    private List<WishlistViewModel> wishlistViewModels = new ArrayList<>();
 
     @Inject
     public EmptyCartPresenter(GetCartListUseCase getCartListUseCase,
@@ -73,11 +81,11 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
 
     @Override
     public void processGetWishlistData() {
-        getWishlistUseCase.createObservable(new GetWishlistSubscriber(getView()));
+        getWishlistUseCase.createObservable(new GetWishlistSubscriber(getView(), this));
     }
 
     @Override
-    public void processGetrecentViewdata() {
+    public void processGetRecentViewdata() {
 
     }
 
@@ -90,5 +98,30 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
                 .subscribe(new CancelAutoApplySubscriber(getView()))
         );
 
+    }
+
+    @Override
+    public ProductPass generateProductPassProductDetailPage(Wishlist wishlist) {
+        return ProductPass.Builder.aProductPass()
+                .setProductId(wishlist.getId())
+                .setProductImage(wishlist.getImageUrl())
+                .setProductName(wishlist.getName())
+                .setProductPrice(wishlist.getPriceFmt())
+                .build();
+    }
+
+    @Override
+    public void setWishListViewModels(List<Wishlist> wishLists) {
+        wishlistViewModels.clear();
+        for (Wishlist wishlist : wishLists) {
+            WishlistViewModel wishlistViewModel = new WishlistViewModel();
+            wishlistViewModel.setWishlist(wishlist);
+            wishlistViewModels.add(wishlistViewModel);
+        }
+    }
+
+    @Override
+    public List<WishlistViewModel> getWishlistViewModels() {
+        return wishlistViewModels;
     }
 }

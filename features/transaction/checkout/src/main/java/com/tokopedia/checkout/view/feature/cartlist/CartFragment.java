@@ -93,7 +93,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int NO_ELEVATION = 0;
 
     private static final int TOP_ADS_COUNT = 4;
-    private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
+//    private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -1355,15 +1355,15 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             case ShipmentActivity.REQUEST_CODE:
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
-            case REQUEST_CODE_ROUTE_WISHLIST:
-                onResultFromRequestCodeWishlist();
-                break;
+//            case REQUEST_CODE_ROUTE_WISHLIST:
+//                onResultFromRequestCodeWishlist();
+//                break;
         }
     }
 
-    private void onResultFromRequestCodeWishlist() {
-        refreshHandler.startRefresh();
-    }
+//    private void onResultFromRequestCodeWishlist() {
+//        refreshHandler.startRefresh();
+//    }
 
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
 //        if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||

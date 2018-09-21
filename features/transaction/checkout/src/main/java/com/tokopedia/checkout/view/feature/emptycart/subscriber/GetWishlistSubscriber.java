@@ -13,9 +13,11 @@ import rx.Subscriber;
 public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
 
     private EmptyCartContract.View view;
+    private EmptyCartContract.Presenter presenter;
 
-    public GetWishlistSubscriber(EmptyCartContract.View view) {
+    public GetWishlistSubscriber(EmptyCartContract.View view, EmptyCartContract.Presenter presenter) {
         this.view = view;
+        this.presenter = presenter;
     }
 
     @Override
@@ -27,7 +29,7 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
     public void onError(Throwable e) {
         e.printStackTrace();
         if (view != null) {
-            view.renderHasNoWishlist();
+            view.renderHasNoWishList();
         }
     }
 
@@ -37,12 +39,13 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
             if (graphqlResponse != null && graphqlResponse.getData(GetWishlistResponse.class) != null) {
                 GetWishlistResponse getWishlistResponse = graphqlResponse.getData(GetWishlistResponse.class);
                 if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null) {
-                    view.renderHasWishlist(getWishlistResponse.getGqlWishList().getWishlistDataList());
+                    presenter.setWishListViewModels(getWishlistResponse.getGqlWishList().getWishlistDataList());
+                    view.renderHasWishList();
                 } else {
-                    view.renderHasNoWishlist();
+                    view.renderHasNoWishList();
                 }
             } else {
-                view.renderHasNoWishlist();
+                view.renderHasNoWishList();
             }
         }
     }

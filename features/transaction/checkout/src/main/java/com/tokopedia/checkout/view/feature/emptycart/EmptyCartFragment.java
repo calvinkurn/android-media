@@ -1,13 +1,19 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,9 +30,11 @@ import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartModule;
+import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.Endpoint;
@@ -40,8 +48,6 @@ import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART_SRC;
@@ -51,10 +57,12 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
  */
 
 public class EmptyCartFragment extends BaseCheckoutFragment
-        implements EmptyCartContract.View, TopAdsItemClickListener {
+        implements EmptyCartContract.View, TopAdsItemClickListener, WishlistAdapter.ActionListener {
+
+    private static final int TOP_ADS_COUNT = 4;
+    private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
 
     public static final String ARG_AUTO_APPLY_MESSAGE = "ARG_AUTO_APPLY_MESSAGE";
-    private static final int TOP_ADS_COUNT = 4;
 
     private View toolbar;
     private AppBarLayout appBarLayout;
@@ -64,8 +72,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private AppCompatImageView btnCancelPromoCodeEmptyCart;
     private TextView btnContinueShoppingEmptyCart;
     private TopAdsView topAdsView;
+    private RelativeLayout rlWishList;
+    private TextViewCompat tvWishListSeeAll;
+    private RecyclerView rvWishList;
 
     private boolean isToolbarWithBackButton = true;
+    private WishlistAdapter wishlistAdapter;
 
     @Inject
     UserSession userSession;
@@ -146,6 +158,12 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
+
+    @Override
     protected void initView(View view) {
         setupToolbar(view);
         presenter.attachView(this);
@@ -155,13 +173,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         btnCancelPromoCodeEmptyCart = view.findViewById(R.id.button_cancel);
         btnContinueShoppingEmptyCart = view.findViewById(R.id.btn_shopping_now);
         topAdsView = view.findViewById(R.id.topads);
+        rlWishList = view.findViewById(R.id.rl_wish_list);
+        tvWishListSeeAll = view.findViewById(R.id.tv_wish_list_see_all);
+        rvWishList = view.findViewById(R.id.rv_wish_list);
+        rvWishList.setNestedScrollingEnabled(false);
 
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.processInitialGetCartData();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
+        tvWishListSeeAll.setOnClickListener(v -> onShowAllWishListClicked());
 
         String autoApplyMessage = null;
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
@@ -172,18 +190,33 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderEmptyCart(String autoApplyMessage) {
+        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int deviceWidth = displayMetrics.widthPixels;
+        double itemWidth = deviceWidth / 2.0f;
+
         renderAutoApplyPromo(autoApplyMessage);
         renderTopAds();
+        renderWishList((int) itemWidth);
+    }
+
+    private void renderWishList(int imageWidth) {
+        presenter.processGetWishlistData();
+        wishlistAdapter = new WishlistAdapter(presenter, this, imageWidth);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        rvWishList.setLayoutManager(gridLayoutManager);
+        rvWishList.setAdapter(wishlistAdapter);
     }
 
     @Override
-    public void renderHasWishlist(List<Wishlist> wishlistData) {
-        // Todo : bind to RV
+    public void renderHasWishList() {
+        rlWishList.setVisibility(View.VISIBLE);
+        wishlistAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void renderHasNoWishlist() {
-
+    public void renderHasNoWishList() {
+        rlWishList.setVisibility(View.GONE);
     }
 
     private void renderAutoApplyPromo(String autoApplyMessage) {
@@ -353,4 +386,33 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     public void onAddWishList(int position, Data data) {
 
     }
+
+    @Override
+    public void onItemWishListClicked(Wishlist wishlist) {
+        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
+                presenter.generateProductPassProductDetailPage(wishlist)
+        ), REQUEST_CODE_ROUTE_WISHLIST);
+    }
+
+    public void onShowAllWishListClicked() {
+        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
+                REQUEST_CODE_ROUTE_WISHLIST
+        );
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case REQUEST_CODE_ROUTE_WISHLIST:
+                onResultFromRequestCodeWishList();
+                break;
+        }
+    }
+
+    private void onResultFromRequestCodeWishList() {
+        presenter.processInitialGetCartData();
+    }
+
 }
