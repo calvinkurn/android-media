@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -110,9 +111,9 @@ class AddTalkFragment : BaseDaggerFragment(),
         send_progress.visibility = View.GONE
 
         if (throwable is MessageErrorException) {
-            ToasterError.make(view, throwable.message).show()
+            ToasterError.make(view, throwable.message, Snackbar.LENGTH_LONG).show()
         } else {
-            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable) ?: "").show()
+            ToasterError.make(view, ErrorHandler.getErrorMessage(context, throwable) ?: "", Snackbar.LENGTH_LONG).show()
         }
 
     }
