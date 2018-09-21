@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.project.youtubeutils.common.YoutubeInitializer;
+import com.project.youtubeutils.common.YoutubePlayerConstant;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
@@ -25,8 +27,6 @@ import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostYoutubeViewModel;
 import com.tokopedia.kol.feature.post.view.widget.BaseKolView;
-import com.tokopedia.youtubeutils.common.YoutubeInitializer;
-import com.tokopedia.youtubeutils.common.YoutubePlayerConstant;
 
 import java.util.ArrayList;
 import java.util.List;
