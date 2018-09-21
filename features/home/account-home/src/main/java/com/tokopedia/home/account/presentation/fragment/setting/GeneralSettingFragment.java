@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -98,6 +99,19 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity()));
         TextView appVersion = view.findViewById(R.id.text_view_app_version);
         appVersion.setText(getString(R.string.application_version_fmt, GlobalConfig.VERSION_NAME));
+        setDefaultShakeEnable();
+    }
+
+    private void setDefaultShakeEnable() {
+        if (UserSession.isFirstTimeUser(getActivity()) && userSession.isLoggedIn()) {
+            saveSettingValue(getString(R.string.pref_receive_shake), true);
+        }
+    }
+
+    public static class UserSession {
+        public static boolean isFirstTimeUser(Context context) {
+            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
+        }
     }
 
     @Override
