@@ -41,5 +41,6 @@ public class ExternalWebViewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         webView = view.findViewById(R.id.webview);
         webView.loadUrl(url);
+        webView.getSettings().setJavaScriptEnabled(true);
     }
 }
