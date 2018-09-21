@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 28
+    compileSdkVersion = 27
     minSdkVersion = 16
-    targetSdkVersion = 28
-    buildToolsVersion = "28.0.2"
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -298,7 +298,7 @@ ext {
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.15",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 

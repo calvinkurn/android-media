@@ -250,7 +250,7 @@ public class SimpleWebViewWithFilePickerFragment extends Fragment implements Gen
         webSettings.setDomStorageEnabled(true);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        webSettings.setBuiltInZoomControls(true);
+        webSettings.setBuiltInZoomControls(false);
         optimizeWebView();
         CookieManager.getInstance().setAcceptCookie(true);
         return view;
