@@ -146,8 +146,6 @@ import com.tokopedia.flight.review.domain.FlightCheckVoucherCodeUseCase;
 import com.tokopedia.flight.review.domain.FlightVoucherCodeWrapper;
 import com.tokopedia.flight.review.view.model.FlightCheckoutViewModel;
 import com.tokopedia.gamification.GamificationRouter;
-import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
-import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.channel.view.fragment.ChannelFragment;
 import com.tokopedia.groupchat.chatroom.data.ChatroomUrl;
@@ -379,8 +377,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         ProductEditModuleRouter,
         TopAdsWebViewRouter,
-        ShopSettingRouter,
-        GmSubscribeModuleRouter {
+        ShopSettingRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -786,12 +783,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void goToGmSubscribeMembershipRedirect(Context context) {
-        Intent intent = GmMembershipActivity.createIntent(context);
-        context.startActivity(intent);
-    }
-
-    @Override
     public void goToCreateMerchantRedirect(Context context) {
         Intent intent = RedirectCreateShopActivity.getCallingIntent(context);
         context.startActivity(intent);
@@ -964,12 +955,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
-        UnifyTracking.sendGTMEvent(eventTracking);
-        CommonUtils.dumper(eventTracking.toString());
-    }
-
-    @Override
-    public void sendEventTrackingGmSubscribe(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }

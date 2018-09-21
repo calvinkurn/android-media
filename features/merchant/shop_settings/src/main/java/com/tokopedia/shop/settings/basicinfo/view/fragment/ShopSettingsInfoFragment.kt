@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.webkit.URLUtil
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -353,7 +354,11 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
     }
 
     private fun navigateToAboutGM() {
-        (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
+        if (GlobalConfig.isSellerApp()) {
+            (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
+        } else {
+
+        }
     }
 
     override fun onErrorGetShopBasicData(throwable: Throwable) {
