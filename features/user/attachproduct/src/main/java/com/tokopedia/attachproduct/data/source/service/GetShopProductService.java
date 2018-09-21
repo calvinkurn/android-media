@@ -1,6 +1,6 @@
 package com.tokopedia.attachproduct.data.source.service;
 
-import com.tokopedia.attachproduct.data.source.api.TomeGetShopProductAPI;
+import com.tokopedia.attachproduct.data.source.api.AttachProductApi;
 import com.tokopedia.network.constant.TkpdBaseURL;
 
 import retrofit2.Retrofit;
@@ -10,21 +10,21 @@ import retrofit2.Retrofit;
  */
 
 public class GetShopProductService {
-    TomeGetShopProductAPI api;
+    AttachProductApi api;
 
-    public GetShopProductService(TomeGetShopProductAPI api) {
+    public GetShopProductService(AttachProductApi api) {
         this.api = api;
     }
 
     protected void initApiService(Retrofit retrofit) {
-        api = retrofit.create(TomeGetShopProductAPI.class);
+        api = retrofit.create(AttachProductApi.class);
     }
 
     protected String getBaseUrl() {
-        return TkpdBaseURL.TOME_DOMAIN;
+        return TkpdBaseURL.ACE_DOMAIN;
     }
 
-    public TomeGetShopProductAPI getApi() {
+    public AttachProductApi getApi() {
         return api;
     }
 }

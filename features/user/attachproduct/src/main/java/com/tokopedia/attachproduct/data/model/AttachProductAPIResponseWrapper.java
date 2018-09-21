@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public class AttachProductAPIResponseWrapper {
-    @SerializedName("list")
+    @SerializedName("products")
     @Expose
     private List<DataProductResponse> products;
 

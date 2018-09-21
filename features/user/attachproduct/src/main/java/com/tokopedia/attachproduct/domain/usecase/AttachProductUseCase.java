@@ -17,9 +17,12 @@ import rx.Observable;
  */
 
 public class AttachProductUseCase extends UseCase<List<AttachProductItemViewModel>> {
-    private static final String KEYWORD_KEY = "keyword";
+    private static final String KEYWORD_KEY = "q";
     private static final String SHOP_ID_KEY = "shop_id";
-    private static final String PAGE_KEY = "page";
+    private static final String PAGE_KEY = "start";
+    private static final String SOURCE_KEY = "source";
+    private static final String DEVICE_KEY = "device";
+    private static final String PER_PAGE_KEY = "rows";
     private final AttachProductRepository repository;
     private final DataModelToDomainModelMapper mapper;
 
@@ -35,11 +38,13 @@ public class AttachProductUseCase extends UseCase<List<AttachProductItemViewMode
     }
 
     public static RequestParams createRequestParams(String query, String shopId, int page) {
-        if(page == 0) page = 1;
         RequestParams param = RequestParams.create();
-        param.putString(KEYWORD_KEY,query);
-        param.putString(SHOP_ID_KEY,shopId);
-        param.putString(PAGE_KEY,String.valueOf(page));
+        param.putString(KEYWORD_KEY, query);
+        param.putString(SHOP_ID_KEY, shopId);
+        param.putString(PAGE_KEY, String.valueOf(page * 10));
+        param.putString(SOURCE_KEY, "attach_product");
+        param.putString(PER_PAGE_KEY, "11");
+        param.putString(DEVICE_KEY, "android");
         return param;
     }
 }

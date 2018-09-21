@@ -12,15 +12,15 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.attachproduct.data.model.mapper.TkpdResponseToAttachProductDomainModelMapper;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepository;
 import com.tokopedia.attachproduct.data.repository.AttachProductRepositoryImpl;
-import com.tokopedia.attachproduct.data.source.api.TomeGetShopProductAPI;
+import com.tokopedia.attachproduct.data.source.api.AttachProductApi;
 import com.tokopedia.attachproduct.data.source.service.GetShopProductService;
 import com.tokopedia.attachproduct.data.source.url.AttachProductUrl;
 import com.tokopedia.attachproduct.domain.model.mapper.DataModelToDomainModelMapper;
 import com.tokopedia.attachproduct.domain.usecase.AttachProductUseCase;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
-import com.tokopedia.core.network.retrofit.interceptors.TkpdAuthInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
+import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
 import com.tokopedia.user.session.UserSession;
 
 import java.util.concurrent.TimeUnit;
@@ -42,6 +42,11 @@ public class AttachProductModule {
     private static final int NET_CONNECT_TIMEOUT = 60;
     private static final int NET_RETRY = 1;
 
+    @Provides
+    UserSession provideUserSession(@ApplicationContext Context context) {
+        return new UserSession(context);
+    }
+
 
     @AttachProductScope
     @Provides
@@ -62,21 +67,47 @@ public class AttachProductModule {
     @Provides
     @AttachProductQualifier
     Retrofit provideRetrofit(OkHttpClient okHttpClient,
-                                         Retrofit.Builder retrofitBuilder) {
+                             Retrofit.Builder retrofitBuilder) {
         return retrofitBuilder.baseUrl(AttachProductUrl.URL)
                 .client(okHttpClient)
                 .build();
     }
 
     @Provides
-    public static TomeGetShopProductAPI provideApiTome(Retrofit retrofit){
-        return retrofit.create(TomeGetShopProductAPI.class);
+    public static AttachProductApi provideApiTome(Retrofit retrofit) {
+        return retrofit.create(AttachProductApi.class);
     }
 
     @Provides
     @ChuckInterceptorAttachProductQualifier
-    public static ChuckInterceptor provideChuck(@ApplicationContext Context context){
+    public static ChuckInterceptor provideChuck(@ApplicationContext Context context) {
         return new ChuckInterceptor(context);
+    }
+
+    @AttachProductScope
+    @Provides
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
+        return (NetworkRouter) context;
+    }
+
+    @AttachProductScope
+    @Provides
+    TkpdAuthInterceptor provideTkpdAuthInterceptor(@ApplicationContext Context context,
+                                                   NetworkRouter networkRouter,
+                                                   UserSession userSession) {
+        return new TkpdAuthInterceptor(context, networkRouter, userSession);
+    }
+
+    @AttachProductScope
+    @Provides
+    FingerprintInterceptor provideFingerprintInterceptor(NetworkRouter networkRouter,
+                                                         UserSession userSession) {
+        return new FingerprintInterceptor(networkRouter, userSession);
+    }
+
+    @Provides
+    CacheApiInterceptor provideCacheApiInterceptor() {
+        return new CacheApiInterceptor();
     }
 
     @AttachProductScope
@@ -84,17 +115,18 @@ public class AttachProductModule {
     @AttachProductQualifier
     OkHttpClient provideOkHttpClient(OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     @ApplicationContext Context context,
                                      @ChuckInterceptorAttachProductQualifier ChuckInterceptor
                                              chuckInterceptor,
-                                     @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor) {
-        UserSession userSession = new UserSession(context);
+                                     @ApplicationScope HttpLoggingInterceptor httpLoggingInterceptor,
+                                     TkpdAuthInterceptor tkpdAuthInterceptor,
+                                     FingerprintInterceptor fingerprintInterceptor,
+                                     CacheApiInterceptor cacheApiInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
-                .addInterceptor(new FingerprintInterceptor((NetworkRouter)context,userSession))
-                .addInterceptor(new CacheApiInterceptor())
+                .addInterceptor(fingerprintInterceptor)
+                .addInterceptor(cacheApiInterceptor)
                 .addInterceptor(errorResponseInterceptor)
-                .addInterceptor(new TkpdAuthInterceptor())
+                .addInterceptor(tkpdAuthInterceptor)
                 .connectTimeout(retryPolicy.connectTimeout, TimeUnit.SECONDS)
                 .readTimeout(retryPolicy.readTimeout, TimeUnit.SECONDS)
                 .writeTimeout(retryPolicy.writeTimeout, TimeUnit.SECONDS);
@@ -106,17 +138,17 @@ public class AttachProductModule {
     }
 
     @Provides
-    public static GetShopProductService provideShopService(TomeGetShopProductAPI api){
+    public static GetShopProductService provideShopService(AttachProductApi api) {
         return new GetShopProductService(api);
     }
 
     @Provides
-    public static AttachProductRepository provideAttachProductRepository(GetShopProductService shopService,TkpdResponseToAttachProductDomainModelMapper mapper){
+    public static AttachProductRepository provideAttachProductRepository(GetShopProductService shopService, TkpdResponseToAttachProductDomainModelMapper mapper) {
         return new AttachProductRepositoryImpl(shopService, mapper);
     }
 
     @Provides
-    public static AttachProductUseCase provideAttachProductUseCase(AttachProductRepository repository, DataModelToDomainModelMapper mapper){
-        return new AttachProductUseCase(repository,mapper);
+    public static AttachProductUseCase provideAttachProductUseCase(AttachProductRepository repository, DataModelToDomainModelMapper mapper) {
+        return new AttachProductUseCase(repository, mapper);
     }
 }

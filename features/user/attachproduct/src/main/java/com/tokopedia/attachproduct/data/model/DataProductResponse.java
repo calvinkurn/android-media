@@ -8,29 +8,28 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DataProductResponse {
-    
-    @SerializedName("product_url")
+
+    @SerializedName("url")
     @Expose
     private String productUrl;
-    @SerializedName("product_name")
+    @SerializedName("name")
     @Expose
     private String productName;
-    @SerializedName("product_id")
+    @SerializedName("id")
     @Expose
     private int productId;
-    @SerializedName("product_image_full")
+    @SerializedName("image_url_700")
     @Expose
     private String productImageFull;
-    @SerializedName("product_image")
+    @SerializedName("image_url")
     @Expose
     private String productImage;
-    @SerializedName("product_price")
+    @SerializedName("price")
     @Expose
     private String productPrice;
-
-    @SerializedName("shop_name")
+    @SerializedName("shop")
     @Expose
-    private String shopName;
+    private DataShopResponse shop;
 
     public String getProductUrl() {
         return productUrl;
@@ -80,11 +79,7 @@ public class DataProductResponse {
         this.productPrice = productPrice;
     }
 
-    public String getShopName() {
-        return shopName;
-    }
-
-    public void setShopName(String shopName) {
-        this.shopName = shopName;
+    public DataShopResponse getShop() {
+        return shop;
     }
 }

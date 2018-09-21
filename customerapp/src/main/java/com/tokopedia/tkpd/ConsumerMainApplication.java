@@ -258,7 +258,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         TrainUrl.WEB_DOMAIN = ConsumerAppBaseUrl.KAI_WEB_DOMAIN;
         TalkUrl.Companion.setBASE_URL(ConsumerAppBaseUrl.BASE_INBOX_DOMAIN);
 
-        AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_TOME_DOMAIN;
+        AttachProductUrl.URL = ConsumerAppBaseUrl.BASE_ACE_DOMAIN;
 
         UpdateInactivePhoneURL.UPDATE_INACTIVE_PHONE_UPLOAD_IMAGE = ConsumerAppBaseUrl.UPDATE_INACTIVE_PHONE_IMAGE_UPLOAD;
         generateTransactionDataModuleBaseUrl();

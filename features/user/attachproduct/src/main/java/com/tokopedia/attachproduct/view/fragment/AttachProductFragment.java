@@ -38,9 +38,9 @@ import javax.inject.Inject;
  * Created by Hendri on 13/02/18.
  */
 
-public class AttachProductFragment extends BaseSearchListFragment<AttachProductItemViewModel,AttachProductListAdapterTypeFactory>
+public class AttachProductFragment extends BaseSearchListFragment<AttachProductItemViewModel, AttachProductListAdapterTypeFactory>
         implements CheckableInteractionListenerWithPreCheckedAction,
-                   AttachProductContract.View {
+        AttachProductContract.View {
     private final static int MAX_CHECKED = 3;
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -99,7 +99,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     public void onStart() {
         super.onStart();
-        if(activityContract == null) {
+        if (activityContract == null) {
             if (getActivity() instanceof AttachProductContract.Activity) {
                 activityContract = (AttachProductContract.Activity) getActivity();
             }
@@ -122,7 +122,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onSearchTextChanged(String text) {
-        if(TextUtils.isEmpty(text)) loadInitialData();
+        if (TextUtils.isEmpty(text)) loadInitialData();
     }
 
     @Override
@@ -139,7 +139,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void loadData(int page) {
-        presenter.loadProductData(searchInputView.getSearchText(),activityContract.getShopId(),page);
+        presenter.loadProductData(searchInputView.getSearchText(), activityContract.getShopId(), page);
+    }
+
+    @Override
+    public int getDefaultInitialPage() {
+        return 0;
     }
 
     @NonNull
@@ -164,31 +169,30 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     public boolean shouldAllowCheckChange(int position, boolean checked) {
         boolean isCurrentlyChecked = isChecked(position);
         boolean willCheckedStatusChanged = (isCurrentlyChecked ^ checked);
-        if(adapter.getCheckedCount() >= MAX_CHECKED && (willCheckedStatusChanged && !isCurrentlyChecked)) {
-            String message = getString(R.string.string_attach_product_warning_max_product_format,String.valueOf(MAX_CHECKED));
+        if (adapter.getCheckedCount() >= MAX_CHECKED && (willCheckedStatusChanged && !isCurrentlyChecked)) {
+            String message = getString(R.string.string_attach_product_warning_max_product_format, String.valueOf(MAX_CHECKED));
             NetworkErrorHelper.showSnackbar(getActivity(), message);
             return false;
-        }
-        else {
+        } else {
             return true;
         }
     }
 
     @Override
     public boolean isChecked(int position) {
-            return adapter.isChecked(position);
+        return adapter.isChecked(position);
     }
 
     @Override
     public void updateListByCheck(boolean isChecked, int position) {
-        adapter.itemChecked(isChecked,position);
+        adapter.itemChecked(isChecked, position);
         presenter.updateCheckedList(adapter.getCheckedDataList());
         trackAction();
     }
 
     @Override
     public void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage) {
-        renderList(products,hasNextPage);
+        renderList(products, hasNextPage);
     }
 
     @Override
@@ -205,27 +209,25 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void updateButtonBasedOnChecked(int checkedCount) {
-        sendButton.setText(getString(R.string.string_attach_product_send_button_text,String.valueOf(checkedCount),String.valueOf(MAX_CHECKED)));
+        sendButton.setText(getString(R.string.string_attach_product_send_button_text, String.valueOf(checkedCount), String.valueOf(MAX_CHECKED)));
         if (checkedCount > 0 && checkedCount <= MAX_CHECKED) {
             sendButton.setEnabled(true);
-        }
-        else {
+        } else {
             sendButton.setEnabled(false);
         }
     }
 
-    private void sendButtonClicked(){
+    private void sendButtonClicked() {
         presenter.completeSelection();
     }
 
     @Override
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
-        if(TextUtils.isEmpty(searchInputView.getSearchText())) {
+        if (TextUtils.isEmpty(searchInputView.getSearchText())) {
             emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
             emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
-        }
-        else {
+        } else {
             emptyResultViewModel.setContent(getString(R.string.string_attach_product_search_not_found));
             emptyResultViewModel.setIconRes(R.drawable.ic_empty_search);
         }
@@ -233,7 +235,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
             emptyResultViewModel.setButtonTitleRes(R.string.string_attach_product_add_product_now);
             emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
                 @Override
-                public void onEmptyContentItemTextClicked() {}
+                public void onEmptyContentItemTextClicked() {
+                }
 
                 @Override
                 public void onEmptyButtonClicked() {
@@ -245,13 +248,13 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         return emptyResultViewModel;
     }
 
-    public void addProductClicked(){
+    public void addProductClicked() {
         activityContract.goToAddProduct(activityContract.getShopId());
     }
 
-    private void trackAction(){
-        if((getActivity().getApplicationContext() instanceof AbstractionRouter)){
-            AbstractionRouter abstractionRouter = (AbstractionRouter)getActivity().getApplicationContext();
+    private void trackAction() {
+        if ((getActivity().getApplicationContext() instanceof AbstractionRouter)) {
+            AbstractionRouter abstractionRouter = (AbstractionRouter) getActivity().getApplicationContext();
             abstractionRouter.getAnalyticTracker().sendEventTracking(
                     AttachProductAnalytics.getEventCheckProduct().getEvent()
             );
@@ -265,7 +268,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void onDestroy() {
-        if(presenter != null) presenter.detachView();
+        if (presenter != null) presenter.detachView();
         super.onDestroy();
     }
 }

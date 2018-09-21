@@ -1,6 +1,6 @@
 package com.tokopedia.attachproduct.data.source.api;
 
-import com.tokopedia.attachproduct.data.model.TomeResponseWrapper;
+import com.tokopedia.attachproduct.data.model.AceResponseWrapper;
 import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.Map;
@@ -14,7 +14,7 @@ import rx.Observable;
  * Created by Hendri on 02/03/18.
  */
 
-public interface TomeGetShopProductAPI {
-    @GET(TkpdBaseURL.Tome.PATH_GET_SHOP_PRODUCT)
-    Observable<Response<TomeResponseWrapper>> getShopProduct(@QueryMap Map<String, String> params);
+public interface AttachProductApi {
+    @GET(TkpdBaseURL.Ace.PATH_SEARCH_PRODUCT)
+    Observable<Response<AceResponseWrapper>> getShopProduct(@QueryMap Map<String, String> params);
 }

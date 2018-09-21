@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Hendri on 08/08/18.
  */
-public class TomeResponseWrapper {
+public class AceResponseWrapper {
     @SerializedName("data")
     @Expose
     AttachProductAPIResponseWrapper data;

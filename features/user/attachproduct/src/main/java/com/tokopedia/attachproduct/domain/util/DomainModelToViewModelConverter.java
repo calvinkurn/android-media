@@ -8,13 +8,13 @@ import com.tokopedia.attachproduct.view.viewmodel.AttachProductItemViewModel;
  */
 
 public class DomainModelToViewModelConverter {
-    public static AttachProductItemViewModel convertProductDomainModel(DataProductResponse product){
+    public static AttachProductItemViewModel convertProductDomainModel(DataProductResponse product) {
         return new AttachProductItemViewModel(product.getProductUrl(),
                 product.getProductName(),
                 product.getProductId(),
                 product.getProductImageFull(),
                 product.getProductImage(),
                 product.getProductPrice(),
-                product.getShopName());
+                product.getShop().getShopName());
     }
 }
