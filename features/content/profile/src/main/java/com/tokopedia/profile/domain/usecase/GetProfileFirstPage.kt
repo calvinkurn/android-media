@@ -41,7 +41,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         13,
                         true,
                         false,
-                        false
+                        true
                 )
         )
     }
@@ -76,7 +76,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         0,
                         imageList,
                         true,
-                        false
+                        true
                 )
         )
 
@@ -93,7 +93,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         0,
                         imageList,
                         true,
-                        false
+                        true
                 )
         )
         return Observable.just(posts)

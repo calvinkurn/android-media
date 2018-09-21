@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.adapter
 
 import android.graphics.Bitmap
 import android.support.v4.view.PagerAdapter
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -9,6 +10,7 @@ import android.widget.ImageView
 import com.bumptech.glide.request.animation.GlideAnimation
 import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.profile.R
 
 /**
  * @author by milhamj on 9/21/18.
@@ -21,22 +23,25 @@ class PostImageAdapter: PagerAdapter() {
     override fun getCount(): Int = imageList.size
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
-        val imageView = ImageView(container.context)
+        val view = LayoutInflater.from(container.context).inflate(
+                R.layout.item_post_image,
+                container,
+                false
+        )
+        val imageView = view.findViewById<ImageView>(R.id.image)
         val imageUrl = imageList[position]
 
-        imageView.scaleType = ImageView.ScaleType.FIT_CENTER
-        imageView.adjustViewBounds = true
-        imageView.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        val viewTreeObserver = imageView.getViewTreeObserver()
-                        viewTreeObserver.removeOnGlobalLayoutListener(this)
-
-                        imageView.setMaxHeight(imageView.getWidth())
-                        imageView.requestLayout()
-                    }
-                }
-        )
+//        imageView.viewTreeObserver.addOnGlobalLayoutListener(
+//                object : ViewTreeObserver.OnGlobalLayoutListener {
+//                    override fun onGlobalLayout() {
+//                        val viewTreeObserver = imageView.getViewTreeObserver()
+//                        viewTreeObserver.removeOnGlobalLayoutListener(this)
+//
+//                        imageView.setMaxHeight(imageView.getWidth())
+//                        imageView.requestLayout()
+//                    }
+//                }
+//        )
         ImageHandler.loadImageWithTarget(
                 container.context, imageUrl,
                 object : SimpleTarget<Bitmap>() {
@@ -46,12 +51,12 @@ class PostImageAdapter: PagerAdapter() {
                     }
                 }
         )
-
-        return imageView
+        container.addView(view)
+        return view
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        container.removeView(`object` as ImageView)
+        container.removeView(`object` as View)
     }
 
     fun setList(imageList: ArrayList<String>) {

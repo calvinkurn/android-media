@@ -26,12 +26,12 @@ class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfilePostViewMod
         itemView.name.text = element.name
         itemView.time.text = element.time
 
-        if (!TextUtils.isEmpty(element.info)) {
-            itemView.info.text = element.info
-            itemView.info.visibility = View.VISIBLE
-        } else {
-            itemView.info.visibility = View.GONE
-        }
+//        if (!TextUtils.isEmpty(element.info)) {
+//            itemView.info.text = element.info
+//            itemView.info.visibility = View.VISIBLE
+//        } else {
+//            itemView.info.visibility = View.GONE
+//        }
 
         itemView.goToProductBtn.setOnClickListener {
             //TODO milhamj
@@ -41,9 +41,9 @@ class ProfilePostViewHolder(val v: View) : AbstractViewHolder<ProfilePostViewMod
             itemView.addImageBtn.setOnClickListener {
                 //TODO milhamj
             }
-            itemView.visibility = View.VISIBLE
+            itemView.addImageBtn.visibility = View.VISIBLE
         } else {
-            itemView.visibility = View.GONE
+            itemView.addImageBtn.visibility = View.GONE
         }
 
         setUpViewPager(element)
