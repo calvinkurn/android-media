@@ -79,8 +79,11 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
         adapter.setOnNotifClickListener((parent, child) -> {
             sendTracking(parent, child);
             DrawerNotification item = adapter.getItem(parent);
-            DrawerNotification.ChildDrawerNotification childItem = item.getChilds().get(child);
-            RouteManager.route(getActivity(), childItem.getApplink());
+            if (getActivity() != null && item != null
+                    && item.getChilds() != null
+                    && item.getChilds().get(child) != null) {
+                RouteManager.route(getActivity(), item.getChilds().get(child).getApplink());
+            }
         });
 
         adapter.addAll(getData());
@@ -210,20 +213,20 @@ public class NotificationFragment extends BaseParentFragment implements Notifica
 
     private void sendTracking(int parent, int child) {
         DrawerNotification parentItem = adapter.getItem(parent);
-        if (parentItem == null)
-            return;
+        if (parentItem != null && parentItem.getChilds() != null) {
+            DrawerNotification.ChildDrawerNotification childItem =
+                    parentItem.getChilds().get(child);
 
-        DrawerNotification.ChildDrawerNotification childItem =
-                parentItem.getChilds().get(child);
-        if (childItem == null)
-            return;
+            String section = "";
+            if (parentItem.getTitle() != null)
+                section = parentItem.getTitle();
 
-        String section = "";
-        if (parentItem.getTitle() != null)
-            section = parentItem.getTitle();
+            if (childItem != null) {
+                globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
+                        childItem.getTitle().toLowerCase());
+            }
+        }
 
-        globalNavAnalytics.eventNotificationPage(section.toLowerCase(),
-                childItem.getTitle().toLowerCase());
     }
 
     private boolean shouldAddUserInfo() {
