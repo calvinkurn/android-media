@@ -9,8 +9,8 @@ import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactory
 data class ProfileHeaderViewModel(
         val name: String = "",
         val avatar: String = "",
-        val followers: Int = 0,
-        val following: Int = 0,
+        val followers: String = "0",
+        val following: String = "0",
         val userId: Int = 0,
         val isKol: Boolean = false,
         val isFollowed: Boolean = false,

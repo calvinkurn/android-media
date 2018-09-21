@@ -1,6 +1,7 @@
 package com.tokopedia.profile.view.fragment
 
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.View
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -9,8 +10,10 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.profile.di.DaggerProfileComponent
+import com.tokopedia.profile.view.activity.ProfileActivity
 import com.tokopedia.profile.view.adapter.factory.ProfileTypeFactoryImpl
 import com.tokopedia.profile.view.listener.ProfileContract
+import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
@@ -21,6 +24,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         ProfileContract.View {
 
     override lateinit var userSession: UserSession
+    private var userId: String = "0"
 
     @Inject lateinit var presenter: ProfileContract.Presenter
 
@@ -29,9 +33,9 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
+        presenter.attachView(this)
         initVar()
+        super.onViewCreated(view, savedInstanceState)
     }
 
     override fun getScreenName(): String? = null
@@ -55,6 +59,19 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun loadData(page: Int) {
+        if (isLoadingInitialData){
+            presenter.getProfileFirstPage(userId);
+        } else {
+            presenter.getProfilePost(userId)
+        }
+    }
+
+    override fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
+                                              cursor: String) {
+        val visitables: ArrayList<Visitable<*>> = ArrayList()
+        visitables.add(profileFirstPageViewModel.profileHeaderViewModel)
+        visitables.addAll(profileFirstPageViewModel.profilePostViewModel)
+        renderList(visitables, !TextUtils.isEmpty(cursor))
     }
 
     override fun goToFollowing(userId: Int) {
@@ -67,7 +84,14 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         Toast.makeText(context, "Follow? ".plus(follow), Toast.LENGTH_LONG).show()
     }
 
+    override fun updateCursor(cursor: String) {
+        presenter.cursor = cursor
+    }
+
     private fun initVar() {
+        arguments?.let {
+            userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
+        }
         userSession = UserSession(context)
     }
 }

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Profile</string>
+    <string name="title_profile">Profile</string>
     <string name="profile_add_image">Tambah Gambar</string>
     <string name="profile_go_to_product">Lihat Produk</string>
-    <string name="profile_followers_number" formatted="false">%d Followers</string>
-    <string name="profile_following_number" formatted="false">%d Following</string>
+    <string name="profile_followers_number" formatted="false">%s Followers</string>
+    <string name="profile_following_number" formatted="false">%s Following</string>
     <string name="profile_followers_and_following" formatted="false">%s • %s</string>
     <string name="profile_follow">Follow</string>
     <string name="profile_following">Following</string>

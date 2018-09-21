@@ -1,2 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.profile" />
+    package="com.tokopedia.profile">
+
+    <application>
+        <activity
+            android:name=".view.activity.ProfileActivity"
+            android:label="@string/title_profile"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+    </application>
+</manifest>

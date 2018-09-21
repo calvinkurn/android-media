@@ -2,6 +2,7 @@ package com.tokopedia.profile.view.listener
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.profile.view.viewmodel.ProfileFirstPageViewModel
 import com.tokopedia.user.session.UserSession
 
 /**
@@ -11,11 +12,20 @@ interface ProfileContract {
     interface View : CustomerView {
         val userSession: UserSession
 
+        fun onSuccessGetProfileFirstPage(profileFirstPageViewModel: ProfileFirstPageViewModel,
+                                         cursor: String)
+
         fun goToFollowing(userId: Int)
 
         fun followUnfollowUser(userId: Int, follow: Boolean)
+
+        fun updateCursor(cursor: String)
     }
     interface Presenter : CustomerPresenter<View> {
+        var cursor: String
 
+        fun getProfileFirstPage(userId: String)
+
+        fun getProfilePost(userId: String)
     }
 }
