@@ -106,7 +106,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
             }
         }
 
-        model.setIconPosition(itemPositionInList - lastTitlePosition + 1);
+        model.setIconPosition(itemPositionInList - lastTitlePosition);
 
         return model;
     }
