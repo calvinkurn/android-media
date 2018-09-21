@@ -24,7 +24,8 @@ public class ProductWishlistUrlUseCase extends UseCase<Response<String>> {
 
     @Override
     public Observable<Response<String>> createObservable(RequestParams requestParams) {
-        return topAdsService.productWishlistUrl(requestParams.getString(PRODUCT_WISHLIST_URL, "")).map(new Func1<Response<String>, Response<String>>() {
+        return topAdsService.productWishlistUrl(requestParams.getString(PRODUCT_WISHLIST_URL, ""))
+                .map(new Func1<Response<String>, Response<String>>() {
             @Override
             public Response<String> call(Response<String> response) {
                 if(response.isSuccessful()){
