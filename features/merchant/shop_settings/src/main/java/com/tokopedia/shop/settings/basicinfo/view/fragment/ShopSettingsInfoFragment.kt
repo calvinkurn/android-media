@@ -357,7 +357,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
         if (GlobalConfig.isSellerApp()) {
             (activity!!.application as ShopSettingRouter).goToGmSubscribeMembershipRedirect(activity!!)
         } else {
-
+            (activity!!.application as ShopSettingRouter).goToMerchantRedirect(activity!!)
         }
     }
 

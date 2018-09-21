@@ -17,6 +17,7 @@ import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_auto_subsc
 import kotlinx.android.synthetic.main.partial_gm_subscribe_membership_selected_product.*
 import javax.inject.Inject
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.core.app.TkpdCoreRouter
 import com.tokopedia.gm.subscribe.membership.analytic.GmSubscribeMembershipTracking
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
@@ -83,7 +84,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
 
         btnExtend.setOnClickListener {
             gmSubscribeMembershipTracking.eventClickExtend(subscriptionNameSelected)
-            goToProductPage()
+            (activity!!.application as TkpdCoreRouter).goToMerchantRedirect(activity!!)
         }
 
         labelExtendPacket.setOnClickListener { goToProductPage() }
