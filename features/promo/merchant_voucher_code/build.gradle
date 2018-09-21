@@ -5,7 +5,7 @@ apply plugin: 'io.hansel.preprocessor.module'
 project.ext {
     artifactId = 'merchant-voucher-code'
     groupId = 'com.tokopedia.mvc'
-    versionName = "${tkpdMerchantVoucherVersion}"
+    versionName = "${tkpdMerchantVoucherCodeVersion}"
     artifactName ="merchant_voucher_code-release"
 }
 
