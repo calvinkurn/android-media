@@ -26,6 +26,7 @@ import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.TickerContainer;
 import com.tokopedia.tokopoints.view.model.TickerMetadata;
 import com.tokopedia.tokopoints.view.presenter.CatalogListingPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 import com.tokopedia.tokopoints.view.util.SimpleSpanBuilder;
 
@@ -87,6 +88,12 @@ public class TickerPagerAdapter extends PagerAdapter {
                         } else {
                             ((TokopointRouter) mContext.getApplicationContext()).openTokoPoint(mContext, uri);
                         }
+
+                        AnalyticsTrackerUtil.sendEvent(mContext,
+                                AnalyticsTrackerUtil.EventKeys.EVENT_TOKOPOINT,
+                                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS,
+                                "click " + linkContent + " on ticker",
+                                "");
                     }
 
                     @Override

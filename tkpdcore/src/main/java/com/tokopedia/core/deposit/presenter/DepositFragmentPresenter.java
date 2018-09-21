@@ -25,6 +25,8 @@ public interface DepositFragmentPresenter {
 
     void setCache();
 
+    void getMerchantSaldoDetails();
+
     void loadMore(int lastItemPosition, int visibleItem);
 
     RetryDataBinder.OnRetryListener onRetry();

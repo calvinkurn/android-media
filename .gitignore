@@ -60,3 +60,4 @@ buckw
 BUCK
 .buckconfig
 .settings
+.buckjavaargs

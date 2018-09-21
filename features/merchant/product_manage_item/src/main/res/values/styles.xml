@@ -6,10 +6,6 @@
         <item name="android:button">@drawable/selector_checkbox</item>
     </style>
 
-    <style name="ProductAddEditRadioButton" parent="Widget.AppCompat.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/selector_radiobutton</item>
-    </style>
-
     <style name="LabelLayout.InnerExpandable">
         <item name="android:paddingLeft">@dimen/product_inner_expandable_padding</item>
         <item name="android:paddingRight">@dimen/product_inner_expandable_padding</item>
