@@ -15,6 +15,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -224,7 +225,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
-            getView().getCurrentActivity().startActivity(ManageGeneral.getCallingIntent(getView().getCurrentActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+            getView().getCurrentActivity().startActivity(GeneralSettingActivity.createIntent(getView().getCurrentActivity()));
             getView().finish();
         }else {
             getView().makeInvisibleShakeShakeDisableView();
