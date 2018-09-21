@@ -1,9 +1,9 @@
 package com.tokopedia.profile.view.adapter.viewholder
 
+import android.support.annotation.LayoutRes
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
-import android.text.TextUtils
 import android.text.style.ClickableSpan
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -21,6 +21,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
     : AbstractViewHolder<ProfileHeaderViewModel>(v) {
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.item_profile_header
     }
 
@@ -32,7 +33,7 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
         if (element.isKol) {
             setFollowersText(element)
 
-            if (!isOwnUser(element.userId)) {
+            if (element.isOwner) {
                 itemView.followBtn.visibility = View.VISIBLE
                 itemView.followBtn.setOnClickListener {
                     viewListener.followUnfollowUser(element.userId, !element.isFollowed)
@@ -75,9 +76,6 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
                 spannableString.indexOf(following) + following.length,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
-
-    private fun isOwnUser(userId: Int) = !TextUtils.isEmpty(viewListener.userSession.userId)
-            && userId == Integer.valueOf(viewListener.userSession.userId)
 
     private fun updateButtonState(isFollowed: Boolean) {
         if (isFollowed) {

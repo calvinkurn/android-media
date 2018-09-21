@@ -13,7 +13,8 @@ data class ProfileHeaderViewModel(
         val following: Int = 0,
         val userId: Int = 0,
         val isKol: Boolean = false,
-        val isFollowed: Boolean = false) : Visitable<ProfileTypeFactory> {
+        val isFollowed: Boolean = false,
+        val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
 
     override fun type(typeFactory: ProfileTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

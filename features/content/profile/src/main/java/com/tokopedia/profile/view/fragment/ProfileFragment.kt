@@ -50,6 +50,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
 
     override fun followUnfollowUser(userId: Int, follow: Boolean) {
         //TODO milhamj
+        Toast.makeText(context, "Follow? ".plus(follow), Toast.LENGTH_LONG).show()
     }
 
     private fun initVar() {

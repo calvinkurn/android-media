@@ -10,8 +10,10 @@ class ProfilePostViewModel(
         val name: String = "",
         val avatar: String = "",
         val time: String = "",
+        val info: String = "",
         val productId: Int = 0,
         val images: List<String> = ArrayList(),
+        val isKol: Boolean = false,
         val isOwner: Boolean = false) : Visitable<ProfileTypeFactory> {
 
     override fun type(typeFactory: ProfileTypeFactory?): Int {
