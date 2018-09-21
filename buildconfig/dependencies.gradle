@@ -363,6 +363,7 @@ ext {
             notifCenter           : ":features:user:notifcenter",
             contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
+            logisticaddaddress    : ":features:logistic:logisticaddaddress",
             transactiondata       : ":features:transaction:transactiondata",
             transactionanalytics  : ":features:transaction:transactionanalytics",
             tracking              : ":features:logistic:tracking",
