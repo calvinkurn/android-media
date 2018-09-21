@@ -149,6 +149,7 @@ import com.tokopedia.district_recommendation.domain.mapper.TokenMapper;
 import com.tokopedia.district_recommendation.domain.model.Token;
 import com.tokopedia.district_recommendation.view.DistrictRecommendationActivity;
 import com.tokopedia.events.EventModuleRouter;
+import com.tokopedia.events.ScanQrCodeRouter;
 import com.tokopedia.events.di.DaggerEventComponent;
 import com.tokopedia.events.di.EventComponent;
 import com.tokopedia.events.di.EventModule;
@@ -459,7 +460,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
-        DigitalBrowseRouter {
+        DigitalBrowseRouter,
+        ScanQrCodeRouter {
 
     private static final String EXTRA = "extra";
 
@@ -2617,7 +2619,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public Intent gotoQrScannerPage() {
-        return QrScannerActivity.newInstance(this);
+        return gotoQrScannerPage(false);
+    }
+
+    @Override
+    public Intent gotoQrScannerPage(boolean needResult) {
+        return QrScannerActivity.newInstance(this, needResult);
     }
 
 
