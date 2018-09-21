@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.common.domain.mapper
+package com.tokopedia.merchantvoucher.common.gql.domain.mapper
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 

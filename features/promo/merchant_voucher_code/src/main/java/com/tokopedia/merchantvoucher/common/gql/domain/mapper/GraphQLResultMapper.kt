@@ -1,10 +1,10 @@
-package com.tokopedia.merchantvoucher.common.domain.mapper
+package com.tokopedia.merchantvoucher.common.gql.domain.mapper
 
 import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.merchantvoucher.common.data.GraphQLDataError
-import com.tokopedia.merchantvoucher.common.data.GraphQLResult
+import com.tokopedia.merchantvoucher.common.gql.data.GraphQLDataError
+import com.tokopedia.merchantvoucher.common.gql.data.GraphQLResult
 
 import rx.Observable
 import rx.functions.Func1
