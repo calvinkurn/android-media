@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 project.ext {
-    artifactId = 'merchant-voucher-code'
-    groupId = 'com.tokopedia.mvc'
-    versionName = "${tkpdMerchantVoucherCodeVersion}"
-    artifactName ="merchant_voucher_code-release"
+    artifactId = 'merchant-voucher'
+    groupId = 'com.tokopedia.merchantvoucher'
+    versionName = "${tkpdMerchantVoucherVersion}"
+    artifactName ="merchant_voucher-release"
 }
 
 buildscript {

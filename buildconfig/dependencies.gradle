@@ -56,7 +56,7 @@ ext {
     tkpdKolVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
-    tkpdMerchantVoucherCodeVersion = '2.22'
+    tkpdMerchantVoucherVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
     tkpdEventsVersion = '2.22'
     tkpdTokocashVersion = '2.22'
@@ -263,7 +263,7 @@ ext {
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             pushNotif             : "com.tokopedia.pushnotif:push_notification:${tkpdPushNotifVersion}",
             gamification          : "com.tokopedia.gamification:gamification:${tkpdGamificationVersion}",
-            merchantVoucherCode   : "com.tokopedia.merchantvoucher:merchant-voucher-code:${tkpdMerchantVoucherCodeVersion}",
+            merchantVoucher       : "com.tokopedia.merchantvoucher:merchant-voucher:${tkpdMerchantVoucherCodeVersion}",
             mitraToppers          : "com.tokopedia.mitratoppers:mitra_toppers:${tkpdMitraToppersVersion}",
             goldMerchant          : "com.tokopedia.gm:gold_merchant:${tkpdGoldMerchantVersion}",
             goldMerchantSubscribe : "com.tokopedia.gm:gold_merchant-subscribe:${tkpdGoldMerchantVersion}",
@@ -330,7 +330,7 @@ ext {
             kol                   : ":features:content:kol",
             groupchat             : ":features:user:groupchat",
             gamification          : ":features:promo:gamification",
-            merchantVoucherCode   : ":features:promo:merchant_voucher_code",
+            merchantVoucher       : ":features:promo:merchant_voucher",
             profile               : ":features:user:profile",
             topchat               : ":features:user:topchat",
             contactUs             : ":features:operational:contact_us",
