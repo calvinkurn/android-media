@@ -26,6 +26,11 @@ public class BalanceTokoCash implements Parcelable {
     private long rawThreshold;
     private String threshold;
     private List<String> abTags;
+    private String pointBalance;
+    private int rawPointBalance;
+    private String cashBalance;
+    private int rawCashBalance;
+    private String walletType;
 
     public BalanceTokoCash() {
     }
@@ -46,29 +51,11 @@ public class BalanceTokoCash implements Parcelable {
         rawThreshold = in.readLong();
         threshold = in.readString();
         abTags = in.createStringArrayList();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(titleText);
-        dest.writeParcelable(actionBalance, flags);
-        dest.writeString(balance);
-        dest.writeLong(rawBalance);
-        dest.writeString(totalBalance);
-        dest.writeLong(rawTotalBalance);
-        dest.writeString(holdBalance);
-        dest.writeLong(rawHoldBalance);
-        dest.writeString(applinks);
-        dest.writeString(redirectUrl);
-        dest.writeByte((byte) (link ? 1 : 0));
-        dest.writeLong(rawThreshold);
-        dest.writeString(threshold);
-        dest.writeStringList(abTags);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+        pointBalance = in.readString();
+        rawPointBalance = in.readInt();
+        cashBalance = in.readString();
+        rawCashBalance = in.readInt();
+        walletType = in.readString();
     }
 
     public static final Creator<BalanceTokoCash> CREATOR = new Creator<BalanceTokoCash>() {
@@ -82,6 +69,34 @@ public class BalanceTokoCash implements Parcelable {
             return new BalanceTokoCash[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(titleText);
+        parcel.writeParcelable(actionBalance, i);
+        parcel.writeString(balance);
+        parcel.writeLong(rawBalance);
+        parcel.writeString(totalBalance);
+        parcel.writeLong(rawTotalBalance);
+        parcel.writeString(holdBalance);
+        parcel.writeLong(rawHoldBalance);
+        parcel.writeString(applinks);
+        parcel.writeString(redirectUrl);
+        parcel.writeByte((byte) (link ? 1 : 0));
+        parcel.writeLong(rawThreshold);
+        parcel.writeString(threshold);
+        parcel.writeStringList(abTags);
+        parcel.writeString(pointBalance);
+        parcel.writeInt(rawPointBalance);
+        parcel.writeString(cashBalance);
+        parcel.writeInt(rawCashBalance);
+        parcel.writeString(walletType);
+    }
 
     public String getTitleText() {
         return titleText;
@@ -193,5 +208,45 @@ public class BalanceTokoCash implements Parcelable {
 
     public void setAbTags(List<String> abTags) {
         this.abTags = abTags;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public void setPointBalance(String pointBalance) {
+        this.pointBalance = pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public void setRawPointBalance(int rawPointBalance) {
+        this.rawPointBalance = rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public void setCashBalance(String cashBalance) {
+        this.cashBalance = cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public void setRawCashBalance(int rawCashBalance) {
+        this.rawCashBalance = rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(String walletType) {
+        this.walletType = walletType;
     }
 }

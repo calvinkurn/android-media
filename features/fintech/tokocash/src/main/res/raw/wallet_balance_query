@@ -25,4 +25,9 @@
       visibility
     }
   }
+  point_balance
+  raw_point_balance
+  cash_balance
+  raw_cash_balance
+  wallet_type
 }

@@ -101,7 +101,11 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
                 }
             }
             balanceTokoCash.setAbTags(abTags);
-
+            balanceTokoCash.setPointBalance(balanceTokoCashEntity.getPointBalance());
+            balanceTokoCash.setRawPointBalance(balanceTokoCashEntity.getRawPointBalance());
+            balanceTokoCash.setCashBalance(balanceTokoCashEntity.getCashBalance());
+            balanceTokoCash.setRawCashBalance(balanceTokoCashEntity.getRawCashBalance());
+            balanceTokoCash.setWalletType(balanceTokoCashEntity.getWalletType());
 
             return balanceTokoCash;
         }

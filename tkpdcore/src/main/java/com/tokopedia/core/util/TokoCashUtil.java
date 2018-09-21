@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /**
  * Created by nabillasabbaha on 11/13/17.
  */
-
+@Deprecated
 public class TokoCashUtil {
 
     public static DrawerTokoCash convertToViewModel(TokoCashData tokoCashData) {

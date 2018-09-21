@@ -48,6 +48,21 @@ public class BalanceTokoCashEntity {
     @SerializedName("action")
     @Expose
     private ActionEntity action;
+    @SerializedName("point_balance")
+    @Expose
+    private String pointBalance;
+    @SerializedName("raw_point_balance")
+    @Expose
+    private int rawPointBalance;
+    @SerializedName("cash_balance")
+    @Expose
+    private String cashBalance;
+    @SerializedName("raw_cash_balance")
+    @Expose
+    private int rawCashBalance;
+    @SerializedName("wallet_type")
+    @Expose
+    private String walletType;
 
     public Boolean getLinked() {
         return linked;
@@ -123,5 +138,25 @@ public class BalanceTokoCashEntity {
 
     public Integer getRawHoldBalance() {
         return rawHoldBalance;
+    }
+
+    public String getPointBalance() {
+        return pointBalance;
+    }
+
+    public int getRawPointBalance() {
+        return rawPointBalance;
+    }
+
+    public String getCashBalance() {
+        return cashBalance;
+    }
+
+    public int getRawCashBalance() {
+        return rawCashBalance;
+    }
+
+    public String getWalletType() {
+        return walletType;
     }
 }
