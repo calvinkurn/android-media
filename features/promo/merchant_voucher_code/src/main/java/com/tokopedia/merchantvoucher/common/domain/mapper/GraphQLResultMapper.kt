@@ -5,7 +5,6 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.merchantvoucher.common.data.GraphQLDataError
 import com.tokopedia.merchantvoucher.common.data.GraphQLResult
-import com.tokopedia.shop.common.graphql.domain.mapper.HasGraphQLResult
 
 import rx.Observable
 import rx.functions.Func1
