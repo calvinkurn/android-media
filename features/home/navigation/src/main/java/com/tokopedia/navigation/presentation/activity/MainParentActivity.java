@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.BottomNavigationView;
@@ -172,10 +174,18 @@ public class MainParentActivity extends BaseActivity implements
     protected void onStart() {
         super.onStart();
         if (presenter.isFirstTimeUser()) {
+            setDefaultShakeEnable();
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             finish();
         }
+    }
+
+    private void setDefaultShakeEnable() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(getString(R.string.pref_receive_shake), true);
+        editor.apply();
     }
 
     @Override
