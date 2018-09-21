@@ -48,11 +48,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
         <activity
-            android:name=".historytokocash.presentation.activity.HelpHistoryDetailActivity"
-            android:label="@string/tokocash"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White.PopupTransparent" />
-        <activity
             android:name=".historytokocash.presentation.activity.MoveToSaldoActivity"
             android:label="@string/tokocash"
             android:screenOrientation="portrait"

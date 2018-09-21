@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.tokocash.accountsetting.data.entity.OAuthInfoEntity;
 import com.tokopedia.tokocash.accountsetting.data.entity.RevokeTokoCashEntity;
 import com.tokopedia.tokocash.activation.data.entity.PendingCashbackEntity;
-import com.tokopedia.tokocash.historytokocash.data.entity.HelpHistoryTokoCashEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.TokoCashHistoryEntity;
 import com.tokopedia.tokocash.historytokocash.data.entity.WithdrawSaldoEntity;
 import com.tokopedia.tokocash.qrpayment.data.entity.InfoQrEntity;
@@ -31,10 +30,6 @@ import rx.Observable;
 public interface WalletApi {
 
     String IDENTIFIER = "identifier";
-
-    @Deprecated
-    @POST(WalletUrl.Wallet.POST_COMPLAINT)
-    Observable<Response<DataResponse<HelpHistoryTokoCashEntity>>> postHelpHistory(@Body Map<String, String> params);
 
     @POST
     Observable<Response<DataResponse<WithdrawSaldoEntity>>> withdrawSaldoFromTokocash(@Url String url,

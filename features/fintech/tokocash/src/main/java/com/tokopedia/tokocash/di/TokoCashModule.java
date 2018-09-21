@@ -22,9 +22,7 @@ import com.tokopedia.tokocash.balance.data.repository.BalanceRepository;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.historytokocash.data.repository.WalletRepository;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
-import com.tokopedia.tokocash.historytokocash.domain.GetReasonHelpDataUseCase;
 import com.tokopedia.tokocash.historytokocash.domain.MoveToSaldoUseCase;
-import com.tokopedia.tokocash.historytokocash.domain.PostHelpHistoryDetailUseCase;
 import com.tokopedia.tokocash.network.WalletTokenRefresh;
 import com.tokopedia.tokocash.network.api.TokoCashApi;
 import com.tokopedia.tokocash.network.api.WalletApi;
@@ -149,11 +147,6 @@ public class TokoCashModule {
     }
 
     @Provides
-    GetReasonHelpDataUseCase provideGetReasonHelpDataUseCase(WalletRepository walletRepository) {
-        return new GetReasonHelpDataUseCase(walletRepository);
-    }
-
-    @Provides
     GetInfoQrTokoCashUseCase provideGetInfoQrTokoCashUseCase(QrPaymentRepository qrPaymentRepository) {
         return new GetInfoQrTokoCashUseCase(qrPaymentRepository);
     }
@@ -184,12 +177,6 @@ public class TokoCashModule {
     @TokoCashScope
     GetPendingCasbackUseCase provideGetPendingCasbackUseCase(PendingCashbackRepository pendingCashbackRepository) {
         return new GetPendingCasbackUseCase(pendingCashbackRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    PostHelpHistoryDetailUseCase providePostHelpHistoryDetailUseCase(WalletRepository walletRepository) {
-        return new PostHelpHistoryDetailUseCase(walletRepository);
     }
 
     @Provides
