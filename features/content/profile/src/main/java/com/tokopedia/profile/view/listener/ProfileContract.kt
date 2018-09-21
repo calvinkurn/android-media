@@ -15,7 +15,7 @@ interface ProfileContract {
 
         fun followUnfollowUser(userId: Int, follow: Boolean)
     }
-    interface Presenter : CustomerPresenter<CustomerView> {
+    interface Presenter : CustomerPresenter<View> {
 
     }
 }
