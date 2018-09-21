@@ -136,6 +136,9 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
     public void renderData(DigitalBrowseMarketplaceViewModel marketplaceData) {
         this.digitalBrowseMarketplaceViewModel = marketplaceData;
 
+        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(
+                presenter.getPopularAnalyticsModelList(marketplaceData.getPopularBrandsList()));
+
         renderCategory(marketplaceData.getRowViewModelList());
         renderPopularBrands(marketplaceData.getPopularBrandsList());
     }
@@ -223,25 +226,18 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
 
     @Override
     public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
-        digitalBrowseAnalytics.eventPromoClickPopularBrand(viewModel.getId(),
-                viewModel.getName(), position + 1);
+        digitalBrowseAnalytics.eventPromoClickPopularBrand(
+                presenter.getPopularAnalyticsModel(viewModel, position));
 
         if (viewModel.getUrl() != null &&
                 RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
             RouteManager.route(getContext(), viewModel.getUrl());
         } else {
-            if (getActivity().getApplication() instanceof DigitalBrowseRouter
-                    ) {
+            if (getActivity().getApplication() instanceof DigitalBrowseRouter) {
                 ((DigitalBrowseRouter) getActivity().getApplication())
                         .goToWebview(getActivity(), viewModel.getUrl());
             }
         }
-    }
-
-    @Override
-    public void sendImpressionAnalytics(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
-        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(viewModel.getId(),
-                viewModel.getName(), position + 1);
     }
 
     @Override

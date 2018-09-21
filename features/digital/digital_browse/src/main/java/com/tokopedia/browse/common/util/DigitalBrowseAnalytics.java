@@ -2,6 +2,7 @@ package com.tokopedia.browse.common.util;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel;
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
 
 import java.util.ArrayList;
@@ -43,17 +44,18 @@ public class DigitalBrowseAnalytics {
                 "");
     }
 
-    public void eventPromoImpressionPopularBrand(long bannerId,
-                                                 String creativeName,
-                                                 int position) {
-        Object promotion = DataLayer.mapOf(
-                "id", bannerId,
-                "name", "/belanja - Brand Pilihan",
-                "creative", creativeName,
-                "position", position);
-
+    public void eventPromoImpressionPopularBrand(List<DigitalBrowsePopularAnalyticsModel> promotionDatas) {
         List<Object> promotions = new ArrayList<>();
-        promotions.add(promotion);
+
+        for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
+            Object promotion = DataLayer.mapOf(
+                    "id", promotionItem.getBannerId(),
+                    "name", "/belanja - Brand Pilihan",
+                    "creative", promotionItem.getBrandName(),
+                    "position", promotionItem.getPosition());
+
+            promotions.add(promotion);
+        }
 
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(
@@ -69,14 +71,12 @@ public class DigitalBrowseAnalytics {
         );
     }
 
-    public void eventPromoClickPopularBrand(long bannerId,
-                                            String creativeName,
-                                            int position) {
+    public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
         Object promotion = DataLayer.mapOf(
-                "id", bannerId,
+                "id", promotionItem.getBannerId(),
                 "name", "/belanja - Brand Pilihan",
-                "creative", creativeName,
-                "position", position);
+                "creative", promotionItem.getBrandName(),
+                "position", promotionItem.getPosition());
 
         List<Object> promotions = new ArrayList<>();
         promotions.add(promotion);
@@ -86,7 +86,7 @@ public class DigitalBrowseAnalytics {
                         "event", Event.CLICK_PROMO,
                         "eventCategory", GENERIC_CATEGORY,
                         "eventAction", Action.CLICK_BRAND_BELANJA,
-                        "eventLabel", creativeName,
+                        "eventLabel", promotionItem.getBrandName(),
                         "ecommerce", DataLayer.mapOf(
                                 "promoClick", DataLayer.mapOf(
                                         "promotions", DataLayer.listOf(promotions.toArray()))
