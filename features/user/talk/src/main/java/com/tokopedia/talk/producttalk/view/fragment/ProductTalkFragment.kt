@@ -103,11 +103,12 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
-            fragment.shopId = extras.getString("shop_id")
-            fragment.productId = extras.getString("product_id")
-            fragment.productPrice = extras.getString("product_price")
-            fragment.productName = extras.getString("prod_name")
-            fragment.productImage = MethodChecker.fromHtml(extras.getString("product_image")).toString()
+            fragment.shopId = extras.getString("shop_id", "")
+            fragment.productId = extras.getString("product_id", "")
+            fragment.productPrice = extras.getString("product_price", "")
+            fragment.productName = extras.getString("prod_name", "")
+            fragment.productImage = MethodChecker.fromHtml(extras.getString("product_image", ""))
+                    .toString()
             fragment.intentChat = extras.getParcelable("intent_chat")
             return fragment
         }
@@ -486,7 +487,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onChatClicked() {
-        startActivity(intentChat)
+        intentChat?.run {
+            startActivity(this)
+        }
     }
 
     override fun onGoToUserProfile(userId: String) {
@@ -540,7 +543,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
         }
 
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

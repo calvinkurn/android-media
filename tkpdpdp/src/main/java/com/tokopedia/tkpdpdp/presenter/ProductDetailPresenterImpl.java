@@ -163,7 +163,7 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void initGetRateEstimationUseCase(){
+    public void initGetRateEstimationUseCase() {
         getRateEstimationUseCase = new GetRateEstimationUseCase(new GraphqlUseCase());
     }
 
@@ -173,11 +173,12 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     }
 
     @Override
-    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain){
+    public void getCostEstimation(@NonNull Context context, float productWeight, String shopDomain) {
         getRateEstimationUseCase.execute(GetRateEstimationUseCase.createRequestParams(GraphqlHelper.loadRawString(context.getResources(), R.raw.gql_pdp_estimasi_ongkir), productWeight, shopDomain),
                 new Subscriber<RatesEstimationModel>() {
                     @Override
-                    public void onCompleted() { }
+                    public void onCompleted() {
+                    }
 
                     @Override
                     public void onError(Throwable throwable) {
@@ -345,8 +346,8 @@ public class ProductDetailPresenterImpl implements ProductDetailPresenter {
     @Override
     public void processToTalk(@NonNull Context context, @NonNull Bundle bundle) {
         UnifyTracking.eventPDPTalk();
-        Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context);
-        intent.putExtras(bundle);
+        Intent intent = ((PdpRouter) context.getApplicationContext()).getProductTalk(context,
+                bundle.getString("product_id", ""));
         viewListener.navigateToActivityRequest(intent,
                 ProductDetailFragment.REQUEST_CODE_TALK_PRODUCT);
     }

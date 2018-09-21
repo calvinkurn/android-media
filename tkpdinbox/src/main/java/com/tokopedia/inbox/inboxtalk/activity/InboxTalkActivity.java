@@ -45,6 +45,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+@Deprecated
 public class InboxTalkActivity extends BaseTemporaryDrawerActivity implements
         InboxTalkActivityView,
         NotificationReceivedListener,

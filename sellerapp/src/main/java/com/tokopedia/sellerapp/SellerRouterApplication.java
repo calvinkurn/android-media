@@ -73,6 +73,7 @@ import com.tokopedia.core.router.transactionmodule.sharedata.AddToCartResult;
 import com.tokopedia.core.share.DefaultShare;
 import com.tokopedia.core.shopinfo.activity.ShopDiscussionActivity;
 import com.tokopedia.core.shopinfo.limited.fragment.ShopTalkLimitedFragment;
+import com.tokopedia.core.shopinfo.models.talkmodel.ShopTalk;
 import com.tokopedia.core.util.AccessTokenRefresh;
 import com.tokopedia.core.util.AppWidgetUtil;
 import com.tokopedia.core.util.DeepLinkChecker;
@@ -172,6 +173,7 @@ import com.tokopedia.shop.page.view.activity.ShopPageActivity;
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity;
 import com.tokopedia.talk.common.TalkRouter;
 import com.tokopedia.talk.inboxtalk.view.activity.InboxTalkActivity;
+import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity;
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
@@ -1547,8 +1549,21 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public Intent getProductTalk(Context context) {
-        return InboxTalkActivity.Companion.createIntent(context);
+    public Intent getProductTalk(Context context, String productId) {
+        if (remoteConfig.getBoolean("sellerapp_is_enabled_new_talk", false))
+            return TalkProductActivity.Companion.createIntent(context);
+        else {
+            Bundle bundle = new Bundle();
+            bundle.putString("product_id", productId);
+            return new Intent(context, com.tokopedia.core.talk.talkproduct.activity
+                    .TalkProductActivity.class);
+        }
+    }
+
+    @Override
+    public Intent getShopTalkIntent(Context context, String shopId) {
+        return ShopTalkActivity.Companion.createIntent(context, shopId);
+
     }
 
     @Override

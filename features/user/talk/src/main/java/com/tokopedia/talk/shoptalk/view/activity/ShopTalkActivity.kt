@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.shoptalk.view.fragment.ShopTalkFragment
@@ -32,8 +33,6 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         const val EXTRA_SHOP_ID: String = "shopId"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
-        const val APP_LINK_EXTRA_SHOP_ATTRIBUTION = "tracker_attribution"
-
 
         open fun createIntent(context: Context,
                               shopId: String): Intent {
@@ -50,13 +49,11 @@ class ShopTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
             @DeepLink(ApplinkConst.SHOP_TALK)
             fun getCallingIntent(context: Context, extras: Bundle): Intent {
                 val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
+                val shopId = extras.getString(APP_LINK_EXTRA_SHOP_ID, "")
+                return (context.applicationContext as TalkRouter).getShopTalkIntent(context, shopId)
+                        .setData(uri.build())
+                        .putExtras(extras)
 
-                var bundle: Bundle = Bundle()
-                bundle.putAll(extras)
-                bundle.putString(EXTRA_SHOP_ID, extras.getString(APP_LINK_EXTRA_SHOP_ID))
-                bundle.putString(SHOP_ATTRIBUTION, extras.getString(APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                return Intent(context, ShopTalkActivity::class.java)
-                        .putExtras(bundle)
             }
 
         }
