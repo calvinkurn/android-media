@@ -13,17 +13,34 @@ import android.support.v4.content.ContextCompat;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
+
+import javax.inject.Inject;
 
 public class WithdrawPasswordActivity extends BaseSimpleActivity {
 
     public final static String BUNDLE_BANK = "bank";
     public final static String BUNDLE_WITHDRAW = "withdraw";
 
+    @Inject
+    WithdrawAnalytics analytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolbar();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        analytics.sendScreen(this, getScreenName());
+    }
+
+    @Override
+    public String getScreenName() {
+        return WithdrawAnalytics.SCREEN_WITHDRAW_PASSWORD;
     }
 
     @Override
@@ -61,5 +78,11 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
     @Override
     protected boolean isShowCloseButton() {
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        analytics.eventClickX();
+        super.onBackPressed();
     }
 }

@@ -12,17 +12,24 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by Steven on 7/24/18.
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
+
+    @Inject
+    WithdrawAnalytics analytics;
+
 
     int selectedItem;
     public interface OnBankClickListener {
@@ -139,6 +146,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         if(listBank.size()<4){
+                            analytics.eventClickAddAccount();
                             context.goToAddBank();
                         }else {
                             context.goToSettingBank();
@@ -153,6 +161,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 BankAccountViewModel thisItem = listBank.get(position);
 
                 View.OnClickListener l = (View v) -> {
+                    analytics.eventClickAccountBank();
                     changeItemSelected(position);
                 };
                 holder.itemView.setOnClickListener(l);

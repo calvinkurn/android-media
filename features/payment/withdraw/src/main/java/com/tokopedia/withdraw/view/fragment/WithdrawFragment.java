@@ -42,6 +42,7 @@ import com.tokopedia.settingbank.addeditaccount.view.activity.AddEditBankActivit
 import com.tokopedia.settingbank.addeditaccount.view.viewmodel.BankFormModel;
 import com.tokopedia.settingbank.banklist.view.activity.SettingBankActivity;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.WithdrawRouter;
 import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
@@ -98,6 +99,9 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Inject
     WithdrawPresenter presenter;
+
+    @Inject
+    WithdrawAnalytics analytics;
 
     @Override
     protected void initInjector() {
@@ -193,6 +197,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         withdrawAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                analytics.eventClickWithdrawalAll();
                 totalWithdrawal.setText(getArguments().getString(BUNDLE_TOTAL_BALANCE_INT, DEFAULT_TOTAL_BALANCE));
             }
         });
@@ -252,6 +257,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
             @Override
             public void onClick(View v) {
                 infoDialog.show();
+                analytics.eventClickInformasiPenarikanSaldo();
             }
         });
 
@@ -260,6 +266,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        analytics.eventClickCloseErrorMessage();
                         snackBarError.dismiss();
                     }
                 });
@@ -421,6 +428,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
     @Override
     public void showConfirmPassword() {
+        analytics.eventClickWithdrawal();
         Intent intent = new Intent(getActivity(), WithdrawPasswordActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString(WithdrawPasswordActivity.BUNDLE_WITHDRAW, totalWithdrawal.getText().toString());
