@@ -49,6 +49,7 @@ import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulat
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
@@ -247,6 +248,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void closeView() {
+
+    }
+
+    @Override
+    public void onWishlistCountLoaded(String wishlistCountText) {
 
     }
 
@@ -643,6 +649,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void refreshData() {
+
+    }
+
+    @Override
+    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
+
+    }
+
+    @Override
+    public void moveToEstimationDetail() {
 
     }
 

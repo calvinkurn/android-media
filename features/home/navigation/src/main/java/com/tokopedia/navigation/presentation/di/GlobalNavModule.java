@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -29,8 +30,8 @@ import dagger.Provides;
 @Module
 public class GlobalNavModule {
     @Provides
-    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase){
-        return new MainParentPresenter(getNotificationUseCase);
+    MainParentPresenter provideMainParentPresenter(GetDrawerNotificationUseCase getNotificationUseCase, UserSession userSession){
+        return new MainParentPresenter(getNotificationUseCase, userSession);
     }
 
     @Provides

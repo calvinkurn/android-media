@@ -8,10 +8,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
+import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -142,5 +144,19 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     @Override
     public int getSelectedCategoryId() {
         return getView().getSelectedCategoryId();
+    }
+
+    public String getCategoryName(ArrayList<CatalogCategory> catalogCategories, int selectedCategoryId) {
+        for (CatalogCategory each : catalogCategories) {
+            if (each == null) {
+                continue;
+            }
+
+            if (selectedCategoryId == each.getId()) {
+                return each.getName();
+            }
+        }
+
+        return "";
     }
 }

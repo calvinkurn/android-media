@@ -701,15 +701,6 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchWishlist(String label) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.HOME_WISHLIST,
-                AppEventTracking.Category.HOMEPAGE,
-                AppEventTracking.Action.WISHLIST_SEARCH_ITEM,
-                label
-        ).getEvent());
-    }
-
     public static void eventCartAbandon() {
         sendGTMEvent(new EventTracking(
                 AppEventTracking.Event.BACK_CLICK,
@@ -954,33 +945,6 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.BUY
-        ).getEvent());
-    }
-
-    public static void eventRemoveWishlist() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.WISHLIST,
-                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
-                AppEventTracking.Action.CLICK_REMOVE_WISHLIST,
-                ""
-        ).getEvent());
-    }
-
-    public static void eventClickCariEmptyWishlist() {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.WISHLIST,
-                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
-                AppEventTracking.Action.CLICK_EMPTY_SEARCH_WISHLIST,
-                ""
-        ).getEvent());
-    }
-
-    public static void eventClickCariWishlist(String query) {
-        sendGTMEvent(new EventTracking(
-                AppEventTracking.Event.WISHLIST,
-                AppEventTracking.Category.HOMEPAGE.toLowerCase(),
-                AppEventTracking.Action.CLICK_SEARCH_ITEM_WISHLIST,
-                query
         ).getEvent());
     }
 
