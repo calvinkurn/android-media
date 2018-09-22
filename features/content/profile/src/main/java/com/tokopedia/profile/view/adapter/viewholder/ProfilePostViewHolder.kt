@@ -29,12 +29,12 @@ class ProfilePostViewHolder(val v: View, val viewListener: ProfileContract.View)
         itemView.name.text = element.name
         itemView.time.text = element.time
 
-//        if (!TextUtils.isEmpty(element.info)) {
-//            itemView.info.text = element.info
-//            itemView.info.visibility = View.VISIBLE
-//        } else {
-//            itemView.info.visibility = View.GONE
-//        }
+        if (!TextUtils.isEmpty(element.info)) {
+            itemView.info.text = element.info
+            itemView.info.visibility = View.VISIBLE
+        } else {
+            itemView.info.visibility = View.GONE
+        }
 
         itemView.goToProductBtn.setOnClickListener {
             //TODO milhamj
@@ -60,6 +60,7 @@ class ProfilePostViewHolder(val v: View, val viewListener: ProfileContract.View)
         val viewPager = itemView.findViewById<WrapContentViewPager>(R.id.imageViewPager)
         adapter.setList(ArrayList(element.images))
         viewPager.setAdapter(adapter)
+        viewPager.offscreenPageLimit = adapter.count
         itemView.tabLayout.setupWithViewPager(viewPager)
     }
 }
