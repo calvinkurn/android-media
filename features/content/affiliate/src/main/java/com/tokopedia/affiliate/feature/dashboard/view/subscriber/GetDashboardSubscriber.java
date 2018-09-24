@@ -59,6 +59,7 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
         List<DashboardItemViewModel> itemList = new ArrayList<>();
         for (DashboardItemPojo pojo : pojoList) {
             DashboardItemViewModel item = new DashboardItemViewModel(
+                    pojo.getId(),
                     pojo.getImage(),
                     pojo.getName(),
                     pojo.getCommission(),

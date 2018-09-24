@@ -6,10 +6,6 @@ import com.tokopedia.affiliate.feature.dashboard.domain.usecase.GetDashboardUseC
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardSubscriber;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
-
-import javax.inject.Inject;
 
 /**
  * @author by yfsx on 13/09/18.
@@ -43,5 +39,12 @@ public class DashboardPresenter extends BaseDaggerPresenter<DashboardContract.Vi
         getDashboardLoadMoreUseCase.clearRequest();
         getDashboardLoadMoreUseCase.addRequest(getDashboardLoadMoreUseCase.getRequest());
         getDashboardLoadMoreUseCase.execute(new GetDashboardLoadMoreSubscriber(mainView));
+    }
+
+    @Override
+    public void detachView() {
+        super.detachView();
+        getDashboardUseCase.unsubscribe();
+        getDashboardLoadMoreUseCase.unsubscribe();
     }
 }

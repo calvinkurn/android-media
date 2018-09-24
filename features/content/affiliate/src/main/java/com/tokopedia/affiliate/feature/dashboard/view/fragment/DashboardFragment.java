@@ -14,13 +14,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
-//import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
-import com.tokopedia.affiliate.feature.dashboard.di.DashboardModule;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
@@ -32,7 +31,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardVi
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
+//import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
 
 /**
  * @author by yfsx on 13/09/18.
@@ -108,7 +107,10 @@ public class DashboardFragment
 
     @Override
     public void onRefresh() {
-        loadFirstData();
+        if (!swipeToRefresh.isRefreshing()) {
+            swipeToRefresh.setRefreshing(true);
+            loadFirstData();
+        }
     }
 
     @Override
@@ -124,7 +126,6 @@ public class DashboardFragment
             progressBar.setVisibility(View.GONE);
         }
     }
-
 
     private void initView() {
         initDefaultValue();
@@ -159,7 +160,12 @@ public class DashboardFragment
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
-                if (isCanLoadMore && totalItemCount<= lastVisibleItemPos + ITEM_COUNT){
+                if (isCanLoadMore
+                        && !TextUtils.isEmpty(cursor)
+                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
+                    isCanLoadMore = false;
+                    swipeToRefresh.setRefreshing(true);
+                    adapter.addElement(new LoadingModel());
                     presenter.loadMoreDashboardItem(cursor);
                 }
             }
@@ -178,17 +184,18 @@ public class DashboardFragment
 
     @Override
     public void onSuccessGetDashboardItem(DashboardHeaderViewModel header, List<DashboardItemViewModel> itemList, String cursor) {
+        if (swipeToRefresh.isRefreshing()) swipeToRefresh.setRefreshing(false);
         if (itemList.size() == 0) {
             EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel();
             adapter.addElement(emptyDashboardViewModel);
             adapter.notifyDataSetChanged();
             isCanLoadMore = false;
         } else {
-            isCanLoadMore = true;
             adapter.addElement(header);
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
             this.cursor = cursor;
+            isCanLoadMore = true;
         }
     }
 
@@ -205,11 +212,17 @@ public class DashboardFragment
 
     @Override
     public void onSuccessLoadMoreDashboardItem(List<DashboardItemViewModel> itemList, String cursor) {
-        if (TextUtils.isEmpty(cursor)) isCanLoadMore = false;
         adapter.hideLoading();
         adapter.addElement(itemList);
         adapter.notifyDataSetChanged();
-        this.cursor = cursor;
+        if (TextUtils.isEmpty(cursor)) {
+            isCanLoadMore = false;
+            this.cursor = "";
+        } else {
+            isCanLoadMore = true;
+            this.cursor = cursor;
+        }
+
     }
 
     @Override
@@ -220,5 +233,11 @@ public class DashboardFragment
                 () -> {
                     presenter.loadMoreDashboardItem(cursor);
         });
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
     }
 }
