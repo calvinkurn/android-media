@@ -38,6 +38,11 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
         super.onViewCreated(view, savedInstanceState)
     }
 
+    override fun onDestroy() {
+        presenter.detachView()
+        super.onDestroy()
+    }
+
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
