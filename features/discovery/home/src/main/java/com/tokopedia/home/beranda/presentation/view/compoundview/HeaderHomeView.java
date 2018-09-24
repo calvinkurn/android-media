@@ -15,11 +15,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeCategoryListener;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 
 /**
  * @author anggaprasetiyo on 11/12/17.
@@ -205,7 +205,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashProgressBar.setVisibility(VISIBLE);
             tokocashActionContainer.setVisibility(GONE);
         } else {
-            if (homeHeaderWalletAction.getWalletType().equalsIgnoreCase("ovo")) {
+            if (!TextUtils.isEmpty(homeHeaderWalletAction.getWalletType()) && homeHeaderWalletAction.getWalletType().equals("OVO")) {
                 successRenderOvo(homeHeaderWalletAction);
             } else {
                 successRenderTokoCash(homeHeaderWalletAction);
@@ -281,6 +281,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
             imageInfoBtn.setVisibility(GONE);
         } else {
+            tvTitleTokocash.setText("OVO");
             tvTitleTokocash.setTypeface(null, Typeface.NORMAL);
             tvActionTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setVisibility(GONE);
@@ -291,9 +292,8 @@ public class HeaderHomeView extends BaseCustomView {
                 if (headerViewModel.getCashBackData().getAmount() > 0) {
                     tvTitleTokocash.setText("(+ " + headerViewModel.getCashBackData().getAmountText() + ")");
                 }
-                else {
-                    tvTitleTokocash.setText("OVO");
-                }
+            } else {
+                listener.onRequestPendingCashBack();
             }
         }
     }
@@ -324,7 +324,6 @@ public class HeaderHomeView extends BaseCustomView {
             public void onClick(View view) {
                 listener.actionInfoPendingCashBackTokocash(
                         headerViewModel.getCashBackData(),
-                        homeHeaderWalletAction.getRedirectUrlActionButton(),
                         homeHeaderWalletAction.getAppLinkActionButton()
                 );
             }
@@ -341,9 +340,7 @@ public class HeaderHomeView extends BaseCustomView {
                     UnifyTracking.eventTokoCashActivateClick();
                 }
 
-                listener.actionAppLinkWalletHeader(
-                        homeHeaderWalletAction.getRedirectUrlActionButton(),
-                        homeHeaderWalletAction.getAppLinkActionButton()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkActionButton()
                 );
             }
         };
@@ -360,9 +357,7 @@ public class HeaderHomeView extends BaseCustomView {
                     UnifyTracking.eventTokoCashCheckSaldoClick();
                 }
 
-                listener.actionAppLinkWalletHeader(
-                        homeHeaderWalletAction.getRedirectUrlBalance(),
-                        homeHeaderWalletAction.getAppLinkBalance()
+                listener.actionAppLinkWalletHeader(homeHeaderWalletAction.getAppLinkBalance()
                 );
             }
         };
