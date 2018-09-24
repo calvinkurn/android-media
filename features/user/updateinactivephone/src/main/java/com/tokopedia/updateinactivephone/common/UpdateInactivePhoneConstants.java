@@ -15,6 +15,7 @@ public interface UpdateInactivePhoneConstants {
         String ID = "id";
         String TOKEN = "token";
         String SERVER_ID = "server_id";
+        String IMAGE_UPLOAD_URL = "image_upload_url";
         String RESOLUTION = "resolution";
         String PARAM_KTP_IMAGE_PATH = "ktp_image_path";
         String PARAM_BANK_BOOK_IMAGE_PATH = "account_image_path";

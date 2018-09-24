@@ -30,10 +30,6 @@ public class CatalogChipAdapter extends RecyclerView.Adapter<CatalogChipAdapter.
     public CatalogChipAdapter(CatalogListingPresenter presenter, List<CatalogCategory> items) {
         this.mPresenter = presenter;
         this.mItems = items;
-        for (int i = 0; i < mItems.size(); i++) {
-            //Converting seconds to milliseconds
-            mItems.get(i).setTimeWithCurrentMs(mItems.get(i).getTimeRemainingSeconds() * 1000 * 60 + System.currentTimeMillis());
-        }
     }
 
     @Override

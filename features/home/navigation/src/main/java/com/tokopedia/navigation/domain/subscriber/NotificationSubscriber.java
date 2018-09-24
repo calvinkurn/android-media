@@ -27,6 +27,10 @@ public class NotificationSubscriber extends Subscriber<NotificationEntity> {
     public void onNext(NotificationEntity notificationEntity) {
         if (notificationEntity != null)
             this.mainParentView.renderNotification(
-                NotificationMapper.notificationMapper(notificationEntity.getNotifications()));
+                NotificationMapper.notificationMapper(
+                        notificationEntity.getNotifications(),
+                        notificationEntity.getNotifcenterUnread()
+                )
+            );
     }
 }

@@ -65,8 +65,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
         recycler_view.addItemDecoration(DividerItemDecoration(activity))
         recycler_view.isNestedScrollingEnabled = false
 
-        shipping_weight.text = getString(R.string.rate_est_detail_weight_fmt, DecimalFormat("#.####").format(productWeight),
-                if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit)
+        shipping_weight.text = DecimalFormat("#.####").format(productWeight) + " " + if (productWeightUnit.toLowerCase() == "gr") "gram" else productWeightUnit
 
         getCostEstimation()
     }
@@ -104,21 +103,25 @@ class RatesEstimationDetailFragment : BaseDaggerFragment(), RatesEstimationDetai
     override fun onSuccesLoadRateEstimaion(ratesEstimationModel: RatesEstimationModel) {
         val address = ratesEstimationModel.address
         val ratesEstimation = ratesEstimationModel.rates
+        val shop = ratesEstimationModel.shop
 
-        shipping_destination.text = getString(R.string.rate_est_detail_dest_fmt, ratesEstimation.texts.textDestination)
+        shipping_destination.text = shop.districtName
         val title = userSession.name
         val spannableString = SpannableString(title)
         spannableString.setSpan(StyleSpan(Typeface.BOLD), 0, userSession.name.length, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE)
         shipping_receiver_name.text = spannableString
-        shipping_receiver_address.text = String.format("%s\n%s", address.phone,
-                "${address.address}, ${address.districtName}, ${address.cityName}, ${address.provinceName}, ${address.postalCode}")
+        if(address.phone.isNotEmpty()) {
+            shipping_receiver_phone.visibility = View.VISIBLE
+            shipping_receiver_phone.text = address.phone
+        }
+        shipping_receiver_address.text = "${address.address}, ${address.districtName}, ${address.provinceName}"
         adapter.updateShippingServices(ratesEstimation.attributes)
         setViewState(VIEW_CONTENT)
     }
 
     companion object {
-        private val VIEW_CONTENT = 1
-        private val VIEW_LOADING = 2
+        private const val VIEW_CONTENT = 1
+        private const val VIEW_LOADING = 2
 
         fun createInstance(shopDomain: String, productWeight: Float, productWeightUnit: String) = RatesEstimationDetailFragment().apply {
             arguments = Bundle().apply {

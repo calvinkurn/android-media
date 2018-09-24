@@ -1,0 +1,24 @@
+{
+  tokopoints {
+    popupNotif(type: "main") {
+      title
+      text
+      imageURL
+      buttonText
+      buttonURL
+      appLink
+      notes
+      sender
+      catalog {
+        title
+        subtitle
+        points
+        thumbnailURL
+        thumbnailURLMobile
+        imageURL
+        imageURLMobile
+        expired
+      }
+    }
+  }
+}
