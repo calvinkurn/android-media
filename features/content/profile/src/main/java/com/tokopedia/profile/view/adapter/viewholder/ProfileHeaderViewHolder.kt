@@ -48,26 +48,37 @@ class ProfileHeaderViewHolder(val v: View, val viewListener: ProfileContract.Vie
             }
         } else {
             itemView.kolBadge.visibility = View.GONE
-            itemView.followers.visibility = View.GONE
+            if (element.isOwner) {
+                itemView.followers.visibility = View.VISIBLE
+                itemView.followers.text = getFollowersText(element)
+                itemView.followers.movementMethod = LinkMovementMethod.getInstance()
+            } else {
+                itemView.followers.visibility = View.GONE
+            }
         }
     }
 
     private fun getFollowersText(element: ProfileHeaderViewModel): SpannableString {
-        val followers = String.format(
-                getString(R.string.profile_followers_number),
-                element.followers
-        )
+        val spannableString: SpannableString
         val following = String.format(
                 getString(R.string.profile_following_number),
                 element.following
         )
-        val followersAndFollowing = String.format(
-                getString(R.string.profile_followers_and_following),
-                followers,
-                following
-        )
-        val spannableString = SpannableString(followersAndFollowing)
-        val goToFollowing = object: ClickableSpan() {
+        if (element.isKol) {
+            val followers = String.format(
+                    getString(R.string.profile_followers_number),
+                    element.followers
+            )
+            val followersAndFollowing = String.format(
+                    getString(R.string.profile_followers_and_following),
+                    followers,
+                    following
+            )
+            spannableString = SpannableString(followersAndFollowing)
+        } else {
+            spannableString = SpannableString(following)
+        }
+        val goToFollowing = object : ClickableSpan() {
             override fun onClick(p0: View?) {
                 viewListener.goToFollowing(element.userId)
             }

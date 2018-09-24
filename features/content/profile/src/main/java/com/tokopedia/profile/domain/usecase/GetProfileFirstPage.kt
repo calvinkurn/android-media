@@ -39,7 +39,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         "1.5M",
                         "131",
                         13,
-                        true,
+                        false,
                         false,
                         true
                 )
@@ -60,7 +60,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         "",
                         0,
                         imageList,
-                        true,
+                        false,
                         false
                 )
         )
@@ -75,7 +75,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         "Main gak ya?",
                         0,
                         imageList,
-                        true,
+                        false,
                         true
                 )
         )
@@ -92,7 +92,7 @@ class GetProfileFirstPage @Inject constructor(val getProfileHeaderUseCase: GetPr
                         "Yuk main yuk",
                         0,
                         imageList,
-                        true,
+                        false,
                         true
                 )
         )

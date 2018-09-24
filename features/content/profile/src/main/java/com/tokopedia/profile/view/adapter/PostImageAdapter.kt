@@ -34,7 +34,7 @@ class PostImageAdapter: PagerAdapter() {
                 false
         )
         val imageView = view.findViewById<ImageView>(R.id.image)
-        val imageCardView = view.findViewById<CardView>(R.id.imageCardView)
+//        val imageCardView = view.findViewById<CardView>(R.id.imageCardView)
         val imageUrl = imageList[position]
 
         imageView.viewTreeObserver.addOnGlobalLayoutListener(
@@ -45,24 +45,10 @@ class PostImageAdapter: PagerAdapter() {
 
                         imageView.maxHeight = imageView.width
                         imageView.requestLayout()
-
-                        imageCardView.layoutParams= ConstraintLayout.LayoutParams(
-                                imageView.width,
-                                imageView.height
-                        )
-                        imageCardView.requestLayout()
                     }
                 }
         )
-        ImageHandler.loadImageWithTarget(
-                container.context, imageUrl,
-                object : SimpleTarget<Bitmap>() {
-                    override fun onResourceReady(resource: Bitmap,
-                                                 glideAnimation: GlideAnimation<in Bitmap>) {
-                        imageView.setImageBitmap(resource)
-                    }
-                }
-        )
+        ImageHandler.loadImageRounded2(imageView.context, imageView, imageUrl)
         container.addView(view)
         return view
     }
