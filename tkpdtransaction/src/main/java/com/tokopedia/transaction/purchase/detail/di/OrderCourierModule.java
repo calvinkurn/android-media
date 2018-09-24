@@ -1,5 +1,8 @@
 package com.tokopedia.transaction.purchase.detail.di;
 
+import android.content.Context;
+
+import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
 import com.tokopedia.transaction.network.MyShopOrderActService;
@@ -7,6 +10,8 @@ import com.tokopedia.transaction.purchase.detail.domain.OrderCourierRepository;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderCourierInteractorImpl;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenterImpl;
+import com.tokopedia.transaction.purchase.utils.TransactionTrackingUtil;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -72,6 +77,15 @@ public class OrderCourierModule {
     @OrderCourierScope
     OrderCourierPresenterImpl provideOrderCourierPresenter() {
         return new OrderCourierPresenterImpl(provideOrderCourierInteractor());
+    }
+
+    @Provides
+    @OrderCourierScope
+    TransactionTrackingUtil provideTransactionTrackingUtil(@ApplicationContext Context context){
+        if(context instanceof ITransactionOrderDetailRouter) {
+            return new TransactionTrackingUtil((ITransactionOrderDetailRouter)context);
+        }
+        return null;
     }
 
 }

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -28,6 +29,7 @@ import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.ListCour
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderCourierPresenterImpl;
 import com.tokopedia.transaction.purchase.listener.ToolbarChangeListener;
+import com.tokopedia.transaction.purchase.utils.TransactionTrackingUtil;
 
 import javax.inject.Inject;
 
@@ -62,6 +64,9 @@ public class ConfirmShippingActivity extends TActivity
 
     @Inject
     OrderCourierPresenterImpl presenter;
+
+    @Inject
+    private TransactionTrackingUtil transactionTrackingUtil;
 
     public static Intent createInstance(Context context, OrderDetailData data) {
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
@@ -152,6 +157,7 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onSuccessConfirm(String successMessage) {
+        transactionTrackingUtil.sendTrackerOnSuccessConfirmShipping();
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
         //TODO REMOVE IF BUGGY
         setResult(Activity.RESULT_OK);
@@ -180,6 +186,12 @@ public class ConfirmShippingActivity extends TActivity
     @Override
     public void onShowError(String errorMessage) {
         NetworkErrorHelper.showSnackbar(this, errorMessage);
+    }
+
+    @Override
+    public void onShowErrorConfirmShipping(String message) {
+        transactionTrackingUtil.sendTrackerOnFailedConfirmShipping();
+        onShowError(message);
     }
 
     @Override
@@ -238,6 +250,7 @@ public class ConfirmShippingActivity extends TActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                transactionTrackingUtil.sendTrackerOnScanBarcodeClick();
                 ConfirmShippingActivityPermissionsDispatcher
                         .onScanBarcodeWithCheck(ConfirmShippingActivity.this);
             }
@@ -285,7 +298,11 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        barcodeEditText.setText(CommonUtils.getBarcode(requestCode, resultCode, data));
+        String barcode = CommonUtils.getBarcode(requestCode, resultCode, data);
+        if(!TextUtils.isEmpty(barcode)){
+            transactionTrackingUtil.sendTrackerOnResultScanBarcode();
+        }
+        barcodeEditText.setText(barcode);
         super.onActivityResult(requestCode, resultCode, data);
     }
 
