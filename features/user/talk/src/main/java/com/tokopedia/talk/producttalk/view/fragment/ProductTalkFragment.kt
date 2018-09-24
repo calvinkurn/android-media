@@ -330,25 +330,29 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
-        context?.run {
-            val listMenu = ArrayList<Menus.ItemMenus>()
-            if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_delete_talk)))
-            if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_unfollow_talk)))
-            if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_follow_talk)))
-            if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_report_talk)))
+        if (presenter.isLoggedIn()) {
+            context?.run {
+                val listMenu = ArrayList<Menus.ItemMenus>()
+                if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_delete_talk)))
+                if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_unfollow_talk)))
+                if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_follow_talk)))
+                if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_report_talk)))
 
-            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-            bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
-            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
+                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+                bottomMenu.itemMenuList = listMenu
+                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+                bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                    onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
+                }
+                bottomMenu.show()
             }
-            bottomMenu.show()
+        } else {
+            goToLogin()
         }
     }
 
@@ -427,25 +431,30 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
-        context?.run {
-            val listMenu = ArrayList<Menus.ItemMenus>()
-            if (menu.allowReport) {
-                listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_report_comment)))
-            }
-            if (menu.allowDelete) {
-                listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_delete_comment)))
-            }
+        if (presenter.isLoggedIn()) {
 
-            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-            bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
-            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+            context?.run {
+                val listMenu = ArrayList<Menus.ItemMenus>()
+                if (menu.allowReport) {
+                    listMenu.add(Menus.ItemMenus(getString(R.string
+                            .menu_report_comment)))
+                }
+                if (menu.allowDelete) {
+                    listMenu.add(Menus.ItemMenus(getString(R.string
+                            .menu_delete_comment)))
+                }
+
+                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+                bottomMenu.itemMenuList = listMenu
+                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+                bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                    onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+                }
+                bottomMenu.show()
             }
-            bottomMenu.show()
+        } else {
+            goToLogin()
         }
     }
 
