@@ -3,21 +3,22 @@ package com.tokopedia.gm.subscribe.membership.analytic
 object GmSubscribeMembershipTrackingConstant {
 
     //event
+    const val ACTION_GM_SUBSCRIBE_AUTO_EXTEND = "clickGoldMerchant"
 
     //category
-    val GM_SUBSCRIBE_AUTO_EXTEND = "gold merchant - auto extend"
+    const val CATEGORY_GM_SUBSCRIBE_AUTO_EXTEND = "gold merchant - auto extend"
 
     //action
-    val CLICK_TOGGLE = "click toggle "
-    val CLICK_EXTEND = "click - "
-    val CLICK_SUBSCRIBE = "click subscribe - "
-    val CLICK_LEARN_MORE = "click - learn more"
+    const val CLICK_TOGGLE = "click toggle "
+    const val CLICK_EXTEND = "click - "
+    const val CLICK_SUBSCRIBE = "click subscribe - "
+    const val CLICK_LEARN_MORE = "click - learn more"
 
     //label
 
     //key
-    val EVENT = "event"
-    val EVENT_CATEGORY = "eventCategory"
-    val EVENT_ACTION = "eventAction"
-    val EVENT_LABEL = "eventLabel"
+    const val EVENT = "event"
+    const val EVENT_CATEGORY = "eventCategory"
+    const val EVENT_ACTION = "eventAction"
+    const val EVENT_LABEL = "eventLabel"
 }

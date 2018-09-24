@@ -27,11 +27,13 @@
                 android:text="@string/shop_settings_membership_label" />
 
             <TextView
+                android:id="@+id/tvManageGmSubscribe"
                 style="@style/TextView.Title.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingRight="@dimen/dp_20"
-                android:text="@string/label_manage" />
+                android:text="@string/label_manage"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

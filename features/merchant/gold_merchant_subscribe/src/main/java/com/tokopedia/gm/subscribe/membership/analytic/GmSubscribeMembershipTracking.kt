@@ -6,7 +6,7 @@ import java.util.HashMap
 class GmSubscribeMembershipTracking (private val gmSubscribeModuleRouter: GmSubscribeModuleRouter){
 
     private fun eventGmMembershipSubscribe(action: String) {
-        val eventMap = createEventMap("", GmSubscribeMembershipTrackingConstant.GM_SUBSCRIBE_AUTO_EXTEND, action, "")
+        val eventMap = createEventMap(GmSubscribeMembershipTrackingConstant.ACTION_GM_SUBSCRIBE_AUTO_EXTEND, GmSubscribeMembershipTrackingConstant.CATEGORY_GM_SUBSCRIBE_AUTO_EXTEND, action, "")
         gmSubscribeModuleRouter.sendEventTrackingGmSubscribe(eventMap)
     }
 

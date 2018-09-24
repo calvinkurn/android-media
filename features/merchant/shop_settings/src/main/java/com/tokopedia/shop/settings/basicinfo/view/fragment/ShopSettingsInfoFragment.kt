@@ -348,7 +348,7 @@ class ShopSettingsInfoFragment : BaseDaggerFragment(), ShopSettingsInfoPresenter
             tvMembershipName.text = getString(R.string.label_gold_merchant)
             tvMembershipDescription.text = getString(R.string.valid_until_x,
                     toReadableString(FORMAT_DATE, shopBasicDataModel.expired ?: ""))
-
+            tvManageGmSubscribe.visibility = View.VISIBLE
             vgMembershipContainer.setOnClickListener { navigateToAboutGM() }
         }
     }
