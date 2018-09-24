@@ -38,7 +38,9 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
         if (view != null) {
             if (graphqlResponse != null && graphqlResponse.getData(GetWishlistResponse.class) != null) {
                 GetWishlistResponse getWishlistResponse = graphqlResponse.getData(GetWishlistResponse.class);
-                if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null) {
+                if (getWishlistResponse != null && getWishlistResponse.getGqlWishList() != null &&
+                        getWishlistResponse.getGqlWishList().getWishlistDataList() != null &&
+                        getWishlistResponse.getGqlWishList().getWishlistDataList().size() > 0) {
                     presenter.setWishListViewModels(getWishlistResponse.getGqlWishList().getWishlistDataList());
                     view.renderHasWishList();
                 } else {

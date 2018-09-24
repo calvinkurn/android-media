@@ -878,16 +878,6 @@ public class CartListPresenter implements ICartListPresenter {
     }
 
     @Override
-    public ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData) {
-        return ProductPass.Builder.aProductPass()
-                .setProductId(originData.getProductId())
-                .setProductImage(originData.getProductImage())
-                .setProductName(originData.getProductName())
-                .setProductPrice(originData.getPriceFormatted())
-                .build();
-    }
-
-    @Override
     public Map<String, Object> generateCartDataAnalytics(CartItemData removedCartItem, String enhancedECommerceAction) {
         List<CartItemData> cartItemDataList = new ArrayList<>();
         return generateCartDataAnalytics(cartItemDataList, enhancedECommerceAction);

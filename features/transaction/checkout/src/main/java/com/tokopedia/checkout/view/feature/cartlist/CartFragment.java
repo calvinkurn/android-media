@@ -25,7 +25,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
@@ -479,9 +478,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         sendAnalyticsOnClickProductNameCartItem(cartItemHolderData.getCartItemData().getOriginData().getProductName());
         navigateToActivity(
                 checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                        dPresenter.generateProductPassProductDetailPage(
-                                cartItemHolderData.getCartItemData().getOriginData()
-                        )
+                        cartItemHolderData.getCartItemData().getOriginData().getProductId()
                 ));
     }
 

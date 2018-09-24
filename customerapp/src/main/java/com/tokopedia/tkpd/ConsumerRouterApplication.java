@@ -256,6 +256,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -1889,6 +1890,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent checkoutModuleRouterGetRecentViewIntent() {
+        return RecentViewActivity.newInstance(this);
+    }
+
+    @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
@@ -1933,8 +1939,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass) {
-        return ProductInfoActivity.createInstance(getAppContext(), productPass);
+    public Intent checkoutModuleRouterGetProductDetailIntent(String productId) {
+        return ProductInfoActivity.createInstance(this, productId);
     }
 
     @Override

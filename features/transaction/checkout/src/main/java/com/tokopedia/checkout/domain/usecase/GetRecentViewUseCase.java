@@ -1,14 +1,14 @@
-package com.tokopedia.wishlist.common.usecase;
+package com.tokopedia.checkout.domain.usecase;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.checkout.R;
+import com.tokopedia.checkout.domain.datamodel.recentview.GqlRecentViewResponse;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
-import com.tokopedia.wishlist.common.R;
-import com.tokopedia.wishlist.common.response.GetWishlistResponse;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,36 +16,31 @@ import java.util.Map;
 import rx.Subscriber;
 
 /**
- * Created by Irfan Khoirul on 20/09/18.
+ * Created by Irfan Khoirul on 21/09/18.
  */
 
-public class GetWishlistUseCase {
+public class GetRecentViewUseCase {
 
-    private static final String PAGE = "page";
-    private static final String COUNT = "count";
-    private static final int DEFAULT_PAGE = 1;
-    private static final int DEFAULT_COUNT = 2;
+    private static final String USER_ID = "userID";
 
     private final Context context;
     private GraphqlUseCase graphqlUseCase;
 
-    public GetWishlistUseCase(Context context) {
+    public GetRecentViewUseCase(Context context) {
         GraphqlClient.init(context);
         graphqlUseCase = new GraphqlUseCase();
         this.context = context;
     }
 
-    public void createObservable(Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
+    public void createObservable(int userId, Subscriber<GraphqlResponse> graphqlResponseSubscriber) {
 
         graphqlUseCase.clearRequest();
         Map<String, Object> variables = new HashMap<>();
-
-        variables.put(PAGE, DEFAULT_PAGE);
-        variables.put(COUNT, DEFAULT_COUNT);
+        variables.put(USER_ID, userId);
 
         GraphqlRequest graphqlRequest = new GraphqlRequest(
-                GraphqlHelper.loadRawString(context.getResources(), R.raw.query_get_wishlist),
-                GetWishlistResponse.class,
+                GraphqlHelper.loadRawString(context.getResources(), R.raw.recent_view_query),
+                GqlRecentViewResponse.class,
                 variables);
 
         graphqlUseCase.addRequest(graphqlRequest);

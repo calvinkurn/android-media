@@ -8,12 +8,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.TypedValue;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,12 +22,14 @@ import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.domain.datamodel.cartlist.CartListData;
+import com.tokopedia.checkout.domain.datamodel.recentview.RecentView;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.common.base.BaseCheckoutFragment;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveView;
 import com.tokopedia.checkout.view.compoundview.ToolbarRemoveWithBackView;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
+import com.tokopedia.checkout.view.feature.emptycart.adapter.RecentViewAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.adapter.WishlistAdapter;
 import com.tokopedia.checkout.view.feature.emptycart.di.DaggerEmptyCartComponent;
 import com.tokopedia.checkout.view.feature.emptycart.di.EmptyCartComponent;
@@ -57,10 +57,12 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
  */
 
 public class EmptyCartFragment extends BaseCheckoutFragment
-        implements EmptyCartContract.View, TopAdsItemClickListener, WishlistAdapter.ActionListener {
+        implements EmptyCartContract.View, TopAdsItemClickListener, WishlistAdapter.ActionListener,
+        RecentViewAdapter.ActionListener {
 
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
+    private static final int REQUEST_CODE_ROUTE_RECENT_VIEW = 321;
 
     public static final String ARG_AUTO_APPLY_MESSAGE = "ARG_AUTO_APPLY_MESSAGE";
 
@@ -75,9 +77,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private RelativeLayout rlWishList;
     private TextViewCompat tvWishListSeeAll;
     private RecyclerView rvWishList;
+    private RelativeLayout rlLastSeen;
+    private TextView tvLastSeenSeeAll;
+    private RecyclerView rvLastSeen;
 
     private boolean isToolbarWithBackButton = true;
     private WishlistAdapter wishlistAdapter;
+    private RecentViewAdapter recentViewAdapter;
 
     @Inject
     UserSession userSession;
@@ -176,10 +182,21 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         rlWishList = view.findViewById(R.id.rl_wish_list);
         tvWishListSeeAll = view.findViewById(R.id.tv_wish_list_see_all);
         rvWishList = view.findViewById(R.id.rv_wish_list);
+        rlLastSeen = view.findViewById(R.id.rl_last_seen);
+        tvLastSeenSeeAll = view.findViewById(R.id.tv_last_seen_see_all);
+        rvLastSeen = view.findViewById(R.id.rv_last_seen);
+
         rvWishList.setNestedScrollingEnabled(false);
+        rvLastSeen.setNestedScrollingEnabled(false);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
-        tvWishListSeeAll.setOnClickListener(v -> onShowAllWishListClicked());
+        tvWishListSeeAll.setOnClickListener(v -> startActivityForResult(
+                checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
+                REQUEST_CODE_ROUTE_WISHLIST)
+        );
+        tvLastSeenSeeAll.setOnClickListener(v -> startActivityForResult(
+                checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
+                REQUEST_CODE_ROUTE_RECENT_VIEW));
 
         String autoApplyMessage = null;
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
@@ -190,14 +207,19 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderEmptyCart(String autoApplyMessage) {
-        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int deviceWidth = displayMetrics.widthPixels;
-        double itemWidth = deviceWidth / 2.0f;
+        double itemWidth = getItemWidth();
 
         renderAutoApplyPromo(autoApplyMessage);
         renderTopAds();
         renderWishList((int) itemWidth);
+        renderRecentView((int) itemWidth);
+    }
+
+    private double getItemWidth() {
+        DisplayMetrics displayMetrics = getActivity().getResources().getDisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int deviceWidth = displayMetrics.widthPixels;
+        return (double) (deviceWidth / 2.0f);
     }
 
     private void renderWishList(int imageWidth) {
@@ -217,6 +239,25 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void renderHasNoWishList() {
         rlWishList.setVisibility(View.GONE);
+    }
+
+    private void renderRecentView(int imageWidth) {
+        presenter.processGetRecentViewData(Integer.parseInt(userSession.getUserId()));
+        recentViewAdapter = new RecentViewAdapter(presenter, this, imageWidth);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        rvLastSeen.setLayoutManager(gridLayoutManager);
+        rvLastSeen.setAdapter(recentViewAdapter);
+    }
+
+    @Override
+    public void renderHasRecentView() {
+        rlLastSeen.setVisibility(View.VISIBLE);
+        recentViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void renderHasNoRecentView() {
+        rlLastSeen.setVisibility(View.GONE);
     }
 
     private void renderAutoApplyPromo(String autoApplyMessage) {
@@ -390,29 +431,23 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onItemWishListClicked(Wishlist wishlist) {
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
-                presenter.generateProductPassProductDetailPage(wishlist)
+                wishlist.getId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
-    }
-
-    public void onShowAllWishListClicked() {
-        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
-                REQUEST_CODE_ROUTE_WISHLIST
-        );
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        switch (requestCode) {
-            case REQUEST_CODE_ROUTE_WISHLIST:
-                onResultFromRequestCodeWishList();
-                break;
+        if (requestCode == REQUEST_CODE_ROUTE_WISHLIST || requestCode == REQUEST_CODE_ROUTE_RECENT_VIEW) {
+            presenter.processInitialGetCartData();
         }
     }
 
-    private void onResultFromRequestCodeWishList() {
-        presenter.processInitialGetCartData();
+    @Override
+    public void onItemRecentViewClicked(RecentView recentView) {
+        startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
+                recentView.getProductId()
+        ), REQUEST_CODE_ROUTE_WISHLIST);
     }
-
 }

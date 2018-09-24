@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.feature.emptycart.di;
 
 import com.tokopedia.checkout.domain.usecase.CancelAutoApplyCouponUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCartListUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRecentViewUseCase;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.TrackingAnalyticsModule;
 import com.tokopedia.checkout.view.di.scope.CartListScope;
@@ -37,6 +38,12 @@ public class EmptyCartModule {
 
     @Provides
     @EmptyCartScope
+    GetRecentViewUseCase providegetRecentViewUseCase() {
+        return new GetRecentViewUseCase(emptyCartFragment.getContext());
+    }
+
+    @Provides
+    @EmptyCartScope
     CompositeSubscription provideCompositeSubscription() {
         return new CompositeSubscription();
     }
@@ -45,11 +52,12 @@ public class EmptyCartModule {
     @EmptyCartScope
     EmptyCartContract.Presenter provideShipmentPresenter(GetCartListUseCase getCartListUseCase,
                                                          GetWishlistUseCase getWishlistUseCase,
+                                                         GetRecentViewUseCase getRecentViewUseCase,
                                                          CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                          CartApiRequestParamGenerator cartApiRequestParamGenerator,
                                                          CompositeSubscription compositeSubscription) {
-        return new EmptyCartPresenter(getCartListUseCase, getWishlistUseCase, cancelAutoApplyCouponUseCase,
-                cartApiRequestParamGenerator, compositeSubscription);
+        return new EmptyCartPresenter(getCartListUseCase, getWishlistUseCase, getRecentViewUseCase,
+                cancelAutoApplyCouponUseCase, cartApiRequestParamGenerator, compositeSubscription);
     }
 
 }
