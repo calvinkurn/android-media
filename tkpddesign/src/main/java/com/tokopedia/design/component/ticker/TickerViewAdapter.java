@@ -1,6 +1,7 @@
 package com.tokopedia.design.component.ticker;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.text.Spannable;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 import com.tokopedia.design.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hangnadi on 8/16/17.
@@ -48,8 +50,9 @@ class TickerViewAdapter extends PagerAdapter {
         this.listener = listener;
     }
 
+    @NonNull
     @Override
-    public Object instantiateItem(final ViewGroup container, final int position) {
+    public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.item_ticker, container, false);
         View tickerBackground = view.findViewById(R.id.ticker_background);
@@ -144,5 +147,20 @@ class TickerViewAdapter extends PagerAdapter {
 
     public void setIsUnderlinedLink(boolean isUnderlinedLink) {
         this.isUnderlinedLink = isUnderlinedLink;
+    }
+
+    public void addMessage(String message){
+        listMessage.add(message);
+        notifyDataSetChanged();
+    }
+
+    public void addMessage(int pos, String message){
+        listMessage.add(pos, message);
+        notifyDataSetChanged();
+    }
+
+    public void addAllMessage(List<String> messages){
+        listMessage.addAll(messages);
+        notifyDataSetChanged();
     }
 }

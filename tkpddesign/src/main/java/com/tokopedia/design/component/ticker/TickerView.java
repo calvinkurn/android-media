@@ -21,6 +21,7 @@ import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.design.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by hangnadi on 8/15/17.
@@ -85,6 +86,13 @@ public class TickerView extends BaseCustomView {
 
     public int getStateVisibility() {
         return stateVisibility;
+    }
+
+    public void clearMessage() {
+        listMessage.clear();
+        listBackGroundColor.clear();
+        listTextColor.clear();
+        tickerAdapter.notifyDataSetChanged();
     }
 
     @SuppressWarnings("WeakerAccess")
@@ -186,6 +194,49 @@ public class TickerView extends BaseCustomView {
         };
     }
 
+    private void updateTicker(){
+        listBackGroundColor.add(defaultBackgroundColor);
+        listTextColor.add(defaultTextColor);
+
+        if (listMessage.size() == 1) {
+            tickerIndicator.setVisibility(GONE);
+
+            stopAutoScrollTicker();
+        } else {
+            tickerIndicator.setVisibility(View.VISIBLE);
+
+            startAutoScrollTicker();
+        }
+    }
+
+    public void addMessage(String message){
+        listMessage.add(message);
+        updateTicker();
+        tickerAdapter.notifyDataSetChanged();
+
+    }
+
+    public void addMessage(int pos, String message){
+        listMessage.add(pos, message);
+        updateTicker();
+        tickerAdapter = new TickerViewAdapter(
+                listTextColor,
+                listBackGroundColor,
+                defaultLinkColor,
+                contentTextSize,
+                listMessage,
+                onPartialTextClickListener
+        );
+        tickerAdapter.setIsUnderlinedLink(isUnderlinedLink);
+        tickerViewPager.setAdapter(tickerAdapter);
+    }
+
+    public void addAllMessage(List<String> messages){
+        listMessage.addAll(messages);
+        updateTicker();
+        tickerAdapter.notifyDataSetChanged();
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -220,7 +271,7 @@ public class TickerView extends BaseCustomView {
         GradientDrawable gradientDrawable;
         try {
             gradientDrawable = (GradientDrawable) tickerHighlightView.getBackground();
-            gradientDrawable.setColor(defaultHighLightColor);
+            gradientDrawable.setColor(highLightColor);
 
             tickerHighlightView.setBackground(gradientDrawable);
         } catch (Exception e) {
@@ -267,11 +318,11 @@ public class TickerView extends BaseCustomView {
     }
 
     public void buildView() {
-        if (listMessage.isEmpty()) {
+        /*if (listMessage.isEmpty()) {
             throw new RuntimeException(
                     "Undefined Message. Set your message by call setListMessage(...)"
             );
-        }
+        }*/
 
         if (listBackGroundColor.isEmpty()) {
             int i = 0;
