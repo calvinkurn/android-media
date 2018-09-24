@@ -153,7 +153,9 @@ class GetTalkCommentsMapper @Inject constructor() : Func1<Response<DataResponse<
     private fun mapProductHeader(data: TalkDetailsPojo): ProductHeader {
         return ProductHeader(
                 data.talk.talk_product_name,
-                data.talk.talk_product_image
+                data.talk.talk_product_image,
+                data.talk.talk_product_id,
+                data.talk.talk_product_url
         )
     }
 }

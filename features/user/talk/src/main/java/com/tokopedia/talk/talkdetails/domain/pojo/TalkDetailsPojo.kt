@@ -49,6 +49,9 @@ data class TalkDetailsItemPojo(
         @SerializedName("talk_product_name")
         val talk_product_name: String = "",
         @Expose
+        @SerializedName("talk_product_url")
+        val talk_product_url: String = "",
+        @Expose
         @SerializedName("talk_product_status")
         val talk_product_status: Int = 0,
         @Expose

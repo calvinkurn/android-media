@@ -48,7 +48,7 @@ class InboxTalkPresenter @Inject constructor(private val getInboxTalkUseCase: Ge
 
                 override fun onError(e: Throwable) {
                     view.hideLoading()
-                    onErrorActionTalk(e)
+                    onErrorTalk(e)
                 }
 
                 override fun onNext(talkViewModel: InboxTalkViewModel) {
