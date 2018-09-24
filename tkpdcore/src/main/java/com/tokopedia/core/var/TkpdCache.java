@@ -232,6 +232,11 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
     }
 
     public class RemoteConfigKey {
+        public static final String MAINAPP_WALLET_APPLINK = "mainapp_wallet_applink";
+        public static final String MAINAPP_WALLET_APPLINK_REGISTER = "mainapp_wallet_applink_register";
+        public static final String MAINAPP_WALLET_LABEL_NAME = "mainapp_wallet_label_name";
+        public static final String MAINAPP_WALLET_LABEL_REGISTER = "mainapp_wallet_label_register";
+
         public static final String MAINAPP_SHOW_APP_SHARE_BUTTON = "mainapp_show_app_share_button";
         public static final String APP_SHARE_DESCRIPTION = "app_share_description";
         public static final String MAINAPP_ACTIVATE_BRANCH_LINKS = "mainapp_activate_branch_links";
@@ -272,6 +277,9 @@ public class TkpdCache extends com.tokopedia.abstraction.constant.TkpdCache {
 
         public static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
         public static final String SHOW_INSTANT_LOAN = "app_enable_instant_loan";
+        public static final String SHOW_TOKOCARD = "app_enable_toko_card";
+        public static final String APP_ENABLE_UPDATE_INACTIVE_PHONE = "app_enable_update_inactive_phone";
+        public static final String SALDO_PRIORITAS_NATIVE_ANDROID = "mainapp_saldo_prioritas_native_android";
     }
 
 }

@@ -6,6 +6,7 @@ import android.os.Vibrator;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.core.ManageGeneral;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -14,6 +15,7 @@ import com.tokopedia.core.network.retrofit.utils.ErrorNetMessage;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.home.account.presentation.activity.GeneralSettingActivity;
 import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.campaign.analytics.CampaignTracking;
@@ -152,7 +154,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
                         getView().showMessage(s.getMessage());
                         return;
                     }
-                    DeepLinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getDelegateInstance();
+                    ApplinkDelegate deepLinkDelegate = DeeplinkHandlerActivity.getApplinkDelegateInstance();
                     if (!deepLinkDelegate.supportsUri(s.getUrl())) {
                         getView().showErrorNetwork(context.getString(R.string.shake_shake_wrong_deeplink));
                         return;
@@ -223,7 +225,7 @@ public class ShakeDetectPresenter extends BaseDaggerPresenter<ShakeDetectContrac
         //disable the shake shake
         ShakeDetectManager.getShakeDetectManager().disableShakeShake();
         if(SessionHandler.isV4Login(getView().getCurrentActivity())) {
-            getView().getCurrentActivity().startActivity(ManageGeneral.getCallingIntent(getView().getCurrentActivity(), ManageGeneral.TAB_POSITION_MANAGE_APP));
+            getView().getCurrentActivity().startActivity(GeneralSettingActivity.createIntent(getView().getCurrentActivity()));
             getView().finish();
         }else {
             getView().makeInvisibleShakeShakeDisableView();

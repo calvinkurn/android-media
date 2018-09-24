@@ -253,6 +253,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
+
         });
 
         cardActionReturn.setActionListener(() -> {
@@ -269,6 +271,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                     trainScheduleBookingPassData.getInfantPassenger(),
                     false);
             startActivity(intent);
+            getActivity().overridePendingTransition(R.anim.digital_slide_up_in, R.anim.digital_anim_stay);
         });
     }
 
@@ -276,7 +279,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
         TrainBookingPassengerAdapterTypeFactory adapterTypeFactory = new TrainBookingPassengerAdapterTypeFactory(new TrainBookingPassengerAdapterListener() {
             @Override
             public void onChangePassengerData(TrainPassengerViewModel trainPassengerViewModel) {
-                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, false), ADD_PASSENGER_REQUEST_CODE);
+                boolean isCheckAsBuyer = sameAsBuyerCheckbox.isChecked() && trainPassengerViewModel.getPassengerId() == 1;
+                startActivityForResult(TrainBookingAddPassengerActivity.callingIntent(getActivity(), trainPassengerViewModel, isCheckAsBuyer), ADD_PASSENGER_REQUEST_CODE);
             }
         });
         adapter = new TrainBookingPassengerAdapter(adapterTypeFactory, new ArrayList<Visitable>());
@@ -321,8 +325,8 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void loadDetailSchedule(TrainScheduleViewModel trainScheduleViewModel, CardWithAction cardWithAction) {
-        cardWithAction.setContentInfo(TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
-                TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()));
+        cardWithAction.setContentInfo("(" + TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+                TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()) + ")");
         cardWithAction.setSubContent(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
         String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp());
@@ -569,8 +573,9 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     @Override
     public void showNavigateToSearchDialog(String message) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
+        dialog.setTitle(getString(R.string.train_error_dialog_failed_booking));
         dialog.setDesc(message);
-        dialog.setBtnOk(getString(R.string.train_dialog_booking_passanger_yes));
+        dialog.setBtnOk(getString(R.string.train_error_dialog_default_button));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

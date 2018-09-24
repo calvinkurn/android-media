@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 
 import java.util.Map;
 
@@ -18,9 +17,15 @@ public interface ShopModuleRouter {
 
     Fragment getShopTalkFragment();
 
+    Fragment getKolPostShopFragment(String shopId, String createPostUrl);
+
+    void goToEditShop(Context context);
+
     void goToManageShop(Context context);
 
     void goToEditShopNote(Context context);
+
+    void goToManageShipping(Context context);
 
     void goToAddProduct(Context context);
 
@@ -36,6 +41,10 @@ public interface ShopModuleRouter {
 
     void goToProfileShop(Context context, String userId);
 
+    void goToShopReview(Context context, String shopId, String shopDomain);
+
+    void goToShopDiscussion(Context context, String shopId);
+
     Intent getLoginIntent(Context context);
 
     void sendEventTrackingShopPage(Map<String, Object> eventTracking);
@@ -43,4 +52,6 @@ public interface ShopModuleRouter {
     void sendScreenName(String screenName);
 
     Intent getTopProfileIntent(Context context, String userId);
+
+    boolean isFeedShopPageEnabled();
 }

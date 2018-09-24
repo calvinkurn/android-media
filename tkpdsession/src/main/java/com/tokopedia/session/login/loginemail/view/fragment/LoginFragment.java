@@ -31,11 +31,13 @@ import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.LoginAnalytics;
 import com.tokopedia.analytics.SessionTrackingUtils;
@@ -62,6 +64,7 @@ import com.tokopedia.otp.phoneverification.view.activity.PhoneVerificationActiva
 import com.tokopedia.session.R;
 import com.tokopedia.session.WebViewLoginFragment;
 import com.tokopedia.session.activation.view.activity.ActivationActivity;
+import com.tokopedia.session.addname.AddNameActivity;
 import com.tokopedia.session.data.viewmodel.SecurityDomain;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.google.GoogleSignInActivity;
@@ -76,7 +79,6 @@ import com.tokopedia.session.register.view.activity.SmartLockActivity;
 import com.tokopedia.session.register.view.subscriber.registerinitial.GetFacebookCredentialSubscriber;
 import com.tokopedia.session.register.view.viewmodel.DiscoverItemViewModel;
 import com.tokopedia.session.register.view.viewmodel.createpassword.CreatePasswordViewModel;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
 
 import java.util.ArrayList;
 
@@ -106,6 +108,7 @@ public class LoginFragment extends BaseDaggerFragment
     private static final int REQUESTS_CREATE_PASSWORD = 106;
     private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
     private static final int REQUEST_VERIFY_PHONE = 108;
+    private static final int REQUEST_ADD_NAME = 109;
 
 
     public static final int TYPE_SQ_PHONE = 1;
@@ -120,6 +123,7 @@ public class LoginFragment extends BaseDaggerFragment
 
     public static final String IS_AUTO_FILL = "auto_fill";
     public static final String AUTO_FILL_EMAIL = "email";
+    public static final String IS_FROM_REGISTER = "is_from_register";
 
     AutoCompleteTextView emailEditText;
     TextInputEditText passwordEditText;
@@ -169,7 +173,7 @@ public class LoginFragment extends BaseDaggerFragment
         daggerSessionComponent.inject(this);
     }
 
-    public void initOuterInjector(SessionModule sessionModule){
+    public void initOuterInjector(SessionModule sessionModule) {
         AppComponent appComponent = getComponent(AppComponent.class);
         DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
                 DaggerSessionComponent.builder()
@@ -340,7 +344,7 @@ public class LoginFragment extends BaseDaggerFragment
         presenter.discoverLogin();
         if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
             emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
-        }else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+        } else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
             switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
                 case LoginActivity.METHOD_FACEBOOK:
                     onLoginFacebookClick();
@@ -467,6 +471,13 @@ public class LoginFragment extends BaseDaggerFragment
     public void onSuccessLogin() {
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
+
+        TrackingUtils.eventPushUserID();
+        if (!GlobalConfig.DEBUG) {
+            Crashlytics.setUserIdentifier(String.valueOf(sessionHandler.getLoginID()));
+        }
+        BranchSdkUtils.sendIdentityEvent(String.valueOf(sessionHandler
+                .getLoginID()));
     }
 
     @Override
@@ -577,10 +588,16 @@ public class LoginFragment extends BaseDaggerFragment
     @Override
     public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
                                        String email, String phone) {
-        Intent  intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
                 getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
         startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
 
+    }
+
+    @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+        Intent intent = AddNameActivity.newInstance(getActivity());
+        startActivityForResult(intent, REQUEST_ADD_NAME);
     }
 
     @Override
@@ -806,35 +823,44 @@ public class LoginFragment extends BaseDaggerFragment
         } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
             presenter.loginWebview(data);
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
-            getActivity().setResult(Activity.RESULT_OK);
-            getActivity().finish();
+            onSuccessLogin();
         } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
             dismissLoadingLogin();
             getActivity().setResult(Activity.RESULT_CANCELED);
         } else if (requestCode == REQUEST_VERIFY_PHONE) {
-            getActivity().setResult(Activity.RESULT_OK);
+            onSuccessLogin();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+            onSuccessLogin();
+        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+            sessionHandler.clearUserData(getActivity());
+            dismissLoadingLogin();
+            getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
+    }
+
+    @Override
+    public boolean isFromRegister() {
+        return getActivity() != null
+                && getActivity().getIntent() != null &&
+                getActivity().getIntent().getBooleanExtra(IS_FROM_REGISTER, false);
     }
 
     @Override

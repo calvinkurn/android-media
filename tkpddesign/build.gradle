@@ -20,15 +20,14 @@ project.ext {
 }
 
 dependencies {
+    implementation rootProject.ext.supportLibDependencies.preferenceV7
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
         exclude group: 'com.android.support'
     }
 
     implementation rootProject.ext.networkDependencies.glide
-
     testImplementation "org.robolectric:robolectric:3.8"
-
 }
 
 apply from: '../publish_local.gradle'

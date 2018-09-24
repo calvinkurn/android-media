@@ -25,8 +25,8 @@
     <dimen name="filter_bottom_sheet_height">420dp</dimen>
     <dimen name="guided_search_padding_vertical">12dp</dimen>
     <dimen name="guided_search_padding_horizontal">20dp</dimen>
-    <dimen name="quick_filter_padding_vertical">12dp</dimen>
-    <dimen name="quick_filter_padding_horizontal">20dp</dimen>
+    <dimen name="quick_filter_padding_vertical">8dp</dimen>
+    <dimen name="quick_filter_padding_horizontal">16dp</dimen>
     <dimen name="empty_state_selected_filter_padding_vertical">12dp</dimen>
     <dimen name="empty_state_selected_filter_padding_left">16dp</dimen>
     <dimen name="empty_state_selected_filter_padding_right">12dp</dimen>

@@ -9,6 +9,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tokopoints.ApplinkConstant;
 import com.tokopedia.tokopoints.R;
@@ -16,6 +17,7 @@ import com.tokopedia.tokopoints.di.DaggerTokoPointComponent;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
 import com.tokopedia.tokopoints.view.fragment.HomepageFragment;
 
+@DeepLink(ApplinkConst.TOKOPOINTS)
 public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasComponent<TokoPointComponent> {
     private TokoPointComponent tokoPointComponent;
 
@@ -23,7 +25,6 @@ public class TokoPointsHomeActivity extends BaseSimpleActivity implements HasCom
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         updateTitle(getString(R.string.tp_title_tokopoints));
-        GraphqlClient.init(getApplicationContext());
     }
 
     @Override

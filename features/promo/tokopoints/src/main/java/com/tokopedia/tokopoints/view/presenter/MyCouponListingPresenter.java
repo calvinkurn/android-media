@@ -72,7 +72,12 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
                 //handling the catalog listing and tabs
                 TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
                 if (catalogListingOuter != null) {
-                    getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
+                    if (catalogListingOuter.getCoupon().getCoupons() != null &&
+                            catalogListingOuter.getCoupon().getCoupons().size() > 0) {
+                        getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
+                    } else {
+                        getView().emptyCoupons();
+                    }
                 } else {
                     getView().showError(null);
                 }
@@ -125,5 +130,9 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
+    }
+
+    @Override
+    public void startSendGift(int id, String title, String pointStr) {
     }
 }

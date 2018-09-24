@@ -62,7 +62,7 @@
 
     <string name="title_header_menu_digital_categories_transaction_list_digital_module">Transaksi Saya</string>
     <string name="title_header_menu_digital_categories_favorite_number_digital_module">Nomor Favorit</string>
-    <string name="title_header_menu_digital_categories_subscription_digital_module">Langganan</string>
+    <string name="title_header_menu_digital_categories_subscription_digital_module">MyBills</string>
 
     <string name="ussd_batal">Batal</string>
     <string name="ok">Ok</string>
@@ -129,4 +129,6 @@
     <string name="promo_tab_title">Promo</string>
     <string name="guide_tab_title">Panduan</string>
     <string name="digital_coupon_applied_ticker_message">Kode kupon telah dimasukkan. Silahkan pilih produk yang diinginkan, lalu check-out.</string>
+    <string name="digital_list_device_consumer_app_prefix">android-%s</string>
+    <string name="digital_list_device_seller_app_prefix">seller_app-%s</string>
 </resources>

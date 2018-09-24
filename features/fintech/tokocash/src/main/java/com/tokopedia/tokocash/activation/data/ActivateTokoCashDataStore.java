@@ -15,4 +15,6 @@ public interface ActivateTokoCashDataStore {
     Observable<ActivateTokoCashEntity> requestOTPWallet();
 
     Observable<ActivateTokoCashEntity> linkedWalletToTokoCash(HashMap<String, String> mapParam);
+
+    Observable<String> getRefreshWalletToken();
 }

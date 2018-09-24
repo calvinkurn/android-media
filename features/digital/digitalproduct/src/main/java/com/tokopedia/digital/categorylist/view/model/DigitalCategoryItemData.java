@@ -7,17 +7,64 @@ import android.os.Parcelable;
  * @author anggaprasetiyo on 7/3/17.
  */
 
-public class DigitalCategoryItemData implements Parcelable {
+public class DigitalCategoryItemData implements Parcelable{
     public static final String DEFAULT_TYPE_DIGITAL = "Digital";
     // TODO : next sprint will be discussed with mojito & wallet team
     public static final int DEFAULT_TOKOCASH_CATEGORY_ID = 103;
 
+    private String id;
     private String name;
     private String imageUrl;
     private String description;
     private String redirectValue;
     private String categoryId;
     private String appLinks;
+
+    protected DigitalCategoryItemData(Parcel in) {
+        id = in.readString();
+        name = in.readString();
+        imageUrl = in.readString();
+        description = in.readString();
+        redirectValue = in.readString();
+        categoryId = in.readString();
+        appLinks = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(imageUrl);
+        dest.writeString(description);
+        dest.writeString(redirectValue);
+        dest.writeString(categoryId);
+        dest.writeString(appLinks);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<DigitalCategoryItemData> CREATOR = new Creator<DigitalCategoryItemData>() {
+        @Override
+        public DigitalCategoryItemData createFromParcel(Parcel in) {
+            return new DigitalCategoryItemData(in);
+        }
+
+        @Override
+        public DigitalCategoryItemData[] newArray(int size) {
+            return new DigitalCategoryItemData[size];
+        }
+    };
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -69,42 +116,11 @@ public class DigitalCategoryItemData implements Parcelable {
 
 
     @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.name);
-        dest.writeString(this.imageUrl);
-        dest.writeString(this.description);
-        dest.writeString(this.redirectValue);
-        dest.writeString(this.categoryId);
-        dest.writeString(this.appLinks);
+    public boolean equals(Object obj) {
+        return obj instanceof DigitalCategoryItemData && ((DigitalCategoryItemData) obj).getName().equals(getName());
     }
 
     public DigitalCategoryItemData() {
     }
 
-    protected DigitalCategoryItemData(Parcel in) {
-        this.name = in.readString();
-        this.imageUrl = in.readString();
-        this.description = in.readString();
-        this.redirectValue = in.readString();
-        this.categoryId = in.readString();
-        this.appLinks = in.readString();
-    }
-
-    public static final Parcelable.Creator<DigitalCategoryItemData> CREATOR =
-            new Parcelable.Creator<DigitalCategoryItemData>() {
-                @Override
-                public DigitalCategoryItemData createFromParcel(Parcel source) {
-                    return new DigitalCategoryItemData(source);
-                }
-
-                @Override
-                public DigitalCategoryItemData[] newArray(int size) {
-                    return new DigitalCategoryItemData[size];
-                }
-            };
 }

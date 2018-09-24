@@ -19,6 +19,15 @@ public interface CommonConstant {
     int MY_COUPON_TAB = 1;
     int MAX_COUPON_TO_SHOW_COUNT = 9;
     String TOKOPOINTS_CATALOG_STATUS_AUTO_REFRESH_S = "tokopoints_catalog_status_auto_refresh_s";
+    String EXTRA_COUPON_COUNT = "extra_coupon_count";
+    String EXTRA_COUPON_CODE = "coupon_code";
+    String EXTRA_CATALOG_CODE = "catalog_code";
+    String EXTRA_COUPON_ID = "extra_coupon_id";
+    String EXTRA_COUPON_TITLE = "extra_coupon_title";
+    String EXTRA_COUPON_POINT = "extra_coupon_point";
+    int MAX_COUPON_RE_FETCH_COUNT = 3;
+    int COUPON_RE_FETCH_DELAY_S = 5;
+    long COUPON_SHOW_COUNTDOWN_MAX_LIMIT_S = 86400;
 
     interface CouponRedemptionCode {
         int LOW_POINT = 42020;
@@ -41,6 +50,9 @@ public interface CommonConstant {
         String CATEGORY_ID_COUPON = "categoryIDCoupon";
         String SLUG = "slug";
         String CATALOG_IDS = "catalogIDs";
+        String CODE = "code";
+        String GIFT_EMAIL = "gift_email";
+        String NOTES = "notes";
     }
 
     interface TickerMapKeys {
@@ -50,6 +62,11 @@ public interface CommonConstant {
         String URL = "url";
     }
 
+    interface CouponMapKeys {
+        String TITLE = "title";
+        String SUB_TITLE = "subTitle";
+    }
+
     class BaseUrl {
         static String WEB_DOMAIN_MOBILE = "https://m.tokopedia.com/";
     }
@@ -57,10 +74,6 @@ public interface CommonConstant {
     interface WebLink {
         String MEMBERSHIP = WEB_DOMAIN_MOBILE + "tokopoints/mobile/membership";
         String HISTORY = WEB_DOMAIN_MOBILE + "tokopoints/mobile/history";
-        String SEE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/mobile/kupon-saya/";
-        String LUCKY_EGG_PAGE = WEB_DOMAIN_MOBILE + "tokopoints/hadiah";
         String INFO = WEB_DOMAIN_MOBILE + "tokopoints/info";
-        String EXCHANGE_COUPON = WEB_DOMAIN_MOBILE + "tokopoints/mobile/tukar-point";
-        String COUPON_DETAIL = WEB_DOMAIN_MOBILE + "tokopoints/mobile/detail/";
     }
 }

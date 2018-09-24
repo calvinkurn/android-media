@@ -9,7 +9,17 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
 
 public class EmptyKolPostViewModel implements Visitable<KolPostTypeFactory> {
 
+    private boolean isShowTopShadow;
+
     public EmptyKolPostViewModel() {
+    }
+
+    public boolean isShowTopShadow() {
+        return isShowTopShadow;
+    }
+
+    public void setShowTopShadow(boolean showTopShadow) {
+        isShowTopShadow = showTopShadow;
     }
 
     @Override

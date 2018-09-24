@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.core.util.ImageUploadHandler;
 import com.tokopedia.inbox.rescenter.network.ResolutionApi;
 import com.tokopedia.inbox.rescenter.network.ResolutionErrorInterceptor;
 import com.tokopedia.inbox.rescenter.network.ResolutionErrorResponse;

@@ -1,6 +1,7 @@
 package com.tokopedia.digital_deals.view.presenter;
 
 import android.content.Intent;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -131,10 +132,16 @@ public class CheckoutDealPresenter
         Gson gson = new Gson();
         JsonObject jsonObject = gson.fromJson(cart, JsonObject.class);
 
+        if (!(jsonObject.get("error_code")==null))
+            return null;
         for (JsonElement jsonElement : jsonObject.get("cart_items").getAsJsonArray()) {
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                     .getAsJsonObject().addProperty("email", this.email);
-            if (dealDetail.getOutlets().get(0) != null)
+            if (dealDetail.getOutlets().size() > 1) {
+                jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
+                        .getAsJsonObject().addProperty("name",
+                        String.format(getView().getActivity().getResources().getString(R.string.text_available_locations), dealDetail.getOutlets().size()));
+            } else if (dealDetail.getOutlets().get(0) != null)
                 jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().get("entity_address")
                         .getAsJsonObject().addProperty("name", dealDetail.getOutlets().get(0).getDistrict());
             jsonElement.getAsJsonObject().get("meta_data").getAsJsonObject().addProperty("entity_brand_name", dealDetail.getBrand().getTitle());
@@ -147,7 +154,12 @@ public class CheckoutDealPresenter
     public void getPaymentLink() {
         paymentparams = RequestParams.create();
         try {
-            paymentparams.putObject(Utils.Constants.CHECKOUTDATA, convertCartItemToJson(cartData));
+            JsonObject jsonObject = convertCartItemToJson(cartData);
+            if (jsonObject == null) {
+                getView().showFailureMessageProductExpired();
+                return;
+            } else
+                paymentparams.putObject(Utils.Constants.CHECKOUTDATA, jsonObject);
         } catch (Exception e) {
             NetworkErrorHelper.showEmptyState(getView().getActivity(),
                     getView().getRootView(), new NetworkErrorHelper.RetryClickedListener() {

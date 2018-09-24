@@ -191,8 +191,8 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
     override fun onSuccessSetDefault(adapterPosition: Int) {
         adapter.changeMain(adapterPosition)
         linearLayoutManager.scrollToPosition(0)
-
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_set_main_bank_account))
+        activity?.setResult(Activity.RESULT_OK,  Intent())
 
     }
 
@@ -223,7 +223,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         if (adapter.getList() != null) {
             val element = adapter.getList()!![adapterPosition] as BankAccountViewModel
 
-            if (element != null && presenter.isMsisdnVerified()) {
+            if (presenter.isMsisdnVerified()) {
                 analyticTracker.trackEditBankAccount()
                 startActivityForResult(AddEditBankActivity.createIntentEditBank(
                         activity!!
@@ -297,6 +297,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
         }
 
         NetworkErrorHelper.showSnackbar(activity, getString(R.string.success_delete_bank_account))
+        activity?.setResult(Activity.RESULT_OK,  Intent())
     }
 
     override fun onErrorDeleteAccount(errorMessage: String) {
@@ -353,6 +354,7 @@ class SettingBankFragment : SettingBankContract.View, BankAccountPopupListener, 
                 REQUEST_EDIT_BANK -> resultMessage = getString(R.string.success_edit_bank_account)
             }
             presenter.refreshBankList(resultMessage)
+
         }
 
     }

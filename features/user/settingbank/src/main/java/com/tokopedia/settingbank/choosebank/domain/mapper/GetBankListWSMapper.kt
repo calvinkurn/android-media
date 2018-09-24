@@ -39,7 +39,7 @@ class GetBankListWSMapper : Func1<Response<DataResponse<BankListPojo>>,
     }
 
     private fun hasNextPage(pojo: BankListPojo): Boolean {
-        return pojo.has_next_page != null && pojo.has_next_page
+        return pojo.has_next_page
     }
 
 }

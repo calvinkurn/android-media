@@ -3,6 +3,8 @@ package com.tokopedia.checkout.domain.datamodel.shipmentrates;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+
 import java.util.List;
 
 /**
@@ -19,11 +21,13 @@ public class ShipmentDetailData implements Parcelable {
     private CourierItemData selectedCourier;
     private Boolean useInsurance;
     private boolean usePartialOrder;
-    private boolean useDropshipper;
+    private Boolean useDropshipper;
     private String dropshipperName;
     private String dropshipperPhone;
     private boolean dropshipperNameValid;
     private boolean dropshipperPhoneValid;
+    private String shopId;
+    private List<ShippingCourierViewModel> shippingCourierViewModels;
 
     public ShipmentDetailData() {
     }
@@ -38,11 +42,14 @@ public class ShipmentDetailData implements Parcelable {
         byte tmpUseInsurance = in.readByte();
         useInsurance = tmpUseInsurance == 0 ? null : tmpUseInsurance == 1;
         usePartialOrder = in.readByte() != 0;
-        useDropshipper = in.readByte() != 0;
+        byte tmpUseDropshipper = in.readByte();
+        useDropshipper = tmpUseDropshipper == 0 ? null : tmpUseDropshipper == 1;
         dropshipperName = in.readString();
         dropshipperPhone = in.readString();
         dropshipperNameValid = in.readByte() != 0;
         dropshipperPhoneValid = in.readByte() != 0;
+        shopId = in.readString();
+        shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -129,11 +136,11 @@ public class ShipmentDetailData implements Parcelable {
         this.usePartialOrder = usePartialOrder;
     }
 
-    public boolean getUseDropshipper() {
+    public Boolean getUseDropshipper() {
         return useDropshipper;
     }
 
-    public void setUseDropshipper(boolean useDropshipper) {
+    public void setUseDropshipper(Boolean useDropshipper) {
         this.useDropshipper = useDropshipper;
     }
 
@@ -161,6 +168,22 @@ public class ShipmentDetailData implements Parcelable {
         this.totalQuantity = totalQuantity;
     }
 
+    public String getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(String shopId) {
+        this.shopId = shopId;
+    }
+
+    public List<ShippingCourierViewModel> getShippingCourierViewModels() {
+        return shippingCourierViewModels;
+    }
+
+    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
+        this.shippingCourierViewModels = shippingCourierViewModels;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -176,10 +199,12 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeParcelable(selectedCourier, flags);
         dest.writeByte((byte) (useInsurance == null ? 0 : useInsurance ? 1 : 2));
         dest.writeByte((byte) (usePartialOrder ? 1 : 0));
-        dest.writeByte((byte) (useDropshipper ? 1 : 0));
+        dest.writeByte((byte) (useDropshipper == null ? 0 : useDropshipper ? 1 : 2));
         dest.writeString(dropshipperName);
         dest.writeString(dropshipperPhone);
         dest.writeByte((byte) (dropshipperNameValid ? 1 : 0));
         dest.writeByte((byte) (dropshipperPhoneValid ? 1 : 0));
+        dest.writeString(shopId);
+        dest.writeTypedList(shippingCourierViewModels);
     }
 }
