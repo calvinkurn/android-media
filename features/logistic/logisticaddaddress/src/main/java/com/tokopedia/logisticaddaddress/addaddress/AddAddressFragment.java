@@ -48,6 +48,7 @@ import com.tokopedia.logisticaddaddress.model.db.Province;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.transactionanalytics.listener.ITransactionAnalyticsAddAddress;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -282,6 +283,11 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         progressDistrict = view.findViewById(R.id.district_progress);
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
+
+        UserSession sess = new UserSession(getActivity());
+        addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
+        receiverNameEditText.setText(sess.getName());
+        receiverPhoneEditText.setText(sess.getPhoneNumber());
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
