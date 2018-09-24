@@ -30,6 +30,8 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.tkpd.library.utils.ImageHandler;
 import com.tkpd.library.viewpagerindicator.CirclePageIndicator;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.CategoryPageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -168,6 +170,8 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.top_ads_banner)
     TopAdsBannerView topAdsBannerView;
 
+    TextView btnSeeAllOfficialBrand;
+
     private CirclePageIndicator bannerIndicator;
     private View banner;
     private ViewPager bannerViewPager;
@@ -210,6 +214,9 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         View parentView = inflater.inflate(R.layout.fragment_intermediary, container, false);
 
         ButterKnife.bind(this, parentView);
+
+        btnSeeAllOfficialBrand = parentView.findViewById(R.id.see_all_official_brand_button);
+        btnSeeAllOfficialBrand.setOnClickListener(new SeeAllOfficialOnClickListener());
 
         presenter.attachView(this);
         presenter.getIntermediaryCategory(departmentId);
@@ -777,6 +784,19 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
                     intent.putExtra("url", url);
                     startActivity(intent);
             }
+        }
+    }
+
+    public void viewAllOfficialStores() {
+        if(getActivity() != null){
+            RouteManager.route(getActivity(), ApplinkConst.OFFICIAL_STORES);
+        }
+    }
+
+    private class SeeAllOfficialOnClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View view) {
+            viewAllOfficialStores();
         }
     }
 }

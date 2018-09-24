@@ -161,6 +161,7 @@
     <item name="card_official_intermediary" type="id"/>
     <item name="rv_official_intermediary" type="id"/>
     <item name="header_container" type="id"/>
+    <item name="see_all_official_brand_button" type="id"/>
     <item name="intermediary_video_title" type="id"/>
     <item name="intermediary_video_desc" type="id"/>
 
