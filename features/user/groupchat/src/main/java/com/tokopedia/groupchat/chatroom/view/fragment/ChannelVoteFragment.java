@@ -41,6 +41,7 @@ import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.presenter.ChannelVotePresenter;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
+import com.tokopedia.groupchat.common.design.GridVoteItemDecoration;
 import com.tokopedia.groupchat.common.design.SpaceItemDecoration;
 import com.tokopedia.groupchat.common.di.component.DaggerGroupChatComponent;
 import com.tokopedia.groupchat.common.di.component.GroupChatComponent;
@@ -424,7 +425,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
 
         if (voteInfoViewModel.getVoteOptionType().equals(VoteViewModel.IMAGE_TYPE)) {
             voteLayoutManager = new GridLayoutManager(getActivity(), 2);
-            itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2);
+            itemDecoration = new GridVoteItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_mini), 2, voteInfoViewModel.getListOption().size());
         } else {
             voteLayoutManager = new LinearLayoutManager(getActivity());
             itemDecoration = new SpaceItemDecoration((int) getActivity().getResources().getDimension(R.dimen.space_between), false);

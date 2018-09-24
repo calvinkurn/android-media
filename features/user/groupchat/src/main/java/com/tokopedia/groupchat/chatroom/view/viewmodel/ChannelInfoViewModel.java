@@ -327,4 +327,8 @@ public class ChannelInfoViewModel implements Parcelable {
     public String getVideoId() {
         return videoId;
     }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
+    }
 }

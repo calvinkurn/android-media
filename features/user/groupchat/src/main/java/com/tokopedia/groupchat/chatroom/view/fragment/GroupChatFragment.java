@@ -58,6 +58,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics;
 import com.tokopedia.groupchat.common.design.CloseableBottomSheetDialog;
@@ -751,10 +752,21 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem);
         }
 
+        if(messageItem instanceof VideoViewModel){
+            setVideo((VideoViewModel) messageItem);
+        }
+
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
             addIncomingMessage(messageItem);
         }
 
+    }
+
+    private void setVideo(VideoViewModel video) {
+        if(getActivity()!=null && getActivity() instanceof GroupChatActivity){
+            ((GroupChatActivity) getActivity()).getChannelInfoViewModel().setVideoId(video.getVideoId());
+            ((GroupChatActivity) getActivity()).initVideoFragment(((GroupChatActivity) getActivity()).getChannelInfoViewModel());
+        }
     }
 
     private void addIncomingMessage(Visitable messageItem) {

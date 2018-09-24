@@ -80,6 +80,7 @@ public class ProductTalkViewFragment extends TalkViewFragment{
     protected void addDummy() {
         CommentTalk detail = new CommentTalk();
         detail.setCommentMessage(content);
+
         detail.setCommentCreateTime(getString(R.string.title_sending));
         detail.setCommentUserName(SessionHandler.getLoginName(context));
         detail.setCommentShopName(SessionHandler.getShopDomain(context));

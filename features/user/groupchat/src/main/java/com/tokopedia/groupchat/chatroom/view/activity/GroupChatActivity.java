@@ -261,7 +261,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         initPreference();
     }
 
-    private void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
+    public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
 
@@ -353,6 +353,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }else{
             findViewById(R.id.video_container).setVisibility(View.GONE);
         }
+
     }
 
     private boolean isEnabledGroupChatRoom() {
