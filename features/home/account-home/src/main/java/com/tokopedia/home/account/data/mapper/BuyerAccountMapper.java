@@ -36,6 +36,7 @@ import static com.tokopedia.home.account.AccountConstants.Analytics.PEMBELI;
  */
 
 public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
+    public static final String OVO = "OVO";
     private Context context;
 
     @Inject
@@ -63,14 +64,30 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         TokopediaPayViewModel tokopediaPayViewModel = new TokopediaPayViewModel();
         tokopediaPayViewModel.setLinked(accountModel.getWallet().isLinked());
-        if (!accountModel.getWallet().isLinked()) {
-            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
-            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+        if (accountModel.getWallet().getWalletType().equals(OVO)) {
+            if (!accountModel.getWallet().isLinked()) {
+                if (accountModel.getWallet().getAmountPendingCashback() > 0) {
+                    tokopediaPayViewModel.setLabelLeft("(+" + accountModel.getWallet().getPendingCashback() + ")");
+                } else {
+                    tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                }
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+            } else {
+                tokopediaPayViewModel.setLabelLeft("Points " + accountModel.getWallet().getPointBalance());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getCashBalance());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            }
         } else {
-            tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
-            tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
-            tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            if (!accountModel.getWallet().isLinked()) {
+                tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getAction().getText());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getAction().getApplink());
+            } else {
+                tokopediaPayViewModel.setLabelLeft(accountModel.getWallet().getText());
+                tokopediaPayViewModel.setAmountLeft(accountModel.getWallet().getBalance());
+                tokopediaPayViewModel.setApplinkLeft(accountModel.getWallet().getApplink());
+            }
         }
 
         if (!((AccountHomeRouter) context.getApplicationContext()).getBooleanRemoteConfig("mainapp_android_enable_tokocard", false)
