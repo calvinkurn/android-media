@@ -37,7 +37,7 @@ public class RecentViewViewHolder extends RecyclerView.ViewHolder {
 
     public void bindData(RecentViewViewModel recentViewViewModel) {
         tvProductName.setText(recentViewViewModel.getRecentView().getProductName());
-//        tvProductPrice.setText(recentViewViewModel.getRecentView().getPriceFmt());
+        tvProductPrice.setText(recentViewViewModel.getRecentView().getProductPrice());
         ImageHandler.loadImage(imgProduct.getContext(), imgProduct,
                 recentViewViewModel.getRecentView().getProductImage(), R.drawable.loading_page
         );

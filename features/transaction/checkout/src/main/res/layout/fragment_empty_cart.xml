@@ -166,7 +166,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
-                            android:text="Wishlist" />
+                            android:text="@string/label_empty_cart_wishlist" />
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:id="@+id/tv_wish_list_see_all"
@@ -178,7 +178,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
-                            android:text="Lihat Semua"
+                            android:text="@string/label_empty_cart_see_all"
                             android:textColor="@color/tkpd_main_green"
                             app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
 
@@ -206,7 +206,7 @@
                             android:layout_height="wrap_content"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
-                            android:text="Terakhir Dilihat" />
+                            android:text="@string/label_empty_cart_recent_view" />
 
                         <com.tokopedia.design.component.TextViewCompat
                             android:id="@+id/tv_last_seen_see_all"
@@ -218,7 +218,7 @@
                             android:gravity="center_vertical"
                             android:paddingLeft="@dimen/dp_16"
                             android:paddingRight="@dimen/dp_16"
-                            android:text="Lihat Semua"
+                            android:text="@string/label_empty_cart_see_all"
                             android:textColor="@color/tkpd_main_green"
                             app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
 

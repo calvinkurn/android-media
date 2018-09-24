@@ -3,6 +3,7 @@ query recent_view($userID: Int){
     items{
       product_id,
       product_name,
+      product_price,
       shop_url,
       product_rating,
       product_review_count,
