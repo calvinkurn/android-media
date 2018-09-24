@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:layout_marginLeft="@dimen/dp_40"
+    android:layout_marginRight="@dimen/dp_40"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_af_dashboard_empty" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp_16"
+        android:fontFamily="sans-serif"
+        android:textStyle="bold"
+        android:textColor="@color/font_black_secondary_54"
+        android:gravity="center_horizontal"
+        android:text="@string/text_empty_start_recommendation_string"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:textSize="@dimen/sp_16"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@color/font_black_secondary_54"
+        android:gravity="center_horizontal"
+        android:text="@string/text_empty_have_recommendation"/>
+
+    <Button
+        android:id="@+id/btn_start_recommendation"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_48"
+        android:layout_marginTop="@dimen/dp_24"
+        android:background="@drawable/bg_button_green"
+        android:text="@string/text_empty_start_recommendation_btn"
+        android:textColor="@color/white"
+        android:textAllCaps="false"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="@dimen/sp_14"/>
+
+</LinearLayout>

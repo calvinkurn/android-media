@@ -4,40 +4,64 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
-import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
+//import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
+import com.tokopedia.affiliate.feature.dashboard.di.DashboardModule;
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
+import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl;
+import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
+import com.tokopedia.affiliate.feature.dashboard.view.presenter.DashboardPresenter;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author by yfsx on 13/09/18.
  */
-public class DashboardFragment extends BaseDaggerFragment {
-
-    private static final String URL_BACKGROUND = "https://ecs7.tokopedia.net/img/android/bg_af_dashboard/drawable-xxxhdpi/bg_af_dashboard.png";
+public class DashboardFragment
+        extends BaseDaggerFragment
+        implements DashboardContract.View,
+        SwipeToRefresh.OnRefreshListener {
 
     private static final int TEXT_TYPE_PROFILE_SEEN = 1;
     private static final int TEXT_TYPE_PRODUCT_CLICKED = 2;
     private static final int TEXT_TYPE_PRODUCT_BOUGHT = 3;
-    private static final int TECT_RECOMMENDATION_LEFT = 4;
+    private static final int TEXT_RECOMMENDATION_LEFT = 4;
+    private static final int ITEM_COUNT = 5;
 
-    private FrameLayout layoutSaldo;
-    private ImageView ivSaldo;
-    private TextView tvSaldo, tvProfileSeen, tvProductClicked, tvProductBought, tvRecommendationCount;
-    private LinearLayout layoutProfileSeen, layoutProductClicked, layoutProductBought;
+    private ProgressBar progressBar;
+    private TextView tvRecommendationCount;
     private RecyclerView rvHistory;
+    private LinearLayoutManager layoutManager;
     private CardView cvRecommendation;
+    private DashboardAdapter adapter;
+    private SwipeToRefresh swipeToRefresh;
+
+
+    private boolean isCanLoadMore = false;
+    private String cursor = "";
+
+//    @Inject
+    DashboardPresenter presenter;
 
     public static DashboardFragment getInstance(Bundle bundle) {
         DashboardFragment fragment = new DashboardFragment();
@@ -49,10 +73,10 @@ public class DashboardFragment extends BaseDaggerFragment {
     protected void initInjector() {
         DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
                 .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
-
-        DaggerDashboardComponent.builder()
-                .affiliateComponent(affiliateComponent)
-                .build().inject(this);
+//
+//        DaggerDashboardComponent.builder()
+//                .affiliateComponent(affiliateComponent)
+//                .build().inject(this);
     }
 
     @Override
@@ -64,40 +88,82 @@ public class DashboardFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_dashboard, container, false);
-        layoutSaldo = (FrameLayout) view.findViewById(R.id.layout_saldo);
-        ivSaldo = (ImageView) view.findViewById(R.id.iv_saldo);
-        tvSaldo = (TextView) view.findViewById(R.id.tv_saldo);
         rvHistory = (RecyclerView) view.findViewById(R.id.rv_history);
-        tvProfileSeen = (TextView) view.findViewById(R.id.tv_profile_seen);
-        tvProductClicked = (TextView) view.findViewById(R.id.tv_product_clicked);
-        tvProductBought = (TextView) view.findViewById(R.id.tv_product_bought);
-        layoutProfileSeen = (LinearLayout) view.findViewById(R.id.layout_profile_seen);
-        layoutProductClicked = (LinearLayout) view.findViewById(R.id.layout_product_clicked);
-        layoutProductBought = (LinearLayout) view.findViewById(R.id.layout_product_bought);
         cvRecommendation = (CardView) view.findViewById(R.id.item_recommendation_count);
         tvRecommendationCount = (TextView) view.findViewById(R.id.tv_recommendation_count);
+        swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
+        progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        presenter.attachView(this);
         return view;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        progressBar.setVisibility(View.GONE);
+        cvRecommendation.setVisibility(View.GONE);
         initView();
         initViewListener();
     }
 
+    @Override
+    public void onRefresh() {
+        loadFirstData();
+    }
+
+    @Override
+    public void showLoading() {
+        if (progressBar.getVisibility() == View.GONE) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (progressBar.getVisibility() == View.VISIBLE) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+
     private void initView() {
-        ImageHandler.LoadImage(ivSaldo, URL_BACKGROUND);
-        tvProductBought.setText(countTextBuilder(TEXT_TYPE_PROFILE_SEEN, 0));
-        tvProductClicked.setText(countTextBuilder(TEXT_TYPE_PRODUCT_CLICKED, 0));
-        tvProfileSeen.setText(countTextBuilder(TEXT_TYPE_PROFILE_SEEN, 0));
-        tvRecommendationCount.setText(countTextBuilder(TECT_RECOMMENDATION_LEFT, 0));
+        initDefaultValue();
+        swipeToRefresh.setOnRefreshListener(this);
+        adapter = new DashboardAdapter(new DashboardItemTypeFactoryImpl(this), new ArrayList());
+        layoutManager = new LinearLayoutManager(getActivity());
+        rvHistory.setLayoutManager(layoutManager);
+        rvHistory.setAdapter(adapter);
+        rvHistory.addOnScrollListener(onScrollListener());
+//        loadFirstData();
+    }
+
+    private void loadFirstData() {
+        isCanLoadMore = true;
+        presenter.loadDashboardItem();
+    }
+
+    private void initDefaultValue() {
+        tvRecommendationCount.setText(countTextBuilder(TEXT_RECOMMENDATION_LEFT, 0));
     }
 
     private void initViewListener() {
         cvRecommendation.setOnClickListener(view -> {
 
         });
+    }
+
+    private RecyclerView.OnScrollListener onScrollListener() {
+        return new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
+                if (isCanLoadMore && totalItemCount<= lastVisibleItemPos + ITEM_COUNT){
+                    presenter.loadMoreDashboardItem(cursor);
+                }
+            }
+        };
     }
 
     private String countTextBuilder(int textType, int count) {
@@ -108,5 +174,51 @@ public class DashboardFragment extends BaseDaggerFragment {
                                 R.string.title_klik_produk :
                                 R.string.title_produk_dibeli));
         return String.valueOf(count) + " " + defaultText;
+    }
+
+    @Override
+    public void onSuccessGetDashboardItem(DashboardHeaderViewModel header, List<DashboardItemViewModel> itemList, String cursor) {
+        if (itemList.size() == 0) {
+            EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel();
+            adapter.addElement(emptyDashboardViewModel);
+            adapter.notifyDataSetChanged();
+            isCanLoadMore = false;
+        } else {
+            isCanLoadMore = true;
+            adapter.addElement(header);
+            adapter.addElement(itemList);
+            adapter.notifyDataSetChanged();
+            this.cursor = cursor;
+        }
+    }
+
+    @Override
+    public void onErrorGetDashboardItem(String error) {
+        NetworkErrorHelper.showEmptyState(getActivity(),
+                getView().getRootView(),
+                error,
+                () -> {
+                    presenter.loadDashboardItem();
+                }
+                );
+    }
+
+    @Override
+    public void onSuccessLoadMoreDashboardItem(List<DashboardItemViewModel> itemList, String cursor) {
+        if (TextUtils.isEmpty(cursor)) isCanLoadMore = false;
+        adapter.hideLoading();
+        adapter.addElement(itemList);
+        adapter.notifyDataSetChanged();
+        this.cursor = cursor;
+    }
+
+    @Override
+    public void onErrorLoadMoreDashboardItem(String error) {
+        NetworkErrorHelper.createSnackbarWithAction(
+                getActivity(),
+                error,
+                () -> {
+                    presenter.loadMoreDashboardItem(cursor);
+        });
     }
 }

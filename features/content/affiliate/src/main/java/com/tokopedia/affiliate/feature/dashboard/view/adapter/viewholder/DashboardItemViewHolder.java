@@ -10,7 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardListener;
+import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
 
 /**
@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemVie
  */
 public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemViewModel> {
 
-    private DashboardListener.View mainView;
+    private DashboardContract.View mainView;
 
     @LayoutRes
     public static final int LAYOUT = R.layout.item_af_dashboard;
@@ -27,7 +27,7 @@ public class DashboardItemViewHolder extends AbstractViewHolder<DashboardItemVie
     private FrameLayout layoutStatus;
     private TextView tvStatus, tvName, tvCommission, tvBuyCount, tvClickCount;
 
-    public DashboardItemViewHolder(View itemView, DashboardListener.View mainView) {
+    public DashboardItemViewHolder(View itemView, DashboardContract.View mainView) {
         super(itemView);
         this.mainView = mainView;
         ivItem = (ImageView) itemView.findViewById(R.id.iv_item);
