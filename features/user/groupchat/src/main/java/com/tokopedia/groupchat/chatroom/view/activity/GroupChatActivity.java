@@ -261,7 +261,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         initPreference();
     }
 
-<<<<<<< HEAD
     private void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
@@ -299,9 +298,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
     }
 
-
-=======
->>>>>>> 6f4bcdd31f70e9a9efbf9c287eb93e7064de7386
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);

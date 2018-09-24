@@ -70,13 +70,9 @@ public class ChannelInfoViewModel implements Parcelable {
                                 String bannedMessage, String kickedMessage, boolean isFreeze,
                                 @Nullable PinnedMessageViewModel pinnedMessageViewModel,
                                 @Nullable ExitMessage exitMessage,
-<<<<<<< HEAD
                                 List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel,
                                 String videoId) {
-=======
-                                List<GroupChatQuickReplyItemViewModel> quickRepliesViewModel) {
         this.channelId = channelId;
->>>>>>> 6f4bcdd31f70e9a9efbf9c287eb93e7064de7386
         this.title = title;
         this.channelUrl = channelUrl;
         this.bannerUrl = bannerUrl;
