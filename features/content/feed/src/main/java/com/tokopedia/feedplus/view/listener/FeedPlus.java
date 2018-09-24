@@ -139,6 +139,8 @@ public interface FeedPlus {
 
         void finishLoading();
 
+        void showInterestPick();
+
         void updateCursor(String currentCursor);
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
