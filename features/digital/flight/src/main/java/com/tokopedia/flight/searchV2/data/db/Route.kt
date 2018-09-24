@@ -11,14 +11,20 @@ import com.google.gson.annotations.SerializedName
 @Entity(foreignKeys = [
         ForeignKey(
                 entity = Journey::class,
-                parentColumns = arrayOf("journeyId"),
+                parentColumns = arrayOf("id"),
                 childColumns = arrayOf("journeyId"),
                 onDelete = CASCADE
         )])
 data class Route(
         val journeyId: String,
-        @field:SerializedName("name")
-        val name: String,
-        @field:SerializedName("email")
-        val email: String
+        val airline: String,
+        val departureAirport: String,
+        val arrivalAirport: String,
+        val departureTimestamp: String,
+        val arrivalTimestamp: String,
+        val duration: String,
+        val layover: String,
+        val flightNumber: String,
+        val isRefundable: Boolean,
+        val stops: Int
 )

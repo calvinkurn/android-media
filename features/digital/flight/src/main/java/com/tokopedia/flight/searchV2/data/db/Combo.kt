@@ -9,6 +9,11 @@ import com.google.gson.annotations.SerializedName
 @Entity
 data class Combo(
         val comboId: String,
-        @field:SerializedName("price")
-        val price: String
+        val journeyId: String,
+        val adultPrice: String,
+        val childPrice: String,
+        val infantPrice: String,
+        val adultPriceNumeric: Int,
+        val childPriceNumeric: Int,
+        val infantPriceNumeric: Int
 )
