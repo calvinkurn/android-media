@@ -111,7 +111,7 @@
                     android:layout_marginRight="@dimen/dp_5"
                     android:layout_marginEnd="@dimen/dp_5"
                     android:text="@string/shop_page_chat_label"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/buttonManageShop"
