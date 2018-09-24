@@ -143,7 +143,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_add).isVisible = !presenter.isMyShop(shopId) && presenter.isLoggedIn()
+        menu.findItem(R.id.action_add).isVisible = !presenter.isMyShop(shopId)
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -160,6 +160,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToCreateTalk(productId: String) {
         activity?.run {
+            if(!presenter.isLoggedIn()){
+                goToLogin()
+                return
+            }
             val intent = AddTalkActivity.createIntent(this, productId)
             this@ProductTalkFragment.startActivityForResult(intent, REQUEST_CREATE_TALK)
         }
