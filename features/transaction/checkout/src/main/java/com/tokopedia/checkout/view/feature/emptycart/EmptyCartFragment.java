@@ -7,6 +7,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -43,6 +44,7 @@ import com.tokopedia.topads.sdk.domain.model.Data;
 import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
+import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
@@ -57,8 +59,8 @@ import static com.tokopedia.transaction.common.constant.CartConstant.TOPADS_CART
  */
 
 public class EmptyCartFragment extends BaseCheckoutFragment
-        implements EmptyCartContract.View, TopAdsItemClickListener, WishlistAdapter.ActionListener,
-        RecentViewAdapter.ActionListener {
+        implements EmptyCartContract.View, TopAdsItemClickListener, TopAdsListener,
+        WishlistAdapter.ActionListener, RecentViewAdapter.ActionListener {
 
     private static final int TOP_ADS_COUNT = 4;
     private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
@@ -73,10 +75,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private TextView tvPromoCodeEmptyCart;
     private AppCompatImageView btnCancelPromoCodeEmptyCart;
     private TextView btnContinueShoppingEmptyCart;
+    private CardView cvRecommendation;
     private TopAdsView topAdsView;
+    private CardView cvWishList;
     private RelativeLayout rlWishList;
     private TextViewCompat tvWishListSeeAll;
     private RecyclerView rvWishList;
+    private CardView cvLastSeen;
     private RelativeLayout rlLastSeen;
     private TextView tvLastSeenSeeAll;
     private RecyclerView rvLastSeen;
@@ -178,10 +183,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         tvPromoCodeEmptyCart = view.findViewById(R.id.textview_promo_code);
         btnCancelPromoCodeEmptyCart = view.findViewById(R.id.button_cancel);
         btnContinueShoppingEmptyCart = view.findViewById(R.id.btn_shopping_now);
+        cvRecommendation = view.findViewById(R.id.cv_recommendation);
         topAdsView = view.findViewById(R.id.topads);
+        cvWishList = view.findViewById(R.id.cv_wish_list);
         rlWishList = view.findViewById(R.id.rl_wish_list);
         tvWishListSeeAll = view.findViewById(R.id.tv_wish_list_see_all);
         rvWishList = view.findViewById(R.id.rv_wish_list);
+        cvLastSeen = view.findViewById(R.id.cv_last_seen);
         rlLastSeen = view.findViewById(R.id.rl_last_seen);
         tvLastSeenSeeAll = view.findViewById(R.id.tv_last_seen_see_all);
         rvLastSeen = view.findViewById(R.id.rv_last_seen);
@@ -232,13 +240,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasWishList() {
-        rlWishList.setVisibility(View.VISIBLE);
+        cvWishList.setVisibility(View.VISIBLE);
         wishlistAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void renderHasNoWishList() {
-        rlWishList.setVisibility(View.GONE);
+        cvWishList.setVisibility(View.GONE);
     }
 
     private void renderRecentView(int imageWidth) {
@@ -251,13 +259,13 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasRecentView() {
-        rlLastSeen.setVisibility(View.VISIBLE);
+        cvLastSeen.setVisibility(View.VISIBLE);
         recentViewAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void renderHasNoRecentView() {
-        rlLastSeen.setVisibility(View.GONE);
+        cvLastSeen.setVisibility(View.GONE);
     }
 
     private void renderAutoApplyPromo(String autoApplyMessage) {
@@ -298,6 +306,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         topAdsView.setMaxItems(TOP_ADS_COUNT);
         topAdsView.setAdsItemClickListener(this);
         topAdsView.loadTopAds();
+        topAdsView.setAdsListener(this);
     }
 
     @Override
@@ -449,5 +458,15 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
                 recentView.getProductId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
+    }
+
+    @Override
+    public void onTopAdsLoaded() {
+        cvRecommendation.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onTopAdsFailToLoad(int errorCode, String message) {
+        cvRecommendation.setVisibility(View.GONE);
     }
 }
