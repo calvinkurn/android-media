@@ -19,6 +19,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShipProd;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -31,6 +32,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
@@ -50,6 +52,12 @@ import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
 import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShippingInfoData;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.transactiondata.exception.ResponseCartApiErrorException;
 import com.tokopedia.usecase.RequestParams;
 
@@ -87,6 +95,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final EditAddressUseCase editAddressUseCase;
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
+    private final SaveShipmentStateUseCase saveShipmentStateUseCase;
 
     private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -114,6 +123,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              EditAddressUseCase editAddressUseCase,
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                             SaveShipmentStateUseCase saveShipmentStateUseCase,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -124,6 +134,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.editAddressUseCase = editAddressUseCase;
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
+        this.saveShipmentStateUseCase = saveShipmentStateUseCase;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
     }
 
@@ -1031,6 +1042,113 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .isDonation(isDonation)
                 .data(dataCheckoutRequestList)
                 .build();
+    }
+
+    @Override
+    public void processSaveShipmentState() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        SaveShipmentStateRequest saveShipmentStateRequest;
+        if (recipientAddressModel != null) {
+            saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress();
+        } else {
+            saveShipmentStateRequest = generateSaveShipmentStateRequestMultipleAddress();
+        }
+        param.put(SaveShipmentStateUseCase.PARAM_CARTS, new Gson().toJson(saveShipmentStateRequest));
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+
+        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new Subscriber<SaveShipmentStateData>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(SaveShipmentStateData saveShipmentStateData) {
+                        // Expected to do nothing
+                    }
+                }));
+    }
+
+    private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress() {
+
+        List<ShipmentStateShopProductData> shipmentStateShopProductDataList = new ArrayList<>();
+
+        List<ShipmentStateRequestData> shipmentStateRequestDataList = new ArrayList<>();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList);
+        }
+
+        ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData.Builder()
+                .addressId(Integer.parseInt(recipientAddressModel.getId()))
+                .shopProductDataList(shipmentStateShopProductDataList)
+                .build();
+        shipmentStateRequestDataList.add(shipmentStateRequestData);
+
+        return new SaveShipmentStateRequest.Builder()
+                .requestDataList(shipmentStateRequestDataList)
+                .build();
+    }
+
+    private SaveShipmentStateRequest generateSaveShipmentStateRequestMultipleAddress() {
+
+        List<ShipmentStateRequestData> shipmentStateRequestDataList = new ArrayList<>();
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+            List<ShipmentStateShopProductData> shipmentStateShopProductDataList = new ArrayList<>();
+
+            setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList);
+
+            ShipmentStateRequestData shipmentStateRequestData = new ShipmentStateRequestData.Builder()
+                    .addressId(Integer.parseInt(shipmentCartItemModel.getRecipientAddressModel().getId()))
+                    .shopProductDataList(shipmentStateShopProductDataList)
+                    .build();
+            shipmentStateRequestDataList.add(shipmentStateRequestData);
+        }
+
+        return new SaveShipmentStateRequest.Builder()
+                .requestDataList(shipmentStateRequestDataList)
+                .build();
+    }
+
+    private void setSaveShipmentStateData(ShipmentCartItemModel shipmentCartItemModel, List<ShipmentStateShopProductData> shipmentStateShopProductDataList) {
+        List<ShipmentStateProductData> shipmentStateProductDataList = new ArrayList<>();
+        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+            ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
+                    .productId(cartItemModel.getProductId());
+            shipmentStateProductDataList.add(builder.build());
+        }
+
+        ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
+                .name(shipmentCartItemModel.getDropshiperName())
+                .telpNo(shipmentCartItemModel.getDropshiperPhone())
+                .build();
+
+        ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
+                .shippingId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperId())
+                .spId(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getShipperProductId())
+                .build();
+
+        ShipmentStateShopProductData.Builder builder = new ShipmentStateShopProductData.Builder()
+                .shopId(shipmentCartItemModel.getShopId())
+                .finsurance((shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance()) ? 1 : 0)
+                .isDropship((shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper()) ? 1 : 0)
+                .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+                .dropshipData(dropshipDataBuilder)
+                .shippingInfoData(shippingInfoDataBuilder)
+                .productDataList(shipmentStateProductDataList);
+        shipmentStateShopProductDataList.add(builder.build());
     }
 
     @Override

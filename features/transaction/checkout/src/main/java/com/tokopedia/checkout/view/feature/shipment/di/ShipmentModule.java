@@ -15,6 +15,7 @@ import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.module.ConverterDataModule;
 import com.tokopedia.checkout.view.di.module.PeopleAddressModule;
@@ -120,6 +121,12 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    SaveShipmentStateUseCase provideSaveShipmentStateUseCase(ICartRepository iCartRepository) {
+        return new SaveShipmentStateUseCase(iCartRepository);
+    }
+
+    @Provides
+    @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
@@ -128,11 +135,12 @@ public class ShipmentModule {
                                                         CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase,
                                                         EditAddressUseCase editAddressUseCase,
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
-                                                        ChangeShippingAddressUseCase changeShippingAddressUseCase) {
+                                                        ChangeShippingAddressUseCase changeShippingAddressUseCase,
+                                                        SaveShipmentStateUseCase saveShipmentStateUseCase) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
                 checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
-                changeShippingAddressUseCase, shipmentAnalyticsActionListener);
+                changeShippingAddressUseCase, saveShipmentStateUseCase, shipmentAnalyticsActionListener);
     }
 
     @Provides

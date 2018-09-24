@@ -185,6 +185,8 @@ public interface ShipmentContract {
 
         void processCheckPromoCodeFromSuggestedPromo(String promoCode);
 
+        void processSaveShipmentState();
+
         RecipientAddressModel getRecipientAddressModel();
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);

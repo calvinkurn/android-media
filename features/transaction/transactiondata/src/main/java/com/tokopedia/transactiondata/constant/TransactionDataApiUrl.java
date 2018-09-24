@@ -33,6 +33,7 @@ public class TransactionDataApiUrl {
         public static final String PATH_COUPON_LIST = BASE_PATH + VERSION_2 + "/coupon_list";
         public static final String PATH_SAVE_PICKUP_STORE_POINT = BASE_PATH + VERSION_2 + "/save_pickup_store_point";
         public static final String PATH_CANCEL_AUTO_APPLY_COUPON = BASE_PATH + VERSION_2 + "/auto_applied_kupon/clear";
+        public static final String PATH_SAVE_SHIPMENT = BASE_PATH + VERSION_2 + "/save_shipment";
     }
 
     public static class TransactionAction {
