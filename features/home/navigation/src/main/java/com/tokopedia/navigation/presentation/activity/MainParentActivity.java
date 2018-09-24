@@ -121,6 +121,8 @@ public class MainParentActivity extends BaseActivity implements
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
 
+    private Handler handler = new Handler();
+
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
         return start(context);
@@ -329,25 +331,27 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void openFragment(Fragment fragment) {
-        String backStateName = fragment.getClass().getName();
+        handler.post(() -> {
+            String backStateName = fragment.getClass().getName();
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction ft = manager.beginTransaction();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction ft = manager.beginTransaction();
 
-        Fragment currentFrag = manager.findFragmentByTag(backStateName);
-        if (currentFrag != null && manager.getFragments().size() > 0) {
-            for (int i = 0; i < manager.getFragments().size(); i++) {
-                Fragment frag = manager.getFragments().get(i);
-                if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    ft.show(frag); // only show fragment what you want to show
-                } else {
-                    ft.hide(frag); // hide all fragment
+            Fragment currentFrag = manager.findFragmentByTag(backStateName);
+            if (currentFrag != null && manager.getFragments().size() > 0) {
+                for (int i = 0; i < manager.getFragments().size(); i++) {
+                    Fragment frag = manager.getFragments().get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                        ft.show(frag); // only show fragment what you want to show
+                    } else {
+                        ft.hide(frag); // hide all fragment
+                    }
                 }
+            } else {
+                ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-        } else {
-            ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
-        }
-        ft.commit();
+            ft.commitAllowingStateLoss();
+        });
     }
 
     private void scrollToTop(Fragment fragment) {
