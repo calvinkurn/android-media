@@ -34,7 +34,6 @@ class PostImageAdapter: PagerAdapter() {
                 false
         )
         val imageView = view.findViewById<ImageView>(R.id.image)
-//        val imageCardView = view.findViewById<CardView>(R.id.imageCardView)
         val imageUrl = imageList[position]
 
         imageView.viewTreeObserver.addOnGlobalLayoutListener(

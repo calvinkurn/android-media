@@ -62,18 +62,6 @@ class ProfilePostViewHolder(val v: View, val viewListener: ProfileContract.View)
         adapter.setList(ArrayList(element.images))
         viewPager.setAdapter(adapter)
         viewPager.offscreenPageLimit = adapter.count
-        itemView.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
-            override fun onTabReselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {
-            }
-
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewPager.requestLayout()
-                viewPager.invalidate()
-            }
-        })
         itemView.tabLayout.setupWithViewPager(viewPager)
     }
 }
