@@ -45,54 +45,62 @@ public class DigitalBrowseAnalytics {
     }
 
     public void eventPromoImpressionPopularBrand(List<DigitalBrowsePopularAnalyticsModel> promotionDatas) {
-        List<Object> promotions = new ArrayList<>();
+        try {
+            List<Object> promotions = new ArrayList<>();
 
-        for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
+            for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
+                Object promotion = DataLayer.mapOf(
+                        "id", Long.toString(promotionItem.getBannerId()),
+                        "name", "/belanja - Brand Pilihan",
+                        "creative", promotionItem.getBrandName(),
+                        "position", Integer.toString(promotionItem.getPosition()));
+
+                promotions.add(promotion);
+            }
+
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", Event.IMPRESSION_PROMO,
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", Action.IMPRESSION_BRAND_BELANJA,
+                            "eventLabel", "",
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoView", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(promotions.toArray()))
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
+        try {
             Object promotion = DataLayer.mapOf(
                     "id", Long.toString(promotionItem.getBannerId()),
                     "name", "/belanja - Brand Pilihan",
                     "creative", promotionItem.getBrandName(),
                     "position", Integer.toString(promotionItem.getPosition()));
 
+            List<Object> promotions = new ArrayList<>();
             promotions.add(promotion);
+
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", Event.CLICK_PROMO,
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", Action.CLICK_BRAND_BELANJA,
+                            "eventLabel", promotionItem.getBrandName(),
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoClick", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(promotions.toArray()))
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf(
-                        "event", Event.IMPRESSION_PROMO,
-                        "eventCategory", GENERIC_CATEGORY,
-                        "eventAction", Action.IMPRESSION_BRAND_BELANJA,
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(promotions.toArray()))
-                        )
-                )
-        );
-    }
-
-    public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
-        Object promotion = DataLayer.mapOf(
-                "id", Long.toString(promotionItem.getBannerId()),
-                "name", "/belanja - Brand Pilihan",
-                "creative", promotionItem.getBrandName(),
-                "position", Integer.toString(promotionItem.getPosition()) );
-
-        List<Object> promotions = new ArrayList<>();
-        promotions.add(promotion);
-
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf(
-                        "event", Event.CLICK_PROMO,
-                        "eventCategory", GENERIC_CATEGORY,
-                        "eventAction", Action.CLICK_BRAND_BELANJA,
-                        "eventLabel", promotionItem.getBrandName(),
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(promotions.toArray()))
-                        )
-                )
-        );
     }
 
     public void eventImpressionHomePage(String iconName, int iconPosition) {
