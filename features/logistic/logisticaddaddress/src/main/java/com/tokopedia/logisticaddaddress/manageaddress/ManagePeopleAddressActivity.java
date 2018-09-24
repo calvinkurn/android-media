@@ -12,8 +12,8 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
-import com.tokopedia.core.manage.people.address.service.ManagePeopleAddressReceiver;
-import com.tokopedia.core.manage.people.address.service.ManagePeopleAddressService;
+import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
+import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
 import butterknife.BindView;
 

@@ -1,6 +1,6 @@
 package com.tokopedia.logisticaddaddress.model.datamanager;
 
-import com.tokopedia.core.manage.people.address.model.GetAddressDataPass;
+import com.tokopedia.logisticaddaddress.model.GetAddressDataPass;
 
 import java.util.HashMap;
 import java.util.Map;
