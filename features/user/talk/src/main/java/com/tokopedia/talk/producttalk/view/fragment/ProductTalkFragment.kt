@@ -504,18 +504,23 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onChatClicked() {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getAskSellerIntent(
-                    this,
-                    shopId,
-                    "",
-                    "",
-                    productUrl,
-                    "product",
-                    "")
-            this@ProductTalkFragment.startActivity(intent)
+        if (presenter.isLoggedIn()) {
+            if (shopId.isNotBlank()) {
+                activity?.applicationContext?.run {
+                    val intent: Intent = (this as TalkRouter).getAskSellerIntent(
+                            this,
+                            shopId,
+                            "",
+                            "",
+                            productUrl,
+                            "product",
+                            "")
+                    this@ProductTalkFragment.startActivity(intent)
+                }
+            }
+        } else {
+            goToLogin()
         }
-
     }
 
     override fun onGoToUserProfile(userId: String) {
