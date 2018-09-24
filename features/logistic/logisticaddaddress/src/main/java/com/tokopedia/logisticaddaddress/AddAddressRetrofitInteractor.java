@@ -3,8 +3,8 @@ package com.tokopedia.logisticaddaddress;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tokopedia.core.database.model.Province;
 import com.tokopedia.logisticaddaddress.model.FormAddressDomainModel;
+import com.tokopedia.logisticaddaddress.model.db.Province;
 
 import java.util.ArrayList;
 import java.util.Map;

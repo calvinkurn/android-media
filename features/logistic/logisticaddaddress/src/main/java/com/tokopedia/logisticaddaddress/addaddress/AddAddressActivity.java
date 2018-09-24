@@ -11,8 +11,8 @@ import android.support.annotation.Nullable;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.logisticaddaddress.model.AddressModel;
-import com.tokopedia.logisticaddaddress.model.Token;
 
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_FROM_CART_IS_EMPTY_ADDRESS_FIRST;

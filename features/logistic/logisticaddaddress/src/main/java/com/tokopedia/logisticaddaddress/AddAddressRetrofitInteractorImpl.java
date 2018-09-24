@@ -12,18 +12,18 @@ import com.tkpd.library.utils.data.model.ListCity;
 import com.tkpd.library.utils.data.model.ListDistricts;
 import com.tkpd.library.utils.data.model.ListProvince;
 import com.tokopedia.core.database.DbFlowDatabase;
-import com.tokopedia.core.database.model.City;
 import com.tokopedia.core.database.model.City_Table;
-import com.tokopedia.core.database.model.District;
-import com.tokopedia.core.database.model.Province;
 import com.tokopedia.core.database.model.Province_Table;
-import com.tokopedia.core.manage.people.address.model.FormAddressDomainModel;
 import com.tokopedia.core.network.apiservices.etc.AddressService;
 import com.tokopedia.core.network.apiservices.user.PeopleActService;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
 import com.tokopedia.core.network.retrofit.response.ErrorListener;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
+import com.tokopedia.logisticaddaddress.model.FormAddressDomainModel;
+import com.tokopedia.logisticaddaddress.model.db.City;
+import com.tokopedia.logisticaddaddress.model.db.District;
+import com.tokopedia.logisticaddaddress.model.db.Province;
 
 import org.json.JSONException;
 

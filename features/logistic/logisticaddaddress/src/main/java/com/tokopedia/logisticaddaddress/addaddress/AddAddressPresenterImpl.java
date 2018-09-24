@@ -2,13 +2,13 @@ package com.tokopedia.logisticaddaddress.addaddress;
 
 import android.text.TextUtils;
 
-import com.tokopedia.core.database.model.City;
-import com.tokopedia.core.database.model.Province;
-import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractor;
-import com.tokopedia.core.manage.people.address.interactor.AddAddressRetrofitInteractorImpl;
-import com.tokopedia.core.manage.people.address.listener.AddAddressFragmentView;
-import com.tokopedia.core.manage.people.address.model.Destination;
-import com.tokopedia.core.manage.people.address.model.FormAddressDomainModel;
+
+import com.tokopedia.logisticaddaddress.model.Destination;
+import com.tokopedia.logisticaddaddress.model.db.City;
+import com.tokopedia.logisticaddaddress.model.db.Province;
+import com.tokopedia.logisticaddaddress.AddAddressRetrofitInteractor;
+import com.tokopedia.logisticaddaddress.AddAddressRetrofitInteractorImpl;
+import com.tokopedia.logisticaddaddress.model.FormAddressDomainModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
