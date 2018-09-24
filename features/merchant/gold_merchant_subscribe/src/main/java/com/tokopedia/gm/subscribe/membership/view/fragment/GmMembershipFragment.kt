@@ -83,7 +83,7 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
         }
 
         btnExtend.setOnClickListener {
-            gmSubscribeMembershipTracking.eventClickExtend(subscriptionNameSelected)
+            gmSubscribeMembershipTracking.eventClickExtend()
             (activity!!.application as TkpdCoreRouter).goToMerchantRedirect(activity!!)
         }
 

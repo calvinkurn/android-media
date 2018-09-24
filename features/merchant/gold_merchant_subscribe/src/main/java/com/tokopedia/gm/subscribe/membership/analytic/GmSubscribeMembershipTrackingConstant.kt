@@ -10,7 +10,7 @@ object GmSubscribeMembershipTrackingConstant {
 
     //action
     const val CLICK_TOGGLE = "click toggle "
-    const val CLICK_EXTEND = "click - "
+    const val CLICK_EXTEND = "click package"
     const val CLICK_SUBSCRIBE = "click subscribe - "
     const val CLICK_LEARN_MORE = "click - learn more"
 

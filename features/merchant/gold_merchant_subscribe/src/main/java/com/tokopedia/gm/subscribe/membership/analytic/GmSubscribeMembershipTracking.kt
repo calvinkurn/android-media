@@ -23,8 +23,8 @@ class GmSubscribeMembershipTracking (private val gmSubscribeModuleRouter: GmSubs
         eventGmMembershipSubscribe(GmSubscribeMembershipTrackingConstant.CLICK_TOGGLE + action)
     }
 
-    fun eventClickExtend(subscription_type: String) {
-        eventGmMembershipSubscribe(GmSubscribeMembershipTrackingConstant.CLICK_EXTEND + subscription_type)
+    fun eventClickExtend() {
+        eventGmMembershipSubscribe(GmSubscribeMembershipTrackingConstant.CLICK_EXTEND)
     }
 
     fun eventClickSubscribe(subscription_type: String) {
