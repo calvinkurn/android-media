@@ -495,7 +495,7 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
         if (!slidesModel.isImpressed()
                 && slidesModel.getTopadsViewUrl()!=null
                 && !slidesModel.getTopadsViewUrl().isEmpty()) {
-            Observable.just(new ImpresionTask(new ImpressionListener() {
+            compositeSubscription.add(Observable.just(new ImpresionTask(new ImpressionListener() {
                 @Override
                 public void onSuccess() {
                     slidesModel.setImpressed(true);
@@ -505,7 +505,12 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 public void onFailed() {
                     slidesModel.setImpressed(false);
                 }
-            }).execute(slidesModel.getTopadsViewUrl())).debounce(200, TimeUnit.MILLISECONDS);
+            }).execute(slidesModel.getTopadsViewUrl()))
+                    .debounce(200, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe());
         }
     }
 
