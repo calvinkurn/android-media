@@ -190,8 +190,8 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             val intent: Intent = if (commentId.isBlank()) {
                 ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
             } else {
-                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
-                        productId, commentId)
+                ReportTalkActivity.createIntentReportComment(this, talkId, commentId,
+                        shopId, productId)
             }
             this@InboxTalkFragment.startActivityForResult(intent, REQUEST_REPORT_TALK)
         }

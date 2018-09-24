@@ -495,8 +495,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             val intent: Intent = if (commentId.isBlank()) {
                 ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
             } else {
-                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
-                        productId, commentId)
+                ReportTalkActivity.createIntentReportComment(this, talkId, commentId,
+                        shopId, productId)
             }
             this@TalkDetailsFragment.startActivityForResult(intent, GO_TO_REPORT_TALK_REQ_CODE)
         }

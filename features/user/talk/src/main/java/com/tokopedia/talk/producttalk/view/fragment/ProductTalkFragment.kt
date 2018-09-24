@@ -346,8 +346,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
             val intent: Intent = if (commentId.isBlank()) {
                 ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
             } else {
-                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
-                        productId, commentId)
+                ReportTalkActivity.createIntentReportComment(this, talkId, commentId,
+                        shopId, productId)
             }
             this@ProductTalkFragment.startActivityForResult(intent, REQUEST_REPORT_TALK)
         }
