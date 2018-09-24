@@ -91,9 +91,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     private static final int HAS_ELEVATION = 8;
     private static final int NO_ELEVATION = 0;
 
-    private static final int TOP_ADS_COUNT = 4;
-//    private static final int REQUEST_CODE_ROUTE_WISHLIST = 123;
-
     private View toolbar;
     private AppBarLayout appBarLayout;
     private RecyclerView cartRecyclerView;
@@ -1088,7 +1085,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         getActivity().invalidateOptionsMenu();
         checkoutModuleRouter.checkoutModuleRouterResetBadgeCart();
 
-        // Todo : change fragment to EmptyCartFragment
         String autoApplyMessage = null;
         if (cartListData != null && cartListData.getAutoApplyData() != null &&
                 cartListData.getAutoApplyData().isSuccess()) {
@@ -1102,66 +1098,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             }
         }
         showEmptyCartContainer();
-/*
-        emptyCartContainer.removeAllViews();
-
-
-        @SuppressLint("InflateParams") View emptyState = LayoutInflater.from(getActivity()).
-                inflate(R.layout.layout_empty_shopping_cart_new, null);
-
-        NestedScrollView scrollViewEmptyCart = emptyState.findViewById(R.id.scrollview_empty_cart);
-        layoutUsedPromoEmptyCart = emptyState.findViewById(R.id.layout_used_promo);
-        TextView tvPromoCodeEmptyCart = emptyState.findViewById(R.id.textview_promo_code);
-        View btnCancelPromoCodeEmptyCart = emptyState.findViewById(R.id.button_cancel);
-        View btnContinueShoppingEmptyCart = emptyState.findViewById(R.id.btn_shopping_now);
-        View btnAddFromWishListEmptyCart = emptyState.findViewById(R.id.btn_add_from_whislist);
-        TopAdsView topAdsViewEmptyCart = emptyState.findViewById(R.id.topads);
-        emptyCartContainer.addView(emptyState);
-
-        if (cartListData != null && cartListData.getAutoApplyData() != null &&
-                cartListData.getAutoApplyData().isSuccess()) {
-            layoutUsedPromoEmptyCart.setVisibility(View.VISIBLE);
-            tvPromoCodeEmptyCart.setText(cartListData.getAutoApplyData().getTitleDescription());
-            btnCancelPromoCodeEmptyCart.setOnClickListener(view -> dPresenter.processCancelAutoApply());
-        } else {
-            layoutUsedPromoEmptyCart.setVisibility(View.GONE);
-        }
-        btnContinueShoppingEmptyCart.setOnClickListener(view -> {
-            sendAnalyticsOnClickShoppingNowCartEmptyState();
-            navigateToActivity(
-                    checkoutModuleRouter.checkoutModuleRouterGetHomeFeedIntent(getActivity())
-            );
-            getActivity().finish();
-        });
-        btnAddFromWishListEmptyCart.setOnClickListener(v -> {
-            sendAnalyticsOnClickAddFromWishListCartEmptyState();
-            navigateToActivityRequest(
-                    checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
-                    REQUEST_CODE_ROUTE_WISHLIST
-            );
-        });
-        TopAdsParams params = new TopAdsParams();
-        params.getParam().put(TopAdsParams.KEY_SRC, TOPADS_CART_SRC);
-
-        Config config = new Config.Builder()
-                .setSessionId(userSession.getDeviceId())
-                .setUserId(userSession.getUserId())
-                .withPreferedCategory()
-                .setEndpoint(Endpoint.PRODUCT)
-                .displayMode(DisplayMode.FEED)
-                .topAdsParams(params)
-                .build();
-
-        topAdsViewEmptyCart.setConfig(config);
-        topAdsViewEmptyCart.setDisplayMode(DisplayMode.FEED);
-        topAdsViewEmptyCart.setMaxItems(TOP_ADS_COUNT);
-        topAdsViewEmptyCart.setAdsItemClickListener(this);
-        topAdsViewEmptyCart.loadTopAds();
-
-        int scrollTo = ((View) tvPromoCodeEmptyCart.getParent().getParent()).getTop() + tvPromoCodeEmptyCart.getTop();
-        scrollViewEmptyCart.smoothScrollTo(0, scrollTo);
-        setVisibilityRemoveButton(false);
-*/
         notifyBottomCartParent();
     }
 
@@ -1354,21 +1290,10 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
             case ShipmentActivity.REQUEST_CODE:
                 onResultFromRequestCodeCartShipment(resultCode, data);
                 break;
-//            case REQUEST_CODE_ROUTE_WISHLIST:
-//                onResultFromRequestCodeWishlist();
-//                break;
         }
     }
 
-//    private void onResultFromRequestCodeWishlist() {
-//        refreshHandler.startRefresh();
-//    }
-
     private void onResultFromRequestCodeCartShipment(int resultCode, Intent data) {
-//        if (resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_SINGLE_SHIPMENT ||
-//                resultCode == ShipmentActivity.RESULT_CODE_FORCE_RESET_CART_FROM_MULTIPLE_SHIPMENT) {
-//            dPresenter.processResetAndRefreshCartData();
-//        } else
         if (resultCode == TopPayActivity.PAYMENT_CANCELLED) {
             NetworkErrorHelper.showSnackbar(
                     getActivity(),

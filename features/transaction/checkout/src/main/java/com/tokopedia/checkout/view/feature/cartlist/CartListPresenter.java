@@ -546,7 +546,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
-//                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
             }
@@ -782,7 +781,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
-//                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
