@@ -269,7 +269,7 @@ class ShopSettingsEtalaseListFragment : BaseSearchListFragment<BaseShopEtalaseVi
         isLoadingInitialData = true
         val tempShopEtalaseViewModels = ArrayList<BaseShopEtalaseViewModel>()
         if (this.shopEtalaseViewModels!= null &&
-                this.shopEtalaseViewModels.size > 0) {
+                this.shopEtalaseViewModels!!.size > 0) {
             val textLowerCase = text.toLowerCase()
             for (shopEtalaseViewModel in this.shopEtalaseViewModels!!) {
                 if (shopEtalaseViewModel.name.toLowerCase().contains(textLowerCase)) {
