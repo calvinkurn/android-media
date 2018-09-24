@@ -121,6 +121,12 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
                 ticketSuccessLayouyt.setVisibility(View.GONE);
                 redeemTicket.setVisibility(View.GONE);
                 ticketRedeemed.setVisibility(View.VISIBLE);
+                if (scanTicketResponse.getProduct() != null) {
+                    eventName.setText(scanTicketResponse.getProduct().getDisplayName());
+                    if (scanTicketResponse.getSchedule() != null) {
+                        eventDate.setText(scanTicketResponse.getSchedule().getShowData());
+                    }
+                }
             } else if (scanTicketResponse.getAction() != null && scanTicketResponse.getAction().get(0).getButtonType().equalsIgnoreCase("button")) {
                 if (scanTicketResponse.getUser() != null) {
                     if (!TextUtils.isEmpty(scanTicketResponse.getUser().getName())) {
