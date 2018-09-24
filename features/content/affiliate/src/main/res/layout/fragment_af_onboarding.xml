@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_16"
     tools:context=".feature.onboarding.view.fragment.OnboardingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <ImageView
+        android:layout_width="@dimen/dp_240"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_loading_image" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="3sp"
+        android:textColor="@color/black_70"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold"
+        android:text="@string/af_onboarding_start_by_me" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:fontFamily="sans-serif"
+        android:gravity="center_horizontal"
+        android:lineSpacingExtra="6sp"
+        android:textColor="@color/black_54"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="normal"
+        android:text="@string/af_onboarding_make_profile_desc" />
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_24"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary"
+        android:text="@string/af_try_now"/>
+
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_10"
+        android:clickable="true"
+        android:focusable="true"
+        android:fontFamily="sans-serif-medium"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:gravity="center_horizontal"
+        android:padding="@dimen/dp_8"
+        android:textColor="@color/medium_green"
+        android:textSize="@dimen/sp_12"
+        android:textStyle="normal"
+        android:text="@string/af_about_comission" />
 
-</FrameLayout>
+</LinearLayout>

@@ -18,4 +18,11 @@
     <string name="text_empty_start_recommendation_btn">Mulai Rekomendasi</string>
     <string name="text_empty_have_recommendation">Kamu masih memiliki 10 jatah rekomendasi yang bisa diambil.</string>
 
+    <!--DASHBOARD-->
+    <string name="title_af_onboarding">Tokopedia By.Me</string>
+    <string name="af_about_comission">Tentang Komisi</string>
+    <string name="af_try_now">Coba Sekarang</string>
+    <string name="af_onboarding_make_profile_desc">Buat halaman profil <bold>By.Me</bold>, lalu mulai rekomendasikan produk pilihan untuk dapatkan komisinya!</string>
+    <string name="af_onboarding_start_by_me">Mulailah Dari By.Me!</string>
+
 </resources>
