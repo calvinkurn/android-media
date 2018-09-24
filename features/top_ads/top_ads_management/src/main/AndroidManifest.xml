@@ -17,9 +17,6 @@
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
                     android:pathPrefix="/v2/manage/headline"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
-                    android:pathPrefix="/v2/manage/headline"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -27,9 +24,6 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/keyword/insight"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
                     android:pathPrefix="/v2/manage/keyword/insight"/>
             </intent-filter>
         </activity>
@@ -45,9 +39,6 @@
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
                     android:pathPrefix="/v2/manage/product"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
-                    android:pathPrefix="/v2/manage/product"/>
             </intent-filter>
         </activity>
         <activity
@@ -61,9 +52,6 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
-                    android:pathPrefix="/v2/manage/group"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
                     android:pathPrefix="/v2/manage/group"/>
             </intent-filter>
         </activity>
@@ -145,9 +133,6 @@
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
                     android:path="/v2/manage/keyword/positive"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
-                    android:path="/v2/manage/keyword/positive"/>
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -155,9 +140,6 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"
                     android:host="ta.tokopedia.com"
-                    android:path="/v2/manage/keyword/negative"/>
-                <data android:scheme="https"
-                    android:host="ta-staging.tokopedia.com"
                     android:path="/v2/manage/keyword/negative"/>
             </intent-filter>
         </activity>
