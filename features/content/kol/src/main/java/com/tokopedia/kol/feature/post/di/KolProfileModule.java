@@ -3,12 +3,19 @@ package com.tokopedia.kol.feature.post.di;
 import com.tokopedia.kol.common.data.source.api.KolApi;
 import com.tokopedia.kol.feature.post.data.mapper.LikeKolPostMapper;
 import com.tokopedia.kol.feature.post.data.source.LikeKolPostSourceCloud;
-import com.tokopedia.kol.feature.post.domain.interactor.GetKolPostUseCase;
-import com.tokopedia.kol.feature.post.domain.interactor.LikeKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostShopUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.GetKolPostUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.LikeKolPostUseCase;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactory;
 import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactoryImpl;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
+import com.tokopedia.kol.feature.post.view.listener.KolPostShopContract;
 import com.tokopedia.kol.feature.post.view.presenter.KolPostPresenter;
+import com.tokopedia.kol.feature.post.view.presenter.KolPostShopPresenter;
+import com.tokopedia.kol.feature.postdetail.domain.interactor.GetKolPostDetailUseCase;
+import com.tokopedia.kol.feature.postdetail.view.listener.KolPostDetailContract;
+import com.tokopedia.kol.feature.postdetail.view.presenter.KolPostDetailPresenter;
 
 import dagger.Module;
 import dagger.Provides;
@@ -45,5 +52,20 @@ public class KolProfileModule {
         return new LikeKolPostSourceCloud(viewListener.getContext(), kolApi, likeKolPostMapper);
     }
 
+    @KolProfileScope
+    @Provides
+    KolPostDetailContract.Presenter
+    provideKolPostDetailPresenter(GetKolPostDetailUseCase getKolPostDetailUseCase,
+                                  LikeKolPostUseCase likeKolPostUseCase,
+                                  FollowKolPostGqlUseCase followKolPostGqlUseCase) {
+        return new KolPostDetailPresenter(getKolPostDetailUseCase, likeKolPostUseCase,
+                followKolPostGqlUseCase);
+    }
 
+    @KolProfileScope
+    @Provides
+    KolPostShopContract.Presenter
+    provideKolPostShopPresenter(GetKolPostShopUseCase getKolPostShopUseCase) {
+        return new KolPostShopPresenter(getKolPostShopUseCase);
+    }
 }

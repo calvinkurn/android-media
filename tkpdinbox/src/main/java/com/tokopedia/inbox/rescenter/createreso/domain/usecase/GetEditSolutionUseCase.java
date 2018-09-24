@@ -1,11 +1,11 @@
 package com.tokopedia.inbox.rescenter.createreso.domain.usecase;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.inbox.rescenter.createreso.data.repository.EditSolutionRepository;
+import com.tokopedia.inbox.rescenter.createreso.data.source.CreateResolutionSource;
 import com.tokopedia.inbox.rescenter.createreso.domain.model.solution.EditSolutionResponseDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import javax.inject.Inject;
 
 import rx.Observable;
 
@@ -16,18 +16,16 @@ import rx.Observable;
 public class GetEditSolutionUseCase extends UseCase<EditSolutionResponseDomain> {
     public static final String RESO_ID = "reso_id";
 
-    private EditSolutionRepository editSolutionRepository;
+    private CreateResolutionSource createResolutionSource;
 
-    public GetEditSolutionUseCase(ThreadExecutor threadExecutor,
-                                  PostExecutionThread postExecutionThread,
-                                  EditSolutionRepository editSolutionRepository) {
-        super(threadExecutor, postExecutionThread);
-        this.editSolutionRepository = editSolutionRepository;
+    @Inject
+    public GetEditSolutionUseCase(CreateResolutionSource createResolutionSource) {
+        this.createResolutionSource = createResolutionSource;
     }
 
     @Override
     public Observable<EditSolutionResponseDomain> createObservable(RequestParams requestParams) {
-        return editSolutionRepository.getEditSolutionFromCloud(requestParams);
+        return createResolutionSource.getEditSolution(requestParams);
     }
 
     public RequestParams getEditSolutionUseCaseParams(String resoId) {

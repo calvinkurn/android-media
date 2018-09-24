@@ -119,7 +119,7 @@ public class BaseKolView extends BaseCustomView {
             followText.setText(R.string.action_follow_english);
         }
 
-        UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
+        setKolText(element);
 
         if (element.isLiked()) {
             ImageHandler.loadImageWithIdWithoutPlaceholder(likeIcon, R.drawable.ic_thumb_green);
@@ -159,8 +159,8 @@ public class BaseKolView extends BaseCustomView {
         kolText.setOnClickListener(v -> {
             if (kolText.getText().toString().endsWith(
                     kolText.getContext().getString(R.string.read_more_english))) {
-                UrlUtil.setTextWithClickableTokopediaUrl(kolText, element.getReview());
                 element.setReviewExpanded(true);
+                setKolText(element);
 
                 viewListener.onDescriptionClickListener(element);
             }
@@ -173,6 +173,16 @@ public class BaseKolView extends BaseCustomView {
 
     public void onViewRecycled() {
         ImageHandler.clearImage(avatar);
+    }
+
+    private void setKolText(final BaseKolViewModel element) {
+        if (element.getReviewUrlClickableSpan() != null) {
+            UrlUtil.setTextWithClickableTokopediaUrl(kolText,
+                    getKolText(element),
+                    element.getReviewUrlClickableSpan());
+        } else {
+            UrlUtil.setTextWithClickableTokopediaUrl(kolText, getKolText(element));
+        }
     }
 
     private String getKolText(BaseKolViewModel element) {

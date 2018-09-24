@@ -198,7 +198,7 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
         NetworkErrorHelper.showEmptyState(this, mainView, new NetworkErrorHelper.RetryClickedListener() {
             @Override
             public void onRetryClicked() {
-                presenter.processDeepLinkAction(uriData);
+                presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
             }
         });
     }
@@ -318,9 +318,9 @@ public class DeepLinkActivity extends BasePresenterActivity<DeepLinkPresenter> i
             } else {
                 presenter.checkUriLogin(uriData);
                 if (presenter.isLandingPageWebView(uriData)) {
-                    presenter.processDeepLinkAction(uriData);
+                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
                 } else {
-                    presenter.processDeepLinkAction(uriData);
+                    presenter.processDeepLinkAction(DeepLinkActivity.this, uriData);
                 }
             }
         }

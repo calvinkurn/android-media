@@ -29,7 +29,7 @@
 
         <FrameLayout
             android:id="@+id/image_button_option"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_24"
             android:layout_height="match_parent"
             android:clickable="true"
             android:visibility="gone"
@@ -37,11 +37,11 @@
             android:foreground="?selectableItemBackground">
 
             <ImageView
-                android:layout_width="@dimen/dp_24"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                app:srcCompat="@drawable/ic_more_vert_grey"
-                tools:src="@drawable/ic_more_vert_grey" />
+                app:srcCompat="@drawable/ic_topads_more_vert_grey"
+                tools:src="@drawable/ic_topads_more_vert_grey" />
         </FrameLayout>
 
 

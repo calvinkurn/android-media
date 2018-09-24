@@ -14,8 +14,6 @@ import com.tokopedia.tkpdpdp.R;
 
 import java.util.ArrayList;
 
-import butterknife.ButterKnife;
-
 /**
  * @author by HenryPri on 12/05/17.
  */
@@ -67,7 +65,6 @@ public class CourierAdapter extends RecyclerView.Adapter<CourierAdapter.CourierV
 
         CourierViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this, itemView);
             name = (TextView) itemView.findViewById(R.id.courier_item_name);
             info = (TextView) itemView.findViewById(R.id.courier_item_info);
             image = (ImageView) itemView.findViewById(R.id.courier_item_image);

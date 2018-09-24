@@ -10,11 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.text.TkpdTextInputLayout;
+import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.orderlist.contract.FlightResendETicketContract;
+import com.tokopedia.flight.orderlist.di.DaggerFlightOrderComponent;
 import com.tokopedia.flight.orderlist.di.FlightOrderComponent;
 import com.tokopedia.flight.orderlist.presenter.FlightResendETicketPresenter;
 
@@ -63,12 +64,11 @@ public class FlightResendETicketDialogFragment extends DialogFragment implements
             userEmail = getArguments().getString(EXTRA_USER_EMAIL);
         }
 
-        getComponent(FlightOrderComponent.class)
-                .inject(this);
-    }
+        FlightOrderComponent component = DaggerFlightOrderComponent.builder()
+                .flightComponent(FlightComponentInstance.getFlightComponent(getActivity().getApplication()))
+                .build();
 
-    protected <C> C getComponent(Class<C> componentType) {
-        return componentType.cast(((HasComponent<C>) getActivity()).getComponent());
+        component.inject(this);
     }
 
     @Nullable

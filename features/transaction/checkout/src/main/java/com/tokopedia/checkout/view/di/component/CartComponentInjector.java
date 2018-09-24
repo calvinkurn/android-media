@@ -3,11 +3,13 @@ package com.tokopedia.checkout.view.di.component;
 import android.app.Application;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
 import com.tokopedia.checkout.domain.usecase.GetMarketPlaceCartCounterUseCase;
+import com.tokopedia.checkout.domain.usecase.UpdateCartUseCase;
 import com.tokopedia.checkout.view.di.module.CartUseCaseModule;
 import com.tokopedia.checkout.view.di.module.CheckoutRouterModule;
 import com.tokopedia.checkout.view.di.module.CheckoutUseCaseModule;
@@ -25,6 +27,8 @@ public class CartComponentInjector {
     private static CartComponentInjector instance;
 
     @Inject
+    UpdateCartUseCase updateCartUseCase;
+    @Inject
     AddToCartUseCase addToCartUseCase;
     @Inject
     CheckPromoCodeCartListUseCase checkPromoCodeCartListUseCase;
@@ -34,6 +38,8 @@ public class CartComponentInjector {
     GetCouponListCartMarketPlaceUseCase getCouponListCartMarketPlaceUseCase;
     @Inject
     GetMarketPlaceCartCounterUseCase getMarketPlaceCartCounterUseCase;
+    @Inject
+    UserSession userSession;
 
     private CartComponent cartApiServiceComponent;
 
@@ -74,6 +80,10 @@ public class CartComponentInjector {
         return addToCartUseCase;
     }
 
+    public UpdateCartUseCase getUpdateCartUseCase() {
+        return updateCartUseCase;
+    }
+
     public CheckPromoCodeCartListUseCase getCheckPromoCodeCartListUseCase() {
         return checkPromoCodeCartListUseCase;
     }
@@ -88,5 +98,9 @@ public class CartComponentInjector {
 
     public GetMarketPlaceCartCounterUseCase getGetMarketPlaceCartCounterUseCase() {
         return getMarketPlaceCartCounterUseCase;
+    }
+
+    public UserSession getUserSession() {
+        return userSession;
     }
 }

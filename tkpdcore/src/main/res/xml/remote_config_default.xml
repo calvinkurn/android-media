@@ -190,10 +190,6 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>mainapp_flight_transaction_menu</key>
-        <value>false</value>
-    </entry>
-    <entry>
         <key>mainapp_show_recomendation_button</key>
         <value>true</value>
     </entry>
@@ -218,5 +214,57 @@
     <entry>
         <key>mainapp_digital_smartcard</key>
         <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_notif_center</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>indicator_groupchat</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>mainapp_login_inactive_phone_no_link</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_kai_native_enable</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_interest_pick</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_is_enabled_new_withdraw</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_is_enabled_new_withdraw</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_wallet_label_register</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>mainapp_wallet_applink_register</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>mainapp_wallet_applink</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>mainapp_wallet_label_name</key>
+        <value></value>
+    </entry>
+    <entry>
+        <key>mainapp_enable_feed_shop_page</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_enable_feed_shop_page</key>
+        <value>true</value>
     </entry>
 </defaultsMap>

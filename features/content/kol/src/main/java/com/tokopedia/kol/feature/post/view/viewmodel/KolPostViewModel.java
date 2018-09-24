@@ -7,7 +7,8 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel
+        implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
     private String kolImage;
@@ -16,6 +17,7 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
     private String tagsType;
     private String tagsCaption;
     private String tagsLink;
+    private boolean showTopShadow;
 
     public KolPostViewModel(int userId, String cardType, String title, String name,
                             String avatar, String label, String kolProfileUrl, boolean followed,
@@ -79,6 +81,14 @@ public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolP
 
     public void setTagsLink(String tagsLink) {
         this.tagsLink = tagsLink;
+    }
+
+    public boolean isShowTopShadow() {
+        return showTopShadow;
+    }
+
+    public void setShowTopShadow(boolean showTopShadow) {
+        this.showTopShadow = showTopShadow;
     }
 
     @Override

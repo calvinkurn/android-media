@@ -77,7 +77,7 @@ public class RegisterAnalytics {
                 Event.CLICK_CONFIRM,
                 Category.REGISTER_PAGE,
                 "click on pop up box register (ubah)",
-                ""
+                "phone number"
         );
     }
 
@@ -95,7 +95,7 @@ public class RegisterAnalytics {
                 Event.CLICK_CONFIRM,
                 Category.REGISTER_PAGE,
                 "click on pop up box register (ubah)",
-                ""
+                "email"
         );
     }
 

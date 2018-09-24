@@ -131,9 +131,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChatRoom()) {
-            taskStackBuilder.addNextIntent(detailsIntent);
-        }
+        taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
 
@@ -147,9 +145,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
+        taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -165,9 +161,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntent(homeIntent);
-        if (((GroupChatModuleRouter) context.getApplicationContext()).isEnabledGroupChat()) {
-            taskStackBuilder.addNextIntent(parentIntent);
-        }
+        taskStackBuilder.addNextIntent(parentIntent);
         taskStackBuilder.addNextIntent(detailsIntent);
         return taskStackBuilder;
     }
@@ -232,9 +226,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!isEnabledGroupChatRoom()) {
-            finish();
-        }
 
         if (savedInstanceState != null) {
             initialFragment = savedInstanceState.getInt(INITIAL_FRAGMENT, CHATROOM_FRAGMENT);
@@ -270,6 +261,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         initPreference();
     }
 
+<<<<<<< HEAD
     private void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
@@ -308,6 +300,8 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
 
+=======
+>>>>>>> 6f4bcdd31f70e9a9efbf9c287eb93e7064de7386
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -473,7 +467,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         String link = ChatroomUrl.GROUP_CHAT_URL.replace(TAG_CHANNEL, viewModel.getChannelUrl());
 
         String description = String.format("%s %s", String.format(getString(R.string.lets_join_channel),
-                viewModel.getChannelName()), link);
+                viewModel.getChannelName()), "");
 
         ((GroupChatModuleRouter) getApplication()).shareGroupChat(this,
                 viewModel.getChannelUuid(), viewModel.getChannelName(), description,
@@ -1025,9 +1019,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     protected void onResume() {
         super.onResume();
 
-        if (((GroupChatModuleRouter) getApplicationContext()).isEnabledIdleKick()) {
-            kickIfIdleForTooLong();
-        }
+        kickIfIdleForTooLong();
 
         if (viewModel != null && viewModel.getChannelInfoViewModel() != null
                 && !isFirstTime) {
@@ -1072,19 +1064,14 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onSuccessRefreshChannelInfo(ChannelInfoViewModel channelInfoViewModel) {
         setChannelInfoView(channelInfoViewModel);
-        refreshTab();
-        tabAdapter.setActiveFragment(initialFragment);
-        if (currentFragmentIsChat()) {
-            refreshChat();
-        } else if (currentFragmentIsVote() && checkPollValid()) {
-            refreshVote(channelInfoViewModel.getVoteInfoViewModel());
-        } else if (currentFragmentIsVote()) {
-            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
-            showFragment(CHATROOM_FRAGMENT);
-        } else if (currentFragmentIsInfo()) {
-            populateChannelInfoFragment();
-        }
-        setGreenIndicator(channelInfoViewModel.getVoteInfoViewModel());
+
+        presenter.logoutChannel(mChannel);
+        presenter.enterChannelAfterRefresh(userSession.getUserId(),
+                viewModel.getChannelInfoViewModel().getChannelUrl(),
+                userSession.getName(), userSession.getProfilePicture(),
+                this, channelInfoViewModel.getSendBirdToken());
+
+
     }
 
     private void refreshTab() {
@@ -1259,6 +1246,34 @@ public class GroupChatActivity extends BaseSimpleActivity
         } catch (NullPointerException e) {
             e.printStackTrace();
             onErrorEnterChannel(getString(R.string.default_request_error_unknown));
+        }
+    }
+
+    @Override
+    public void onSuccessEnterRefreshChannel(OpenChannel openChannel) {
+
+        hideLoading();
+        mChannel = openChannel;
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag
+                (GroupChatFragment.class.getSimpleName());
+        if (fragment != null) {
+            ((GroupChatFragment) fragment).setChannel(mChannel);
+        }
+
+        refreshTab();
+        setGreenIndicator(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        setTooltip(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        tabAdapter.setActiveFragment(initialFragment);
+
+        if (currentFragmentIsChat()) {
+            refreshChat();
+        } else if (currentFragmentIsVote() && checkPollValid()) {
+            refreshVote(viewModel.getChannelInfoViewModel().getVoteInfoViewModel());
+        } else if (currentFragmentIsVote()) {
+            viewModel.getChannelInfoViewModel().setVoteInfoViewModel(null);
+            showFragment(CHATROOM_FRAGMENT);
+        } else if (currentFragmentIsInfo()) {
+            populateChannelInfoFragment();
         }
     }
 

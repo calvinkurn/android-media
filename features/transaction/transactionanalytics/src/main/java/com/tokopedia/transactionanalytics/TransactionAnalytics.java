@@ -1,6 +1,7 @@
 package com.tokopedia.transactionanalytics;
 
 import android.app.Activity;
+import android.util.Log;
 
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 
@@ -33,7 +34,8 @@ public abstract class TransactionAnalytics {
     }
 
     void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
-        if (analyticTracker != null)
+        if (analyticTracker != null) {
             analyticTracker.sendEnhancedEcommerce(dataLayer);
+        }
     }
 }

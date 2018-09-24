@@ -5,16 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class CouponValueEntity {
     @Expose
-    @SerializedName("catalog_id")
+    @SerializedName(value = "catalog_id", alternate = {"id"})
     private int catalogId;
-
-    @Expose
-    @SerializedName("catalog_title")
-    private String catalogTitle;
-
-    @Expose
-    @SerializedName("catalog_sub_title")
-    private String catalogSubTitle;
 
     @Expose
     @SerializedName("code")
@@ -25,7 +17,7 @@ public class CouponValueEntity {
     private String cta;
 
     @Expose
-    @SerializedName("ctaDesktop")
+    @SerializedName(value = "ctaDesktop", alternate = {"cta_desktop"})
     private String ctaDesktop;
 
     @Expose
@@ -41,28 +33,28 @@ public class CouponValueEntity {
     private String icon;
 
     @Expose
-    @SerializedName("image_url")
+    @SerializedName(value = "imageUrl", alternate = {"image_url"})
     private String imageUrl;
 
     @Expose
-    @SerializedName("image_url_mobile")
+    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile", "imageURLMobile"})
     private String imageUrlMobile;
 
     @Expose
-    @SerializedName("promo_id")
-    private int promoId;
-
-    @Expose
-    @SerializedName("sub_title")
-    private String subTitle;
-
-    @Expose
-    @SerializedName("thumbnail_url")
+    @SerializedName(value = "thumbnailUrl", alternate = {"thumbnail_url"})
     private String thumbnailUrl;
 
     @Expose
-    @SerializedName("thumbnail_url_mobile")
+    @SerializedName(value = "thumbnailUrlMobile", alternate = {"thumbnail_url_mobile"})
     private String thumbnailUrlMobile;
+
+    @Expose
+    @SerializedName("promoID")
+    private int promoId;
+
+    @Expose
+    @SerializedName(value = "subTitle", alternate = {"sub_title", "subtitle"})
+    private String subTitle;
 
     @Expose
     @SerializedName("title")
@@ -72,28 +64,43 @@ public class CouponValueEntity {
     @SerializedName("usage")
     private CouponUsesEntity usage;
 
+    @SerializedName(value = "howToUse", alternate = {"how_to_use"})
+    private String howToUse;
+
+    @SerializedName(value = "minimumUsage", alternate = {"minimum_usage"})
+    private String minimumUsage;
+
+    @SerializedName("overview")
+    private String overview;
+
+    @SerializedName("real_code")
+    private String realCode;
+
+    @SerializedName("tnc")
+    private String tnc;
+
+    public String getMinimumUsage() {
+        return minimumUsage;
+    }
+
+    public void setMinimumUsage(String minimumUsage) {
+        this.minimumUsage = minimumUsage;
+    }
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
     public int getCatalogId() {
         return catalogId;
     }
 
     public void setCatalogId(int catalogId) {
         this.catalogId = catalogId;
-    }
-
-    public String getCatalogTitle() {
-        return catalogTitle;
-    }
-
-    public void setCatalogTitle(String catalogTitle) {
-        this.catalogTitle = catalogTitle;
-    }
-
-    public String getCatalogSubTitle() {
-        return catalogSubTitle;
-    }
-
-    public void setCatalogSubTitle(String catalogSubTitle) {
-        this.catalogSubTitle = catalogSubTitle;
     }
 
     public String getCode() {
@@ -160,22 +167,6 @@ public class CouponValueEntity {
         this.imageUrlMobile = imageUrlMobile;
     }
 
-    public int getPromoId() {
-        return promoId;
-    }
-
-    public void setPromoId(int promoId) {
-        this.promoId = promoId;
-    }
-
-    public String getSubTitle() {
-        return subTitle;
-    }
-
-    public void setSubTitle(String subTitle) {
-        this.subTitle = subTitle;
-    }
-
     public String getThumbnailUrl() {
         return thumbnailUrl;
     }
@@ -190,6 +181,22 @@ public class CouponValueEntity {
 
     public void setThumbnailUrlMobile(String thumbnailUrlMobile) {
         this.thumbnailUrlMobile = thumbnailUrlMobile;
+    }
+
+    public int getPromoId() {
+        return promoId;
+    }
+
+    public void setPromoId(int promoId) {
+        this.promoId = promoId;
+    }
+
+    public String getSubTitle() {
+        return subTitle;
+    }
+
+    public void setSubTitle(String subTitle) {
+        this.subTitle = subTitle;
     }
 
     public String getTitle() {
@@ -208,12 +215,34 @@ public class CouponValueEntity {
         this.usage = usage;
     }
 
+    public String getHowToUse() {
+        return howToUse;
+    }
+
+    public void setHowToUse(String howToUse) {
+        this.howToUse = howToUse;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getRealCode() {
+        return realCode;
+    }
+
+    public void setRealCode(String realCode) {
+        this.realCode = realCode;
+    }
+
     @Override
     public String toString() {
         return "CouponValueEntity{" +
                 "catalogId=" + catalogId +
-                ", catalogTitle='" + catalogTitle + '\'' +
-                ", catalogSubTitle='" + catalogSubTitle + '\'' +
                 ", code='" + code + '\'' +
                 ", cta='" + cta + '\'' +
                 ", ctaDesktop='" + ctaDesktop + '\'' +
@@ -222,12 +251,17 @@ public class CouponValueEntity {
                 ", icon='" + icon + '\'' +
                 ", imageUrl='" + imageUrl + '\'' +
                 ", imageUrlMobile='" + imageUrlMobile + '\'' +
-                ", promoId=" + promoId +
-                ", subTitle='" + subTitle + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
+                ", promoId=" + promoId +
+                ", subTitle='" + subTitle + '\'' +
                 ", title='" + title + '\'' +
                 ", usage=" + usage +
+                ", howToUse='" + howToUse + '\'' +
+                ", minimumUsage='" + minimumUsage + '\'' +
+                ", overview='" + overview + '\'' +
+                ", realCode='" + realCode + '\'' +
+                ", tnc='" + tnc + '\'' +
                 '}';
     }
 }

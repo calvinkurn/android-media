@@ -16,8 +16,11 @@ public interface ConstantTransactionAnalytics {
 
     interface EventName {
         String CLICK_ATC = "clickATC";
+        String CLICK_BUY = "clickBuy";
+        String CLICK_CHECKOUT = "clickCheckout";
         String VIEW_ATC = "viewATC";
         String REMOVE_FROM_CART = "removeFromCart";
+        String CHECKOUT = "checkout";
         String ADD_TO_CART = "addToCart";
         String CLICK_COURIER = "clickCourier";
         String CLICK_COUPON = "clickCoupon";
@@ -27,6 +30,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_PROMO = "viewPromo";
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
+        String CLICK_ADDRESS = "clickAddress";
     }
 
     interface EventCategory {
@@ -88,12 +92,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_BACK_ARROW_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click back arrow from kirim ke beberapa alamat";
         String CLICK_KEMBALI_DAN_HAPUS_PERUBAHAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click kembali dan hapus perubahan from kirim ke beberapa alamat";
         String CLICK_TETAP_DI_HALAMAN_INI_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tetap di halaman ini from kirim ke beberapa alamat";
-        String CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tambah pengiriman baru from kirim ke beberapa alamat";
-        String CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click edit from kirim ke beberapa alamat";
-        String CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click pilih kurir pengiriman from kirim ke beberapa alamat";
         String CLICK_X_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click x from ubah from kirim ke beberapa alamat";
-        String CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click - from ubah from kirim ke beberapa alamat";
-        String CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click + from ubah from kirim ke beberapa alamat";
         String CLICK_INPUT_QUANTITY_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click input quantity from ubah from kirim ke beberapa alamat";
         String CLICK_TULIS_CATATAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tulis catatan from ubah from kirim ke beberapa alamat";
         String CLICK_SIMPAN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click simpan from ubah from kirim ke beberapa alamat";
@@ -150,13 +149,42 @@ public interface ConstantTransactionAnalytics {
         String CLICK_TELEPON_PADA_TAMBAH_ADDRESS = "click telepon pada + address";
         String CLICK_ALAMAT_PADA_TAMBAH_ADDRESS = "click alamat pada + address";
 
-        String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS ="validation error alamat sebagai pada + address";
-        String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS ="validation error nama pada + address";
-        String VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS ="validation error telepon pada + address";
-        String VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS ="validation error kota / kecamatan pada + address";
-        String VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS ="validation error kode pos pada + address";
-        String VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS ="validation error alamat pada + address";
+        String VALIDATION_ERROR_ALAMAT_SEBAGAI_PADA_TAMBAH_ADDRESS = "validation error alamat sebagai pada + address";
+        String VALIDATION_ERROR_NAMA_PADA_TAMBAH_ADDRESS = "validation error nama pada + address";
+        String VALIDATION_ERROR_TELEPON_PADA_TAMBAH_ADDRESS = "validation error telepon pada + address";
+        String VALIDATION_ERROR_KOTA_KECAMATAN_PADA_TAMBAH_ADDRESS = "validation error kota / kecamatan pada + address";
+        String VALIDATION_ERROR_KODE_POS_PADA_TAMBAH_ADDRESS = "validation error kode pos pada + address";
+        String VALIDATION_ERROR_ALAMAT_PADA_TAMBAH_ADDRESS = "validation error alamat pada + address";
 
+        //PHASE 2
+        String CLICK_PILIH_ALAMAT_LAIN = "click pilih alamat lain";
+        String CLICK_KIRIM_KE_BANYAK_ALAMAT = "click kirim ke banyak alamat";
+        String CLICK_EDIT_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click edit from kirim ke beberapa alamat";
+        String CLICK_TAMBAH_PENGIRIMAN_BARU_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click tambah pengiriman baru from kirim ke beberapa alamat";
+        String CLICK_PILIH_KURIR_PENGIRIMAN_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click pilih kurir pengiriman from kirim ke beberapa alamat";
+        String CLICK_PLUS_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click + from ubah from kirim ke beberapa alamat";
+        String CLICK_MIN_FROM_UBAH_FROM_KIRIM_KE_BEBERAPA_ALAMAT = "click - from ubah from kirim ke beberapa alamat";
+        String CLICK_TOP_DONASI = "click top donasi";
+
+        String CLICK_ADD_FROM_WISHLIST_ON_EMPTY_CART = "click add from wishlist on empty cart";
+
+        String CLICK_CHECKOUT = "click checkout";
+        String CLICK_PILIH_SEMUA_PRODUK = "click pilih semua produk";
+        String CLICK_BAYAR = "click bayar";
+        String CLICK_UBAH_KURIR = "click ubah kurir";
+        String CLICK_TAMBAH_FROM_TAMBAH_ALAMAT_BARU = "click tambah from tambah alamat baru";
+
+        String VIEW_PROMO_ELIGBLE_APPLY = "view promo eligible apply";
+
+        //ROBINHOOD
+        String CLICK_BUTTON_DURASI_PENGIRIMAN = "click button durasi pengiriman";
+        String CLICK_X_PADA_DURASI_PENGIRIMAN = "click x pada durasi pengiriman";
+        String CLICK_CHECKLIST_PILIH_DURASI_PENGIRIMAN = "click checklist pilih durasi pengiriman";
+        String CLICK_CTA_BUTTON = "click cta button";
+        String VIEW_PRESELECTED_COURIER_OPTION = "view preselected courier option";
+        String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
+        String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
+        String CLICK_UBAH_DURASI = "click ubah durasi";
     }
 
     interface EventLabel {
@@ -164,19 +192,33 @@ public interface ConstantTransactionAnalytics {
         String NOT_SUCCESS = "not success";
         String COURIER_NOT_COMPLETE = "courier not complete";
         String KUOTA_PENUKARAN = "kuota penukaran";
+        String FAILED = "failed";
+        String CHECKLIST = "checklist";
+        String UN_CHECKLIST = "unchecklist";
+        String FAILED_DROPSHIPPER = "failed dropshipper";
+
+        String CHECKOUT_SUCCESS_DEFAULT = "success - default";
+        String CHECKOUT_SUCCESS_CHECK_ALL = "success - check all";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP = "success - partial shop";
+        String CHECKOUT_SUCCESS_PARTIAL_PRODUCT = "success - partial product";
+        String CHECKOUT_SUCCESS_PARTIAL_SHOP_AND_PRODUCT = "success - partial shop and product";
+
+        String CHECKOUT_COUPON_AUTO_APPLY = "coupon autoapply";
+        String CHECKOUT_COUPON_OR_PROMO_MANUAL_APPLY = "%s manual apply";
     }
 
     interface ScreenName {
         String CART = "/cart";
         String CHECKOUT = "/cart/shipment";
         String SELECT_COURIER = "/selectcourier";
-        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart/voucher";
-        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart/coupon";
-        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment/voucher";
-        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment/coupon";
+        String PROMO_PAGE_FROM_CART_TAB_PROMO = "/cart#voucher";
+        String PROMO_PAGE_FROM_CART_TAB_COUPON = "/cart#coupon";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_PROMO = "/cart/shipment#voucher";
+        String PROMO_PAGE_FROM_CHECKOUT_TAB_COUPON = "/cart/shipment#coupon";
         String MULTI_ADDRESS_PAGE = "/cart/shipment/multiple";
         String EDIT_MULTIPLE_ADDRESS_PAGE = "/cart/shipment/multiple/edit";
         String ADDRESS_LIST_PAGE = "/cart/address";
         String ADD_NEW_ADDRESS_PAGE = "/cart/address/create";
+        String ADD_NEW_ADDRESS_PAGE_FROM_EMPTY_ADDRESS_CART = "/user/address/create/cart";
     }
 }

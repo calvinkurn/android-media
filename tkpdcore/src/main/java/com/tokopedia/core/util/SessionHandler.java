@@ -39,6 +39,10 @@ import com.tokopedia.core.talk.cache.database.InboxTalkCacheManager;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
+@Deprecated
+/**
+ * Please use {@link com.tokopedia.user.session.UserSession} instead.
+ */
 public class SessionHandler {
     public static final String DEFAULT_EMPTY_SHOP_ID = "0";
     public static final String CACHE_PROMOTION_PRODUCT = "CACHE_PROMOTION_PRODUCT";
@@ -228,9 +232,6 @@ public class SessionHandler {
             });
             webView.loadUrl("https://instagram.com/accounts/logout/");
             webView.setVisibility(View.GONE);
-        }
-        if (context.getApplicationContext() instanceof TkpdCoreRouter) {
-            ((TkpdCoreRouter) context.getApplicationContext()).removeInstopedToken();
         }
     }
 

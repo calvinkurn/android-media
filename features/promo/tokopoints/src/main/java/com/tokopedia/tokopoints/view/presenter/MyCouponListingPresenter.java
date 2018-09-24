@@ -46,6 +46,9 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
         Map<String, Object> variablesMain = new HashMap<>();
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE, 1); // start with first page
         variablesMain.put(CommonConstant.GraphqlVariableKeys.PAGE_SIZE, CommonConstant.PAGE_SIZE);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.SERVICE_ID, "");
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID_COUPON, 0);
+        variablesMain.put(CommonConstant.GraphqlVariableKeys.CATEGORY_ID, 0);
 
         GraphqlRequest graphqlRequestMain = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_coupon_listing),
                 TokoPointPromosEntity.class,
@@ -69,7 +72,12 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
                 //handling the catalog listing and tabs
                 TokoPointPromosEntity catalogListingOuter = graphqlResponse.getData(TokoPointPromosEntity.class);
                 if (catalogListingOuter != null) {
-                    getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
+                    if (catalogListingOuter.getCoupon().getCoupons() != null &&
+                            catalogListingOuter.getCoupon().getCoupons().size() > 0) {
+                        getView().populateCoupons(catalogListingOuter.getCoupon().getCoupons());
+                    } else {
+                        getView().emptyCoupons();
+                    }
                 } else {
                     getView().showError(null);
                 }
@@ -122,5 +130,9 @@ public class MyCouponListingPresenter extends BaseDaggerPresenter<MyCouponListin
     @Override
     public void showRedeemCouponDialog(String cta, String code, String title) {
         getView().showRedeemCouponDialog(cta, code, title);
+    }
+
+    @Override
+    public void startSendGift(int id, String title, String pointStr) {
     }
 }

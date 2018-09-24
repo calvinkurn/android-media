@@ -54,6 +54,7 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
     public ChannelInfoViewModel call(Response<DataResponse<ChannelInfoPojo>> response) {
         ChannelInfoPojo pojo = response.body().getData();
         return new ChannelInfoViewModel(
+                String.valueOf(pojo.getChannel().getChannelId()),
                 pojo.getChannel().getTitle() != null ? pojo.getChannel().getTitle() : "",
                 pojo.getChannel().getChannelUrl() != null ? pojo.getChannel().getChannelUrl() : "",
                 pojo.getChannel().getCoverUrl() != null ? pojo.getChannel().getCoverUrl() : "",

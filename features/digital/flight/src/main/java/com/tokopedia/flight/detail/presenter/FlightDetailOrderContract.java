@@ -119,5 +119,6 @@ public interface FlightDetailOrderContract {
 
         List<FlightCancellationJourney> transformOrderToCancellation(List<FlightOrderJourney> flightOrderJourneyList);
 
+        void onMoreAirlineInfoClicked();
     }
 }

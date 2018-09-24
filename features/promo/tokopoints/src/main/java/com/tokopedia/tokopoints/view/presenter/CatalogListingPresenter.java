@@ -8,10 +8,12 @@ import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.contract.CatalogListingContract;
 import com.tokopedia.tokopoints.view.model.CatalogBannerOuter;
+import com.tokopedia.tokopoints.view.model.CatalogCategory;
 import com.tokopedia.tokopoints.view.model.CatalogFilterOuter;
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +45,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getHomePageData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetHomePageData.clearRequest();
         getView().showLoader();
 
@@ -54,9 +60,11 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
                 variablesBanner);
         mGetHomePageData.addRequest(graphqlRequestBanners);
 
+        Map<String, Object> variableFilter = new HashMap<>();
+        variableFilter.put(CommonConstant.GraphqlVariableKeys.SLUG, "");
         GraphqlRequest graphqlRequestFilter = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_catalog_filter),
                 CatalogFilterOuter.class,
-                variablesBanner);
+                variableFilter);
         mGetHomePageData.addRequest(graphqlRequestFilter);
 
         mGetHomePageData.execute(new Subscriber<GraphqlResponse>() {
@@ -92,6 +100,10 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
 
     @Override
     public void getPointData() {
+        if (getView() == null) {
+            return;
+        }
+
         mGetPointData.clearRequest();
 
         GraphqlRequest graphqlRequestPoints = new GraphqlRequest(GraphqlHelper.loadRawString(getView().getResources(), R.raw.tp_gql_current_points),
@@ -132,5 +144,19 @@ public class CatalogListingPresenter extends BaseDaggerPresenter<CatalogListingC
     @Override
     public int getSelectedCategoryId() {
         return getView().getSelectedCategoryId();
+    }
+
+    public String getCategoryName(ArrayList<CatalogCategory> catalogCategories, int selectedCategoryId) {
+        for (CatalogCategory each : catalogCategories) {
+            if (each == null) {
+                continue;
+            }
+
+            if (selectedCategoryId == each.getId()) {
+                return each.getName();
+            }
+        }
+
+        return "";
     }
 }

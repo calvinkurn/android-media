@@ -1,24 +1,33 @@
 package com.tokopedia.tokopoints.view.adapter;
 
-import android.graphics.Color;
+import android.content.Context;
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.ImageHandler;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.tokopoints.R;
+import com.tokopedia.tokopoints.view.activity.CouponCatalogDetailsActivity;
 import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
+import com.tokopedia.tokopoints.view.util.ImageUtil;
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.ViewHolder> {
 
@@ -27,20 +36,29 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     private boolean mIsLimitEnable;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, label, value, btnContinue, pointValue, quota;
-        ImageView imgBanner, imgLabel;
+        TextView quota, description, pointLabel, pointValue,
+                timeLabel, timeValue, disabledError, btnContinue,
+                labelPoint, textDiscount;
+        ImageView imgBanner, imgTime, imgPoint;
+        ImageButton btnSendGift;
+        boolean isVisited = false;
 
         public ViewHolder(View view) {
             super(view);
-            title = view.findViewById(R.id.text_description);
-            label = view.findViewById(R.id.text_label);
-            label = view.findViewById(R.id.text_label);
-            value = view.findViewById(R.id.text_value);
+            quota = view.findViewById(R.id.text_quota_count);
+            description = view.findViewById(R.id.text_description);
+            pointLabel = view.findViewById(R.id.text_my_points_label);
             pointValue = view.findViewById(R.id.text_point_value);
+            timeLabel = view.findViewById(R.id.text_time_label);
+            timeValue = view.findViewById(R.id.text_time_value);
+            disabledError = view.findViewById(R.id.text_disabled_error);
             btnContinue = view.findViewById(R.id.button_continue);
             imgBanner = view.findViewById(R.id.img_banner);
-            imgLabel = view.findViewById(R.id.img_label);
-            quota = view.findViewById(R.id.text_quota_count);
+            imgTime = view.findViewById(R.id.img_time);
+            imgPoint = view.findViewById(R.id.img_points_stack);
+            labelPoint = view.findViewById(R.id.text_point_label);
+            textDiscount = view.findViewById(R.id.text_point_discount);
+            btnSendGift = view.findViewById(R.id.btn_send_gift);
         }
     }
 
@@ -66,24 +84,94 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         CatalogsValueEntity item = mItems.get(position);
-        holder.title.setText(item.getTitle());
-        holder.pointValue.setVisibility(View.VISIBLE);
-        holder.pointValue.setText(item.getPointsStr());
-        holder.btnContinue.setText(R.string.tp_label_exchange);
-        ImageHandler.loadImageFit2(holder.imgBanner.getContext(), holder.imgBanner, item.getImageUrlMobile());
-        holder.imgLabel.setImageResource(R.drawable.ic_tp_point_stack);
-
-        if (item.getQuota() != null && item.getQuota() > 0) {
-            String firstSpan = holder.quota.getResources().getString(R.string.tp_label_remaining_exchange);
-            String secondSpan = " " + item.getQuota() + "x";
-            Spannable wordtoSpan = new SpannableString(firstSpan + secondSpan);
-            wordtoSpan.setSpan(new ForegroundColorSpan(ContextCompat.getColor(holder.quota.getContext(), R.color.orange_red)), firstSpan.length(), wordtoSpan.length(),
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            holder.quota.setText(wordtoSpan);
-            holder.quota.setVisibility(View.VISIBLE);
-
+        holder.btnContinue.setEnabled(!item.isDisabledButton());
+        holder.description.setText(item.getTitle());
+        holder.btnContinue.setText(R.string.tp_label_exchange); //TODO asked for server driven value
+        ImageHandler.loadImageFitCenter(holder.imgBanner.getContext(), holder.imgBanner, item.getThumbnailUrlMobile());
+        //setting points info if exist in response
+        if (item.getPointsStr() == null || item.getPointsStr().isEmpty()) {
+            holder.pointValue.setVisibility(View.GONE);
+            holder.imgPoint.setVisibility(View.GONE);
         } else {
+            holder.pointValue.setVisibility(View.VISIBLE);
+            holder.imgPoint.setVisibility(View.VISIBLE);
+            holder.pointValue.setText(item.getPointsStr());
+        }
+
+        //setting expiry time info if exist in response
+        if (item.getExpiredLabel() == null || item.getExpiredLabel().isEmpty()) {
+            holder.timeLabel.setVisibility(View.GONE);
+            holder.timeValue.setVisibility(View.GONE);
+            holder.imgTime.setVisibility(View.GONE);
+        } else {
+            holder.timeLabel.setVisibility(View.VISIBLE);
+            holder.timeValue.setVisibility(View.VISIBLE);
+            holder.imgTime.setVisibility(View.VISIBLE);
+            holder.timeLabel.setText(item.getExpiredLabel());
+            holder.timeValue.setText(item.getExpiredStr());
+        }
+
+        //Quota text handling
+        if (item.getUpperTextDesc() == null || item.getUpperTextDesc().isEmpty()) {
             holder.quota.setVisibility(View.GONE);
+        } else {
+            holder.quota.setVisibility(View.VISIBLE);
+            StringBuilder upperText = new StringBuilder();
+            for (int i = 0; i < item.getUpperTextDesc().size(); i++) {
+                if (i == 1) {
+                    //exclusive case for handling font color of second index.
+                    upperText.append("<font color='#ff5722'>" + item.getUpperTextDesc().get(i) + "</font>");
+                } else {
+                    upperText.append(item.getUpperTextDesc().get(i)).append(" ");
+                }
+            }
+            holder.quota.setText(MethodChecker.fromHtml(upperText.toString()));
+        }
+
+        //Quota text handling
+        if (item.getDisableErrorMessage() == null || item.getDisableErrorMessage().isEmpty()) {
+            holder.disabledError.setVisibility(View.GONE);
+        } else {
+            holder.disabledError.setVisibility(View.VISIBLE);
+            holder.disabledError.setText(item.getDisableErrorMessage());
+        }
+
+        //disabling the coupons if not eligible for current membership
+        if (item.isDisabled()) {
+            ImageUtil.dimImage(holder.imgBanner);
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.black_54));
+        } else {
+            ImageUtil.unDimImage(holder.imgBanner);
+            holder.pointValue.setTextColor(ContextCompat.getColor(holder.pointValue.getContext(), R.color.orange_red));
+        }
+
+        if (item.isDisabledButton()) {
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.black_12));
+        } else {
+            holder.btnContinue.setTextColor(ContextCompat.getColor(holder.btnContinue.getContext(), R.color.white));
+        }
+
+        if (item.getPointsSlash() <= 0) {
+            holder.labelPoint.setVisibility(View.GONE);
+        } else {
+            holder.labelPoint.setVisibility(View.VISIBLE);
+            holder.labelPoint.setText(item.getPointsSlashStr());
+            holder.labelPoint.setPaintFlags(holder.labelPoint.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        }
+
+        if (item.getDiscountPercentage() <= 0) {
+            holder.textDiscount.setVisibility(View.GONE);
+        } else {
+            holder.textDiscount.setVisibility(View.VISIBLE);
+            holder.textDiscount.setText(item.getDiscountPercentageStr());
+        }
+
+        if (item.getIsGift() == 1) {
+            holder.btnSendGift.setVisibility(View.VISIBLE);
+            holder.btnSendGift.setOnClickListener(view -> mPresenter.startSendGift(item.getId(), item.getTitle(), item.getPointsStr()));
+        } else {
+            holder.btnSendGift.setVisibility(View.GONE);
+            holder.btnSendGift.setOnClickListener(null);
         }
 
         holder.btnContinue.setOnClickListener(v -> {
@@ -91,7 +179,12 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
             mPresenter.startValidateCoupon(item);
         });
 
-        holder.imgBanner.setOnClickListener(v -> mPresenter.navigateToWebView(CommonConstant.WebLink.COUPON_DETAIL + mItems.get(position).getSlug()));
+        holder.imgBanner.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString(CommonConstant.EXTRA_CATALOG_CODE, mItems.get(position).getSlug());
+            holder.imgBanner.getContext().startActivity(CouponCatalogDetailsActivity.getCatalogDetail(holder.imgBanner.getContext(), bundle), bundle);
+            sendClickEvent(holder.imgBanner.getContext(), item, position);
+        });
     }
 
     @Override
@@ -105,5 +198,65 @@ public class CatalogListAdapter extends RecyclerView.Adapter<CatalogListAdapter.
 
     public void updateItems(List<CatalogsValueEntity> items) {
         this.mItems = items;
+    }
+
+    public List<CatalogsValueEntity> getItems() {
+        return this.mItems;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+
+        CatalogsValueEntity data = mItems.get(holder.getAdapterPosition());
+        if (data == null) {
+            return;
+        }
+
+        if (!holder.isVisited) {
+            Map<String, String> item = new HashMap<>();
+            item.put("id", String.valueOf(data.getId()));
+            item.put("name", data.getTitle());
+            item.put("position", String.valueOf(holder.getAdapterPosition()));
+            item.put("creative", data.getTitle());
+            item.put("creative_url", data.getImageUrlMobile());
+            item.put("promo_code", data.getBaseCode());
+
+            Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+            promotions.put("promotions", Arrays.asList(item));
+
+            Map<String, Map<String, List<Map<String, String>>>> promoView = new HashMap<>();
+            promoView.put("promoView", promotions);
+
+            AnalyticsTrackerUtil.sendECommerceEvent(holder.btnContinue.getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                    AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                    AnalyticsTrackerUtil.ActionKeys.VIEW_MY_COUPON,
+                    data.getTitle(), promoView);
+
+            holder.isVisited = true;
+        }
+    }
+
+    private void sendClickEvent(Context context, CatalogsValueEntity data, int position) {
+        Map<String, String> item = new HashMap<>();
+        item.put("id", String.valueOf(data.getId()));
+        item.put("name", data.getTitle());
+        item.put("position", String.valueOf(position));
+        item.put("creative", data.getTitle());
+        item.put("creative_url", data.getImageUrlMobile());
+        item.put("promo_code", data.getBaseCode());
+
+        Map<String, List<Map<String, String>>> promotions = new HashMap<>();
+        promotions.put("promotions", Arrays.asList(item));
+
+        Map<String, Map<String, List<Map<String, String>>>> promoClick = new HashMap<>();
+        promoClick.put("promoClick", promotions);
+
+        AnalyticsTrackerUtil.sendECommerceEvent(context,
+                AnalyticsTrackerUtil.EventKeys.EVENT_VIEW_PROMO,
+                AnalyticsTrackerUtil.CategoryKeys.TOKOPOINTS_PENUKARAN_POINT,
+                AnalyticsTrackerUtil.ActionKeys.CLICK_COUPON,
+                data.getTitle(), promoClick);
     }
 }

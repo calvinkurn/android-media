@@ -17,6 +17,7 @@ import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.listener.InboxChatContract;
 import com.tokopedia.topchat.chatlist.presenter.InboxChatPresenter;
 import com.tokopedia.topchat.chatlist.viewmodel.ChatListViewModel;
+import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.util.ChatTimeConverter;
 
@@ -53,11 +54,6 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     InboxChatPresenter presenter;
 
     String[] array;
-
-    public final static String USER = "Pengguna";
-    final static String ADMIN = "Administrator";
-    final static String OFFICIAL = "Official";
-    final static String SELLER = "Penjual";
 
     @LayoutRes
     public static final int LAYOUT = R.layout.message_item;
@@ -171,9 +167,17 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
     }
 
     private void setLabel(String labelS) {
-        if (labelS != null && labelS.length() > 0 && !labelS.equals(USER)) {
+        if (labelS != null && labelS.length() > 0 && !labelS.equals(InboxChatConstant.USER_TAG)) {
             label.setVisibility(View.VISIBLE);
             label.setText(labelS);
+            if(labelS.equals(InboxChatConstant.SELLER_TAG)){
+                label.setBackgroundResource(R.drawable.topchat_seller_label);
+                label.setTextColor(itemView.getContext().getResources().getColor(R.color.medium_green));
+            }
+            else {
+                label.setBackgroundResource(R.drawable.topchat_admin_label);
+                label.setTextColor(itemView.getContext().getResources().getColor(R.color.topchat_admin_label_text_color));
+            }
         } else {
             label.setVisibility(View.GONE);
         }
@@ -253,10 +257,10 @@ public class ListChatViewHolder extends AbstractViewHolder<ChatListViewModel> {
                     }
                 }else {
                     if (messageItem.getLabel() != null
-                            && !messageItem.getLabel().equals(ADMIN)
-                            && !messageItem.getLabel().equals(OFFICIAL)
+                            && !messageItem.getLabel().equals(InboxChatConstant.ADMIN_TAG)
+                            && !messageItem.getLabel().equals(InboxChatConstant.OFFICIAL_TAG)
                             && messageItem.getSenderId() != null) {
-                        if (messageItem.getLabel().equals(SELLER)) {
+                        if (messageItem.getLabel().equals(InboxChatConstant.SELLER_TAG)) {
                             presenter.goToShop(Integer.parseInt(messageItem.getSenderId()));
                         } else {
                             presenter.goToProfile(Integer.parseInt(messageItem.getSenderId()));

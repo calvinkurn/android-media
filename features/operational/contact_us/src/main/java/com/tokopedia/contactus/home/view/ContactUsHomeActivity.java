@@ -9,9 +9,8 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.contactus.home.view.fragment.ContactUsHomeFragment;
-
-import static com.tokopedia.contactus.common.AppLink.CONTACT_US_APPLINK;
 
 /**
  * Created by sandeepgoyal on 02/04/18.
@@ -19,7 +18,7 @@ import static com.tokopedia.contactus.common.AppLink.CONTACT_US_APPLINK;
 
 public class ContactUsHomeActivity extends BaseSimpleActivity {
 
-    @DeepLink(CONTACT_US_APPLINK)
+    @DeepLink(ApplinkConst.CONTACT_US_NATIVE)
     public static Intent getContactUsIntent(Context context, Bundle bundle){
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, ContactUsHomeActivity.class)

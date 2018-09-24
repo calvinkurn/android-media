@@ -17,7 +17,9 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
@@ -29,11 +31,14 @@ import com.tokopedia.digital_deals.view.activity.BrandDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.activity.DealsHomeActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
+import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
+import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.BrandDetailsPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;
 import com.tokopedia.digital_deals.view.presenter.DealDetailsPresenter;
+import com.tokopedia.digital_deals.view.utils.DealsAnalytics;
 import com.tokopedia.digital_deals.view.utils.Utils;
 import com.tokopedia.usecase.RequestParams;
 
@@ -41,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+;
 
 public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements DealCategoryAdapterContract.View {
 
@@ -52,6 +59,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private final int HEADER = 4;
     private final int ITEM3 = 5;
     private final int HEADER2 = 6;
+    private final int HEADER_BRAND = 7;
     private boolean isFooterAdded;
     private boolean isHeaderAdded;
     private boolean shortLayout;
@@ -60,13 +68,27 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     private String highLightText;
     private String lowerhighlight;
     private String upperhighlight;
+    private boolean isBrandHeaderAdded = false;
+
     private INavigateToActivityRequest toActivityRequest;
+    public static final int HOME_PAGE = 1;
+    public static final int SEARCH_PAGE = 2;
+    public static final int CATEGORY_PAGE = 3;
+    public static final int BRAND_PAGE = 4;
+    public static final int DETAIL_PAGE = 5;
+    private int pageType = 1;
+    private String categoryName;
+
     @Inject
     DealCategoryAdapterPresenter mPresenter;
+    DealsAnalytics dealsAnalytics;
     private SpannableString headerText;
     private boolean showHighlightText;
+    private String brandHeaderText;
+    private int productCount;
+    private Brand brand;
 
-    public DealsCategoryAdapter(List<ProductItem> categoryItems, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
+    public DealsCategoryAdapter(List<ProductItem> categoryItems, int pageType, INavigateToActivityRequest toActivityRequest, Boolean... layoutType) {
         if (categoryItems == null)
             this.categoryItems = new ArrayList<>();
         else
@@ -82,6 +104,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
         this.toActivityRequest = toActivityRequest;
+        this.pageType = pageType;
 
     }
 
@@ -97,6 +120,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         this.context = parent.getContext();
+        dealsAnalytics = new DealsAnalytics(context.getApplicationContext());
         LayoutInflater inflater = LayoutInflater.from(
                 parent.getContext());
         RecyclerView.ViewHolder holder = null;
@@ -125,6 +149,10 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             case HEADER2:
                 v = inflater.inflate(R.layout.header_layout_trending_deals, parent, false);
                 holder = new HeaderViewHolder(v);
+                break;
+            case HEADER_BRAND:
+                v = inflater.inflate(R.layout.header_layout_brand_page, parent, false);
+                holder = new HeaderBrandViewHolder(v);
                 break;
             default:
                 break;
@@ -159,6 +187,9 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 break;
             case HEADER2:
                 break;
+            case HEADER_BRAND:
+                ((HeaderBrandViewHolder) holder).bindData(brandHeaderText, productCount);
+                break;
             default:
                 break;
         }
@@ -175,7 +206,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                         :
                         (isLastPosition(position) && isFooterAdded)
                                 ? FOOTER : (position == 0 && isHeaderAdded)
-                                ? HEADER : ITEM));
+                                ? HEADER : (position == 0 && isBrandHeaderAdded && brandPageCard)
+                                ? HEADER_BRAND : ITEM));
     }
 
     private boolean isLastPosition(int position) {
@@ -198,6 +230,17 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         }
     }
 
+    public void addBrandHeader(String brandDetails, String brandName, int count) {
+        if (!isBrandHeaderAdded) {
+            isBrandHeaderAdded = true;
+            highLightText = brandName;  //brand name
+            brandHeaderText = brandDetails;
+            productCount = count;
+            categoryItems.add(0, new ProductItem());
+            notifyItemInserted(0);
+        }
+    }
+
     public void removeHeaderAndFooter() {
         if (isHeaderAdded)
             categoryItems.remove(0);
@@ -213,6 +256,42 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             lowerhighlight = text.toLowerCase();
             upperhighlight = text.toUpperCase();
             highLightText = first + text.substring(1).toLowerCase();
+        }
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+
+    @Override
+    public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder instanceof ItemViewHolder) {
+            ItemViewHolder holder1 = ((ItemViewHolder) holder);
+            if (!holder1.isShown()) {
+                holder1.setShown(true);
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+            }
+        } else if (holder instanceof ItemViewHolder2) {
+            ItemViewHolder2 holder1 = ((ItemViewHolder2) holder);
+            if (!holder1.isShown()) {
+                holder1.setShown(true);
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+            }
+        } else if (holder instanceof TopSuggestionHolder) {
+
+            TopSuggestionHolder holder1 = ((TopSuggestionHolder) holder);
+            if (!isHeaderAdded) {
+                holder1.setShown(false);
+            }
+            if (!holder1.isShown()) {
+                holder1.setShown(true);
+                dealsAnalytics.sendDealImpressionEvent(isHeaderAdded, isBrandHeaderAdded, topDealsLayout,
+                        categoryItems.get(holder1.getIndex()), categoryName, pageType, holder1.getIndex());
+            }
         }
     }
 
@@ -286,7 +365,13 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         ).show();
     }
 
+    public void setBrand(Brand brand) {
+        this.brand = brand;
+    }
+
     public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        private static final String LIKE = "LIKE";
+        private static final String UNLIKE = "UNLIKE";
         private View itemView;
         private ImageView dealImage;
         private ImageView brandImage;
@@ -302,6 +387,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView hotDeal;
         private CardView cvBrand;
         private int index;
+        private boolean isShown;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
@@ -330,8 +416,8 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 if (productItem.getBrand().getUrl() != null) {
                     cvBrand.setOnClickListener(this);
                 }
-
             } else {
+                productItem.setBrand(brand);
                 cvBrand.setVisibility(View.GONE);
                 brandName.setVisibility(View.GONE);
                 Drawable img = getActivity().getResources().getDrawable(R.drawable.ic_location);
@@ -346,15 +432,15 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             } else {
                 hotDeal.setVisibility(View.GONE);
             }
-            if (TextUtils.isEmpty(productItem.getCityName())) {
+            if (TextUtils.isEmpty(productItem.getBrand().getCityName())) {
                 Location location = Utils.getSingletonInstance().getLocation(context);
                 if (location != null) {
                     dealavailableLocations.setText(location.getName());
                 }
             } else {
-                dealavailableLocations.setText(productItem.getCityName());
+                dealavailableLocations.setText(productItem.getBrand().getCityName());
             }
-            if (productItem.getMrp() != 0) {
+            if (productItem.getMrp() != 0 && productItem.getMrp() != productItem.getSalesPrice()) {
                 dealListPrice.setVisibility(View.VISIBLE);
                 dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
                 dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -397,16 +483,52 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
+        private String getShareLabel(int position) {
+            if(categoryItems.get(getIndex()).getBrand()==null)
+                return "";
+            return String.format("%s - %s - %s", categoryItems.get(getIndex()).getBrand().getTitle()
+                    , categoryItems.get(getIndex()).getDisplayName(),
+                    position);
+        }
+
+        private String getFavouriteLabel(int position) {
+            String str = LIKE;
+            if (categoryItems.get(getIndex()).isLiked())
+                str = UNLIKE;
+            if(categoryItems.get(getIndex()).getBrand()==null)
+                return "";
+            return String.format("%s - %s - %s - %s",
+                    categoryItems.get(getIndex()).getBrand().getTitle()
+                    , categoryItems.get(getIndex()).getDisplayName()
+                    , position
+                    , str);
+        }
+
         @Override
         public void onClick(View v) {
+            int position = getIndex();
+            if (isHeaderAdded || isBrandHeaderAdded)
+                position -= 1;
+
             if (v.getId() == R.id.iv_share) {
+                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SHARE,
+                        getShareLabel(position));
+
                 Utils.getSingletonInstance().shareDeal(categoryItems.get(getIndex()).getSeoUrl(),
                         context, categoryItems.get(getIndex()).getDisplayName(),
                         categoryItems.get(getIndex()).getImageWeb());
             } else if (v.getId() == R.id.iv_wish_list) {
-
                 boolean isLoggedIn = mPresenter.setDealLike(categoryItems.get(getIndex()), getIndex());
                 if (isLoggedIn) {
+                    dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_LOVE, getFavouriteLabel(position));
                     if (categoryItems.get(getIndex()).isLiked()) {
                         setLikes(categoryItems.get(getIndex()).getLikes() - 1, !categoryItems.get(getIndex()).isLiked());
                     } else {
@@ -421,7 +543,12 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 toActivityRequest.onNavigateToActivityRequest(detailsIntent, DealsHomeActivity.REQUEST_CODE_DEALDETAILACTIVITY, getIndex());
+                dealsAnalytics.sendDealClickEvent(categoryItems.get(getIndex()), categoryName,
+                        pageType, position);
+
             }
+
+
         }
     }
 
@@ -451,6 +578,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private TextView dealSellingPrice;
         private TextView hotDeal;
         private int index;
+        private boolean isShown;
 
         public ItemViewHolder2(View itemView) {
             super(itemView);
@@ -486,7 +614,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             if (productItem.getBrand().getUrl() != null) {
                 cvBrand.setOnClickListener(this);
             }
-            if (productItem.getMrp() != 0) {
+            if (productItem.getMrp() != 0 && productItem.getMrp() != productItem.getSalesPrice()) {
                 dealListPrice.setVisibility(View.VISIBLE);
                 dealListPrice.setText(Utils.convertToCurrencyString(productItem.getMrp()));
                 dealListPrice.setPaintFlags(dealListPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -512,6 +640,14 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.cv_brand) {
@@ -522,6 +658,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
                 Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
                 detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
                 context.startActivity(detailsIntent);
+                dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), getIndex(), DealsAnalytics.EVENT_CLICK_RECOMMENDED_PDT_DETAIL, DealsAnalytics.LIST_DEALS_RECOMMENDED_PDP);
             }
         }
     }
@@ -557,6 +694,7 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
         private View itemView;
         private ProductItem valueItem;
         private int index;
+        private boolean isShown;
 
         private TopSuggestionHolder(View itemView) {
             super(itemView);
@@ -598,11 +736,82 @@ public class DealsCategoryAdapter extends RecyclerView.Adapter<RecyclerView.View
             return this.index;
         }
 
+        public boolean isShown() {
+            return isShown;
+        }
+
+        public void setShown(boolean shown) {
+            isShown = shown;
+        }
+
         @Override
         public void onClick(View v) {
             Intent detailsIntent = new Intent(context, DealDetailsActivity.class);
             detailsIntent.putExtra(DealDetailsPresenter.HOME_DATA, categoryItems.get(getIndex()).getSeoUrl());
             context.startActivity(detailsIntent);
+            int position = getIndex();
+            String action;
+            if (isHeaderAdded) {
+                action = DealsAnalytics.EVENT_CLICK_SEARCH_TRENDING;
+                position -= 1;
+            } else
+                action = DealsAnalytics.EVENT_CLICK_SEARCH_RESULT;
+            ProductItem productItem = categoryItems.get(getIndex());
+            dealsAnalytics.sendEcommerceClickEvent(categoryItems.get(getIndex()), position, action, DealsAnalytics.LIST_DEALS_SEARCH_TRENDING);
+        }
+    }
+
+    public class HeaderBrandViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        private ExpandableTextView tvExpandableDesc;
+        private LinearLayout tvSeeMoreBtn;
+        private TextView tvDealsCount;
+        private TextView tvCityName;
+        private View itemView;
+        private TextView tvSeeMore;
+        private ImageView ivArrowSeeMore;
+
+        private HeaderBrandViewHolder(View view) {
+            super(view);
+            this.itemView = view;
+            tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
+            tvSeeMoreBtn = view.findViewById(R.id.expand_view_description);
+            tvDealsCount = view.findViewById(R.id.number_of_locations);
+            tvCityName = view.findViewById(R.id.tv_popular);
+            tvSeeMore = view.findViewById(R.id.seemorebutton_description);
+            ivArrowSeeMore = view.findViewById(R.id.down_arrow_description);
+        }
+
+        public void bindData(final String headerText, int count) {
+            tvExpandableDesc.setText(headerText);
+            Location location = Utils.getSingletonInstance().getLocation(getActivity());
+            if (location != null) {
+                tvCityName.setText(String.format(context.getResources().getString(R.string.deals_brand_detail_location), location.getName()));
+
+            } else {
+                tvCityName.setText(context.getResources().getString(R.string.text_deals));
+            }
+            tvDealsCount.setText(String.format(context.getResources().getString(R.string.number_of_items), count));
+            tvSeeMoreBtn.setOnClickListener(this);
+            tvExpandableDesc.setInterpolator(new OvershootInterpolator());
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.expand_view_description) {
+                dealsAnalytics.sendEventDealsDigitalClick(DealsAnalytics.EVENT_CLICK_SEE_MORE_BRAND_DETAIL, highLightText);
+                if (tvExpandableDesc.isExpanded()) {
+                    tvSeeMore.setText(R.string.expand);
+                    ivArrowSeeMore.animate().rotation(0f);
+
+                } else {
+                    tvSeeMore.setText(R.string.collapse);
+                    ivArrowSeeMore.animate().rotation(180f);
+
+                }
+                tvExpandableDesc.toggle();
+            }
         }
     }
 

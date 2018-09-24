@@ -6,11 +6,38 @@ import com.google.gson.annotations.SerializedName;
 public class TokoPointEntity {
     @Expose
     @SerializedName("resultStatus")
-    ResultStatusEntity resultStatus;
+    private ResultStatusEntity resultStatus;
 
     @Expose
     @SerializedName("status")
-    TokoPointStatusEntity status;
+    private TokoPointStatusEntity status;
+
+    @Expose
+    @SerializedName("ticker")
+    private TickerBase ticker;
+
+    @Expose
+    @SerializedName("sheetHowToGet")
+    LobDetails lobs;
+
+    @SerializedName("popupNotif")
+    PopupNotification popupNotif;
+
+    public LobDetails getLobs() {
+        return lobs;
+    }
+
+    public void setLobs(LobDetails lobs) {
+        this.lobs = lobs;
+    }
+
+    public TickerBase getTicker() {
+        return ticker;
+    }
+
+    public void setTicker(TickerBase ticker) {
+        this.ticker = ticker;
+    }
 
     public ResultStatusEntity getResultStatus() {
         return resultStatus;
@@ -28,11 +55,22 @@ public class TokoPointEntity {
         this.status = status;
     }
 
+    public PopupNotification getPopupNotif() {
+        return popupNotif;
+    }
+
+    public void setPopupNotif(PopupNotification popupNotif) {
+        this.popupNotif = popupNotif;
+    }
+
     @Override
     public String toString() {
         return "TokoPointEntity{" +
                 "resultStatus=" + resultStatus +
                 ", status=" + status +
+                ", ticker=" + ticker +
+                ", lobs=" + lobs +
+                ", popupNotif=" + popupNotif +
                 '}';
     }
 }

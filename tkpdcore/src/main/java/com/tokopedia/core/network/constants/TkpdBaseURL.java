@@ -639,11 +639,9 @@ public class TkpdBaseURL {
     }
 
     public static class Mojito {
-        public static final String PATH_USER = "v1.0.3/users/";
         public static final String PATH_PRODUCT = "users/";
         public static final String PATH_CATALOG = "v1/catalogs/";
 
-        public static final String PATH_WISHLIST_PRODUCT = TkpdBaseURL.Mojito.PATH_USER + "{userId}/wishlist/products";
         public static final String PATH_WISHLIST = "wishlist/";
         public static final String PATH_WISH_LIST_V_1_1 = "v1.1";
         public static final String API_HOME_CATEGORY_MENU = "/api/v1.3/layout/category";
@@ -660,6 +658,7 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
         public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
+        public static final String API_V1_WISHLIST_COUNT = "/wishlist/count/v1";
     }
 
     public static class KunyitTalk {
@@ -797,6 +796,7 @@ public class TkpdBaseURL {
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
         public static final String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class TrainWebsite {

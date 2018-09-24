@@ -34,13 +34,17 @@ public class AppModule {
 
     @ApplicationScope
     @Provides
-    UserSession provideUserSession(AbstractionRouter abstractionRouter){
+    public UserSession provideUserSession(AbstractionRouter abstractionRouter){
+        return realProvideUserSession(abstractionRouter);
+    }
+
+    protected UserSession realProvideUserSession(AbstractionRouter abstractionRouter){
         return abstractionRouter.getSession();
     }
 
     @ApplicationScope
     @Provides
-    AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
+    public AbstractionRouter provideAbstractionRouter(@ApplicationContext Context context){
         if(context instanceof AbstractionRouter){
             return ((AbstractionRouter)context);
         }else{
@@ -50,7 +54,7 @@ public class AppModule {
 
     @ApplicationScope
     @Provides
-    CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
+    public CacheManager provideGlobalCacheManager(AbstractionRouter abstractionRouter){
         return abstractionRouter.getGlobalCacheManager();
     }
 

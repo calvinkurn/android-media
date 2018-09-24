@@ -16,20 +16,26 @@ public class ListMethodItemPojo {
     @SerializedName("mode_list")
     @Expose
     private List<ModeList> modeList = null;
+    @SerializedName("info_footer")
+    @Expose
+    private String infoFooter = "";
+    @SerializedName("link_type")
+    @Expose
+    private int linkType = 0;
 
     public int getIsSuccess() {
         return isSuccess;
-    }
-
-    public void setIsSuccess(int isSuccess) {
-        this.isSuccess = isSuccess;
     }
 
     public List<ModeList> getModeList() {
         return modeList;
     }
 
-    public void setModeList(List<ModeList> modeList) {
-        this.modeList = modeList;
+    public String getInfoFooter() {
+        return infoFooter;
+    }
+
+    public int getLinkType() {
+        return linkType;
     }
 }

@@ -4,10 +4,11 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class CatalogsValueEntity implements Serializable {
     @Expose
-    @SerializedName("base_code")
+    @SerializedName("baseCode")
     private String baseCode;
 
     @Expose
@@ -19,15 +20,15 @@ public class CatalogsValueEntity implements Serializable {
     private int id;
 
     @Expose
-    @SerializedName("image_url")
+    @SerializedName(value = "imageURL", alternate = {"image_url"})
     private String imageUrl;
 
     @Expose
-    @SerializedName("image_url_mobile")
+    @SerializedName(value = "imageUrlMobile", alternate = {"image_url_mobile"})
     private String imageUrlMobile;
 
     @Expose
-    @SerializedName("isGift")
+    @SerializedName(value = "isGift", alternate = {"is_gift"})
     private int isGift;
 
     @Expose
@@ -35,11 +36,11 @@ public class CatalogsValueEntity implements Serializable {
     private String points;
 
     @Expose
-    @SerializedName("points_str")
+    @SerializedName(value = "pointsStr", alternate = {"points_str"})
     private String pointsStr;
 
     @Expose
-    @SerializedName("promo_id")
+    @SerializedName("promoID")
     private int promoId;
 
     @Expose
@@ -51,20 +52,83 @@ public class CatalogsValueEntity implements Serializable {
     private String slug;
 
     @Expose
-    @SerializedName("sub_title")
+    @SerializedName(value = "subtitle", alternate = {"sub_title"})
     private String subTitle;
 
     @Expose
-    @SerializedName("thumbnail_url")
+    @SerializedName(value = "thumbnailURL", alternate = {"thumbnail_url"})
     private String thumbnailUrl;
 
     @Expose
-    @SerializedName("thumbnail_url_mobile")
+    @SerializedName(value = "thumbnailURLMobile", alternate = {"thumbnail_url_mobile"})
     private String thumbnailUrlMobile;
 
     @Expose
     @SerializedName("title")
     private String title;
+
+    @Expose
+    @SerializedName(value = "isDisabled", alternate = {"is_disabled"})
+    private boolean isDisabled;
+
+    @Expose
+    @SerializedName(value = "isDisabledButton", alternate = {"is_disabled_button"})
+    private boolean isDisabledButton;
+
+    @Expose
+    @SerializedName(value = "upperTextDesc", alternate = {"upper_text_desc"})
+    private List<String> upperTextDesc;
+
+    @Expose
+    @SerializedName(value = "expiredLabel", alternate = {"expired_label"})
+    private String expiredLabel;
+
+    @Expose
+    @SerializedName(value = "disableErrorMessage", alternate = {"disable_error_message"})
+    private String disableErrorMessage;
+
+    @Expose
+    @SerializedName(value = "expiredStr", alternate = {"expired_str"})
+    private String expiredStr;
+
+    @Expose
+    @SerializedName(value = "catalogType", alternate = {"catalog_type"})
+    private int catalogType;
+
+    @Expose
+    @SerializedName(value = "pointsSlash", alternate = {"points_slash"})
+    private int pointsSlash;
+
+    @Expose
+    @SerializedName(value = "pointsSlashStr", alternate = {"points_slash_str"})
+    private String pointsSlashStr;
+
+    @Expose
+    @SerializedName(value = "discountPercentage", alternate = {"discount_percentage"})
+    private int discountPercentage;
+
+    @Expose
+    @SerializedName(value = "discountPercentageStr", alternate = {"discount_percentage_str"})
+    private String discountPercentageStr;
+
+    @SerializedName(value = "buttonStr", alternate = {"button_str"})
+    private String buttonStr;
+
+    @Expose
+    @SerializedName(value = "howToUse", alternate = {"how_to_use"})
+    private String howToUse;
+
+    @Expose
+    @SerializedName("overview")
+    private String overview;
+
+    @Expose
+    @SerializedName("tnc")
+    private String tnc;
+
+    @Expose
+    @SerializedName("cta")
+    private String cta;
 
     public String getBaseCode() {
         return baseCode;
@@ -186,6 +250,134 @@ public class CatalogsValueEntity implements Serializable {
         this.title = title;
     }
 
+    public boolean isDisabled() {
+        return isDisabled;
+    }
+
+    public void setDisabled(boolean disabled) {
+        isDisabled = disabled;
+    }
+
+    public boolean isDisabledButton() {
+        return isDisabledButton;
+    }
+
+    public void setDisabledButton(boolean disabledButton) {
+        isDisabledButton = disabledButton;
+    }
+
+    public List<String> getUpperTextDesc() {
+        return upperTextDesc;
+    }
+
+    public void setUpperTextDesc(List<String> upperTextDesc) {
+        this.upperTextDesc = upperTextDesc;
+    }
+
+    public String getExpiredLabel() {
+        return expiredLabel;
+    }
+
+    public void setExpiredLabel(String expiredLabel) {
+        this.expiredLabel = expiredLabel;
+    }
+
+    public String getDisableErrorMessage() {
+        return disableErrorMessage;
+    }
+
+    public void setDisableErrorMessage(String disableErrorMessage) {
+        this.disableErrorMessage = disableErrorMessage;
+    }
+
+    public String getExpiredStr() {
+        return expiredStr;
+    }
+
+    public void setExpiredStr(String expiredStr) {
+        this.expiredStr = expiredStr;
+    }
+
+    public int getCatalogType() {
+        return catalogType;
+    }
+
+    public void setCatalogType(int catalogType) {
+        this.catalogType = catalogType;
+    }
+
+    public int getPointsSlash() {
+        return pointsSlash;
+    }
+
+    public void setPointsSlash(int pointsSlash) {
+        this.pointsSlash = pointsSlash;
+    }
+
+    public String getPointsSlashStr() {
+        return pointsSlashStr;
+    }
+
+    public void setPointsSlashStr(String pointsSlashStr) {
+        this.pointsSlashStr = pointsSlashStr;
+    }
+
+    public int getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+    public void setDiscountPercentage(int discountPercentage) {
+        this.discountPercentage = discountPercentage;
+    }
+
+    public String getDiscountPercentageStr() {
+        return discountPercentageStr;
+    }
+
+    public void setDiscountPercentageStr(String discountPercentageStr) {
+        this.discountPercentageStr = discountPercentageStr;
+    }
+
+    public String getButtonStr() {
+        return buttonStr;
+    }
+
+    public void setButtonStr(String buttonStr) {
+        this.buttonStr = buttonStr;
+    }
+
+    public String getHowToUse() {
+        return howToUse;
+    }
+
+    public void setHowToUse(String howToUse) {
+        this.howToUse = howToUse;
+    }
+
+    public String getOverview() {
+        return overview;
+    }
+
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
+    public String getTnc() {
+        return tnc;
+    }
+
+    public void setTnc(String tnc) {
+        this.tnc = tnc;
+    }
+
+    public String getCta() {
+        return cta;
+    }
+
+    public void setCta(String cta) {
+        this.cta = cta;
+    }
+
     @Override
     public String toString() {
         return "CatalogsValueEntity{" +
@@ -198,12 +390,28 @@ public class CatalogsValueEntity implements Serializable {
                 ", points='" + points + '\'' +
                 ", pointsStr='" + pointsStr + '\'' +
                 ", promoId=" + promoId +
-                ", quota='" + quota + '\'' +
+                ", quota=" + quota +
                 ", slug='" + slug + '\'' +
                 ", subTitle='" + subTitle + '\'' +
                 ", thumbnailUrl='" + thumbnailUrl + '\'' +
                 ", thumbnailUrlMobile='" + thumbnailUrlMobile + '\'' +
                 ", title='" + title + '\'' +
+                ", isDisabled=" + isDisabled +
+                ", isDisabledButton=" + isDisabledButton +
+                ", upperTextDesc=" + upperTextDesc +
+                ", expiredLabel='" + expiredLabel + '\'' +
+                ", disableErrorMessage='" + disableErrorMessage + '\'' +
+                ", expiredStr='" + expiredStr + '\'' +
+                ", catalogType=" + catalogType +
+                ", pointsSlash=" + pointsSlash +
+                ", pointsSlashStr='" + pointsSlashStr + '\'' +
+                ", discountPercentage=" + discountPercentage +
+                ", discountPercentageStr='" + discountPercentageStr + '\'' +
+                ", buttonStr='" + buttonStr + '\'' +
+                ", howToUse='" + howToUse + '\'' +
+                ", overview='" + overview + '\'' +
+                ", tnc='" + tnc + '\'' +
+                ", cta='" + cta + '\'' +
                 '}';
     }
 }

@@ -45,6 +45,7 @@
     <string name="title_activity_history_address">Riwayat Alamat Pengembalian</string>
     <string name="title_activity_history_action">Riwayat Komplain</string>
     <string name="label_buyer_complaint">Komplain Pembeli:</string>
+    <string name="label_amount_complaint">Dana yang ingin dikembalikan</string>
     <string name="label_reason_complaint">Alasan Komplain:</string>
     <string name="label_complaint_attachment">Lampiran Bukti:</string>
     <string name="title_activity_list_product_rescenter">Produk Yang Dikomplain</string>
@@ -118,6 +119,13 @@
     <!--step 2-->
     <string name="string_money_amount_returned">Jumlah uang yang ingin dikembalikan</string>
     <string name="string_input_amount">Masukkan Jumlah Uang</string>
+    <string name="string_qty">Qty</string>
+    <string name="string_max_refund">Maksimal</string>
+    <string name="string_fund_want_refunded">Dana yang ingin dikembalikan</string>
+    <string name="string_total_refunded">Total Dana Bermasalah</string>
+    <string name="string_current_solution">Solusi Sekarang</string>
+    <string name="string_other_solution">Pilih Solusi Lain</string>
+    <string name="string_solution_message">$solution.message</string>
 
     <!--step 3-->
     <string name="string_upload_prove">Unggah Bukti</string>
@@ -272,4 +280,5 @@
     <string name="string_attach_product_activity_title">Lampirkan Produk</string>
     <string name="title_video">Video</string>
     <string name="title_image">Gambar</string>
+    <string name="choose_video">Pilih Video</string>
 </resources>

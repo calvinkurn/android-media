@@ -8,6 +8,10 @@ import com.google.gson.annotations.SerializedName;
 
 public class Brand implements Parcelable {
 
+
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("title")
     @Expose
     private String title;
@@ -26,6 +30,9 @@ public class Brand implements Parcelable {
     @SerializedName("featured_thumbnail_image")
     @Expose
     private String featuredThumbnailImage;
+    @SerializedName("city_name")
+    @Expose
+    private String cityName;
     public final static Parcelable.Creator<Brand> CREATOR = new Creator<Brand>() {
 
 
@@ -43,15 +50,25 @@ public class Brand implements Parcelable {
     };
 
     protected Brand(Parcel in) {
+        this.id = ((Integer) in.readValue((Integer.class.getClassLoader())));
         this.title = ((String) in.readValue((String.class.getClassLoader())));
         this.description = ((String) in.readValue((String.class.getClassLoader())));
         this.url = ((String) in.readValue((String.class.getClassLoader())));
         this.seoUrl = ((String) in.readValue((String.class.getClassLoader())));
         this.featuredImage = ((String) in.readValue((String.class.getClassLoader())));
         this.featuredThumbnailImage = ((String) in.readValue((String.class.getClassLoader())));
+        this.cityName = ((String) in.readValue((String.class.getClassLoader())));
     }
 
     public Brand() {
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -102,13 +119,23 @@ public class Brand implements Parcelable {
         this.featuredThumbnailImage = featuredThumbnailImage;
     }
 
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(id);
         dest.writeValue(title);
         dest.writeValue(description);
         dest.writeValue(url);
         dest.writeValue(seoUrl);
         dest.writeValue(featuredImage);
         dest.writeValue(featuredThumbnailImage);
+        dest.writeValue(cityName);
     }
 
     public int describeContents() {

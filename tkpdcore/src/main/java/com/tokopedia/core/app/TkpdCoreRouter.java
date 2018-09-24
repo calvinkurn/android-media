@@ -14,7 +14,7 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
 import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.drawer2.view.subscriber.ProfileCompletionSubscriber;
-import com.tokopedia.core.gcm.ApplinkUnsupported;
+import com.tokopedia.applink.ApplinkUnsupported;
 import com.tokopedia.core.gcm.model.NotificationPass;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.util.SessionHandler;
@@ -28,12 +28,6 @@ import rx.Observable;
  */
 public interface TkpdCoreRouter {
     String EXTRAS = "extras";
-
-    void startInstopedActivityForResult(Activity activity, int resultCode, int maxResult);
-
-    void startInstopedActivityForResult(Context context, Fragment fragment, int resultCode, int maxResult);
-
-    void removeInstopedToken();
 
     void goToManageProduct(Context context);
 
@@ -194,8 +188,13 @@ public interface TkpdCoreRouter {
 
     Intent getDistrictRecommendationIntent(Activity activity, Token token, boolean isFromMarketplaceCart);
 
+    Intent getWithdrawIntent(Context context);
+
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
 
+    Intent getSettingBankIntent(Context context);
+
+    Intent getChangePasswordIntent(Context context);
 }

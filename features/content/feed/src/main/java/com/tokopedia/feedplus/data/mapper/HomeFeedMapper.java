@@ -30,8 +30,10 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
 
     private FeedDomain convertToDataFeedDomain(HomeFeedQuery.Data data) {
 
-        return new FeedDomain(convertToFeedDomain(data),
+        FeedDomain feedDomain = new FeedDomain(convertToFeedDomain(data),
                 data.feed().links().pagination().has_next_page());
+        feedDomain.setTitle(data.feed().title());
+        return feedDomain;
     }
 
     private List<DataFeedDomain> convertToFeedDomain(HomeFeedQuery.Data data) {
@@ -52,7 +54,6 @@ public class HomeFeedMapper implements Func1<HomeFeedQuery.Data, FeedDomain> {
                     );
                     SourceFeedDomain sourceFeedDomain =
                             createSourceFeedDomain(datum.source());
-
                     dataFeedDomains.add(createDataFeedDomain(datum,
                             contentFeedDomain, sourceFeedDomain));
                 }
