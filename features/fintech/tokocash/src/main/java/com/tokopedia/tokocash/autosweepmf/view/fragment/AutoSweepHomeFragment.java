@@ -39,7 +39,7 @@ import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.AutoSweepHomePagePresenter;
 import com.tokopedia.tokocash.autosweepmf.view.util.CommonConstant;
 import com.tokopedia.tokocash.autosweepmf.view.util.MfUtils;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 

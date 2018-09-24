@@ -35,7 +35,7 @@ import com.tokopedia.tokocash.activation.presentation.contract.RequestOtpTokoCas
 import com.tokopedia.tokocash.activation.presentation.presenter.RequestOTPWalletPresenter;
 import com.tokopedia.tokocash.activation.presentation.util.IncomingSmsReceiver;
 import com.tokopedia.tokocash.activation.presentation.util.RequestPermissionUtil;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import java.util.concurrent.TimeUnit;
 

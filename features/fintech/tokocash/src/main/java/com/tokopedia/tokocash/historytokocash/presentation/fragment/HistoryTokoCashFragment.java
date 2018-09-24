@@ -31,7 +31,7 @@ import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.DetailTransactionActivity;

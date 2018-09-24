@@ -15,7 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.presentation.activity.ThankYouMoveToSaldoActivity;
 import com.tokopedia.tokocash.historytokocash.presentation.contract.MoveToSaldoContract;
 import com.tokopedia.tokocash.historytokocash.presentation.model.WalletToDepositData;

@@ -30,7 +30,7 @@ import com.tokopedia.tokocash.TokoCashRouter;
 import com.tokopedia.tokocash.autosweepmf.view.contract.SetAutoSweepLimitContract;
 import com.tokopedia.tokocash.autosweepmf.view.model.AutoSweepLimit;
 import com.tokopedia.tokocash.autosweepmf.view.presenter.SetAutoSweepLimitPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import javax.inject.Inject;
 

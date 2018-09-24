@@ -25,7 +25,7 @@ import com.tokopedia.tokocash.accountsetting.presentation.dialog.DeleteTokoCashA
 import com.tokopedia.tokocash.accountsetting.presentation.model.AccountWalletItem;
 import com.tokopedia.tokocash.accountsetting.presentation.model.OAuthInfo;
 import com.tokopedia.tokocash.accountsetting.presentation.presenter.AccountSettingPresenter;
-import com.tokopedia.tokocash.di.TokoCashComponent;
+import com.tokopedia.tokocash.common.di.TokoCashComponent;
 
 import java.util.ArrayList;
 
