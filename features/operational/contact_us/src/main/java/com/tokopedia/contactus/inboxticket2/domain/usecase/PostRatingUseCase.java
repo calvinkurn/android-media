@@ -8,6 +8,7 @@ import com.tokopedia.common.network.data.model.RestCacheStrategy;
 import com.tokopedia.common.network.data.model.RestRequest;
 import com.tokopedia.common.network.domain.RestRequestUseCase;
 import com.tokopedia.contactus.inboxticket2.data.InboxEndpoint;
+import com.tokopedia.contactus.inboxticket2.domain.InboxDataResponse;
 import com.tokopedia.contactus.inboxticket2.domain.RatingResponse;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 
@@ -31,7 +32,7 @@ public class PostRatingUseCase extends RestRequestUseCase {
     @Override
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
-        RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<DataResponse<RatingResponse>>() {
+        RestRequest restRequest1 = new RestRequest.Builder(getUrl(), new TypeToken<InboxDataResponse<RatingResponse>>() {
         }.getType())
                 .setRequestType(RequestType.POST)
                 .setBody(queryMap)

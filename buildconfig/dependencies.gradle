@@ -1,9 +1,9 @@
 ext {
 
-    compileSdkVersion = 28
+    compileSdkVersion = 27
     minSdkVersion = 16
-    targetSdkVersion = 28
-    buildToolsVersion = "28.0.2"
+    targetSdkVersion = 27
+    buildToolsVersion = "27.0.3"
 
     jacocoVersion = "0.7.9"
     kotlinVersion = "1.2.40"
@@ -55,7 +55,9 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
+    tkpdKolCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
+    tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
     tkpdGamificationVersion = '2.22'
     tkpdGoldMerchantVersion = '2.22'
@@ -69,6 +71,7 @@ ext {
     tkpdYoutubeUtilVersion = '2.22'
     tkpdAnalyticsVersion = '2.22'
     tkpdVoteVersion = '2.22'
+    tkpdNotifCenterVersion = '2.22'
     tkpdGraphqlVersion = '2.22'
     tkpdContactUsVersion = '2.22'
     tkpdCommonNetworkVersion = '2.22'
@@ -260,6 +263,7 @@ ext {
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
+            kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
             explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
             ride                  : "com.tokopedia.ride:ride:${tkpdRideVersion}",
             reactNative           : "com.tokopedia.tkpdreactnative:reactnative:${tkpdReactNativeVersion}",
@@ -291,12 +295,13 @@ ext {
             productDraftDatabase  : "com.tokopedia.productdraftdatabase:product-draft-database:${tkpdProductVersion}",
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
-            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}"
+            paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
+            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}"
     ]
 
     tkpdLibDependencies = [
             expandableOption: "com.tokopedia.tkpdlib:expandableoption:0.7.1",
-            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.15",
+            showcase        : "com.tokopedia.tkpdlib:showcase-stepper:0.5.16",
             youtubePlayer   : "com.tokopedia.youtube:player:0.0.1"
     ]
 
@@ -309,7 +314,9 @@ ext {
             nps                   : ":features:common:nps",
             feed                  : ":features:content:feed",
             kol                   : ":features:content:kol",
+            kolCommon             : ":features:content:kol_common",
             explore               : ":features:content:explore",
+            interestPick          : ":features:content:interest_pick",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",
             inbox                 : ":tkpdinbox",
@@ -353,6 +360,7 @@ ext {
             bankdb                : ":features:user:bankdb",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
+            notifCenter           : ":features:user:notifcenter",
             contactUs             : ":features:operational:contact_us",
             logisticdata          : ":features:logistic:logisticdata",
             transactiondata       : ":features:transaction:transactiondata",
@@ -373,7 +381,10 @@ ext {
             productDraftDatabase  : ":features:merchant:product_draft_database",
             paymentManagementSystem     : ":features:payment:pms",
             train                 : ":features:digital:train",
-            updateinactivephone   : ":features:user:updateinactivephone"
+            updateinactivephone   : ":features:user:updateinactivephone",
+            paymentSetting        : ":features:payment:payment_setting",
+            browse                : ":features:digital:digital_browse",
+            saldodetails            : ":features:fintech:saldo_details"
     ]
 
     libraries = [

@@ -252,6 +252,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void onWishlistCountLoaded(String wishlistCountText) {
+
+    }
+
+    @Override
     public void onProductDepartmentClicked(@NonNull Bundle bundle) {
 
     }

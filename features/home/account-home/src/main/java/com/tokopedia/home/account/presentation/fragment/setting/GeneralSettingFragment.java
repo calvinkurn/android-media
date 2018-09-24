@@ -3,6 +3,7 @@ package com.tokopedia.home.account.presentation.fragment.setting;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -111,7 +112,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         }
 
         WalletModel walletModel = walletPref.retrieveWallet();
-        String walletName = walletModel != null ? walletModel.getText() + "," : "";
+        String walletName = walletModel != null ? walletModel.getText() + ", " : "";
         String settingDescTkpdPay = walletName + getString(R.string.subtitle_tkpd_pay_setting);
         settingItems.add(new SettingItemViewModel(SettingConstant.SETTING_TKPD_PAY_ID,
                 getString(R.string.title_tkpd_pay_setting), settingDescTkpdPay));

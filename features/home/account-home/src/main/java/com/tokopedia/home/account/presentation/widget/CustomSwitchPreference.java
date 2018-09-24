@@ -37,6 +37,7 @@ public class CustomSwitchPreference extends SwitchPreference {
         titleText.setTextAppearance(holder.itemView.getContext(), R.style.TextView_Small);
         TextView summaryText = holder.itemView.findViewById(android.R.id.summary);
         summaryText.setTextAppearance(holder.itemView.getContext(), R.style.TextView_Small_BlackDisabled);
+        summaryText.setVisibility(View.GONE);
         holder.itemView.setMinimumHeight((int) holder.itemView.getResources().getDimension(R.dimen.dp_64));
 
         Switch aSwitch = findSwitch(holder.itemView.findViewById(android.R.id.widget_frame));

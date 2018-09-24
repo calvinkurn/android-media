@@ -30,6 +30,8 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.FeedTracking;
@@ -73,7 +75,7 @@ import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
 import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.createpost.view.activity.CreatePostImagePickerActivity;
-import com.tokopedia.kol.feature.post.domain.interactor.FollowKolPostGqlUseCase;
+import com.tokopedia.kol.feature.post.domain.usecase.FollowKolPostGqlUseCase;
 import com.tokopedia.kol.feature.post.view.listener.KolPostListener;
 import com.tokopedia.kol.feature.post.view.viewmodel.BaseKolViewModel;
 import com.tokopedia.kol.feature.post.view.viewmodel.KolPostViewModel;
@@ -574,6 +576,13 @@ public class FeedPlusFragment extends BaseDaggerFragment
     }
 
     @Override
+    public void showInterestPick() {
+        if (getContext() != null && feedModuleRouter.isEnableInterestPick()) {
+            RouteManager.route(getContext(), ApplinkConst.INTEREST_PICK);
+        }
+    }
+
+    @Override
     public void onErrorGetFeedFirstPage(String errorMessage) {
         finishLoading();
         if (adapter.getItemCount() == 0) {
@@ -795,17 +804,18 @@ public class FeedPlusFragment extends BaseDaggerFragment
 
     private void loadData(boolean isVisibleToUser) {
         if (isVisibleToUser && isAdded()
-                && getActivity()!= null && presenter != null
-                && !isLoadedOnce) {
+                && getActivity()!= null && presenter != null) {
+            if (!isLoadedOnce) {
+                presenter.fetchFirstPage();
+                if (trace != null)
+                    trace.stop();
 
-            presenter.fetchFirstPage();
-            if (trace != null)
-                trace.stop();
+                presenter.checkNewFeed(firstCursor);
 
-            presenter.checkNewFeed(firstCursor);
+                isLoadedOnce = !isLoadedOnce;
+            }
+
             ScreenTracking.screen(getScreenName());
-
-            isLoadedOnce = !isLoadedOnce;
         }
     }
 

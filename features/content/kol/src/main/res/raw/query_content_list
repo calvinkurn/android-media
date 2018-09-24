@@ -1,0 +1,35 @@
+query ContentList ($limit: Int!, $shopID: Int!, $cursor: String!, $source: String!){
+  feed_content_post(limit:$limit, shopID:$shopID, cursor:$cursor, source:$source){
+    posts{
+      id
+      createTime
+      description
+      content{
+        type
+        URL
+        tags{
+          id
+          type
+          link
+          captionEng
+          captionInd
+        }
+      }
+      author{
+        id
+        name
+        thumbnail
+        url
+      }
+      interaction{
+        isLiked
+        commentCount
+        likeCount
+        showComment
+        showLike
+      }
+    }
+    lastCursor
+    error
+  }
+}
