@@ -30,8 +30,17 @@ data class ProductTalkPojo(
         @SerializedName("product_url")
         val product_url: String = "",
         @Expose
+        @SerializedName("product_price")
+        val product_price: String = "",
+        @Expose
         @SerializedName("shop_id")
-        val shop_id: Int = 0
+        val shop_id: Int = 0,
+        @Expose
+        @SerializedName("shop_name")
+        val shop_name: String = "",
+        @Expose
+        @SerializedName("shop_image")
+        val shop_image: String = ""
 )
 
 data class ProductTalkItemPojo(

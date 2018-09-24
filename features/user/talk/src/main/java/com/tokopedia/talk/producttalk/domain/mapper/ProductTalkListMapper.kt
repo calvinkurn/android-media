@@ -53,7 +53,11 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
                 pojo.product_name,
                 pojo.product_image,
                 pojo.product_url,
-                pojo.shop_id)
+                pojo.product_price
+                pojo.shop_id,
+                pojo.shop_name,
+                pojo.shop_image
+                )
     }
 
     private fun mapThread(pojo: ProductTalkItemPojo): TalkThreadViewModel {

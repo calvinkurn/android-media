@@ -29,6 +29,9 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         val PRODUCT_PRICE = "product_price"
         val PRODUCT_NAME = "prod_name"
         val PRODUCT_IMAGE = "product_image"
+        val PRODUCT_URL = "product_url"
+        val SHOP_NAME = "shop_name"
+        val SHOP_AVATAR = "shop_avatar"
 
         @JvmStatic
         fun createIntent(context: Context, productId: String): Intent {
@@ -42,13 +45,19 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
                          shopId: String,
                          productPrice: String,
                          productName: String,
-                         productImage: String): Intent {
+                         productImage: String,
+                         productUrl: String,
+                         shopName: String,
+                         shopAvatar: String): Intent {
             val intent = Intent(context, TalkProductActivity::class.java)
             intent.putExtra(PRODUCT_ID, productId)
             intent.putExtra(SHOP_ID, shopId)
             intent.putExtra(PRODUCT_PRICE, productPrice)
             intent.putExtra(PRODUCT_NAME, productName)
             intent.putExtra(PRODUCT_IMAGE, productImage)
+            intent.putExtra(PRODUCT_URL, productUrl)
+            intent.putExtra(SHOP_NAME, shopName)
+            intent.putExtra(SHOP_AVATAR, shopAvatar)
             return intent
         }
     }

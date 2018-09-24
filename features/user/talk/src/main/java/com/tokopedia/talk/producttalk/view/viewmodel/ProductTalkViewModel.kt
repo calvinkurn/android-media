@@ -16,7 +16,10 @@ data class ProductTalkViewModel(
         var productName: String = "",
         var productImage: String = "",
         var productUrl: String = "",
-        var shopId: Int = 0
+        var productPrice: String = "",
+        var shopId: Int = 0,
+        var shopName : String = "",
+        var shopAvatar : String = ""
 ) {
 
 }

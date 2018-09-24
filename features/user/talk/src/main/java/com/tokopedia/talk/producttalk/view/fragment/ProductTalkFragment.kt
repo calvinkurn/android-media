@@ -32,6 +32,7 @@ import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
+import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity
 import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.LoadProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
@@ -91,6 +92,8 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var productPrice: String = ""
     var productImage: String = ""
     var productUrl: String = ""
+    var shopName: String = ""
+    var shopAvatar: String = ""
 
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
@@ -104,13 +107,15 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
-            fragment.shopId = extras.getString("shop_id", "")
-            fragment.productId = extras.getString("product_id", "")
-            fragment.productPrice = extras.getString("product_price", "")
-            fragment.productName = extras.getString("prod_name", "")
-            fragment.productImage = MethodChecker.fromHtml(extras.getString("product_image", ""))
-                    .toString()
-            fragment.productUrl = extras.getString("product_url", "")
+            fragment.shopId = extras.getString(TalkProductActivity.SHOP_ID, "")
+            fragment.productId = extras.getString(TalkProductActivity.PRODUCT_ID, "")
+            fragment.productPrice = extras.getString(TalkProductActivity.PRODUCT_PRICE, "")
+            fragment.productName = extras.getString(TalkProductActivity.PRODUCT_NAME, "")
+            fragment.productImage = MethodChecker.fromHtml(extras.getString(TalkProductActivity
+                    .PRODUCT_IMAGE, "")).toString()
+            fragment.productUrl = extras.getString(TalkProductActivity.PRODUCT_URL, "")
+            fragment.shopName = extras.getString(TalkProductActivity.SHOP_NAME, "")
+            fragment.shopAvatar = extras.getString(TalkProductActivity.SHOP_AVATAR, "")
             return fragment
         }
 
@@ -232,9 +237,10 @@ class ProductTalkFragment : BaseDaggerFragment(),
         shopId = productTalkViewModel.shopId.toString()
         productName = productTalkViewModel.productName
         productImage = productTalkViewModel.productImage
-        productPrice = ""
+        productPrice = productTalkViewModel.productPrice
         productUrl = productTalkViewModel.productUrl
-
+        shopName = productTalkViewModel.shopName
+        shopAvatar = productTalkViewModel.shopAvatar
     }
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {
@@ -510,11 +516,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
                     val intent: Intent = (this as TalkRouter).getAskSellerIntent(
                             this,
                             shopId,
-                            "",
+                            shopName,
                             "",
                             productUrl,
                             "product",
-                            "")
+                            shopAvatar)
                     this@ProductTalkFragment.startActivity(intent)
                 }
             }
