@@ -254,6 +254,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     override fun onSuccessRefreshTalkAfterSendTalk(data: ArrayList<Visitable<*>>) {
         hideLoadingAction()
+        adapter.clearAllElements()
         adapter.setList(data)
     }
 

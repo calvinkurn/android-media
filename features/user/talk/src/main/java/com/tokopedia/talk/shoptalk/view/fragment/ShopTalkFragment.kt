@@ -127,8 +127,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun onRefreshData() {
-        presenter.refreshTalk(shopId)
         swipeToRefresh.isRefreshing = true
+        presenter.refreshTalk(shopId)
     }
 
     override fun hideRefreshLoad() {
@@ -256,8 +256,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
             val intent: Intent = if (commentId.isBlank()) {
                 ReportTalkActivity.createIntentReportTalk(this, talkId, shopId, productId)
             } else {
-                ReportTalkActivity.createIntentReportComment(this, talkId, shopId,
-                        productId, commentId)
+                ReportTalkActivity.createIntentReportComment(this, talkId, commentId,
+                        shopId, productId)
             }
             this@ShopTalkFragment.startActivityForResult(intent, REQUEST_REPORT_TALK)
         }

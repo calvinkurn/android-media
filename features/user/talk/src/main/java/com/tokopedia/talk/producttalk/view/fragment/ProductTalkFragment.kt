@@ -107,15 +107,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
         fun newInstance(extras: Bundle): ProductTalkFragment {
             val fragment = ProductTalkFragment()
-            fragment.shopId = extras.getString(TalkProductActivity.SHOP_ID, "")
-            fragment.productId = extras.getString(TalkProductActivity.PRODUCT_ID, "")
-            fragment.productPrice = extras.getString(TalkProductActivity.PRODUCT_PRICE, "")
-            fragment.productName = extras.getString(TalkProductActivity.PRODUCT_NAME, "")
-            fragment.productImage = MethodChecker.fromHtml(extras.getString(TalkProductActivity
-                    .PRODUCT_IMAGE, "")).toString()
-            fragment.productUrl = extras.getString(TalkProductActivity.PRODUCT_URL, "")
-            fragment.shopName = extras.getString(TalkProductActivity.SHOP_NAME, "")
-            fragment.shopAvatar = extras.getString(TalkProductActivity.SHOP_AVATAR, "")
+            fragment.arguments = extras
             return fragment
         }
 
@@ -128,8 +120,44 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        savedInstanceState?.run {
+            shopId = getString(TalkProductActivity.SHOP_ID, "")
+            productId = getString(TalkProductActivity.PRODUCT_ID, "")
+            productPrice = getString(TalkProductActivity.PRODUCT_PRICE, "")
+            productName = getString(TalkProductActivity.PRODUCT_NAME, "")
+            productImage = MethodChecker.fromHtml(getString(TalkProductActivity
+                    .PRODUCT_IMAGE, "")).toString()
+            productUrl = getString(TalkProductActivity.PRODUCT_URL, "")
+            shopName = getString(TalkProductActivity.SHOP_NAME, "")
+            shopAvatar = getString(TalkProductActivity.SHOP_AVATAR, "")
+        } ?: arguments?.run {
+            shopId = getString(TalkProductActivity.SHOP_ID, "")
+            productId = getString(TalkProductActivity.PRODUCT_ID, "")
+            productPrice = getString(TalkProductActivity.PRODUCT_PRICE, "")
+            productName = getString(TalkProductActivity.PRODUCT_NAME, "")
+            productImage = MethodChecker.fromHtml(getString(TalkProductActivity
+                    .PRODUCT_IMAGE, "")).toString()
+            productUrl = getString(TalkProductActivity.PRODUCT_URL, "")
+            shopName = getString(TalkProductActivity.SHOP_NAME, "")
+            shopAvatar = getString(TalkProductActivity.SHOP_AVATAR, "")
+        }
+
         setUpView(view)
         presenter.initProductTalk(productId)
+
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(TalkProductActivity.SHOP_ID, shopId)
+        outState.putString(TalkProductActivity.PRODUCT_ID, productId)
+        outState.putString(TalkProductActivity.PRODUCT_PRICE, productPrice)
+        outState.putString(TalkProductActivity.PRODUCT_NAME, productName)
+        outState.putString(TalkProductActivity.PRODUCT_URL, productUrl)
+        outState.putString(TalkProductActivity.PRODUCT_IMAGE, productImage)
+        outState.putString(TalkProductActivity.SHOP_NAME, shopName)
+        outState.putString(TalkProductActivity.SHOP_AVATAR, shopAvatar)
     }
 
     override fun onResume() {
@@ -160,7 +188,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     private fun goToCreateTalk(productId: String) {
         activity?.run {
-            if(!presenter.isLoggedIn()){
+            if (!presenter.isLoggedIn()) {
                 goToLogin()
                 return
             }
@@ -325,7 +353,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
-        if(presenter.isLoggedIn()){
+        if (presenter.isLoggedIn()) {
             goToLogin()
             return;
         }
