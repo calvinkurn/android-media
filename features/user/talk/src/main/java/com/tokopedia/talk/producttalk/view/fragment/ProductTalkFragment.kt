@@ -234,6 +234,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
         productImage = productTalkViewModel.productImage
         productPrice = ""
         productUrl = productTalkViewModel.productUrl
+
     }
 
     override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {

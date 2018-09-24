@@ -40,6 +40,7 @@ import com.tokopedia.talk.talkdetails.view.adapter.AttachingProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
+import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_talk_comments.*
 import javax.inject.Inject
 
@@ -72,6 +73,9 @@ class TalkDetailsFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var talkDialog: TalkDialog
+
+    @Inject
+    lateinit var userSession: UserSession
 
     private var talkId: String = ""
     private var shopId: String = ""
@@ -122,15 +126,30 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         attachedProductList = view.findViewById(R.id.talk_details_attach_product_list)
         talkRecyclerView = view.findViewById(R.id.talk_details_reply_list)
         attachProductButton = view.findViewById(R.id.add_url)
-        attachProductButton.setOnClickListener { goToAttachProductScreen() }
+        attachProductButton.setOnClickListener {
+            if (userSession.isLoggedIn) {
+                goToAttachProductScreen()
+            } else {
+                goToLogin()
+            }
+        }
         sendMessageEditText = view.findViewById(R.id.new_comment)
         sendMessageButton = view.findViewById(R.id.send_but)
         sendMessageButton.setOnClickListener {
-
             KeyboardHandler.DropKeyboard(context, view)
-            presenter.sendComment(talkId,
-                    sendMessageEditText.text.toString(),
-                    attachedProductListAdapter.data)
+            if (userSession.isLoggedIn) {
+                presenter.sendComment(talkId,
+                        sendMessageEditText.text.toString(),
+                        attachedProductListAdapter.data)
+            } else {
+                goToLogin()
+            }
+        }
+
+        sendMessageEditText.setOnClickListener{
+            if(!userSession.isLoggedIn){
+                goToLogin()
+            }
         }
         setupView()
         loadData()
@@ -277,7 +296,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     private fun goToAttachProductScreen() {
         val intent = AttachProductActivity.createInstance(context, shopId, "", false)
         startActivityForResult(intent, GO_TO_ATTACH_PRODUCT_REQ_CODE)
+    }
 
+    private fun goToLogin() {
+        context?.applicationContext?.run {
+            val intent = (this as TalkRouter).getLoginIntent(this)
+            this@TalkDetailsFragment.startActivity(intent)
+        }
     }
 
     private fun convertAttachProduct(products: ArrayList<ResultProduct>)
@@ -304,25 +329,29 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onCommentMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, commentId: String, productId: String) {
-        context?.run {
-            val listMenu = ArrayList<Menus.ItemMenus>()
-            if (menu.allowReport) {
-                listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_report_comment)))
-            }
-            if (menu.allowDelete) {
-                listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_delete_comment)))
-            }
+        if (userSession.isLoggedIn) {
+            context?.run {
+                val listMenu = ArrayList<Menus.ItemMenus>()
+                if (menu.allowReport) {
+                    listMenu.add(Menus.ItemMenus(getString(R.string
+                            .menu_report_comment)))
+                }
+                if (menu.allowDelete) {
+                    listMenu.add(Menus.ItemMenus(getString(R.string
+                            .menu_delete_comment)))
+                }
 
-            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-            bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
-            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+                bottomMenu.itemMenuList = listMenu
+                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+                bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                    onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
+                }
+                bottomMenu.show()
             }
-            bottomMenu.show()
+        } else {
+            goToLogin()
         }
     }
 
@@ -350,25 +379,29 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     override fun onMenuButtonClicked(menu: TalkState, shopId: String, talkId: String, productId: String) {
-        context?.run {
-            val listMenu = ArrayList<Menus.ItemMenus>()
-            if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_delete_talk)))
-            if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_unfollow_talk)))
-            if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_follow_talk)))
-            if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_report_talk)))
+        if (userSession.isLoggedIn) {
+            context?.run {
+                val listMenu = ArrayList<Menus.ItemMenus>()
+                if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_delete_talk)))
+                if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_unfollow_talk)))
+                if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_follow_talk)))
+                if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
+                        .menu_report_talk)))
 
-            if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
-            bottomMenu.itemMenuList = listMenu
-            bottomMenu.setActionText(getString(R.string.button_cancel))
-            bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
-            bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
-                onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
+                if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
+                bottomMenu.itemMenuList = listMenu
+                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
+                bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
+                    onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
+                }
+                bottomMenu.show()
             }
-            bottomMenu.show()
+        } else {
+            goToLogin()
         }
     }
 
