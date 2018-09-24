@@ -1,7 +1,7 @@
 package com.tokopedia.talk.inboxtalk.view.viewmodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.talk.common.domain.UnreadCount
+import com.tokopedia.talk.common.domain.pojo.UnreadCount
 
 /**
  * @author by nisie on 8/29/18.

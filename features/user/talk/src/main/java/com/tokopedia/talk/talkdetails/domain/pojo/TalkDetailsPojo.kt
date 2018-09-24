@@ -2,7 +2,8 @@ package com.tokopedia.talk.talkdetails.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.talk.common.domain.*
+import com.tokopedia.talk.common.domain.pojo.TalkCommentItem
+import com.tokopedia.talk.common.domain.pojo.TalkState
 
 data class TalkDetailsPojo(
         @Expose

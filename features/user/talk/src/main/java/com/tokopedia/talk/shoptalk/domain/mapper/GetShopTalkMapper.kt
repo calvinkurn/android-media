@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
-import com.tokopedia.talk.common.domain.CommentProduct
-import com.tokopedia.talk.common.domain.InboxTalkItemPojo
-import com.tokopedia.talk.common.domain.InboxTalkPojo
-import com.tokopedia.talk.common.domain.TalkCommentItem
+import com.tokopedia.talk.common.domain.pojo.CommentProduct
+import com.tokopedia.talk.common.domain.pojo.InboxTalkItemPojo
+import com.tokopedia.talk.common.domain.pojo.InboxTalkPojo
+import com.tokopedia.talk.common.domain.pojo.TalkCommentItem
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel

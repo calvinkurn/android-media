@@ -4,11 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
-import com.tokopedia.talk.common.domain.CommentProduct
-import com.tokopedia.talk.common.domain.InboxTalkItemPojo
-import com.tokopedia.talk.common.domain.InboxTalkPojo
-import com.tokopedia.talk.common.domain.TalkCommentItem
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
+import com.tokopedia.talk.producttalk.domain.pojo.CommentProduct
+import com.tokopedia.talk.producttalk.domain.pojo.ProductTalkItemPojo
+import com.tokopedia.talk.producttalk.domain.pojo.ProductTalkPojo
+import com.tokopedia.talk.producttalk.domain.pojo.TalkCommentItem
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
@@ -20,38 +20,43 @@ import javax.inject.Inject
 /**
  * @author by Steven.
  */
-class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<InboxTalkPojo>>,
+class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<ProductTalkPojo>>,
         ProductTalkViewModel> {
 
     private val IS_READ = 2
     private val IS_FOLLOWED = 1
     private val SELLER_LABEL_ID = 3
 
-    override fun call(response: Response<DataResponse<InboxTalkPojo>>): ProductTalkViewModel {
+    override fun call(response: Response<DataResponse<ProductTalkPojo>>): ProductTalkViewModel {
         if ((response.body() != null) && (response.body().header == null ||
                         (response.body().header != null && response.body().header.messages.isEmpty()) ||
                         (response.body().header != null && response.body().header.messages[0].isBlank()))) {
-            val pojo: InboxTalkPojo = response.body().data
+            val pojo: ProductTalkPojo = response.body().data
             return mapToViewModel(pojo)
         } else {
             throw MessageErrorException(response.body().header.messages[0])
         }
     }
 
-    private fun mapToViewModel(pojo: InboxTalkPojo): ProductTalkViewModel {
+    private fun mapToViewModel(pojo: ProductTalkPojo): ProductTalkViewModel {
 
         val listThread = ArrayList<Visitable<*>>()
 
-        for (data: InboxTalkItemPojo in pojo.list) {
+        for (data: ProductTalkItemPojo in pojo.list) {
             listThread.add(mapThread(data))
         }
         return ProductTalkViewModel("",
                 listThread,
                 pojo.paging.has_next,
-                pojo.paging.page_id)
+                pojo.paging.page_id,
+                pojo.product_id,
+                pojo.product_name,
+                pojo.product_image,
+                pojo.product_url,
+                pojo.shop_id)
     }
 
-    private fun mapThread(pojo: InboxTalkItemPojo): TalkThreadViewModel {
+    private fun mapThread(pojo: ProductTalkItemPojo): TalkThreadViewModel {
 
         val listCommentTalk = ArrayList<Visitable<*>>()
 
@@ -143,7 +148,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
         return listProduct
     }
 
-    private fun mapHeaderTalkState(pojo: InboxTalkItemPojo): TalkState {
+    private fun mapHeaderTalkState(pojo: ProductTalkItemPojo): TalkState {
         return TalkState(
                 pojo.talk_state.allow_report,
                 pojo.talk_state.allow_delete,

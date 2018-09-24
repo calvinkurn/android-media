@@ -21,7 +21,7 @@ import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolde
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
-import com.tokopedia.talk.common.domain.UnreadCount
+import com.tokopedia.talk.common.domain.pojo.UnreadCount
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.di.DaggerInboxTalkComponent

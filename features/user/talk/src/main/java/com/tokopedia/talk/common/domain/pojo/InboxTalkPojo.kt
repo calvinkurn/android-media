@@ -1,4 +1,4 @@
-package com.tokopedia.talk.common.domain
+package com.tokopedia.talk.common.domain.pojo
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -31,7 +31,7 @@ data class InboxTalkItemPojo(
         val talk_create_time_fmt: String = "",
         @Expose
         @SerializedName("talk_create_time_list")
-        val talk_create_time_list: CreateTimeList= CreateTimeList(),
+        val talk_create_time_list: CreateTimeList = CreateTimeList(),
         @Expose
         @SerializedName("talk_follow_status")
         val talk_follow_status: Int = 0,
@@ -106,7 +106,7 @@ data class TalkCommentItem(
         val comment_create_time_fmt: String = "",
         @Expose
         @SerializedName("comment_create_time_list")
-        val comment_create_time_list: CreateTimeList= CreateTimeList(),
+        val comment_create_time_list: CreateTimeList = CreateTimeList(),
         @Expose
         @SerializedName("comment_id")
         val comment_id: String = "",

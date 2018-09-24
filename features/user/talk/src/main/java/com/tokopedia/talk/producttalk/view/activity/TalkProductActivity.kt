@@ -25,12 +25,30 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
     companion object {
 
         val PRODUCT_ID = "product_id"
+        val SHOP_ID = "shop_id"
+        val PRODUCT_PRICE = "product_price"
+        val PRODUCT_NAME = "prod_name"
+        val PRODUCT_IMAGE = "product_image"
 
         @JvmStatic
         fun createIntent(context: Context, productId: String): Intent {
             val intent = Intent(context,
                     TalkProductActivity::class.java)
             intent.putExtra(PRODUCT_ID, productId)
+            return intent
+        }
+
+        fun createIntent(context: Context, productId: String,
+                         shopId: String,
+                         productPrice: String,
+                         productName: String,
+                         productImage: String): Intent {
+            val intent = Intent(context, TalkProductActivity::class.java)
+            intent.putExtra(PRODUCT_ID, productId)
+            intent.putExtra(SHOP_ID, shopId)
+            intent.putExtra(PRODUCT_PRICE, productPrice)
+            intent.putExtra(PRODUCT_NAME, productName)
+            intent.putExtra(PRODUCT_IMAGE, productImage)
             return intent
         }
     }

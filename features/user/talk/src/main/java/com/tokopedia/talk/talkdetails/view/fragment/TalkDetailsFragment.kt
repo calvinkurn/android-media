@@ -31,6 +31,7 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
 import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHolder
+import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.di.DaggerTalkDetailsComponent
@@ -155,9 +156,9 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         talkRecyclerView.layoutManager = linearLayoutManager
         talkRecyclerView.adapter = adapter
 
-        if(shopId.isBlank()){
+        if (shopId.isBlank()) {
             attachProductButton.visibility = View.GONE
-        }else{
+        } else {
             attachProductButton.visibility = View.VISIBLE
         }
     }
@@ -220,6 +221,15 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             bundle.putString(TalkDetailsActivity.THREAD_TALK_ID, talkId)
             intent.putExtras(bundle)
             setResult(TalkDetailsActivity.RESULT_OK_READ, intent)
+        }
+
+        showAttachProduct(data)
+    }
+
+    private fun showAttachProduct(data: ArrayList<Visitable<*>>) {
+        if (data.isNotEmpty() && data[0] is InboxTalkItemViewModel) {
+            shopId = (data[0] as InboxTalkItemViewModel).talkThread.headThread.shopId
+            attachProductButton.visibility = View.VISIBLE
         }
     }
 

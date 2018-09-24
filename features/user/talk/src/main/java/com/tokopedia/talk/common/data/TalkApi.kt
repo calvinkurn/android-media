@@ -2,10 +2,9 @@ package com.tokopedia.talk.common.data
 
 import com.tokopedia.abstraction.common.data.model.response.DataResponse
 import com.tokopedia.talk.addtalk.domain.CreateTalkPojo
-import com.tokopedia.talk.common.domain.InboxTalkPojo
 import com.tokopedia.talk.common.domain.pojo.BaseActionTalkPojo
-import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
-import com.tokopedia.talk.producttalk.view.viewmodel.TalkThreadViewModel
+import com.tokopedia.talk.common.domain.pojo.InboxTalkPojo
+import com.tokopedia.talk.producttalk.domain.pojo.ProductTalkPojo
 import retrofit2.Response
 import retrofit2.http.*
 import rx.Observable
@@ -21,7 +20,7 @@ interface TalkApi {
 
     @GET(TalkUrl.PATH_GET_PRODUCT_TALK)
     fun getProductTalk(@QueryMap params: HashMap<String, Any>):
-            Observable<Response<DataResponse<InboxTalkPojo>>>
+            Observable<Response<DataResponse<ProductTalkPojo>>>
 
     @FormUrlEncoded
     @POST(TalkUrl.PATH_DELETE_TALK)

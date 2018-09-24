@@ -38,6 +38,7 @@ import com.tokopedia.talk.producttalk.view.adapter.ProductTalkAdapter
 import com.tokopedia.talk.producttalk.view.adapter.ProductTalkThreadViewHolder
 import com.tokopedia.talk.producttalk.view.listener.ProductTalkContract
 import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkTitleViewModel
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
@@ -89,7 +90,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     var productName: String = ""
     var productPrice: String = ""
     var productImage: String = ""
-    var intentChat: Intent? = null
+    var productUrl: String = ""
 
     override fun initInjector() {
         val productTalkComponent = DaggerProductTalkComponent.builder()
@@ -109,7 +110,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
             fragment.productName = extras.getString("prod_name", "")
             fragment.productImage = MethodChecker.fromHtml(extras.getString("product_image", ""))
                     .toString()
-            fragment.intentChat = extras.getParcelable("intent_chat")
+            fragment.productUrl = extras.getString("product_url", "")
             return fragment
         }
 
@@ -218,13 +219,28 @@ class ProductTalkFragment : BaseDaggerFragment(),
         adapter.showLoading()
     }
 
-    override fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>) {
-        adapter.setList(listThread, ProductTalkTitleViewModel(productImage, productName, productPrice))
+    override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
+        setupViewModel(productTalkViewModel)
+
+        adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
+                productName, productPrice))
+
     }
 
-    override fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>) {
+    private fun setupViewModel(productTalkViewModel: ProductTalkViewModel) {
+        productId = productTalkViewModel.productId.toString()
+        shopId = productTalkViewModel.shopId.toString()
+        productName = productTalkViewModel.productName
+        productImage = productTalkViewModel.productImage
+        productPrice = ""
+        productUrl = productTalkViewModel.productUrl
+    }
+
+    override fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel) {
+        setupViewModel(productTalkViewModel)
+
         adapter.hideLoading()
-        adapter.addList(listThread)
+        adapter.addList(productTalkViewModel.listThread)
     }
 
     override fun onLoadClicked() {
@@ -487,9 +503,18 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onChatClicked() {
-        intentChat?.run {
-            startActivity(this)
+        activity?.applicationContext?.run {
+            val intent: Intent = (this as TalkRouter).getAskSellerIntent(
+                    this,
+                    shopId,
+                    "",
+                    "",
+                    productUrl,
+                    "product",
+                    "")
+            this@ProductTalkFragment.startActivity(intent)
         }
+
     }
 
     override fun onGoToUserProfile(userId: String) {

@@ -66,9 +66,9 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
                     } else {
                         if (reset) {
                             view.hideRefresh()
-                            view.onSuccessResetTalk(viewModel.listThread)
+                            view.onSuccessResetTalk(viewModel)
                         } else {
-                            view.onSuccessGetTalks(viewModel.listThread)
+                            view.onSuccessGetTalks(viewModel)
                         }
                         if (viewModel.hasNextPage) {
                             view.setCanLoad()

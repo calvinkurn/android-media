@@ -1,9 +1,9 @@
 package com.tokopedia.talk.producttalk.view.listener
 
 import android.content.Context
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.talk.producttalk.view.viewmodel.ProductTalkViewModel
 
 /**
  * @author by Steven
@@ -16,8 +16,8 @@ interface ProductTalkContract {
         fun showLoadingFull()
         fun hideLoadingFull()
         fun onEmptyTalk()
-        fun onSuccessResetTalk(listThread: ArrayList<Visitable<*>>)
-        fun onSuccessGetTalks(listThread: ArrayList<Visitable<*>>)
+        fun onSuccessResetTalk(listThread: ProductTalkViewModel)
+        fun onSuccessGetTalks(listThread: ProductTalkViewModel)
         fun onErrorGetTalks(errorMessage: String?)
         fun setCanLoad()
         fun showRefresh()
