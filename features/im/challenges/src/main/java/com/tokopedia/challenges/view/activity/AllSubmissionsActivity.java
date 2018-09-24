@@ -1,17 +1,12 @@
 package com.tokopedia.challenges.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
-import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.fragments.AllSubmissionFragment;
-import com.tokopedia.challenges.view.fragments.SubmitDetailFragment;
-import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
-import com.tokopedia.challenges.view.utils.Utils;
 
 public class AllSubmissionsActivity extends BaseActivity {
 

@@ -78,8 +78,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
 
     }
 
-    @Override
-    public void postMapBranchUrl(String id, String branchUrl, String packageName, String title, boolean isChallenge) {
+    private void postMapBranchUrl(String id, String branchUrl, String packageName, String title, boolean isChallenge) {
         postMapBranchUrlUseCase.setRequestParams(id, branchUrl);
         postMapBranchUrlUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

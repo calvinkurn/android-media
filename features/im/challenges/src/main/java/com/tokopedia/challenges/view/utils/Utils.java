@@ -242,29 +242,6 @@ public class Utils {
         return url + "?height=500";
     }
 
-    public static void convertTextToBulletText(TextView textView, Context context, String text) {
-        SpannableString spannableString = new SpannableString(text);
-        int startIndexOfLink = text.indexOf("\u2022");
-
-        spannableString.setSpan(new ClickableSpan() {
-            @Override
-            public void onClick(View view) {
-                //TransactionPurchaseRouter.startWebViewActivity(getContext(), contactUs.helpUrl());
-            }
-
-            @Override
-            public void updateDrawState(TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setUnderlineText(false);
-                ds.setColor(context.getResources().getColor(R.color.green_250)); // specific color for this link
-            }
-        }, startIndexOfLink, startIndexOfLink + "\u2022".length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        textView.setMovementMethod(LinkMovementMethod.getInstance());
-
-        textView.setText(spannableString, TextView.BufferType.SPANNABLE);
-
-    }
-
     public static void generateText(LinearLayout layout, @NonNull String text) {
         for (String each : text.replaceFirst("~", "").split("~")) {
             BulletTextView bulletTextView = new BulletTextView(layout.getContext());

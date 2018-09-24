@@ -40,7 +40,7 @@ public class GetWinnersUseCase extends RestRequestSupportInterceptorUseCase {
         HashMap<String, Object> parameters = requestParams.getParameters();
         String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);
         parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);
-        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.CHALLENGES_SUBMISSIONS, challengeID), SubmissionResponse.class)
+        RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + String.format(ChallengesUrl.PRIVATE.CHALLENGE_WINNERS, challengeID), SubmissionResponse.class)
                 .setQueryParams(parameters)
                 .build();
         tempRequest.add(restRequest1);

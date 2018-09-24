@@ -26,12 +26,12 @@
         <TextView
             android:id="@+id/tv_winner_number"
             style="@style/TextView.Small.White"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="@dimen/dp_20"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/ic_winner_badge"
             android:gravity="center_horizontal"
-            android:textSize="@dimen/sp_10"
+            android:textSize="@dimen/sp_12"
             android:visibility="gone"
             app:layout_constraintRight_toRightOf="@+id/iv_challenge"
             app:layout_constraintTop_toTopOf="@id/iv_challenge" />

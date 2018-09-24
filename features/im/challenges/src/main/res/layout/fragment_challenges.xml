@@ -25,7 +25,7 @@
             android:paddingRight="@dimen/dp_16"
             android:paddingTop="@dimen/dp_10"
             android:text="@string/ch_active_challenges"
-            android:textColor="@color/black_56" />
+            android:textColor="@color/tkpd_main_green" />
 
         <TextView
             android:id="@+id/tv_past_challenges"

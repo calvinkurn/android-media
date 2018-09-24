@@ -48,7 +48,6 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     private ChallengesComponent challengesComponent;
     private ProgressDialog progress;
     private View closeButton;
-    private TextView tvHeading;
     private SubmissionResult submissionItem;
     private Result challengeItem;
     private boolean isChallenge;
@@ -91,17 +90,21 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         showHeading = getArguments().getBoolean(PARAM_IS_SHOW_HEADING, false);
 
         initView(view);
-        tvHeading = view.findViewById(R.id.tv_heading);
+       View headingView = view.findViewById(R.id.tv_heading);
         closeButton = view.findViewById(R.id.item_close);
         closeButton.setOnClickListener(v -> dismiss());
         if (showHeading) {
-            tvHeading.setVisibility(View.VISIBLE);
+            headingView.setVisibility(View.VISIBLE);
         } else {
-            tvHeading.setVisibility(View.GONE);
+            headingView.setVisibility(View.GONE);
+        }
+        View titleView= view.findViewById(R.id.layout_title);
+        titleView.setOnClickListener(view1 -> dismiss());
 
-        }getDialog().setTitle("Tokopedia Challenge");
         return view;
     }
+
+
 
     public void initView(View view) {
         challengesComponent = ((BaseActivity) getActivity()).getComponent();

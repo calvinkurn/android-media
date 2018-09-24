@@ -57,7 +57,6 @@ import javax.inject.Inject;
 public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDetailContract.View, CustomVideoPlayer.CustomVideoPlayerListener {
     private LinearLayout statusView;
     private TextView statusText;
-    private LinearLayout profileLayout;
     private ImageView profilePic;
     private TextView profileText;
     private CustomVideoPlayer challengeImage;
@@ -89,7 +88,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     private View progressBarLayout;
     private boolean fromSubmission;
     private TextView tvWinnerNumber;
-    private Menu mMenu;
     private ScrollView scrollView;
     @Inject
     public ChallengesGaAnalyticsTracker analytics;
@@ -118,7 +116,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         statusView = view.findViewById(R.id.conditional_status);
         statusText = view.findViewById(R.id.status_text);
 
-        profileLayout = view.findViewById(R.id.profile);
         profilePic = view.findViewById(R.id.profile_pic);
         profileText = view.findViewById(R.id.profile_name);
 
@@ -447,14 +444,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         super.onCreateOptionsMenu(menu, inflater);
         if (presenter.getParticipatedStatus(submissionResult)) {
             inflater.inflate(R.menu.menu_submission_detail, menu);
-            mMenu = menu;
-            for (int i = 0; i < mMenu.size(); i++) {
-                MenuItem item = menu.getItem(i);
-                SpannableString s = new SpannableString(item.getTitle());
-                s.setSpan(new AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, s.length(), 0);
-                s.setSpan(new StyleSpan(Typeface.NORMAL), 0, s.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                item.setTitle(s);
-            }
         }
     }
 

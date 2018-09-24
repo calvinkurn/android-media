@@ -21,7 +21,6 @@ public class ShareBottomSheetContract {
     }
 
     public interface Presenter extends CustomerPresenter<View> {
-        void postMapBranchUrl(String id, String branchUrl, String packageName, String title, boolean isChallenge);
 
         void createAndShareChallenge(String packageName);
 

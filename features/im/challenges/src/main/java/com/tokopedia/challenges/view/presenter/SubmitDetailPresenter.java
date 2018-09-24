@@ -63,7 +63,9 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
             getView().isParticipated(false);
             sendBuzzPointEvent(model.getId());
         }
-        getView().setLikes(model.getMe().isLiked());
+        if (model.getMe() != null) {
+            getView().setLikes(model.getMe().isLiked());
+        }
         getView().setApprovedView(model.getStatus(), model.getStatusMessage());
         getView().setPointsView(String.valueOf(model.getPoints()));
         getView().setDetailTitle(model.getTitle());
@@ -82,7 +84,7 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
     @Override
     public void likeBtnClick(SubmissionResult result) {
         RequestParams requestParams = RequestParams.create();
-        if (result.getMe() != null)
+        if (result.getMe() != null && result.getMe() != null)
             requestParams.putBoolean(PostSubmissionLikeUseCase.IS_LIKED, !result.getMe().isLiked());
         if (!TextUtils.isEmpty(result.getId()))
             requestParams.putString(Utils.QUERY_PARAM_SUBMISSION_ID, result.getId());
@@ -94,7 +96,9 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
             @Override
             public void onError(Throwable e) {
-                getView().setLikes(result.getMe().isLiked());
+                if (result.getMe() != null) {
+                    getView().setLikes(result.getMe().isLiked());
+                }
             }
 
             @Override

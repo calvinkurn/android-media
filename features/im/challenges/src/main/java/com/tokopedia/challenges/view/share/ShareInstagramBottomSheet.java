@@ -54,6 +54,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         int screenHeight = displaymetrics.heightPixels;
         getBottomSheetBehavior().setPeekHeight((int) (screenHeight / 1.5));
+
     }
 
 
@@ -65,7 +66,8 @@ public class ShareInstagramBottomSheet extends BottomSheets {
             hastag = challengeItem.getHashTag();
         } else if (submissionResult != null) {
             ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()), R.color.grey_1100);
-            hastag = submissionResult.getCollection().getHashTag();
+            if (submissionResult.getSharing() != null && submissionResult.getSharing().getSocialTracking() != null && submissionResult.getSharing().getSocialTracking().getInstagram() != null)
+                hastag = submissionResult.getSharing().getSocialTracking().getInstagram().getRequiredText();
 
         }
 
@@ -82,7 +84,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
 
     @Override
     protected String title() {
-        return "";
+        return "Tokopedia Challenge";
     }
 
     private void setData(Object item) {

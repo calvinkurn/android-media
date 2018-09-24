@@ -75,6 +75,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getOpenChallenges();
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+            tvActiveChallenges.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+            tvPastChallenges.setTextColor(getResources().getColor(R.color.black_56));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,
@@ -88,6 +90,8 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
             challengeHomePresenter.getPastChallenges();
             tvPastChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_selected);
             tvActiveChallenges.setBackgroundResource(R.drawable.bg_ch_bubble_default);
+            tvPastChallenges.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+            tvActiveChallenges.setTextColor(getResources().getColor(R.color.black_56));
             analytics.sendEventChallenges(ChallengesGaAnalyticsTracker.EVENT_CLICK_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_CATEGORY_CHALLENGES,
                     ChallengesGaAnalyticsTracker.EVENT_ACTION_CLICK,

@@ -46,6 +46,7 @@
         android:layout_toRightOf="@+id/award_image"
         android:ellipsize="end"
         android:gravity="left"
+        android:textStyle="bold"
         android:lines="2"
         android:paddingBottom="@dimen/dp_16"
         app:layout_constraintRight_toRightOf="parent"
