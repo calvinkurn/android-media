@@ -92,6 +92,4 @@ public class GetMySubmissionsListUseCase extends RestRequestSupportInterceptorUs
 
         return tempRequest;
     }
-
-
 }

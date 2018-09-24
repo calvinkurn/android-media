@@ -60,10 +60,9 @@ public class CustomMediaController extends MediaController {
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenPortraitVideoActivity.class);
-                        intent.putExtra("fullScreenInd", "");
-                        intent.putExtra("seekPos", iCurrentPos.getPosition());
-                        intent.putExtra("isPlaying", iCurrentPos.isVideoPlaying());
-                        intent.putExtra("videoUrl", videoUrl);
+                        intent.putExtra(FullScreenLandscapeActivity.SEEK_POS_PARAM, iCurrentPos.getPosition());
+                        intent.putExtra(FullScreenLandscapeActivity.ISPLAYING_PARAM, iCurrentPos.isVideoPlaying());
+                        intent.putExtra(FullScreenLandscapeActivity.VIDEO_URL_PARAM, videoUrl);
                         ((Activity) getContext()).startActivityForResult(intent, 100);
                     }
 
@@ -79,10 +78,9 @@ public class CustomMediaController extends MediaController {
                         ((Activity) getContext()).finish();
                     } else {
                         Intent intent = new Intent(getContext(), FullScreenLandscapeActivity.class);
-                        intent.putExtra("fullScreenInd", "");
-                        intent.putExtra("seekPos", iCurrentPos.getPosition());
-                        intent.putExtra("isPlaying", iCurrentPos.isVideoPlaying());
-                        intent.putExtra("videoUrl", videoUrl);
+                        intent.putExtra(FullScreenLandscapeActivity.SEEK_POS_PARAM, iCurrentPos.getPosition());
+                        intent.putExtra(FullScreenLandscapeActivity.ISPLAYING_PARAM, iCurrentPos.isVideoPlaying());
+                        intent.putExtra(FullScreenLandscapeActivity.VIDEO_URL_PARAM, videoUrl);
                         ((Activity) getContext()).startActivityForResult(intent, 100);
                     }
 

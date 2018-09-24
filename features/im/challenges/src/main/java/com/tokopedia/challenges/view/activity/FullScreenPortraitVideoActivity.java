@@ -33,13 +33,12 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
 
         videoView = findViewById(R.id.videoView);
 
-        String fullScreen = getIntent().getStringExtra("fullScreenInd");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
-        videoUrl = getIntent().getStringExtra("videoUrl");
-        pos = getIntent().getIntExtra("seekPos", 0);
+        videoUrl = getIntent().getStringExtra(FullScreenLandscapeActivity.VIDEO_URL_PARAM);
+        pos = getIntent().getIntExtra(FullScreenLandscapeActivity.SEEK_POS_PARAM, 0);
         videoThumbnail = findViewById(R.id.video_thumbnail);
         playIcon = findViewById(R.id.play_icon);
         startVideoPlay(videoUrl);
@@ -75,7 +74,7 @@ public class FullScreenPortraitVideoActivity extends BaseActivity implements Cus
 
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
-        if (getIntent().getBooleanExtra("isPlaying", false)) {
+        if (getIntent().getBooleanExtra(FullScreenLandscapeActivity.ISPLAYING_PARAM, false)) {
             videoView.start();
         }
 

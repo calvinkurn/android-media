@@ -14,14 +14,11 @@ public interface ChallengesModuleRouter {
 
     Intent getLoginIntent(Context context);
 
-    void actionOpenGeneralWebView(Activity activity, String mobileUrl);
-
     Intent getHomeIntent(Context context);
 
-    public Intent getGalleryVideoIntent(Context activity);
+    Intent getGalleryVideoIntent(Context activity);
 
-    public Intent getGalleryVideoImageIntent(Context activity);
-    //void shareChallenge(Activity context, String packageName, String url, String title, String imageUrl, String og_url, String og_title, String og_image_url);
+    Intent getGalleryVideoImageIntent(Context activity);
 
     String getResultSelectionPath(Intent data);
 

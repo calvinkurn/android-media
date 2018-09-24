@@ -15,6 +15,9 @@ import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
 public class FullScreenLandscapeActivity extends BaseActivity implements CustomMediaController.ICurrentPos {
 
+    public static final String VIDEO_URL_PARAM = "videoUrl";
+    public static final String SEEK_POS_PARAM = "seekpos";
+    public static final String ISPLAYING_PARAM = "isPlaying";
     private VideoView videoView;
     private MediaController mediaController;
     private String videoUrl;
@@ -31,13 +34,12 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
 
         videoView = findViewById(R.id.videoView);
 
-        String fullScreen = getIntent().getStringExtra("fullScreenInd");
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
 
-        videoUrl = getIntent().getStringExtra("videoUrl");
-        pos = getIntent().getIntExtra("seekPos", 0);
+        videoUrl = getIntent().getStringExtra(VIDEO_URL_PARAM);
+        pos = getIntent().getIntExtra(SEEK_POS_PARAM, 0);
         videoThumbnail  = findViewById(R.id.video_thumbnail);
         playIcon = findViewById(R.id.play_icon);
         startVideoPlay(videoUrl);
@@ -75,7 +77,7 @@ public class FullScreenLandscapeActivity extends BaseActivity implements CustomM
 
         videoView.setMediaController(mediaController);
         videoView.seekTo(pos);
-        if (getIntent().getBooleanExtra("isPlaying", false)) {
+        if (getIntent().getBooleanExtra(ISPLAYING_PARAM, false)) {
             videoView.start();
         }
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {

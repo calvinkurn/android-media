@@ -45,7 +45,9 @@
 
         <service android:name=".view.service.UploadChallengeService" />
 
-        <activity android:name=".view.activity.AllSubmissionsActivity"></activity>
+        <activity
+            android:name=".view.activity.AllSubmissionsActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

@@ -220,11 +220,17 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
             if (productItem.getMe() != null) {
                 setLikes(productItem.getMe().isLiked());
+            }else{
+                setLikes(false);
             }
             tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
             if (isWinner) {
                 tvWinnerNumber.setVisibility(View.VISIBLE);
                 tvWinnerNumber.setText(String.valueOf(getIndex() + 1));
+            }else{
+                tvWinnerNumber.setVisibility(View.GONE);
+                tvWinnerNumber.setText("");
+
             }
             itemView.setOnClickListener(this);
             ivShareVia.setOnClickListener(this);

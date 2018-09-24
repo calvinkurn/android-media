@@ -192,6 +192,4 @@ public class ExpandableTextView extends TextView {
 
         void onCollapse(@NonNull ExpandableTextView view);
     }
-
-
 }

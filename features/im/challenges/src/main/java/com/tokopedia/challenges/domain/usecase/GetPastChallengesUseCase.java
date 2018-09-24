@@ -25,8 +25,6 @@ public class GetPastChallengesUseCase extends RestRequestSupportInterceptorUseCa
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        //Request 1
-
         RestRequest restRequest1 = new RestRequest.Builder(ChallengesUrl.INDI_DOMAIN + ChallengesUrl.PRIVATE.PAST_CHALLENGES, Challenge.class)
                 .build();
         tempRequest.add(restRequest1);

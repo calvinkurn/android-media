@@ -47,7 +47,6 @@ public class TouchImageAdapter extends PagerAdapter {
 
             @Override
             public void OnStateChanged(float StateSize) {
-                // TODO Auto-generated method stub
                 if (StateSize <= 1)
                     ImageStateChangeListener.OnStateDefault();
                 else

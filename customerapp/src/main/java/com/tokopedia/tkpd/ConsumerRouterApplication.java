@@ -2950,7 +2950,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 .setType(ShareData.INDI_CHALLENGE_TYPE)
                 .setName(title)
                 .setUri(url)
-                // .setImgUri(challengeShareData.)
                 .setOgUrl(og_url)
                 .setOgTitle(og_title)
                 .setOgImageUrl(og_image)
