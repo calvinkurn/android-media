@@ -67,7 +67,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!product.isLoaded() && isVisible(imageView)) {
+                        if (!product.isLoaded()) {
                             product.setLoaded(true);
                             new ImpresionTask().execute(product.getImage().getXs_url());
                             if(impressionListener!=null){
@@ -87,7 +87,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!shop.isLoaded() && isVisible(imageView)) {
+                        if (!shop.isLoaded()) {
                             shop.setLoaded(true);
                             new ImpresionTask().execute(shop.getImageShop().getsUrl());
                         }
@@ -100,25 +100,11 @@ public class ImageLoader {
                 .load(ecs)
                 .asBitmap()
                 .placeholder(R.drawable.loading_page)
-                .listener(new RequestListener<String, Bitmap>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        if (url!=null && url.contains(PATH_VIEW) && isVisible(imageView)) {
-                            new ImpresionTask().execute(url);
-                        }
-                        return false;
-                    }
-                })
                 .into(new SimpleTarget<Bitmap>() {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW) && isVisible(imageView)) {
+                        if (url!=null && url.contains(PATH_VIEW)) {
                             new ImpresionTask().execute(url);
                         }
                     }
