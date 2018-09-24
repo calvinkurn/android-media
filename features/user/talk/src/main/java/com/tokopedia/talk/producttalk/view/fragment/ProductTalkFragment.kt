@@ -138,7 +138,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_add).isVisible = !presenter.isMyShop(shopId)
+        menu.findItem(R.id.action_add).isVisible = !presenter.isMyShop(shopId) && presenter.isLoggedIn()
         super.onPrepareOptionsMenu(menu)
     }
 
@@ -315,6 +315,11 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
+        if(presenter.isLoggedIn()){
+            goToLogin()
+            return;
+        }
+
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         }
