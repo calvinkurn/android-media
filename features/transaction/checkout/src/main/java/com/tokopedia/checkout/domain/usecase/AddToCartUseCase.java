@@ -34,8 +34,8 @@ public class AddToCartUseCase extends UseCase<AddToCartDataResponse> {
     public Observable<AddToCartDataResponse> createObservable(RequestParams requestParams) {
         AddToCartRequest addToCartRequest = (AddToCartRequest) requestParams.getObject(PARAM_ADD_TO_CART);
         TKPDMapParam<String, String> paramRequest = new TKPDMapParam<>();
-        String addToCartJsonRequest = gson.toJson(addToCartRequest);
-        paramRequest.put(KEY_PARAM_PARAMS, addToCartJsonRequest);
+        String addToCartRequestString = gson.toJson(addToCartRequest);
+        paramRequest.put(KEY_PARAM_PARAMS, addToCartRequestString);
         return iCartRepository.addToCartData(paramRequest);
     }
 

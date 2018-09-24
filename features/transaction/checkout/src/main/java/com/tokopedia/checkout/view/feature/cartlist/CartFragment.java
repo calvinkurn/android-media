@@ -794,6 +794,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                         .fromAutoApply(true)
                         .build();
             }
+            sendAnalyticsOnViewPromoAutoApply();
         } else {
             cartItemPromoHolderData = new CartItemPromoHolderData();
             cartItemPromoHolderData.setPromoNotActive();
@@ -988,16 +989,17 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 sendAnalyticsOnSuccessToCheckoutPartialShopAndProduct(eeCheckoutData);
                 break;
         }
-        Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
-                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
-        );
-        startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
+        renderToAddressChoice();
     }
 
     @Override
     public void renderToAddressChoice() {
+        boolean isAutoApplyPromoCodeApplied = dPresenter.getCartListData() != null &&
+                dPresenter.getCartListData().getAutoApplyData() != null &&
+                dPresenter.getCartListData().getAutoApplyData().isSuccess();
         Intent intent = ShipmentActivity.createInstance(getActivity(), promoCodeAppliedData,
-                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab()
+                cartListData.getCartPromoSuggestion(), cartListData.getDefaultPromoDialogTab(),
+                isAutoApplyPromoCodeApplied
         );
         startActivityForResult(intent, ShipmentActivity.REQUEST_CODE);
     }
@@ -1403,6 +1405,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 cartItemPromoHolderData.setPromoVoucherType(voucherCode, voucherMessage, voucherDiscountAmount);
 
                 cartAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+                sendAnalyticsOnViewPromoManualApply("voucher");
             }
         } else if (resultCode == IRouterConstant.LoyaltyModule.ResultLoyaltyActivity.COUPON_RESULT_CODE) {
             Bundle bundle = data.getExtras();
@@ -1428,6 +1431,7 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
                 );
 
                 cartAdapter.updateItemPromoVoucher(cartItemPromoHolderData);
+                sendAnalyticsOnViewPromoManualApply("coupon");
             }
         }
     }
@@ -1609,6 +1613,16 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
     @Override
     public void sendAnalyticsOnButtonSelectAllUnchecked() {
         cartPageAnalytics.eventClickCheckoutCartClickPilihSemuaProdukUnChecklist();
+    }
+
+    @Override
+    public void sendAnalyticsOnViewPromoManualApply(String type) {
+        cartPageAnalytics.eventViewPromoManualApply(type);
+    }
+
+    @Override
+    public void sendAnalyticsOnViewPromoAutoApply() {
+        cartPageAnalytics.eventViewPromoAutoApply();
     }
 
     private void notifyBottomCartParent() {

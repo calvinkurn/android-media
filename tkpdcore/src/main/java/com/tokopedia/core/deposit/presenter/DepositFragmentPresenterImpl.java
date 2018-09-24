@@ -21,6 +21,10 @@ import com.tokopedia.core.deposit.listener.DepositFragmentView;
 import com.tokopedia.core.deposit.model.SummaryDepositParam;
 import com.tokopedia.core.deposit.model.SummaryWithdraw;
 import com.tokopedia.core.util.PagingHandler;
+import com.tokopedia.saldodetails.deposit.listener.MerchantSaldoDetailsActionListener;
+import com.tokopedia.saldodetails.response.model.GqlMerchantSaldoDetailsResponse;
+import com.tokopedia.saldodetails.subscriber.GetMerchantSaldoDetailsSubscriber;
+import com.tokopedia.saldodetails.usecase.GetMerchantSaldoDetails;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -33,7 +37,7 @@ import java.util.Map;
 /**
  * Created by Nisie on 3/30/16.
  */
-public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
+public class DepositFragmentPresenterImpl implements DepositFragmentPresenter, MerchantSaldoDetailsActionListener {
 
     public static final String BUNDLE_TOTAL_BALANCE = "total_balance";
     public static final String BUNDLE_TOTAL_BALANCE_INT = "total_balance_int";
@@ -58,7 +62,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     @Override
     public void onDrawClicked(Intent intent) {
         Context context = viewListener.getContext();
-        UserSession session = ((AbstractionRouter)context.getApplicationContext()).getSession();
+        UserSession session = ((AbstractionRouter) context.getApplicationContext()).getSession();
         if (session.isHasPassword()) {
             depositCacheInteractor.getSummaryDepositCache(new DepositCacheInteractor.GetSummaryDepositCacheListener() {
                 @Override
@@ -92,6 +96,18 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
         paramEndDate = viewListener.getEndDate();
         paging.resetPage();
         getSummaryDeposit();
+    }
+
+    @Override
+    public void getMerchantSaldoDetails() {
+        viewListener.setLoading();
+        GetMerchantSaldoDetails getMerchantSaldoDetails =
+                new GetMerchantSaldoDetails(viewListener.getContext());
+
+        GetMerchantSaldoDetailsSubscriber getMerchantSaldoDetailsSubscriber =
+                new GetMerchantSaldoDetailsSubscriber(this);
+
+        getMerchantSaldoDetails.execute(getMerchantSaldoDetailsSubscriber);
     }
 
     @Override
@@ -199,9 +215,9 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
                 viewListener.getAdapter().getList().size() == 0) {
             viewListener.setLoading();
 
-        } else if(paging.getPage() == 1){
+        } else if (paging.getPage() == 1) {
             viewListener.showRefreshing();
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(true);
         }
     }
@@ -296,7 +312,7 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
 
         if (paging.CheckNextPage()) {
             viewListener.getAdapter().showLoading(true);
-        }else{
+        } else {
             viewListener.getAdapter().showLoading(false);
         }
     }
@@ -368,4 +384,18 @@ public class DepositFragmentPresenterImpl implements DepositFragmentPresenter {
     }
 
 
+    @Override
+    public void hideSaldoPrioritasFragment() {
+        viewListener.hideSaldoPrioritasFragment();
+    }
+
+    @Override
+    public void showSaldoPrioritasFragment(GqlMerchantSaldoDetailsResponse.Details sellerDetails) {
+        viewListener.showSaldoPrioritasFragment(sellerDetails);
+    }
+
+    @Override
+    public void finishLoading() {
+        viewListener.finishLoading();
+    }
 }
