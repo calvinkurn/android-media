@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
+import com.tokopedia.navigation_common.model.PendingCashbackModel;
 import com.tokopedia.navigation_common.model.WalletModel;
 
 import rx.Observable;

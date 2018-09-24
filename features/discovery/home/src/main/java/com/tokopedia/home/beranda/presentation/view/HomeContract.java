@@ -8,11 +8,11 @@ import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.drawer2.data.pojo.topcash.TokoCashData;
-import com.tokopedia.core.drawer2.data.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.core.drawer2.data.viewmodel.TokoPointDrawerData;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeHeaderWalletAction;
 import com.tokopedia.tokocash.pendingcashback.domain.PendingCashback;
 
 import java.util.List;
@@ -57,7 +57,7 @@ public interface HomeContract {
 
         void showRecomendationButton();
 
-        Observable<TokoCashData> getTokocashBalance();
+        Observable<HomeHeaderWalletAction> getTokocashBalance();
 
         Observable<PendingCashback> getTokocashPendingCashback();
 
