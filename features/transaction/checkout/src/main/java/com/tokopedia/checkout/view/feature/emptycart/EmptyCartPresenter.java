@@ -122,7 +122,7 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     public void setRecentViewListModels(List<RecentView> recentViewList) {
         recentViewViewModels.clear();
         for (int i = 0; i < recentViewList.size(); i++) {
-            if (i < 2) {
+            if (i < LIST_SIZE) {
                 RecentViewViewModel recentViewViewModel = new RecentViewViewModel();
                 recentViewViewModel.setRecentView(recentViewList.get(i));
                 recentViewViewModels.add(recentViewViewModel);
