@@ -136,6 +136,7 @@ public class DashboardFragment
         rvHistory.setAdapter(adapter);
         rvHistory.addOnScrollListener(onScrollListener());
 //        loadFirstData();
+        testData();
     }
 
     private void loadFirstData() {
@@ -239,5 +240,19 @@ public class DashboardFragment
     public void onDestroy() {
         super.onDestroy();
 //        presenter.detachView();
+    }
+
+    private void testData() {
+        DashboardHeaderViewModel headerModel = new DashboardHeaderViewModel("Rp. 123.456", "12x Dilihat", "10 Di klik", "2 Dibeli");
+        List<DashboardItemViewModel> itemList = new ArrayList<>();
+        itemList.add(new DashboardItemViewModel(
+                "123",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng",
+                "Rp 12.000",
+                "12x diklik",
+                "1 Dibeli",
+                true));
+        onSuccessGetDashboardItem(headerModel, itemList,"");
     }
 }

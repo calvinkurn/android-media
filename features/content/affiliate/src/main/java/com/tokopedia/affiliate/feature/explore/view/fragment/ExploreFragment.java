@@ -84,7 +84,8 @@ public class ExploreFragment
         searchView.getSearchTextView().setOnClickListener(v -> {
             searchView.getSearchTextView().setCursorVisible(true);
         });
-        presenter.getFirstData(searchKey);
+        testData();
+//        presenter.getFirstData(searchKey);
     }
 
     private void resetData() {
@@ -236,5 +237,22 @@ public class ExploreFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
+    }
+
+    private void testData() {
+        List<Visitable> itemList = new ArrayList<>();
+        itemList.add(new ExploreViewModel(
+                "1",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng",
+                "Rp. 10.000"));
+
+        itemList.add(new ExploreViewModel(
+                "2",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "Nasi Goreng Sapi",
+                "Rp. 12.000"));
+
+        onSuccessGetFirstData(itemList,"");
     }
 }

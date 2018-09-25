@@ -60,9 +60,6 @@ public class ExploreViewModel implements Visitable<ExploreTypeFactory>,Parcelabl
         return typeFactory.type(this);
     }
 
-    public ExploreViewModel() {
-    }
-
     @Override
     public int describeContents() {
         return 0;
