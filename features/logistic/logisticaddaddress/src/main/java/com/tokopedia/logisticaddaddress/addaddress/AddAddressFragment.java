@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -39,7 +38,6 @@ import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.logisticaddaddress.CounterHintInputLayout;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
@@ -55,6 +53,7 @@ import com.tokopedia.user.session.UserSession;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EDIT_PARAM;
 import static com.tokopedia.logisticaddaddress.ManageAddressConstant.EXTRA_ADDRESS;
@@ -78,12 +77,15 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private static final double MONAS_LATITUDE = -6.175794;
     private static final double MONAS_LONGITUDE = 106.826457;
 
+    private static final int ADDRESS_MAX_CHARACTER = 175;
+    private static final int ADDRESS_MIN_CHARACTER = 20;
+
     private TextInputLayout receiverNameLayout;
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
     private EditText addressTypeEditText;
-    private CounterHintInputLayout addressLayout;
-    private TextInputEditText addressEditText;
+    private TextInputLayout addressLayout;
+    private EditText addressEditText;
     private TextInputLayout receiverPhoneLayout;
     private EditText receiverPhoneEditText;
     private View chooseLocation;
@@ -91,6 +93,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private TextInputLayout passwordLayout;
     private EditText passwordEditText;
     private TextView saveButton;
+    private TextView addressLabel;
 
     private TextInputLayout districtLayout;
     private EditText districtEditText;
@@ -194,7 +197,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     private void setTextWatcher() {
         receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
-//        addressEditText.addTextChangedListener(watcher(addressLayout));
+        addressEditText.addTextChangedListener(watcher(addressLayout));
+        addressEditText.addTextChangedListener(characterWatcher(addressLabel));
         addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
         passwordEditText.addTextChangedListener(watcher(passwordLayout));
@@ -204,6 +208,33 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
         postCodeEditText.addTextChangedListener(watcher(postCodeLayout));
 
+    }
+
+    private TextWatcher characterWatcher(TextView watcher) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                int textLength = charSequence.length();
+                int charLeft;
+                if (textLength < ADDRESS_MIN_CHARACTER) {
+                    charLeft = ADDRESS_MIN_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, "%1$d karakter lagi deperlukan", charLeft));
+                } else {
+                    charLeft = ADDRESS_MAX_CHARACTER - textLength;
+                    watcher.setText(String.format(Locale.US, "%1$d karakter tersisa", charLeft));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        };
     }
 
     private TextWatcher watcher(final TextInputLayout wrapper) {
@@ -266,6 +297,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         passwordLayout = view.findViewById(R.id.password_layout);
         passwordEditText = view.findViewById(R.id.password);
         saveButton = view.findViewById(R.id.save_button);
+        addressLabel = view.findViewById(R.id.address_label_watcher);
 
         districtLayout = view.findViewById(R.id.district_layout);
         districtEditText = view.findViewById(R.id.district);

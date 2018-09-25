@@ -2224,5 +2224,6 @@ di Tokopedia Sekarang!</string>
     <string name="label_tokocard">TokoCard</string>
     <string name="react_native_developer_mode">React Native Developer Mode</string>
     <string name="address_type_default">Rumah</string>
+    <string name="minimal_karakter">Minimal 20 karakter</string>
 
 </resources>
