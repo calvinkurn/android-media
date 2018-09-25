@@ -34,7 +34,6 @@ import com.tokopedia.talk.inboxtalk.view.adapter.viewholder.InboxTalkItemViewHol
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
-import com.tokopedia.talk.talkdetails.di.DaggerTalkDetailsComponent
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
 import com.tokopedia.talk.talkdetails.view.adapter.AttachingProductListAdapter
 import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactoryImpl
@@ -146,8 +145,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             }
         }
 
-        sendMessageEditText.setOnClickListener{
-            if(!userSession.isLoggedIn){
+        sendMessageEditText.setOnClickListener {
+            if (!userSession.isLoggedIn) {
                 goToLogin()
             }
         }
@@ -295,7 +294,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     }
 
     private fun goToAttachProductScreen() {
-        val intent = AttachProductActivity.createInstance(context, shopId, "", false)
+        val intent = AttachProductActivity.createInstance(context, shopId, "",
+                userSession.shopId == shopId)
         startActivityForResult(intent, GO_TO_ATTACH_PRODUCT_REQ_CODE)
     }
 

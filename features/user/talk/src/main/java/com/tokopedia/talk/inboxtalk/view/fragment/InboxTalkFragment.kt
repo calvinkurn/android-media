@@ -178,6 +178,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
         for (itemMenu in filterMenuList) {
             itemMenu.iconEnd = 0
+            itemMenu.icon = -1
         }
         filterMenuList[pos].iconEnd = R.drawable.ic_check
         presenter.getInboxTalkWithFilter(filter, nav)

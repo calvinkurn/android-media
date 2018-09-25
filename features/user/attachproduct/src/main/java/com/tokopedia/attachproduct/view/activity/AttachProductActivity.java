@@ -5,17 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-
-import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
-import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.attachproduct.AttachProductRouter;
 import com.tokopedia.attachproduct.R;
-import com.tokopedia.attachproduct.di.AttachProductComponent;
-import com.tokopedia.attachproduct.di.DaggerAttachProductComponent;
+import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 import com.tokopedia.attachproduct.view.fragment.AttachProductFragment;
 import com.tokopedia.attachproduct.view.presenter.AttachProductContract;
-import com.tokopedia.attachproduct.resultmodel.ResultProduct;
 
 import java.util.ArrayList;
 
@@ -34,18 +29,16 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     private String shopId;
     private String shopName;
     private boolean isSeller;
-    private AttachProductComponent attachProductComponent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         shopId = "";
-        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
+        if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY) != null) {
             shopId = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY);
         }
-        if(!getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,false)) {
-            isSeller = true;
-        }
+
+        isSeller = getIntent().getBooleanExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, false);
 
         toolbar.setBackgroundColor(getResources().getColor(R.color.white));
     }
@@ -56,32 +49,31 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
         super.setupLayout(savedInstanceState);
         getSupportActionBar().setBackgroundDrawable(getResources().getDrawable(R.drawable.bg_white_toolbar_drop_shadow));
         getSupportActionBar().setHomeAsUpIndicator(getResources().getDrawable(R.drawable.ic_close_default));
-        if(getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
+        if (getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY) != null) {
             shopName = getIntent().getStringExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY);
-        }
-        else {
+        } else {
             shopName = "";
         }
-        toolbar.setSubtitleTextAppearance(this,R.style.AttachProductToolbarSubTitle_SansSerif);
-        toolbar.setTitleTextAppearance(this,R.style.AttachProductToolbarTitle_SansSerif);
+        toolbar.setSubtitleTextAppearance(this, R.style.AttachProductToolbarSubTitle_SansSerif);
+        toolbar.setTitleTextAppearance(this, R.style.AttachProductToolbarTitle_SansSerif);
         toolbar.setSubtitle(shopName);
     }
 
     public static Intent createInstance(Context context, String shopId, String shopName, boolean isSeller) {
         Intent intent = new Intent(context, AttachProductActivity.class);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY,shopId);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY,isSeller);
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY,shopName);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, isSeller);
+        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
         Fragment fragment = getSupportFragmentManager().findFragmentByTag(getTagFragment());
-        if(fragment != null){
+        if (fragment != null) {
             return fragment;
-        }else{
-            fragment = AttachProductFragment.newInstance(this);
+        } else {
+            fragment = AttachProductFragment.newInstance(this, isSeller);
             return fragment;
         }
     }
@@ -94,8 +86,8 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     @Override
     public void finishActivityWithResult(ArrayList<ResultProduct> products) {
         Intent data = new Intent();
-        data.putParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY,products);
-        setResult(TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK,data);
+        data.putParcelableArrayListExtra(TOKOPEDIA_ATTACH_PRODUCT_RESULT_KEY, products);
+        setResult(TOKOPEDIA_ATTACH_PRODUCT_RESULT_CODE_OK, data);
         finish();
     }
 
@@ -107,15 +99,14 @@ public class AttachProductActivity extends BaseSimpleActivity implements AttachP
     @Override
     public void setShopName(String shopName) {
         this.shopName = shopName;
-        getIntent().putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY,shopName);
+        getIntent().putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, shopName);
         toolbar.setSubtitle(shopName);
     }
 
     @Override
     public void goToAddProduct(String shopId) {
-//        if(MainApplication.getAppContext() instanceof TkpdInboxRouter) {
-//            TkpdInboxRouter router = (TkpdInboxRouter) MainApplication.getAppContext();
-//            router.startAddProduct(this, "");
-//        }
+        if (isSeller && getApplicationContext() instanceof AttachProductRouter) {
+            ((AttachProductRouter) getApplicationContext()).goToAddProduct(this);
+        }
     }
 }

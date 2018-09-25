@@ -42,6 +42,7 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         implements CheckableInteractionListenerWithPreCheckedAction,
         AttachProductContract.View {
     private final static int MAX_CHECKED = 3;
+    private static final String IS_SELLER = "isSeller";
     private Button sendButton;
     private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -50,6 +51,8 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     private AttachProductContract.Activity activityContract;
     protected AttachProductListAdapter adapter;
+
+    private boolean isSeller = false;
 
     public void setActivityContract(AttachProductContract.Activity activityContract) {
         this.activityContract = activityContract;
@@ -72,6 +75,18 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (savedInstanceState != null) {
+            isSeller = savedInstanceState.getBoolean(IS_SELLER, false);
+        } else if (getArguments() != null) {
+            isSeller = getArguments().getBoolean(IS_SELLER, false);
+        }
+
+        if (isSeller) {
+            sendButton.setVisibility(View.VISIBLE);
+        } else {
+            sendButton.setVisibility(View.GONE);
+        }
     }
 
     @Nullable
@@ -79,19 +94,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_attach_product, container, false);
         sendButton = view.findViewById(R.id.send_button_attach_product);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendButtonClicked();
-            }
-        });
+        sendButton.setOnClickListener(view1 -> sendButtonClicked());
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                loadInitialData();
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(() -> loadInitialData());
         updateButtonBasedOnChecked(0);
         return view;
     }
@@ -106,8 +111,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         }
     }
 
-    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView) {
+    public static AttachProductFragment newInstance(AttachProductContract.Activity checkedUIView, boolean isSeller) {
         Bundle args = new Bundle();
+        args.putBoolean(IS_SELLER, isSeller);
         AttachProductFragment fragment = new AttachProductFragment();
         fragment.setActivityContract(checkedUIView);
         fragment.setArguments(args);

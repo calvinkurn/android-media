@@ -159,7 +159,9 @@ public class Menus extends BaseBottomSheetView {
             } else if (viewHolder instanceof ViewHolder) {
                 final ItemMenus itemMenus = itemMenusList.get(i);
                 final ViewHolder holder = (ViewHolder) viewHolder;
-                if (itemMenus.icon != 0) {
+                if (itemMenus.icon == -1) {
+                    holder.icon.setVisibility(View.GONE);
+                } else if (itemMenus.icon != 0) {
                     holder.icon.setImageResource(itemMenus.icon);
                     holder.icon.setVisibility(View.VISIBLE);
                 } else {
