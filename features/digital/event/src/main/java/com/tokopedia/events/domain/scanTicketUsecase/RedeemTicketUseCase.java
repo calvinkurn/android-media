@@ -35,6 +35,7 @@ public class RedeemTicketUseCase extends RestRequestUseCase {
 
         RestRequest restRequest1 = new RestRequest.Builder(url, token)
                 .setRequestType(RequestType.POST)
+                .setBody("")
                 .build();
         tempRequest.add(restRequest1);
         return tempRequest;
