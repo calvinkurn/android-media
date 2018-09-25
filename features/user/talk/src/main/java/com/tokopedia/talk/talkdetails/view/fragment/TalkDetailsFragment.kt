@@ -336,11 +336,11 @@ class TalkDetailsFragment : BaseDaggerFragment(),
                 val listMenu = ArrayList<Menus.ItemMenus>()
                 if (menu.allowReport) {
                     listMenu.add(Menus.ItemMenus(getString(R.string
-                            .menu_report_comment)))
+                            .menu_report_comment), -1))
                 }
                 if (menu.allowDelete) {
                     listMenu.add(Menus.ItemMenus(getString(R.string
-                            .menu_delete_comment)))
+                            .menu_delete_comment), -1))
                 }
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
@@ -385,13 +385,13 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             context?.run {
                 val listMenu = ArrayList<Menus.ItemMenus>()
                 if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_delete_talk)))
+                        .menu_delete_talk), -1))
                 if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_unfollow_talk)))
+                        .menu_unfollow_talk), -1))
                 if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_follow_talk)))
+                        .menu_follow_talk), -1))
                 if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
-                        .menu_report_talk)))
+                        .menu_report_talk), -1))
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
