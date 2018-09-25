@@ -52,6 +52,7 @@ import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.widgets.DividerItemDecoration;
 import com.tokopedia.discovery.DiscoveryRouter;
 import com.tokopedia.discovery.R;
+import com.tokopedia.discovery.intermediary.analytics.IntermediaryAnalytics;
 import com.tokopedia.discovery.intermediary.di.IntermediaryDependencyInjector;
 import com.tokopedia.discovery.intermediary.domain.model.BannerModel;
 import com.tokopedia.discovery.intermediary.domain.model.BrandModel;
@@ -796,6 +797,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     private class SeeAllOfficialOnClickListener implements View.OnClickListener {
         @Override
         public void onClick(View view) {
+            IntermediaryAnalytics.eventClickSeeAllOfficialStores(getActivity());
             viewAllOfficialStores();
         }
     }
