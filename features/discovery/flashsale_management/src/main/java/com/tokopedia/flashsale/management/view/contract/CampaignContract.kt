@@ -1,0 +1,22 @@
+package com.tokopedia.flashsale.management.view.contract
+
+import com.tokopedia.abstraction.base.view.listener.CustomerView
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.flashsale.management.data.Data
+
+interface CampaignContract{
+
+    interface View : CustomerView {
+
+        fun onSuccessGetCampaignList(data: Data)
+
+        fun onErrorGetCampaignList(throwable: Throwable)
+
+    }
+
+    interface Presenter : CustomerPresenter<View> {
+
+        fun getCampaignList()
+    }
+
+}

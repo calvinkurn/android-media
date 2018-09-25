@@ -7,17 +7,29 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.view.PagerAdapter
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.view.fragment.TokopediaCampaignFragment
+import com.tokopedia.flashsale.management.di.CampaignComponent
+import com.tokopedia.flashsale.management.di.CampaignModule
+import com.tokopedia.flashsale.management.di.DaggerCampaignComponent
+import com.tokopedia.flashsale.management.view.fragment.MyCampaignFragment
+import com.tokopedia.flashsale.management.view.fragment.UpcomingCampaignFragment
 
-class CampaignActivity : BaseTabActivity(){
+class CampaignActivity : BaseTabActivity(), HasComponent<CampaignComponent> {
 
     companion object {
         @JvmStatic
         fun createIntent(context: Context): Intent {
             return Intent(context, CampaignActivity::class.java)
         }
+    }
+
+    override fun getComponent(): CampaignComponent {
+        return DaggerCampaignComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .campaignModule(CampaignModule()).build()
     }
 
     override fun setupLayout(savedInstanceState: Bundle?) {
@@ -38,8 +50,8 @@ class CampaignActivity : BaseTabActivity(){
 
             override fun getItem(position: Int): Fragment? {
                 return when (position) {
-                    0 -> TokopediaCampaignFragment.createInstance()
-                    1 -> TokopediaCampaignFragment.createInstance()
+                    0 -> UpcomingCampaignFragment.createInstance()
+                    1 -> MyCampaignFragment.createInstance()
                     else -> null
                 }
             }
