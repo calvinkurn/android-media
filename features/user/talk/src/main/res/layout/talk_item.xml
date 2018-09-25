@@ -47,10 +47,13 @@
 
         <TextView
             android:id="@+id/seller_label"
-            style="@style/TextView.Micro.Green"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             android:layout_alignBottom="@id/username"
             android:layout_alignTop="@id/username"
             android:layout_marginLeft="@dimen/dp_10"
+            android:fontFamily="sans-serif-medium"
+            android:textColor="@color/medium_green"
             android:layout_toRightOf="@id/username"
             android:background="@drawable/talk_seller_label"
             android:gravity="center_horizontal"
@@ -60,7 +63,8 @@
             android:paddingTop="@dimen/dp_2"
             android:text="@string/label_talk_seller"
             android:textSize="@dimen/sp_11"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </RelativeLayout>
 
