@@ -7,13 +7,13 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
@@ -27,7 +27,7 @@ public class DomainInputFragment extends BaseDaggerFragment {
     private UserSession userSession;
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
-    private EditText usernameInput;
+    private PrefixEditText usernameInput;
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
 
@@ -74,11 +74,25 @@ public class DomainInputFragment extends BaseDaggerFragment {
 
     private void initView() {
         ImageHandler.loadImageCircle2(getContext(), avatar, userSession.getProfilePicture());
+        saveBtn.setEnabled(false);
         usernameInput.addTextChangedListener(new AfterTextWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
-
+                String byMeUsername = usernameInput.getTextWithoutPrefix();
+                if (byMeUsername.length() < 3) {
+                    disableSaveBtn();
+                } else {
+                    enableSaveBtn();
+                }
             }
         });
+    }
+
+    private void enableSaveBtn() {
+        saveBtn.setEnabled(true);
+    }
+
+    private void disableSaveBtn() {
+        saveBtn.setEnabled(false);
     }
 }
