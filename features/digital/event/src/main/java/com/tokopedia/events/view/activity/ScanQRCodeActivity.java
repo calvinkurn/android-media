@@ -31,6 +31,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
     private ImageView crossIcon1, crossIcon2, crossIcon3;
     private ConstraintLayout mainContent;
     private ProgressBar progressBar;
+    private TextView ticketRedeemDate;
 
 
     private String scanUrl = "";
@@ -74,6 +75,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
 
         mainContent = findViewById(R.id.main_content);
         progressBar = findViewById(R.id.prog_bar);
+        ticketRedeemDate = ticketFailureLayout.findViewById(R.id.ticket_redeem_date);
         scanUrl = getIntent().getStringExtra("scanUrl");
 
 
@@ -126,6 +128,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
                     if (scanTicketResponse.getSchedule() != null) {
                         eventDate.setText(scanTicketResponse.getSchedule().getShowData());
                     }
+                    ticketRedeemDate.setText(scanTicketResponse.getProduct().getUpdatedAt());
                 }
             } else if (scanTicketResponse.getAction() != null && scanTicketResponse.getAction().get(0).getButtonType().equalsIgnoreCase("button")) {
                 if (scanTicketResponse.getUser() != null) {
