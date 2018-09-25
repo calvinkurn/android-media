@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">broadcast_message</string>
-    <string name="template_bm_quota">Kuota sebar pesan: %1$d</string>
+    <string name="template_bm_quota">Kuota sebar pesan: </string>
     <string name="template_bm_quota_refill">Kuota berlaku hingga %1$s</string>
     <string name="content_empty_string">Sebarkan pesan promosi seputar produk atau toko secara eksklusif melalui chat langsung ke followers Anda</string>
     <string name="button_text_empty">Buat Pesan</string>

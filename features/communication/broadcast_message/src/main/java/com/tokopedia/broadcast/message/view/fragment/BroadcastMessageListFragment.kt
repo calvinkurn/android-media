@@ -1,10 +1,16 @@
 package com.tokopedia.broadcast.message.view.fragment
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -95,7 +101,12 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
 
     override fun onSuccessGetMetaData(metaData: TopChatBlastSellerMetaData?) {
         metaData?.let {
-            bm_quota.text = getString(R.string.template_bm_quota, it.quota)
+            val spannableBuilder = SpannableStringBuilder()
+            spannableBuilder.append("${getString(R.string.template_bm_quota)} ")
+            val boldString = SpannableString(it.quota.toString())
+            boldString.setSpan(StyleSpan(Typeface.BOLD), 0, boldString.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannableBuilder.append(boldString)
+            bm_quota.setText(spannableBuilder, TextView.BufferType.SPANNABLE)
             bm_quota_refill.text = getString(R.string.template_bm_quota_refill, it.expireAt.toISO8601Date().toStringDayMonth())
         }
     }
