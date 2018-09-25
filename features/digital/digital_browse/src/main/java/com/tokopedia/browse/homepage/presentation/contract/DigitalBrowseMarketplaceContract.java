@@ -25,6 +25,8 @@ public interface DigitalBrowseMarketplaceContract {
 
         int getCategoryItemCount();
 
+        void sendPopularImpressionAnalytics(List<DigitalBrowsePopularAnalyticsModel> analyticsModelList);
+
     }
 
     interface Presenter {

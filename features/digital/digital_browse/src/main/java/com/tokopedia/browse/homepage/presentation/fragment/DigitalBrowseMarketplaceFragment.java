@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.R;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
+import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel;
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapter;
@@ -136,9 +137,6 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
     public void renderData(DigitalBrowseMarketplaceViewModel marketplaceData) {
         this.digitalBrowseMarketplaceViewModel = marketplaceData;
 
-        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(
-                presenter.getPopularAnalyticsModelList(marketplaceData.getPopularBrandsList()));
-
         renderCategory(marketplaceData.getRowViewModelList());
         renderPopularBrands(marketplaceData.getPopularBrandsList());
     }
@@ -160,6 +158,11 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
     @Override
     public int getCategoryItemCount() {
         return categoryAdapter.getItemCount();
+    }
+
+    @Override
+    public void sendPopularImpressionAnalytics(List<DigitalBrowsePopularAnalyticsModel> analyticsModelList) {
+        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(analyticsModelList);
     }
 
     private void initializeCategoryView() {
