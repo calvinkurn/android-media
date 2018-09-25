@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/dp_16"
-    android:paddingRight="@dimen/dp_16"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
     android:paddingTop="@dimen/dp_16">
 
     <TextView
@@ -33,12 +33,13 @@
         android:visibility="gone"
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
-        android:textColor="#ffffff"
+        android:textColor="@color/white"
         android:textSize="@dimen/sp_11"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@+id/title"
         app:layout_constraintTop_toTopOf="@id/title"
         tools:text="21"
+        tools:visibility="visible"
         />
 
 </android.support.constraint.ConstraintLayout>
