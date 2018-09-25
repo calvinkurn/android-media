@@ -104,8 +104,10 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW)) {
+                        boolean tag = (boolean) imageView.getTag();
+                        if (url!=null && url.contains(PATH_VIEW) && tag) {
                             new ImpresionTask().execute(url);
+                            imageView.setTag(true);
                         }
                     }
                 });
