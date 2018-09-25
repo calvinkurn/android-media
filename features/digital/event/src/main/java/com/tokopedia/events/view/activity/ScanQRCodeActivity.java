@@ -128,7 +128,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
                     if (scanTicketResponse.getSchedule() != null) {
                         eventDate.setText(scanTicketResponse.getSchedule().getShowData());
                     }
-                    ticketRedeemDate.setText(scanTicketResponse.getProduct().getUpdatedAt());
+                    ticketRedeemDate.setText("Diredeem pada" + " " + scanTicketResponse.getProduct().getUpdatedAt());
                 }
             } else if (scanTicketResponse.getAction() != null && scanTicketResponse.getAction().get(0).getButtonType().equalsIgnoreCase("button")) {
                 if (scanTicketResponse.getUser() != null) {
@@ -154,7 +154,7 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
                 if (scanTicketResponse.getProduct() != null) {
                     eventName.setText(scanTicketResponse.getProduct().getDisplayName());
                     if (scanTicketResponse.getSchedule() != null) {
-                        eventDate.setText("Diredeem pada" + " " + scanTicketResponse.getSchedule().getShowData());
+                        eventDate.setText(scanTicketResponse.getSchedule().getShowData());
 
                     }
                 }
