@@ -450,22 +450,24 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void setSelectedCourier(int position, CourierItemData courierItemData) {
+    public ShipmentCartItemModel setSelectedCourier(int position, CourierItemData courierItemData) {
+        ShipmentCartItemModel shipmentCartItemModel = null;
         ShipmentData currentShipmentData = shipmentDataList.get(position);
         if (currentShipmentData instanceof ShipmentCartItemModel) {
-            if (((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData() != null) {
-                ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseInsurance(null);
-                ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
+            shipmentCartItemModel = (ShipmentCartItemModel) currentShipmentData;
+            if (shipmentCartItemModel.getSelectedShipmentDetailData() != null) {
+                shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(null);
+                shipmentCartItemModel.getSelectedShipmentDetailData().setSelectedCourier(courierItemData);
                 if (!courierItemData.isAllowDropshiper()) {
-                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(null);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(courierItemData);
-                shipmentDetailData.setShipmentCartData(((ShipmentCartItemModel) currentShipmentData).getShipmentCartData());
-                ((ShipmentCartItemModel) currentShipmentData).setSelectedShipmentDetailData(shipmentDetailData);
+                shipmentDetailData.setShipmentCartData(shipmentCartItemModel.getShipmentCartData());
+                shipmentCartItemModel.setSelectedShipmentDetailData(shipmentDetailData);
                 if (!courierItemData.isAllowDropshiper()) {
-                    ((ShipmentCartItemModel) currentShipmentData).getSelectedShipmentDetailData().setUseDropshipper(null);
+                    shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
             }
             updateShipmentCostModel();
@@ -474,6 +476,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(getShipmentCostPosition());
         notifyItemChanged(position);
         checkHasSelectAllCourier();
+
+        return shipmentCartItemModel;
     }
 
     public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,

@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
@@ -34,6 +36,7 @@ import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
 import com.tokopedia.core.gcm.GCMHandler;
@@ -1045,15 +1048,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void processSaveShipmentState() {
+    public void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel) {
+        List<ShipmentCartItemModel> shipmentCartItemModels = new ArrayList<>();
+        shipmentCartItemModels.add(shipmentCartItemModel);
+
         TKPDMapParam<String, String> param = new TKPDMapParam<>();
-        SaveShipmentStateRequest saveShipmentStateRequest;
-        if (recipientAddressModel != null) {
-            saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress();
-        } else {
-            saveShipmentStateRequest = generateSaveShipmentStateRequestMultipleAddress();
-        }
-        param.put(SaveShipmentStateUseCase.PARAM_CARTS, new Gson().toJson(saveShipmentStateRequest));
+        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModels);
+        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
 
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
@@ -1062,30 +1063,43 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
-                .subscribe(new Subscriber<SaveShipmentStateData>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(SaveShipmentStateData saveShipmentStateData) {
-                        // Expected to do nothing
-                    }
-                }));
+                .subscribe(new SaveShipmentStateSubscriber(getView())));
     }
 
-    private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress() {
+    @Override
+    public void processSaveShipmentState() {
+        TKPDMapParam<String, String> param = new TKPDMapParam<>();
+        JsonArray saveShipmentDataArray = getShipmentItemSaveStateData(shipmentCartItemModelList);
+        param.put(SaveShipmentStateUseCase.PARAM_CARTS, saveShipmentDataArray.toString());
+
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(SaveShipmentStateUseCase.PARAM_CART_DATA_OBJECT, param);
+
+        compositeSubscription.add(saveShipmentStateUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new SaveShipmentStateSubscriber(getView())));
+    }
+
+    private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
+        SaveShipmentStateRequest saveShipmentStateRequest;
+        if (recipientAddressModel != null) {
+            saveShipmentStateRequest = generateSaveShipmentStateRequestSingleAddress(shipmentCartItemModels);
+        } else {
+            saveShipmentStateRequest = generateSaveShipmentStateRequestMultipleAddress(shipmentCartItemModels);
+        }
+        String saveShipmentDataString = new Gson().toJson(saveShipmentStateRequest.getRequestDataList());
+        return new JsonParser().parse(saveShipmentDataString).getAsJsonArray();
+    }
+
+    private SaveShipmentStateRequest generateSaveShipmentStateRequestSingleAddress(
+            List<ShipmentCartItemModel> shipmentCartItemModels) {
 
         List<ShipmentStateShopProductData> shipmentStateShopProductDataList = new ArrayList<>();
 
         List<ShipmentStateRequestData> shipmentStateRequestDataList = new ArrayList<>();
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList);
         }
 
@@ -1100,10 +1114,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .build();
     }
 
-    private SaveShipmentStateRequest generateSaveShipmentStateRequestMultipleAddress() {
+    private SaveShipmentStateRequest generateSaveShipmentStateRequestMultipleAddress(
+            List<ShipmentCartItemModel> shipmentCartItemModels) {
 
         List<ShipmentStateRequestData> shipmentStateRequestDataList = new ArrayList<>();
-        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+        for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModels) {
             List<ShipmentStateShopProductData> shipmentStateShopProductDataList = new ArrayList<>();
 
             setSaveShipmentStateData(shipmentCartItemModel, shipmentStateShopProductDataList);

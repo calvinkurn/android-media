@@ -10,6 +10,10 @@ public class SaveShipmentStateRequest {
 
     private List<ShipmentStateRequestData> requestDataList;
 
+    public List<ShipmentStateRequestData> getRequestDataList() {
+        return requestDataList;
+    }
+
     public SaveShipmentStateRequest(Builder builder) {
         requestDataList = builder.requestDataList;
     }
