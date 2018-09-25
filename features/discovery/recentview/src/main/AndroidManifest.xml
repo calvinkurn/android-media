@@ -3,12 +3,11 @@
 
     <application
         android:allowBackup="true"
-        android:label="@string/title_recent_view"
         android:supportsRtl="true">
 
         <activity
             android:name=".view.activity.RecentViewActivity"
-            android:label="@string/title_recent_view"
+            android:label="@string/recentview_title_recent_view"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
 

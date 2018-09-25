@@ -4,11 +4,14 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.webkit.URLUtil;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.base.BaseCustomView;
 import com.tokopedia.home.account.AccountConstants;
+import com.tokopedia.home.account.AccountHomeUrl;
 import com.tokopedia.home.account.R;
 import com.tokopedia.home.account.AccountHomeRouter;
 
@@ -36,6 +40,7 @@ public class TokopediaPayCardView extends BaseCustomView {
     private LinearLayout layoutLeft;
     private LinearLayout layoutRight;
     private View container;
+    private ImageView iconLeft, iconRight;
 
     public TokopediaPayCardView(@NonNull Context context) {
         super(context);
@@ -63,6 +68,8 @@ public class TokopediaPayCardView extends BaseCustomView {
         textDesctRight = view.findViewById(R.id.text_desc_right);
         layoutLeft = view.findViewById(R.id.layout_left);
         layoutRight = view.findViewById(R.id.layout_right);
+        iconLeft = view.findViewById(R.id.card_icon_left);
+        iconRight = view.findViewById(R.id.card_icon_right);
 
         ImageHandler.loadImageBitmap2(getContext(),
                 getBackgroundImageUri(),
@@ -76,11 +83,11 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     private String getBackgroundImageUri() {
-        String imageUrl = AccountConstants.Url.IMAGE_URL;
-        if(getContext().getApplicationContext() instanceof AccountHomeRouter) {
+        String imageUrl = AccountHomeUrl.IMAGE_URL;
+        if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
             imageUrl = ((AccountHomeRouter) getContext().getApplicationContext())
-                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountConstants.Url.CDN_URL);
-            imageUrl = imageUrl + AccountConstants.Url.CDN_IMAGE_PATH;
+                    .getStringRemoteConfig(KEY_IMAGE_HOST, AccountHomeUrl.CDN_URL);
+            imageUrl = imageUrl + AccountHomeUrl.CDN_IMAGE_PATH;
         }
 
         return imageUrl + TOKOPEDIA_PAY_BG_NAME;
@@ -91,12 +98,11 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     public void setTextAmountLeft(@NonNull String text) {
-        if (text.equalsIgnoreCase(getContext().getString(R.string.label_wallet_activation))) {
-            this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
-        } else {
-            this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
-        }
         this.textAmountLeft.setText(text);
+    }
+
+    public void setAmountColorLeft(@ColorRes int color) {
+        this.textAmountLeft.setTextColor(ContextCompat.getColor(getContext(), color));
     }
 
     public void setTextDescLeft(@NonNull String text) {
@@ -104,11 +110,38 @@ public class TokopediaPayCardView extends BaseCustomView {
     }
 
     public void setTextAmountRight(@NonNull String text) {
+        setTextAmountRight(text, false);
+    }
+
+    public void setTextAmountRight(@NonNull String text, boolean isImportant) {
+        if (isImportant) {
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
+        } else {
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
+        }
+
         this.textAmountRight.setText(text);
     }
 
     public void setTextDesctRight(@NonNull String text) {
         textDesctRight.setText(text);
+    }
+
+    public void setIconLeft(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconLeft.getContext(), iconLeft, url);
+    }
+
+    public void setIconRight(String url) {
+        if (!URLUtil.isValidUrl(url)) {
+            iconRight.setImageResource(R.drawable.ic_saldo_circle);
+            return;
+        }
+
+        ImageHandler.loadImageFitCenter(iconRight.getContext(), iconRight, url);
     }
 
     public void setActionTextClickListener(View.OnClickListener listener) {

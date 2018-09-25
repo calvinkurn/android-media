@@ -16,6 +16,7 @@ query hachikoCouponDetailQuery($code: String) {
     tnc
     cta
     cta_desktop
+    minimum_usage
     usage {
       active_count_down
       expired_count_down

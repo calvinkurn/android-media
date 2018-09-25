@@ -1,6 +1,8 @@
 package com.tokopedia.updateinactivephone.data.repository;
 
+import com.tokopedia.core.network.retrofit.utils.TKPDMapParam;
 import com.tokopedia.updateinactivephone.data.factory.UploadImageSourceFactory;
+import com.tokopedia.updateinactivephone.model.request.UploadHostModel;
 import com.tokopedia.updateinactivephone.model.request.UploadImageModel;
 
 import java.util.Map;
@@ -28,6 +30,13 @@ public class UploadImageRepositoryImpl implements UploadImageRepository {
                         url,
                         params,
                         imageFile);
+    }
+
+    @Override
+    public Observable<UploadHostModel> getUploadHost(TKPDMapParam<String, Object> parameters) {
+        return uploadImageSourceFactory
+                .createCloudUploadHostDataStore()
+                .getUploadHost(parameters);
     }
 
 }

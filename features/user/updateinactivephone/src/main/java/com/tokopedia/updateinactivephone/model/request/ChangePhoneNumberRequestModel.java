@@ -9,6 +9,7 @@ public class ChangePhoneNumberRequestModel {
     private UploadImageModel uploadIdImageModel;
     private UploadImageModel uploadBankBookImageModel;
     private SubmitImageModel submitImageModel;
+    private UploadHostModel uploadHostModel;
 
     public boolean isSuccess() {
         return success;
@@ -61,6 +62,14 @@ public class ChangePhoneNumberRequestModel {
 
     public UploadImageModel getUploadBankBookImageModel() {
         return uploadBankBookImageModel;
+    }
+
+    public UploadHostModel getUploadHostModel() {
+        return uploadHostModel;
+    }
+
+    public void setUploadHostModel(UploadHostModel uploadHostModel) {
+        this.uploadHostModel = uploadHostModel;
     }
 
     public void setSubmitImageModel(SubmitImageModel submitImageModel) {

@@ -78,7 +78,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
                 case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                     accountAnalytics.eventClickAccountSetting(PASSWORD);
                     if (userSession.isHasPassword()) {
-                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.SETTING_PASSWORD);
+                        intent = RouteManager.getIntent(getActivity(), ApplinkConst.CHANGE_PASSWORD);
                         getActivity().startActivityForResult(intent, REQUEST_CHANGE_PASSWORD);
                     } else {
                         intentToAddPassword();
@@ -97,7 +97,7 @@ public class AccountSettingFragment extends TkpdBaseV4Fragment {
     private void intentToAddPassword() {
         if (getActivity().getApplication() instanceof AccountHomeRouter) {
             startActivityForResult(((AccountHomeRouter) getActivity().getApplication())
-                    .getManagePasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
+                    .getChangePasswordIntent(getActivity()), REQUEST_ADD_PASSWORD);
         }
     }
 }
