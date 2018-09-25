@@ -6,6 +6,7 @@ import com.tokopedia.forgotpassword.R;
 import com.tokopedia.forgotpassword.data.pojo.ResetPasswordPojo;
 import com.tokopedia.forgotpassword.domain.ResetPasswordUseCase;
 import com.tokopedia.forgotpassword.view.listener.ForgotPasswordContract;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import javax.inject.Inject;
 
@@ -18,10 +19,13 @@ public class ForgotPasswordPresenter extends BaseDaggerPresenter<ForgotPasswordC
         implements ForgotPasswordContract.Presenter {
 
     private final ResetPasswordUseCase resetPasswordUseCase;
+    private final UserSessionInterface userSession;
 
     @Inject
-    public ForgotPasswordPresenter(ResetPasswordUseCase resetPasswordUseCase) {
+    public ForgotPasswordPresenter(ResetPasswordUseCase resetPasswordUseCase,
+                                   UserSessionInterface userSession) {
         this.resetPasswordUseCase = resetPasswordUseCase;
+        this.userSession = userSession;
     }
 
     @Override
@@ -30,7 +34,8 @@ public class ForgotPasswordPresenter extends BaseDaggerPresenter<ForgotPasswordC
 
         if (isValidForm(email)) {
             getView().showLoadingProgress();
-            resetPasswordUseCase.execute(ResetPasswordUseCase.getParam(email),
+            resetPasswordUseCase.execute(ResetPasswordUseCase.getParam(email,
+                    userSession.getDeviceId(), userSession.getUserId()),
                     new Subscriber<ResetPasswordPojo>() {
                         @Override
                         public void onCompleted() {
