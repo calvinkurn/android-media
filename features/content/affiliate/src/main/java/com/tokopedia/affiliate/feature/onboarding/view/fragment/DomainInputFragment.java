@@ -24,6 +24,9 @@ import com.tokopedia.user.session.UserSession;
  */
 public class DomainInputFragment extends BaseDaggerFragment {
 
+    private static final Integer USERNAME_MAX_LENGTH = 13;
+    private static final Integer USERNAME_MIN_LENGTH = 3;
+
     private UserSession userSession;
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
@@ -79,7 +82,12 @@ public class DomainInputFragment extends BaseDaggerFragment {
             @Override
             public void afterTextChanged(Editable editable) {
                 String byMeUsername = usernameInput.getTextWithoutPrefix();
-                if (byMeUsername.length() < 3) {
+                if (byMeUsername.length() > USERNAME_MAX_LENGTH) {
+                    usernameInput.removeTextChangedListener(this);
+                    usernameInput.setText(byMeUsername.substring(0, USERNAME_MAX_LENGTH));
+                    usernameInput.addTextChangedListener(this);
+                }
+                if (byMeUsername.length() < USERNAME_MIN_LENGTH) {
                     disableSaveBtn();
                 } else {
                     enableSaveBtn();
