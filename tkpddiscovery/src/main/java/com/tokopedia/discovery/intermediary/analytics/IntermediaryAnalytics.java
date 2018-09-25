@@ -15,7 +15,7 @@ public class IntermediaryAnalytics {
 
         if (tracker != null) {
             tracker.sendEventTracking(
-                    "",
+                    "clickIntermediary",
                     "intermediary page",
                     "click lihat semua on os widget",
                     ""
