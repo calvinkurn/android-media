@@ -10,10 +10,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
+import com.tokopedia.withdraw.di.DaggerDoWithdrawComponent;
+import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
+import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.fragment.WithdrawPasswordFragment;
 
 import javax.inject.Inject;
@@ -30,6 +34,7 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolbar();
+        initInjector();
     }
 
     @Override
@@ -50,6 +55,16 @@ public class WithdrawPasswordActivity extends BaseSimpleActivity {
             bundle.putAll(getIntent().getExtras());
         }
         return WithdrawPasswordFragment.createInstance(bundle);
+    }
+
+    protected void initInjector() {
+        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
+                .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
+                .build();
+
+        DaggerDoWithdrawComponent.builder().withdrawComponent(withdrawComponent)
+                .build().inject(this);
+
     }
 
     private void setToolbar() {

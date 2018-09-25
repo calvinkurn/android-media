@@ -10,10 +10,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
 import com.tokopedia.withdraw.WithdrawAnalytics;
+import com.tokopedia.withdraw.di.DaggerDepositWithdrawComponent;
+import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
+import com.tokopedia.withdraw.di.WithdrawComponent;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import javax.inject.Inject;
@@ -34,6 +38,16 @@ public class WithdrawActivity extends BaseSimpleActivity {
     protected void onStart() {
         super.onStart();
         analytics.sendScreen(this, getScreenName());
+        initInjector();
+    }
+
+    private void initInjector() {
+        WithdrawComponent withdrawComponent = DaggerWithdrawComponent.builder()
+                .baseAppComponent(((BaseMainApplication)getApplication()).getBaseAppComponent())
+                .build();
+
+        DaggerDepositWithdrawComponent.builder().withdrawComponent(withdrawComponent)
+                .build().inject(this);
     }
 
     @Override
