@@ -1,9 +1,12 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
@@ -71,12 +74,15 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     private View toolbar;
     private AppBarLayout appBarLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
+    private NestedScrollView nestedScrollView;
     private RelativeLayout layoutUsedPromo;
     private TextView tvPromoCodeEmptyCart;
     private AppCompatImageView btnCancelPromoCodeEmptyCart;
     private TextView btnContinueShoppingEmptyCart;
     private CardView cvRecommendation;
     private TopAdsView topAdsView;
+    private TextViewCompat tvRecommendationSeeAll;
+    private TextViewCompat tvRecommendationSeeAllBottom;
     private CardView cvWishList;
     private RelativeLayout rlWishList;
     private TextViewCompat tvWishListSeeAll;
@@ -178,6 +184,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     protected void initView(View view) {
         setupToolbar(view);
         presenter.attachView(this);
+        nestedScrollView = view.findViewById(R.id.nested_scroll_view);
         swipeRefreshLayout = view.findViewById(R.id.swipe_refresh_layout);
         layoutUsedPromo = view.findViewById(R.id.layout_used_promo);
         tvPromoCodeEmptyCart = view.findViewById(R.id.textview_promo_code);
@@ -185,6 +192,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         btnContinueShoppingEmptyCart = view.findViewById(R.id.btn_shopping_now);
         cvRecommendation = view.findViewById(R.id.cv_recommendation);
         topAdsView = view.findViewById(R.id.topads);
+        tvRecommendationSeeAll = view.findViewById(R.id.tv_recommendation_see_all);
+        tvRecommendationSeeAllBottom = view.findViewById(R.id.tv_recommendation_see_all_bottom);
         cvWishList = view.findViewById(R.id.cv_wish_list);
         rlWishList = view.findViewById(R.id.rl_wish_list);
         tvWishListSeeAll = view.findViewById(R.id.tv_wish_list_see_all);
@@ -193,6 +202,21 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         rlLastSeen = view.findViewById(R.id.rl_last_seen);
         tvLastSeenSeeAll = view.findViewById(R.id.tv_last_seen_see_all);
         rvLastSeen = view.findViewById(R.id.rv_last_seen);
+
+        nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+                if (cvRecommendation.getVisibility() == View.VISIBLE) {
+                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                        showSeeOtherRecommendationText();
+                    } else {
+                        hideSeeOtherRecommendationText();
+                    }
+                } else {
+                    hideSeeOtherRecommendationText();
+                }
+            }
+        });
 
         rvWishList.setNestedScrollingEnabled(false);
         rvLastSeen.setNestedScrollingEnabled(false);
@@ -205,6 +229,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         tvLastSeenSeeAll.setOnClickListener(v -> startActivityForResult(
                 checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
                 REQUEST_CODE_ROUTE_RECENT_VIEW));
+        tvRecommendationSeeAll.setOnClickListener(v -> navigateToHome());
+        tvRecommendationSeeAllBottom.setOnClickListener(v -> navigateToHome());
 
         String autoApplyMessage = null;
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
@@ -276,16 +302,19 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         } else {
             layoutUsedPromo.setVisibility(View.GONE);
         }
-        btnContinueShoppingEmptyCart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
-                startActivity(
-                        checkoutModuleRouter.checkoutModuleRouterGetHomeFeedIntent(getActivity())
-                );
-                getActivity().finish();
-            }
+        btnContinueShoppingEmptyCart.setOnClickListener(v -> {
+            navigateToHome();
         });
+    }
+
+    private void navigateToHome() {
+        if (getActivity() != null) {
+            cartPageAnalytics.eventClickAtcCartClickBelanjaSekarangOnEmptyCart();
+            startActivity(
+                    checkoutModuleRouter.checkoutModuleRouterGetHomeIntent(getActivity())
+            );
+            getActivity().finish();
+        }
     }
 
     private void renderTopAds() {
@@ -463,10 +492,24 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onTopAdsLoaded() {
         cvRecommendation.setVisibility(View.VISIBLE);
+        tvRecommendationSeeAllBottom.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onTopAdsFailToLoad(int errorCode, String message) {
         cvRecommendation.setVisibility(View.GONE);
+        tvRecommendationSeeAllBottom.setVisibility(View.GONE);
+    }
+
+    private void hideSeeOtherRecommendationText() {
+        tvRecommendationSeeAllBottom.animate()
+                .scaleX(0)
+                .scaleY(0);
+    }
+
+    private void showSeeOtherRecommendationText() {
+        tvRecommendationSeeAllBottom.animate()
+                .scaleY(1)
+                .scaleX(1);
     }
 }

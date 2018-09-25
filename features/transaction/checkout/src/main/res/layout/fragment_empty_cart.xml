@@ -33,6 +33,7 @@
         android:visibility="visible">
 
         <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nested_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -275,6 +276,7 @@
                         android:id="@+id/cv_recommendation"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="-16dp"
                         android:visibility="gone"
                         tools:visibility="visible">
 
@@ -331,6 +333,25 @@
                     </android.support.v7.widget.CardView>
 
                 </LinearLayout>
+
+                <com.tokopedia.design.component.TextViewCompat
+                    android:id="@+id/tv_recommendation_see_all_bottom"
+                    style="@style/TextSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|bottom"
+                    android:layout_marginBottom="@dimen/dp_24"
+                    android:background="@drawable/bg_empty_cart_recommandation_see_all"
+                    android:gravity="center_vertical"
+                    android:paddingBottom="@dimen/dp_8"
+                    android:paddingLeft="@dimen/dp_12"
+                    android:paddingRight="@dimen/dp_8"
+                    android:paddingTop="@dimen/dp_8"
+                    android:text="@string/label_empty_cart_see_others"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_white_24dp"
+                    tools:visibility="visible" />
 
             </FrameLayout>
 
