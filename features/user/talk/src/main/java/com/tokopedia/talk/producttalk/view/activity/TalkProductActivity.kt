@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.talk.R
 import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
@@ -86,4 +87,7 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return ProductTalkFragment.newInstance(intent.extras)
     }
 
+    override fun getLayoutRes(): Int {
+        return R.layout.activity_talk_product
+    }
 }
