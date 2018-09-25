@@ -47,6 +47,8 @@ public class GroupChatAnalytics {
     public static final String EVENT_ACTION_CLICK_GROUP_CHAT = "click on groupchat";
     private static final String EVENT_ACTION_CLICK_LOYALTY_WIDGET = "click on loyalty widget";
     private static final String EVENT_ACTION_LEAVE_ROOM = "leave room";
+    private static final String EVENT_ACTION_PLAY_VIDEO = "click on play button video";
+    private static final String EVENT_ACTION_WATCH_VIDEO_DURATION = "watch duration play";
 
 
     private static final String EVENT_NAME_CLICK_GROUPCHAT = "clickGroupChat";
@@ -256,6 +258,22 @@ public class GroupChatAnalytics {
                 EVENT_CATEGORY_GROUPCHAT_ROOM,
                 "view banner push promo",
                 messageItem.getMessageId()
+        );
+    }
+
+    public void eventClickAutoPlayVideo(String channelId) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_PLAY_VIDEO,
+                channelId
+        );
+    }
+
+    public void eventWatchVideoDuration(String channelId, String duration) {
+        analyticTracker.sendEventTracking(EVENT_NAME_CLICK_GROUPCHAT,
+                EVENT_CATEGORY_GROUPCHAT_ROOM,
+                EVENT_ACTION_WATCH_VIDEO_DURATION,
+                channelId +" - "+duration
         );
     }
 }
