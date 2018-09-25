@@ -223,7 +223,6 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
             Intent homeIntent = HomeRouter.getHomeActivityInterfaceRouter(this);
             if (deepLinkDelegate.supportsUri(applink.toString())) {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK, applink.toString());
-                homeIntent.putExtra("af_dp" , applink.toString());
             } else {
                 homeIntent.putExtra(HomeRouter.EXTRA_APPLINK_UNSUPPORTED, true);
             }
