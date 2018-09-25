@@ -468,6 +468,18 @@ public class ImageHandler {
                     .into(getRoundedImageViewTarget(imageview, radius));
         }
     }
+    public static void loadImageRounded2(Context context, final ImageView imageview, final String url, final int size) {
+        if (url != null && !url.isEmpty()) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .dontAnimate()
+                    .placeholder(R.drawable.loading_page)
+                    .override(size, size)
+                    .error(R.drawable.error_drawable)
+                    .into(getRoundedImageViewTarget(imageview, 5.0f));
+        }
+    }
 
     public static void loadImageRounded2(Fragment fragment, final ImageView imageview, final String url) {
         if (url != null && !url.isEmpty()) {
