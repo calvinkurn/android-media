@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
@@ -93,6 +94,11 @@ public class DomainInputFragment extends BaseDaggerFragment {
                     enableSaveBtn();
                 }
             }
+        });
+        saveBtn.setOnClickListener(view -> {
+            startActivity(
+                    OnboardingActivity.createIntent(getContext(), OnboardingActivity.FINISH_TRUE)
+            );
         });
     }
 

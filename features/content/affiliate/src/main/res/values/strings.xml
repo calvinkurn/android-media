@@ -21,7 +21,7 @@
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di ByMe</string>
 
-    <!--DASHBOARD-->
+    <!--ONBOARDING-->
     <string name="title_af_onboarding">Tokopedia By.Me</string>
     <string name="af_about_comission">Tentang Komisi</string>
     <string name="af_try_now">Coba Sekarang</string>
@@ -32,5 +32,8 @@
     <string name="af_agree_terms"><![CDATA[Dengan melanjutkan, saya setuju dengan \nSyarat & Ketentuan By.Me]]></string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">by.me/ </string>
+    <string name="af_complete_profile">Lengkapi Profil By.Me Milikmu</string>
+    <string name="af_select_product_recommendation">Pilih produk rekomendasi terbaik untuk dibagikan ke media sosialmu.</string>
+    <string name="af_see_product_selection">Lihat Pilihan Produk</string>
 
 </resources>
