@@ -284,10 +284,12 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
         spinnerSubDistrict = view.findViewById(R.id.sub_district);
         subDistrictError = view.findViewById(R.id.sub_district_error);
 
-        UserSession sess = new UserSession(getActivity());
-        addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
-        receiverNameEditText.setText(sess.getName());
-        receiverPhoneEditText.setText(sess.getPhoneNumber());
+        if (!isEdit()) {
+            UserSession sess = new UserSession(getActivity());
+            addressTypeEditText.setText(getResources().getString(R.string.address_type_default));
+            receiverNameEditText.setText(sess.getName());
+            receiverPhoneEditText.setText(sess.getPhoneNumber());
+        }
 
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         mProgressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
