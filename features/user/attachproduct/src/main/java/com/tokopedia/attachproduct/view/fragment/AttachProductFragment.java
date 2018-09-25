@@ -231,7 +231,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     protected Visitable getEmptyDataViewModel() {
         EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
         if (TextUtils.isEmpty(searchInputView.getSearchText())) {
-            emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
+            if(activityContract.isSeller()) {
+                emptyResultViewModel.setContent(getString(R.string
+                        .string_attach_product_my_empty_product));
+            }else{
+                emptyResultViewModel.setContent(getString(R.string.string_attach_product_empty_product));
+            }
             emptyResultViewModel.setIconRes(R.drawable.bg_attach_product_empty_result);
         } else {
             emptyResultViewModel.setContent(getString(R.string.string_attach_product_search_not_found));
