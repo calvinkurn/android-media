@@ -4,6 +4,7 @@ import android.support.annotation.LayoutRes;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
@@ -26,6 +27,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
     private ImageView ivImage;
     private FrameLayout btnByme;
     private TextView tvTitle, tvCommission;
+    private RelativeLayout layout;
 
     public ExploreViewHolder(View itemView, ExploreContract.View mainView) {
         super(itemView);
@@ -33,6 +35,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
         ivImage = (ImageView) itemView.findViewById(R.id.iv_image);
         btnByme = (FrameLayout) itemView.findViewById(R.id.iv_byme);
         tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+        layout = (RelativeLayout) itemView.findViewById(R.id.main_view);
         tvCommission = (TextView) itemView.findViewById(R.id.tv_commission);
     }
 
@@ -44,7 +47,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
 
     private void initView(ExploreViewModel element) {
 //        ivImage.setMaxHeight(ivImage.getWidth());
-        ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl(), ivImage.getWidth());
+        ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl(), layout.getWidth());
         tvTitle.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(MethodChecker.fromHtml(element.getCommissionString()));
     }
