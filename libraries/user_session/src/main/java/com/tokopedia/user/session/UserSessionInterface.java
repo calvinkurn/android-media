@@ -49,7 +49,7 @@ interface UserSessionInterface {
 
     void setEmail(String email);
 
-    void setIsMsisdnVerified(boolean isMsisdnVerified)
+    void setIsMsisdnVerified(boolean isMsisdnVerified);
 
     void setPhoneNumber(String phoneNumber);
 
