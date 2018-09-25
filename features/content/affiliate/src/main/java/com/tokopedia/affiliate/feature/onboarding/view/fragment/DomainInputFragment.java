@@ -3,26 +3,31 @@ package com.tokopedia.affiliate.feature.onboarding.view.fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputEditText;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.design.text.watcher.AfterTextWatcher;
+import com.tokopedia.user.session.UserSession;
 
 /**
  * @author by milhamj on 9/24/18.
  */
 public class DomainInputFragment extends BaseDaggerFragment {
 
+    private UserSession userSession;
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
-    private TextInputEditText usernameInput;
+    private EditText usernameInput;
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
 
@@ -38,8 +43,19 @@ public class DomainInputFragment extends BaseDaggerFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_domain_input, container, false);
-
+        avatar = view.findViewById(R.id.avatar);
+        usernameWrapper = view.findViewById(R.id.usernameWrapper);
+        usernameInput = view.findViewById(R.id.usernameInput);
+        termsAndCondition = view.findViewById(R.id.termsAndCondition);
+        saveBtn = view.findViewById(R.id.saveBtn);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initVar();
+        initView();
     }
 
     @Override
@@ -52,5 +68,17 @@ public class DomainInputFragment extends BaseDaggerFragment {
         return null;
     }
 
+    private void initVar() {
+        userSession = new UserSession(getContext());
+    }
 
+    private void initView() {
+        ImageHandler.loadImageCircle2(getContext(), avatar, userSession.getProfilePicture());
+        usernameInput.addTextChangedListener(new AfterTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
 }

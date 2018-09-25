@@ -46,12 +46,17 @@
         android:textColorHint="@color/black_56"
         app:layout_constraintTop_toBottomOf="@id/title">
 
-        <android.support.design.widget.TextInputEditText
+        <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
             android:id="@+id/usernameInput"
+            style="@style/EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"
-            android:textSize="@dimen/sp_16" />
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textSize="@dimen/sp_16"
+            app:prefix="@string/af_by_me_domain"
+            app:prefixTextColor="@color/black_70" />
     </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
     <android.support.v7.widget.CardView
@@ -59,8 +64,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"
+        android:visibility="gone"
         app:cardElevation="@dimen/dp_2"
-        app:layout_constraintTop_toBottomOf="@id/usernameWrapper">
+        app:layout_constraintTop_toBottomOf="@id/usernameWrapper"
+        tools:visibility="visible">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/suggestionRv"
