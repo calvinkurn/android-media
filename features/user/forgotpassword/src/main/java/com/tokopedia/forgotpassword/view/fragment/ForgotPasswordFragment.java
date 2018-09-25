@@ -1,6 +1,5 @@
 package com.tokopedia.forgotpassword.view.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -16,26 +15,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tkpd.library.ui.utilities.TkpdProgressDialog;
-import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
-import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.network.apiservices.accounts.AccountsService;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.applink.ApplinkConst;
+import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.forgotpassword.R;
 import com.tokopedia.forgotpassword.analytics.ForgotPasswordAnalytics;
-import com.tokopedia.forgotpassword.view.listener.ForgotPasswordFragmentView;
-import com.tokopedia.forgotpassword.view.presenter.ForgotPasswordFragmentPresenter;
+import com.tokopedia.forgotpassword.di.DaggerForgotPasswordComponent;
+import com.tokopedia.forgotpassword.di.ForgotPasswordComponent;
+import com.tokopedia.forgotpassword.view.listener.ForgotPasswordContract;
+import com.tokopedia.forgotpassword.view.presenter.ForgotPasswordPresenter;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import javax.inject.Inject;
 
 /**
  * Created by Alifa on 10/17/2016.
  */
 
 public class ForgotPasswordFragment extends BaseDaggerFragment
-        implements ForgotPasswordFragmentView {
+        implements ForgotPasswordContract.View {
 
     private static final String ARGS_EMAIL = "ARGS_EMAIL";
     private static final String ARGS_AUTO_RESET = "ARGS_AUTO_RESET";
@@ -48,8 +52,16 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     TextInputLayout tilEmail;
     TextView registerButton;
 
-    TkpdProgressDialog progressDialog;
-    ForgotPasswordFragmentPresenter presenter;
+    ProgressBar progressDialog;
+
+    @Inject
+    ForgotPasswordAnalytics analytics;
+
+    @Inject
+    ForgotPasswordPresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
 
     public static ForgotPasswordFragment createInstance(String email, boolean isAutoReset, boolean isRemoveFooter) {
         ForgotPasswordFragment fragment = new ForgotPasswordFragment();
@@ -68,7 +80,16 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
     @Override
     protected void initInjector() {
+        if (getActivity() != null) {
+            ForgotPasswordComponent forgotPasswordComponent = DaggerForgotPasswordComponent.builder()
+                    .baseAppComponent(
+                            ((BaseMainApplication) getActivity().getApplication())
+                                    .getBaseAppComponent())
+                    .build();
 
+            forgotPasswordComponent.inject(this);
+            presenter.attachView(this);
+        }
     }
 
     @Nullable
@@ -82,16 +103,15 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         emailEditText = view.findViewById(R.id.email);
         tilEmail = view.findViewById(R.id.til_email);
         registerButton = view.findViewById(R.id.register_button);
-
-        initialPresenter();
-        initView(view);
+        progressDialog = view.findViewById(R.id.progress_bar);
+        initView();
         return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getArguments().getBoolean(ARGS_AUTO_RESET)) {
+        if (getArguments() != null && getArguments().getBoolean(ARGS_AUTO_RESET)) {
             onSuccessResetPassword();
         }
         if (getArguments().getBoolean(ARGS_REMOVE_FOOTER, false)) {
@@ -99,37 +119,22 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         }
     }
 
-    private void initialPresenter() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(AccountsService.USING_HMAC, true);
-        bundle.putString(AccountsService.AUTH_KEY, AuthUtil.KEY.KEY_WSV4);
-
-//        presenter = new ForgotPasswordFragmentPresenterImpl(this,
-//                new ForgotPasswordRetrofitInteractorImpl(new AccountsService(bundle)),
-//                new CompositeSubscription());
-    }
-
-    protected void initView(View view) {
-        registerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                goToRegister();
-            }
-        });
+    protected void initView() {
+        registerButton.setOnClickListener(v -> goToRegister());
         emailEditText.addTextChangedListener(watcher(tilEmail));
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        sendButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
                 KeyboardHandler.DropKeyboard(getActivity(), emailEditText);
-                presenter.resetPassword();
+                frontView.setVisibility(View.GONE);
+                presenter.resetPassword(emailEditText.getText().toString().trim());
             }
         });
 
-        if (!getArguments().getString(ARGS_EMAIL, "").equals("")) {
+        if (getArguments() != null && !getArguments().getString(ARGS_EMAIL, "").equals("")) {
             emailEditText.setText(getArguments().getString(ARGS_EMAIL));
         }
 
-        if (SessionHandler.isV4Login(getActivity())) {
+        if (userSession.isLoggedIn()) {
             registerButton.setVisibility(View.GONE);
         } else {
             registerButton.setVisibility(View.VISIBLE);
@@ -184,31 +189,23 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
 
     private void setWrapperError(TextInputLayout wrapper, String s) {
+        wrapper.setError(s);
+
         if (s == null) {
-            wrapper.setError(s);
             wrapper.setErrorEnabled(false);
         } else {
             wrapper.setErrorEnabled(true);
-            wrapper.setError(s);
         }
     }
 
     private void goToRegister() {
-        Intent intent = ((TkpdCoreRouter) getActivity().getApplication()).getRegisterIntent
-                (getActivity());
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        startActivity(intent);
-        getActivity().finish();
-    }
-
-    @Override
-    public Context getContext() {
-        return getActivity().getApplicationContext();
-    }
-
-    @Override
-    public void refresh() {
-        //TODO
+        if (getActivity() != null) {
+            Intent intent = ((ApplinkRouter) getActivity().getApplicationContext())
+                    .getApplinkIntent(
+                            getActivity(), ApplinkConst.REGISTER);
+            startActivity(intent);
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -218,30 +215,15 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     }
 
     @Override
-    public EditText getEmail() {
-        return emailEditText;
-    }
-
-    @Override
-    public void setEmailError(String errorMessage) {
-        tilEmail.setErrorEnabled(true);
-        tilEmail.setError(errorMessage);
-    }
-
-    @Override
     public void showLoadingProgress() {
-        if (progressDialog == null && getActivity() != null) {
-            progressDialog = new TkpdProgressDialog(getActivity(), TkpdProgressDialog.NORMAL_PROGRESS);
-        }
-
-        if (progressDialog != null) {
-            progressDialog.showDialog();
-        }
+        progressDialog.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onErrorResetPassword(String errorMessage) {
         finishLoadingProgress();
+        frontView.setVisibility(View.VISIBLE);
+
         if (errorMessage.equals(""))
             NetworkErrorHelper.showSnackbar(getActivity());
         else
@@ -259,17 +241,24 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
         emailSend.setText(myData);
 
+        analytics.trackSuccessForgotPassword();
+
+    }
+
+    @Override
+    public void setEmailError(String error) {
+        tilEmail.setErrorEnabled(true);
+        tilEmail.setError(error);
     }
 
     private void finishLoadingProgress() {
-        if (progressDialog != null)
-            progressDialog.dismiss();
+        progressDialog.setVisibility(View.GONE);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        presenter.onDestroyView();
+        presenter.detachView();
     }
 
     @Override

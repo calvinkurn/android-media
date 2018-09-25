@@ -1,6 +1,7 @@
 package com.tokopedia.forgotpassword.data;
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.forgotpassword.data.pojo.ResetPasswordPojo;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.Map;
 
@@ -17,5 +18,6 @@ public interface ForgotPasswordApi {
 
     @FormUrlEncoded
     @POST(ForgotPasswordUrl.RESET_PASSWORD)
-    Observable<Response<TkpdResponse>> resetPassword(@FieldMap Map<String, String> params);
+    Observable<Response<DataResponse<ResetPasswordPojo>>> resetPassword(@FieldMap Map<String,
+            Object> params);
 }

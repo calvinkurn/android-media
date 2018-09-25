@@ -1,126 +1,51 @@
 package com.tokopedia.forgotpassword.view.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
 
-import com.tokopedia.core.R;
-import com.tokopedia.core.analytics.AppScreen;
-import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.forgotpassword.analytics.ForgotPasswordAnalytics;
 import com.tokopedia.forgotpassword.view.fragment.ForgotPasswordFragment;
-import com.tokopedia.forgotpassword.view.listener.ForgotPasswordFragmentView;
-import com.tokopedia.forgotpassword.view.presenter.ForgotPasswordFragmentPresenterImpl;
 
 /**
  * Created by Alifa on 10/17/2016.
  */
 
-public class ForgotPasswordActivity extends BasePresenterActivity {
+public class ForgotPasswordActivity extends BaseSimpleActivity {
 
     private static final String TAG = "FORGOT_PASSWORD_FRAGMENT";
     private static final String INTENT_EXTRA_PARAM_EMAIL = "INTENT_EXTRA_PARAM_EMAIL";
     private static final String INTENT_EXTRA_AUTO_RESET = "INTENT_EXTRA_AUTO_RESET";
     private static final String INTENT_EXTRA_REMOVE_FOOTER = "INTENT_EXTRA_REMOVE_FOOTER";
 
-    public static Intent createInstance(Context context) {
+    /**
+     * @param context activity context
+     * @return Intent
+     * default intent
+     */
+    public static Intent getCallingIntent(Context context) {
         return new Intent(context, ForgotPasswordActivity.class);
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
-    protected void setupURIPass(Uri data) {
-
-    }
-
-    @Override
-    protected void setupBundlePass(Bundle extras) {
-
-    }
-
-    @Override
-    protected void initialPresenter() {
-    }
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_simple_fragment;
-    }
-
-    @Override
-    protected void initView() {
-
-        if (getSupportFragmentManager().findFragmentById(R.id.container) == null) {
-            ForgotPasswordFragment fragment = ForgotPasswordFragment.createInstance(
-                    getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL, ""),
-                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET, false),
-                    getIntent().getExtras().getBoolean(INTENT_EXTRA_REMOVE_FOOTER, false));
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            fragmentTransaction.add(R.id.container, fragment, TAG);
-            fragmentTransaction.commit();
-        }
-    }
-
-    @Override
-    protected void setViewListener() {
-
-    }
-
-    @Override
-    protected void initVar() {
-
-    }
-
-    @Override
-    protected void setActionVar() {
-
-    }
-
-    @Override
-    public String getScreenName() {
-        return AppScreen.SCREEN_FORGOT_PASSWORD;
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ForgotPasswordFragmentPresenterImpl.REQUEST_FORGOT_PASSWORD_CODE && resultCode == Activity.RESULT_OK) {
-            ((ForgotPasswordFragmentView) getFragmentManager().findFragmentByTag(TAG)).refresh();
-        }
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
+    /**
+     * @param context activity context
+     * @param email user email
+     * @return Intent
+     * use this for auto filled email
+     */
     public static Intent getCallingIntent(Context context, String email) {
         Intent intent = new Intent(context, ForgotPasswordActivity.class);
         intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
         return intent;
     }
 
+    /**
+     * @param context activity context
+     * @param email user email
+     * @return Intent
+     * use this for auto reset password
+     */
     public static Intent getAutomaticResetPasswordIntent(Context context, String email) {
         Intent intent = new Intent(context, ForgotPasswordActivity.class);
         intent.putExtra(INTENT_EXTRA_PARAM_EMAIL, email);
@@ -130,7 +55,21 @@ public class ForgotPasswordActivity extends BasePresenterActivity {
     }
 
     @Override
-    protected boolean isLightToolbarThemes() {
-        return true;
+    public String getScreenName() {
+        return ForgotPasswordAnalytics.Screen.FORGOT_PASSWORD;
+    }
+
+    @Override
+    protected Fragment getNewFragment() {
+
+        if (getIntent() != null && getIntent().getExtras() != null) {
+            return ForgotPasswordFragment.createInstance(
+                    getIntent().getExtras().getString(INTENT_EXTRA_PARAM_EMAIL, ""),
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_AUTO_RESET, false),
+                    getIntent().getExtras().getBoolean(INTENT_EXTRA_REMOVE_FOOTER, false)
+            );
+        } else {
+            return null;
+        }
     }
 }

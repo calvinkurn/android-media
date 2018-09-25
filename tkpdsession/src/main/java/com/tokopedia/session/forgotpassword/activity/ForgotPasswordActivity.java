@@ -20,7 +20,10 @@ import com.tokopedia.session.forgotpassword.presenter.ForgotPasswordFragmentPres
 /**
  * Created by Alifa on 10/17/2016.
  */
-
+@Deprecated
+/**
+ * use ForgotPasswordActivity from forgotpassword module instead
+ */
 public class ForgotPasswordActivity extends BasePresenterActivity {
 
     private static final String TAG = "FORGOT_PASSWORD_FRAGMENT";

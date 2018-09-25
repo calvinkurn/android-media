@@ -3,7 +3,7 @@ package com.tokopedia.user.session;
 /**
  * @author by nisie on 9/25/18.
  */
-interface UserSessionInterface {
+public interface UserSessionInterface {
 
     String getAccessToken();
 
@@ -14,8 +14,6 @@ interface UserSessionInterface {
     boolean isLoggedIn();
 
     String getShopId();
-
-    boolean hasShop();
 
     String getName();
 
@@ -34,6 +32,9 @@ interface UserSessionInterface {
     String getPhoneNumber();
 
     String getEmail();
+
+    String getRefreshTokenIV();
+
 
     /**
      * SETTER METHOD
@@ -63,11 +64,9 @@ interface UserSessionInterface {
 
     void setTempUserId(String userId);
 
-    String getRefreshTokenIV();
+    void setToken(String accessToken, String tokenType);
 
     void clearToken();
-
-    void setToken(String accessToken, String tokenType);
 
     void logoutSession();
 }

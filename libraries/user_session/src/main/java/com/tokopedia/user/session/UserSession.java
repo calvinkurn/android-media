@@ -6,9 +6,10 @@ import android.text.TextUtils;
 
 /**
  * @author by milhamj on 04/04/18.
+ * Please avoid using this class to get data. Use {@link UserSessionInterface} instead.
  */
 
-public class UserSession implements UserSessionInterface{
+public class UserSession implements UserSessionInterface {
     private static final String DEFAULT_EMPTY_SHOP_ID = "0";
     private static final String DEFAULT_EMPTY_SHOP_ID_ON_PREF = "-1";
     private static final String IS_LOGIN = "IS_LOGIN";
@@ -89,10 +90,6 @@ public class UserSession implements UserSessionInterface{
             shopId = DEFAULT_EMPTY_SHOP_ID;
         }
         return shopId;
-    }
-
-    public boolean hasShop() {
-        return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
     }
 
     public String getName() {

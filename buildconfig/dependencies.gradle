@@ -85,6 +85,7 @@ ext {
     tkpdUpdateInactivePhoneVersion = '2.22'
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
+    tkpdForgotPasswordVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -295,7 +296,8 @@ ext {
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
-            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}"
+            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
+            forgotPassword        : "com.tokopedia.forgotpassword:forgotpassword:${tkpdForgotPasswordVersion}"
     ]
 
     tkpdLibDependencies = [

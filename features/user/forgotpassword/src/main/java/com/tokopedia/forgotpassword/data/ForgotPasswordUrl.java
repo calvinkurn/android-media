@@ -6,4 +6,5 @@ package com.tokopedia.forgotpassword.data;
 public class ForgotPasswordUrl {
 
     public static final String RESET_PASSWORD = "api/reset";
+    public static final String BASE_URL = "https://accounts.tokopedia.com";
 }
