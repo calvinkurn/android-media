@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.domain.model.Badge;
 import com.tokopedia.topads.sdk.domain.model.Product;
@@ -65,7 +67,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!product.isLoaded() && isVisible(imageView)) {
+                        if (!product.isLoaded()) {
                             product.setLoaded(true);
                             new ImpresionTask().execute(product.getImage().getXs_url());
                             if(impressionListener!=null){
@@ -85,7 +87,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (!shop.isLoaded() && isVisible(imageView)) {
+                        if (!shop.isLoaded()) {
                             shop.setLoaded(true);
                             new ImpresionTask().execute(shop.getImageShop().getsUrl());
                         }
@@ -102,7 +104,7 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        if (url!=null && url.contains(PATH_VIEW) && isVisible(imageView)) {
+                        if (url!=null && url.contains(PATH_VIEW)) {
                             new ImpresionTask().execute(url);
                         }
                     }
