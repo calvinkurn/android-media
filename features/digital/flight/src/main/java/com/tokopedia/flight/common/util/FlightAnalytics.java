@@ -3,11 +3,15 @@ package com.tokopedia.flight.common.util;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.banner.data.source.cloud.model.BannerDetail;
+import com.tokopedia.flight.booking.view.viewmodel.FlightBookingCartData;
+import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailRouteViewModel;
 import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
+import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
 
@@ -24,6 +28,9 @@ import javax.inject.Inject;
 public class FlightAnalytics {
     private AnalyticTracker analyticTracker;
     private String GENERIC_EVENT = "genericFlightEvent";
+    private String ATC_EVENT = "addToCart";
+    private String PROMO_CLICK_EVENT = "promoClick";
+    private String PRODUCT_CLICK_EVENT = "productClick";
     private String GENERIC_CATEGORY = "digital - flight";
 
     @Inject
@@ -39,11 +46,36 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventPromotionClick(int position, String label, String imgUrl) {
+    public void eventPromotionClick(int position, BannerDetail banner) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PROMOTION,
-                String.format(getDefaultLocale(), "%d-%s-%s", position, label, imgUrl)
+                String.format(getDefaultLocale(), "%d-%s-%s", position, banner.getAttributes().getDescription(), banner.getAttributes().getLinkUrl())
+        );
+        List<Object> promos = new ArrayList<>();
+        promos.add(DataLayer.mapOf(
+                "id", banner.getId(),
+                "name", "/flight",
+                "position", String.valueOf(position),
+                "creative", banner.getAttributes().getDescription(),
+                "promo_id", banner.getId(),
+                "promo_code", banner.getAttributes().getPromoCode()
+        ));
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", PROMO_CLICK_EVENT,
+                        "eventCategory", GENERIC_CATEGORY,
+                        "eventAction", Action.PROMOTION_CLICK,
+                        "eventLabel", String.format(getDefaultLocale(), "%d-%s-%s", position, banner.getAttributes().getDescription(), banner.getAttributes().getLinkUrl()),
+                        "ecommerce", DataLayer.mapOf(
+                                "promoClick",
+                                DataLayer.mapOf(
+                                        "promotions",
+                                        DataLayer.listOf(
+                                                promos.toArray(new Object[promos.size()])
+                                        )
+                                )
+                        )
+                )
         );
     }
 
@@ -91,7 +123,7 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventSearchProductClick(FlightSearchViewModel viewModel) {
+    public void eventSearchProductClickFromDetail(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(Label.NORMAL_PRICE);
         analyticTracker.sendEventTracking(GENERIC_EVENT,
@@ -99,10 +131,78 @@ public class FlightAnalytics {
                 Category.CLICK_SEARCH_PRODUCT,
                 result.toString()
         );
+        productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_DETAIL, flightSearchPassData, viewModel, result);
     }
 
 
-    public void eventSearchProductClick(FlightSearchViewModel viewModel, int adapterPosition) {
+    public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel) {
+        StringBuilder result = transformSearchProductClickLabel(viewModel);
+        result.append(Label.NORMAL_PRICE);
+        analyticTracker.sendEventTracking(GENERIC_EVENT,
+                GENERIC_CATEGORY,
+                Category.CLICK_SEARCH_PRODUCT,
+                result.toString()
+        );
+        productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_LIST, flightSearchPassData, viewModel, result);
+    }
+
+    private void productClickEnhanceEcommerce(String action, FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel, StringBuilder result) {
+        List<Object> products = new ArrayList<>();
+        if (flightSearchPassData.getFlightPassengerViewModel().getAdult() > 0) {
+            products.add(DataLayer.mapOf(
+                    "id", viewModel.getId(),
+                    "name", viewModel.getDepartureAirportCity() + "-" + viewModel.getArrivalAirportCity() + " - Flight",
+                    "price", String.valueOf(viewModel.getFare().getAdultNumeric()),
+                    "brand", viewModel.getRouteList().get(0).getAirlineName(),
+                    "category", "Flight",
+                    "variant", flightSearchPassData.getFlightClass().getTitle() + " - Adult",
+                    "quantity", String.valueOf(flightSearchPassData.getFlightPassengerViewModel().getAdult()),
+                    "list", "/flight"
+            ));
+        }
+        if (flightSearchPassData.getFlightPassengerViewModel().getChildren() > 0) {
+            products.add(DataLayer.mapOf(
+                    "id", viewModel.getId(),
+                    "name", viewModel.getDepartureAirportCity() + "-" + viewModel.getArrivalAirportCity() + " - Flight",
+                    "price", String.valueOf(viewModel.getFare().getChildNumeric()),
+                    "brand", viewModel.getRouteList().get(0).getAirlineName(),
+                    "category", "Flight",
+                    "variant", flightSearchPassData.getFlightClass().getTitle() + " - Child",
+                    "quantity", String.valueOf(flightSearchPassData.getFlightPassengerViewModel().getChildren()),
+                    "list", "/flight"
+            ));
+        }
+        if (flightSearchPassData.getFlightPassengerViewModel().getInfant() > 0) {
+            products.add(DataLayer.mapOf(
+                    "id", viewModel.getId(),
+                    "name", viewModel.getDepartureAirportCity() + "-" + viewModel.getArrivalAirportCity() + " - Flight",
+                    "price", String.valueOf(viewModel.getFare().getInfantNumeric()),
+                    "brand", viewModel.getRouteList().get(0).getAirlineName(),
+                    "category", "Flight",
+                    "variant", flightSearchPassData.getFlightClass().getTitle() + " - Infant",
+                    "quantity", String.valueOf(flightSearchPassData.getFlightPassengerViewModel().getInfant()),
+                    "list", "/flight"
+            ));
+        }
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", PRODUCT_CLICK_EVENT,
+                        "eventCategory", GENERIC_CATEGORY,
+                        "eventAction", action,
+                        "eventLabel", result.toString(),
+                        "ecommerce", DataLayer.mapOf(
+                                "products", DataLayer.listOf(
+                                        products.toArray(new Object[products.size()])),
+                                "actionField", DataLayer.mapOf(
+                                        "list", "/flight"
+                                )
+                        )
+                )
+        );
+    }
+
+
+    public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel, int adapterPosition) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
         result.append(Label.NORMAL_PRICE);
@@ -111,7 +211,9 @@ public class FlightAnalytics {
                 Category.CLICK_SEARCH_PRODUCT,
                 result.toString()
         );
+        productClickEnhanceEcommerce(Action.PRODUCT_CLICK_SEARCH_LIST, flightSearchPassData, viewModel, result);
     }
+
 
     @NonNull
     private StringBuilder transformSearchProductClickLabel(FlightSearchViewModel viewModel) {
@@ -119,7 +221,7 @@ public class FlightAnalytics {
         if (viewModel.getAirlineList() != null) {
             List<String> airlines = new ArrayList<>();
             for (FlightAirlineDB airlineDB : viewModel.getAirlineList()) {
-                airlines.add(airlineDB.getId());
+                airlines.add(airlineDB.getShortName());
             }
             result.append(TextUtils.join(",", airlines));
         }
@@ -127,7 +229,7 @@ public class FlightAnalytics {
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
             timeResult += " - " + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
-            result.append(timeResult);
+            result.append(String.format(" - %s", timeResult));
         }
         return result;
     }
@@ -183,8 +285,8 @@ public class FlightAnalytics {
     private String transformAirlines(FlightDetailViewModel viewModel) {
         List<String> airlines = new ArrayList<>();
         for (FlightDetailRouteViewModel airlineDB : viewModel.getRouteList()) {
-            if (!airlines.contains(airlineDB.getAirlineCode())) {
-                airlines.add(airlineDB.getAirlineCode());
+            if (!airlines.contains(airlineDB.getAirlineName())) {
+                airlines.add(airlineDB.getAirlineName());
             }
         }
         return TextUtils.join(",", airlines);
@@ -274,12 +376,27 @@ public class FlightAnalytics {
         );
     }
 
-    private void eventAddToCart(FlightDetailViewModel viewModel) {
-
+    private void eventAddToCart(FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.ADD_TO_CART,
                 transformEventDetailLabel(viewModel)
+        );
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", ATC_EVENT,
+                        "eventCategory", GENERIC_CATEGORY,
+                        "eventAction", Category.ADD_TO_CART,
+                        "eventLabel", transformEventDetailLabel(viewModel),
+                        "ecommerce", DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "add", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                products.toArray(new Object[products.size()])),
+                                        "actionField", actionField
+                                )
+                        )
+                )
         );
     }
 
@@ -299,11 +416,62 @@ public class FlightAnalytics {
         );
     }
 
-    public void eventAddToCart(FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
-        if (departureViewModel != null)
-            eventAddToCart(departureViewModel);
+    public void eventAddToCart(FlightClassViewModel flightClass, FlightBookingCartData cartData, int resultTotalPrice, FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
+        String coupon = "";
+        Object actionField = DataLayer.mapOf(
+                "id", cartData.getId(),
+                "affiliation", "Online Store",
+                "revenue", String.valueOf(resultTotalPrice),
+                "tax", "0",
+                "shipping", "0",
+                "coupon", coupon
+        );
+
+        if (departureViewModel != null) {
+            eventAddToCart(departureViewModel, actionField, constructEnhanceEcommerceProduct(departureViewModel, cartData.getId(), coupon, flightClass.getTitle()));
+        }
         if (returnViewModel != null)
-            eventAddToCart(returnViewModel);
+            eventAddToCart(returnViewModel, actionField, constructEnhanceEcommerceProduct(returnViewModel, cartData.getId(), coupon, flightClass.getTitle()));
+    }
+
+    private List<Object> constructEnhanceEcommerceProduct(FlightDetailViewModel departureViewModel, String cartId, String coupon, String flightClass) {
+        List<Object> products = new ArrayList<>();
+        String name = departureViewModel.getDepartureAirportCity() + "-" + departureViewModel.getArrivalAirportCity() + " - Flights";
+        products.add(DataLayer.mapOf(
+                "name", name,
+                "id", cartId,
+                "price", String.valueOf(departureViewModel.getAdultNumericPrice()),
+                "brand", departureViewModel.getRouteList().get(0).getAirlineName(),
+                "category", "Flight",
+                "variant", flightClass + " - Adult",
+                "quantity", String.valueOf(departureViewModel.getCountAdult()),
+                "coupon", coupon
+        ));
+        if (departureViewModel.getCountChild() > 0) {
+            products.add(DataLayer.mapOf(
+                    "name", name,
+                    "id", cartId,
+                    "price", String.valueOf(departureViewModel.getChildNumericPrice()),
+                    "brand", departureViewModel.getRouteList().get(0).getAirlineName(),
+                    "category", "Flight",
+                    "variant", flightClass + " - Child",
+                    "quantity", String.valueOf(departureViewModel.getCountChild()),
+                    "coupon", coupon
+            ));
+        }
+        if (departureViewModel.getCountInfant() > 0) {
+            products.add(DataLayer.mapOf(
+                    "name", name,
+                    "id", cartId,
+                    "price", String.valueOf(departureViewModel.getInfantNumericPrice()),
+                    "brand", departureViewModel.getRouteList().get(0).getAirlineName(),
+                    "category", "Flight",
+                    "variant", flightClass + " - Infant",
+                    "quantity", String.valueOf(departureViewModel.getCountInfant()),
+                    "coupon", coupon
+            ));
+        }
+        return products;
     }
 
     public void eventPromoImpression(int position, BannerDetail bannerData) {
@@ -400,6 +568,7 @@ public class FlightAnalytics {
         );
     }
 
+
     public static final class Screen {
 
         public static String FLIGHT_CANCELLATION_STEP_TWO = "Flight Cancellation Reason and Proof";
@@ -439,6 +608,12 @@ public class FlightAnalytics {
         static String MORE_INSURANCE_INFO = "click more insurance information";
         static String MORE_INSURANCE = "see another insurance benefit";
 
+    }
+
+    private static class Action {
+        static String PROMOTION_CLICK = "promotion click";
+        static String PRODUCT_CLICK_SEARCH_LIST = "product click from flight list";
+        static String PRODUCT_CLICK_SEARCH_DETAIL = "click pilih on flight detail";
     }
 
     private static class Label {
