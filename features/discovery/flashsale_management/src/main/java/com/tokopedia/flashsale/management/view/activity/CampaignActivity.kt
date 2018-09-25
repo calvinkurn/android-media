@@ -30,8 +30,8 @@ class CampaignActivity : BaseTabActivity(){
         return object : FragmentPagerAdapter(supportFragmentManager) {
             override fun getPageTitle(position: Int): CharSequence? {
                 return when (position) {
-                    0 -> getString(R.string.fm_tokopedia_campaign)
-                    1 -> getString(R.string.fm_my_campaign)
+                    0 -> getString(R.string.fm_upcoming_flash_sale)
+                    1 -> getString(R.string.fm_my_flash_sale)
                     else -> super.getPageTitle(position)
                 }
             }

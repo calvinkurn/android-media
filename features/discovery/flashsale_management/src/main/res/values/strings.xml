@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">flashsale_management</string>
 
-    <string name="fm_campaign">Campaign</string>
-    <string name="fm_tokopedia_campaign">Tokopedia Campaign</string>
-    <string name="fm_my_campaign">My Campaign</string>
+    <string name="fm_flash_sale">Flash Sale</string>
+    <string name="fm_upcoming_flash_sale">Upcoming Flash Sale</string>
+    <string name="fm_my_flash_sale">My Flash Sale</string>
 </resources>
