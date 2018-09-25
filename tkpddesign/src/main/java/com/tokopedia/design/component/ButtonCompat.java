@@ -6,9 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
-import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.*;
 import android.support.v7.content.res.AppCompatResources;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
@@ -147,7 +145,7 @@ public class ButtonCompat extends AppCompatButton {
                 initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
             case DISABLE:
-                initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
+                initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
         }
     }
