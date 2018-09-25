@@ -66,7 +66,7 @@ public class ConfirmShippingActivity extends TActivity
     OrderCourierPresenterImpl presenter;
 
     @Inject
-    private TransactionTrackingUtil transactionTrackingUtil;
+    TransactionTrackingUtil transactionTrackingUtil;
 
     public static Intent createInstance(Context context, OrderDetailData data) {
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
