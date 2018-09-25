@@ -190,13 +190,18 @@ public class DashboardFragment
             EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel();
             adapter.addElement(emptyDashboardViewModel);
             adapter.notifyDataSetChanged();
-            isCanLoadMore = false;
         } else {
             adapter.addElement(header);
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
-            this.cursor = cursor;
+        }
+
+        if (TextUtils.isEmpty(cursor)) {
+            isCanLoadMore = false;
+            this.cursor = "";
+        } else {
             isCanLoadMore = true;
+            this.cursor = cursor;
         }
     }
 

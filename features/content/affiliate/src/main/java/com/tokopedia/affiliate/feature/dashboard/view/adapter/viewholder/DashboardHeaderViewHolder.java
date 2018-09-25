@@ -54,7 +54,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
 
     private void initView(DashboardHeaderViewModel element) {
         ImageHandler.LoadImage(ivSaldo, URL_BACKGROUND);
-        if (element != null) {
+        if (element == null) {
             initDefaultValue();
         } else {
             tvSaldo.setText(MethodChecker.fromHtml(element.getSaldoString()));
