@@ -38,4 +38,18 @@ public class TransactionTrackingUtil {
                 TransactionTrackingConstant.EVENT_LABEL_FAILED);
 
     }
+
+    public void sendTrackerImpressionAWB() {
+        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+                TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
+                TransactionTrackingConstant.EVENT_ACTION_IMPRESSION_SCAN_AWB_PAGE,
+                "");
+    }
+
+    public void sendTrackerOnBackScanAWB() {
+        router.sendEventTracking(TransactionTrackingConstant.EVENT_CLICK_SHIPPING,
+                TransactionTrackingConstant.EVENT_CATEGORY_SALES_SHIPPING,
+                TransactionTrackingConstant.EVENT_ACTION_EXIT_SCAN_AWB,
+                "");
+    }
 }
