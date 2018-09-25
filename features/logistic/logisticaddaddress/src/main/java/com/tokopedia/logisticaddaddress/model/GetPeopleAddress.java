@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 
 import java.util.ArrayList;

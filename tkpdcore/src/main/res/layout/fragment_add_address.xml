@@ -88,7 +88,7 @@
                 android:id="@+id/address_label_watcher"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
+                android:gravity="start"
                 android:paddingEnd="@dimen/dp_4"
                 android:paddingLeft="@dimen/dp_4"
                 android:paddingRight="@dimen/dp_4"

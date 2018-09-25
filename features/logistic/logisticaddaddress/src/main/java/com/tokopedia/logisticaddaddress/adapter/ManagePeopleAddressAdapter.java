@@ -16,9 +16,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.customadapter.BaseLinearRecyclerViewAdapter;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.var.TkpdState;
 import com.tokopedia.logisticaddaddress.manageaddress.ManagePeopleAddressFragmentPresenter;
-import com.tokopedia.logisticaddaddress.model.AddressModel;
 
 import java.util.List;
 

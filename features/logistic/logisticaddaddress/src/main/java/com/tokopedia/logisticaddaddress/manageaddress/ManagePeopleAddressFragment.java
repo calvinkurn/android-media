@@ -19,6 +19,7 @@ import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.EndLessScrollBehavior;
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
@@ -26,7 +27,6 @@ import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
 import com.tokopedia.logisticaddaddress.adapter.ManagePeopleAddressAdapter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
-import com.tokopedia.logisticaddaddress.model.AddressModel;
 
 import java.util.ArrayList;
 import java.util.List;

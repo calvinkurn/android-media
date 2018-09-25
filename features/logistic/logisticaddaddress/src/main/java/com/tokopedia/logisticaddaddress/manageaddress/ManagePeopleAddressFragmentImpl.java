@@ -6,10 +6,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
 import com.tokopedia.core.util.PagingHandler;
-import com.tokopedia.logisticaddaddress.model.AddressModel;
 import com.tokopedia.logisticaddaddress.model.GetAddressDataPass;
 import com.tokopedia.logisticaddaddress.model.GetPeopleAddress;
 import com.tokopedia.logisticaddaddress.model.Paging;

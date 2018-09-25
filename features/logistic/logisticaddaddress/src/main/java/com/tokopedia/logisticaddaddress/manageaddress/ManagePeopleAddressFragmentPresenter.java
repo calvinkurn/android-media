@@ -4,8 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.logisticaddaddress.model.AddressModel;
 import com.tokopedia.logisticaddaddress.model.GetPeopleAddress;
 
 /**

@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
+import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.router.productdetail.passdata.ProductPass;
 import com.tokopedia.topads.sdk.domain.model.Product;
 
@@ -50,6 +53,8 @@ public interface ICheckoutModuleRouter {
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
     Intent checkoutModuleRouterGetHomeFeedIntent(Context context);
+
+    Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 

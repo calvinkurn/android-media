@@ -4,9 +4,9 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 
+import com.tokopedia.core.manage.people.address.model.AddressModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.logisticaddaddress.model.AddressModel;
 
 import java.util.ArrayList;
 import java.util.List;
