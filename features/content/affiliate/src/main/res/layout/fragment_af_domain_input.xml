@@ -56,6 +56,7 @@
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:digits="abcdefghijklmnopqrstuvwxyz1234567890"
                 android:inputType="text"
                 android:maxLines="1"
                 android:singleLine="true"
@@ -86,7 +87,7 @@
         <View
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_128"
-            app:layout_constraintTop_toBottomOf="@id/usernameWrapper"/>
+            app:layout_constraintTop_toBottomOf="@id/usernameWrapper" />
 
         <TextView
             android:id="@+id/termsAndCondition"
