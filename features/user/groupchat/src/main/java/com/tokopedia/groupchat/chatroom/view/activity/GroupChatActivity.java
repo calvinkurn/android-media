@@ -264,6 +264,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
+            findViewById(R.id.video_container).setVisibility(View.VISIBLE);
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
 
             if (videoFragment == null)
@@ -324,7 +325,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                             public void onLoaded(String s) {
                                 Log.i(TAG, "onLoaded: ");
                                 youTubePlayer.play();
-                                analytics.eventClickJoin();
+                                analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
                             }
 
                             @Override
@@ -360,6 +361,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.GONE);
         }else{
             findViewById(R.id.video_container).setVisibility(View.GONE);
+            sponsorLayout.setVisibility(View.VISIBLE);
         }
 
     }
