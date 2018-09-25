@@ -38,7 +38,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
-import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.logisticaddaddress.CounterHintInputLayout;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
@@ -82,7 +82,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
     private EditText addressTypeEditText;
-    private TkpdHintTextInputLayout addressLayout;
+    private CounterHintInputLayout addressLayout;
     private TextInputEditText addressEditText;
     private TextInputLayout receiverPhoneLayout;
     private EditText receiverPhoneEditText;
