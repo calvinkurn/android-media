@@ -154,7 +154,8 @@ public class ScanQRCodeActivity extends TActivity implements HasComponent<EventC
                 if (scanTicketResponse.getProduct() != null) {
                     eventName.setText(scanTicketResponse.getProduct().getDisplayName());
                     if (scanTicketResponse.getSchedule() != null) {
-                        eventDate.setText(scanTicketResponse.getSchedule().getShowData());
+                        eventDate.setText("Diredeem pada" + " " + scanTicketResponse.getSchedule().getShowData());
+
                     }
                 }
 
