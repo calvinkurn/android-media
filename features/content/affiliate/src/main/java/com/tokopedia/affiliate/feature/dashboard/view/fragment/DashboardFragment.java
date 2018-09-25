@@ -92,7 +92,7 @@ public class DashboardFragment
         tvRecommendationCount = (TextView) view.findViewById(R.id.tv_recommendation_count);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-        presenter.attachView(this);
+//        presenter.attachView(this);
         return view;
     }
 
@@ -238,6 +238,6 @@ public class DashboardFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        presenter.detachView();
+//        presenter.detachView();
     }
 }
