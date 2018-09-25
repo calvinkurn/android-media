@@ -7,16 +7,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.affiliate.feature.onboarding.view.fragment.OnboardingFragment;
+import com.tokopedia.affiliate.feature.onboarding.view.fragment.DomainInputFragment;
 
-public class OnboardingActivity extends BaseSimpleActivity {
+public class DomainInputActivity extends BaseSimpleActivity {
 
     public static Intent createIntent(Context context) {
-        return new Intent(context, OnboardingActivity.class);
+        return new Intent(context, DomainInputActivity.class);
     }
-
     @Override
     protected Fragment getNewFragment() {
-        return OnboardingFragment.newInstance();
+        return DomainInputFragment.newInstance();
     }
 }

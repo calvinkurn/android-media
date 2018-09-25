@@ -42,6 +42,7 @@
         android:text="@string/af_onboarding_make_profile_desc" />
 
     <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/goBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"

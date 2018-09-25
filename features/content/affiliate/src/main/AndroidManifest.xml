@@ -12,11 +12,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity android:name=".feature.onboarding.view.activity.OnboardingActivity"
+        <activity
+            android:name=".feature.onboarding.view.activity.OnboardingActivity"
             android:label="@string/title_af_dashboard"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="stateAlwaysHidden" />
+        <activity android:name=".feature.onboarding.view.activity.DomainInputActivity"
+            android:label="@string/title_af_dashboard"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
     </application>
 
 </manifest>

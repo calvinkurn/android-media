@@ -147,7 +147,7 @@ public class ButtonCompat extends AppCompatButton {
                 initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
                 break;
             case DISABLE:
-                initDraw(R.color.grey_500, R.drawable.bg_button_secondary);
+                initDraw(R.color.grey_350, R.drawable.bg_button_disabled);
                 break;
         }
     }
