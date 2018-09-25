@@ -143,7 +143,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
         presenter.getInboxTalk(filter, nav)
 
         filterMenuList = ArrayList()
-        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk)))
+        filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_all_talk), -1))
         filterMenuList[0].iconEnd = R.drawable.ic_check
         filterMenuList.add(Menus.ItemMenus(getString(R.string.filter_not_read)))
 

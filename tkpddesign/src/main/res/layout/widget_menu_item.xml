@@ -18,17 +18,19 @@
             android:id="@+id/iv_icon_menu"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
-            android:layout_marginEnd="@dimen/dp_24"
-            android:layout_marginRight="@dimen/dp_24"
+            android:layout_marginEnd="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
             android:adjustViewBounds="true"
             android:padding="@dimen/dp_8"
             tools:src="@drawable/ic_badge_shop_official"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_title_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginStart="@dimen/dp_12"
             android:layout_alignWithParentIfMissing="true"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/iv_icon_menu"
