@@ -49,11 +49,7 @@ public class DigitalBrowseAnalytics {
             List<Object> promotions = new ArrayList<>();
 
             for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
-                Object promotion = DataLayer.mapOf(
-                        "id", Long.toString(promotionItem.getBannerId()),
-                        "name", "/belanja - Brand Pilihan",
-                        "creative", promotionItem.getBrandName(),
-                        "position", Integer.toString(promotionItem.getPosition()));
+                Object promotion = tranformPromotionModel(promotionItem);
 
                 promotions.add(promotion);
             }
@@ -77,11 +73,7 @@ public class DigitalBrowseAnalytics {
 
     public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
         try {
-            Object promotion = DataLayer.mapOf(
-                    "id", Long.toString(promotionItem.getBannerId()),
-                    "name", "/belanja - Brand Pilihan",
-                    "creative", promotionItem.getBrandName(),
-                    "position", Integer.toString(promotionItem.getPosition()));
+            Object promotion = tranformPromotionModel(promotionItem);
 
             List<Object> promotions = new ArrayList<>();
             promotions.add(promotion);
@@ -151,6 +143,14 @@ public class DigitalBrowseAnalytics {
                 String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.getHeaderName()),
                 analyticsModel.getIconName() + "_" + analyticsModel.getHeaderPosition()
                         + "_" + analyticsModel.getIconPosition());
+    }
+
+    private Object tranformPromotionModel(DigitalBrowsePopularAnalyticsModel promotionItem) {
+        return DataLayer.mapOf(
+                "id", Long.toString(promotionItem.getBannerId()),
+                "name", "/belanja - Brand Pilihan",
+                "creative", promotionItem.getBrandName(),
+                "position", Integer.toString(promotionItem.getPosition()));
     }
 
 }
