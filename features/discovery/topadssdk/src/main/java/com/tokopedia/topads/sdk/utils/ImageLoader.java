@@ -69,7 +69,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!product.isLoaded()) {
                             product.setLoaded(true);
-                            new ImpresionTask().execute(product.getImage().getXs_url());
+                            new ImpresionTask().execute(product.getImage().getS_url());
                             if(impressionListener!=null){
                                 impressionListener.onImpressionProductAdsItem(pos, product);
                             }
