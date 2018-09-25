@@ -156,38 +156,40 @@ public class EventsDetailsPresenter
         }
         RequestParams params = RequestParams.create();
         userSession = new UserSession(getView().getActivity());
-        params.putInt("user_id", Integer.parseInt(userSession.getUserId()));
-        params.putString("email", userSession.getEmail());
-        params.putInt("product_id", productId);
-        checkScanOptionUseCase.setRequestParams(params);
-        checkScanOptionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
-            @Override
-            public void onCompleted() {
+        if (userSession != null && userSession.isLoggedIn()) {
+            params.putInt("user_id", Integer.parseInt(userSession.getUserId()));
+            params.putString("email", userSession.getEmail());
+            params.putInt("product_id", productId);
+            checkScanOptionUseCase.setRequestParams(params);
+            checkScanOptionUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
+                @Override
+                public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if (getView() == null) {
-                    return;
                 }
 
-                Type token = new TypeToken<DataResponse<CheckScanOption>>() {
-                }.getType();
-                RestResponse restResponse = typeRestResponseMap.get(token);
+                @Override
+                public void onError(Throwable e) {
 
-                DataResponse data = restResponse.getData();
+                }
 
-                CheckScanOption checkScanOption = (CheckScanOption) data.getData();
+                @Override
+                public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
+                    if (getView() == null) {
+                        return;
+                    }
 
-                getView().setMenuItemVisibility(checkScanOption.isSuccess());
-            }
-        });
+                    Type token = new TypeToken<DataResponse<CheckScanOption>>() {
+                    }.getType();
+                    RestResponse restResponse = typeRestResponseMap.get(token);
+
+                    DataResponse data = restResponse.getData();
+
+                    CheckScanOption checkScanOption = (CheckScanOption) data.getData();
+
+                    getView().setMenuItemVisibility(checkScanOption.isSuccess());
+                }
+            });
+        }
     }
 
 }
