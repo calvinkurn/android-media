@@ -195,7 +195,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     private void initTicker(View view) {
         tickerView = view.findViewById(R.id.ticker_view);
         tickerView.setListMessage(new ArrayList<>());
-        tickerView.setHighLightColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         tickerView.setOnPartialTextClickListener(new TickerView.OnPartialTextClickListener() {
             @Override
             public void onClick(View view, String messageClick) {

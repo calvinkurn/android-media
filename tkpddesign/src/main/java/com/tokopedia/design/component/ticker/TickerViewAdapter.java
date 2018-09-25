@@ -29,7 +29,7 @@ import java.util.List;
 class TickerViewAdapter extends PagerAdapter {
 
     private ArrayList<String> listMessage;
-    private ArrayList<Integer> listBackGroundColor;
+    private int backgroundColor;
     private ArrayList<Integer> listTextColor;
     private int defaultLinkColor;
     private float textSize;
@@ -37,13 +37,13 @@ class TickerViewAdapter extends PagerAdapter {
     private boolean isUnderlinedLink = true;
 
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
-                             ArrayList<Integer> listBackGroundColor,
+                             int backgroundColor,
                              int defaultLinkColor,
                              float textSize,
                              ArrayList<String> listMessage,
                              TickerView.OnPartialTextClickListener listener) {
         this.listTextColor = listTextColor;
-        this.listBackGroundColor = listBackGroundColor;
+        this.backgroundColor = backgroundColor;
         this.defaultLinkColor = defaultLinkColor;
         this.textSize = textSize;
         this.listMessage = listMessage;
@@ -59,7 +59,7 @@ class TickerViewAdapter extends PagerAdapter {
         TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
         tickerMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
-        tickerBackground.setBackgroundColor(listBackGroundColor.get(position));
+        tickerBackground.setBackgroundColor(backgroundColor);
         tickerMessage.setTextColor(listTextColor.get(position));
         tickerMessage.setLinkTextColor(defaultLinkColor);
         tickerMessage.setMovementMethod(new SelectableSpannedMovementMethod());
@@ -118,8 +118,8 @@ class TickerViewAdapter extends PagerAdapter {
         this.listMessage = listMessage;
     }
 
-    public void setListBackGroundColor(ArrayList<Integer> listBackGroundColor) {
-        this.listBackGroundColor = listBackGroundColor;
+    public void setBackgroundColor(int backgroundColor) {
+        this.backgroundColor = backgroundColor;
     }
 
     public void setListTextColor(ArrayList<Integer> listTextColor) {
@@ -147,20 +147,5 @@ class TickerViewAdapter extends PagerAdapter {
 
     public void setIsUnderlinedLink(boolean isUnderlinedLink) {
         this.isUnderlinedLink = isUnderlinedLink;
-    }
-
-    public void addMessage(String message){
-        listMessage.add(message);
-        notifyDataSetChanged();
-    }
-
-    public void addMessage(int pos, String message){
-        listMessage.add(pos, message);
-        notifyDataSetChanged();
-    }
-
-    public void addAllMessage(List<String> messages){
-        listMessage.addAll(messages);
-        notifyDataSetChanged();
     }
 }

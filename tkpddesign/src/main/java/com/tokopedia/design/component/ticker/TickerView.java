@@ -14,7 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 
 import com.tokopedia.design.R;
 import com.tokopedia.design.base.BaseCustomView;
@@ -53,7 +53,8 @@ public class TickerView extends BaseCustomView {
 
     private ViewPager tickerViewPager;
     private CirclePageIndicator tickerIndicator;
-    private RelativeLayout tickerHighlightView;
+    private FrameLayout tickerHighlightView;
+    private View container;
     private View imageViewActionClose;
 
     private int defaultHighLightColor;
@@ -66,7 +67,6 @@ public class TickerView extends BaseCustomView {
     private boolean isShowCloseButton;
     private boolean isUnderlinedLink;
 
-    private ArrayList<Integer> listBackGroundColor;
     private ArrayList<Integer> listTextColor;
     private ArrayList<String> listMessage;
 
@@ -90,7 +90,6 @@ public class TickerView extends BaseCustomView {
 
     public void clearMessage() {
         listMessage.clear();
-        listBackGroundColor.clear();
         listTextColor.clear();
         tickerAdapter.notifyDataSetChanged();
     }
@@ -161,17 +160,17 @@ public class TickerView extends BaseCustomView {
 
     private void init() {
         View view = inflate(getContext(), R.layout.widget_ticker, this);
-        tickerHighlightView = (RelativeLayout) view.findViewById(R.id.parent_view);
+        tickerHighlightView = (FrameLayout) view.findViewById(R.id.parent_view);
+        container = view.findViewById(R.id.container);
         tickerViewPager = (ViewPager) view.findViewById(R.id.view_pager_ticker);
         tickerIndicator = (CirclePageIndicator) view.findViewById(R.id.page_indicator_ticker);
         imageViewActionClose = view.findViewById(R.id.imageview_ticker_action_close);
 
         listTextColor = new ArrayList<>();
-        listBackGroundColor = new ArrayList<>();
         listMessage = new ArrayList<>();
         tickerAdapter = new TickerViewAdapter(
                 listTextColor,
-                listBackGroundColor,
+                defaultBackgroundColor,
                 defaultLinkColor,
                 contentTextSize,
                 listMessage,
@@ -195,7 +194,6 @@ public class TickerView extends BaseCustomView {
     }
 
     private void updateTicker(){
-        listBackGroundColor.add(defaultBackgroundColor);
         listTextColor.add(defaultTextColor);
 
         if (listMessage.size() == 1) {
@@ -221,7 +219,7 @@ public class TickerView extends BaseCustomView {
         updateTicker();
         tickerAdapter = new TickerViewAdapter(
                 listTextColor,
-                listBackGroundColor,
+                defaultBackgroundColor,
                 defaultLinkColor,
                 contentTextSize,
                 listMessage,
@@ -241,6 +239,7 @@ public class TickerView extends BaseCustomView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         setStateVisibility(getVisibility());
+        setContainerColor(defaultBackgroundColor);
         setHighLightColor(defaultHighLightColor);
         setBackGroundColor(defaultBackgroundColor);
         setTextColor(defaultTextColor);
@@ -249,6 +248,20 @@ public class TickerView extends BaseCustomView {
         prepareView();
         invalidate();
         requestLayout();
+    }
+
+    private void setContainerColor(int backgroundColor) {
+        GradientDrawable gradientDrawable;
+        try {
+            gradientDrawable = (GradientDrawable) container.getBackground();
+            gradientDrawable.setColor(backgroundColor);
+
+            container.setBackground(gradientDrawable);
+        } catch (Exception e) {
+            container.setBackgroundColor(
+                    ContextCompat.getColor(getContext(), DEFAULT_COLOR_BACKGROUND_TICKER)
+            );
+        }
     }
 
     private void prepareView() {
@@ -297,10 +310,6 @@ public class TickerView extends BaseCustomView {
         this.defaultTextColor = textColor;
     }
 
-    public void setListBackGroundColor(ArrayList<Integer> listBackGroundColor) {
-        this.listBackGroundColor = listBackGroundColor;
-    }
-
     public void setListTextColor(ArrayList<Integer> listTextColor) {
         this.listTextColor = listTextColor;
     }
@@ -318,19 +327,6 @@ public class TickerView extends BaseCustomView {
     }
 
     public void buildView() {
-        /*if (listMessage.isEmpty()) {
-            throw new RuntimeException(
-                    "Undefined Message. Set your message by call setListMessage(...)"
-            );
-        }*/
-
-        if (listBackGroundColor.isEmpty()) {
-            int i = 0;
-            while (i < listMessage.size()) {
-                listBackGroundColor.add(defaultBackgroundColor);
-                i++;
-            }
-        }
 
         if (listTextColor.isEmpty()) {
             int i = 0;
@@ -352,7 +348,7 @@ public class TickerView extends BaseCustomView {
 
         tickerAdapter.setListMessage(listMessage);
         tickerAdapter.setListTextColor(listTextColor);
-        tickerAdapter.setListBackGroundColor(listBackGroundColor);
+        tickerAdapter.setBackgroundColor(defaultBackgroundColor);
         tickerAdapter.setListener(onPartialTextClickListener);
         tickerAdapter.setDefaultLinkColor(defaultLinkColor);
         tickerAdapter.setIsUnderlinedLink(isUnderlinedLink);
