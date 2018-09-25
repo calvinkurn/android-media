@@ -32,13 +32,13 @@ public class WithdrawActivity extends BaseSimpleActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setToolbar();
+        initInjector();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         analytics.sendScreen(this, getScreenName());
-        initInjector();
     }
 
     private void initInjector() {
