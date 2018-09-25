@@ -288,6 +288,67 @@ public class GroupChatActivity extends BaseSimpleActivity
                 }
             });
 
+            youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
+                String TAG = "youtube";
+                @Override
+                public void onPlaying() {
+                    Log.i(TAG, "onPlaying: ");
+                }
+
+                @Override
+                public void onPaused() {
+                    Log.i(TAG, "onPaused: ");
+                }
+
+                @Override
+                public void onStopped() {
+                    Log.i(TAG, "onStopped: ");
+                }
+
+                @Override
+                public void onBuffering(boolean b) {
+                    Log.i(TAG, "onBuffering: ");
+                }
+
+                @Override
+                public void onSeekTo(int i) {
+                    Log.i(TAG, "onSeekTo: ");
+                }
+            });
+
+            youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                String TAG = "youtube";
+                @Override
+                public void onLoading() {
+                    Log.i(TAG, "onLoading: ");
+                }
+
+                @Override
+                public void onLoaded(String s) {
+                    Log.i(TAG, "onLoaded: ");
+                }
+
+                @Override
+                public void onAdStarted() {
+                    Log.i(TAG, "onAdStarted: ");
+                }
+
+                @Override
+                public void onVideoStarted() {
+                    Log.i(TAG, "onVideoStarted: ");
+                }
+
+                @Override
+                public void onVideoEnded() {
+                    Log.i(TAG, "onVideoEnded: ");
+                }
+
+                @Override
+                public void onError(YouTubePlayer.ErrorReason errorReason) {
+                    Log.i(TAG, errorReason.getDeclaringClass() + " onError: "+ errorReason.name() );
+                }
+            });
+
             sponsorLayout.setVisibility(View.GONE);
         }else{
             findViewById(R.id.video_container).setVisibility(View.GONE);
@@ -295,7 +356,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private boolean isEnabledGroupChatRoom() {
-        return ((GroupChatModuleRouter) getApplicationContext()).isEnabledGroupChatRoom();
+        return true;
     }
 
     @Override
