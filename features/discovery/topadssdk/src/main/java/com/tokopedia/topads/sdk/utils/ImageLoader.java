@@ -60,7 +60,7 @@ public class ImageLoader {
     public void loadImage(Product product, final ImageView imageView, int pos,
                           TopAdsItemImpressionListener impressionListener) {
         Glide.with(context)
-                .load(product.getImage().getS_ecs())
+                .load(product.getImage().getM_url())
                 .asBitmap()
                 .placeholder(R.drawable.loading_page)
                 .into(new SimpleTarget<Bitmap>() {
@@ -80,7 +80,7 @@ public class ImageLoader {
 
     public void loadImage(Shop shop, final ImageView imageView) {
         Glide.with(context)
-                .load(shop.getImageShop().getXsEcs())
+                .load(shop.getImageShop().getsUrl())
                 .asBitmap()
                 .placeholder(R.drawable.loading_page)
                 .into(new SimpleTarget<Bitmap>() {
@@ -104,10 +104,8 @@ public class ImageLoader {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         imageView.setImageBitmap(resource);
-                        boolean tag = (boolean) imageView.getTag();
-                        if (url!=null && url.contains(PATH_VIEW) && tag) {
+                        if (url!=null && url.contains(PATH_VIEW)) {
                             new ImpresionTask().execute(url);
-                            imageView.setTag(true);
                         }
                     }
                 });
