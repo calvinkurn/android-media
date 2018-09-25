@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -37,6 +38,7 @@ import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
@@ -80,8 +82,8 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
     private EditText receiverNameEditText;
     private TextInputLayout addressTypeLayout;
     private EditText addressTypeEditText;
-    private TextInputLayout addressLayout;
-    private EditText addressEditText;
+    private TkpdHintTextInputLayout addressLayout;
+    private TextInputEditText addressEditText;
     private TextInputLayout receiverPhoneLayout;
     private EditText receiverPhoneEditText;
     private View chooseLocation;
@@ -192,7 +194,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     private void setTextWatcher() {
         receiverNameEditText.addTextChangedListener(watcher(receiverNameLayout));
-        addressEditText.addTextChangedListener(watcher(addressLayout));
+//        addressEditText.addTextChangedListener(watcher(addressLayout));
         addressTypeEditText.addTextChangedListener(watcher(addressTypeLayout));
         receiverPhoneEditText.addTextChangedListener(watcher(receiverPhoneLayout));
         passwordEditText.addTextChangedListener(watcher(passwordLayout));
