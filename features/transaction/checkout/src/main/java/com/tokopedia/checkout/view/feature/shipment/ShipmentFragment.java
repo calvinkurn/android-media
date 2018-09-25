@@ -1234,6 +1234,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                               int errorPosition) {
         if (shipmentData == null && result) {
             shipmentPresenter.processCheckShipmentPrepareCheckout();
+            shipmentPresenter.processSaveShipmentState();
         } else if (shipmentData != null && !result) {
             sendAnalyticsDropshipperNotComplete();
             if (errorPosition != ShipmentAdapter.DEFAULT_ERROR_POSITION) {
@@ -1352,6 +1353,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void onDonationChecked(boolean checked) {
         shipmentAdapter.updateDonation(checked);
         if (checked) sendAnalyticsOnClickTopDonation();
+    }
+
+    @Override
+    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
+        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
     }
 
     @Override

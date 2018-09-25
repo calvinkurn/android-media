@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.feature.shipment.adapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -173,6 +174,14 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public int getItemCount() {
         return shipmentDataList.size();
+    }
+
+    @Override
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof ShipmentItemViewHolder) {
+            ((ShipmentItemViewHolder) holder).unsubscribeDebouncer();
+        }
     }
 
     private void setShowCase(Context context) {

@@ -47,8 +47,15 @@ import com.tokopedia.showcase.ShowCaseObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -170,6 +177,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private List<ShipmentData> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
+    private CompositeSubscription compositeSubscription;
+    private SaveStateDebounceListener saveStateDebounceListener;
 
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
@@ -279,6 +288,45 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
+
+        compositeSubscription = new CompositeSubscription();
+        initSaveStateDebouncer();
+    }
+
+    private void initSaveStateDebouncer() {
+        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<ShipmentCartItemModel>() {
+            @Override
+            public void call(final Subscriber<? super ShipmentCartItemModel> subscriber) {
+                saveStateDebounceListener = new SaveStateDebounceListener() {
+                    @Override
+                    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
+                        subscriber.onNext(shipmentCartItemModel);
+                    }
+                };
+            }
+        }).debounce(500, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<ShipmentCartItemModel>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(ShipmentCartItemModel shipmentCartItemModel) {
+                        mActionListener.onNeedToSaveState(shipmentCartItemModel);
+                    }
+                }));
+    }
+
+    public void unsubscribeDebouncer() {
+        compositeSubscription.unsubscribe();
     }
 
     private void showBottomSheet(Context context, String title, String message, int image) {
@@ -626,41 +674,40 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         mActionListener.hideSoftKeyboard();
                         if (shipmentDataList.get(getAdapterPosition()) instanceof ShipmentCartItemModel) {
                             ShipmentCartItemModel data = ((ShipmentCartItemModel) shipmentDataList.get(getAdapterPosition()));
-                            etShipperName.setText("");
-                            etShipperPhone.setText("");
                             data.getSelectedShipmentDetailData().setUseDropshipper(checked);
                             if (checked) {
+                                etShipperName.setText(data.getDropshiperName());
+                                etShipperPhone.setText(data.getDropshiperPhone());
+                                data.getSelectedShipmentDetailData().setDropshipperName(data.getDropshiperName());
+                                data.getSelectedShipmentDetailData().setDropshipperPhone(data.getDropshiperPhone());
                                 llDropshipperInfo.setVisibility(View.VISIBLE);
                                 mActionListener.onDropshipCheckedForTrackingAnalytics();
                             } else {
+                                etShipperName.setText("");
+                                etShipperPhone.setText("");
+                                data.getSelectedShipmentDetailData().setDropshipperName("");
+                                data.getSelectedShipmentDetailData().setDropshipperPhone("");
+                                data.setDropshiperName("");
+                                data.setDropshiperPhone("");
                                 llDropshipperInfo.setVisibility(View.GONE);
                                 data.setStateDropshipperHasError(false);
                             }
                             mActionListener.onNeedUpdateViewItem(getAdapterPosition());
                             mActionListener.onNeedUpdateRequestData();
+                            saveStateDebounceListener.onNeedToSaveState(data);
                         }
                     }
                 });
 
                 Boolean useDropshipper = shipmentCartItemModel.getSelectedShipmentDetailData().getUseDropshipper();
                 if (useDropshipper != null) {
-                    cbDropshipper.setChecked(useDropshipper);
                     if (useDropshipper) {
-                        llDropshipperInfo.setVisibility(View.VISIBLE);
+                        cbDropshipper.setChecked(true);
                     } else {
-                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
-                        shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                        etShipperName.setText("");
-                        etShipperPhone.setText("");
-                        llDropshipperInfo.setVisibility(View.GONE);
+                        checkDropshipperState(shipmentCartItemModel);
                     }
                 } else {
-                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperName(null);
-                    shipmentCartItemModel.getSelectedShipmentDetailData().setDropshipperPhone(null);
-                    etShipperName.setText("");
-                    etShipperPhone.setText("");
-                    cbDropshipper.setChecked(false);
-                    llDropshipperInfo.setVisibility(View.GONE);
+                    checkDropshipperState(shipmentCartItemModel);
                 }
 
                 llDropshipper.setOnClickListener(getDropshipperClickListener());
@@ -688,6 +735,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                 if (!TextUtils.isEmpty(charSequence)) {
                                     data.getSelectedShipmentDetailData().setDropshipperName(charSequence.toString());
                                     validateDropshipperName(data, charSequence, true);
+                                    saveStateDebounceListener.onNeedToSaveState(data);
                                 }
                             }
                         }
@@ -698,7 +746,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
                     }
                 });
-                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())) {
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName()) ||
+                        !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperName())) {
                     etShipperName.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName());
                 } else {
                     etShipperName.setText("");
@@ -724,6 +773,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                 if (!TextUtils.isEmpty(charSequence)) {
                                     data.getSelectedShipmentDetailData().setDropshipperPhone(charSequence.toString());
                                     validateDropshipperPhone(data, charSequence, true);
+                                    saveStateDebounceListener.onNeedToSaveState(data);
                                 }
                             }
                         }
@@ -734,7 +784,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
                     }
                 });
-                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())) {
+                if (!TextUtils.isEmpty(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone()) ||
+                        !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperPhone())) {
                     etShipperPhone.setText(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone());
                 } else {
                     etShipperPhone.setText("");
@@ -746,6 +797,15 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 }
                 etShipperPhone.setSelection(etShipperPhone.length());
             }
+        }
+    }
+
+    private void checkDropshipperState(ShipmentCartItemModel shipmentCartItemModel) {
+        if (!TextUtils.isEmpty(shipmentCartItemModel.getDropshiperName()) ||
+                !TextUtils.isEmpty(shipmentCartItemModel.getDropshiperPhone())) {
+            cbDropshipper.setChecked(true);
+        } else {
+            cbDropshipper.setChecked(false);
         }
     }
 
@@ -807,6 +867,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                     }
                     mActionListener.onInsuranceChecked(getAdapterPosition());
                     mActionListener.onNeedUpdateRequestData();
+                    saveStateDebounceListener.onNeedToSaveState(shipmentCartItemModel);
                 }
             });
 
@@ -844,8 +905,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(true);
                         mActionListener.onInsuranceChecked(getAdapterPosition());
                     } else if (courierItemData.getInsuranceUsedDefault() == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
-                        cbInsurance.setChecked(false);
-                        shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(false);
+                        cbInsurance.setChecked(shipmentCartItemModel.isInsurance());
+                        shipmentCartItemModel.getSelectedShipmentDetailData().setUseInsurance(shipmentCartItemModel.isInsurance());
                     }
                 }
             }
@@ -1061,4 +1122,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         ivProductImage.setImageAlpha(IMAGE_ALPHA_ENABLED);
     }
 
+    private interface SaveStateDebounceListener {
+
+        void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel);
+
+    }
 }

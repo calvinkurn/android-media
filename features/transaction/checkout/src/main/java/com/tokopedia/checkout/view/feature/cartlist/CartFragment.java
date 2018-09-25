@@ -57,6 +57,7 @@ import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartItemHolderData
 import com.tokopedia.checkout.view.feature.cartlist.viewmodel.CartShopHolderData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentActivity;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
+import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
 import com.tokopedia.navigation_common.listener.EmptyCartListener;
@@ -634,6 +635,11 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         if (isAdded()) {
             btnToShipment.setOnClickListener(getOnClickButtonToShipmentListener(getString(R.string.message_checkout_empty_selection)));
         }
+    }
+
+    @Override
+    public void onNeedToSaveState(ShipmentCartItemModel shipmentCartItemModel) {
+
     }
 
     @Override

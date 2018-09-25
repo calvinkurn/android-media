@@ -1144,8 +1144,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
 
         ShipmentStateDropshipData dropshipDataBuilder = new ShipmentStateDropshipData.Builder()
-                .name(shipmentCartItemModel.getDropshiperName())
-                .telpNo(shipmentCartItemModel.getDropshiperPhone())
+                .name(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperName())
+                .telpNo(shipmentCartItemModel.getSelectedShipmentDetailData().getDropshipperPhone())
                 .build();
 
         ShipmentStateShippingInfoData shippingInfoDataBuilder = new ShipmentStateShippingInfoData.Builder()
