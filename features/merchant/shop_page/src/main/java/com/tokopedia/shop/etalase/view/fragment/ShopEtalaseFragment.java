@@ -90,6 +90,7 @@ public class ShopEtalaseFragment extends BaseListFragment<ShopEtalaseViewModel, 
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, shopEtalaseViewModel.getEtalaseId());
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_NAME, shopEtalaseViewModel.getEtalaseName());
         intent.putExtra(ShopParamConstant.EXTRA_USE_ACE, shopEtalaseViewModel.isUseAce());
+        intent.putExtra(ShopParamConstant.EXTRA_ETALASE_BADGE, shopEtalaseViewModel.getEtalaseBadge());
         getActivity().setResult(Activity.RESULT_OK, intent);
         getActivity().finish();
     }

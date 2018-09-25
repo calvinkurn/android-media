@@ -64,7 +64,7 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         shopProductFeaturedViewModel = new ShopProductFeaturedViewModel();
         shopProductEtalaseHighlightViewModel = new ShopProductEtalaseHighlightViewModel(null);
         shopProductEtalaseListViewModel = new ShopProductEtalaseListViewModel();
-        shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
+        shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
         visitables.add(shopProductPromoViewModel);
         visitables.add(shopProductFeaturedViewModel);
         visitables.add(shopProductEtalaseHighlightViewModel);
@@ -126,11 +126,11 @@ public class ShopProductAdapter extends BaseListAdapter<BaseShopProductViewModel
         return shopProductEtalaseHighlightViewModel;
     }
 
-    public void setShopEtalaseTitle(String etalaseName) {
+    public void setShopEtalaseTitle(String etalaseName, String etalaseBadge) {
         if (TextUtils.isEmpty(etalaseName)) {
-            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null);
+            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(null, null);
         } else {
-            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(etalaseName);
+            this.shopProductEtalaseTitleViewModel = new ShopProductEtalaseTitleViewModel(etalaseName, etalaseBadge);
         }
         setVisitable(DEFAULT_ETALASE_TITLE_POSITION, this.shopProductEtalaseTitleViewModel);
     }

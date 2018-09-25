@@ -38,6 +38,12 @@ import rx.Subscriber;
 
 public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopProductListView> {
 
+    // THESE CONSTANSTS COME FROM API.
+    private static final String SOLD_ETALASE = "sold";
+    private static final String DISCOUNT_ETALASE = "discount";
+    private static final int ORDER_BY_LAST_UPDATE = 3;
+    private static final int ORDER_BY_MOST_SOLD = 8;
+
     private final GetShopProductFeaturedWithAttributeUseCase getShopProductFeaturedWithAttributeUseCase;
     private final GetShopProductListWithAttributeUseCase productListWithAttributeUseCase;
     private final GetShopEtalaseUseCase getShopEtalaseUseCase;
@@ -113,6 +119,11 @@ public class ShopProductLimitedListPresenter extends BaseDaggerPresenter<ShopPro
             ShopProductRequestModel shopProductRequestModel = generateShopProductRequestModel(shopId, isShopClosed,
                     isOfficialStore, 1, ShopPageConstant.ETALASE_HIGHLIGHT_COUNT,
                     shopEtalaseViewModel.getEtalaseId(), shopEtalaseViewModel.isUseAce());
+            if (shopEtalaseViewModel.getEtalaseId().equals(SOLD_ETALASE)) {
+                shopProductRequestModel.setOrderBy(ORDER_BY_MOST_SOLD);
+            } else if (shopEtalaseViewModel.getEtalaseId().equals(DISCOUNT_ETALASE)){
+                shopProductRequestModel.setOrderBy(ORDER_BY_LAST_UPDATE);
+            }
             requestParamList.add(GetShopProductListWithAttributeUseCase.createRequestParam(shopProductRequestModel));
         }
         productListWithAttributeUseCase.executeList(requestParamList, new Subscriber<List<List<ShopProductViewModel>>>() {

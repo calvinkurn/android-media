@@ -563,12 +563,15 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     public void onSuccessGetEtalaseListByShop(ArrayList<ShopEtalaseViewModel> shopEtalaseModelList) {
         //default select first index as selected.
         this.shopEtalaseViewModelList = shopEtalaseModelList;
+        String etalaseBadge = null;
 
         if (TextUtils.isEmpty(selectedEtalaseId) &&
                 shopEtalaseModelList != null &&
                 shopEtalaseModelList.size() > 0) {
-            selectedEtalaseId = shopEtalaseModelList.get(0).getEtalaseId();
-            selectedEtalaseName = shopEtalaseModelList.get(0).getEtalaseName();
+            ShopEtalaseViewModel shopEtalaseViewModel = shopEtalaseModelList.get(0);
+            selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
+            selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
+            etalaseBadge = shopEtalaseViewModel.getEtalaseBadge();
         }
         // update the adapter
         List<ShopEtalaseViewModel> shopEtalaseModelListToShow;
@@ -578,7 +581,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
             shopEtalaseModelListToShow = shopEtalaseModelList;
         }
         shopProductAdapter.setShopEtalase(new ShopProductEtalaseListViewModel(shopEtalaseModelListToShow, selectedEtalaseId));
-        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge);
 
         loadData(getDefaultInitialPage());
 
@@ -597,7 +600,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         }
         String shopId = shopInfo.getInfo().getShopId();
         shopProductLimitedListPresenter.getProductListHighlight(shopId,
-                shopInfo.getInfo().isOpen(),
+                !shopInfo.getInfo().isOpen(),
                 shopInfo.getInfo().isShopOfficial(),
                 highlightEtalaseViewModelList);
     }
@@ -605,7 +608,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
     @Override
     public void onErrorGetEtalaseListByShop(Throwable e) {
         shopProductAdapter.setShopEtalase(null);
-        shopProductAdapter.setShopEtalaseTitle(null);
+        shopProductAdapter.setShopEtalaseTitle(null, null);
         shopProductAdapter.setShopProductEtalaseHighlightViewModel(null);
         showGetListError(e);
     }
@@ -647,7 +650,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
         selectedEtalaseId = shopEtalaseViewModel.getEtalaseId();
         selectedEtalaseName = shopEtalaseViewModel.getEtalaseName();
         shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
-        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+        shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, shopEtalaseViewModel.getEtalaseBadge());
         if (shopPageTracking != null) {
             String shopId = shopInfo.getInfo().getShopId();
             shopPageTracking.eventClickEtalaseShopChoose(getString(R.string.shop_info_title_tab_product),
@@ -735,6 +738,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         && data != null) {
                     String etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
                     String etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME);
+                    String etalaseBadge = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE);
 
                     // if etalase id is on the list, refresh this page; if etalase id is in other list, go to new page.
                     if (shopProductAdapter.isEtalaseInChip(etalaseId)) {
@@ -747,7 +751,7 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
                         startActivity(intent);
                     }
                     shopProductAdapter.setSelectedEtalaseId(selectedEtalaseId);
-                    shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName);
+                    shopProductAdapter.setShopEtalaseTitle(selectedEtalaseName, etalaseBadge);
 
                     needReloadData = true;
 

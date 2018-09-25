@@ -5,11 +5,14 @@ import android.support.annotation.LayoutRes;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef;
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel;
@@ -31,6 +34,7 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
     private RecyclerView recyclerView;
     private ShopProductAdapter shopProductCarouselAdapter;
     private boolean isVerticalLayout;
+    private ImageView ivBadge;
 
     private ShopCarouselSeeAllClickedListener shopCarouselSeeAllClickedListener;
 
@@ -68,6 +72,12 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
                     ((EtalaseHighlightCarouselViewModel) visitable).getShopProductViewModelList());
             ShopEtalaseViewModel shopEtalaseViewModel = ((EtalaseHighlightCarouselViewModel) visitable).getShopEtalaseViewModel();
             tvTitle.setText(shopEtalaseViewModel.getEtalaseName());
+            if (!TextUtils.isEmpty(shopEtalaseViewModel.getEtalaseBadge())){
+                ImageHandler.LoadImage(ivBadge, shopEtalaseViewModel.getEtalaseBadge());
+                ivBadge.setVisibility(View.VISIBLE);
+            } else {
+                ivBadge.setVisibility(View.GONE);
+            }
             tvSeeAll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -88,6 +98,7 @@ public class ShopProductCarouselViewHolder extends AbstractViewHolder<Visitable>
 
     private void findViews(View view) {
         tvTitle = view.findViewById(R.id.tv_title);
+        ivBadge = view.findViewById(R.id.image_view_etalase_badge);
         tvSeeAll = view.findViewById(R.id.tvSeeAll);
         recyclerView = view.findViewById(R.id.recyclerViewCarousel);
         LinearLayoutManager layoutManager = new LinearLayoutManager(view.getContext(),
