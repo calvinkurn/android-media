@@ -60,7 +60,7 @@ public class ImageLoader {
     public void loadImage(Product product, final ImageView imageView, int pos,
                           TopAdsItemImpressionListener impressionListener) {
         Glide.with(context)
-                .load(product.getImage().getM_url())
+                .load(product.getImage().getS_ecs())
                 .asBitmap()
                 .placeholder(R.drawable.loading_page)
                 .into(new SimpleTarget<Bitmap>() {
@@ -80,7 +80,7 @@ public class ImageLoader {
 
     public void loadImage(Shop shop, final ImageView imageView) {
         Glide.with(context)
-                .load(shop.getImageShop().getsUrl())
+                .load(shop.getImageShop().getXsEcs())
                 .asBitmap()
                 .placeholder(R.drawable.loading_page)
                 .into(new SimpleTarget<Bitmap>() {
