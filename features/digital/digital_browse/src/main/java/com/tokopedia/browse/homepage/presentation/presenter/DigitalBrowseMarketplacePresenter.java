@@ -129,5 +129,7 @@ public class DigitalBrowseMarketplacePresenter extends BaseDaggerPresenter<Digit
     @Override
     public void onSuccessGetMarketplace(DigitalBrowseMarketplaceViewModel digitalBrowseMarketplaceData) {
         getView().renderData(digitalBrowseMarketplaceData);
+        getView().sendPopularImpressionAnalytics(getPopularAnalyticsModelList(
+                digitalBrowseMarketplaceData.getPopularBrandsList()));
     }
 }
