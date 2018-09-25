@@ -52,7 +52,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     TextInputLayout tilEmail;
     TextView registerButton;
 
-    ProgressBar progressDialog;
+    ProgressBar progressBar;
 
     @Inject
     ForgotPasswordAnalytics analytics;
@@ -95,7 +95,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forgotpassword, container, false);
+        View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
         frontView = view.findViewById(R.id.front_view);
         successView = view.findViewById(R.id.success_view);
         emailSend = view.findViewById(R.id.email_send);
@@ -103,7 +103,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
         emailEditText = view.findViewById(R.id.email);
         tilEmail = view.findViewById(R.id.til_email);
         registerButton = view.findViewById(R.id.register_button);
-        progressDialog = view.findViewById(R.id.progress_bar);
+        progressBar = view.findViewById(R.id.progress_bar);
         initView();
         return view;
     }
@@ -216,7 +216,7 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
     @Override
     public void showLoadingProgress() {
-        progressDialog.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -247,12 +247,14 @@ public class ForgotPasswordFragment extends BaseDaggerFragment
 
     @Override
     public void setEmailError(String error) {
+        frontView.setVisibility(View.VISIBLE);
+
         tilEmail.setErrorEnabled(true);
         tilEmail.setError(error);
     }
 
     private void finishLoadingProgress() {
-        progressDialog.setVisibility(View.GONE);
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

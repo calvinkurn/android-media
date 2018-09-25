@@ -296,9 +296,6 @@ public class LoginFragment extends BaseDaggerFragment
         emailEditText.addTextChangedListener(watcher(wrapperEmail));
 
         forgotPass.setOnClickListener(v -> {
-//            Intent intent = ForgotPasswordActivity.getCallingIntent(getActivity(), emailEditText.getText()
-//                    .toString());
-
             Intent intent = ((TkpdCoreRouter) getActivity().getApplicationContext())
                     .getForgotPasswordIntent(getActivity(), emailEditText.getText().toString()
                             .trim());

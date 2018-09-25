@@ -8,8 +8,8 @@ Ingatlah untuk mengkonfirmasi bahwa email di atas adalah benar dan periksa junk 
     <string name="forgot_password_title">Kesulitan mengakses akun Anda?</string>
     <string name="forgot_password_body">Lupa kata sandi? Masukkan email login Anda di bawah ini. Kami akan mengirimkan pesan email beserta tautan untuk reset kata sandi anda.</string>
 
-    <string name="error_field_required">Kesulitan mengakses akun Anda?</string>
-    <string name="error_invalid_email">Lupa kata sandi? Masukkan email login Anda di bawah ini. Kami akan mengirimkan pesan email beserta tautan untuk reset kata sandi anda.</string>
+    <string name="error_field_required">Harus diisi.</string>
+    <string name="error_invalid_email">Email ini tidak valid.</string>
     <string name="forgot_password_footer_text">Belum punya akun? Daftar Sekarang !!</string>
     <string name="email_address">Alamat Email</string>
     <string name="reset_password_button">Ganti Kata Sandi</string>
