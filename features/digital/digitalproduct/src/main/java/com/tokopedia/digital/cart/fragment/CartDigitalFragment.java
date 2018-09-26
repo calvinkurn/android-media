@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.constant.IRouterConstant;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragment;
@@ -53,6 +54,7 @@ import com.tokopedia.digital.cart.model.VoucherDigital;
 import com.tokopedia.digital.cart.presenter.CartDigitalPresenter;
 import com.tokopedia.digital.cart.presenter.ICartDigitalPresenter;
 import com.tokopedia.digital.common.data.apiservice.DigitalEndpointService;
+import com.tokopedia.digital.common.util.DigitalAnalytics;
 import com.tokopedia.digital.utils.DeviceUtil;
 import com.tokopedia.digital.utils.data.RequestBodyIdentifier;
 import com.tokopedia.loyalty.view.activity.LoyaltyActivity;
@@ -187,6 +189,7 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
         if (compositeSubscription == null) compositeSubscription = new CompositeSubscription();
         presenter = new CartDigitalPresenter(
                 this,
+                new DigitalAnalytics(((AbstractionRouter) context.getApplicationContext()).getAnalyticTracker()),
                 new CartDigitalInteractor(
                         compositeSubscription,
                         new CartDigitalRepository(digitalEndpointService, cartMapperData),
@@ -260,6 +263,11 @@ public class CartDigitalFragment extends BasePresenterFragment<ICartDigitalPrese
     @Override
     public void showProgressLoading(String title, String message) {
         progressDialogNormal.showDialog(title, message);
+    }
+
+    @Override
+    public CartDigitalInfoData getCartDataInfo() {
+        return cartDigitalInfoDataState;
     }
 
     @Override

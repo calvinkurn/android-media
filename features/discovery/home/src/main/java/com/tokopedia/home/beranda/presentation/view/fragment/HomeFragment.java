@@ -22,8 +22,10 @@ import android.view.ViewGroup;
 
 import com.google.firebase.perf.metrics.Trace;
 import com.tkpd.library.ui.view.LinearLayoutManager;
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.HomePageTracking;
 import com.tokopedia.core.analytics.ScreenTracking;
@@ -59,6 +61,7 @@ import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.design.countdown.CountDownView;
+import com.tokopedia.digital.common.constant.DigitalEventTracking;
 import com.tokopedia.gamification.floating.view.fragment.FloatingEggButtonFragment;
 import com.tokopedia.home.IHomeRouter;
 import com.tokopedia.home.R;
@@ -134,13 +137,12 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
     public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
 
 
-
     private boolean scrollToRecommendList = false;
 
     public static HomeFragment newInstance(boolean scrollToRecommendList) {
         HomeFragment fragment = new HomeFragment();
         Bundle args = new Bundle();
-        args.putBoolean(SCROLL_RECOMMEND_LIST,scrollToRecommendList);
+        args.putBoolean(SCROLL_RECOMMEND_LIST, scrollToRecommendList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -214,7 +216,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         tabContainer = view.findViewById(R.id.tab_container);
         floatingTextButton = view.findViewById(R.id.recom_action_button);
         root = view.findViewById(R.id.root);
-        if(SessionHandler.isV4Login(getActivity())) {
+        if (SessionHandler.isV4Login(getActivity())) {
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
         presenter.attachView(this);
@@ -457,6 +459,16 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
                     IDigitalModuleRouter.REQUEST_CODE_DIGITAL_CATEGORY_LIST
             );
         }
+
+        if (getActivity() != null && getActivity().getApplication() instanceof AbstractionRouter) {
+            AnalyticTracker analyticTracker = ((AbstractionRouter) getActivity().getApplication()).getAnalyticTracker();
+            analyticTracker.sendEventTracking(
+                    DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
+                    DigitalEventTracking.Category.DIGITAL_HOMEPAGE,
+                    DigitalEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
+                    DigitalEventTracking.Label.DEFAULT_EMPTY_VALUE
+            );
+        }
     }
 
     @Override
@@ -626,7 +638,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
             updateHeaderItem(dataHeader);
         }
         adapter.setItems(items);
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             presenter.fetchNextPageFeed();
         }
     }
@@ -793,7 +805,7 @@ public class HomeFragment extends BaseDaggerFragment implements HomeContract.Vie
         int posStart = adapter.getItemCount();
         adapter.addItems(visitables);
         adapter.notifyItemRangeInserted(posStart, visitables.size());
-        if(scrollToRecommendList) {
+        if (scrollToRecommendList) {
             scrollToRecommendList();
         }
 
