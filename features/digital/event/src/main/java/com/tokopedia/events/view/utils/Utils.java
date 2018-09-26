@@ -328,6 +328,7 @@ public class Utils {
     }
 
     public static class Constants {
+        public final static String ISSEATINGEVENT = "isseatingevent";
         public final static String EXTRA_EVENT_CALENDAR = "EVENTCALENDAR";
         public final static String THEMEPARK = "hiburan";
         public final static String PROMOURL = "https://www.tokopedia.com/promo/tiket/events/";

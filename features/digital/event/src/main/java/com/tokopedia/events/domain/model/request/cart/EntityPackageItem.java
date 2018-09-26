@@ -21,7 +21,7 @@ public class EntityPackageItem implements Parcelable {
     @SerializedName("group_id")
     private int groupId;
 
-    @SerializedName("seat_id")
+    @SerializedName("seat_ids")
     private List<String> seatId;
 
     @SerializedName("seat_physical_row_id")
