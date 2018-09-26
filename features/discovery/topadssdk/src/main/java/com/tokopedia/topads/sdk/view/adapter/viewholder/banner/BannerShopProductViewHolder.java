@@ -82,7 +82,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         @Override
         public void onBindViewHolder(ItemViewHolder holder, final int position) {
             final Product product = productList.get(position);
-            imageLoader.loadImage(product, holder.imageView, position);
+            imageLoader.loadImage(product.getImageProduct().getImageUrl(), product.getImageProduct().getImageUrl(), holder.imageView);
             holder.imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
