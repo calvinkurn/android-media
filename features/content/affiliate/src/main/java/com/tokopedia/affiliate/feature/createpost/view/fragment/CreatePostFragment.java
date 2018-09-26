@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent;
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.design.component.ButtonCompat;
 
@@ -32,6 +33,9 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private ArrayList<String> selectedImage = new ArrayList<>();
 
     private ButtonCompat addImageBtn;
+
+    private String productId = "";
+    private String adId = "";
 
     @Inject
     CreatePostContract.Presenter presenter;
@@ -69,6 +73,20 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        presenter.attachView(this);
+        initVar();
+        initView();
+        presenter.fetchContentForm("1", "1");
+    }
+
+    private void initVar() {
+        if (getArguments() != null) {
+            productId = getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
+            adId = getArguments().getString(CreatePostActivity.PARAM_AD_ID, "");
+        }
+    }
+
+    private void initView() {
         addImageBtn.setOnClickListener(view1 -> {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(

@@ -19,7 +19,7 @@ import rx.Subscriber;
 /**
  * @author by milhamj on 9/26/18.
  */
-public class GetFeedContentForm {
+public class GetContentFormUseCase {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_PRODUCT_ID = "productID";
     private static final String PARAM_AD_ID = "adID";
@@ -29,8 +29,8 @@ public class GetFeedContentForm {
     private final GraphqlUseCase graphqlUseCase;
 
     @Inject
-    public GetFeedContentForm(@ApplicationContext Context context,
-                                   GraphqlUseCase graphqlUseCase) {
+    GetContentFormUseCase(@ApplicationContext Context context,
+                          GraphqlUseCase graphqlUseCase) {
         this.context = context;
         this.graphqlUseCase = graphqlUseCase;
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.di;
 
-import com.tokopedia.affiliate.feature.createpost.view.CreatePostPresenter;
+import com.tokopedia.affiliate.feature.createpost.view.presenter.CreatePostPresenter;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 
 import dagger.Binds;
