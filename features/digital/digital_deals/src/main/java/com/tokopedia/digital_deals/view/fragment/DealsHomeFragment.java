@@ -384,7 +384,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         Location location = Utils.getSingletonInstance().getLocation(getActivity());
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(Utils.BRAND_QUERY_PARAM_TREE, Utils.BRAND_QUERY_PARAM_BRAND);
-        requestParams.putInt(Utils.BRAND_QUERY_PARAM_CITY_ID, location.getId());
+        requestParams.putInt(Utils.QUERY_PARAM_CITY_ID, location.getId());
         return requestParams;
     }
 

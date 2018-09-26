@@ -1,22 +1,23 @@
 package com.tokopedia.navigation.data.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.navigation.data.entity.NotificationEntity;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.util.IntegerUtil;
+import com.tokopedia.navigation_common.model.NotifcenterUnread;
 import com.tokopedia.navigation_common.model.NotificationsModel;
 
 import rx.functions.Func1;
+
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99;
+import static com.tokopedia.navigation_common.model.NotifcenterUnread.NOTIF_99_NUMBER;
 
 /**
  * Created by meta on 25/07/18.
  */
 public class NotificationMapper implements Func1<GraphqlResponse, NotificationEntity> {
-
-    @Override
-    public NotificationEntity call(GraphqlResponse graphqlResponse) {
-        return graphqlResponse.getData(NotificationEntity.class);
-    }
 
     public static boolean isHasShop(NotificationEntity entity) {
         return entity != null
@@ -25,19 +26,20 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
                 && !entity.getShopInfo().getInfo().getShopId().equalsIgnoreCase("-1");
     }
 
-    public static Notification notificationMapper(NotificationsModel entity) {
+    public static Notification notificationMapper(NotificationsModel entity,
+                                                  NotifcenterUnread unread) {
         Notification data = new Notification();
         try {
             data.setTotalCart(IntegerUtil.tryParseInt(entity.getTotalCart()));
             data.setTotalInbox(totalInbox(entity));
-            data.setTotalNotif(totalNotif(entity));
+            data.setTotalNotif(totalNotif(entity, unread));
         } catch (NumberFormatException e) {
             e.printStackTrace();
         }
         return data;
     }
 
-    private static Integer totalNotif(NotificationsModel entity) {
+    private static Integer totalNotif(NotificationsModel entity, NotifcenterUnread unread) {
         Integer total = 0;
         total += entity.getSellerInfo().getNotification();
         total += IntegerUtil.tryParseInt(entity.getBuyerOrder().getPaymentStatus());
@@ -51,6 +53,7 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
         total += entity.getSellerOrder().getArriveAtDestination();
         total += entity.getResolution().getBuyer();
         total += entity.getResolution().getSeller();
+        total += getNotifCenterUnread(unread);
         return total;
     }
 
@@ -61,5 +64,20 @@ public class NotificationMapper implements Func1<GraphqlResponse, NotificationEn
         total += IntegerUtil.tryParseInt(entity.getInbox().getReview());
         total += IntegerUtil.tryParseInt(entity.getInbox().getTicket());
         return total;
+    }
+
+    private static Integer getNotifCenterUnread(NotifcenterUnread unread) {
+        if (unread == null) {
+            return 0;
+        }
+
+        return TextUtils.equals(unread.getNotifUnread(), NOTIF_99)
+                ? NOTIF_99_NUMBER
+                : IntegerUtil.tryParseInt(unread.getNotifUnread());
+    }
+
+    @Override
+    public NotificationEntity call(GraphqlResponse graphqlResponse) {
+        return graphqlResponse.getData(NotificationEntity.class);
     }
 }

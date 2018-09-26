@@ -32,4 +32,6 @@ public interface FeedModuleRouter {
                            String name, String price);
 
     void openRedirectUrl(Activity activity, String url);
+
+    boolean isEnableInterestPick();
 }
