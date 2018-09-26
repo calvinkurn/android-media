@@ -38,7 +38,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_create_post, container, false);
         addImageBtn = view.findViewById(R.id.addImageBtn);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     @Override
