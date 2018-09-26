@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 
-import com.tokopedia.core.R;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customView.EndLessScrollBehavior;
@@ -25,6 +24,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.logisticaddaddress.ManageAddressConstant;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ManagePeopleAddressAdapter;
 import com.tokopedia.logisticaddaddress.addaddress.AddAddressActivity;
 
@@ -127,7 +127,7 @@ public class ManagePeopleAddressFragment extends BasePresenterFragment<ManagePeo
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_manage_people_address;
+        return R.layout.logistic_fragment_manage_people_address;
     }
 
     @Override

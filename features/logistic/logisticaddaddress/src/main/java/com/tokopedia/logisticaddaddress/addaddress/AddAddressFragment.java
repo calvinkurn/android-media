@@ -29,7 +29,6 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
-import com.tokopedia.core.R;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.geolocation.activity.GeolocationActivity;
@@ -38,6 +37,7 @@ import com.tokopedia.core.geolocation.utils.GeoLocationUtils;
 import com.tokopedia.core.manage.people.address.model.DistrictRecommendationAddress;
 import com.tokopedia.core.manage.people.address.model.Token;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
 import com.tokopedia.logisticaddaddress.adapter.SubDistrictAdapter;
@@ -186,7 +186,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
     @Override
     protected int getFragmentLayout() {
-        return R.layout.fragment_add_address;
+        return R.layout.logistic_fragment_add_address;
     }
 
     @Override

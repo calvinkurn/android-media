@@ -8,10 +8,11 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 
-import com.tokopedia.core.R;
+
 import com.tokopedia.core.R2;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressReceiver;
 import com.tokopedia.logisticaddaddress.service.ManagePeopleAddressService;
 
@@ -49,7 +50,7 @@ public class ManagePeopleAddressActivity extends BasePresenterActivity<ManagePeo
 
     @Override
     protected int getLayoutId() {
-        return R.layout.activity_manage_people_address2;
+        return R.layout.logistic_activity_manage_people_address;
     }
 
     @Override
