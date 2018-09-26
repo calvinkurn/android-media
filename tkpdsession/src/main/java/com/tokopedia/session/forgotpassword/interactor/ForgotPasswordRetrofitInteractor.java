@@ -9,7 +9,7 @@ import rx.Observable;
 /**
  * Created by Alifa on 10/17/2016.
  */
-
+@Deprecated
 public interface ForgotPasswordRetrofitInteractor {
 
     Observable<Response<TkpdResponse>> resetPassword(TKPDMapParam<String,String> email);

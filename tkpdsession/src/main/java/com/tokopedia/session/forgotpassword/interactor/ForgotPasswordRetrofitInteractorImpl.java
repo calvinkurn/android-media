@@ -12,7 +12,7 @@ import rx.Observable;
 /**
  * Created by Alifa on 10/17/2016.
  */
-
+@Deprecated
 public class ForgotPasswordRetrofitInteractorImpl implements ForgotPasswordRetrofitInteractor {
 
     private final AccountsService accountsService;

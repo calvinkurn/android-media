@@ -30,7 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 /**
  * Created by Alifa on 10/17/2016.
  */
-
+@Deprecated
 public class ForgotPasswordFragmentPresenterImpl implements ForgotPasswordFragmentPresenter {
 
     public static final int REQUEST_FORGOT_PASSWORD_CODE = 1;

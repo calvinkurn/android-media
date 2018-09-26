@@ -7,7 +7,7 @@ import android.widget.EditText;
 /**
  * Created by Alifa on 10/17/2016.
  */
-
+@Deprecated
 public interface ForgotPasswordFragmentView {
     Context getContext();
 
