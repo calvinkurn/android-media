@@ -164,7 +164,6 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
         RefreshHandler refresh = new RefreshHandler(getActivity(), swipeToRefresh, new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                tickerView.clearMessage();
                 topAdsDashboardPresenter.clearStatisticsCache();
                 topAdsDashboardPresenter.clearTotalAdCache();
                 loadData();
@@ -446,6 +445,7 @@ public class TopAdsDashboardFragment extends BaseDaggerFragment implements TopAd
     }
 
     private void loadData() {
+        tickerView.clearMessage();
         swipeToRefresh.setRefreshing(true);
         topAdsDashboardPresenter.getPopulateDashboardData(GraphqlHelper.loadRawString(getResources(), R.raw.gql_get_deposit));
         topAdsDashboardPresenter.getShopInfo();
