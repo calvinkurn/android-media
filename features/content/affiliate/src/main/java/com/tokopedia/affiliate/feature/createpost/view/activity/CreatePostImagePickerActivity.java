@@ -27,7 +27,6 @@ import static com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDe
  */
 public class CreatePostImagePickerActivity extends ImagePickerActivity {
 
-    private static final int CREATE_FORM_REQUEST = 1234;
     private static final int MAX_PICK_NUMBER = 4;
 
     public static Intent getInstance(Context context, ArrayList<String> selectedImageList) {
@@ -57,7 +56,7 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
     @Override
     protected void startEditorActivity(ArrayList<String> selectedImagePaths) {
         Intent intent = getEditorIntent(selectedImagePaths);
-        startActivityForResult(intent, CREATE_FORM_REQUEST);
+        startActivityForResult(intent, REQUEST_CODE_EDITOR);
     }
 
     @Override
