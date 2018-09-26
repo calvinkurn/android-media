@@ -8,23 +8,12 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class BannerDetail {
-    @SerializedName("type")
-    @Expose
-    private String type;
     @SerializedName("id")
     @Expose
     private int id;
     @SerializedName("attributes")
     @Expose
     private BannerAttribute attributes;
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
 
     public int getId() {
         return id;
@@ -42,12 +31,4 @@ public class BannerDetail {
         this.attributes = attributes;
     }
 
-    @Override
-    public String toString() {
-        return "BannerDetail{" +
-                "type='" + type + '\'' +
-                ", id=" + id +
-                ", attributes=" + attributes.toString() +
-                '}';
-    }
 }

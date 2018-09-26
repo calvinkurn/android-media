@@ -23,10 +23,10 @@ public class GetTrainPromoUseCase extends UseCase<List<TrainPromoViewModel>> {
     private static final String PARAM_DEVICE = "deviceId";
     private static final String PARAM_INSTANCE = "instance";
 
-    private static final String DEFAULT_LANGUAGE = "0";
+    private static final int DEFAULT_LANGUAGE = 0;
     private static final String DEFAULT_COUNTRY = "ID";
-    private static final String DEFAULT_DEVICE = "5";
-    private static final String DEFAULT_INSTANCE = "2";
+    private static final int DEFAULT_DEVICE = 5;
+    private static final int DEFAULT_INSTANCE = 2;
 
     private TrainRepository trainRepository;
     private TrainPromoViewModelMapper trainPromoViewModelMapper;
@@ -50,10 +50,10 @@ public class GetTrainPromoUseCase extends UseCase<List<TrainPromoViewModel>> {
 
     public RequestParams create() {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putString(PARAM_LANGUANGE, DEFAULT_LANGUAGE);
+        requestParams.putInt(PARAM_LANGUANGE, DEFAULT_LANGUAGE);
         requestParams.putString(PARAM_COUNTRY, DEFAULT_COUNTRY);
-        requestParams.putString(PARAM_DEVICE, DEFAULT_DEVICE);
-        requestParams.putString(PARAM_INSTANCE, DEFAULT_INSTANCE);
+        requestParams.putInt(PARAM_DEVICE, DEFAULT_DEVICE);
+        requestParams.putInt(PARAM_INSTANCE, DEFAULT_INSTANCE);
         return requestParams;
     }
 }

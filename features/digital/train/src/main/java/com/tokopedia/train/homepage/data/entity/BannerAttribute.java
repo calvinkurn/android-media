@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class BannerAttribute {
-    @SerializedName("desription")
+    @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("link_url")
+    @SerializedName("linkURL")
     @Expose
     private String linkUrl;
-    @SerializedName("image_url")
+    @SerializedName("imageURL")
     @Expose
     private String imageUrl;
-    @SerializedName("promo_code")
+    @SerializedName("promoCode")
     @Expose
     private String promoCode;
 

@@ -215,7 +215,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
             @Override
             public void navigateToPromoDetail(int position) {
                 if (trainPromoViewModelList.size() > position && trainPromoViewModelList.get(position).getAttributes() != null) {
-                    String url = trainPromoViewModelList.get(position).getAttributes().getImageUrl();
+                    String url = trainPromoViewModelList.get(position).getAttributes().getLinkUrl();
                     Uri uri = Uri.parse(url);
                     boolean isPromoNativeActive = isPromoNativeActive();
                     if (isPromoNativeActive && uri != null

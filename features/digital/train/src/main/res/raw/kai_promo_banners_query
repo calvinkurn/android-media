@@ -1,7 +1,7 @@
-query TravelBannerResult($languageId: String!, $countryId : String!, $deviceId : String!, $instance : String!){
-  travelBanner(languageID: $languageId,countryID: $countryId, deviceID: $deviceId, instance:$instance){
-    id,
-    attributes{
+query travelBanner($languageId: Int!, $countryId : String!, $deviceId : Int!, $instance : Int!) {
+  travelBanner(languageID: $languageId,countryID: $countryId, deviceID: $deviceId, instanceID:$instance) {
+    id
+    attributes {
       description
       linkURL
       imageURL
