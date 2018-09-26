@@ -5,7 +5,7 @@ import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 
 public class HomeGATracking extends UnifyTracking {
 
-    private static final String EVENT_VIDEO_VIEW = "videoView";
+    private static final String EVENT_VIDEO_VIEW = "viewVideo";
     private static final String EVENT_VIDEO_GENERAL_EVENT = "videoGeneralEvent";
     private static final String CATEGORY_VIDEO_PUSH = "video push";
     private static final String ACTION_VIDEO_NOTIFICATION_PAGE = "view video notification page";
