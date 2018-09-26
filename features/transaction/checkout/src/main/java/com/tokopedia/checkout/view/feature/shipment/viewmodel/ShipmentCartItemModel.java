@@ -62,10 +62,13 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
     private String unixTime;
     private Store store;
 
+    // View state
     private boolean stateDetailSubtotalViewExpanded;
     private boolean stateAllItemViewExpanded = true;
     private boolean stateDropshipperDetailExpanded;
     private boolean stateDropshipperHasError;
+    private boolean stateLoadingCourierState;
+    private boolean stateHasLoadCourierState;
 
     // Address Model for multiple address shipment, null if single address shipment
     private RecipientAddressModel recipientAddressModel;
@@ -112,6 +115,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dropshiperName = in.readString();
         dropshiperPhone = in.readString();
         isInsurance = in.readByte() != 0;
+        stateLoadingCourierState = in.readByte() != 0;
+        stateHasLoadCourierState = in.readByte() != 0;
     }
 
     @Override
@@ -151,6 +156,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         dest.writeString(dropshiperName);
         dest.writeString(dropshiperPhone);
         dest.writeByte((byte) (isInsurance ? 1 : 0));
+        dest.writeByte((byte) (stateLoadingCourierState ? 1 : 0));
+        dest.writeByte((byte) (stateHasLoadCourierState ? 1 : 0));
     }
 
     @Override
@@ -205,6 +212,8 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
         newShipmentCartItemModel.setDropshiperName(shipmentCartItemModel.getDropshiperName());
         newShipmentCartItemModel.setDropshiperPhone(shipmentCartItemModel.getDropshiperPhone());
         newShipmentCartItemModel.setInsurance(shipmentCartItemModel.isInsurance());
+        newShipmentCartItemModel.setStateLoadingCourierState(shipmentCartItemModel.isStateLoadingCourierState());
+        newShipmentCartItemModel.setStateHasLoadCourierState(shipmentCartItemModel.isStateHasLoadCourierState());
 
         return newShipmentCartItemModel;
     }
@@ -487,6 +496,22 @@ public class ShipmentCartItemModel implements ShipmentData, Parcelable {
 
     public void setInsurance(boolean insurance) {
         isInsurance = insurance;
+    }
+
+    public boolean isStateLoadingCourierState() {
+        return stateLoadingCourierState;
+    }
+
+    public void setStateLoadingCourierState(boolean stateLoadingCourierState) {
+        this.stateLoadingCourierState = stateLoadingCourierState;
+    }
+
+    public boolean isStateHasLoadCourierState() {
+        return stateHasLoadCourierState;
+    }
+
+    public void setStateHasLoadCourierState(boolean stateHasLoadCourierState) {
+        this.stateHasLoadCourierState = stateHasLoadCourierState;
     }
 
     @Override

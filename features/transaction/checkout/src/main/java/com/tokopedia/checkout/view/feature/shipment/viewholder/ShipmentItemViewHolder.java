@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -31,11 +32,13 @@ import com.tokopedia.checkout.domain.datamodel.addressoptions.RecipientAddressMo
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentCartData;
 import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.view.common.utils.WeightFormatterUtil;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.adapter.ShipmentInnerProductListAdapter;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.component.Tooltip;
@@ -132,6 +135,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoText;
     private TextView tvPromoPrice;
     private RelativeLayout rlShipmentCost;
+    private ProgressBar pbCourierState;
     private LinearLayout llSelectedCourier;
     private TextView tvCourierName;
     private TextView tvCourierPrice;
@@ -230,6 +234,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
         rlExpandOtherProduct = itemView.findViewById(R.id.rl_expand_other_product);
         tvTextShipment = itemView.findViewById(R.id.tv_text_shipment);
+        pbCourierState = itemView.findViewById(R.id.pb_courier_state);
         chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
         llShipmentOptionViewLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
         tvCartSubTotal = itemView.findViewById(R.id.tv_cart_sub_total);
@@ -347,6 +352,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     public void bindViewHolder(ShipmentCartItemModel shipmentCartItemModel,
                                List<ShipmentData> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
+                               RatesDataConverter ratesDataConverter,
                                ArrayList<ShowCaseObject> showCaseObjectList) {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
@@ -364,7 +370,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 );
             }
         } else {
-            renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(), recipientAddressModel);
+            renderCourier(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
+                    recipientAddressModel, ratesDataConverter);
             if (showCaseObjectList.size() == 1) {
                 showCaseObjectList.add(new ShowCaseObject(llShipmentOptionViewLayout,
                         llShipmentOptionViewLayout.getContext().getString(R.string.label_title_showcase_shipment),
@@ -471,7 +478,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderCourier(ShipmentCartItemModel shipmentCartItemModel,
                                ShipmentDetailData shipmentDetailData,
-                               RecipientAddressModel recipientAddressModel) {
+                               RecipientAddressModel recipientAddressModel,
+                               RatesDataConverter ratesDataConverter) {
         llShipmentRecommendationContainer.setVisibility(View.GONE);
         llShipmentContainer.setVisibility(View.VISIBLE);
 
@@ -519,6 +527,36 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             llShippingOptionsContainer.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.GONE);
             llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
+
+            if (shipmentCartItemModel.isStateLoadingCourierState()) {
+                pbCourierState.setVisibility(View.VISIBLE);
+            } else {
+                pbCourierState.setVisibility(View.GONE);
+                if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
+                    if (shipmentDetailData == null) {
+                        RecipientAddressModel tmpRecipientAddressModel;
+                        if (recipientAddressModel != null) {
+                            tmpRecipientAddressModel = recipientAddressModel;
+                        } else {
+                            tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                        }
+                        ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+                                shipmentCartItemModel, tmpRecipientAddressModel);
+
+                        if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
+                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                    shipmentCartItemModel.getShopShipmentList());
+                            shipmentCartItemModel.setStateLoadingCourierState(true);
+                            shipmentCartItemModel.setStateHasLoadCourierState(true);
+                            pbCourierState.setVisibility(View.VISIBLE);
+                        }
+                    }
+                } else {
+                    pbCourierState.setVisibility(View.GONE);
+                }
+            }
+
         }
 
     }

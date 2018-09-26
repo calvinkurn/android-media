@@ -652,6 +652,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition) {
+        shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        shipmentAdapter.setSelectedCourier(itemPosition, courierItemData);
+        onNeedUpdateViewItem(itemPosition);
+    }
+
+    @Override
+    public void renderCourierStateFailed(int itemPosition) {
+        shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition).setStateLoadingCourierState(false);
+        onNeedUpdateViewItem(itemPosition);
+    }
+
+    @Override
     public void navigateToSetPinpoint(String message, LocationPass locationPass) {
         sendAnalyticsOnClickEditPinPointErrorValidation(message);
         if (getView() != null) {
@@ -1475,7 +1488,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-
     @Override
     public void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
                                         RecipientAddressModel recipientAddressModel,
@@ -1495,5 +1507,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             KeyboardHandler.hideSoftKeyboard(getActivity());
         }
+    }
+
+    @Override
+    public void onLoadShippingState(int shipperId, int spId, int itemPosition,
+                                    ShipmentDetailData shipmentDetailData,
+                                    List<ShopShipment> shopShipmentList) {
+        shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
     }
 }

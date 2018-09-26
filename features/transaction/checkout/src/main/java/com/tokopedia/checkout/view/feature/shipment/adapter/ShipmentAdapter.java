@@ -22,6 +22,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData
 import com.tokopedia.checkout.view.feature.shipment.ShipmentAdapterActionListener;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentData;
 import com.tokopedia.checkout.view.feature.shipment.ShipmentFragment;
+import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.checkout.view.feature.shipment.viewholder.ShipmentDonationViewHolder;
@@ -73,6 +74,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private ShipmentDonationModel shipmentDonationModel;
 
     private ShipmentDataRequestConverter shipmentDataRequestConverter;
+    private RatesDataConverter ratesDataConverter;
 
     private boolean hasShownShowCase;
     private int lastChooseCourierItemPosition;
@@ -81,9 +83,11 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     @Inject
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
-                           ShipmentDataRequestConverter shipmentDataRequestConverter) {
+                           ShipmentDataRequestConverter shipmentDataRequestConverter,
+                           RatesDataConverter ratesDataConverter) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
+        this.ratesDataConverter = ratesDataConverter;
         this.shipmentDataList = new ArrayList<>();
         this.showCaseObjectList = new ArrayList<>();
     }
@@ -155,7 +159,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     showCaseObjectList, cartIds);
         } else if (viewType == ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM) {
             ((ShipmentItemViewHolder) holder).bindViewHolder(
-                    (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel, showCaseObjectList);
+                    (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
+                    ratesDataConverter, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder(

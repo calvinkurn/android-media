@@ -10,6 +10,8 @@ import com.tokopedia.checkout.domain.datamodel.cartlist.CartPromoSuggestion;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.CourierItemData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartShipmentData;
@@ -80,6 +82,10 @@ public interface ShipmentContract {
         void renderChangeAddressSuccess(RecipientAddressModel recipientAddressModel);
 
         void renderCancelAutoApplyCouponSuccess();
+
+        void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition);
+
+        void renderCourierStateFailed(int itemPosition);
 
         void navigateToSetPinpoint(String message, LocationPass locationPass);
 
@@ -188,6 +194,9 @@ public interface ShipmentContract {
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 
         void processSaveShipmentState();
+
+        void processGetRates(int shipperId, int spId, int itemPosition,
+                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
         RecipientAddressModel getRecipientAddressModel();
 

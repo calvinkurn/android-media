@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
@@ -136,11 +137,12 @@ public class ShipmentModule {
                                                         EditAddressUseCase editAddressUseCase,
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                         ChangeShippingAddressUseCase changeShippingAddressUseCase,
-                                                        SaveShipmentStateUseCase saveShipmentStateUseCase) {
+                                                        SaveShipmentStateUseCase saveShipmentStateUseCase,
+                                                        GetRatesUseCase getRatesUseCase) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
                 checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
-                changeShippingAddressUseCase, saveShipmentStateUseCase, shipmentAnalyticsActionListener);
+                changeShippingAddressUseCase, saveShipmentStateUseCase, getRatesUseCase, shipmentAnalyticsActionListener);
     }
 
     @Provides
@@ -151,13 +153,15 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
-    ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter) {
-        return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter);
+    RatesDataConverter provideRatesDataConverter() {
+        return new RatesDataConverter();
     }
 
     @Provides
     @ShipmentScope
-    RatesDataConverter provideRatesDataConverter() {
-        return new RatesDataConverter();
+    ShipmentAdapter provideShipmentAdapter(ShipmentDataRequestConverter shipmentDataRequestConverter,
+                                           RatesDataConverter ratesDataConverter) {
+        return new ShipmentAdapter(shipmentAdapterActionListener, shipmentDataRequestConverter, ratesDataConverter);
     }
+
 }

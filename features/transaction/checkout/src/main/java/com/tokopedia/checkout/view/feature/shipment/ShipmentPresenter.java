@@ -22,6 +22,7 @@ import com.tokopedia.checkout.domain.datamodel.cartshipmentform.ShopShipment;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.CartItemModel;
 import com.tokopedia.checkout.domain.datamodel.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.checkout.domain.datamodel.saveshipmentstate.SaveShipmentStateData;
+import com.tokopedia.checkout.domain.datamodel.shipmentrates.ShipmentDetailData;
 import com.tokopedia.checkout.domain.datamodel.toppay.ThanksTopPayData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeAppliedData;
 import com.tokopedia.checkout.domain.datamodel.voucher.PromoCodeCartListData;
@@ -32,10 +33,12 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
@@ -99,6 +102,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase;
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
+    private final GetRatesUseCase getRatesUseCase;
 
     private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -127,6 +131,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
+                             GetRatesUseCase getRatesUseCase,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -138,6 +143,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.cancelAutoApplyCouponUseCase = cancelAutoApplyCouponUseCase;
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
+        this.getRatesUseCase = getRatesUseCase;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
     }
 
@@ -1080,6 +1086,18 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .unsubscribeOn(Schedulers.io())
                 .subscribe(new SaveShipmentStateSubscriber(getView())));
+    }
+
+    @Override
+    public void processGetRates(int shipperId, int spId, int itemPosition,
+                                ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList) {
+        getRatesUseCase.setShipmentDetailData(shipmentDetailData);
+        getRatesUseCase.setShopShipmentList(shopShipmentList);
+        compositeSubscription.add(getRatesUseCase.createObservable(getRatesUseCase.getParams())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .unsubscribeOn(Schedulers.io())
+                .subscribe(new GetRatesSubscriber(getView(), shipperId, spId, itemPosition)));
     }
 
     private JsonArray getShipmentItemSaveStateData(List<ShipmentCartItemModel> shipmentCartItemModels) {
