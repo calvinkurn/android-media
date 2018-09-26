@@ -18,12 +18,12 @@ public class ShipmentCartData implements Parcelable {
     private String shippingNames;
     private String originDistrictId;
     private String originPostalCode;
-    private Double originLatitude;
-    private Double originLongitude;
+    private String originLatitude;
+    private String originLongitude;
     private String destinationDistrictId;
     private String destinationPostalCode;
-    private Double destinationLatitude;
-    private Double destinationLongitude;
+    private String destinationLatitude;
+    private String destinationLongitude;
     private String destinationAddress;
     private double weight;
     private String token;
@@ -35,106 +35,6 @@ public class ShipmentCartData implements Parcelable {
 
     public ShipmentCartData() {
     }
-
-    protected ShipmentCartData(Parcel in) {
-        shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
-        deliveryPriceTotal = in.readInt();
-        shippingServices = in.readString();
-        shippingNames = in.readString();
-        originDistrictId = in.readString();
-        originPostalCode = in.readString();
-        if (in.readByte() == 0) {
-            originLatitude = null;
-        } else {
-            originLatitude = in.readDouble();
-        }
-        if (in.readByte() == 0) {
-            originLongitude = null;
-        } else {
-            originLongitude = in.readDouble();
-        }
-        destinationDistrictId = in.readString();
-        destinationPostalCode = in.readString();
-        if (in.readByte() == 0) {
-            destinationLatitude = null;
-        } else {
-            destinationLatitude = in.readDouble();
-        }
-        if (in.readByte() == 0) {
-            destinationLongitude = null;
-        } else {
-            destinationLongitude = in.readDouble();
-        }
-        destinationAddress = in.readString();
-        weight = in.readDouble();
-        token = in.readString();
-        ut = in.readString();
-        insurance = in.readInt();
-        productInsurance = in.readInt();
-        orderValue = in.readInt();
-        categoryIds = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(shopShipments);
-        dest.writeInt(deliveryPriceTotal);
-        dest.writeString(shippingServices);
-        dest.writeString(shippingNames);
-        dest.writeString(originDistrictId);
-        dest.writeString(originPostalCode);
-        if (originLatitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(originLatitude);
-        }
-        if (originLongitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(originLongitude);
-        }
-        dest.writeString(destinationDistrictId);
-        dest.writeString(destinationPostalCode);
-        if (destinationLatitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(destinationLatitude);
-        }
-        if (destinationLongitude == null) {
-            dest.writeByte((byte) 0);
-        } else {
-            dest.writeByte((byte) 1);
-            dest.writeDouble(destinationLongitude);
-        }
-        dest.writeString(destinationAddress);
-        dest.writeDouble(weight);
-        dest.writeString(token);
-        dest.writeString(ut);
-        dest.writeInt(insurance);
-        dest.writeInt(productInsurance);
-        dest.writeInt(orderValue);
-        dest.writeString(categoryIds);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
-        @Override
-        public ShipmentCartData createFromParcel(Parcel in) {
-            return new ShipmentCartData(in);
-        }
-
-        @Override
-        public ShipmentCartData[] newArray(int size) {
-            return new ShipmentCartData[size];
-        }
-    };
 
     public List<ShopShipment> getShopShipments() {
         return shopShipments;
@@ -184,19 +84,19 @@ public class ShipmentCartData implements Parcelable {
         this.originPostalCode = originPostalCode;
     }
 
-    public Double getOriginLatitude() {
+    public String getOriginLatitude() {
         return originLatitude;
     }
 
-    public void setOriginLatitude(Double originLatitude) {
+    public void setOriginLatitude(String originLatitude) {
         this.originLatitude = originLatitude;
     }
 
-    public Double getOriginLongitude() {
+    public String getOriginLongitude() {
         return originLongitude;
     }
 
-    public void setOriginLongitude(Double originLongitude) {
+    public void setOriginLongitude(String originLongitude) {
         this.originLongitude = originLongitude;
     }
 
@@ -216,19 +116,19 @@ public class ShipmentCartData implements Parcelable {
         this.destinationPostalCode = destinationPostalCode;
     }
 
-    public Double getDestinationLatitude() {
+    public String getDestinationLatitude() {
         return destinationLatitude;
     }
 
-    public void setDestinationLatitude(Double destinationLatitude) {
+    public void setDestinationLatitude(String destinationLatitude) {
         this.destinationLatitude = destinationLatitude;
     }
 
-    public Double getDestinationLongitude() {
+    public String getDestinationLongitude() {
         return destinationLongitude;
     }
 
-    public void setDestinationLongitude(Double destinationLongitude) {
+    public void setDestinationLongitude(String destinationLongitude) {
         this.destinationLongitude = destinationLongitude;
     }
 
@@ -295,4 +195,68 @@ public class ShipmentCartData implements Parcelable {
     public void setCategoryIds(String categoryIds) {
         this.categoryIds = categoryIds;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeTypedList(this.shopShipments);
+        dest.writeInt(this.deliveryPriceTotal);
+        dest.writeString(this.shippingServices);
+        dest.writeString(this.shippingNames);
+        dest.writeString(this.originDistrictId);
+        dest.writeString(this.originPostalCode);
+        dest.writeString(this.originLatitude);
+        dest.writeString(this.originLongitude);
+        dest.writeString(this.destinationDistrictId);
+        dest.writeString(this.destinationPostalCode);
+        dest.writeString(this.destinationLatitude);
+        dest.writeString(this.destinationLongitude);
+        dest.writeString(this.destinationAddress);
+        dest.writeDouble(this.weight);
+        dest.writeString(this.token);
+        dest.writeString(this.ut);
+        dest.writeInt(this.insurance);
+        dest.writeInt(this.productInsurance);
+        dest.writeInt(this.orderValue);
+        dest.writeString(this.categoryIds);
+    }
+
+    protected ShipmentCartData(Parcel in) {
+        this.shopShipments = in.createTypedArrayList(ShopShipment.CREATOR);
+        this.deliveryPriceTotal = in.readInt();
+        this.shippingServices = in.readString();
+        this.shippingNames = in.readString();
+        this.originDistrictId = in.readString();
+        this.originPostalCode = in.readString();
+        this.originLatitude = in.readString();
+        this.originLongitude = in.readString();
+        this.destinationDistrictId = in.readString();
+        this.destinationPostalCode = in.readString();
+        this.destinationLatitude = in.readString();
+        this.destinationLongitude = in.readString();
+        this.destinationAddress = in.readString();
+        this.weight = in.readDouble();
+        this.token = in.readString();
+        this.ut = in.readString();
+        this.insurance = in.readInt();
+        this.productInsurance = in.readInt();
+        this.orderValue = in.readInt();
+        this.categoryIds = in.readString();
+    }
+
+    public static final Creator<ShipmentCartData> CREATOR = new Creator<ShipmentCartData>() {
+        @Override
+        public ShipmentCartData createFromParcel(Parcel source) {
+            return new ShipmentCartData(source);
+        }
+
+        @Override
+        public ShipmentCartData[] newArray(int size) {
+            return new ShipmentCartData[size];
+        }
+    };
 }

@@ -1,5 +1,7 @@
 package com.tokopedia.kol.feature.post.view.viewmodel;
 
+import android.text.style.ClickableSpan;
+
 /**
  * @author by milhamj on 14/05/18.
  */
@@ -14,6 +16,7 @@ public class BaseKolViewModel {
     private String kolProfileUrl;
     private boolean followed;
     private String review;
+    private ClickableSpan reviewUrlClickableSpan;
     private boolean liked;
     private int totalLike;
     private int totalComment;
@@ -110,6 +113,14 @@ public class BaseKolViewModel {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public ClickableSpan getReviewUrlClickableSpan() {
+        return reviewUrlClickableSpan;
+    }
+
+    public void setReviewUrlClickableSpan(ClickableSpan reviewUrlClickableSpan) {
+        this.reviewUrlClickableSpan = reviewUrlClickableSpan;
     }
 
     public boolean isLiked() {

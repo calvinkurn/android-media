@@ -1,7 +1,10 @@
 package com.tokopedia.core.share;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.os.Build;
+
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -28,10 +31,20 @@ public class DefaultShare {
     public void show() {
         BranchSdkUtils.generateBranchLink(shareData, activity,
                 (shareContents, shareUri, branchUrl) -> {
-            Intent intent = getIntent(shareContents);
-            activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));
-            sendTracker();
-        });
+                    Intent intent = getIntent(shareContents);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                        Intent receiver = new Intent(activity, ShareBroadcastReceiver.class);
+                        receiver.putExtra(ShareBroadcastReceiver.KEY_TYPE, shareData.getType());
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(activity, 0,
+                                receiver, PendingIntent.FLAG_UPDATE_CURRENT);
+                        activity.startActivity(Intent.createChooser(intent, TITLE_OTHER,
+                                pendingIntent.getIntentSender()));
+
+                    } else {
+                        activity.startActivity(Intent.createChooser(intent, TITLE_OTHER));
+                    }
+                    sendTracker();
+                });
     }
 
     private Intent getIntent(String contains) {

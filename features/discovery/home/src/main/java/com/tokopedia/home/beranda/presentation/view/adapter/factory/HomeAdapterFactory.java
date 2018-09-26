@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicCh
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.DynamicChannelSprintViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.EmptyBlankViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HeaderViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SellViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.SprintSaleCarouselViewHolder;
@@ -29,6 +30,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.CategorySe
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DigitalsViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.DynamicChannelViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.HeaderViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.InspirationHeaderViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.SellViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TickerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.TopAdsViewModel;
@@ -51,6 +53,11 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
         this.listener = listener;
         this.feedListener = feedListener;
         this.countDownListener = countDownListener;
+    }
+
+    @Override
+    public int type(InspirationHeaderViewModel inspirationHeaderViewModel) {
+        return InspirationHeaderViewHolder.LAYOUT;
     }
 
     @Override
@@ -145,6 +152,8 @@ public class HomeAdapterFactory extends BaseAdapterTypeFactory implements HomeTy
             viewHolder = new SixGridChannelViewHolder(view, listener);
         else if (type == EmptyBlankViewHolder.LAYOUT)
             viewHolder = new EmptyBlankViewHolder(view);
+        else if (type == InspirationHeaderViewHolder.LAYOUT)
+            viewHolder = new InspirationHeaderViewHolder(view);
         else viewHolder = super.createViewHolder(view, type);
 
         return viewHolder;

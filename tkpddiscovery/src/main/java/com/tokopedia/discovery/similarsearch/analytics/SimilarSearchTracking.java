@@ -39,13 +39,23 @@ public class SimilarSearchTracking extends UnifyTracking {
         ).getEvent());
     }
 
-    public static void eventClickSimilarProduct(String screenName,String productsId,List<Object> productsItem) {
-        sendGTMEvent(new EventTracking(
-                SimilarSearchAppEventTracking.Event.GenericProductClick,
-                SimilarSearchAppEventTracking.Category.EventSimilarProduct,
-                SimilarSearchAppEventTracking.Action.EventClickSimilarProduct,
-                String.format(SimilarSearchAppEventTracking.Label.LableOriginProductId,productsId, screenName)
-        ).getEvent());
+    public static void eventClickSimilarProduct(String screenName,String productsId,Object productsItem) {
+        try {
+            TrackingUtils.eventTrackingEnhancedEcommerce(new SimilarSearchEventTracking(
+                    SimilarSearchAppEventTracking.Event.GenericProductClick,
+                    SimilarSearchAppEventTracking.Category.EventSimilarProduct,
+                    SimilarSearchAppEventTracking.Action.EventClickSimilarProduct,
+                    String.format(SimilarSearchAppEventTracking.Label.LableOriginProductId, productsId, screenName),
+                    DataLayer.mapOf(
+                            "click",
+                            DataLayer.mapOf("actionField",
+                                    DataLayer.mapOf("list", "'/similarproduct'"),
+                                    "products", DataLayer.listOf(productsItem)
+                            ))
+            ).getEvent());
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public static void eventUserSeeNoSimilarProduct(String productId,String screenName) {
         sendGTMEvent(new EventTracking(

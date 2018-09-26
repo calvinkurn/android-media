@@ -44,5 +44,7 @@ public interface ITransactionAnalyticsAddAddress {
 
     void sendAnalyticsOnSaveAddressButtonWithoutErrorValidation(boolean success);
 
+    void sendAnalyticsScreenName(String screenName);
+
 
 }

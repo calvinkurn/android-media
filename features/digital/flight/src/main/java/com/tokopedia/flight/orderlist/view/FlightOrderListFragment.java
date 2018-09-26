@@ -1,15 +1,25 @@
 package com.tokopedia.flight.orderlist.view;
 
 import android.annotation.SuppressLint;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +35,8 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.FlightModuleRouter;
 import com.tokopedia.flight.R;
+import com.tokopedia.flight.airport.service.GetAirportListJobService;
+import com.tokopedia.flight.airport.service.GetAirportListService;
 import com.tokopedia.flight.booking.domain.subscriber.model.ProfileInfo;
 import com.tokopedia.flight.cancellation.view.activity.FlightCancellationActivity;
 import com.tokopedia.flight.cancellation.view.viewmodel.FlightCancellationJourney;
@@ -63,19 +75,42 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         QuickSingleFilterView.ActionListener,
         FlightOrderAdapter.OnAdapterInteractionListener {
 
+    public static final String EXTRA_SHOULD_CHECK_PRELOAD = "EXTRA_SHOULD_CHECK_PRELOAD";
+
     private static final int REQUEST_CODE_RESEND_ETICKET_DIALOG = 1;
     private static final int REQUEST_CODE_CANCELLATION = 2;
     private static final int REQUEST_CODE_ORDER_DETAIL = 3;
     private static final String RESEND_ETICKET_DIALOG_TAG = "resend_eticket_dialog_tag";
     public static final int PER_PAGE = 10;
-    @Inject
-    FlightOrderListPresenter presenter;
-    private QuickSingleFilterView quickSingleFilterView;
+    public static final boolean DEFAULT_CHECK_PRELOAD = true;
 
     private String selectedFilter;
 
+    @Inject
+    FlightModuleRouter flightModuleRouter;
+    @Inject
+    FlightOrderListPresenter presenter;
+
+    private QuickSingleFilterView quickSingleFilterView;
+
     public static FlightOrderListFragment createInstance() {
-        return new FlightOrderListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_SHOULD_CHECK_PRELOAD, DEFAULT_CHECK_PRELOAD);
+
+        FlightOrderListFragment fragment = new FlightOrderListFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
+    }
+
+    public static FlightOrderListFragment createInstance(boolean isShouldCheckPreload) {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(EXTRA_SHOULD_CHECK_PRELOAD, isShouldCheckPreload);
+
+        FlightOrderListFragment fragment = new FlightOrderListFragment();
+        fragment.setArguments(bundle);
+
+        return fragment;
     }
 
     @Override
@@ -123,7 +158,11 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @Override
     public void loadData(int page) {
         presenter.attachView(this);
-        presenter.loadData(selectedFilter, page, PER_PAGE);
+        if (!getArguments().getBoolean(EXTRA_SHOULD_CHECK_PRELOAD)) {
+            loadPageData(page);
+        } else {
+            presenter.onInitialize(getArguments().getBoolean(EXTRA_SHOULD_CHECK_PRELOAD), page);
+        }
         presenter.onGetProfileData();
     }
 
@@ -270,13 +309,14 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
     @SuppressLint("StringFormatMatches")
     @Override
     public void showLessThan6HoursDialog() {
-        int color = getContext().getResources().getColor(R.color.green_500);
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.RETORIC);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
-        dialog.setDesc(MethodChecker.fromHtml(getString(
-            R.string.flight_cancellation_recommendation_to_contact_airlines_description,
-            color, "#")));
-        dialog.setBtnOk("OK");
+        dialog.setDesc(buildAirlineContactInfo(
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description),
+                getString(R.string.flight_cancellation_recommendation_to_contact_airlines_description_mark)
+        ));
+        dialog.setDescMovementMethod();
+        dialog.setBtnOk(getString(R.string.flight_cancellation_less_than_6_hours_confirmation_dialog));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -286,13 +326,37 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         dialog.show();
     }
 
+    @NonNull
+    private SpannableString buildAirlineContactInfo(String fullText, String mark) {
+        final int color = getContext().getResources().getColor(R.color.green_500);
+        int startIndex = fullText.indexOf(mark);
+        int stopIndex = fullText.length();
+        SpannableString description = new SpannableString(fullText);
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                presenter.onMoreAirlineInfoClicked();
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(color);
+                ds.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
+            }
+        };
+        description.setSpan(clickableSpan, startIndex, stopIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return description;
+    }
+
     @Override
     public void showNonRefundableCancelDialog(final String invoiceId, final List<FlightCancellationJourney> item, final String departureTime) {
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            MethodChecker.fromHtml(getString(
-                R.string.flight_cancellation_dialog_non_refundable_description)));
+                MethodChecker.fromHtml(getString(
+                        R.string.flight_cancellation_dialog_non_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -316,7 +380,7 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
         final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         dialog.setTitle(getString(R.string.flight_cancellation_dialog_title));
         dialog.setDesc(
-            MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
+                MethodChecker.fromHtml(getString(R.string.flight_cancellation_dialog_refundable_description)));
         dialog.setBtnOk(getString(R.string.flight_cancellation_dialog_back_button_text));
         dialog.setOnOkClickListener(new View.OnClickListener() {
             @Override
@@ -341,5 +405,37 @@ public class FlightOrderListFragment extends BaseListFragment<Visitable, FlightO
                 invoiceId,
                 item
         ), REQUEST_CODE_CANCELLATION);
+    }
+
+    @Override
+    public void loadPageData(int page) {
+        presenter.loadData(selectedFilter, page, PER_PAGE);
+    }
+
+    @Override
+    public void startAirportSyncInBackground(long airportVersion) {
+        if (getActivity() != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                JobScheduler jobScheduler =
+                        (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+                if (jobScheduler == null) return;
+
+                PersistableBundle bundle = new PersistableBundle();
+                bundle.putLong(GetAirportListJobService.AIRPORT_VERSION, airportVersion);
+
+                jobScheduler.schedule(new JobInfo.Builder(101,
+                        new ComponentName(getActivity(), GetAirportListJobService.class))
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
+                        .setExtras(bundle)
+                        .build());
+            }else {
+                GetAirportListService.startService(getActivity(), airportVersion);
+            }
+        }
+    }
+
+    @Override
+    public void navigateToWebview(String url) {
+        startActivity(flightModuleRouter.getWebviewActivity(getActivity(), url));
     }
 }

@@ -28,6 +28,10 @@ public class Feed {
   @Expose
   private FeedContent content;
 
+  @SerializedName("meta")
+  @Expose
+  private FeedMeta meta;
+
   public void setId(String id) {
     this.id = id;
   }
@@ -52,6 +56,10 @@ public class Feed {
     this.content = content;
   }
 
+  public void setMeta(FeedMeta meta) {
+    this.meta = meta;
+  }
+
   public String getId() {
     return this.id;
   }
@@ -74,5 +82,9 @@ public class Feed {
 
   public FeedContent getContent() {
     return this.content;
+  }
+
+  public FeedMeta getMeta() {
+    return meta;
   }
 }

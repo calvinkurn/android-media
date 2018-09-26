@@ -62,7 +62,7 @@ public class StringUtils {
 
     public static String omitNonNumeric(String stringToReplace){
         if (TextUtils.isEmpty(stringToReplace)){
-            return "";
+            return "0";
         }
         else {
             return stringToReplace.replaceAll("[^\\d]", "");

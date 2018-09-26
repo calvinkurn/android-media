@@ -23,3 +23,4 @@ public abstract class BaseDaggerFragment extends TkpdBaseV4Fragment {
 
     protected abstract void initInjector();
 }
+

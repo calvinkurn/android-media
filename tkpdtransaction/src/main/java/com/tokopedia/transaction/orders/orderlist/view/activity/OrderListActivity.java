@@ -6,24 +6,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tkpd.library.utils.KeyboardHandler;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
-import com.tokopedia.core.app.DrawerPresenterActivity;
+import com.tokopedia.applink.RouteManager;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.core.listener.GlobalMainTabSelectedListener;
-import com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter;
-import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.design.component.Tabs;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.orders.orderlist.data.OrderCategory;
 import com.tokopedia.transaction.orders.orderlist.data.OrderLabelList;
 import com.tokopedia.transaction.orders.orderlist.di.DaggerOrderListComponent;
@@ -31,30 +27,27 @@ import com.tokopedia.transaction.orders.orderlist.di.OrderListComponent;
 import com.tokopedia.transaction.orders.orderlist.view.adapter.OrderTabAdapter;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitContract;
 import com.tokopedia.transaction.orders.orderlist.view.presenter.OrderListInitPresenterImpl;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.List;
 
-import static com.tokopedia.core.router.transactionmodule.TransactionPurchaseRouter.EXTRA_STATE_TAB_POSITION;
-
-public class OrderListActivity extends DrawerPresenterActivity<OrderListInitContract.Presenter>
-        implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener{
+public class OrderListActivity extends BaseTemporaryDrawerActivity<OrderListInitContract.Presenter>
+        implements HasComponent<OrderListComponent>, OrderListInitContract.View, OrderTabAdapter.Listener {
     private static final String ORDER_CATEGORY = "orderCategory";
-    private int drawerPosition;
+    private static final int REQUEST_CODE = 100;
     private String orderCategory = "ALL";
-    private ProgressBar progressBar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private LinearLayout mainLayout;
     private OrderTabAdapter adapter;
     private OrderListComponent orderListComponent;
 
     @DeepLink({ApplinkConst.DEALS_ORDER, ApplinkConst.DIGITAL_ORDER,
-            ApplinkConst.EVENTS_DETAILS})
+            ApplinkConst.EVENTS_ORDER})
     public static Intent getOrderListIntent(Context context, Bundle bundle){
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         String link = bundle.getString(DeepLink.URI);
-        String category = link.substring(link.indexOf("//")+2, link.lastIndexOf("/")).toUpperCase();
+        String category = link.substring(link.indexOf("//") + 2, link.lastIndexOf("/")).toUpperCase();
         bundle.putString(ORDER_CATEGORY, category);
         return new Intent(context, OrderListActivity.class)
                 .setData(uri.build())
@@ -62,7 +55,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
     }
 
     @DeepLink(ApplinkConst.FLIGHT_ORDER)
-    public static Intent getFlightOrderListIntent(Context context, Bundle bundle){
+    public static Intent getFlightOrderListIntent(Context context, Bundle bundle) {
 
         Uri.Builder uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon();
         bundle.putString(ORDER_CATEGORY, OrderCategory.FLIGHTS);
@@ -71,7 +64,7 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
                 .putExtras(bundle);
     }
 
-    public static Intent getInstance(Context context){
+    public static Intent getInstance(Context context) {
         return new Intent(context, OrderListActivity.class);
     }
 
@@ -82,39 +75,35 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        drawerPosition = extras.getInt(EXTRA_STATE_TAB_POSITION,
-                TransactionPurchaseRouter.TAB_POSITION_PURCHASE_SUMMARY);
     }
 
     @Override
     protected void initialPresenter() {
-        presenter = new OrderListInitPresenterImpl(this,new GraphqlUseCase());
+        presenter = new OrderListInitPresenterImpl(this, new GraphqlUseCase());
+    }
+
+    @Override
+    protected boolean isLightToolbarThemes() {
+        return false;
+    }
+
+    @Override
+    protected int getContentId() {
+        if (GlobalConfig.isSellerApp())
+            return super.getContentId();
+        return R.layout.layout_tab_secondary;
     }
 
     @Override
     protected int getLayoutId() {
+        if (GlobalConfig.isCustomerApp())
+            return 0;
         return R.layout.activity_order_list_module;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if(drawerHelper != null) {
-            switch (orderCategory){
-                case OrderCategory.DIGITAL:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.FLIGHTS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
-                    break;
-                    case OrderCategory.DEALS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.EVENTS:
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
-                    break;
-            }
-        }
     }
 
     @Override
@@ -124,23 +113,18 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     protected void initVar() {
-        progressBar = findViewById(R.id.progress);
         tabLayout = findViewById(R.id.indicator);
         viewPager = findViewById(R.id.pager);
-        mainLayout = findViewById(R.id.main_content);
     }
 
     @Override
     protected void setActionVar() {
-        progressBar.setVisibility(View.VISIBLE);
-        mainLayout.setVisibility(View.GONE);
     }
 
     @Override
     protected int setDrawerPosition() {
-        return drawerPosition;
+        return 0;
     }
-
 
     @Override
     public OrderListComponent getComponent() {
@@ -159,22 +143,27 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         GraphqlClient.init(this);
         super.onCreate(savedInstanceState);
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null){
+        if (bundle != null) {
             orderCategory = bundle.getString(ORDER_CATEGORY);
         }
-        initTabs();
+        UserSession userSession = new UserSession(getActivity());
+        if (userSession != null && !userSession.isLoggedIn()) {
+            startActivityForResult(RouteManager.getIntent(getActivity(), ApplinkConst.LOGIN), REQUEST_CODE);
+        } else {
+            initTabs();
+        }
     }
 
     private void initTabs() {
         removeProgressBarView();
         int position = 0;
-        for(int i = 0; i < OrderCategory.TABS_CATEGORY.length; i++) {
-            if(orderCategory.equals(OrderCategory.TABS_CATEGORY[i])){
+        for (int i = 0; i < OrderCategory.TABS_CATEGORY.length; i++) {
+            if (orderCategory.equals(OrderCategory.TABS_CATEGORY[i])) {
                 position = i;
             }
             tabLayout.addTab(tabLayout.newTab().setText(OrderCategory.TABS_LABEL[i]));
         }
-        adapter = new OrderTabAdapter(getSupportFragmentManager(),this);
+        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
@@ -188,21 +177,17 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
 
     @Override
     public void removeProgressBarView() {
-
-        progressBar.setVisibility(View.GONE);
-        mainLayout.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showErrorNetwork(String message) {
-
     }
 
     @Override
     public void renderTabs(List<OrderLabelList> orderLabelList) {
-        for(OrderLabelList tabContent: orderLabelList)
+        for (OrderLabelList tabContent : orderLabelList)
             tabLayout.addTab(tabLayout.newTab().setText(tabContent.getLabel()));
-        adapter = new OrderTabAdapter(getSupportFragmentManager(),this);
+        adapter = new OrderTabAdapter(getSupportFragmentManager(), this);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new OnTabPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new GlobalMainTabSelectedListener(viewPager));
@@ -218,27 +203,16 @@ public class OrderListActivity extends DrawerPresenterActivity<OrderListInitCont
         public void onPageSelected(int position) {
             super.onPageSelected(position);
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            drawerPosition = position;
-            switch (orderCategory){
-                case OrderCategory.DIGITAL:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DIGITAL_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.FLIGHTS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_FLIGHT_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.EVENTS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_EVENTS_TRANSACTION_LIST);
-                    break;
-                case OrderCategory.DEALS:
-                    drawerPosition = TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST;
-                    drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.PEOPLE_DEALS_TRANSACTION_LIST);
-                    break;
-
-            }
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            initTabs();
+        } else {
+            finish();
+        }
+    }
 }

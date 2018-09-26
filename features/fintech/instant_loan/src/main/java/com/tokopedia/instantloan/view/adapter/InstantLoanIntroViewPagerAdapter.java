@@ -13,13 +13,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
 import com.tokopedia.instantloan.view.presenter.InstantLoanPresenter;
 
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_LEARN_MORE;
 import static com.tokopedia.instantloan.network.InstantLoanUrl.WEB_LINK_TNC;
-
-//import static com.tokopedia.core.network.constants.TkpdBaseURL.InstantLoan.WEB_LINK_TNC;
 
 /**
  * View pager adapter
@@ -57,6 +57,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
+                    sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_LEARN_MORE);
                     mActivity.openWebView(WEB_LINK_LEARN_MORE);
                 }
             };
@@ -89,6 +90,7 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
                 @Override
                 public void onClick(View view) {
+                    sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_TNC);
                     mActivity.openWebView(WEB_LINK_TNC);
                 }
             };
@@ -98,13 +100,20 @@ public class InstantLoanIntroViewPagerAdapter extends PagerAdapter {
 
             textTnC.setText(spannableString);
             textTnC.setMovementMethod(LinkMovementMethod.getInstance());
-            view.findViewById(R.id.button_connect_device).setOnClickListener(v -> mPresenter.startDataCollection());
+            view.findViewById(R.id.button_connect_device).setOnClickListener(v -> {
+                sendLoanPopupClickEvent(InstantLoanEventConstants.EventLabel.PL_POPUP_CONNECT_DEVICE);
+                mPresenter.startDataCollection();
+            });
 
         }
         view.setTag(position);
         container.addView(view);
 
         return view;
+    }
+
+    private void sendLoanPopupClickEvent(String label) {
+        InstantLoanEventTracking.eventLoanPopupClick(label);
     }
 
     @Override

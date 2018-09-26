@@ -49,6 +49,9 @@
     <string name="no_reputation_yet">Belum ada nilai reputasi</string>
     <string name="label_send_to_pick_up_booth">Kirim ke Gerai Pengambilan</string>
     <string name="label_edit_pickup">Ubah Gerai</string>
+    <string name="empty_search_result_default">Pencarian tidak ditemukan</string>
+
+    <string name="edit">Ubah</string>
 
     <string name="label_official_store">Official Store</string>
     <string name="label_gold_merchant">Gold Merchant</string>
