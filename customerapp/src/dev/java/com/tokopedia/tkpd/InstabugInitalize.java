@@ -1,10 +1,13 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.Application;
+import android.view.MotionEvent;
 
 import com.instabug.library.Instabug;
 import com.instabug.library.InstabugColorTheme;
 import com.instabug.library.InstabugCustomTextPlaceHolder;
+import com.instabug.library.InstabugTrackingDelegate;
 import com.instabug.library.invocation.InstabugInvocationEvent;
 import com.instabug.library.ui.onboarding.WelcomeMessage;
 
@@ -38,5 +41,9 @@ public class InstabugInitalize {
         Instabug.setUserAttribute("USER_TYPE", "instabug user");
 
         Instabug.setAutoScreenRecordingEnabled(true);
+    }
+
+    public static void dispatchTouchEvent(Activity context, MotionEvent ev) {
+        InstabugTrackingDelegate.notifyActivityGotTouchEvent(ev, context);
     }
 }
