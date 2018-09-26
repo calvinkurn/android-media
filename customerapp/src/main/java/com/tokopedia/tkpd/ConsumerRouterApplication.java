@@ -869,6 +869,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public void goToGmSubscribeMembershipRedirect(Context context) {
+        Intent intent = new Intent(context, GoldMerchantRedirectActivity.class);
+        context.startActivity(intent);
+    }
+       
+    @Override
     public void goToGMSubscribe(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
         context.startActivity(intent);

@@ -97,6 +97,8 @@ import com.tokopedia.gm.common.di.component.DaggerGMComponent;
 import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
+import com.tokopedia.gm.subscribe.GmSubscribeModuleRouter;
+import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipActivity;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
@@ -221,7 +223,7 @@ public abstract class SellerRouterApplication extends MainApplication
         MitraToppersRouter, AbstractionRouter, DigitalModuleRouter, ShopModuleRouter,
         ApplinkRouter, OtpModuleRouter, ImageUploaderRouter, ILogisticUploadAwbRouter,
         NetworkRouter, TopChatRouter, ProductEditModuleRouter, TopAdsWebViewRouter,
-        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter {
+        BankRouter, ChangePasswordRouter, WithdrawRouter, ShopSettingRouter, GmSubscribeModuleRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -327,6 +329,12 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToMerchantRedirect(Context context) {
         Intent intent = GmSubscribeHomeActivity.getCallingIntent(context);
+        context.startActivity(intent);
+    }
+
+    @Override
+    public void goToGmSubscribeMembershipRedirect(Context context) {
+        Intent intent = GmMembershipActivity.createIntent(context);
         context.startActivity(intent);
     }
 
@@ -510,6 +518,12 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void sendEventTrackingShopPage(Map<String, Object> eventTracking) {
+        UnifyTracking.sendGTMEvent(eventTracking);
+        CommonUtils.dumper(eventTracking.toString());
+    }
+
+    @Override
+    public void sendEventTrackingGmSubscribe(Map<String, Object> eventTracking) {
         UnifyTracking.sendGTMEvent(eventTracking);
         CommonUtils.dumper(eventTracking.toString());
     }
