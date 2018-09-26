@@ -72,7 +72,7 @@
     <string name="pref_receive_promo" translatable="false">notification_receive_promo</string>
     <string name="pref_receive_seller_info" translatable="false">notification_seller_info</string>
     <string name="pref_receive_group_chat" translatable="false">notification_group_chat</string>
-    <string name="pref_receive_shake" translatable="false">notification_shake_shake</string>
+    <string name="pref_receive_shake_promo" translatable="false">notification_shake_promo</string>
 
     <string name="application_version_fmt">Versi %1$s</string>
     <string name="error_bank_no_password_title">Anda tidak memiliki kata sandi</string>
