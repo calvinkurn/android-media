@@ -19,6 +19,7 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.core.app.BasePresenterFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.seller.R;
 import com.tokopedia.seller.shopsettings.notes.adapter.ShopNotesAdapter;
 import com.tokopedia.seller.shopsettings.notes.listener.ManageShopNotesView;
@@ -91,7 +92,11 @@ public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNot
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.manage_shop_notes, menu);
+        if(GlobalConfig.isCustomerApp()) {
+            inflater.inflate(R.menu.manage_shop_notes_dark, menu);
+        } else {
+            inflater.inflate(R.menu.manage_shop_notes, menu);
+        }
     }
 
     @Override

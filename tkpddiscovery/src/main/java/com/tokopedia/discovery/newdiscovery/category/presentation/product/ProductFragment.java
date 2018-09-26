@@ -25,6 +25,7 @@ import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
@@ -44,6 +45,7 @@ import com.tokopedia.discovery.newdiscovery.category.presentation.product.adapte
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ChildCategoryModel;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.category.presentation.product.viewmodel.ProductViewModel;
+import com.tokopedia.discovery.newdiscovery.search.fragment.BrowseSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragment;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionFragmentPresenter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
@@ -73,7 +75,7 @@ import static com.tokopedia.core.router.productdetail.ProductDetailRouter.EXTRA_
  * @author by alifa on 10/26/17.
  */
 
-public class ProductFragment extends SearchSectionFragment
+public class ProductFragment extends BrowseSectionFragment
         implements SearchSectionGeneralAdapter.OnItemChangeView, ProductContract.View,
         ItemClickListener, WishListActionListener, TopAdsItemClickListener, TopAdsListener,
         DefaultCategoryAdapter.CategoryListener, RevampCategoryAdapter.CategoryListener {
@@ -756,8 +758,13 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
     }
 
@@ -774,7 +781,9 @@ public class ProductFragment extends SearchSectionFragment
 
     @Override
     public void backToTop() {
-        recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     public void setProductList(List<Visitable> productList) {

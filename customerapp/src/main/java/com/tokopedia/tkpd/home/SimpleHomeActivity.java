@@ -14,9 +14,11 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
+import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.gcm.Constants;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ProductHistoryFragment;
 import com.tokopedia.tkpd.home.fragment.WishListFragment;
@@ -36,7 +38,7 @@ public class SimpleHomeActivity extends TActivity
 
     FragmentManager supportFragmentManager;
 
-    @DeepLink(Constants.Applinks.WISHLIST)
+    @DeepLink({Constants.Applinks.WISHLIST, ApplinkConst.WISHLIST})
     public static Intent getWishlistApplinkIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return newWishlistInstance(context)
@@ -44,23 +46,9 @@ public class SimpleHomeActivity extends TActivity
                 .putExtras(extras);
     }
 
-    @DeepLink(Constants.Applinks.RECENT_VIEW)
-    public static Intent getRecentViewApplinkIntent(Context context, Bundle extras) {
-        Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
-        return newRecentViewInstance(context)
-                .setData(uri.build())
-                .putExtras(extras);
-    }
-
     public static Intent newWishlistInstance(Context context) {
         Intent intent = new Intent(context, SimpleHomeActivity.class);
         intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.WISHLIST_FRAGMENT);
-        return intent;
-    }
-
-    public static Intent newRecentViewInstance(Context context) {
-        Intent intent = new Intent(context, SimpleHomeActivity.class);
-        intent.putExtra(SimpleHomeActivity.FRAGMENT_TYPE, SimpleHomeActivity.PRODUCT_HISTORY_FRAGMENT);
         return intent;
     }
 
@@ -78,6 +66,7 @@ public class SimpleHomeActivity extends TActivity
         }
         setContentView(R.layout.activity_simple_home);
         initToolbar();
+        initGraphqlLib();
 
         supportFragmentManager = getSupportFragmentManager();
         supportFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
@@ -96,6 +85,9 @@ public class SimpleHomeActivity extends TActivity
 
     }
 
+    private void initGraphqlLib() {
+        GraphqlClient.init(this);
+    }
 
     @Override
     public void setTitle(int fragmentType) {

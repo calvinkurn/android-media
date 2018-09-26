@@ -6,6 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -36,7 +37,7 @@ import com.tokopedia.contactus.home.view.adapter.CardPagerAdapter;
 import com.tokopedia.contactus.home.view.customview.ArticleTextView;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomeContract;
 import com.tokopedia.contactus.home.view.presenter.ContactUsHomePresenter;
-import com.tokopedia.contactus.inboxticket.activity.InboxTicketActivity;
+import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.util.SessionHandler;
 
 import java.util.List;
@@ -68,6 +69,9 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     TextView btnFullPurchaseList;
     @BindView(R2.id.txt_hi_user)
     TextView txtHiUser;
+
+    @BindView(R2.id.txt_user_info)
+     TextView txtUserMessage;
 
     String msgId;
     @BindView(R2.id.pager_indicator)
@@ -114,7 +118,7 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
         int i = item.getItemId();
         if (i == R.id.action_inbox) {
             ContactUsTracking.eventInboxClick();
-            startActivity(new Intent(getContext(), InboxTicketActivity.class));
+            startActivity(new Intent(getContext(), InboxListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -184,6 +188,11 @@ public class ContactUsHomeFragment extends BaseDaggerFragment
     @Override
     public void setChatBotMessageId(int msgId) {
         this.msgId = String.valueOf(msgId);
+    }
+
+    @Override
+    public void setChatBotMessage(String message) {
+        txtUserMessage.setText(Html.fromHtml(message));
     }
 
     @Override

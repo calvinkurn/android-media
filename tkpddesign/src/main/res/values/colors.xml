@@ -16,6 +16,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="pin_normal">#6B767E</color>
+    <color name="transparent">#00000000</color>
     <color name="countdown_background">#ff3b30</color>
     <color name="background_apps">@color/grey_200</color>
     <color name="background_error">#D50000</color>
@@ -24,7 +25,7 @@
     <color name="background_star_review">#FFC107</color>
 
     <color name="font_black_primary_70">#B3000000</color>
-    <color name="font_black_secondary_54">#8C000000</color>
+    <color name="font_black_secondary_54">#8a000000</color>
     <color name="font_black_disabled_38">#61000000</color>
 
     <color name="font_white_primary_70">#FFFFFFFF</color>
@@ -50,7 +51,11 @@
 
     <color name="grey_transparent_background">#28000000</color>
 
+    <color name="black_12">#1e000000</color>
+    <color name="black_36">#5b000000</color>
+    <color name="black_54">#8a000000</color>
     <color name="black_55">#8C000000</color>
+    <color name="black_70">#b3000000</color>
 
     <color name="bottomnav_bg">#FFFFFF</color>
     <color name="bottomnav_active">@color/green_250</color>
@@ -62,4 +67,11 @@
     <color name="bg_button_border_outline">#E0E0E0</color>
     <color name="white_two">#e0e0e0</color>
     <color name="gray_background">#fff2f3f4</color>
+
+    <color name="pinkish_grey">#bdbdbd</color>
+    <color name="widget_card_with_action_separator">#cfcfcf</color>
+    <color name="black_24">#2e000000</color>
+    <color name="black_26">#42000000</color>
+    <color name="black_56">#8f000000</color>
+    <color name="greyish_bg">#ededed</color>
 </resources>

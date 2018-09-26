@@ -3,7 +3,7 @@ package com.tokopedia.inbox.rescenter.createreso.view.viewmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 /**
  * Created by yoasfs on 18/08/17.
@@ -12,11 +12,13 @@ import org.json.JSONObject;
 public class ProblemOrderDetailResult implements Parcelable {
     public int id;
 
-    public JSONObject writeToJson() {
-        JSONObject object = new JSONObject();
+    public static final String PARAM_ID = "id";
+
+    public JsonObject writeToJson() {
+        JsonObject object = new JsonObject();
         try {
             if (id != 0) {
-                object.put("id", id);
+                object.addProperty(PARAM_ID, id);
             }
         } catch (Exception e) {
             e.printStackTrace();

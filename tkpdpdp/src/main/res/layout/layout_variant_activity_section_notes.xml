@@ -20,22 +20,32 @@
         android:text="@string/catatan_untuk_penjual_opsional"
         />
 
-    <com.tokopedia.design.component.EditTextCompat
-        android:id="@+id/et_remark"
+    <com.tokopedia.design.text.TkpdHintTextInputLayout
+        android:id="@+id/wrapperRemark"
+        style="@style/HintTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:imeActionLabel="Selesai"
-        android:imeOptions="actionDone"
-        android:maxLines="3"
-        android:paddingBottom="@dimen/dp_16"
-        android:textColor="@color/font_black_primary_70"
-        android:textColorHighlight="@color/tkpd_main_green"
-        android:textSize="@dimen/sp_13"
-        android:textStyle="normal"
-        app:backgroundTint="@color/tkpd_main_green"
-        tools:ignore="TextFields"
-        tools:text="Saya pesan warna merah yah min.. "
-        />
+        app:counterEnabled="true"
+        app:counterMaxLength="144">
+
+        <com.tokopedia.design.component.EditTextCompat
+            android:id="@+id/et_remark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:imeActionLabel="Selesai"
+            android:imeOptions="actionDone"
+            android:maxLines="3"
+            android:paddingBottom="@dimen/dp_16"
+            android:textColor="@color/font_black_primary_70"
+            android:textColorHighlight="@color/tkpd_main_green"
+            android:textSize="@dimen/sp_13"
+            android:textStyle="normal"
+            android:maxLength="144"
+            tools:ignore="TextFields"
+            tools:text="Saya pesan warna merah yah min.. "
+            />
+
+    </com.tokopedia.design.text.TkpdHintTextInputLayout>
 
 </LinearLayout>

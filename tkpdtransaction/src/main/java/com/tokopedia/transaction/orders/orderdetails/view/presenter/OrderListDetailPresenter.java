@@ -55,7 +55,8 @@ public class OrderListDetailPresenter extends BaseDaggerPresenter<OrderListDetai
 
     @Override
     public void setOrderDetailsContent(String orderId, String orderCategory, String fromPayment) {
-
+        if(getView().getAppContext()==null)
+            return;
         Map<String, Object> variables = new HashMap<>();
         variables.put(ORDER_CATEGORY, orderCategory);
         variables.put(ORDER_ID, orderId);

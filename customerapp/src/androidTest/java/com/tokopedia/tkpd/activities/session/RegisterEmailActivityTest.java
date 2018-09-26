@@ -354,7 +354,7 @@ public class RegisterEmailActivityTest {
      * Updated methode by fauzan
      */
 
-    private void fillWithBlacklistName(){
+    private void fillWithBlacklistName() {
         onView(tkpdHintTextInputLayout(R.id.wrapper_email))
                 .perform(clearText())
                 .perform(typeText("fauzan@gmailccc.com"));

@@ -15,10 +15,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.view.webview.CommonWebViewClient;
+import com.tokopedia.abstraction.base.view.webview.FilePickerInterface;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.oms.R;
 
-public class ScroogeActivity extends AppCompatActivity {
+public class ScroogeActivity extends AppCompatActivity implements FilePickerInterface {
     //callbacks URL's
     private static String ADD_CC_SUCESS_CALLBACK = "tokopedia://action_add_cc_success";
     private static String ADD_CC_FAIL_CALLBACK = "tokopedia://action_add_cc_fail";
@@ -40,6 +42,7 @@ public class ScroogeActivity extends AppCompatActivity {
     private int requestCode;
     private boolean isPostRequest;
     private String title;
+    private CommonWebViewClient webChromeWebviewClient;
 
     public static Intent getCallingIntent(Context context, String url, boolean isPostRequest, String postParams, String title) {
         Intent intent = new Intent(context, ScroogeActivity.class);
@@ -64,6 +67,7 @@ public class ScroogeActivity extends AppCompatActivity {
 
         if (mPostParams == null) mPostParams = "";
         this.mWebView.postUrl(mURl, mPostParams.getBytes());
+
     }
 
     @Override
@@ -92,6 +96,7 @@ public class ScroogeActivity extends AppCompatActivity {
 
         mProgress.setIndeterminate(true);
 
+        webChromeWebviewClient = new CommonWebViewClient(this, mProgress);
         setupWebView(this.mWebView);
     }
 
@@ -173,20 +178,15 @@ public class ScroogeActivity extends AppCompatActivity {
             }
         });
 
-        webview.setWebChromeClient(new WebChromeClient() {
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                try {
-                    if (newProgress == 100) {
-                        view.setVisibility(View.VISIBLE);
-                        mProgress.setVisibility(View.GONE);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                super.onProgressChanged(view, newProgress);
-            }
-        });
+        webview.setWebChromeClient(webChromeWebviewClient);
         webview.getSettings().setJavaScriptEnabled(true);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+        if(requestCode == CommonWebViewClient.ATTACH_FILE_REQUEST && webChromeWebviewClient != null){
+            webChromeWebviewClient.onActivityResult(requestCode, resultCode, intent);
+        }
     }
 }

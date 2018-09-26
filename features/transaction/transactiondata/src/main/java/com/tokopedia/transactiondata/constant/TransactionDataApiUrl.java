@@ -18,6 +18,8 @@ public class TransactionDataApiUrl {
 
         public static final String PATH_ADD_TO_CART = BASE_PATH + VERSION_2 + "/add_product_cart";
         public static final String PATH_CART_LIST = BASE_PATH + VERSION_2 + "/cart_list";
+        public static final String PATH_CART_LIST_MULTIPLE_ADDRESS = BASE_PATH + VERSION_2 + "/cart_list/multi_address";
+        public static final String PATH_SHOP_GROUP_LIST = BASE_PATH + VERSION_2 + "/shop_group";
         public static final String PATH_REMOVE_FROM_CART = BASE_PATH + VERSION_2 + "/remove_product_cart";
         public static final String PATH_UPDATE_CART = BASE_PATH + VERSION_2 + "/update_cart";
         public static final String PATH_CHECK_PROMO_CODE_CART_LIST = BASE_PATH + VERSION_2 + "/check_promo_code";
