@@ -2,6 +2,8 @@ package com.tokopedia.transaction.purchase.utils;
 
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
+
+@Deprecated
 public class TransactionTrackingUtil {
     private ITransactionOrderDetailRouter router;
 

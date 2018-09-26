@@ -17,6 +17,8 @@ import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.app.TActivity;
 import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
+import com.tokopedia.logisticanalytics.listener.IConfirmShippingAnalyticsActionListener;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.di.DaggerOrderCourierComponent;
@@ -45,7 +47,7 @@ public class ConfirmShippingActivity extends TActivity
         implements ConfirmShippingView,
         ServiceSelectionFragment.ServiceSelectionListener,
         CourierSelectionFragment.OrderCourierFragmentListener,
-        ToolbarChangeListener {
+        ToolbarChangeListener, IConfirmShippingAnalyticsActionListener {
 
     private static final String EXTRA_ORDER_DETAIL_DATA = "EXTRA_ORDER_DETAIL_DATA";
     private static final String EXTRA_ORDER_MODE_KEY = "EXTRA_ORDER_MODE_KEY";
@@ -66,7 +68,8 @@ public class ConfirmShippingActivity extends TActivity
     OrderCourierPresenterImpl presenter;
 
     @Inject
-    TransactionTrackingUtil transactionTrackingUtil;
+    SalesShippingAnalytics salesShippingAnalytics;
+
 
     public static Intent createInstance(Context context, OrderDetailData data) {
         Intent intent = new Intent(context, ConfirmShippingActivity.class);
@@ -111,7 +114,7 @@ public class ConfirmShippingActivity extends TActivity
         confirmButton.setOnClickListener(onConfirmButtonClickedListener(barcodeEditText));
         barcodeEditText.setText(orderDetailData.getAwb());
         barcodeScanner.setOnClickListener(onBarcodeScanClickedListener());
-        if(!editableModel.getShipmentName().isEmpty())
+        if (!editableModel.getShipmentName().isEmpty())
             courierName.setText(
                     editableModel.getShipmentName() + " " + editableModel.getPackageName()
             );
@@ -119,13 +122,13 @@ public class ConfirmShippingActivity extends TActivity
 
     private boolean isChangeCourierMode(int orderCode) {
         return (orderCode >= OrderShipmentTypeDef.ORDER_WAITING
-                && orderCode< OrderShipmentTypeDef.ORDER_DELIVERED)
+                && orderCode < OrderShipmentTypeDef.ORDER_DELIVERED)
                 || getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CHANGE_COURIER_MODE;
     }
 
     private void initateData(OrderDetailData orderDetailData) {
         editableModel = new OrderDetailShipmentModel();
-        if(getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CONFIRM_SHIPMENT_MODE) {
+        if (getIntent().getExtras().getInt(EXTRA_ORDER_MODE_KEY) == CONFIRM_SHIPMENT_MODE) {
             editableModel.setShipmentId(orderDetailData.getShipmentId());
             editableModel.setPackageId(orderDetailData.getShipmentServiceId());
             editableModel.setShipmentName(orderDetailData.getShipmentName());
@@ -140,7 +143,7 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void receiveShipmentData(ListCourierViewModel model) {
-        if(model.getCourierViewModelList().size() == 0) {
+        if (model.getCourierViewModelList().size() == 0) {
             NetworkErrorHelper.showSnackbar(
                     ConfirmShippingActivity.this,
                     getString(R.string.error_no_courier_available)
@@ -157,7 +160,7 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onSuccessConfirm(String successMessage) {
-        transactionTrackingUtil.sendTrackerOnSuccessConfirmShipping();
+        sendAnalyticsOnClickButtonFinishWithSuccessResult();
         Toast.makeText(this, successMessage, Toast.LENGTH_LONG).show();
         //TODO REMOVE IF BUGGY
         setResult(Activity.RESULT_OK);
@@ -190,7 +193,7 @@ public class ConfirmShippingActivity extends TActivity
 
     @Override
     public void onShowErrorConfirmShipping(String message) {
-        transactionTrackingUtil.sendTrackerOnFailedConfirmShipping();
+        sendAnalyticsOnClickButtonFinishWithFailedResult();
         onShowError(message);
     }
 
@@ -231,7 +234,7 @@ public class ConfirmShippingActivity extends TActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
+                if (editableModel.getPackageId() == null || editableModel.getPackageId().isEmpty()) {
                     NetworkErrorHelper.showSnackbar(
                             ConfirmShippingActivity.this,
                             getString(R.string.error_no_courier_chosen)
@@ -250,7 +253,7 @@ public class ConfirmShippingActivity extends TActivity
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                transactionTrackingUtil.sendTrackerOnScanBarcodeClick();
+                sendAnalyticsOnClickButtonScan();
                 ConfirmShippingActivityPermissionsDispatcher
                         .onScanBarcodeWithCheck(ConfirmShippingActivity.this);
             }
@@ -299,8 +302,8 @@ public class ConfirmShippingActivity extends TActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String barcode = CommonUtils.getBarcode(requestCode, resultCode, data);
-        if(!TextUtils.isEmpty(barcode)){
-            transactionTrackingUtil.sendTrackerOnResultScanBarcode();
+        if (!TextUtils.isEmpty(barcode)) {
+            sendAnalyticsOnViewScanAwb();
         }
         barcodeEditText.setText(barcode);
         super.onActivityResult(requestCode, resultCode, data);
@@ -314,5 +317,25 @@ public class ConfirmShippingActivity extends TActivity
     @Override
     public void onChangeTitle(String toolbarTitle) {
         toolbar.setTitle(toolbarTitle);
+    }
+
+    @Override
+    public void sendAnalyticsOnClickButtonScan() {
+        salesShippingAnalytics.eventClickShippingSalesShippingClickTombolScanAwb();
+    }
+
+    @Override
+    public void sendAnalyticsOnViewScanAwb() {
+        salesShippingAnalytics.eventViewShippingSalesShippingViewScanAwbSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickButtonFinishWithSuccessResult() {
+        salesShippingAnalytics.eventClickShippingSalesShippingClickTombolSelesaiSuccess();
+    }
+
+    @Override
+    public void sendAnalyticsOnClickButtonFinishWithFailedResult() {
+        salesShippingAnalytics.eventClickShippingSalesShippingClickTombolSelesaiFail();
     }
 }

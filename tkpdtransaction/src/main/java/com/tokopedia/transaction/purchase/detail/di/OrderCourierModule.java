@@ -2,9 +2,11 @@ package com.tokopedia.transaction.purchase.detail.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.network.apiservices.shop.MyShopOrderService;
 import com.tokopedia.core.network.apiservices.transaction.OrderDetailService;
+import com.tokopedia.logisticanalytics.SalesShippingAnalytics;
 import com.tokopedia.transaction.network.MyShopOrderActService;
 import com.tokopedia.transaction.purchase.detail.domain.OrderCourierRepository;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
@@ -81,9 +83,18 @@ public class OrderCourierModule {
 
     @Provides
     @OrderCourierScope
-    TransactionTrackingUtil provideTransactionTrackingUtil(@ApplicationContext Context context){
-        if(context instanceof ITransactionOrderDetailRouter) {
-            return new TransactionTrackingUtil((ITransactionOrderDetailRouter)context);
+    TransactionTrackingUtil provideTransactionTrackingUtil(@ApplicationContext Context context) {
+        if (context instanceof ITransactionOrderDetailRouter) {
+            return new TransactionTrackingUtil((ITransactionOrderDetailRouter) context);
+        }
+        return null;
+    }
+
+    @Provides
+    @OrderCourierScope
+    SalesShippingAnalytics provideSalesShippingAnalytics(@ApplicationContext Context context) {
+        if (context instanceof AbstractionRouter) {
+            return new SalesShippingAnalytics(((AbstractionRouter) context).getAnalyticTracker());
         }
         return null;
     }
