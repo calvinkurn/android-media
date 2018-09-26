@@ -86,6 +86,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnoun
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.UserActionViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VibrateViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VideoViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.VoteAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.tab.TabViewModel;
 import com.tokopedia.groupchat.common.analytics.EEPromotion;
@@ -266,7 +267,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             findViewById(R.id.video_container).setVisibility(View.VISIBLE);
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
-            setToolbarWhite();
             if (videoFragment == null)
                 return;
             videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -359,7 +359,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
             sponsorLayout.setVisibility(View.GONE);
         }else{
-            setupToolbar();
             findViewById(R.id.video_container).setVisibility(View.GONE);
             sponsorLayout.setVisibility(View.VISIBLE);
         }
@@ -399,7 +398,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setupToolbar();
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
@@ -496,8 +494,6 @@ public class GroupChatActivity extends BaseSimpleActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
     }
 
     private boolean isLollipopOrNewer() {
@@ -1459,9 +1455,9 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setToolbarPlain() {
+        toolbar.removeAllViews();
         setToolbarWhite();
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
-        toolbar.removeAllViews();
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
     }
@@ -1515,12 +1511,25 @@ public class GroupChatActivity extends BaseSimpleActivity
             updateAds((AdsViewModel) map);
         } else if (map instanceof GroupChatQuickReplyViewModel) {
             updateQuickReply(((GroupChatQuickReplyViewModel) map).getList());
+        } else if (map instanceof PinnedMessageViewModel){
+            updatePinnedMessage((PinnedMessageViewModel) map);
+        } else if (map instanceof VideoViewModel){
+            updateVideo((VideoViewModel) map);
         }
 
         if (currentFragmentIsChat()) {
             ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
                     (GroupChatFragment.class.getSimpleName())).onMessageReceived(map);
         }
+    }
+
+    private void updateVideo(VideoViewModel map) {
+        viewModel.getChannelInfoViewModel().setVideoId(map.getVideoId());
+        initVideoFragment(getChannelInfoViewModel());
+    }
+
+    private void updatePinnedMessage(PinnedMessageViewModel map) {
+        viewModel.getChannelInfoViewModel().setPinnedMessageViewModel(map);
     }
 
     private void updateQuickReply(List<GroupChatQuickReplyItemViewModel> list) {

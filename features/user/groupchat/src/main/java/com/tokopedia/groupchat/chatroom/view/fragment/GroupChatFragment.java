@@ -14,9 +14,11 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -87,6 +89,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
     private static final long DELAY_TIME_SPRINT_SALE = TimeUnit.SECONDS.toMillis(3);
     private static final int REQUEST_LOGIN = 111;
     private static final String NO_USER_ID = "anonymous";
+    private static final int KEYBOARD_TRESHOLD = 100;
 
     @Inject
     ChatroomPresenter presenter;
@@ -283,6 +286,26 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         });
 
         setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
+
+        chatRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            String TAG = "global keyboardd";
+            @Override
+            public void onGlobalLayout() {
+//                int heightDiff = chatRecyclerView.getRootView().getHeight() - chatRecyclerView.getHeight();
+//
+//                if (heightDiff > KEYBOARD_TRESHOLD) {
+//                    Log.i(TAG, "onGlobalLayout: ");
+//                } else {
+//                    Log.i(TAG, "onGlobalLayout: ");
+//                }
+//                Log.i(TAG, chatRecyclerView.getRootView().getHeight()+" onGlobalLayout: " +chatRecyclerView.getHeight());
+//                if(chatRecyclerView.getHeight() < 200){
+//
+//                }else{
+//
+//                }
+            }
+        });
     }
 
     private void goToLogin() {
@@ -386,6 +409,11 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             if (list != null && !list.isEmpty() && userSession.isLoggedIn()) {
                 quickReplyRecyclerView.setVisibility(View.VISIBLE);
                 quickReplyAdapter.setList(list);
+                ChannelInfoViewModel channelInfoViewModel = ((GroupChatContract.View) getActivity())
+                        .getChannelInfoViewModel();
+                if(channelInfoViewModel != null){
+                    channelInfoViewModel.setQuickRepliesViewModel(list);
+                }
             } else {
                 quickReplyRecyclerView.setVisibility(View.GONE);
             }
@@ -752,21 +780,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             analytics.eventViewBannerPushPromo((ImageAnnouncementViewModel)messageItem);
         }
 
-        if(messageItem instanceof VideoViewModel){
-            setVideo((VideoViewModel) messageItem);
-        }
-
         if (!groupChatMessagesMapper.shouldHideMessage(messageItem)) {
             addIncomingMessage(messageItem);
         }
 
-    }
-
-    private void setVideo(VideoViewModel video) {
-        if(getActivity()!=null && getActivity() instanceof GroupChatActivity){
-            ((GroupChatActivity) getActivity()).getChannelInfoViewModel().setVideoId(video.getVideoId());
-            ((GroupChatActivity) getActivity()).initVideoFragment(((GroupChatActivity) getActivity()).getChannelInfoViewModel());
-        }
     }
 
     private void addIncomingMessage(Visitable messageItem) {

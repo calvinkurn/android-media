@@ -305,6 +305,10 @@ public class ChannelInfoViewModel implements Parcelable {
         return pinnedMessageViewModel;
     }
 
+    public void setPinnedMessageViewModel(@Nullable PinnedMessageViewModel pinnedMessageViewModel) {
+        this.pinnedMessageViewModel = pinnedMessageViewModel;
+    }
+
     @Nullable
     public ExitMessage getExitMessage() {
         return exitMessage;
