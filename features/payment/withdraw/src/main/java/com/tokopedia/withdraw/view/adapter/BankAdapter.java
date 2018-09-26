@@ -27,7 +27,6 @@ import javax.inject.Inject;
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
 
-    @Inject
     WithdrawAnalytics analytics;
 
 
@@ -44,16 +43,17 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     private OnBankClickListener listener;
     private BankAccountViewModel accountButton;
 
-    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
+    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
         this.context = context;
         this.listBank = listBank;
         this.selectedBankId = "";
         this.selectedItem = -1;
         this.accountButton = new BankAccountViewModel();
+        this.analytics = analytics;
     }
 
-    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
-        return new BankAdapter(context, listBank);
+    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
+        return new BankAdapter(context, listBank, analytics);
     }
 
     public void setList(List<BankAccountViewModel> listBank) {

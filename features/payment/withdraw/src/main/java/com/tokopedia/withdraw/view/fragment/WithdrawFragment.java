@@ -167,7 +167,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         super.onViewCreated(view, savedInstanceState);
 
         listBank = new ArrayList<>();
-        bankAdapter = BankAdapter.createAdapter(this, listBank);
+        bankAdapter = BankAdapter.createAdapter(this, listBank, analytics);
         bankRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         bankRecyclerView.setAdapter(bankAdapter);
         bankAdapter.setList(listBank);
