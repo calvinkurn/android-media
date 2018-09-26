@@ -309,6 +309,7 @@
                                 android:paddingRight="@dimen/dp_16"
                                 android:text="@string/label_empty_cart_see_all"
                                 android:textColor="@color/tkpd_main_green"
+                                android:visibility="gone"
                                 app:drawableRightCompat="@drawable/ic_keyboard_arrow_right_24dp" />
 
                             <View

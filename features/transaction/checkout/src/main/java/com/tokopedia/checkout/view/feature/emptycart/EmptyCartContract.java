@@ -33,11 +33,11 @@ public interface EmptyCartContract {
 
         void renderEmptyCart(String autoApplyMessage);
 
-        void renderHasWishList();
+        void renderHasWishList(boolean hasMoreItem);
 
         void renderHasNoWishList();
 
-        void renderHasRecentView();
+        void renderHasRecentView(boolean hasMoreItem);
 
         void renderHasNoRecentView();
 

@@ -106,10 +106,12 @@ public class EmptyCartPresenter extends BaseDaggerPresenter<EmptyCartContract.Vi
     @Override
     public void setWishListViewModels(List<Wishlist> wishLists) {
         wishlistViewModels.clear();
-        for (Wishlist wishlist : wishLists) {
-            WishlistViewModel wishlistViewModel = new WishlistViewModel();
-            wishlistViewModel.setWishlist(wishlist);
-            wishlistViewModels.add(wishlistViewModel);
+        for (int i = 0; i < wishLists.size(); i++) {
+            if (i < LIST_SIZE) {
+                WishlistViewModel wishlistViewModel = new WishlistViewModel();
+                wishlistViewModel.setWishlist(wishLists.get(i));
+                wishlistViewModels.add(wishlistViewModel);
+            }
         }
     }
 

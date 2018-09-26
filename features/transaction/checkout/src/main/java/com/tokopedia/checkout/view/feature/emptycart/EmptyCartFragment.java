@@ -265,9 +265,14 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void renderHasWishList() {
+    public void renderHasWishList(boolean hasMoreItem) {
         cvWishList.setVisibility(View.VISIBLE);
         wishlistAdapter.notifyDataSetChanged();
+        if (hasMoreItem) {
+            tvWishListSeeAll.setVisibility(View.VISIBLE);
+        } else {
+            tvWishListSeeAll.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -284,9 +289,14 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void renderHasRecentView() {
+    public void renderHasRecentView(boolean hasMoreItem) {
         cvLastSeen.setVisibility(View.VISIBLE);
         recentViewAdapter.notifyDataSetChanged();
+        if (hasMoreItem) {
+            tvLastSeenSeeAll.setVisibility(View.VISIBLE);
+        } else {
+            tvLastSeenSeeAll.setVisibility(View.GONE);
+        }
     }
 
     @Override
