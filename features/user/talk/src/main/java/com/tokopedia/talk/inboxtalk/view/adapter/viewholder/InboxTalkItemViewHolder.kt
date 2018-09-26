@@ -43,6 +43,7 @@ open class InboxTalkItemViewHolder(val v: View,
         fun onNoShowTalkItemClick(talkId: String)
         fun onGoToPdp(productId: String)
         fun onGoToUserProfile(userId: String)
+        fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String)
     }
 
     protected val productName: TextView = itemView.productName
@@ -88,6 +89,13 @@ open class InboxTalkItemViewHolder(val v: View,
 
             itemView.replyButton.setOnClickListener {
                 listener.onReplyTalkButtonClick(
+                        element.talkThread.headThread.menu.allowReply,
+                        element.talkThread.headThread.talkId,
+                        element.talkThread.headThread.shopId)
+            }
+
+            itemView.setOnClickListener {
+                listener.onItemTalkClick(
                         element.talkThread.headThread.menu.allowReply,
                         element.talkThread.headThread.talkId,
                         element.talkThread.headThread.shopId)

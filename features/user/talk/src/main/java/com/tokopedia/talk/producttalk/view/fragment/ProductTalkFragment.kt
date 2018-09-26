@@ -30,7 +30,6 @@ import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
-import com.tokopedia.talk.producttalk.di.DaggerProductTalkComponent
 import com.tokopedia.talk.producttalk.presenter.ProductTalkPresenter
 import com.tokopedia.talk.producttalk.view.activity.TalkProductActivity
 import com.tokopedia.talk.producttalk.view.adapter.EmptyProductTalkViewHolder
@@ -247,7 +246,9 @@ class ProductTalkFragment : BaseDaggerFragment(),
         talkProgressBar.visibility = View.GONE
     }
 
-    override fun onEmptyTalk() {
+    override fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel) {
+        setupViewModel(productTalkViewModel)
+
         setHasOptionsMenu(false)
         adapter.showEmpty(presenter.isMyShop(shopId))
     }
@@ -295,6 +296,15 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
         adapter.deleteComment(talkId, commentId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
+    }
+
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+        if (!presenter.isLoggedIn()) {
+            goToLogin()
+        } else {
+            goToDetailTalk(talkId, shopId, allowReply)
+        }
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
@@ -357,10 +367,6 @@ class ProductTalkFragment : BaseDaggerFragment(),
     }
 
     private fun onMenuItemClicked(itemMenu: Menus.ItemMenus, bottomMenu: Menus, shopId: String, talkId: String, productId: String) {
-        if (presenter.isLoggedIn()) {
-            goToLogin()
-            return;
-        }
 
         if (!::alertDialog.isInitialized) {
             alertDialog = Dialog(activity, Dialog.Type.PROMINANCE)
@@ -528,10 +534,13 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessDeleteTalk(talkId: String) {
         adapter.deleteTalkByTalkId(talkId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
     }
 
     override fun onSuccessUnfollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, false)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_unfollow_talk))
+
     }
 
     override fun onSuccessFollowTalk(talkId: String) {

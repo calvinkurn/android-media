@@ -30,7 +30,6 @@ import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkItemViewModel
 import com.tokopedia.talk.inboxtalk.view.viewmodel.InboxTalkViewModel
 import com.tokopedia.talk.producttalk.view.viewmodel.TalkState
 import com.tokopedia.talk.reporttalk.view.activity.ReportTalkActivity
-import com.tokopedia.talk.shoptalk.di.DaggerShopTalkComponent
 import com.tokopedia.talk.shoptalk.view.activity.ShopTalkActivity
 import com.tokopedia.talk.shoptalk.view.listener.ShopTalkContract
 import com.tokopedia.talk.shoptalk.view.presenter.ShopTalkPresenter
@@ -172,6 +171,14 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onErrorActionTalk(errorMessage: String) {
         NetworkErrorHelper.showRedSnackbar(view, errorMessage)
+    }
+
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+        if (userSession.isLoggedIn) {
+            goToDetailTalk(talkId, shopId, allowReply)
+        } else {
+            goToLogin()
+        }
     }
 
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
@@ -426,14 +433,20 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onSuccessDeleteTalk(talkId: String) {
         adapter.deleteTalkByTalkId(talkId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
+
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
         adapter.deleteComment(talkId, commentId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
+
     }
 
     override fun onSuccessUnfollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, false)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_unfollow_talk))
+
     }
 
     override fun onSuccessFollowTalk(talkId: String) {

@@ -62,7 +62,7 @@ class ProductTalkPresenter @Inject constructor(@TalkScope val userSession: UserS
                     isRequesting = false
                     view.hideLoadingFull()
                     if (viewModel.listThread.isEmpty()) {
-                        view.onEmptyTalk()
+                        view.onEmptyTalk(viewModel)
                     } else {
                         if (reset) {
                             view.hideRefresh()

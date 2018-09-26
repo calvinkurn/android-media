@@ -41,6 +41,7 @@ import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactor
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.user.session.UserSession
+import kotlinx.android.synthetic.main.fragment_report_talk.*
 import kotlinx.android.synthetic.main.fragment_talk_comments.*
 import javax.inject.Inject
 
@@ -273,6 +274,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             intent.putExtras(bundle)
             setResult(TalkDetailsActivity.RESULT_OK_REFRESH_TALK, intent)
         }
+
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_send_talk))
 
     }
 
@@ -516,6 +519,10 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         //There should not be reply button
     }
 
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+        //Do nothing
+    }
+
     override fun onGoToPdp(productId: String) {
         activity?.applicationContext?.run {
             val intent: Intent = (this as TalkRouter).getProductPageIntent(this, productId)
@@ -534,6 +541,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
             intent.putExtras(bundle)
             setResult(TalkDetailsActivity.RESULT_OK_DELETE_TALK, intent)
         }
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
+
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
@@ -548,6 +557,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
 
         adapter.deleteComment(talkId, commentId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
+
 
     }
 
@@ -561,6 +572,8 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
 
         adapter.setStatusFollow(talkId, false)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_unfollow_talk))
+
     }
 
     override fun onSuccessFollowTalk(talkId: String) {
@@ -635,5 +648,12 @@ class TalkDetailsFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         presenter.detachView()
+    }
+
+    override fun onDestroyView() {
+        context?.run {
+            KeyboardHandler.DropKeyboard(this, sendMessageEditText)
+        }
+        super.onDestroyView()
     }
 }

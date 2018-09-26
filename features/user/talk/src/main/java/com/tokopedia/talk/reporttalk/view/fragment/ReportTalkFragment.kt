@@ -224,10 +224,14 @@ class ReportTalkFragment : BaseDaggerFragment(), ReportTalkContract.View, Report
 
     override fun onDestroy() {
         super.onDestroy()
-        context?.run {
-            KeyboardHandler.DropKeyboard(this, view)
-        }
         presenter.detachView()
+    }
+
+    override fun onDestroyView() {
+        context?.run {
+            KeyboardHandler.DropKeyboard(this, reason)
+        }
+        super.onDestroyView()
     }
 
 }

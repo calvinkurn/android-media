@@ -449,6 +449,10 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
     }
 
+    override fun onItemTalkClick(allowReply: Boolean, talkId: String, shopId: String) {
+        goToDetailTalk(talkId, shopId, allowReply)
+    }
+
     override fun onReplyTalkButtonClick(allowReply: Boolean, talkId: String, shopId: String) {
         goToDetailTalk(talkId, shopId, allowReply)
     }
@@ -459,11 +463,11 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
             if (menu.allowDelete) listMenu.add(Menus.ItemMenus(getString(R.string
                     .menu_delete_talk), -1))
             if (menu.allowUnfollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_unfollow_talk),-1))
+                    .menu_unfollow_talk), -1))
             if (menu.allowFollow) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_follow_talk),-1))
+                    .menu_follow_talk), -1))
             if (menu.allowReport) listMenu.add(Menus.ItemMenus(getString(R.string
-                    .menu_report_talk),-1))
+                    .menu_report_talk), -1))
 
             if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
             bottomMenu.itemMenuList = listMenu
@@ -616,14 +620,18 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
     override fun onSuccessDeleteTalk(talkId: String) {
         adapter.deleteTalkByTalkId(talkId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
     }
 
     override fun onSuccessDeleteCommentTalk(talkId: String, commentId: String) {
         adapter.deleteComment(talkId, commentId)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_delete_comment_talk))
     }
 
     override fun onSuccessUnfollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, false)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_unfollow_talk))
+
     }
 
     override fun onSuccessFollowTalk(talkId: String) {

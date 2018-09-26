@@ -15,9 +15,9 @@ interface ProductTalkContract {
         fun getContext(): Context?
         fun showLoadingFull()
         fun hideLoadingFull()
-        fun onEmptyTalk()
-        fun onSuccessResetTalk(listThread: ProductTalkViewModel)
-        fun onSuccessGetTalks(listThread: ProductTalkViewModel)
+        fun onEmptyTalk(productTalkViewModel: ProductTalkViewModel)
+        fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel)
+        fun onSuccessGetTalks(productTalkViewModel: ProductTalkViewModel)
         fun onErrorGetTalks(errorMessage: String?)
         fun setCanLoad()
         fun showRefresh()

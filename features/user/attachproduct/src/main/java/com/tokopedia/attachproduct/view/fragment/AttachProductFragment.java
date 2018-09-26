@@ -81,12 +81,6 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
         } else if (getArguments() != null) {
             isSeller = getArguments().getBoolean(IS_SELLER, false);
         }
-
-        if (isSeller) {
-            sendButton.setVisibility(View.VISIBLE);
-        } else {
-            sendButton.setVisibility(View.GONE);
-        }
     }
 
     @Nullable
@@ -198,6 +192,12 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
 
     @Override
     public void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage) {
+        if(products.size()> 0){
+            sendButton.setVisibility(View.Visible);
+        }else{
+            sendButton.setVisibility(View.Visible);
+        }
+
         renderList(products, hasNextPage);
     }
 
