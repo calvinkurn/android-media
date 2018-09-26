@@ -45,7 +45,7 @@ public class CreatePostImagePickerActivity extends ImagePickerActivity {
                         selectedImageList,
                         null,
                         0,
-                        MAX_PICK_NUMBER - selectedImageList.size()));
+                        MAX_PICK_NUMBER));
         Intent intent = new Intent(context, CreatePostImagePickerActivity.class);
         Bundle bundle = new Bundle();
         bundle.putParcelable(EXTRA_IMAGE_PICKER_BUILDER, builder);
