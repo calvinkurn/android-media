@@ -193,9 +193,9 @@ public class AttachProductFragment extends BaseSearchListFragment<AttachProductI
     @Override
     public void addProductToList(List<AttachProductItemViewModel> products, boolean hasNextPage) {
         if(products.size()> 0){
-            sendButton.setVisibility(View.Visible);
+            sendButton.setVisibility(View.VISIBLE);
         }else{
-            sendButton.setVisibility(View.Visible);
+            sendButton.setVisibility(View.VISIBLE);
         }
 
         renderList(products, hasNextPage);
