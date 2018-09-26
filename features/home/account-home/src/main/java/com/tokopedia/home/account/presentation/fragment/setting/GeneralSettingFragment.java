@@ -268,7 +268,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
     public boolean isSwitchSelected(int settingId) {
         switch (settingId){
             case SettingConstant.SETTING_SHAKE_ID:
-                return isItemSelected(getString(R.string.pref_receive_shake_promo));
+                return isItemSelected(getString(R.string.pref_receive_shake));
             default:
                 return false;
         }
@@ -279,7 +279,7 @@ public class GeneralSettingFragment extends BaseGeneralSettingFragment
         switch (settingId){
             case SettingConstant.SETTING_SHAKE_ID:
                 accountAnalytics.eventClickSetting(SHAKE_SHAKE);
-                saveSettingValue(getString(R.string.pref_receive_shake_promo), value);
+                saveSettingValue(getString(R.string.pref_receive_shake), value);
                 break;
             default:
                 break;

@@ -186,7 +186,7 @@ public class MainParentActivity extends BaseActivity implements
     private void setDefaultShakeEnable() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(getString(R.string.pref_receive_shake_promo), true);
+        editor.putBoolean(getString(R.string.pref_receive_shake), true);
         editor.apply();
     }
 
