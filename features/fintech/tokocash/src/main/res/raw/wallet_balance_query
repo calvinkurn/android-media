@@ -28,5 +28,8 @@
     cash_balance
     raw_cash_balance
     wallet_type
+    help_applink
+    tnc_applink
+    show_announcement
   }
 }

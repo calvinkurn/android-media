@@ -63,6 +63,15 @@ public class BalanceTokoCashEntity {
     @SerializedName("wallet_type")
     @Expose
     private String walletType;
+    @SerializedName("help_applink")
+    @Expose
+    private String helpApplink;
+    @SerializedName("tnc_applink")
+    @Expose
+    private String tncApplink;
+    @SerializedName("show_announcement")
+    @Expose
+    private boolean showAnnouncement;
 
     public Boolean getLinked() {
         return linked;
@@ -158,5 +167,17 @@ public class BalanceTokoCashEntity {
 
     public String getWalletType() {
         return walletType;
+    }
+
+    public String getHelpApplink() {
+        return helpApplink;
+    }
+
+    public String getTncApplink() {
+        return tncApplink;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
     }
 }

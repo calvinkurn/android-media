@@ -33,6 +33,9 @@ public class BalanceTokoCash implements Parcelable {
     private String walletType;
     private String pendingCashback;
     private int amountPendingCashback;
+    private String helpApplink;
+    private String tncApplink;
+    private boolean showAnnouncement;
 
     public BalanceTokoCash() {
     }
@@ -60,6 +63,9 @@ public class BalanceTokoCash implements Parcelable {
         walletType = in.readString();
         pendingCashback = in.readString();
         amountPendingCashback = in.readInt();
+        helpApplink = in.readString();
+        tncApplink = in.readString();
+        showAnnouncement = in.readByte() != 0;
     }
 
     @Override
@@ -85,6 +91,9 @@ public class BalanceTokoCash implements Parcelable {
         dest.writeString(walletType);
         dest.writeString(pendingCashback);
         dest.writeInt(amountPendingCashback);
+        dest.writeString(helpApplink);
+        dest.writeString(tncApplink);
+        dest.writeByte((byte) (showAnnouncement ? 1 : 0));
     }
 
     @Override
@@ -270,5 +279,29 @@ public class BalanceTokoCash implements Parcelable {
 
     public void setAmountPendingCashback(int amountPendingCashback) {
         this.amountPendingCashback = amountPendingCashback;
+    }
+
+    public String getHelpApplink() {
+        return helpApplink;
+    }
+
+    public void setHelpApplink(String helpApplink) {
+        this.helpApplink = helpApplink;
+    }
+
+    public String getTncApplink() {
+        return tncApplink;
+    }
+
+    public void setTncApplink(String tncApplink) {
+        this.tncApplink = tncApplink;
+    }
+
+    public boolean isShowAnnouncement() {
+        return showAnnouncement;
+    }
+
+    public void setShowAnnouncement(boolean showAnnouncement) {
+        this.showAnnouncement = showAnnouncement;
     }
 }

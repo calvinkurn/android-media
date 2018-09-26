@@ -60,6 +60,9 @@ public class BalanceTokoCashMapper implements Func1<BalanceTokoCashEntity, Balan
                 balanceTokoCash.setApplinks(balanceTokoCashEntity.getApplinks());
                 balanceTokoCash.setActionBalance(action);
                 balanceTokoCash.setWalletType(balanceTokoCashEntity.getWalletType());
+                balanceTokoCash.setHelpApplink(balanceTokoCashEntity.getHelpApplink());
+                balanceTokoCash.setTncApplink(balanceTokoCashEntity.getTncApplink());
+                balanceTokoCash.setShowAnnouncement(balanceTokoCashEntity.isShowAnnouncement());
                 return balanceTokoCash;
             }
 
