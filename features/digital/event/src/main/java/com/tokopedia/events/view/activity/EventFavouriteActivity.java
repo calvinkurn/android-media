@@ -135,7 +135,7 @@ public class EventFavouriteActivity extends TActivity implements EventFavouriteC
 
     private void initInjector() {
         eventComponent = DaggerEventComponent.builder()
-                .appComponent(getApplicationComponent())
+                .baseAppComponent(getBaseAppComponent())
                 .eventModule(new EventModule(this))
                 .build();
     }

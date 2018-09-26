@@ -398,11 +398,6 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onErrorAddWishList(String errorMessage, String productId) {
-        if (!shopProductLimitedListPresenter.isLogin()) {
-            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
-            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
-            return;
-        }
         NetworkErrorHelper.showCloseSnackbar(getActivity(), errorMessage);
     }
 
@@ -590,6 +585,11 @@ public class ShopProductListLimitedFragment extends BaseListFragment<BaseShopPro
 
     @Override
     public void onWishListClicked(ShopProductViewModel shopProductViewModel, boolean isFromFeatured) {
+        if (!shopProductLimitedListPresenter.isLogin()) {
+            Intent intent = ((ShopModuleRouter) getActivity().getApplication()).getLoginIntent(getActivity());
+            startActivityForResult(intent, REQUEST_CODE_USER_LOGIN);
+            return;
+        }
         if (shopInfo != null) {
             if (isFromFeatured) {
                 shopPageTracking.eventClickWishlistShopPageFeatured(getString(R.string.shop_info_title_tab_product),

@@ -29,6 +29,8 @@ import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.instantloan.InstantLoanComponentInstance;
 import com.tokopedia.instantloan.R;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventConstants;
+import com.tokopedia.instantloan.common.analytics.InstantLoanEventTracking;
 import com.tokopedia.instantloan.data.model.response.BannerEntity;
 import com.tokopedia.instantloan.ddcollector.DDCollectorManager;
 import com.tokopedia.instantloan.di.component.InstantLoanComponent;
@@ -247,6 +249,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
             mBannerPager.setClipToPadding(false);
             mBannerPager.setPageMargin(getResources().getDimensionPixelOffset(R.dimen.il_margin_medium));
             mBannerPager.addOnPageChangeListener(mBannerPageChangeListener);
+            sendBannerImpressionEvent(0);
         }
     }
 
@@ -321,6 +324,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        sendPermissionDeniedGTMEvent(permissions, grantResults);
         DDCollectorManager.getsInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -347,6 +351,7 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
                 mBtnNextBanner.show();
                 mBtnPreviousBanner.show();
             }
+            sendBannerImpressionEvent(position);
         }
 
         @Override
@@ -355,13 +360,27 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
         }
     };
 
+    private void sendBannerImpressionEvent(int position) {
+        BannerPagerAdapter bannerPagerAdapter = (BannerPagerAdapter) mBannerPager.getAdapter();
+
+        if (bannerPagerAdapter != null &&
+                bannerPagerAdapter.getBannerEntityList() != null &&
+                bannerPagerAdapter.getBannerEntityList().get(position) != null) {
+            String eventLabel = bannerPagerAdapter.getBannerEntityList().get(position).getLink()
+                    + " - " + String.valueOf(position);
+            InstantLoanEventTracking.eventLoanBannerImpression(eventLabel);
+        }
+    }
+
     private CharSequence getPageTitle(int position) {
         return getResources().getStringArray(R.array.values_title)[position];
     }
 
     @Override
-    public void onBannerClick(View view) {
+    public void onBannerClick(View view, int position) {
         String url = (String) view.getTag();
+        String eventLabel = url + " - " + String.valueOf(position);
+        InstantLoanEventTracking.eventLoanBannerClick(eventLabel);
         if (!TextUtils.isEmpty(url)) {
             openWebView(url);
         }
@@ -370,6 +389,16 @@ public class InstantLoanActivity extends BaseSimpleActivity implements HasCompon
     public void openWebView(String url) {
         Intent intent = SimpleWebViewWithFilePickerActivity.getIntentWithTitle(this, url, PINJAMAN_TITLE);
         startActivity(intent);
+    }
+
+    private void sendPermissionDeniedGTMEvent(@NonNull String[] permissions, @NonNull int[] grantResults) {
+        StringBuilder eventLabel = new StringBuilder(InstantLoanEventConstants.EventLabel.PL_PERMISSION_DENIED);
+        for (int i = 0; i < permissions.length; i++) {
+            if (grantResults[i] == -1) {
+                eventLabel.append(permissions[i]).append(", ");
+            }
+        }
+        InstantLoanEventTracking.eventInstantLoanPermissionStatus(eventLabel.toString());
     }
 }
 

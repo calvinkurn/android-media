@@ -9,7 +9,6 @@ import java.util.List;
  */
 
 public class ChatRoomViewModel {
-
     String nameHeader;
     String labelHeader;
     String onlineTime;
@@ -20,6 +19,9 @@ public class ChatRoomViewModel {
     boolean hasNext;
     private boolean hasTimeMachine;
     private int shopId;
+    String interlocutorRole;
+    String interlocutorId;
+
 
     public String getNameHeader() {
         return nameHeader;
@@ -99,5 +101,21 @@ public class ChatRoomViewModel {
 
     public void setShopId(int shopId) {
         this.shopId = shopId;
+    }
+
+    public String getInterlocutorRole() {
+        return interlocutorRole;
+    }
+
+    public void setInterlocutorRole(String interlocutorRole) {
+        this.interlocutorRole = interlocutorRole;
+    }
+
+    public String getInterlocutorId() {
+        return interlocutorId;
+    }
+
+    public void setInterlocutorId(String interlocutorId) {
+        this.interlocutorId = interlocutorId;
     }
 }

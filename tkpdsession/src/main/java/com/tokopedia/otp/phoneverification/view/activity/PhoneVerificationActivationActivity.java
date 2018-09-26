@@ -16,6 +16,7 @@ import com.tokopedia.core.router.SellerRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.otp.phoneverification.PhoneVerificationAnalytics;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationActivationFragment;
 import com.tokopedia.otp.phoneverification.view.fragment.PhoneVerificationFragment;
 import com.tokopedia.session.R;
@@ -31,6 +32,7 @@ public class PhoneVerificationActivationActivity extends TActivity implements Ha
 
     private boolean canSkip = false;
     private boolean isLogoutOnBack = false;
+    PhoneVerificationAnalytics analytics;
 
     public static Intent getIntent(Context context, boolean isMandatory, boolean isLogoutOnBack){
         Intent intent = new Intent(context, PhoneVerificationActivationActivity.class);
@@ -51,6 +53,8 @@ public class PhoneVerificationActivationActivity extends TActivity implements Ha
         super.onCreate(savedInstanceState);
         inflateView(R.layout.activity_phone_verification_activation);
         initView();
+
+        analytics = PhoneVerificationAnalytics.createInstance(getApplicationContext());
     }
 
     private void initView() {
@@ -103,6 +107,10 @@ public class PhoneVerificationActivationActivity extends TActivity implements Ha
 
     @Override
     public void onBackPressed() {
+        if(analytics != null){
+            analytics.eventClickOnBackPressed();
+        }
+
         if (isLogoutOnBack) {
             SessionHandler session = new SessionHandler(this);
             session.Logout(this);

@@ -28,7 +28,7 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
 
     @Override
     protected Fragment getNewFragment() {
-        return CatalogListingFragment.newInstance();
+        return CatalogListingFragment.newInstance(getIntent().getExtras());
     }
 
     @Override
@@ -38,8 +38,10 @@ public class CatalogListingActivity extends BaseSimpleActivity implements HasCom
     }
 
     @DeepLink(ApplinkConstant.CATALOG_LISTING)
-    public static Intent getCallingIntent(Context context) {
-        return new Intent(context, CatalogListingActivity.class);
+    public static Intent getCallingIntent(Context context, Bundle extras) {
+        Intent intent = new Intent(context, CatalogListingActivity.class);
+        intent.putExtras(extras);
+        return intent;
     }
 
     private void initInjector() {

@@ -21,6 +21,7 @@
     <string name="lihat_semua_product">Lihat Semua Produk</string>
     <string name="textview_redirect_seller_app">Fitur ini hanya tersedia pada aplikasi TopSeller. Nikmati berbagai kemudahan berjualan online dalam genggaman Anda.</string>
     <string name="drawer_title_wishlist">Wishlist</string>
+    <string name="drawer_title_mybills">MyBills</string>
     <string name="drawer_title_buyer">Pembelian</string>
     <string name="drawer_title_payment_status">Status Pembayaran</string>
     <string name="drawer_title_order_status">Status Pemesanan</string>
@@ -70,20 +71,10 @@
     <string name="no_available_feature">Fitur akan segera hadir untuk anda.</string>
     <string name="error_actiivty_open_permission">Gagal membuka scan kode QR</string>
 
-    <!-- Tokocash activation -->
-    <string name="title_activation">Aktivasi TokoCash</string>
-    <string name="applick_tokocash_activation">tokopedia://wallet/activation</string>
-    <string name="label_tokocash">TokoCash</string>
-
     <string name="payment_description_transfer_procedure">Mohon lakukan pembayaran pesanan Rp. %1$s ke %2$s %3$s sebelum %4$s. Untuk info lebih lanjut cek status pembayaran Anda.</string>
     <string name="wishlist_empty_title">Wishlist masih kosong</string>
     <string name="wishlist_empty_message">Masuk untuk melihat produk-produk pilihan Anda</string>
 
-    <string name="longpress_beli">Beli</string>
-    <string name="longpress_bayar">Bayar</string>
-    <string name="longpress_jual">Jual</string>
-    <string name="longpress_share">Share</string>
-    <string name="coupon_copy_text">Kode voucher tersalin</string>
     <string name="flight_title_activity_phone_verification">Verifikasi Nomor Ponsel</string>
     <string name="flight_phone_verification_header">Jaga akun Anda tetap aman dengan \nmelakukan verifikasi nomor ponsel.</string>
 
@@ -94,6 +85,7 @@
     <string name="shake_shake_wrong_deeplink">Sedang terjadi kendala. Mohon coba beberapa saat lagi.</string>
 
     <string name="drawer_title_shopping_list">Daftar Belanja</string>
+    <string name="drawer_title_payment_list">Menunggu Pembayaran</string>
     <string name="drawer_title_digital_transaction_list"><![CDATA[Daftar Top-Up & Tagihan]]></string>
     <string name="drawer_title_travel_flight_transaction_list">Daftar Tiket Pesawat</string>
     <string name="drawer_title_travel_train_transaction_list">Daftar Tiket Kereta Api</string>

@@ -19,6 +19,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
     <style name="AppBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="actionModeBackground">@color/tkpd_main_green</item>
         <item name="android:actionModeBackground">@color/tkpd_main_green</item>

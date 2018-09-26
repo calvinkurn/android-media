@@ -30,6 +30,7 @@ import com.tokopedia.design.quickfilter.QuickSingleFilterView;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
 import com.tokopedia.tokocash.TokoCashRouter;
+import com.tokopedia.tokocash.activation.presentation.activity.ActivateTokoCashActivity;
 import com.tokopedia.tokocash.di.TokoCashComponent;
 import com.tokopedia.tokocash.historytokocash.domain.GetHistoryDataUseCase;
 import com.tokopedia.tokocash.historytokocash.presentation.DatePickerTokoCashUtil;
@@ -59,6 +60,7 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
 
     private static final int SELECTION_TYPE_PERIOD_DATE = 0;
     private static final int EXTRA_INTENT_DATE_PICKER = 50;
+    private static final int REQUEST_CODE_LOGIN = 1008;
     private static final String FORMAT_DATE = "dd+MMM+yyyy";
     private static final String ALL_TRANSACTION_TYPE = "all";
     private static final String PENDING_TYPE = "pending";
@@ -422,6 +424,20 @@ public class HistoryTokoCashFragment extends BaseDaggerFragment implements TokoC
                 isWaitingTransaction ? "" : endDateFormatted);
         requestParams.putString(GetHistoryDataUseCase.PAGE, String.valueOf(page));
         return requestParams;
+    }
+
+    @Override
+    public void navigatePageToActivateTokocash() {
+        startActivity(ActivateTokoCashActivity.newInstance(getActivity()));
+        getActivity().finish();
+    }
+
+    @Override
+    public void navigateToLoginPage() {
+        if (getActivity().getApplication() != null && getActivity().getApplication() instanceof TokoCashRouter) {
+            startActivityForResult(((TokoCashRouter) getActivity().getApplication()).getLoginIntent(), REQUEST_CODE_LOGIN);
+            getActivity().finish();
+        }
     }
 
     @Override

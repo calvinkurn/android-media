@@ -76,6 +76,11 @@ public class CheckoutActivity extends DealsBaseActivity implements DealFragmentC
     }
 
     @Override
+    public void replaceFragment(String text, String toolBarText, int flag) {
+
+    }
+
+    @Override
     public List<Outlet> getOutlets() {
         return outlets;
     }

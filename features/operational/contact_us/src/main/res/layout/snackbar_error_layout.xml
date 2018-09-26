@@ -36,6 +36,7 @@
         android:layout_marginLeft="@dimen/new_margin_med"
         android:layout_marginRight="@dimen/new_margin_sm"
         android:padding="@dimen/new_margin_small"
+        android:visibility="gone"
         android:text="@string/ok"
         android:textAllCaps="true" />
 </RelativeLayout>

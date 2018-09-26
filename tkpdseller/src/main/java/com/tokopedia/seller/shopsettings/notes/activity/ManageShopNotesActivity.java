@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
+import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
 import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFormFragment;
 import com.tokopedia.seller.shopsettings.notes.fragment.ManageShopNotesFragment;
 import com.tokopedia.core.manage.shop.notes.model.ShopNote;
@@ -17,7 +18,7 @@ import com.tokopedia.core.manage.shop.notes.model.ShopNote;
  * use ShopSettings Module
  */
 @Deprecated
-public class ManageShopNotesActivity extends BasePresenterActivity {
+public class ManageShopNotesActivity extends BaseTemporaryDrawerActivity {
 
     public static final String PARAM_SHOP_ID = "shop_id";
     public static final String PARAM_IS_RETURNABLE_POLICY = "IS_RETURNABLE_POLICY";

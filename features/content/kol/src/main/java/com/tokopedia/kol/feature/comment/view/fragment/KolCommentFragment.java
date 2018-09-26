@@ -47,9 +47,11 @@ import javax.inject.Inject;
  * @author by nisie on 10/27/17.
  */
 
-public class KolCommentFragment extends BaseDaggerFragment implements KolComment.View {
+public class KolCommentFragment extends BaseDaggerFragment
+        implements KolComment.View, KolComment.View.ViewHolder {
 
     public static final String ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT";
+    public static final String ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG";
 
     private RecyclerView listComment;
     private EditText kolComment;
@@ -89,7 +91,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
     protected void initInjector() {
         DaggerKolCommentComponent.builder()
                 .kolComponent(KolComponentInstance.getKolComponent(getActivity().getApplication()))
-                .kolCommentModule(new KolCommentModule(this))
+                .kolCommentModule(new KolCommentModule(this, this))
                 .build()
                 .inject(this);
     }
@@ -166,19 +168,29 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         listComment.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager
                 .VERTICAL, false));
         listComment.setAdapter(adapter);
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.sendComment(getArguments().getInt(
-                        KolCommentActivity.ARGS_ID),
-                        kolComment.getText().toString());
+        sendButton.setOnClickListener(v -> {
+            if (userSession != null && userSession.isLoggedIn()) {
+                presenter.sendComment(
+                        getArguments().getInt(KolCommentActivity.ARGS_ID),
+                        kolComment.getText().toString()
+                );
+            } else {
+                startActivity(kolRouter.getLoginIntent(getActivity()));
             }
+
         });
+
+
+    }
+
+    @Override
+    public void openRedirectUrl(String url) {
+        kolRouter.openRedirectUrl(getActivity(), url);
     }
 
     @Override
     public void onGoToProfile(String url) {
-        kolRouter.openRedirectUrl(getActivity(), url);
+        openRedirectUrl(url);
     }
 
     @Override
@@ -188,13 +200,28 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onErrorGetCommentsFirstTime(String errorMessage) {
-        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage, new NetworkErrorHelper
-                .RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getCommentFirstTime(getArguments().getInt(KolCommentActivity.ARGS_ID));
-            }
-        });
+        NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                () -> presenter.getCommentFirstTime(
+                        getArguments().getInt(KolCommentActivity.ARGS_ID))
+        );
+    }
+
+    @Override
+    public void onServerErrorGetCommentsFirstTime(String errorMessage) {
+        if (getActivity() != null
+                && getActivity().getIntent().getExtras() != null
+                && getActivity().getIntent().getExtras().getBoolean(
+                KolCommentActivity.ARGS_FROM_FEED, false)) {
+            Intent intent = new Intent();
+            intent.putExtra(ARGS_SERVER_ERROR_MSG, errorMessage);
+            getActivity().setResult(Activity.RESULT_OK, intent);
+            getActivity().finish();
+        } else {
+            NetworkErrorHelper.showEmptyState(getActivity(), getView(), errorMessage,
+                    () -> presenter.getCommentFirstTime(
+                            getArguments().getInt(KolCommentActivity.ARGS_ID))
+            );
+        }
     }
 
     @Override
@@ -275,6 +302,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
 
     @Override
     public void onErrorSendComment(String errorMessage) {
+        enableSendComment();
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
@@ -298,6 +326,7 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         ));
 
         kolComment.setText("");
+        enableSendComment();
         KeyboardHandler.DropKeyboard(getActivity(), kolComment);
         totalNewComment += 1;
 
@@ -328,6 +357,16 @@ public class KolCommentFragment extends BaseDaggerFragment implements KolComment
         } else {
             return false;
         }
+    }
+
+    @Override
+    public void enableSendComment() {
+        sendButton.setClickable(true);
+    }
+
+    @Override
+    public void disableSendComment() {
+        sendButton.setClickable(false);
     }
 
     private boolean isInfluencer() {

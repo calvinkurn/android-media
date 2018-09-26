@@ -2,6 +2,8 @@ package com.tokopedia.design.component.ticker;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.text.Html;
 import android.text.Spannable;
@@ -36,6 +38,10 @@ class TickerViewAdapter extends PagerAdapter {
     private TickerView.OnPartialTextClickListener listener;
     private boolean isUnderlinedLink = true;
 
+    private View tickerBackground;
+    private TextView tickerMessage;
+    private Context context;
+
     public TickerViewAdapter(ArrayList<Integer> listTextColor,
                              int backgroundColor,
                              int defaultLinkColor,
@@ -55,8 +61,10 @@ class TickerViewAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull final ViewGroup container, final int position) {
         LayoutInflater inflater = (LayoutInflater) container.getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.item_ticker, container, false);
-        View tickerBackground = view.findViewById(R.id.ticker_background);
-        TextView tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
+        context = view.getContext();
+
+        tickerBackground = view.findViewById(R.id.ticker_background);
+        tickerMessage = (TextView) view.findViewById(R.id.ticker_message);
         tickerMessage.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize);
 
         tickerBackground.setBackgroundColor(backgroundColor);
@@ -132,6 +140,18 @@ class TickerViewAdapter extends PagerAdapter {
 
     public void setListener(TickerView.OnPartialTextClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setPadding(int top, int right, int bottom, int left) {
+        tickerBackground.setPadding(left, top, right, bottom);
+    }
+
+    public void setTextAppearance(int appearance) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            tickerMessage.setTextAppearance(appearance);
+        } else {
+            tickerMessage.setTextAppearance(context, appearance);
+        }
     }
 
     @SuppressWarnings("deprecation")

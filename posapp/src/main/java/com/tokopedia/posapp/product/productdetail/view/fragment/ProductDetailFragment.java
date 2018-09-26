@@ -2,12 +2,10 @@ package com.tokopedia.posapp.product.productdetail.view.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,6 @@ import android.widget.ProgressBar;
 
 import com.google.gson.Gson;
 import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.ProductVariant;
@@ -38,23 +34,22 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.posapp.PosApplication;
 import com.tokopedia.posapp.R;
 import com.tokopedia.posapp.cart.view.AddToCart;
-import com.tokopedia.posapp.product.common.di.ProductComponent;
-import com.tokopedia.posapp.product.common.di.DaggerProductComponent;
-import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.posapp.cart.view.activity.LocalCartActivity;
-import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
 import com.tokopedia.posapp.cart.view.presenter.AddToCartPresenter;
+import com.tokopedia.posapp.payment.process.ReactInstallmentActivity;
+import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
+import com.tokopedia.posapp.product.common.di.DaggerProductComponent;
+import com.tokopedia.posapp.product.common.di.ProductComponent;
+import com.tokopedia.posapp.product.productdetail.view.Product;
 import com.tokopedia.posapp.product.productdetail.view.activity.PosDescriptionActivity;
 import com.tokopedia.posapp.product.productdetail.view.presenter.ProductPresenter;
 import com.tokopedia.posapp.product.productdetail.view.widget.DescriptionView;
 import com.tokopedia.posapp.product.productdetail.view.widget.HeaderInfoView;
 import com.tokopedia.posapp.product.productdetail.view.widget.InstallmentSimulationView;
-import com.tokopedia.posapp.base.fragment.PosAlertDialog;
 import com.tokopedia.posapp.product.productdetail.view.widget.PictureView;
-import com.tokopedia.posapp.product.common.data.pojo.ProductDetail;
 import com.tokopedia.posapp.product.productlist.data.pojo.ProductPicture;
-import com.tokopedia.tkpdpdp.DescriptionActivity;
 import com.tokopedia.tkpdpdp.PreviewProductImageDetail;
+import com.tokopedia.tkpdpdp.estimasiongkir.data.model.RatesModel;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
 import java.util.ArrayList;
@@ -137,6 +132,11 @@ public class ProductDetailFragment extends BaseDaggerFragment
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public Context getActivityContext() {
+        return getActivity();
     }
 
     private ProductDetailData responseToProductDetailData(String bundle) {
@@ -644,6 +644,16 @@ public class ProductDetailFragment extends BaseDaggerFragment
 
     @Override
     public void refreshData() {
+
+    }
+
+    @Override
+    public void onSuccesLoadRateEstimaion(RatesModel ratesModel) {
+
+    }
+
+    @Override
+    public void moveToEstimationDetail() {
 
     }
 

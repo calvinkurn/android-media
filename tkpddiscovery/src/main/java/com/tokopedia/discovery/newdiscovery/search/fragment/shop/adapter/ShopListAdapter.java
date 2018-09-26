@@ -10,11 +10,15 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.adapter.model.EmptyModel;
 import com.tokopedia.core.base.adapter.model.LoadingModel;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionGeneralAdapter;
 import com.tokopedia.discovery.newdiscovery.search.fragment.SearchSectionTypeFactory;
+import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.EmptySearchModel;
 import com.tokopedia.discovery.newdiscovery.search.fragment.product.viewmodel.ProductItem;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.adapter.typefactory.ShopListTypeFactory;
 import com.tokopedia.discovery.newdiscovery.search.fragment.shop.viewmodel.ShopViewModel;
+import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,12 +89,6 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public void showEmptyState(String message) {
-        emptyModel.setMessage(message);
-        getItemList().add(emptyModel);
-        notifyDataSetChanged();
-    }
-
     public boolean isShopItem(int position) {
         return position < list.size() && list.get(position) instanceof ShopViewModel.ShopItem;
     }
@@ -103,5 +101,24 @@ public class ShopListAdapter extends SearchSectionGeneralAdapter {
     @Override
     protected SearchSectionTypeFactory getTypeFactory() {
         return typeFactory;
+    }
+
+    @Override
+    public boolean isEmptyItem(int position) {
+        return checkDataSize(position) && getItemList().get(position) instanceof EmptySearchModel;
+    }
+
+    @Override
+    public int getIconTypeRecyclerView() {
+        switch (getTypeFactory().getRecyclerViewItem()) {
+            case TkpdState.RecyclerView.VIEW_PRODUCT:
+                return R.drawable.ic_list_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_2:
+                return R.drawable.ic_grid_default_green;
+            case TkpdState.RecyclerView.VIEW_PRODUCT_GRID_1:
+                return R.drawable.ic_grid_box_green;
+            default:
+                return R.drawable.ic_grid_default_green;
+        }
     }
 }

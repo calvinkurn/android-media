@@ -11,7 +11,11 @@ public interface DealFragmentCallbacks {
 
     void replaceFragment(DealsDetailsResponse detailsViewModel, int flag);
 
+    void replaceFragment(String text, String toolBarText, int flag);
+
     List<Outlet> getOutlets();
 
     DealsDetailsResponse getDealDetails();
+
+
 }

@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentTransaction;
 
 import com.tokopedia.abstraction.common.di.component.HasComponent;
-import com.tokopedia.core.analytics.AppScreen;
+import com.tokopedia.analytics.RegisterAnalytics;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.session.R;
@@ -22,6 +22,13 @@ public class RegisterEmailActivity extends BasePresenterActivity implements HasC
 
     public static final String EXTRA_PARAM_EMAIL = "email";
     private String email;
+    private RegisterAnalytics analytics;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        analytics = RegisterAnalytics.initAnalytics(this);
+    }
 
     @Override
     protected void setupURIPass(Uri data) {
@@ -76,11 +83,12 @@ public class RegisterEmailActivity extends BasePresenterActivity implements HasC
 
     @Override
     public String getScreenName() {
-        return AppScreen.SCREEN_REGISTER;
+        return RegisterAnalytics.Screen.SCREEN_REGISTER_WITH_EMAIL;
     }
 
     @Override
     public void onBackPressed() {
+        analytics.eventClickBackRegisterWithEmail();
         if (getFragmentManager().getBackStackEntryCount() > 0)
             getFragmentManager().popBackStack();
         else
