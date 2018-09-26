@@ -16,7 +16,7 @@
         android:fontFamily="sans-serif"
         android:lineSpacingExtra="1sp"
         android:textColor="@color/black_38"
-        android:textSize="14sp"
+        android:textSize="@dimen/sp_14"
         tools:text="Semuaaaaaaaaaaaaaa"
         />
 
