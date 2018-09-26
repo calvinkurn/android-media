@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_4"
+    app:cardElevation="@dimen/dp_3"
     app:cardPreventCornerOverlap="false"
-    android:layout_marginTop="@dimen/dp_8"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginTop="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_4"
     android:layout_marginLeft="@dimen/dp_16"
     android:layout_marginRight="@dimen/dp_16"
     android:clickable="true"
@@ -23,8 +23,7 @@
         <ImageView
             android:id="@+id/ivImageCampaign"
             android:layout_width="@dimen/dp_80"
-            android:layout_height="@dimen/dp_80"
-            android:background="@color/green_200"/>
+            android:layout_height="@dimen/dp_80" />
 
         <TextView
             android:id="@+id/tvCampaignType"

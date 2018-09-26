@@ -38,8 +38,18 @@ class GetCampaignListUsecase(private val context: Context, private val graphqlUs
 //            }
 //        }
 
-        val query = GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign)
-        return Observable.just(Gson().fromJson(query, Data::class.java))
+        val query = requestParams.getString(PARAM_QUERY, "")
+        val all = requestParams.getString(PARAM_ALL, "")
+
+        val data = if(query.isEmpty())
+                        if(all == "true")
+                            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign)
+                        else
+                            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_empty_campaign)
+                    else
+                        GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_empty_campaign)
+
+        return Observable.just(Gson().fromJson(data, Data::class.java))
     }
 
     override fun unsubscribe() {

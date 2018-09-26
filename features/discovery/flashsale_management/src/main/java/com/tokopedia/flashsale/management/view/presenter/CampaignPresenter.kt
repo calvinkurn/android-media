@@ -10,8 +10,8 @@ import javax.inject.Inject
 class CampaignPresenter @Inject
 constructor(private val getCampaignListUsecase: GetCampaignListUsecase) : BaseDaggerPresenter<CampaignContract.View>(), CampaignContract.Presenter {
 
-    override fun getCampaignList() {
-        getCampaignListUsecase.execute(GetCampaignListUsecase.createRequestParams("true", 1, 2, 3, "flash sale", "1,2,3"),
+    override fun getCampaignList(all: String, offset: Int, rows: Int, campaign_type: Int, q: String, status: String) {
+        getCampaignListUsecase.execute(GetCampaignListUsecase.createRequestParams(all, offset, rows, campaign_type, q, status),
                 object : Subscriber<Data>() {
                     override fun onCompleted() {}
                     override fun onError(throwable: Throwable) {

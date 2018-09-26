@@ -16,7 +16,7 @@ interface CampaignContract{
 
     interface Presenter : CustomerPresenter<View> {
 
-        fun getCampaignList()
+        fun getCampaignList(all: String, offset: Int, rows: Int, campaign_type: Int, q: String, status: String)
     }
 
 }
