@@ -260,6 +260,8 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.saldodetails.activity.SaldoDepositActivity;
+import com.tokopedia.saldodetails.router.SaldoDetailsRouter;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -459,7 +461,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
-        DigitalBrowseRouter {
+        DigitalBrowseRouter,
+        SaldoDetailsRouter{
 
     private static final String EXTRA = "extra";
 
@@ -2708,10 +2711,10 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToSaldo(Context context) {
-        Intent intent = new Intent(context, DepositActivity.class);
+        Intent intent = new Intent(context, SaldoDepositActivity.class);
         context.startActivity(intent);
         UnifyTracking.eventDrawerClick(AppEventTracking.EventLabel.DEPOSIT);
-        AnalyticsEventTrackingHelper.homepageSaldoClick(DepositActivity.class.getName());
+        AnalyticsEventTrackingHelper.homepageSaldoClick(SaldoDepositActivity.class.getName());
     }
 
     public Intent getInboxChatIntent(Context context) {

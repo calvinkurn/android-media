@@ -10,4 +10,16 @@
     <string name="sp_btn_ok_disable">Ya,Saya Yakin</string>
     <string name="sp_disable_desc_long" >Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.\nPengembalian dana untuk pelunasan Saldo Prioritas tetap berjalan.</string>
     <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
+    <string name="sp_prompt_search">Cari</string>
+    <string name="sp_topup_saldo">Isi Saldo</string>
+    <string name="sp_title_withdraw">Penarikan</string>
+    <string name="sp_title_remaining_tokopedia">Saldo tersedia</string>
+    <string name="title_max_day">\"Rentang waktu maksimal adalah 31 hari.\"</string>
+    <string name="error_invalid_date">Tanggal tidak valid</string>
+    <string name="error_no_amount_deposit">Maaf, Anda tidak memiliki saldo pada akun Anda saat ini.</string>
+    <string name="error_no_password_yes">Buat kata sandi</string>
+    <string name="error_deposit_no_password_title">Anda tidak memiliki kata sandi</string>
+    <string name="error_deposit_no_password_content">Silahkan buat kata sandi terlebih dahulu untuk melakukan penarikan dana.</string>
+    <string name="sp_saldo_title">Saldo</string>
+    <string name="sp_title_nominal">Nominal</string>
 </resources>

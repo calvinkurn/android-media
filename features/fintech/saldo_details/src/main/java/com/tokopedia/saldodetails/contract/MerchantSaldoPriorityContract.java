@@ -12,15 +12,18 @@ public interface MerchantSaldoPriorityContract {
 
         void hideProgressLoading();
 
-        Context getActivityContext();
+        Context getContext();
 
         void onSaldoStatusUpdateError(String errorMessage);
 
         void onSaldoStatusUpdateSuccess();
+
     }
 
     interface Presenter extends CustomerPresenter<View> {
         void onDestroyView();
+
+        void updateSellerSaldoStatus(boolean value);
     }
 }
 

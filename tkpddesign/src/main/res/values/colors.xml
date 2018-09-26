@@ -77,4 +77,7 @@
     <color name="tkpd_green_30">#4D42b549</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="bg_corner_yellow">#ffc107</color>
+
+    <color name="tkpd_light_green">#008000</color>
+    <color name="tkpd_prod_price">#B44141</color>
 </resources>

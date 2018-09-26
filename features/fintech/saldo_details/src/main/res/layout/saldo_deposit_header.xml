@@ -1,0 +1,156 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/deposit_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    android:padding="@dimen/dp_10">
+
+    <TextView
+        android:id="@+id/txt_depo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="start"
+        android:text="@string/sp_title_remaining_tokopedia"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:id="@+id/total_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_depo"
+        android:gravity="start"
+        android:textSize="@dimen/sp_16"
+        android:textStyle="bold" />
+
+    <com.tokopedia.design.component.ButtonCompat
+        android:id="@+id/withdraw_button"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="@string/sp_title_withdraw"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        app:buttonCompatSize="big"
+        app:buttonCompatType="primary" />
+
+    <TextView
+        android:id="@+id/topup_button"
+        android:layout_width="@dimen/dp_160"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/withdraw_button"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/button_buy_from_cart"
+        android:drawableStart="@drawable/ic_add"
+        android:drawableLeft="@drawable/ic_add"
+        android:gravity="center"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingTop="@dimen/dp_10"
+        android:text="@string/sp_topup_saldo"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/saldo_prioritas_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/withdraw_button"
+        android:layout_margin="@dimen/dp_8" />
+
+
+    <RelativeLayout
+        android:id="@+id/review_warning_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/saldo_prioritas_widget"
+        android:layout_marginTop="@dimen/sp_14"
+        android:background="@color/red_100"
+        android:orientation="vertical"
+        android:padding="@dimen/dp_10"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/amount_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_5" />
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_below="@id/review_warning_layout"
+        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_10"
+        android:background="@color/greyish_bg" />
+
+    <LinearLayout
+        android:id="@+id/filter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/separator"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/start_date"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_weight=".50"
+            android:background="@drawable/btn_cancel"
+            android:focusable="false"
+            android:gravity="center"
+            android:inputType="date"
+            android:text="Start Date"
+            android:textSize="@dimen/sp_14" />
+
+        <EditText
+            android:id="@+id/end_date"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_weight=".50"
+            android:background="@drawable/btn_cancel"
+            android:focusable="false"
+            android:gravity="center"
+            android:inputType="date"
+            android:text="End Date"
+            android:textSize="@dimen/sp_14" />
+
+        <com.tokopedia.design.component.ButtonCompat
+            android:id="@+id/search_button"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_gravity="center"
+            android:layout_weight=".50"
+            android:background="@drawable/btn_shop"
+            android:gravity="center"
+            android:padding="@dimen/dp_5"
+            android:text="@string/sp_prompt_search"
+            android:textAllCaps="false"
+            android:textColor="@color/sp_label_color"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            app:buttonCompatSize="medium"
+            app:buttonCompatType="primary" />
+    </LinearLayout>
+
+</RelativeLayout>

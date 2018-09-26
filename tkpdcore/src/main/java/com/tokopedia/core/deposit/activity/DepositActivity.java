@@ -55,7 +55,7 @@ public class DepositActivity extends BasePresenterActivity<DepositPresenter> imp
     @Override
     protected void setupBundlePass(Bundle extras) {
 
-    }
+}
 
     @Override
     protected void initialPresenter() {
