@@ -55,17 +55,4 @@ public class EtalaseHighlightCarouselViewModel implements Visitable<BaseAdapterT
         }
     }
 
-//    public boolean updateWishListStatus(String productId, boolean wishList) {
-//        for (int i = 0, sizei = shopProductViewModelListList.size(); i < sizei; i++) {
-//            List<ShopProductViewModel> shopProductViewModelList = shopProductViewModelListList.get(i);
-//            for (int j = 0, sizej = shopProductViewModelList.size(); j < sizej; j++) {
-//                ShopProductViewModel shopProductViewModel = shopProductViewModelList.get(j);
-//                if (shopProductViewModel.getId().equalsIgnoreCase(productId)) {
-//                    shopProductViewModel.setWishList(wishList);
-//                    return true;
-//                }
-//            }
-//        }
-//        return false;
-//    }
 }
