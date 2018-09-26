@@ -9,7 +9,6 @@ public class SettingConstant {
     public static final int SETTING_PRIVACY_ID = 6;
     public static final int SETTING_HELP_CENTER_ID = 7;
     public static final int SETTING_OUT_ID = 8;
-    public static final int SETTING_SHAKE_ID = 9;
     public static final int SETTING_ACCOUNT_PERSONAL_DATA_ID = 11;
     public static final int SETTING_ACCOUNT_PASS_ID = 12;
     public static final int SETTING_ACCOUNT_ADDRESS_ID = 13;
@@ -29,6 +28,7 @@ public class SettingConstant {
 
     public static final int SETTING_DEV_OPTIONS = 0;
     public static final int SETTING_APP_REVIEW_ID = 10;
+    public static final int SETTING_SHAKE_ID = 14;
 
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
