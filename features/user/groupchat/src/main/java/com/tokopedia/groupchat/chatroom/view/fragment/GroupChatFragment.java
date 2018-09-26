@@ -15,6 +15,7 @@ import android.text.Html;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.design.text.BackEditText;
 import com.tokopedia.groupchat.GroupChatModuleRouter;
 import com.tokopedia.groupchat.R;
 import com.tokopedia.groupchat.chatroom.di.DaggerChatroomComponent;
@@ -102,7 +104,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private RecyclerView chatRecyclerView;
     private RecyclerView quickReplyRecyclerView;
-    private EditText replyEditText;
+    private BackEditText replyEditText;
     private View sendButton;
     private View divider;
     private View main, loading;
@@ -295,6 +297,25 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 setSprintSaleIcon(null);
             }
         });
+
+        replyEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                setPinnedMessage(null);
+                setQuickReply(null);
+                setSprintSaleIcon(null);
+            }
+        });
+
+        replyEditText.setKeyImeChangeListener(new BackEditText.KeyImeChange(){
+            @Override
+            public void onKeyIme(int keyCode, KeyEvent event)
+            {
+                if (KeyEvent.KEYCODE_BACK == event.getKeyCode())
+                {
+                    onKeyboardDismiss();
+                }
+            }});
     }
 
 

@@ -268,7 +268,6 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             findViewById(R.id.video_container).setVisibility(View.VISIBLE);
-            setToolbarWhite();
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
             if (videoFragment == null)
                 return;
@@ -723,21 +722,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
-//    @Override
-//    public boolean onKeyDown(int keyCode, KeyEvent event) {
-//        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-//            switch (keyCode) {
-//                case KeyEvent.KEYCODE_BACK:
-//                    if(currentFragmentIsChat()){
-//                        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
-//                                (GroupChatFragment.class.getSimpleName())).onKeyboardDismiss();
-//                    }
-//                    return false;
-//            }
-//
-//        }
-//        return super.onKeyDown(keyCode, event);
-//    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -989,7 +973,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalView(),
                 channelInfoViewModel.getBlurredBannerUrl());
-        setToolbarAppearance();
+//        setToolbarAppearance();
         setSponsorData();
     }
 
