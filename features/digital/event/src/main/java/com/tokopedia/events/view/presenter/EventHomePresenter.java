@@ -30,6 +30,7 @@ import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.CategoryViewModel;
 import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSession;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
     private CategoryViewModel carousel;
     private List<CategoryViewModel> categoryViewModels;
     private List<CategoryItemsViewModel> likedEvents;
+    private ArrayList<Integer> likedEventsLocal;
     private TouchViewPager mTouchViewPager;
     private int currentPage, totalPages;
     private List<AdapterCallbacks> adapterCallbacks;
@@ -268,7 +270,8 @@ public class EventHomePresenter extends BaseDaggerPresenter<EventsContract.View>
                     public Observable<List<Integer>> call(List<EventsCategoryDomain> eventsCategoryDomains) {
                         categoryViewModels = Utils.getSingletonInstance()
                                 .convertIntoCategoryListVeiwModel(eventsCategoryDomains);
-                        if (SessionHandler.isV4Login(getView().getActivity()))
+                        UserSession userSession = new UserSession(getView().getActivity());
+                        if (userSession.isLoggedIn())
                             return getUserLikesUseCase.getExecuteObservable(RequestParams.create())
                                     .subscribeOn(Schedulers.newThread())
                                     .observeOn(AndroidSchedulers.mainThread());

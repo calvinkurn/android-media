@@ -1,9 +1,15 @@
 package com.tokopedia.events.view.presenter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.base.domain.RequestParams;
@@ -25,7 +31,9 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
@@ -49,6 +57,7 @@ public class EventSearchPresenter
     private PostUpdateEventLikesUseCase postUpdateEventLikesUseCase;
     private GetSearchNextUseCase getSearchNextUseCase;
     private ArrayList<CategoryItemsViewModel> mTopEvents;
+    private ArrayList<Integer> likedEvents;
     private SearchDomainModel mSearchData;
     private String catgoryFilter = "";
     private String timeFilter = "";
@@ -121,6 +130,7 @@ public class EventSearchPresenter
         isEventCalendar = getView().getActivity().getIntent().
                 getBooleanExtra(Utils.Constants.EXTRA_EVENT_CALENDAR, false);
         mTopEvents = getView().getActivity().getIntent().getParcelableArrayListExtra(Utils.Constants.TOPEVENTS);
+        //getLikedEvents();
         if (isEventCalendar) {
             searchSubmitted("");
         } else {
@@ -315,5 +325,17 @@ public class EventSearchPresenter
         }
         return Utils.getSingletonInstance()
                 .convertIntoCategoryListItemsVeiwModel(searchDomainModel.getEvents());
+    }
+
+    private void getLikedEvents() {
+        SharedPreferences preferences = getView().getActivity().getSharedPreferences(Utils.Constants.EVENTS_PREFS, Context.MODE_PRIVATE);
+        String rawLikes = preferences.getString(Utils.Constants.LIKED_EVENTS, "");
+        Gson gson = new Gson();
+        JsonObject jsonObject = gson.fromJson(rawLikes, JsonObject.class);
+        JsonArray jsonArray = jsonObject.getAsJsonArray(Utils.Constants.LIKED_EVENTS);
+        likedEvents = new ArrayList<>();
+        for (JsonElement aJsonArray : jsonArray) {
+            likedEvents.add(aJsonArray.getAsInt());
+        }
     }
 }

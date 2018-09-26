@@ -350,5 +350,8 @@ public class Utils {
         static String PROMO_SUCCESS = "promocode_success_message";
         static String PROMO_STATUS = "promocode_status";
         public static String EVENT_OMS = "event_oms_android";
+        public static final String LIKED_EVENTS ="liked_events";
+        public static final String EVENTS_PREFS ="events_prefs";
+
     }
 }
