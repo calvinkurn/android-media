@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.FragmentManager;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -159,5 +160,12 @@ public abstract class BottomSheets extends BottomSheetDialogFragment {
         inflatedView.invalidate();
         inflatedView.measure(0, 0);
         bottomSheetBehavior.setPeekHeight(height);
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        try {
+            super.show(manager, tag);
+        } catch (IllegalStateException e) { /*ignore*/ }
     }
 }

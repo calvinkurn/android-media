@@ -42,8 +42,6 @@ public class AccessTokenRefresh {
         params.put(ACCESS_TOKEN, SessionHandler.getAccessToken());
         params.put(REFRESH_TOKEN, EncoderDecoder.Decrypt(SessionHandler.getRefreshToken(context), SessionHandler.getRefreshTokenIV(context)));
 
-        sessionHandler.clearToken();
-
         Call<String> responseCall = getRetrofit().create(AccountsBasicApi.class).getTokenSynchronous(params);
 
         String tokenResponse = null;

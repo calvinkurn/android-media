@@ -45,11 +45,6 @@ public class AccessTokenRefresh {
         String tokenResponseError = null;
         try {
             Response<String> response = responseCall.clone().execute();
-//
-//            tokenResponseError = response.errorBody().string();
-//            checkShowForceLogout(tokenResponseError, networkRouter);
-//
-//            tokenResponse = response.body();
 
             if (response.errorBody() != null) {
                 tokenResponseError = response.errorBody().string();
