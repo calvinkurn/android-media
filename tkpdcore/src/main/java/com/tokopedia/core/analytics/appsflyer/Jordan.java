@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.appsflyer.AppsFlyerConversionListener;
+import com.appsflyer.AppsFlyerLib;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.container.AppsflyerContainer;
@@ -47,8 +49,12 @@ public class Jordan {
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
             @Override
-            public void onInstallConversionDataLoaded(Map<String, String> map) {
+            public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
                 // @TODO
+                for (String attrName : conversionData.keySet()) {
+                    Log.d(AppsFlyerLib.LOG_TAG, "attribute: " + attrName + " = " +
+                            conversionData.get(attrName));
+                }
             }
 
             @Override
