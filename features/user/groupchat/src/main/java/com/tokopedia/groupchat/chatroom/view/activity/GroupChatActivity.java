@@ -266,10 +266,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             findViewById(R.id.video_container).setVisibility(View.VISIBLE);
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
-
+            setToolbarPlain();
             if (videoFragment == null)
                 return;
-
             videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
@@ -360,6 +359,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
             sponsorLayout.setVisibility(View.GONE);
         }else{
+            setupToolbar();
             findViewById(R.id.video_container).setVisibility(View.GONE);
             sponsorLayout.setVisibility(View.VISIBLE);
         }
