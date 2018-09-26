@@ -4,11 +4,14 @@ import android.content.Context;
 
 import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
+import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.forgotpassword.analytics.ForgotPasswordAnalytics;
 import com.tokopedia.forgotpassword.data.ForgotPasswordApi;
 import com.tokopedia.forgotpassword.data.ForgotPasswordUrl;
+import com.tokopedia.forgotpassword.network.OldTkpdAuthInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor;
@@ -67,6 +70,11 @@ public class ForgotPasswordModule {
         return new TkpdAuthInterceptor(context, networkRouter, userSession);
     }
 
+    @ForgotPasswordScope
+    @Provides
+    public ErrorResponseInterceptor provideErrorResponseInterceptor() {
+        return new ErrorResponseInterceptor(TkpdV4ResponseError.class);
+    }
 
     @ForgotPasswordScope
     @Provides
@@ -75,17 +83,28 @@ public class ForgotPasswordModule {
         return new FingerprintInterceptor(networkRouter, userSession);
     }
 
+    @ForgotPasswordScope
+    @Provides
+    OldTkpdAuthInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
+                                                         NetworkRouter networkRouter,
+                                                         UserSession userSession) {
+        return new OldTkpdAuthInterceptor(context, networkRouter, userSession);
+    }
 
     @ForgotPasswordScope
     @Provides
     public OkHttpClient provideOkHttpClient(ChuckInterceptor chuckInterceptor,
                                             HttpLoggingInterceptor httpLoggingInterceptor,
                                             TkpdAuthInterceptor tkpdAuthInterceptor,
-                                            FingerprintInterceptor fingerprintInterceptor) {
+                                            FingerprintInterceptor fingerprintInterceptor,
+                                            ErrorResponseInterceptor errorResponseInterceptor,
+                                            OldTkpdAuthInterceptor oldTkpdAuthInterceptor) {
 
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .addInterceptor(fingerprintInterceptor)
-                .addInterceptor(tkpdAuthInterceptor);
+                .addInterceptor(tkpdAuthInterceptor)
+                .addInterceptor(oldTkpdAuthInterceptor)
+                .addInterceptor(errorResponseInterceptor);
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             builder.addInterceptor(chuckInterceptor)
