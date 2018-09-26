@@ -91,8 +91,13 @@ public class DomainInputFragment extends BaseDaggerFragment {
                 }
 
                 if (byMeUsername.length() < USERNAME_MIN_LENGTH) {
+                    usernameWrapper.setError(String.format(
+                            getString(R.string.af_minimal_character),
+                            USERNAME_MIN_LENGTH)
+                    );
                     disableSaveBtn();
                 } else {
+                    usernameWrapper.setError(null);
                     enableSaveBtn();
                 }
             }
