@@ -111,8 +111,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getXs_url(),
-                productImage);
+        imageLoader.loadImage(product, productImage, clickPosition);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
