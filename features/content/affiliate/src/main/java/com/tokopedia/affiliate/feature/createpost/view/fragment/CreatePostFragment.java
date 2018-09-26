@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.view.fragment;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,10 +11,20 @@ import android.view.ViewGroup;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.design.component.ButtonCompat;
 
+import java.util.ArrayList;
+
+import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
+
+    private static final int REQUEST_IMAGE_PICKER = 1234;
+    private ArrayList<String> selectedImage = new ArrayList<>();
 
     private ButtonCompat addImageBtn;
 
@@ -45,7 +57,24 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addImageBtn.setOnClickListener(view1 -> {
-
+            startActivityForResult(
+                    CreatePostImagePickerActivity.getInstance(
+                            getActivity(),
+                            selectedImage),
+                    REQUEST_IMAGE_PICKER);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_IMAGE_PICKER) {
+                ArrayList<String> imageListResult = data.getStringArrayListExtra(PICKER_RESULT_PATHS);
+                ArrayList<String> imageListOriginal = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
+                ArrayList<String> imageListDescription = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
+                selectedImage = imageListResult;
+            }
+        }
     }
 }
