@@ -2,9 +2,9 @@ package com.tokopedia.logisticaddaddress.addaddress;
 
 import android.content.Context;
 
+import com.tokopedia.core.manage.people.address.model.Destination;
 import com.tokopedia.logisticaddaddress.adapter.ProvinceAdapter;
 import com.tokopedia.logisticaddaddress.adapter.RegencyAdapter;
-import com.tokopedia.logisticaddaddress.model.Destination;
 import com.tokopedia.logisticaddaddress.model.db.City;
 import com.tokopedia.logisticaddaddress.model.db.District;
 import com.tokopedia.logisticaddaddress.model.db.Province;
