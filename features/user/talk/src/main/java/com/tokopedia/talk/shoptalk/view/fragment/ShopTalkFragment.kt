@@ -452,6 +452,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onSuccessFollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, true)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_follow_talk))
     }
 
     override fun onDestroy() {

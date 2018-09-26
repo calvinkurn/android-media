@@ -261,6 +261,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
     override fun onSuccessResetTalk(productTalkViewModel: ProductTalkViewModel) {
         setupViewModel(productTalkViewModel)
 
+
         adapter.setList(productTalkViewModel.listThread, ProductTalkTitleViewModel(productImage,
                 productName, productPrice))
 
@@ -546,6 +547,7 @@ class ProductTalkFragment : BaseDaggerFragment(),
 
     override fun onSuccessFollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, true)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_follow_talk))
     }
 
     override fun onYesReportTalkItemClick(talkId: String, shopId: String, productId: String) {

@@ -636,6 +636,7 @@ open class InboxTalkFragment(open val nav: String = InboxTalkActivity.INBOX_ALL)
 
     override fun onSuccessFollowTalk(talkId: String) {
         adapter.setStatusFollow(talkId, true)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_follow_talk))
     }
 
     override fun onLoadMoreCommentClicked(talkId: String, shopId: String, allowReply: Boolean) {

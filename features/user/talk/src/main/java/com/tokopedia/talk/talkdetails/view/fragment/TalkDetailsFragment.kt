@@ -585,6 +585,7 @@ class TalkDetailsFragment : BaseDaggerFragment(),
         }
 
         adapter.setStatusFollow(talkId, true)
+        NetworkErrorHelper.showGreenSnackbar(view, getString(R.string.success_follow_talk))
     }
 
     override fun onSuccessMarkCommentNotFraud(talkId: String, commentId: String) {
