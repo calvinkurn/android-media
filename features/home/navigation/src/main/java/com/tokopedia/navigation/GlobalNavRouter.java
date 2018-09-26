@@ -14,7 +14,7 @@ import com.tokopedia.navigation.presentation.activity.MainParentActivity;
  */
 public interface GlobalNavRouter {
 
-    Fragment getHomeFragment();
+    Fragment getHomeFragment(boolean scroll);
 
     Fragment getFeedPlusFragment(Bundle bundle);
 

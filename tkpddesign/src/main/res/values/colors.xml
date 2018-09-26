@@ -73,6 +73,11 @@
     <color name="black_56">#8f000000</color>
     <color name="greyish_bg">#ededed</color>
 
+    <color name="bg_corner_red">#f9bcc0</color>
+    <color name="tkpd_green_30">#4D42b549</color>
+    <color name="bright_red">#eb3c0d</color>
+    <color name="bg_corner_yellow">#ffc107</color>
+
     <color name="shadow_color_1">#00CCCCCC</color>
     <color name="shadow_color_2">#10CCCCCC</color>
     <color name="shadow_color_3">#15CCCCCC</color>

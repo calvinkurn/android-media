@@ -25,6 +25,7 @@ import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.MyCouponListingContract;
 import com.tokopedia.tokopoints.view.model.CouponValueEntity;
 import com.tokopedia.tokopoints.view.presenter.MyCouponListingPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.List;
@@ -187,9 +188,19 @@ public class MyCouponListingFragment extends BaseDaggerFragment implements MyCou
         adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
             //Call api to validate the coupon
             mPresenter.redeemCoupon(code, cta);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
         });
         adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
-
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.KUPON_MILIK_SAYA,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                    title);
         });
         AlertDialog dialog = adb.create();
         dialog.show();

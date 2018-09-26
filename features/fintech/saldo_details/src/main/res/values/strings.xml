@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">saldo_details</string>
+    <string name="sp_label_new">Baru</string>
+    <string name="sp_btn_cancel">Kembali</string>
+    <string name="sp_enable_title">Aktifkan Saldo Prioritas</string>
+    <string name="sp_enable_desc">Anda akan menerima pencairan dana di awal dari transaksi yang dilakukan setelah ini.</string>
+    <string name="sp_btn_ok_enable">Aktifkan</string>
+    <string name="sp_disable_title">Yakin Ingin Menonaktifkan Saldo Prioritas?</string>
+    <string name="sp_disable_desc">Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.</string>
+    <string name="sp_btn_ok_disable">Ya,Saya Yakin</string>
+    <string name="sp_disable_desc_long" >Selama fitur dinonaktifkan, Anda tidak akan menerima pencairan dana di awal.\nPengembalian dana untuk pelunasan Saldo Prioritas tetap berjalan.</string>
+    <string name="saldo_status_updated_success">Status Prioritas Diperbarui</string>
+</resources>

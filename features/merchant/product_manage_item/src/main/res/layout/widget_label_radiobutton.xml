@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:clickable="false"
-            style="@style/ProductAddEditRadioButton"
+            style="@style/RadioButton.Big"
             android:padding="@dimen/dp_4"
             android:gravity="center"
             android:scaleX="1.2"

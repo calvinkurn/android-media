@@ -50,8 +50,8 @@ public class Utils {
     private static Location location;
     public static String BRAND_QUERY_PARAM_TREE = "tree";
     public static String BRAND_QUERY_PARAM_BRAND = "brand";
-    public static String BRAND_QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
-    public static String BRAND_QUERY_PARAM_CITY_ID = "cities";
+    public static String QUERY_PARAM_CHILD_CATEGORY_ID = "child_category_ids";
+    public static String QUERY_PARAM_CITY_ID = "cities";
     public static final String NEXT_URL = "nexturl";
     private float defaultBitmapScale = 0.1f;
     private static final float MAX_RADIUS = 25.0f;
@@ -81,6 +81,7 @@ public class Utils {
                 category.setCount(categoryItem.getCount());
                 category.setName(categoryItem.getName());
                 category.setMediaUrl(categoryItem.getMediaUrl());
+                category.setCategoryUrl(categoryItem.getCategoryUrl());
                 category.setUrl(categoryItem.getUrl());
                 category.setItems(categoryItem.getItems());
 
