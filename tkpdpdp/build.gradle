@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.jakewharton.butterknife'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
 repositories {
@@ -34,9 +34,11 @@ dependencies {
     implementation project(rootProject.ext.features.core)
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.features.topAdsSourceTagging)
+    implementation project(rootProject.ext.features.topAdsSdk)
     implementation project(rootProject.ext.libraries.abstraction)
     implementation project(rootProject.ext.libraries.useCase)
     implementation project(rootProject.ext.libraries.applink)
+    implementation project(rootProject.ext.libraries.graphql)
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation project(rootProject.ext.features.transactionanalytics)
     implementation project(rootProject.ext.features.wishlistCommon)
@@ -61,16 +63,14 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.assertJ
 
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
-    annotationProcessor  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
+    kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 
-    implementation rootProject.ext.butterKnifeDependencies.butterKnife
-    annotationProcessor  rootProject.ext.butterKnifeDependencies.butterKnifeCompiler
-
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-    annotationProcessor  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
+    kapt  rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
 
-    annotationProcessor  rootProject.ext.dbDependencies.dbFlowProcessor
+    kapt  rootProject.ext.dbDependencies.dbFlowProcessor
     implementation rootProject.ext.dbDependencies.dbFlowCore
     implementation rootProject.ext.dbDependencies.dbFlow
 

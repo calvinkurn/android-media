@@ -7,17 +7,20 @@ package com.tokopedia.kol.analytics;
 public interface KolEventTracking {
     interface Screen {
         String SCREEN_KOL_COMMENTS = "Kol Comments Page";
+        String SCREEN_KOL_POST_DETAIL = "content detail page";
     }
 
     interface Event {
         String USER_INTERACTION_HOMEPAGE = "userInteractionHomePage";
         String EVENT_CLICK_TOP_PROFILE = "clickTopProfile";
+        String EVENT_CLICK_FEED = "clickFeed";
     }
 
     interface Category {
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String HOMEPAGE = "Homepage";
         String KOL_TOP_PROFILE = "kol top profile";
+        String CONTENT_FEED = "content feed";
     }
 
     interface Action {
@@ -33,6 +36,7 @@ public interface KolEventTracking {
         String FEED_CLICK_CONTENT_COMMENT = "feed - click content comment";
         String FEED_CLICK_CONTENT_CTA = "feed - click content cta";
         String CLICK_PROMPT = "click prompt";
+        String CLICK_YOUTUBE_VIDEO = "click youtube video";
     }
 
     interface EventLabel {

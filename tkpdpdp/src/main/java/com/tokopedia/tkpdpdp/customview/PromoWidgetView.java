@@ -1,16 +1,19 @@
 package com.tokopedia.tkpdpdp.customview;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.product.customview.BaseView;
 import com.tokopedia.core.product.model.productdetail.promowidget.PromoAttributes;
@@ -95,16 +98,30 @@ public class PromoWidgetView extends BaseView<PromoAttributes, ProductDetailView
                         data.getCustomPromoId(),
                         data.getCode()
                 );
-                Intent intent = new Intent(context, BannerWebView.class);
-                intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
-                intent.putExtra(BannerWebView.EXTRA_URL, data.getTargetUrl());
-                context.startActivity(intent);
+                Activity activity = ((Activity) context);
+                if (activity != null
+                        && data.getApplinks() != null
+                        && activity.getApplicationContext() instanceof TkpdCoreRouter
+                        && ((TkpdCoreRouter) activity.getApplicationContext())
+                        .isSupportedDelegateDeepLink(data.getApplinks())) {
+                    openApplink(activity, data.getApplinks());
+                } else {
+                    Intent intent = new Intent(context, BannerWebView.class);
+                    intent.putExtra(BannerWebView.EXTRA_TITLE, context.getString(R.string.title_activity_promo));
+                    intent.putExtra(BannerWebView.EXTRA_URL, data.getTargetUrl());
+                    context.startActivity(intent);
+                }
             }
         });
         setVisibility(VISIBLE);
     }
 
-
+    private void openApplink(Activity activity, String applink) {
+        if (!TextUtils.isEmpty(applink)) {
+            ((TkpdCoreRouter) activity.getApplicationContext())
+                    .actionApplink(activity, applink);
+        }
+    }
 
 }
 

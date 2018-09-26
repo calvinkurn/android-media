@@ -20,6 +20,7 @@ import com.tokopedia.core.base.adapter.Visitable;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.base.domain.RequestParams;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.apiservices.ace.apis.BrowseApi;
 import com.tokopedia.core.router.discovery.DetailProductRouter;
@@ -220,7 +221,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     protected void onLoadMoreCatalog() {
-        showBottomBarNavigation(false);
         if (getDepartmentId() != null && !getDepartmentId().isEmpty()) {
             presenter.requestCatalogLoadMore(getDepartmentId());
         } else {
@@ -242,9 +242,19 @@ public class CatalogFragment extends SearchSectionFragment implements
 
     @Override
     public void onBannerAdsClicked(String appLink) {
-        if (!TextUtils.isEmpty(appLink)) {
-            ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), appLink);
+        TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+        if (router.isSupportedDelegateDeepLink(appLink)) {
+            router.actionApplink(getActivity(), appLink);
+        } else if (appLink != "") {
+            Intent intent = new Intent(getContext(), BannerWebView.class);
+            intent.putExtra("url", appLink);
+            startActivity(intent);
         }
+    }
+
+    @Override
+    public void onSelectedFilterRemoved(String uniqueId) {
+        removeSelectedFilter(uniqueId);
     }
 
     @Override
@@ -306,6 +316,11 @@ public class CatalogFragment extends SearchSectionFragment implements
     }
 
     @Override
+    protected boolean isSortEnabled() {
+        return true;
+    }
+
+    @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
@@ -353,8 +368,7 @@ public class CatalogFragment extends SearchSectionFragment implements
             catalogAdapter.setElement(visitables);
         } else {
             topAdsRecyclerAdapter.shouldLoadAds(false);
-            String message = String.format(getString(R.string.empty_search_content_template), query);
-            catalogAdapter.showEmptyState(message);
+            catalogAdapter.showEmptyState(getActivity(), query, isFilterActive(), getFlagFilterHelper(), getString(R.string.catalog_tab_title).toLowerCase());
             SearchTracking.eventSearchNoResult(getActivity(), query, getScreenName(), getSelectedFilter());
         }
     }
@@ -433,42 +447,6 @@ public class CatalogFragment extends SearchSectionFragment implements
     @Override
     public int getStartFrom() {
         return catalogAdapter.getStartFrom();
-    }
-
-    @Override
-    protected List<AHBottomNavigationItem> getBottomNavigationItems() {
-        List<AHBottomNavigationItem> items = new ArrayList<>();
-        items.add(new AHBottomNavigationItem(getString(R.string.sort), R.drawable.ic_sort_black));
-        items.add(new AHBottomNavigationItem(getString(R.string.filter), R.drawable.ic_filter_list_black));
-        items.add(new AHBottomNavigationItem(getString(catalogAdapter.getTitleTypeRecyclerView()), catalogAdapter.getIconTypeRecyclerView()));
-        items.add(new AHBottomNavigationItem(getString(R.string.share), R.drawable.ic_share_black));
-        return items;
-    }
-
-    @Override
-    protected AHBottomNavigation.OnTabSelectedListener getBottomNavClickListener() {
-        return new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(final int position, boolean wasSelected) {
-                switch (position) {
-                    case 0:
-                        openSortActivity();
-                        return true;
-                    case 1:
-                        SearchTracking.eventSearchResultOpenFilterPageCatalog(getActivity());
-                        openFilterActivity();
-                        return true;
-                    case 2:
-                        switchLayoutType();
-                        return true;
-                    case 3:
-                        startShareActivity(getShareUrl());
-                        return true;
-                    default:
-                        return false;
-                }
-            }
-        };
     }
 
     @Override

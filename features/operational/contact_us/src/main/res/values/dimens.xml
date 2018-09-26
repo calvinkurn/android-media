@@ -2,9 +2,9 @@
 <resources>
     <dimen name="font_time_ticker_size">30sp</dimen>
     <dimen name="indicator_icon_size">50dp</dimen>
-    <item name="font_alpha_38" type="dimen" format="float">0.38</item>
-    <item name="font_alpha_70" type="dimen" format="float">0.7</item>
-    <item name="font_alpha_100" type="dimen" format="float">1.0</item>
+    <item name="font_alpha_38" format="float" type="dimen">0.38</item>
+    <item name="font_alpha_70" format="float" type="dimen">0.7</item>
+    <item name="font_alpha_100" format="float" type="dimen">1.0</item>
 
     <!-- Topchat -->
     <dimen name="max_width_chat_bubble">270dp</dimen>
@@ -38,7 +38,6 @@
     <dimen name="new_margin_very_huge">54dp</dimen>
 
 
-
     <dimen name="new_margin_med_sm">19dp</dimen>
 
     <dimen name="product_item_margin">15dp</dimen>
@@ -54,5 +53,10 @@
     <dimen name="margin_default">16dp</dimen>
 
     <dimen name="font_micro">12sp</dimen>
+
+    <!--need for setting padding-->
+    <dimen name="text_toolbar_height_collapsed">58dp</dimen>
+    <dimen name="text_toolbar_height_expanded">142dp</dimen>
+    <dimen name="help_rate_height">124dp</dimen>
 
 </resources>

@@ -15,4 +15,5 @@
     <color name="shadow_color_3">#15CCCCCC</color>
     <color name="shadow_color_4">#20CCCCCC</color>
     <color name="shadow_color_5">#25CCCCCC</color>
+    <color name="comment_hint_color">#2e000000</color>
 </resources>

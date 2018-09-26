@@ -7,7 +7,8 @@ import com.tokopedia.kol.feature.post.view.adapter.typefactory.KolPostTypeFactor
  * @author by nisie on 10/27/17.
  */
 
-public class KolPostViewModel extends BaseKolViewModel implements Visitable<KolPostTypeFactory> {
+public class KolPostViewModel extends BaseKolViewModel
+        implements Visitable<KolPostTypeFactory> {
     public final static int DEFAULT_ID = -1;
 
     private String kolImage;

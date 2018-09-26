@@ -2,6 +2,7 @@ package com.tokopedia.transactiondata.repository;
 
 import com.tokopedia.transactiondata.entity.response.addtocart.AddToCartDataResponse;
 import com.tokopedia.transactiondata.entity.response.cartlist.CartDataListResponse;
+import com.tokopedia.transactiondata.entity.response.cartlist.CartMultipleAddressDataListResponse;
 import com.tokopedia.transactiondata.entity.response.checkout.CheckoutDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodecartlist.CheckPromoCodeCartListDataResponse;
 import com.tokopedia.transactiondata.entity.response.checkpromocodefinal.CheckPromoCodeFinalDataResponse;
@@ -23,7 +24,9 @@ import rx.Observable;
 
 public interface ICartRepository {
 
-    Observable<CartDataListResponse> getCartList(Map<String, String> param);
+    Observable<CartMultipleAddressDataListResponse> getCartList(Map<String, String> param);
+
+    Observable<CartDataListResponse> getShopGroupList(Map<String, String> param);
 
     Observable<DeleteCartDataResponse> deleteCartData(Map<String, String> param);
 

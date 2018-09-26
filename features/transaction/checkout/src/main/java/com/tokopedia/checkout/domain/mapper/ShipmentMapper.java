@@ -1,5 +1,7 @@
 package com.tokopedia.checkout.domain.mapper;
 
+import android.text.TextUtils;
+
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.AnalyticsProductCheckoutData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.datamodel.cartshipmentform.Donation;
@@ -44,15 +46,18 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
+        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
 
-        Donation donation = new Donation();
-        donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
-        donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
-        donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
-        dataResult.setDonation(donation);
+        if (shipmentAddressFormDataResponse.getDonation() != null) {
+            Donation donation = new Donation();
+            donation.setTitle(shipmentAddressFormDataResponse.getDonation().getTitle());
+            donation.setDescription(shipmentAddressFormDataResponse.getDonation().getDescription());
+            donation.setNominal(shipmentAddressFormDataResponse.getDonation().getNominal());
+            dataResult.setDonation(donation);
+        }
 
         if (!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
             List<GroupAddress> groupAddressListResult = new ArrayList<>();
@@ -261,9 +266,34 @@ public class ShipmentMapper implements IShipmentMapper {
                 groupAddressListResult.add(groupAddressResult);
             }
             dataResult.setGroupAddress(groupAddressListResult);
+            dataResult.setHasError(checkCartHasError(dataResult));
         }
 
         return dataResult;
+    }
+
+    private boolean checkCartHasError(CartShipmentAddressFormData cartShipmentAddressFormData) {
+        boolean hasError = false;
+        for (GroupAddress groupAddress : cartShipmentAddressFormData.getGroupAddress()) {
+            if (groupAddress.isError() || groupAddress.isWarning()) {
+                hasError = true;
+                break;
+            }
+            for (GroupShop groupShop : groupAddress.getGroupShop()) {
+                if (groupShop.isError() || groupShop.isWarning()) {
+                    hasError = true;
+                    break;
+                }
+                for (Product product : groupShop.getProducts()) {
+                    if (product.isError() || !TextUtils.isEmpty(product.getErrorMessage())) {
+                        hasError = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return hasError;
     }
 
     private String generateShopType(com.tokopedia.transactiondata.entity.response.shippingaddressform.Shop shop) {
@@ -273,6 +303,5 @@ public class ShipmentMapper implements IShipmentMapper {
             return SHOP_TYPE_GOLD_MERCHANT;
         else return SHOP_TYPE_REGULER;
     }
-
 
 }

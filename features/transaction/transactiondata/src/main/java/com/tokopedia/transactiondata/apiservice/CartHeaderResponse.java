@@ -41,6 +41,9 @@ public class CartHeaderResponse {
     }
 
     public String getMessageFormatted() {
+        if (message == null || message.isEmpty()) {
+            return "";
+        }
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < message.size(); i++) {
             stringBuilder.append(message.get(i));

@@ -54,10 +54,8 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
     public void bind(ProductAttachmentViewModel element) {
         super.bind(element);
         prerequisiteUISetup(element);
-
         setupChatBubbleAlignment(chatBalloon, element);
         setupProductUI(element, chatBalloon);
-
     }
 
     private void setupChatBubbleAlignment(View productContainerView, ProductAttachmentViewModel element) {
@@ -82,7 +80,7 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         productContainerView.setBackground(context.getResources().getDrawable(R.drawable
                 .attach_product_right_bubble));
         setAlignParent(RelativeLayout.ALIGN_PARENT_RIGHT, productContainerView);
-        chatStatus.setVisibility(View.VISIBLE);
+        setChatReadStatus(element);
     }
 
     protected void prerequisiteUISetup(final ProductAttachmentViewModel element) {
@@ -103,13 +101,12 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
             }
         });
 
-        setChatReadStatus(element.isRead(), element.isDummy());
-
         if (element.getFromRole() != null
                 && !TextUtils.isEmpty(element.getFromRole())
                 && !element.getFromRole().toLowerCase().equals(ROLE_USER.toLowerCase())
                 && element.isSender()
-                && !element.isDummy()) {
+                && !element.isDummy()
+                && element.isShowRole()) {
             name.setText(element.getFrom());
             label.setText(element.getFromRole());
             name.setVisibility(View.VISIBLE);
@@ -123,17 +120,23 @@ public class ProductAttachmentViewHolder extends BaseChatViewHolder<ProductAttac
         }
     }
 
-    private void setChatReadStatus(boolean isRead, boolean isPending) {
+    private void setChatReadStatus(ProductAttachmentViewModel element) {
         int imageResource;
-        if (isRead) {
-            imageResource = R.drawable.ic_chat_read;
+        if(element.isShowTime()) {
+            chatStatus.setVisibility(View.VISIBLE);
+            if (element.isRead()) {
+                imageResource = R.drawable.ic_chat_read;
+            } else {
+                imageResource = R.drawable.ic_chat_unread;
+            }
+
+            if (element.isDummy()) {
+                imageResource = R.drawable.ic_chat_pending;
+            }
+            chatStatus.setImageResource(imageResource);
         } else {
-            imageResource = R.drawable.ic_chat_unread;
+            chatStatus.setVisibility(View.GONE);
         }
-        if (isPending) {
-            imageResource = R.drawable.ic_chat_pending;
-        }
-        chatStatus.setImageResource(imageResource);
     }
 
     private void setAlignParent(int alignment, View view) {
