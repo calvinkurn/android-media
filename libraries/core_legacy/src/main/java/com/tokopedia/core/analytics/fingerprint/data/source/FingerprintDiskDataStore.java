@@ -1,11 +1,12 @@
 package com.tokopedia.core.analytics.fingerprint.data.source;
 
+import android.content.Context;
+
 import com.google.gson.Gson;
 import com.tokopedia.core.analytics.fingerprint.LocationCache;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
 import com.tokopedia.core.analytics.fingerprint.data.FingerprintDataStore;
 import com.tokopedia.core.analytics.fingerprint.domain.model.FingerPrint;
-import com.tokopedia.core.app.MainApplication;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -15,6 +16,12 @@ import rx.functions.Func1;
  */
 
 public class FingerprintDiskDataStore implements FingerprintDataStore {
+
+    private Context context;
+
+    public FingerprintDiskDataStore(Context context) {
+        this.context = context;
+    }
 
     @Override
     public Observable<String> getFingerprint() {
@@ -31,11 +38,11 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String timezone     = Utilities.getTimeZoneOffset();
                         String userAgent    = Utilities.getHttpAgent();
                         boolean isEmulator  = Utilities.isDeviceEmulated();
-                        boolean isTablet    = Utilities.isDeviceTablet(MainApplication.getAppContext());
-                        String screenReso     = Utilities.getScreenResolution(MainApplication.getAppContext());
+                        boolean isTablet    = Utilities.isDeviceTablet(context);
+                        String screenReso     = Utilities.getScreenResolution(context);
                         String deviceLanguage = Utilities.getLanguage();
-                        String ssid         = Utilities.getSSID(MainApplication.getAppContext());
-                        String carrier      = Utilities.getCarrierName(MainApplication.getAppContext());
+                        String ssid         = Utilities.getSSID(context);
+                        String carrier      = Utilities.getCarrierName(context);
 
                         FingerPrint fp = new FingerPrint.FingerPrintBuilder()
                                 .deviceName(deviceName)

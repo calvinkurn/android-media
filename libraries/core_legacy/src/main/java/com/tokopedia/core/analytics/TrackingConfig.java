@@ -1,13 +1,14 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.container.IAppsflyerContainer;
 import com.tokopedia.core.analytics.container.IGTMContainer;
 import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.nishikino.Nishikino;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 
 /**
  * @author  by alvarisi on 10/26/16.
@@ -25,48 +26,48 @@ public abstract class TrackingConfig {
      * Get GTM Container Instance
      * @return GTM Container
      */
-    static IGTMContainer getGTMEngine(){
-        return Nishikino.init(MainApplication.getAppContext()).startAnalytics();
+    static IGTMContainer getGTMEngine(Context context){
+        return Nishikino.init(context).startAnalytics();
     }
 
     /**
      * Get Appsflyer Container Instance
      * @return Appsflyer Instance
      */
-    static IAppsflyerContainer getAFEngine(){
-        return Jordan.init(MainApplication.getAppContext()).getAFContainer();
+    static IAppsflyerContainer getAFEngine(Context context){
+        return Jordan.init(context).getAFContainer();
     }
 
     /**
      * Get MoEngage Engine Instance
      * @return MoEngage Instance
      */
-    static IMoengageContainer getMoEngine(){
-        return Jordan.init(MainApplication.getAppContext()).getMoEngageContainer();
+    static IMoengageContainer getMoEngine(Context context){
+        return Jordan.init(context).getMoEngageContainer();
     }
 
     /**
      * Get Firebase Performance Monitoring Engine Instance
      * @return FPM Instance
      */
-    static IPerformanceMonitoring getFPMEngine(String traceName){
-        return Jordan.init(MainApplication.getAppContext()).getFirebasePerformanceContainer(traceName);
+    static IPerformanceMonitoring getFPMEngine(Context context, String traceName){
+        return Jordan.init(context).getFirebasePerformanceContainer(traceName);
     }
 
     /**
      * Initialize container to start at first time apps launched
      * @param what type container (GTM, Appsflyer, MoEngage)
      */
-    public static void runFirstTime(AnalyticsKind what){
+    public static void runFirstTime(Context context, AnalyticsKind what, SessionHandler sessionHandler){
         switch (what){
             case GTM:
-                getGTMEngine().loadContainer();
+                getGTMEngine(context).loadContainer();
                 break;
             case APPSFLYER:
-                Jordan.init(MainApplication.getAppContext()).runFirstTimeAppsFlyer(SessionHandler.isV4Login(MainApplication.getAppContext()) ? SessionHandler.getLoginID(MainApplication.getAppContext()) : "00000");
+                Jordan.init(context).runFirstTimeAppsFlyer(sessionHandler.isV4Login() ? sessionHandler.getLoginID() : "00000");
                 break;
             case MOENGAGE:
-                Jordan.init(MainApplication.getAppContext()).getMoEngageContainer().initialize();
+                Jordan.init(context).getMoEngageContainer().initialize();
                 break;
         }
     }
@@ -75,7 +76,7 @@ public abstract class TrackingConfig {
      * Set Logging Debugging, Production please set to false
      * @param debugState state debugging
      */
-    public static void enableDebugging(boolean debugState) {
-        getGTMEngine().getTagManager().setVerboseLoggingEnabled(debugState);
+    public static void enableDebugging(Context context, boolean debugState) {
+        getGTMEngine(context).getTagManager().setVerboseLoggingEnabled(debugState);
     }
 }

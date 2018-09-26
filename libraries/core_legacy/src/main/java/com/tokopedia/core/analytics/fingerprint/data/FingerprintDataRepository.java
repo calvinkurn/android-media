@@ -1,7 +1,8 @@
 package com.tokopedia.core.analytics.fingerprint.data;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
-import com.tokopedia.core.app.MainApplication;
 
 import rx.Observable;
 
@@ -13,8 +14,8 @@ public class FingerprintDataRepository implements FingerprintRepository {
 
     private final FingerprintDataStoreFactory fingerprintDataStoreFactory;
 
-    public FingerprintDataRepository(){
-        fingerprintDataStoreFactory = new FingerprintDataStoreFactory(MainApplication.getAppContext());
+    public FingerprintDataRepository(Context context){
+        fingerprintDataStoreFactory = new FingerprintDataStoreFactory(context);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.tokopedia.core.analytics.container;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -12,8 +13,6 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.BuildConfig;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.gcm.GCMHandler;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import rx.schedulers.Schedulers;
 public class AppsflyerContainer implements IAppsflyerContainer {
 
     private static final String TAG = AppsflyerContainer.class.getSimpleName();
-    private Context context;
+    private Application context;
     public static final String APPSFLYER_KEY = "SdSopxGtYr9yK8QEjFVHXL";
     private static final String KEY_INSTALL_SOURCE = "install_source";
 
@@ -44,11 +43,11 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         void onErrorAFAdsID();
     }
 
-    private AppsflyerContainer(Context context) {
+    private AppsflyerContainer(Application context) {
         this.context = context;
     }
 
-    public static AppsflyerContainer newInstance(Context context) {
+    public static AppsflyerContainer newInstance(Application context) {
         return new AppsflyerContainer(context);
     }
 
@@ -69,7 +68,7 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     }
 
     private void setAppsFlyerKey(String key) {
-        AppsFlyerLib.getInstance().startTracking(MainApplication.getInstance(), key);
+        AppsFlyerLib.getInstance().startTracking(context, key);
     }
 
     private void setCurrencyCode(String code) {
@@ -83,13 +82,6 @@ public class AppsflyerContainer implements IAppsflyerContainer {
         AppsFlyerLib.getInstance().setCustomerUserId(userID);
         AppsFlyerLib.getInstance().setAdditionalData(addData);
         CommonUtils.dumper(TAG + " appsflyer initiated with UID " + userID);
-    }
-
-    private void setAndroidID() {
-        String androidID = GCMHandler.getRegistrationId(context);
-        if (!TextUtils.isEmpty(androidID)) {
-
-        }
     }
 
     private HashMap<String, Object> initAdditionalData(){

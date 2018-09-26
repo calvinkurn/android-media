@@ -17,12 +17,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.domain.usecase.CacheGetFingerprintUseCase;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 
-import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS;
-import static com.tokopedia.core.geolocation.presenter.GoogleMapPresenter.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
+import static com.tokopedia.core.analytics.fingerprint.LocationCache.DEFAULT_UPDATE_INTERVAL_IN_MILLISECONDS;
+import static com.tokopedia.core.analytics.fingerprint.LocationCache.FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS;
 
 /**
  * Created by Herdi_WORK on 22.06.17.
@@ -65,7 +64,7 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     @Override
     public void onLocationChanged(Location location) {
         localCacheHandler.clearCache(CacheGetFingerprintUseCase.FINGERPRINT_USE_CASE);
-        LocationCache.saveLocation(context, location);
+        new LocationCache(context).saveLocation(context, location);
         removeLocationUpdates();
     }
 
@@ -79,11 +78,11 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private void getLastLocation() {
         if (isLocationServiceConnected()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
                     if (location != null) {
-                        LocationCache.saveLocation(context, location);
+                        new LocationCache(context).saveLocation(context, location);
                     } else {
                         CommonUtils.dumper("location permission not granted");
                     }
@@ -119,8 +118,8 @@ public class LocationUtils implements LocationListener, GoogleApiClient.Connecti
     private void requestLocationUpdates() {
         if (googleApiClient.isConnected()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(MainApplication.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                        ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         ) {
                     LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, this);
                 }

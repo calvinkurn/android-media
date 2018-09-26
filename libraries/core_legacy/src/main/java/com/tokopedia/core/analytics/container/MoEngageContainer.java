@@ -1,5 +1,6 @@
 package com.tokopedia.core.analytics.container;
 
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
@@ -10,7 +11,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
-import com.tokopedia.core.app.MainApplication;
 
 import org.json.JSONObject;
 
@@ -29,15 +29,15 @@ import rx.subscriptions.CompositeSubscription;
 public class MoEngageContainer implements IMoengageContainer {
     private static final String DATE_FORMAT_1 = "yyyy-MM-dd";
 
-    private Context context;
+    private Application context;
     private CompositeSubscription subscription;
 
-    private MoEngageContainer(Context ctx) {
+    private MoEngageContainer(Application ctx) {
         context = ctx;
         subscription = new CompositeSubscription();
     }
 
-    public static MoEngageContainer getMoEngageContainer(Context context) {
+    public static MoEngageContainer getMoEngageContainer(Application context) {
         return new MoEngageContainer(context);
     }
 
@@ -66,7 +66,7 @@ public class MoEngageContainer implements IMoengageContainer {
           Mandatory to set small/Large notification icon while initialising sdk
           */
         MoEngage moEngage =
-                new MoEngage.Builder(MainApplication.getInstance(),
+                new MoEngage.Builder(context,
                         context.getResources().getString(R.string.key_moengage))
                         .setNotificationSmallIcon(R.drawable.ic_status_bar_notif_customerapp)
                         .setNotificationLargeIcon(R.drawable.ic_big_notif_customerapp)

@@ -1,8 +1,9 @@
 package com.tokopedia.core.analytics.data;
 
-import com.tkpd.library.utils.LocalCacheHandler;
+import android.content.Context;
+
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.app.MainApplication;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
 
 /**
  * @author by alvarisi on 1/4/17.
@@ -11,9 +12,9 @@ import com.tokopedia.core.app.MainApplication;
 public class DiskAnalyticsDataStore {
     private LocalCacheHandler mLocalCacheHandler;
 
-    public DiskAnalyticsDataStore() {
+    public DiskAnalyticsDataStore(Context context) {
         mLocalCacheHandler = new LocalCacheHandler(
-                MainApplication.getAppContext(),
+                context,
                 AppEventTracking.GTM_CACHE
         );
     }

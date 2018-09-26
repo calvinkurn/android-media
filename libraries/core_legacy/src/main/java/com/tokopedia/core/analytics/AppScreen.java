@@ -1,7 +1,6 @@
 package com.tokopedia.core.analytics;
 
 import com.appsflyer.AFInAppEventType;
-import com.tokopedia.core.router.home.HomeRouter;
 
 
 /**
@@ -10,8 +9,10 @@ import com.tokopedia.core.router.home.HomeRouter;
  */
 public final class AppScreen {
 
+    public static final String IDENTIFIER_HOME_ACTIVITY = "ParentIndexHome";
     public static final String IDENTIFIER_REGISTER_NEWNEXT_FRAGMENT = "RegisterNewNextFragment";
     public static final String IDENTIFIER_REGISTER_PASSPHONE_FRAGMENT = "RegisterPassPhoneFragment";
+    public static final String IDENTIFIER_CATEGORY_FRAGMENT = "FragmentIndexCategory";
 
     public static final String STATISTIC_PAGE = "Statistic Page";
     public static final String SCREEN_COPY_PRODUCT = "Salin Product Page";
@@ -289,7 +290,7 @@ public final class AppScreen {
     }
 
     public static String convertAFActivityEvent(String tag) {
-        if (tag.equals(HomeRouter.IDENTIFIER_HOME_ACTIVITY)) {
+        if (tag.equals(IDENTIFIER_HOME_ACTIVITY)) {
             return AFInAppEventType.LOGIN;
         } else {
             return AFInAppEventType.CONTENT_VIEW;

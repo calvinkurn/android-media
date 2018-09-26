@@ -1,11 +1,11 @@
 package com.tokopedia.core.analytics.fingerprint.domain.usecase;
 
+import android.content.Context;
 import android.text.TextUtils;
 
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.analytics.fingerprint.domain.FingerprintRepository;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.base.domain.RequestParams;
+import com.tokopedia.core.deprecated.LocalCacheHandler;
+import com.tokopedia.usecase.RequestParams;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -20,9 +20,9 @@ public class CacheGetFingerprintUseCase extends GetFingerprintUseCase {
     public static final String FINGERPRINT_USE_CASE = "FINGERPRINT_USE_CASE";
     private final LocalCacheHandler localCacheHandler;
 
-    public CacheGetFingerprintUseCase(FingerprintRepository fpRepository) {
+    public CacheGetFingerprintUseCase(Context context, FingerprintRepository fpRepository) {
         super(fpRepository);
-        localCacheHandler = new LocalCacheHandler(MainApplication.getAppContext(), FINGERPRINT_KEY_NAME);
+        localCacheHandler = new LocalCacheHandler(context, FINGERPRINT_KEY_NAME);
         localCacheHandler.setExpire(3600);
     }
 

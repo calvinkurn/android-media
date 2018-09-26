@@ -15,7 +15,6 @@ import com.google.android.gms.tagmanager.ContainerHolder;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.android.gms.tagmanager.TagManager;
 import com.tkpd.library.utils.CommonUtils;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.PurchaseTracking;
@@ -30,10 +29,7 @@ import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.analytics.nishikino.singleton.ContainerHolderSingleton;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.SessionHandler;
-import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.core.deprecated.SessionHandler;
 
 import org.json.JSONObject;
 
@@ -57,13 +53,16 @@ public class GTMContainer implements IGTMContainer {
     private static final String TAG = GTMContainer.class.getSimpleName();
 
     private Context context;
+    private SessionHandler sessionHandler;
 
     public static GTMContainer newInstance(Context context) {
         return new GTMContainer(context);
     }
 
+
     public GTMContainer(Context context) {
         this.context = context;
+        this.sessionHandler = new SessionHandler(context);
     }
 
     @Override
@@ -93,22 +92,22 @@ public class GTMContainer implements IGTMContainer {
         return System.currentTimeMillis() - lastRefresh > EXPIRE_CONTAINER_TIME_DEFAULT;
     }
 
-    private Boolean isAllowRefresh() {
-        //if (MainApplication.isDebug()) return true;
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-        Log.i("GTM TKPD", "Allow Refresh? " + cache.isExpired());
-        return cache.isExpired();
-    }
+//    private Boolean isAllowRefresh() {
+//        //if (MainApplication.isDebug()) return true;
+//        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
+//        Log.i("GTM TKPD", "Allow Refresh? " + cache.isExpired());
+//        return cache.isExpired();
+//    }
 
-    private void setExpiryRefresh() {
-        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
-        if (MainApplication.isDebug()) {
-            cache.setExpire(EXPIRE_CONTAINER_TIME_DEBUG);
-        } else {
-            cache.setExpire(EXPIRE_CONTAINER_TIME);
-        }
-        cache.applyEditor();
-    }
+//    private void setExpiryRefresh() {
+//        LocalCacheHandler cache = new LocalCacheHandler(context, TkpdCache.ALLOW_REFRESH);
+//        if (MainApplication.isDebug()) {
+//            cache.setExpire(EXPIRE_CONTAINER_TIME_DEBUG);
+//        } else {
+//            cache.setExpire(EXPIRE_CONTAINER_TIME);
+//        }
+//        cache.applyEditor();
+//    }
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
@@ -247,11 +246,11 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public GTMContainer sendScreenAuthenticated(String screenName) {
         Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(SessionHandler.getLoginName(context));
-        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
-        authEvent.setShopID(SessionHandler.getShopID(context));
-        authEvent.setShopId(SessionHandler.getShopID(context));
-        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
+        authEvent.setUserFullName(sessionHandler.getLoginName());
+        authEvent.setUserID(sessionHandler.getGTMLoginID());
+        authEvent.setShopID(sessionHandler.getShopID());
+        authEvent.setShopId(sessionHandler.getShopID());
+        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -264,13 +263,13 @@ public class GTMContainer implements IGTMContainer {
     @Override
     public GTMContainer sendScreenAuthenticatedOfficialStore(String screenName, String shopID, String shopType, String pageType, String productId) {
         Authenticated authEvent = new Authenticated();
-        authEvent.setUserFullName(SessionHandler.getLoginName(context));
-        authEvent.setUserID(SessionHandler.getGTMLoginID(context));
+        authEvent.setUserFullName(sessionHandler.getLoginName());
+        authEvent.setUserID(sessionHandler.getGTMLoginID());
         authEvent.setShopId(shopID);
         authEvent.setShopType(shopType);
         authEvent.setPageType(pageType);
         authEvent.setProductId(productId);
-        authEvent.setUserSeller(SessionHandler.isUserHasShop(context) ? 1 : 0);
+        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
 
         CommonUtils.dumper("GAv4 appdata authenticated " + new JSONObject(authEvent.getAuthDataLayar()).toString());
 
@@ -283,13 +282,9 @@ public class GTMContainer implements IGTMContainer {
     public GTMContainer eventAuthenticate(Authenticated authenticated) {
         CommonUtils.dumper("GAv4 send authenticated");
 
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ADVERTISINGID);
-        String adsId = localCacheHandler.getString(TkpdCache.Key.KEY_ADVERTISINGID);
-        if (adsId != null && !"".equalsIgnoreCase(adsId.trim())) {
-            authenticated.setAdsId(adsId);
-        }
+        authenticated.setAdsId(sessionHandler.getAdsId());
 
-        authenticated.setAndroidId(getAndroidId(context));
+        authenticated.setAndroidId(sessionHandler.getAndroidId());
 
 
         if (TextUtils.isEmpty(authenticated.getcIntel())) {
@@ -834,24 +829,5 @@ public class GTMContainer implements IGTMContainer {
                                 ))
                 )
         );
-    }
-
-    private static String getAndroidId(Context context) {
-
-        final LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, TkpdCache.ANDROID_ID);
-
-        String androidId = localCacheHandler.getString(TkpdCache.Key.KEY_ANDROID_ID);
-        if (androidId != null && !"".equalsIgnoreCase(androidId.trim())) {
-            return androidId;
-        } else {
-            String android_id = AuthUtil.md5(Settings.Secure.getString(context.getContentResolver(),
-                    Settings.Secure.ANDROID_ID));
-            if (!TextUtils.isEmpty(android_id)) {
-                localCacheHandler.putString(TkpdCache.Key.KEY_ANDROID_ID, android_id);
-                localCacheHandler.applyEditor();
-            }
-            return android_id;
-        }
-
     }
 }

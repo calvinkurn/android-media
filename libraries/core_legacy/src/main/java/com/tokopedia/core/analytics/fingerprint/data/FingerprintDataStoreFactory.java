@@ -17,7 +17,7 @@ public class FingerprintDataStoreFactory {
     }
 
     public FingerprintDataStore createDiskFingerprintDataStore(){
-        return new FingerprintDiskDataStore();
+        return new FingerprintDiskDataStore(context);
     }
 
 }
