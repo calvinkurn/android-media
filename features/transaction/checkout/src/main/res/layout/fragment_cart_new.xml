@@ -98,8 +98,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:visibility="gone"
-                    app:cardElevation="@dimen/dp_8"
-                    app:cardUseCompatPadding="false"
+                    app:cardUseCompatPadding="true"
                     app:cardPreventCornerOverlap="false"
                     tools:visibility="visible">
 
