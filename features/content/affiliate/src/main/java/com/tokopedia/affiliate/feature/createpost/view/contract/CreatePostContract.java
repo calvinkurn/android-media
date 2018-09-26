@@ -10,7 +10,7 @@ public interface CreatePostContract {
     interface View extends CustomerView {
 
     }
-    interface Presenter extends CustomerPresenter {
-
+    interface Presenter extends CustomerPresenter<View> {
+        void fetchContentForm(String productId, String adId);
     }
 }

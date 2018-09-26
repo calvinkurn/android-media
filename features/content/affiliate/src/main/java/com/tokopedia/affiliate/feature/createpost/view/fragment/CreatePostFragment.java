@@ -9,11 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
+import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.design.component.ButtonCompat;
+
+import javax.inject.Inject;
 
 import java.util.ArrayList;
 
@@ -28,6 +33,9 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private ButtonCompat addImageBtn;
 
+    @Inject
+    CreatePostContract.Presenter presenter;
+
     public static CreatePostFragment createInstance(@NonNull Bundle bundle) {
         CreatePostFragment fragment = new CreatePostFragment();
         fragment.setArguments(bundle);
@@ -36,7 +44,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     protected void initInjector() {
-
+        BaseAppComponent baseAppComponent
+                = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+        DaggerCreatePostComponent.builder()
+                .baseAppComponent(baseAppComponent)
+                .build()
+                .inject(this);
     }
 
     @Override
