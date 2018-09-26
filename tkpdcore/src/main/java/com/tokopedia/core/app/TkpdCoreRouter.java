@@ -198,5 +198,5 @@ public interface TkpdCoreRouter {
 
     Intent getChangePasswordIntent(Context context);
 
-    Intent getTalkIntent(Context context);
+    Intent getInboxTalkCallingIntent(Context context);
 }

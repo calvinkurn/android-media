@@ -93,7 +93,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                intent = ((TkpdCoreRouter) context.getApplication()).getTalkIntent(context);
+                intent = ((TkpdCoreRouter) context.getApplication()).getInboxTalkCallingIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);

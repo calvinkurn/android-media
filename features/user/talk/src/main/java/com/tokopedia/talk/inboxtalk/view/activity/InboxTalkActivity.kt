@@ -57,7 +57,7 @@ class InboxTalkActivity : BaseSimpleActivity(), HasComponent<TalkComponent>,
         @JvmStatic
         @DeepLink(ApplinkConst.TALK)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            return (context.applicationContext as TalkRouter).getTalkIntent(context)
+            return (context.applicationContext as TalkRouter).getInboxTalkCallingIntent(context)
         }
 
     }

@@ -16,8 +16,6 @@ interface TalkRouter {
 
     fun getProductPageIntent(context: Context, productId: String): Intent
 
-    fun getTalkIntent(context: Context): Intent
-
     fun getProductTalk(context: Context, productId: String): Intent
 
     fun getShopTalkIntent(context: Context, shopId: String): Intent
@@ -26,4 +24,6 @@ interface TalkRouter {
 
     fun getAskSellerIntent(context: Context, toShopId: String, shopName: String,
                            customSubject: String, customMessage: String, source: String, avatar: String): Intent
+
+    fun getInboxTalkCallingIntent(context: Context): Intent
 }
