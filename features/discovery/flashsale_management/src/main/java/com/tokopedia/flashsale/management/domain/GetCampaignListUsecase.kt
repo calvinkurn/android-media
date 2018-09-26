@@ -1,23 +1,18 @@
 package com.tokopedia.flashsale.management.domain
 
 import android.content.Context
-import android.text.TextUtils
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.Campaign
-import com.tokopedia.flashsale.management.data.Data
-import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
 
-class GetCampaignListUsecase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<Data>() {
+class GetCampaignListUsecase(private val context: Context, private val graphqlUseCase: GraphqlUseCase) : UseCase<DataCampaignList>() {
 
-    override fun createObservable(requestParams: RequestParams): Observable<Data> {
+    override fun createObservable(requestParams: RequestParams): Observable<DataCampaignList> {
 //        val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_campaign_list)
 //        val graphqlRequest = GraphqlRequest(query, Data::class.java, requestParams.parameters)
 //        graphqlUseCase.clearRequest()
@@ -49,7 +44,7 @@ class GetCampaignListUsecase(private val context: Context, private val graphqlUs
                     else
                         GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_empty_campaign)
 
-        return Observable.just(Gson().fromJson(data, Data::class.java))
+        return Observable.just(Gson().fromJson(data, DataCampaignList::class.java))
     }
 
     override fun unsubscribe() {

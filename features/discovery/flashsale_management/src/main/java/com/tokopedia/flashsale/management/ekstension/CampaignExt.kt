@@ -1,6 +1,6 @@
 package com.tokopedia.flashsale.management.ekstension
 
-import com.tokopedia.flashsale.management.data.Campaign
+import com.tokopedia.flashsale.management.data.campaign_list.Campaign
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 
 fun Campaign.toCampaignViewModel(): CampaignViewModel {

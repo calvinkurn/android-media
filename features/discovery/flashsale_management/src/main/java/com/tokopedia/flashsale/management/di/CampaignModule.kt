@@ -2,6 +2,7 @@ package com.tokopedia.flashsale.management.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.flashsale.management.domain.GetCampaignLabelUsecase
 import com.tokopedia.flashsale.management.domain.GetCampaignListUsecase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import dagger.Module
@@ -19,5 +20,11 @@ class CampaignModule {
     @Provides
     fun provideGetRateEstimationUseCase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): GetCampaignListUsecase {
         return GetCampaignListUsecase(context, graphqlUseCase)
+    }
+
+    @CampaignScope
+    @Provides
+    fun provideGetCampaignLabelUsecase(@ApplicationContext context: Context, graphqlUseCase: GraphqlUseCase): GetCampaignLabelUsecase {
+        return GetCampaignLabelUsecase(context, graphqlUseCase)
     }
 }

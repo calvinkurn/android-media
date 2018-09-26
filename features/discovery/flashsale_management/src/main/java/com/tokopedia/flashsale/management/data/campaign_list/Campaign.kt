@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.data
+package com.tokopedia.flashsale.management.data.campaign_list
 
 data class Campaign(
         var campaign_id: Int = 0,

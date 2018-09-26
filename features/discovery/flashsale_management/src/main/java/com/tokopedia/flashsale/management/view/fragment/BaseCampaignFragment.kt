@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.Campaign
-import com.tokopedia.flashsale.management.data.Data
+import com.tokopedia.flashsale.management.data.campaign_label.DataCampaignLabel
+import com.tokopedia.flashsale.management.data.campaign_list.Campaign
+import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
@@ -49,7 +50,7 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
         return CampaignAdapterTypeFactory()
     }
 
-    override fun onSuccessGetCampaignList(data: Data) {
+    override fun onSuccessGetCampaignList(data: DataCampaignList) {
         val listDummy = ArrayList<CampaignViewModel>()
         for(campaign : Campaign in data.list){
             listDummy.add(campaign.toCampaignViewModel())
@@ -58,6 +59,14 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     override fun onErrorGetCampaignList(throwable: Throwable) {
+
+    }
+
+    override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
+
+    }
+
+    override fun onErrorGetCampaignLabel(throwable: Throwable) {
 
     }
 
