@@ -813,7 +813,7 @@ public class AddAddressFragment extends BasePresenterFragment<AddAddressPresente
 
         // Check address validity
         int addressLength = addressEditText.getText().length();
-        if (addressLength <= 20) {
+        if (addressLength < 20) {
             String errorMessage = getString(R.string.error_min_address);
 
             if (addressLength == 0) {
