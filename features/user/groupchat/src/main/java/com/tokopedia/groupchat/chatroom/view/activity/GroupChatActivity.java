@@ -266,7 +266,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             findViewById(R.id.video_container).setVisibility(View.VISIBLE);
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
-            setToolbarPlain();
+            setToolbarWhite();
             if (videoFragment == null)
                 return;
             videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
@@ -1457,6 +1457,10 @@ public class GroupChatActivity extends BaseSimpleActivity
         toolbar.removeAllViews();
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
+        setToolbarWhite();
+    }
+
+    private void setToolbarWhite(){
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);

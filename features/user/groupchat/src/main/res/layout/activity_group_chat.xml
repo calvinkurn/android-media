@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             app:cardElevation="@dimen/space_tiny"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/video_container"
+            app:layout_constraintTop_toBottomOf="@+id/video_container"
             tools:visibility="gone">
 
             <android.support.v7.widget.RecyclerView
