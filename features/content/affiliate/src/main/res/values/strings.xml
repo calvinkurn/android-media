@@ -36,5 +36,7 @@
     <string name="af_select_product_recommendation">Pilih produk rekomendasi terbaik untuk dibagikan ke media sosialmu.</string>
     <string name="af_see_product_selection">Lihat Pilihan Produk</string>
     <string name="af_minimal_character">Username minimum %d karakter</string>
+    <string name="af_add_images">Tambah Gambar</string>
+    <string name="af_done">Selesai</string>
 
 </resources>

@@ -1,7 +1,16 @@
 package com.tokopedia.affiliate.feature.createpost.view.contract;
 
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+
 /**
- * @author by yfsx on 26/09/18.
+ * @author by milhamj on 9/26/18.
  */
-public class CreatePostContract {
+public interface CreatePostContract {
+    interface View extends CustomerView {
+
+    }
+    interface Presenter extends CustomerPresenter {
+
+    }
 }

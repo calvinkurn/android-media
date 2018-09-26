@@ -33,10 +33,9 @@ public class OnboardingFragment extends Fragment {
 
     private boolean isOnboardingFinish = false;
 
-    public static OnboardingFragment newInstance() {
+    public static OnboardingFragment newInstance(@NonNull Bundle bundle) {
         OnboardingFragment fragment = new OnboardingFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 

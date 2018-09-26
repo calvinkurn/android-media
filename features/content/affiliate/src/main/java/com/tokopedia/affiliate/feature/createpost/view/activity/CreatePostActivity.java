@@ -7,23 +7,27 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
+import com.tokopedia.affiliate.feature.createpost.view.fragment.CreatePostFragment;
 import com.tokopedia.applink.ApplinkConst;
 
-/**
- * @author by yfsx on 26/09/18.
- */
 public class CreatePostActivity extends BaseSimpleActivity {
 
+    public static final String PARAM_PRODUCT_ID = "product_id";
+    public static final String PARAM_AD_ID = "ad_id";
+
     @DeepLink(ApplinkConst.AFFILIATE_CREATE_POST)
-    public static Intent getInstance(Context context) {
+    public static Intent getInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, CreatePostActivity.class);
-        Bundle bundle = new Bundle();
         intent.putExtras(bundle);
         return intent;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return null;
+        Bundle bundle = new Bundle();
+        if (getIntent().getExtras() != null) {
+            bundle.putAll(getIntent().getExtras());
+        }
+        return CreatePostFragment.createInstance(bundle);
     }
 }

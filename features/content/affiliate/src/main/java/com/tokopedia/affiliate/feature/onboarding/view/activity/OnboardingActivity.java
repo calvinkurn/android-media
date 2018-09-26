@@ -32,10 +32,10 @@ public class OnboardingActivity extends BaseSimpleActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        Fragment fragment =  OnboardingFragment.newInstance();
+        Bundle bundle = new Bundle();
         if (getIntent().getExtras() != null) {
-            fragment.setArguments(new Bundle(getIntent().getExtras()));
+            bundle.putAll(getIntent().getExtras());
         }
-        return fragment;
+        return OnboardingFragment.newInstance(bundle);
     }
 }
