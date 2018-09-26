@@ -1,4 +1,4 @@
-query SellerAccountHome($shop_ids:[Int!]!){
+query SellerAccountHome($shop_ids:[Int!]!, $merchantID:Int!){
   status
   isAuthenticated
   saldo {
@@ -35,5 +35,15 @@ query SellerAccountHome($shop_ids:[Int!]!){
   reputation_shops(shop_ids: $shop_ids) {
     badge
     badge_hd
+  }
+  le_preapprove(merchantID: $merchantID) {
+    fieldData {
+        preApp {
+            valid
+            partnerName
+            partnerMaxLoan
+            partnerMinRate
+        }
+    }
   }
 }

@@ -271,6 +271,7 @@ public class ProductListFragment extends SearchSectionFragment
         TopAdsParams adsParams = new TopAdsParams();
         adsParams.getParam().put(TopAdsParams.KEY_SRC, BrowseApi.DEFAULT_VALUE_SOURCE_SEARCH); //[TODO replace source with source from parameters
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, getQueryKey());
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getActivity()));
         adsParams.getParam().putAll(getAdditionalParams());
 
         if (getFlagFilterHelper() != null &&

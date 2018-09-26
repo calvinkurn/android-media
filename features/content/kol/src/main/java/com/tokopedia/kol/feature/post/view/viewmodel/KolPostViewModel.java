@@ -17,6 +17,7 @@ public class KolPostViewModel extends BaseKolViewModel
     private String tagsType;
     private String tagsCaption;
     private String tagsLink;
+    private boolean showTopShadow;
 
     public KolPostViewModel(int userId, String cardType, String title, String name,
                             String avatar, String label, String kolProfileUrl, boolean followed,
@@ -80,6 +81,14 @@ public class KolPostViewModel extends BaseKolViewModel
 
     public void setTagsLink(String tagsLink) {
         this.tagsLink = tagsLink;
+    }
+
+    public boolean isShowTopShadow() {
+        return showTopShadow;
+    }
+
+    public void setShowTopShadow(boolean showTopShadow) {
+        this.showTopShadow = showTopShadow;
     }
 
     @Override
