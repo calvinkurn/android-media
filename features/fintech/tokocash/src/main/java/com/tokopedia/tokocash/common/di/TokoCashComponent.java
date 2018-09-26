@@ -10,6 +10,7 @@ import com.tokopedia.tokocash.autosweepmf.view.fragment.SetAutoSweepLimitFragmen
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HistoryTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.HomeTokoCashFragment;
 import com.tokopedia.tokocash.historytokocash.presentation.fragment.MoveToSaldoFragment;
+import com.tokopedia.tokocash.ovoactivation.IntroOvoFragment;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.balance.domain.GetBalanceTokoCashUseCase;
 import com.tokopedia.tokocash.qrpayment.presentation.activity.NominalQrPaymentActivity;
@@ -49,4 +50,6 @@ public interface TokoCashComponent {
     void inject(AutoSweepHomeFragment fragment);
 
     void inject(SetAutoSweepLimitFragment fragment);
+
+    void inject(IntroOvoFragment announcementOvoFragment);
 }

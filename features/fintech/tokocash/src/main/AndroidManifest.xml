@@ -66,6 +66,14 @@
             android:name=".autosweepmf.view.activity.SetAutoSweepLimitActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".ovoactivation.IntroOvoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
+        <activity
+            android:name=".ovoactivation.ActivationOvoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 
 </manifest>

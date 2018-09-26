@@ -2,7 +2,7 @@
 <resources>
 
     <style name="Large">
-        <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textSize">@dimen/sp_18</item>
     </style>
 
     <style name="Bold">
@@ -50,6 +50,11 @@
 
     <style name="AutoSweepSwitch" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/tkpd_main_green</item>
+    </style>
+
+    <style name="Button.Submit.White.GreenBorderFull">
+        <item name="android:background">@drawable/bg_rounded_corners_green</item>
+        <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
 
 </resources>

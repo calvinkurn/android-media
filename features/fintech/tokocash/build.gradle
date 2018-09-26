@@ -25,6 +25,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.design)
     implementation project(rootProject.ext.libraries.network)
     implementation project(rootProject.ext.libraries.userSession)
+    implementation project(rootProject.ext.libraries.graphql)
+    implementation project(rootProject.ext.libraries.applink)
 
     implementation rootProject.ext.miscDependencies.gson
     implementation rootProject.ext.miscDependencies.facebook

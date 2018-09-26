@@ -1,0 +1,12 @@
+{
+    check_phone {
+        phone_number
+        is_registered
+        registered_applink
+        registered_url
+        not_registered_applink
+        not_registered_url
+        change_msisdn_applink
+        change_msisdn_url
+  }
+}
