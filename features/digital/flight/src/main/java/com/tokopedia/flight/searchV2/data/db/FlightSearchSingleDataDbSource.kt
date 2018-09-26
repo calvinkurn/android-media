@@ -9,7 +9,7 @@ class FlightSearchSingleDataDbSource(val journeyDao: JourneyDao,
                                      val routeDao: RouteDao) {
 
     fun getSearchSingle(): Observable<List<Journey>> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     fun insert(item: List<Journey>) {
