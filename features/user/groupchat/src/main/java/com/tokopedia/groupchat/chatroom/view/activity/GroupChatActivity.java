@@ -399,6 +399,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
 
         setupToolbar();
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
         loading = findViewById(R.id.loading);
         main = findViewById(R.id.main_content);
@@ -495,6 +496,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
     }
 
     private boolean isLollipopOrNewer() {
@@ -1045,7 +1048,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
         setToolbarParticipantCount(TextFormatter.format(totalParticipant));
         setVisibilityHeader(View.VISIBLE);
-        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
     }
 
@@ -1435,6 +1437,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (findViewById(R.id.shadow_layer) != null) {
             findViewById(R.id.shadow_layer).setVisibility(View.GONE);
         }
+        if (findViewById(R.id.video_container) != null) {
+            findViewById(R.id.video_container).setVisibility(View.GONE);
+        }
     }
 
     private void setChannelNotFoundView(int visibility) {
@@ -1454,15 +1459,17 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setToolbarPlain() {
+        setToolbarWhite();
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.white));
         toolbar.removeAllViews();
         toolbar.setTitle(getResources().getString(R.string.label_group_chat));
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
-        setToolbarWhite();
     }
 
     private void setToolbarWhite(){
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
+        toolbar.setSubtitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.getMenu().findItem(R.id.action_share).setVisible(false);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setSubtitle(null);
