@@ -1,0 +1,51 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.playServicesDependencies.plus
+    implementation rootProject.ext.playServicesDependencies.base
+    implementation rootProject.ext.playServicesDependencies.appIndexing
+    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.playServicesDependencies.firebase
+    implementation rootProject.ext.playServicesDependencies.location
+    implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.playServicesDependencies.auth
+    implementation rootProject.ext.playServicesDependencies.places
+    implementation rootProject.ext.playServicesDependencies.perfMon
+    implementation rootProject.ext.analyticsDependencies.appsflyer
+    implementation rootProject.ext.analyticsDependencies.installRef
+    implementation (rootProject.ext.analyticsDependencies.moengage) {
+        exclude group: 'com.moengage', module: 'moe-push-gcm'
+    }
+    implementation (rootProject.ext.analyticsDependencies.moengageMSG) {
+        exclude group: 'com.android.support'
+    }
+    implementation (rootProject.ext.analyticsDependencies.branch) {
+        exclude module: 'answers-shim'
+    }
+    implementation rootProject.ext.analyticsDependencies.logentries
+}
