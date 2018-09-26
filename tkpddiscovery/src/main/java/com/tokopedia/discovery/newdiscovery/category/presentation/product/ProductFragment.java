@@ -781,7 +781,9 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void backToTop() {
-        recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     public void setProductList(List<Visitable> productList) {

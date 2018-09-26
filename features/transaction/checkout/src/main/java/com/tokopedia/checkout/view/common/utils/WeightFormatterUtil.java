@@ -20,12 +20,13 @@ public class WeightFormatterUtil {
             BigDecimal bigDecimal = new BigDecimal(weightTotal / KILOGRAM_DIVIDER);
             bigDecimal = bigDecimal.setScale(DIGIT_AFTER_COMMA, BigDecimal.ROUND_HALF_UP);
             weightTotal = bigDecimal.doubleValue();
-            weighTotalFormatted = String.valueOf(weightTotal) + LABEL_KILOGRAM;
+            weighTotalFormatted = String.valueOf(weightTotal) + " " + LABEL_KILOGRAM;
         } else {
             weighTotalFormatted = ((int) weightTotal) + LABEL_GRAM;
         }
 
-        return weighTotalFormatted.replace(".0", "");
+        return weighTotalFormatted.replace(".0 ", "")
+                .replace("  ", " ");
     }
 
 }

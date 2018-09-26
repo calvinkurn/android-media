@@ -79,5 +79,8 @@ public class GetBuyerAccountUseCase extends UseCase<BuyerViewModel> {
 
     private void saveLocallyWallet(AccountModel accountModel) {
         walletPref.saveWallet(accountModel.getWallet());
+        if (accountModel.getVccUserStatus() != null) {
+            walletPref.setTokoSwipeUrl(accountModel.getVccUserStatus().getRedirectionUrl());
+        }
     }
 }
