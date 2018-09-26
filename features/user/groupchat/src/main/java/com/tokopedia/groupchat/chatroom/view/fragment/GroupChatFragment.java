@@ -287,26 +287,16 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
         setPinnedMessage(((GroupChatContract.View) getActivity()).getPinnedMessage());
 
-        chatRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            String TAG = "global keyboardd";
+        replyEditText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onGlobalLayout() {
-//                int heightDiff = chatRecyclerView.getRootView().getHeight() - chatRecyclerView.getHeight();
-//
-//                if (heightDiff > KEYBOARD_TRESHOLD) {
-//                    Log.i(TAG, "onGlobalLayout: ");
-//                } else {
-//                    Log.i(TAG, "onGlobalLayout: ");
-//                }
-//                Log.i(TAG, chatRecyclerView.getRootView().getHeight()+" onGlobalLayout: " +chatRecyclerView.getHeight());
-//                if(chatRecyclerView.getHeight() < 200){
-//
-//                }else{
-//
-//                }
+            public void onClick(View v) {
+                setPinnedMessage(null);
+                setQuickReply(null);
+                setSprintSaleIcon(null);
             }
         });
     }
+
 
     private void goToLogin() {
         ((GroupChatContract.View) getActivity()).logoutChannel(mChannel);
@@ -1033,6 +1023,15 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
             String channelName = ((GroupChatActivity) getActivity())
                     .getChannelInfoViewModel().getTitle();
             analytics.eventClickLoyaltyWidget(channelName);
+        }
+    }
+
+    public void onKeyboardDismiss() {
+        if(getActivity() != null
+                && ((GroupChatActivity) getActivity()).getChannelInfoViewModel() != null) {
+            setPinnedMessage(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getPinnedMessageViewModel());
+            setQuickReply(((GroupChatContract.View) getActivity()).getChannelInfoViewModel().getQuickRepliesViewModel());
+            setSprintSaleIcon(((GroupChatContract.View) getActivity()).getSprintSaleViewModel());
         }
     }
 }

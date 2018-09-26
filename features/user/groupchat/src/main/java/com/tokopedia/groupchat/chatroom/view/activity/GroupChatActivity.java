@@ -28,8 +28,10 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -266,9 +268,17 @@ public class GroupChatActivity extends BaseSimpleActivity
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             findViewById(R.id.video_container).setVisibility(View.VISIBLE);
+            setToolbarWhite();
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
             if (videoFragment == null)
                 return;
+
+            if(youTubePlayer != null){
+                youTubePlayer.pause();
+                youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                return;
+            }
+
             videoFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, new YouTubePlayer.OnInitializedListener() {
                 @Override
                 public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
@@ -329,7 +339,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                             @Override
                             public void onAdStarted() {
-                                Log.i(TAG, "onAdStarted: ");
+                                Log.i(TAG,"onAdStarted: ");
                             }
 
                             @Override
@@ -713,6 +723,27 @@ public class GroupChatActivity extends BaseSimpleActivity
         }
     }
 
+//    @Override
+//    public boolean onKeyDown(int keyCode, KeyEvent event) {
+//        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+//            switch (keyCode) {
+//                case KeyEvent.KEYCODE_BACK:
+//                    if(currentFragmentIsChat()){
+//                        ((GroupChatFragment) getSupportFragmentManager().findFragmentByTag
+//                                (GroupChatFragment.class.getSimpleName())).onKeyboardDismiss();
+//                    }
+//                    return false;
+//            }
+//
+//        }
+//        return super.onKeyDown(keyCode, event);
+//    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return super.onTouchEvent(event);
+    }
+
     private boolean hasErrorEmptyState() {
         return rootView.findViewById(R.id.main_retry) != null
                 && rootView.findViewById(R.id.main_retry).getVisibility() == View.VISIBLE;
@@ -958,7 +989,16 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalView(),
                 channelInfoViewModel.getBlurredBannerUrl());
+        setToolbarAppearance();
         setSponsorData();
+    }
+
+    private void setToolbarAppearance() {
+        if(TextUtils.isEmpty(getChannelInfoViewModel().getVideoId())) {
+            setupToolbar();
+        } else {
+            setToolbarWhite();
+        }
     }
 
     private void setTooltip(VoteInfoViewModel voteInfoViewModel) {
