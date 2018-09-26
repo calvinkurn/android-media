@@ -5,4 +5,6 @@
     <string name="content_empty_string">Sebarkan pesan promosi seputar produk atau toko secara eksklusif melalui chat langsung ke followers Anda</string>
     <string name="button_text_empty">Buat Pesan</string>
     <string name="bm_list_title">Sebar Pesan</string>
+    <string name="recipient">Penerima:</string>
+    <string name="upload">Upload Gambar</string>
 </resources>
