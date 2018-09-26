@@ -36,8 +36,12 @@
     <string name="af_select_product_recommendation">Pilih produk rekomendasi terbaik untuk dibagikan ke media sosialmu.</string>
     <string name="af_see_product_selection">Lihat Pilihan Produk</string>
     <string name="af_minimal_character">Username minimum %d karakter</string>
+
+    <!--CREATE POST-->
     <string name="af_add_images">Tambah Gambar</string>
     <string name="af_done">Selesai</string>
+    <string name="af_add_more_image_to_product">Tambah gambar agar produk rekomendasimu semakin dilirik.</string>
+    <string name="af_see_example">Lihat Contoh</string>
 
     <!--CREATE POST-->
     <string name="title_image_picker">Image Picker</string>

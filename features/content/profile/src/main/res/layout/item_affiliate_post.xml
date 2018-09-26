@@ -80,7 +80,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.tokopedia.profile.view.widget.WrapContentViewPager
+        <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
             android:id="@+id/imageViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

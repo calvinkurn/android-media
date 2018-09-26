@@ -26,6 +26,7 @@ project.ext {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation project(rootProject.ext.features.affiliateCommon)
     implementation project(rootProject.ext.features.kol)
 
     implementation project(rootProject.ext.libraries.abstraction)

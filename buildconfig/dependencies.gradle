@@ -55,8 +55,9 @@ ext {
     tkpdShopVersion = '2.22'
     tkpdProductVersion = '2.22'
     tkpdKolVersion = '2.22'
-    tkpdAffiliateVersion = '2.22'
     tkpdKolCommonVersion = '2.22'
+    tkpdAffiliateVersion = '2.22'
+    tkpdAffiliateCommonVersion = '2.22'
     tkpdExploreVersion = '2.22'
     tkpdInterestPickVersion = '2.22'
     tkpdPushNotifVersion = '2.22'
@@ -268,6 +269,7 @@ ext {
             design                : "com.tokopedia.design:design:${tkpdDesignVersion}",
             feed                  : "com.tokopedia.feedplus:feed:${tkpdFeedVersion}",
             affiliate             : "com.tokopedia.affiliate:affiliate:${tkpdAffiliateVersion}",
+            affiliateCommon       : "com.tokopedia.affiliatecommon:affiliatecommon:${tkpdAffiliateCommonVersion}",
             kol                   : "com.tokopedia.kol:kol:${tkpdKolVersion}",
             kolCommon             : "com.tokopedia.kolcommon:kolCommon:${tkpdKolCommonVersion}",
             explore               : "com.tokopedia.explore:explore:${tkpdKolVersion}",
@@ -334,6 +336,7 @@ ext {
             explore               : ":features:content:explore",
             interestPick          : ":features:content:interest_pick",
             affiliate             : ":features:content:affiliate",
+            affiliateCommon       : ":features:content:affiliate_common",
             profile               : ":features:content:profile",
             digitalproduct        : ":features:digital:digitalproduct",
             core                  : ":tkpdcore",

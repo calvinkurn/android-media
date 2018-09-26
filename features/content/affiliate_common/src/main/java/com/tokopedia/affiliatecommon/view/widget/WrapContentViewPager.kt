@@ -1,9 +1,9 @@
-package com.tokopedia.profile.view.widget
+package com.tokopedia.affiliatecommon.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.component.ticker.TouchViewPager
+import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 
 /**
  * @author by milhamj on 9/21/18.

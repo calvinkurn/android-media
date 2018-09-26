@@ -1,16 +1,15 @@
 package com.tokopedia.profile.view.adapter.viewholder
 
 import android.support.annotation.LayoutRes
-import android.support.design.widget.TabLayout
 import android.text.TextUtils
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter
+import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
 import com.tokopedia.profile.R
-import com.tokopedia.profile.view.adapter.PostImageAdapter
 import com.tokopedia.profile.view.listener.ProfileContract
 import com.tokopedia.profile.view.viewmodel.ProfilePostViewModel
-import com.tokopedia.profile.view.widget.WrapContentViewPager
 import kotlinx.android.synthetic.main.item_affiliate_post.view.*
 
 /**

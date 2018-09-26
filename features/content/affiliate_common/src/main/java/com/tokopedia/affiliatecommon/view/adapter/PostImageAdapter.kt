@@ -1,21 +1,13 @@
-package com.tokopedia.profile.view.adapter
+package com.tokopedia.affiliatecommon.view.adapter
 
-import android.app.Fragment
-import android.graphics.Bitmap
-import android.support.constraint.ConstraintLayout
 import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
-import android.support.v7.widget.CardView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.FrameLayout
 import android.widget.ImageView
-import com.bumptech.glide.request.animation.GlideAnimation
-import com.bumptech.glide.request.target.SimpleTarget
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.profile.R
+import com.tokopedia.affiliatecommon.R
 
 /**
  * @author by milhamj on 9/21/18.
