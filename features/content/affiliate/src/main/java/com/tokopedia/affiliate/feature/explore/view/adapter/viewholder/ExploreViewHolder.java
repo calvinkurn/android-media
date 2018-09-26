@@ -47,7 +47,7 @@ public class ExploreViewHolder extends AbstractViewHolder<ExploreViewModel> {
 
     private void initView(ExploreViewModel element) {
 //        ivImage.setMaxHeight(ivImage.getWidth());
-        ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl(), layout.getWidth());
+        ImageHandler.loadImageRounded2(mainView.getContext(), ivImage, element.getImageUrl());
         tvTitle.setText(MethodChecker.fromHtml(element.getTitle()));
         tvCommission.setText(MethodChecker.fromHtml(element.getCommissionString()));
     }
