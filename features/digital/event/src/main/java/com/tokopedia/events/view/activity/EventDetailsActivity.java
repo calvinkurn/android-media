@@ -201,8 +201,11 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
-                .gotoQrScannerPage(true), 1001);
+        if (item.getItemId() == R.id.action_scan_qr_code) {
+            startActivityForResult(((ScanQrCodeRouter) this.getApplicationContext())
+                    .gotoQrScannerPage(true), 1001);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
