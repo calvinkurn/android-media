@@ -85,7 +85,7 @@ public class ForgotPasswordModule {
 
     @ForgotPasswordScope
     @Provides
-    OldTkpdAuthInterceptor provideFingerprintInterceptor(@ApplicationContext Context context,
+    OldTkpdAuthInterceptor provideOldTkpdAuthInterceptor(@ApplicationContext Context context,
                                                          NetworkRouter networkRouter,
                                                          UserSession userSession) {
         return new OldTkpdAuthInterceptor(context, networkRouter, userSession);
