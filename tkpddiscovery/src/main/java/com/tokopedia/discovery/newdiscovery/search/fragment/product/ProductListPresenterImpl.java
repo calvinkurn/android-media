@@ -87,7 +87,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     protected void getFilterFromNetwork(RequestParams requestParams) {
-
+        //TODO will be removed after catalog and shop already migrated also to Gql
     }
 
     @Override
@@ -135,7 +135,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
 
     @Override
     public void requestDynamicFilter() {
-
+        //TODO will be removed after catalog and shop already migrated also to Gql
     }
 
     @Override
