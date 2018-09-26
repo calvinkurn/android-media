@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.browse.R;
 import com.tokopedia.browse.common.DigitalBrowseRouter;
+import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel;
 import com.tokopedia.browse.common.util.DigitalBrowseAnalytics;
 import com.tokopedia.browse.homepage.di.DigitalBrowseHomeComponent;
 import com.tokopedia.browse.homepage.presentation.adapter.DigitalBrowseMarketplaceAdapter;
@@ -159,6 +160,11 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
         return categoryAdapter.getItemCount();
     }
 
+    @Override
+    public void sendPopularImpressionAnalytics(List<DigitalBrowsePopularAnalyticsModel> analyticsModelList) {
+        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(analyticsModelList);
+    }
+
     private void initializeCategoryView() {
         tvAllPopularBrand.setVisibility(View.GONE);
         containerPopularBrand.setVisibility(View.GONE);
@@ -223,25 +229,18 @@ public class DigitalBrowseMarketplaceFragment extends BaseDaggerFragment
 
     @Override
     public void onPopularItemClicked(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
-        digitalBrowseAnalytics.eventPromoClickPopularBrand(viewModel.getId(),
-                viewModel.getName(), position + 1);
+        digitalBrowseAnalytics.eventPromoClickPopularBrand(
+                presenter.getPopularAnalyticsModel(viewModel, position));
 
         if (viewModel.getUrl() != null &&
                 RouteManager.isSupportApplink(getContext(), viewModel.getUrl())) {
             RouteManager.route(getContext(), viewModel.getUrl());
         } else {
-            if (getActivity().getApplication() instanceof DigitalBrowseRouter
-                    ) {
+            if (getActivity().getApplication() instanceof DigitalBrowseRouter) {
                 ((DigitalBrowseRouter) getActivity().getApplication())
                         .goToWebview(getActivity(), viewModel.getUrl());
             }
         }
-    }
-
-    @Override
-    public void sendImpressionAnalytics(DigitalBrowsePopularBrandsViewModel viewModel, int position) {
-        digitalBrowseAnalytics.eventPromoImpressionPopularBrand(viewModel.getId(),
-                viewModel.getName(), position + 1);
     }
 
     @Override
