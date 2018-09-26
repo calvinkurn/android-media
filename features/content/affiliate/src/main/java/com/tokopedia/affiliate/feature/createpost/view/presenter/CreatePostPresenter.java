@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.createpost.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
+import com.tokopedia.affiliate.feature.createpost.view.subscriber.GetContentFormSubscriber;
 
 import javax.inject.Inject;
 
@@ -19,12 +20,17 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
         this.getContentFormUseCase = getContentFormUseCase;
     }
 
+    @Override
+    public void detachView() {
+        super.detachView();
+        getContentFormUseCase.unsubcribe();
+    }
 
     @Override
     public void fetchContentForm(String productId, String adId) {
         getContentFormUseCase.execute(
                 GetContentFormUseCase.createRequestParams(productId, adId),
-                null
+                new GetContentFormSubscriber(getView())
         );
     }
 }

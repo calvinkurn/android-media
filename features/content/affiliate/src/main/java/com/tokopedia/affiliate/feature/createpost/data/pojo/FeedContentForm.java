@@ -4,37 +4,38 @@ package com.tokopedia.affiliate.feature.createpost.data.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeedContentForm {
 
     @SerializedName("token")
     @Expose
-    private String token;
+    private String token = "";
     @SerializedName("type")
     @Expose
-    private String type;
+    private String type = "";
     @SerializedName("components")
     @Expose
-    private List<Component> components = null;
+    private List<Component> components = new ArrayList<>();
     @SerializedName("authors")
     @Expose
-    private List<Object> authors = null;
+    private List<Object> authors = new ArrayList<>();
     @SerializedName("tags")
     @Expose
-    private List<String> tags = null;
+    private List<String> tags = new ArrayList<>();
     @SerializedName("media")
     @Expose
-    private Media media;
+    private Media media = new Media();
     @SerializedName("guides")
     @Expose
-    private List<Guide> guides = null;
+    private List<Guide> guides = new ArrayList<>();
     @SerializedName("campaigns")
     @Expose
-    private List<Object> campaigns = null;
+    private List<Object> campaigns = new ArrayList<>();
     @SerializedName("error")
     @Expose
-    private String error;
+    private String error = "";
 
     public String getToken() {
         return token;

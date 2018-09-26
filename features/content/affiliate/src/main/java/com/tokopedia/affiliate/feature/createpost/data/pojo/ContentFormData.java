@@ -8,7 +8,7 @@ public class ContentFormData {
 
     @SerializedName("feed_content_form")
     @Expose
-    private FeedContentForm feedContentForm;
+    private FeedContentForm feedContentForm = new FeedContentForm();
 
     public FeedContentForm getFeedContentForm() {
         return feedContentForm;

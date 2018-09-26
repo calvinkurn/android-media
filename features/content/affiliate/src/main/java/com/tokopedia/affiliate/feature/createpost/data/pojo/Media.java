@@ -1,21 +1,23 @@
 
 package com.tokopedia.affiliate.feature.createpost.data.pojo;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Media {
 
     @SerializedName("multiple_media")
     @Expose
-    private boolean multipleMedia;
+    private boolean multipleMedia = true;
     @SerializedName("max_media")
     @Expose
-    private int maxMedia;
+    private int maxMedia = 5;
     @SerializedName("media")
     @Expose
-    private List<Medium> media = null;
+    private List<Medium> media = new ArrayList<>();
 
     public boolean isMultipleMedia() {
         return multipleMedia;

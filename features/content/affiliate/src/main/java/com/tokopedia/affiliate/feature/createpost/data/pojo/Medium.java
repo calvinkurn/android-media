@@ -8,16 +8,16 @@ public class Medium {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private String id = "";
     @SerializedName("type")
     @Expose
-    private String type;
+    private String type = "";
     @SerializedName("removable")
     @Expose
-    private boolean removable;
+    private boolean removable = false;
     @SerializedName("media_url")
     @Expose
-    private String mediaUrl;
+    private String mediaUrl = "";
 
     public String getId() {
         return id;

@@ -8,22 +8,22 @@ public class Guide {
 
     @SerializedName("id")
     @Expose
-    private String id;
+    private String id = "";
     @SerializedName("header")
     @Expose
-    private String header;
+    private String header = "";
     @SerializedName("more_text")
     @Expose
-    private String moreText;
+    private String moreText = "";
     @SerializedName("image_url")
     @Expose
-    private String imageUrl;
+    private String imageUrl = "";
     @SerializedName("image_description")
     @Expose
-    private String imageDescription;
+    private String imageDescription = "";
     @SerializedName("cta")
     @Expose
-    private String cta;
+    private String cta = "";
 
     public String getId() {
         return id;
