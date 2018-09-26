@@ -1,7 +1,10 @@
 package com.tokopedia.challenges.view.customview;
 
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -47,7 +50,6 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
     private boolean isFullScreen;
     private boolean videoRotation = false;
     private boolean isLocalFile = false;
-
 
     public CustomVideoPlayer(@NonNull Context context) {
         super(context);
@@ -330,4 +332,11 @@ public class CustomVideoPlayer extends RelativeLayout implements CustomMediaCont
         if (customVideoPlayerListener != null)
             customVideoPlayerListener.OnVideoStart();
     }
+
+    public void pause() {
+        if (videoView != null && videoView.isPlaying()) {
+            videoView.pause();
+        }
+    }
+
 }

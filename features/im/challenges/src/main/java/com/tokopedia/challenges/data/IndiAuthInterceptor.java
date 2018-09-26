@@ -1,6 +1,7 @@
 package com.tokopedia.challenges.data;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import javax.inject.Inject;
 
 import dagger.Provides;
+import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -30,14 +32,12 @@ public class IndiAuthInterceptor implements Interceptor {
     private static final String HEADER_ACCOUNTS_AUTHORIZATION = "accounts-authorization";
 
 
-    private Context context;
     protected UserSession userSession;
     private IndiSession indiSession;
 
     @Inject
     public IndiAuthInterceptor(@ApplicationContext Context context,
                                IndiSession indiSession) {
-        this.context = context;
         this.userSession = new UserSession(context);
         this.indiSession = indiSession;
     }
@@ -52,22 +52,13 @@ public class IndiAuthInterceptor implements Interceptor {
             refreshToken();
         }
 
-
         //new request
         Request.Builder newRequest = chain.request().newBuilder()
-                .removeHeader(HEADER_ACCOUNTS_AUTHORIZATION)
-                .header(X_API_KEY, ChallengesUrl.API_KEY)
-                .header(AUTHORIZATION, indiSession.getAccessToken())
-                .header(INDI_USER_ID, indiSession.getUserId())
+                .headers(getHeaderBuilder().build())
                 .method(originRequest.method(), originRequest.body());
-
 
         Response response = chain.proceed(newRequest.build());
 
-        //check if response is not successful throw error
-        if (!response.isSuccessful()) {
-            throwChainProcessCauseHttpError(response);
-        }
 
         //refresh access token and recreate request with new token if response code is 401
         if (response.code() == ERROR_FORBIDDEN_REQUEST) {
@@ -76,6 +67,10 @@ public class IndiAuthInterceptor implements Interceptor {
             response = chain.proceed(newestRequest);
         }
 
+        //check if response is not successful throw error
+        if (!response.isSuccessful()) {
+            throwChainProcessCauseHttpError(response);
+        }
         return response;
     }
 
@@ -103,10 +98,17 @@ public class IndiAuthInterceptor implements Interceptor {
         Request original = chain.request();
 
         return chain.request().newBuilder()
-                .header(X_API_KEY, ChallengesUrl.API_KEY)
-                .header(AUTHORIZATION, indiSession.getAccessToken())
-                .header(INDI_USER_ID, indiSession.getUserId())
+                .headers(getHeaderBuilder().build())
                 .method(original.method(), original.body())
                 .build();
+    }
+
+    @NonNull
+    private Headers.Builder getHeaderBuilder() {
+        Headers.Builder builder = new Headers.Builder();
+        builder.add(X_API_KEY, ChallengesUrl.API_KEY);
+        builder.add(AUTHORIZATION, indiSession.getAccessToken());
+        builder.add(INDI_USER_ID, indiSession.getUserId());
+        return builder;
     }
 }

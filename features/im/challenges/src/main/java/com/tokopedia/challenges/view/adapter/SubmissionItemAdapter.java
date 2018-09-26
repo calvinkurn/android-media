@@ -238,11 +238,13 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
 
         void setLikes(boolean isLiked) {
-            categoryItems.get(getIndex()).getMe().setLiked(isLiked);
-            if (isLiked) {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
-            } else {
-                ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+            if(categoryItems.get(getIndex()).getMe()!=null) {
+                categoryItems.get(getIndex()).getMe().setLiked(isLiked);
+                if (isLiked) {
+                    ivFavourite.setImageResource(R.drawable.ic_wishlist_checked);
+                } else {
+                    ivFavourite.setImageResource(R.drawable.ic_wishlist_unchecked);
+                }
             }
         }
 

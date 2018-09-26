@@ -35,8 +35,6 @@ public class GetWinnersUseCase extends RestRequestSupportInterceptorUseCase {
     protected List<RestRequest> buildRequest() {
         List<RestRequest> tempRequest = new ArrayList<>();
 
-        //Request 1
-
         HashMap<String, Object> parameters = requestParams.getParameters();
         String challengeID = (String) parameters.get(Utils.QUERY_PARAM_CHALLENGE_ID);
         parameters.remove(Utils.QUERY_PARAM_CHALLENGE_ID);

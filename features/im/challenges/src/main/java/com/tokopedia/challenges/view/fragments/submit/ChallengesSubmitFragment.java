@@ -31,6 +31,7 @@ import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracke
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.ChallengesCacheHandler;
 import com.tokopedia.challenges.view.utils.MarkdownProcessor;
+import com.tokopedia.challenges.view.utils.Utils;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterNormal;
@@ -98,10 +99,10 @@ public class ChallengesSubmitFragment extends BaseDaggerFragment implements ICha
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.challengeSettings = getArguments().getParcelable("challengeSettings");
-        this.channelId = getArguments().getString("channelId");
-        this.channelTitle = getArguments().getString("channelTitle");
-        this.channelDesc = getArguments().getString("channelDesc");
+        this.challengeSettings = getArguments().getParcelable(Utils.QUERY_PARAM_CHALLENGE_SETTINGS);
+        this.channelId = getArguments().getString(Utils.QUERY_PARAM_CHANNEL_ID);
+        this.channelTitle = getArguments().getString(Utils.QUERY_PARAM_CHANNEL_TITLE);
+        this.channelDesc = getArguments().getString(Utils.QUERY_PARAM_CHANNEL_DESC);
 
         setHasOptionsMenu(true);
         ChallengesMoengageAnalyticsTracker.challengeScreenLaunched(getActivity(),"Challenge Submissions");

@@ -2,26 +2,21 @@ package com.tokopedia.challenges.view.share;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
-import com.tokopedia.applink.RouteManager;
-import com.tokopedia.challenges.BuildConfig;
+import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
@@ -41,6 +36,7 @@ public class ShareInstagramBottomSheet extends BottomSheets {
     private File media;
     boolean isVideo;
     private String hastag;
+    private final String instructionsDefaultText = "~Silakan unggah konten ke Instagram dengan cara manual.~Sertakan hashtag di bawah ini untuk memudahkan kami mengukur Score yang akan didapatkan.";
 
     @Override
     public int getLayoutResourceId() {
@@ -68,9 +64,14 @@ public class ShareInstagramBottomSheet extends BottomSheets {
             ImageHandler.loadImageWithoutPlaceholder(imgShare, Utils.getImageUrlForSubmission(submissionResult.getThumbnailUrl()), R.color.grey_1100);
             if (submissionResult.getSharing() != null && submissionResult.getSharing().getSocialTracking() != null && submissionResult.getSharing().getSocialTracking().getInstagram() != null)
                 hastag = submissionResult.getSharing().getSocialTracking().getInstagram().getRequiredText();
-
         }
-
+        LinearLayout llShareInstructions = view.findViewById(R.id.ll_share_instructions);
+        String instructionsText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.INSTGRAM_INSTRUCTION_TEXT_FIREBASE_KEY);
+        if (TextUtils.isEmpty(instructionsText)) {
+            Utils.generateText(llShareInstructions, instructionsDefaultText);
+        } else {
+            Utils.generateText(llShareInstructions, instructionsText);
+        }
         TextView btnCancel = view.findViewById(R.id.btn_cancel);
         TextView btnCopy = view.findViewById(R.id.btn_copy);
         btnCopy.setText("Salin " + hastag);
@@ -137,4 +138,8 @@ public class ShareInstagramBottomSheet extends BottomSheets {
         Toast.makeText(getActivity(), R.string.ch_copy_to_clipboard_bhahasa, Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    protected void onCloseButtonClick() {
+        dismiss();
+    }
 }

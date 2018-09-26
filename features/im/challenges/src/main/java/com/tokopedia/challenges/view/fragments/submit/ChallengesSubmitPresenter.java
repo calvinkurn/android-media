@@ -155,7 +155,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                     if (!TextUtils.isEmpty(postId)) {
                         getSubmissionDetail();
-                        ChallengesMoengageAnalyticsTracker.challengeSubmitStart(getView().getActivity(), getView().getChallengeTitle(),
+                        ChallengesMoengageAnalyticsTracker.challengeSubmitFinished(getView().getActivity(), getView().getChallengeTitle(),
                                 getView().getChallengeId(), postId);
                     }
                     getView().saveLocalpath(intent.getStringExtra(Utils.QUERY_PARAM_SUBMISSION_ID), intent.getStringExtra(Utils.QUERY_PARAM_FILE_PATH));

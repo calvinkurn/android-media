@@ -1,7 +1,9 @@
 package com.tokopedia.challenges.view.fragments;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,14 +29,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.view.analytics.ChallengesGaAnalyticsTracker;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.view.activity.ChallengeDetailActivity;
 import com.tokopedia.challenges.view.activity.SubmitDetailActivity;
-import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
 import com.tokopedia.challenges.view.customview.CustomVideoPlayer;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.SubmitDetailContract;
@@ -149,9 +149,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         fromSubmission = getArguments().getBoolean(Utils.QUERY_PARAM_FROM_SUBMISSION);
         if (submissionResult == null) {
             submissionId = getArguments().getString(Utils.QUERY_PARAM_SUBMISSION_ID);
-            if (getArguments().getBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, false)) {
-                ChallengesCacheHandler.resetCache();
-            }
+            // if (getArguments().getBoolean(Utils.QUERY_PARAM_IS_FROM_NOTIF, false)) {
+            ChallengesCacheHandler.resetCache();
+            // }
             presenter.getSubmissionDetails(submissionId);
 
         } else {
@@ -178,16 +178,18 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void onResume() {
-        super.onResume();
         if (ChallegeneSubmissionFragment.VIDEO_POS != -1) {
             if (challengeImage != null)
                 challengeImage.startPlay(ChallegeneSubmissionFragment.VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        super.onResume();
+
     }
 
     @Override
     public void onPause() {
         if (challengeImage != null && challengeImage.isVideoPlaying()) {
+            challengeImage.pause();
             ChallegeneSubmissionFragment.VIDEO_POS = challengeImage.getPosition();
             ChallegeneSubmissionFragment.isVideoPlaying = false;
         }
@@ -373,12 +375,10 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void hidProgressBar() {
         progressBarLayout.setVisibility(View.GONE);
-        // progressBar.setVisibility(View.GONE);
     }
 
     @Override
     public void showProgressBar() {
-        // progressBar.setVisibility(View.VISIBLE);
         progressBarLayout.setVisibility(View.VISIBLE);
     }
 

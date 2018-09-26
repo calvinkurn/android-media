@@ -152,11 +152,11 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onResume() {
-        super.onResume();
         if (VIDEO_POS != -1) {
             if (videoPlayer != null)
                 videoPlayer.startPlay(VIDEO_POS, ChallegeneSubmissionFragment.isVideoPlaying);
         }
+        super.onResume();
     }
 
     @Override
@@ -164,6 +164,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         if (videoPlayer != null) {
             VIDEO_POS = videoPlayer.getPosition();
             isVideoPlaying = false;
+            videoPlayer.pause();
         }
         super.onPause();
     }
@@ -467,7 +468,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     }
 
     public void showBuzzPointsText() {
-        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig("app_text_how_to_generate_buzz_point");
+        buzzPointText = ((ChallengesModuleRouter) getActivity().getApplication()).getStringRemoteConfig(Utils.GENERATE_BUZZ_POINT_FIREBASE_KEY);
         if (!TextUtils.isEmpty(buzzPointText)) {
             clHowBuzzPoints.setVisibility(View.VISIBLE);
             Utils.generateText(tvHowBuzzPointsText, buzzPointText);
