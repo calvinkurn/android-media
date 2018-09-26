@@ -86,6 +86,7 @@ ext {
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
     tkpdTalkVersion = '2.22'
+    tkpdAttachProductVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -298,7 +299,9 @@ ext {
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
             paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
-            talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}"
+            talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
+            attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
+
     ]
 
     tkpdLibDependencies = [
@@ -372,7 +375,6 @@ ext {
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
-            vote                  : ":features:user:vote",
             logout                : ":features:user:logout",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",

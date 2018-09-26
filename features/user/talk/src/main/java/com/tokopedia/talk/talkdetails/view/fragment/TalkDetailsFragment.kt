@@ -41,7 +41,6 @@ import com.tokopedia.talk.talkdetails.view.adapter.factory.TalkDetailsTypeFactor
 import com.tokopedia.talk.talkdetails.view.contract.TalkDetailsContract
 import com.tokopedia.talk.talkdetails.view.presenter.TalkDetailsPresenter
 import com.tokopedia.user.session.UserSession
-import kotlinx.android.synthetic.main.fragment_report_talk.*
 import kotlinx.android.synthetic.main.fragment_talk_comments.*
 import javax.inject.Inject
 
