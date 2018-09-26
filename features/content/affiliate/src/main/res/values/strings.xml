@@ -39,4 +39,9 @@
     <string name="af_add_images">Tambah Gambar</string>
     <string name="af_done">Selesai</string>
 
+    <!--CREATE POST-->
+    <string name="title_image_picker">Image Picker</string>
+    <string name="title_image_editor">Image Editor</string>
+    <string name="title_create_post">Create Post</string>
+
 </resources>
