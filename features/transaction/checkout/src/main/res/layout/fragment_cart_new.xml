@@ -99,7 +99,7 @@
                     android:layout_alignParentBottom="true"
                     android:visibility="gone"
                     app:cardElevation="@dimen/dp_8"
-                    app:cardUseCompatPadding="false"
+                    app:cardPreventCornerOverlap="false"
                     tools:visibility="visible">
 
                     <LinearLayout
