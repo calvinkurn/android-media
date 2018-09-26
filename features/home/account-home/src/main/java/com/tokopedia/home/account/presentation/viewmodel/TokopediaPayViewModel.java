@@ -1,7 +1,6 @@
 package com.tokopedia.home.account.presentation.viewmodel;
 
 import android.os.Parcel;
-import android.support.annotation.ColorRes;
 
 import com.tokopedia.home.account.presentation.adapter.AccountTypeFactory;
 import com.tokopedia.home.account.presentation.viewmodel.base.ParcelableViewModel;
@@ -17,7 +16,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
     private String applinkLeft;
     private String applinkRight;
     private String iconUrlRight;
-    private String iconUrlLeft;
+    private int iconUrlLeft;
     private boolean isRightImportant;
     private TokopediaPayBSModel bsDataLeft;
     private TokopediaPayBSModel bsDataRight;
@@ -84,11 +83,11 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.iconUrlRight = iconUrlRight;
     }
 
-    public String getIconUrlLeft() {
+    public int getIconUrlLeft() {
         return iconUrlLeft;
     }
 
-    public void setIconUrlLeft(String iconUrlLeft) {
+    public void setIconUrlLeft(int iconUrlLeft) {
         this.iconUrlLeft = iconUrlLeft;
     }
 
@@ -141,7 +140,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         dest.writeString(this.applinkLeft);
         dest.writeString(this.applinkRight);
         dest.writeString(this.iconUrlRight);
-        dest.writeString(this.iconUrlLeft);
+        dest.writeInt(this.iconUrlLeft);
         dest.writeByte(this.isRightImportant ? (byte) 1 : (byte) 0);
         dest.writeParcelable(this.bsDataLeft, flags);
         dest.writeParcelable(this.bsDataRight, flags);
@@ -156,7 +155,7 @@ public class TokopediaPayViewModel implements ParcelableViewModel<AccountTypeFac
         this.applinkLeft = in.readString();
         this.applinkRight = in.readString();
         this.iconUrlRight = in.readString();
-        this.iconUrlLeft = in.readString();
+        this.iconUrlLeft = in.readInt();
         this.isRightImportant = in.readByte() != 0;
         this.bsDataLeft = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
         this.bsDataRight = in.readParcelable(TokopediaPayBSModel.class.getClassLoader());
