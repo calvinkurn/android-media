@@ -21,6 +21,7 @@ import com.tokopedia.talk.common.adapter.viewholder.LoadMoreCommentTalkViewHolde
 import com.tokopedia.talk.common.adapter.viewmodel.TalkProductAttachmentViewModel
 import com.tokopedia.talk.common.analytics.TalkAnalytics
 import com.tokopedia.talk.common.di.TalkComponent
+import com.tokopedia.talk.shoptalk.di.DaggerShopTalkComponent
 import com.tokopedia.talk.common.view.TalkDialog
 import com.tokopedia.talk.common.viewmodel.LoadMoreCommentTalkViewModel
 import com.tokopedia.talk.inboxtalk.view.adapter.InboxTalkAdapter
