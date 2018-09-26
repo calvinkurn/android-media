@@ -38,6 +38,46 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/title" />
 
+    <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
+        android:id="@+id/imageViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        app:layout_constraintTop_toBottomOf="@id/seeExample" />
+
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_4"
+        app:layout_constraintBottom_toBottomOf="@id/imageViewPager"
+        app:tabBackground="@drawable/affiliate_tab_selector"
+        app:tabGravity="center"
+        app:tabIndicatorHeight="0dp" />
+
+    <FrameLayout
+        android:id="@+id/deleteImageLayout"
+        android:layout_width="@dimen/dp_40"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginEnd="@dimen/dp_8"
+        android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_8"
+        android:background="@drawable/bg_af_circle_white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/imageViewPager"
+        app:layout_constraintTop_toTopOf="@id/imageViewPager"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/deleteImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_af_trash"
+            tools:ignore="ContentDescription" />
+    </FrameLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
