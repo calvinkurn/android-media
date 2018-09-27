@@ -2,9 +2,13 @@ package com.tokopedia.core.analytics.appsflyer;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
@@ -16,34 +20,34 @@ import com.tokopedia.core.analytics.container.IMoengageContainer;
 import com.tokopedia.core.analytics.container.IPerformanceMonitoring;
 import com.tokopedia.core.analytics.container.MoEngageContainer;
 import com.tokopedia.core.analytics.container.PerfMonContainer;
+import com.tokopedia.core.gcm.Constants;
 
 import java.util.Map;
 
 /**
  * Created by Hafizh Herdi on 2/11/2016.
- *
+ * <p>
  * This class is a library wrapper for AppsFlyer Analytics
  * Name taken from this https://en.wikipedia.org/wiki/Jordan
- *
  */
 public class Jordan {
 
     private Context context;
     public static final String GCM_PROJECT_NUMBER = "692092518182";
 
-    private Jordan(Context ctx){
+    private Jordan(Context ctx) {
         context = ctx;
     }
 
-    public static Jordan init(Context context){
+    public static Jordan init(Context context) {
         return new Jordan(context);
     }
 
-    public static Jordan init(Application application){
+    public static Jordan init(Application application) {
         return new Jordan(application.getApplicationContext());
     }
 
-    public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
+    public AppsflyerContainer runFirstTimeAppsFlyer(String userID) {
         AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
@@ -55,6 +59,23 @@ public class Jordan {
                     Log.d(AppsFlyerLib.LOG_TAG, "attribute: " + attrName + " = " +
                             conversionData.get(attrName));
                 }
+
+                //get first launch and deeplink
+                String isFirstLaunch = conversionData.get("is_first_launch");
+                String deeplink = conversionData.get("af_dp");
+
+                if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink) && context != null) {
+                    //open deeplink
+                    try {
+                        Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
+                        Intent intent = new Intent(Intent.ACTION_VIEW);
+                        intent.setData(uri);
+                        context.startActivity(intent);
+                        Toast.makeText(context, "open " + deeplink, Toast.LENGTH_LONG).show();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
             }
 
             @Override
@@ -64,7 +85,7 @@ public class Jordan {
 
             @Override
             public void onAppOpenAttribution(Map<String, String> map) {
-                // @TODO
+
             }
 
             @Override
@@ -85,7 +106,7 @@ public class Jordan {
         return appsflyerContainer;
     }
 
-    public IAppsflyerContainer getAFContainer(){
+    public IAppsflyerContainer getAFContainer() {
         return AppsflyerContainer.newInstance(context);
     }
 
