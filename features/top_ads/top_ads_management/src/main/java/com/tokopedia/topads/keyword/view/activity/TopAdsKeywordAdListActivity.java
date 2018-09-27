@@ -50,7 +50,9 @@ public class TopAdsKeywordAdListActivity extends BaseTabActivity implements HasC
         totalGroupAd = getIntent().getIntExtra(TopAdsExtraConstant.EXTRA_TOTAL_GROUP_ADS, 0);
 
         Uri data = getIntent().getData();
-        tabPosition = data.getLastPathSegment().equalsIgnoreCase(DEFAULT_POSITIVE_PATH) ? TAB_POSITIVE : TAB_NEGATIVE;
+        if (data != null) {
+            tabPosition = data.getLastPathSegment().equalsIgnoreCase(DEFAULT_POSITIVE_PATH) ? TAB_POSITIVE : TAB_NEGATIVE;
+        }
         viewPager.setCurrentItem(tabPosition);
     }
 
