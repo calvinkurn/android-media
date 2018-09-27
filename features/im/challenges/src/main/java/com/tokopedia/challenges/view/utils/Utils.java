@@ -63,15 +63,6 @@ public class Utils {
     private static String[] isImage = {"jpg", "jpeg", "JPG", "png", "PNG", "webp", "bmp", "WEBP", "BMP"};
 
 
-    synchronized public static Utils getSingletonInstance() {
-        if (singleInstance == null)
-            singleInstance = new Utils();
-        return singleInstance;
-    }
-
-    private Utils() {
-    }
-
     public static String convertUTCToString(String time) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

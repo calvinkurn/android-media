@@ -14,8 +14,6 @@ public class ChallengesCacheHandler {
     public static boolean SUBMISSTION_DETAILS_CACHE;
     public static boolean CHALLENGES_DETAILS_CACHE;
     public static boolean CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE;
-    public static HashMap<String, Boolean> DELETED_ELEMENTS_MAP = new HashMap<>();
-    public static HashMap<String, Boolean> LIKE_UNLIKE_ELEMENTS_MAP = new HashMap<>();
     public static HashMap<String, Integer> MANIPULATED_ELEMENTS_MAP = new HashMap<>();
 
     public enum Manupulated {
@@ -55,18 +53,6 @@ public class ChallengesCacheHandler {
     public static void setChallengeAllSubmissionssListCache() {
         CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = false;
     }
-
-//    public static HashMap<String, Boolean> getDeletedElementsMap() {
-//        return DELETED_ELEMENTS_MAP;
-//    }
-//
-//    public static void addDeletedElementsMap(String key, boolean value) {
-//        DELETED_ELEMENTS_MAP.put(key, value);
-//    }
-//
-//    public static HashMap<String, Boolean> getLikeUnlikeElementsMap() {
-//        return LIKE_UNLIKE_ELEMENTS_MAP;
-//    }
 
     public static void addManipulatedMap(String key, int value) {
         MANIPULATED_ELEMENTS_MAP.put(key, value);
