@@ -4,8 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.tokopedia.core.analytics.AppEventTracking;
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,13 +14,15 @@ import java.util.Map;
  */
 public class EventTracking {
     protected Map<String, Object> eventTracking = new HashMap<>();
+    private SessionHandler sessionHandler;
 
-    public EventTracking() {
+    public EventTracking(SessionHandler sessionHandler) {
+        this.sessionHandler = sessionHandler;
     }
 
     public EventTracking(String event, String category, String action, String label) {
         Log.d("GAv4", "EventTracking: " + event + " " + category + " " + action + " " + label
-                + " " + SessionHandler.getLoginID(MainApplication.getAppContext()));
+                + " " + sessionHandler.getLoginID());
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
         this.eventTracking.put("eventAction", action);
@@ -33,7 +34,7 @@ public class EventTracking {
         Log.d("GAv4", String.format("EventTracking: screenName=%s | event=%s | category=%s " +
                         "| action=%s | label=%s | userId=%s",
                 screenName, event, category, action, label,
-                SessionHandler.getLoginID(MainApplication.getAppContext())));
+                sessionHandler.getLoginID()));
         this.eventTracking.put("screenName", screenName);
         this.eventTracking.put("event", event);
         this.eventTracking.put("eventCategory", category);
@@ -64,9 +65,7 @@ public class EventTracking {
 
     public EventTracking setUserId() {
         this.eventTracking.put(AppEventTracking.CustomDimension.USER_ID, TextUtils.isEmpty
-                (SessionHandler.getLoginID(MainApplication
-                        .getAppContext())) ? "0" : SessionHandler.getLoginID(MainApplication
-                .getAppContext()));
+                (sessionHandler.getLoginID()) ? "0" : sessionHandler.getLoginID());
         return this;
     }
 

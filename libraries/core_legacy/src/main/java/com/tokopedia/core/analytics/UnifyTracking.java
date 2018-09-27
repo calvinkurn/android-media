@@ -1,16 +1,16 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.appsflyer.AFInAppEventType;
 import com.moe.pushlibrary.PayloadBuilder;
 import com.tkpd.library.utils.CommonUtils;
+import com.tkpd.library.utils.MethodChecker;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.GTMCart;
 import com.tokopedia.core.analytics.nishikino.model.ProductDetail;
-import com.tokopedia.core.util.MethodChecker;
-import com.tokopedia.core.var.ProductItem;
 
 import org.json.JSONArray;
 
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import static com.tokopedia.core.util.DateFormatUtils.DEFAULT_LOCALE;
+;
 
 /**
  * @author by Herdi_WORK on 25.10.16.
@@ -1339,67 +1339,67 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAppsFlyerViewListingSearch(List<ProductItem> model, String keyword) {
-        JSONArray afProdIds = new JSONArray();
-        ArrayList<String> prodIdArray = new ArrayList<>();
+//    public static void eventAppsFlyerViewListingSearch(List<ProductItem> model, String keyword) {
+//        JSONArray afProdIds = new JSONArray();
+//        ArrayList<String> prodIdArray = new ArrayList<>();
+//
+//        if (model.size() > 0) {
+//            for (int i = 0; i < model.size(); i++) {
+//                if (i < 3) {
+//                    prodIdArray.add(model.get(i).getId());
+//                    afProdIds.put(model.get(i).getId());
+//                } else {
+//                    break;
+//                }
+//            }
+//        }
+//
+//        eventAppsFlyerViewListingSearch(afProdIds, keyword, prodIdArray);
+//        eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
+//    }
 
-        if (model.size() > 0) {
-            for (int i = 0; i < model.size(); i++) {
-                if (i < 3) {
-                    prodIdArray.add(model.get(i).getId());
-                    afProdIds.put(model.get(i).getId());
-                } else {
-                    break;
-                }
-            }
-        }
-
-        eventAppsFlyerViewListingSearch(afProdIds, keyword, prodIdArray);
-        eventAppsFlyerContentView(afProdIds, keyword, prodIdArray);
-    }
-
-    public static void eventPDPDetail(ProductDetail productDetail) {
-        getGTMEngine()
+    public static void eventPDPDetail(Context context, ProductDetail productDetail) {
+        getGTMEngine(context)
                 .eventDetail(productDetail)
                 .sendScreen(AppScreen.SCREEN_PRODUCT_INFO_DETAIL);
     }
 
-    public static void eventATCSuccess(GTMCart cart) {
-        getGTMEngine()
+    public static void eventATCSuccess(Context context, GTMCart cart) {
+        getGTMEngine(context)
                 .eventAddtoCart(cart)
                 .sendScreen(AppScreen.SCREEN_ADD_TO_CART_SUCCESS)
                 .clearAddtoCartDataLayer(GTMCart.ADD_ACTION);
     }
 
-    public static void eventATCRemove() {
+    public static void eventATCRemove(Context context) {
         GTMCart gtmCart = new GTMCart();
         gtmCart.setCurrencyCode("IDR");
         gtmCart.setAddAction(GTMCart.REMOVE_ACTION);
 
-        getGTMEngine()
+        getGTMEngine(context)
                 .eventAddtoCart(gtmCart)
                 .sendScreen(AppScreen.SCREEN_CART_PAGE_REMOVE)
                 .clearAddtoCartDataLayer(GTMCart.REMOVE_ACTION);
     }
 
-    public static void eventLocaGoodReview(Integer accuracy, Integer quality) {
+    public static void eventLocaGoodReview(Context context, Integer accuracy, Integer quality) {
         PayloadBuilder builder = new PayloadBuilder();
         builder.putAttrInt(
                 AppEventTracking.MOENGAGE.QUALITY_SCORE,
                 quality
         );
-        getMoEngine().sendEvent(
+        getMoEngine(context).sendEvent(
                 builder.build(),
                 AppEventTracking.EventMoEngage.SUBMIT_ULASAN_REVIEW
         );
     }
 
-    public static void sendAFCompleteRegistrationEvent() {
+    public static void sendAFCompleteRegistrationEvent(Context context) {
         Map<String, Object> eventVal = new HashMap<>();
         eventVal.put("advertising_id", "aifa");
         eventVal.put("custom_prop1", "registration");
         eventVal.put("os", "Android");
-        getAFEngine().sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
+        getAFEngine(context).sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
     }
 
     public static void eventGoldMerchantSuccess() {
@@ -1579,13 +1579,13 @@ public class UnifyTracking extends TrackingUtils {
         eventManageProductClicked(AppEventTracking.EventLabel.COPY_PRODUCT);
     }
 
-    public static void eventMoRegistrationStart(String medium) {
-        getMoEngine().sendRegistrationStartEvent(medium);
+    public static void eventMoRegistrationStart(Context context, String medium) {
+        getMoEngine(context).sendRegistrationStartEvent(medium);
     }
 
-    public static void eventMoRegister(String name, String mobileNo) {
+    public static void eventMoRegister(Context context, String name, String mobileNo) {
         CommonUtils.dumper("GAv4 moengage action " + name + " " + mobileNo);
-        getMoEngine().sendRegisterEvent(name, mobileNo);
+        getMoEngine(context).sendRegisterEvent(name, mobileNo);
     }
 
     public static void eventOTPSuccess() {
@@ -3091,6 +3091,7 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
+    public static final Locale DEFAULT_LOCALE = new Locale("in", "ID");
     private static String generateWishlistClickEventLabel(boolean isWishlisted, String keyword) {
         String action = isWishlisted ? "add" : "remove";
         return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
