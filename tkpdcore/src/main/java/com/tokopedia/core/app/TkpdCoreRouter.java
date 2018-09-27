@@ -31,6 +31,8 @@ public interface TkpdCoreRouter {
 
     void goToManageProduct(Context context);
 
+    void goToEtalaseList(Context context);
+
     void goToDraftProductList(Context context);
 
     void clearEtalaseCache();
@@ -193,7 +195,6 @@ public interface TkpdCoreRouter {
     String getStringRemoteConfig(String key);
 
     void setStringRemoteConfigLocal(String key, String value);
-
     Intent getSettingBankIntent(Context context);
 
     Intent getChangePasswordIntent(Context context);

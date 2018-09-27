@@ -5,13 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.tokopedia.topads.R;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.data.source.local.TopAdsCacheDataSourceImpl;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractor;
 import com.tokopedia.topads.dashboard.domain.interactor.TopAdsDatePickerInteractorImpl;
-import com.tokopedia.seller.common.datepicker.view.activity.DatePickerActivity;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.activity.DatePickerActivity;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

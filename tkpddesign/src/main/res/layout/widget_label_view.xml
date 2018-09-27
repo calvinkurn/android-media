@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/image_view"
-        android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:visibility="gone"
         tools:src="@drawable/ic_badge_silver"
         tools:visibility="visible"
