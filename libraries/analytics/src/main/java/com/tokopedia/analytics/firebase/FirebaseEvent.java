@@ -47,7 +47,7 @@ public class FirebaseEvent {
         String HAMBURGER_OPTION_CLICK = "hamburger_option_click";
         String HAMBURGER_TOKOCASH_ACTIVATE = "hamburger_tokocash_activate";
         String HAMBURGER_TOKOPOINTS = "hamburger_tokopoints";
-
+        String HAMBURGER_TOKOCARD = "hamburger_tokocard";
 
     }
 }

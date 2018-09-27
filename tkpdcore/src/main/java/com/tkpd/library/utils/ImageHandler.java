@@ -17,6 +17,7 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.support.v7.content.res.AppCompatResources;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -246,6 +247,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     /* This method specifically designed to display cached image from different size when offline */
+    /* For product detail page only */
     public static void loadImageSourceSizeFitCenter(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
             Glide.with(context.getApplicationContext())
@@ -257,6 +259,7 @@ public class ImageHandler extends com.tokopedia.abstraction.common.utils.image.I
     }
 
     /* This method specifically designed to display cached image from different size when offline */
+    /* For product detail page only */
     public static void loadImageSourceSizeCenterCrop(Context context, ImageView imageview, String url) {
         if (isContextValid(context)) {
             Glide.with(context.getApplicationContext())

@@ -14,10 +14,22 @@ public class CartItemData implements Parcelable {
     private OriginData originData;
     private UpdatedData updatedData;
     private MessageErrorData errorData;
+    private boolean singleChild;
+    private boolean parentHasErrorOrWarning;
     private boolean isError;
     private boolean isWarning;
-    private String warningMessage;
-    private String errorMessage;
+    private String warningMessageTitle;
+    private String warningMessageDescription;
+    private String errorMessageTitle;
+    private String errorMessageDescription;
+
+    public boolean isSingleChild() {
+        return singleChild;
+    }
+
+    public void setSingleChild(boolean singleChild) {
+        this.singleChild = singleChild;
+    }
 
     public boolean isError() {
         return isError;
@@ -31,24 +43,40 @@ public class CartItemData implements Parcelable {
         isWarning = warning;
     }
 
-    public String getWarningMessage() {
-        return warningMessage;
+    public String getWarningMessageTitle() {
+        return warningMessageTitle;
     }
 
-    public void setWarningMessage(String warningMessage) {
-        this.warningMessage = warningMessage;
+    public void setWarningMessageTitle(String warningMessageTitle) {
+        this.warningMessageTitle = warningMessageTitle;
     }
 
     public void setError(boolean error) {
         isError = error;
     }
 
-    public String getErrorMessage() {
-        return errorMessage;
+    public String getErrorMessageTitle() {
+        return errorMessageTitle;
     }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+    public void setErrorMessageTitle(String errorMessageTitle) {
+        this.errorMessageTitle = errorMessageTitle;
+    }
+
+    public String getWarningMessageDescription() {
+        return warningMessageDescription;
+    }
+
+    public void setWarningMessageDescription(String warningMessageDescription) {
+        this.warningMessageDescription = warningMessageDescription;
+    }
+
+    public String getErrorMessageDescription() {
+        return errorMessageDescription;
+    }
+
+    public void setErrorMessageDescription(String errorMessageDescription) {
+        this.errorMessageDescription = errorMessageDescription;
     }
 
     public OriginData getOriginData() {
@@ -75,6 +103,14 @@ public class CartItemData implements Parcelable {
         this.errorData = errorData;
     }
 
+    public boolean isParentHasErrorOrWarning() {
+        return parentHasErrorOrWarning;
+    }
+
+    public void setParentHasErrorOrWarning(boolean parentHasError) {
+        this.parentHasErrorOrWarning = parentHasError;
+    }
+
     public static class OriginData implements Parcelable {
         public static final int CURRENCY_IDR = 1;
         public static final int CURRENCY_USD = 2;
@@ -98,8 +134,6 @@ public class CartItemData implements Parcelable {
         private double weightPlan;
         private int weightUnit;
         private String weightFormatted;
-        private String shopName;
-        private String shopId;
         private boolean isPreOrder;
         private boolean isFreeReturn;
         private boolean isCashBack;
@@ -113,9 +147,14 @@ public class CartItemData implements Parcelable {
         private List<WholesalePrice> wholesalePrice;
         private String trackerAttribution;
         private String trackerListName;
+        private String originalRemark;
+        private String shopName;
+        private String shopId;
         private String shopType;
-        private boolean isGoldMerchant;
-        private boolean isOfficialStore;
+        private boolean officialStore;
+        private boolean goldMerchant;
+        private boolean wishlisted;
+        private int originalQty;
 
         public String getTrackerAttribution() {
             return trackerAttribution;
@@ -127,14 +166,6 @@ public class CartItemData implements Parcelable {
 
         public int getPricePlanInt() {
             return pricePlanInt;
-        }
-
-        public String getShopType() {
-            return shopType;
-        }
-
-        public void setShopType(String shopType) {
-            this.shopType = shopType;
         }
 
         public void setPricePlanInt(int pricePlanInt) {
@@ -173,28 +204,12 @@ public class CartItemData implements Parcelable {
             this.cartId = cartId;
         }
 
-        public String getShopName() {
-            return shopName;
-        }
-
         public String getCategoryId() {
             return categoryId;
         }
 
         public void setCategoryId(String categoryId) {
             this.categoryId = categoryId;
-        }
-
-        public void setShopName(String shopName) {
-            this.shopName = shopName;
-        }
-
-        public String getShopId() {
-            return shopId;
-        }
-
-        public void setShopId(String shopId) {
-            this.shopId = shopId;
         }
 
         public boolean isPreOrder() {
@@ -365,28 +380,76 @@ public class CartItemData implements Parcelable {
             this.wholesalePriceFormatted = wholesalePriceFormatted;
         }
 
-        public boolean isGoldMerchant() {
-            return isGoldMerchant;
-        }
-
-        public void setGoldMerchant(boolean goldMerchant) {
-            this.isGoldMerchant = goldMerchant;
-        }
-
-        public boolean isOfficialStore() {
-            return isOfficialStore;
-        }
-
-        public void setOfficialStore(boolean officialStore) {
-            this.isOfficialStore = officialStore;
-        }
-
         public String getProductCashBack() {
             return productCashBack;
         }
 
         public void setProductCashBack(String productCashBack) {
             this.productCashBack = productCashBack;
+        }
+
+        public String getOriginalRemark() {
+            return originalRemark;
+        }
+
+        public void setOriginalRemark(String originalRemark) {
+            this.originalRemark = originalRemark;
+        }
+
+        public String getShopName() {
+            return shopName;
+        }
+
+        public void setShopName(String shopName) {
+            this.shopName = shopName;
+        }
+
+        public boolean isOfficialStore() {
+            return officialStore;
+        }
+
+        public void setOfficialStore(boolean officialStore) {
+            this.officialStore = officialStore;
+        }
+
+        public boolean isGoldMerchant() {
+            return goldMerchant;
+        }
+
+        public void setGoldMerchant(boolean goldMerchant) {
+            this.goldMerchant = goldMerchant;
+        }
+
+        public boolean isWishlisted() {
+            return wishlisted;
+        }
+
+        public void setWishlisted(boolean wishlisted) {
+            this.wishlisted = wishlisted;
+        }
+
+        public String getShopId() {
+            return shopId;
+        }
+
+        public void setShopId(String shopId) {
+            this.shopId = shopId;
+        }
+
+        public String getShopType() {
+            return shopType;
+        }
+
+        public void setShopType(String shopType) {
+            this.shopType = shopType;
+        }
+
+        public int getOriginalQty() {
+            return originalQty;
+        }
+
+        public void setOriginalQty(int originalQty) {
+            this.originalQty = originalQty;
         }
 
         public OriginData() {
@@ -415,12 +478,12 @@ public class CartItemData implements Parcelable {
             dest.writeDouble(this.weightPlan);
             dest.writeInt(this.weightUnit);
             dest.writeString(this.weightFormatted);
-            dest.writeString(this.shopName);
-            dest.writeString(this.shopId);
             dest.writeByte(this.isPreOrder ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isFreeReturn ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isCashBack ? (byte) 1 : (byte) 0);
             dest.writeByte(this.isFavorite ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.officialStore ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.goldMerchant ? (byte) 1 : (byte) 0);
             dest.writeString(this.cashBackInfo);
             dest.writeString(this.freeReturnLogo);
             dest.writeString(this.category);
@@ -429,10 +492,13 @@ public class CartItemData implements Parcelable {
             dest.writeTypedList(this.wholesalePrice);
             dest.writeString(this.trackerAttribution);
             dest.writeString(this.trackerListName);
-            dest.writeString(this.shopType);
-            dest.writeByte(this.isGoldMerchant ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.isOfficialStore ? (byte) 1 : (byte) 0);
             dest.writeString(this.productCashBack);
+            dest.writeString(this.originalRemark);
+            dest.writeByte(this.wishlisted ? (byte) 1 : (byte) 0);
+            dest.writeString(this.shopName);
+            dest.writeString(this.shopId);
+            dest.writeString(this.shopType);
+            dest.writeInt(this.originalQty);
         }
 
         protected OriginData(Parcel in) {
@@ -452,12 +518,12 @@ public class CartItemData implements Parcelable {
             this.weightPlan = in.readDouble();
             this.weightUnit = in.readInt();
             this.weightFormatted = in.readString();
-            this.shopName = in.readString();
-            this.shopId = in.readString();
             this.isPreOrder = in.readByte() != 0;
             this.isFreeReturn = in.readByte() != 0;
             this.isCashBack = in.readByte() != 0;
             this.isFavorite = in.readByte() != 0;
+            this.officialStore = in.readByte() != 0;
+            this.goldMerchant = in.readByte() != 0;
             this.cashBackInfo = in.readString();
             this.freeReturnLogo = in.readString();
             this.category = in.readString();
@@ -466,10 +532,13 @@ public class CartItemData implements Parcelable {
             this.wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
             this.trackerAttribution = in.readString();
             this.trackerListName = in.readString();
-            this.shopType = in.readString();
-            this.isGoldMerchant = in.readByte() != 0;
-            this.isOfficialStore = in.readByte() != 0;
             this.productCashBack = in.readString();
+            this.originalRemark = in.readString();
+            this.wishlisted = in.readByte() != 0;
+            this.shopName = in.readString();
+            this.shopId = in.readString();
+            this.shopType = in.readString();
+            this.originalQty = in.readInt();
         }
 
         public static final Creator<OriginData> CREATOR = new Creator<OriginData>() {
@@ -705,8 +774,10 @@ public class CartItemData implements Parcelable {
         dest.writeParcelable(this.errorData, flags);
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeByte(this.isWarning ? (byte) 1 : (byte) 0);
-        dest.writeString(this.warningMessage);
-        dest.writeString(this.errorMessage);
+        dest.writeByte(this.singleChild ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.parentHasErrorOrWarning ? (byte) 1 : (byte) 0);
+        dest.writeString(this.warningMessageTitle);
+        dest.writeString(this.errorMessageTitle);
     }
 
     protected CartItemData(Parcel in) {
@@ -715,8 +786,10 @@ public class CartItemData implements Parcelable {
         this.errorData = in.readParcelable(MessageErrorData.class.getClassLoader());
         this.isError = in.readByte() != 0;
         this.isWarning = in.readByte() != 0;
-        this.warningMessage = in.readString();
-        this.errorMessage = in.readString();
+        this.singleChild = in.readByte() != 0;
+        this.parentHasErrorOrWarning = in.readByte() != 0;
+        this.warningMessageTitle = in.readString();
+        this.errorMessageTitle = in.readString();
     }
 
     public static final Creator<CartItemData> CREATOR = new Creator<CartItemData>() {

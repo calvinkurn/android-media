@@ -17,7 +17,7 @@ public class DealsLocationContract {
 
         void navigateToActivityRequest(Intent intent, int requestCode);
 
-        void renderFromSearchResults(List<Location> locationList, boolean isTopLocations);
+        void renderFromSearchResults(List<Location> locationList, boolean isTopLocations, String... searchText);
 
         void showProgressBar();
 

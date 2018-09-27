@@ -11,8 +11,6 @@ import okhttp3.Interceptor;
 
 public interface SessionRouter {
 
-    String ENABLE_LOGIN_INACTIVE_PHONE_LINK = "mainapp_login_inactive_phone_no_link";
-
     Intent getHomeIntent(Context context);
 
     Intent getTopProfileIntent(Context context, String userId);
@@ -22,4 +20,6 @@ public interface SessionRouter {
     Intent getShopPageIntent(Context context, String shopId);
 
     boolean isLoginInactivePhoneLinkEnabled();
+
+    Intent getWithdrawIntent(Context context);
 }

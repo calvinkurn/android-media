@@ -11,6 +11,7 @@ import java.util.List;
  */
 
 public class CartShipmentAddressFormData implements Parcelable {
+    private boolean hasError;
     private boolean isError;
     private String errorMessage;
 
@@ -21,6 +22,15 @@ public class CartShipmentAddressFormData implements Parcelable {
     private String keroDiscomToken;
     private int keroUnixTime;
     private Donation donation;
+    private boolean useCourierRecommendation;
+
+    public boolean isHasError() {
+        return hasError;
+    }
+
+    public void setHasError(boolean hasError) {
+        this.hasError = hasError;
+    }
 
     public boolean isError() {
         return isError;
@@ -94,10 +104,19 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.donation = donation;
     }
 
+    public boolean isUseCourierRecommendation() {
+        return useCourierRecommendation;
+    }
+
+    public void setUseCourierRecommendation(boolean useCourierRecommendation) {
+        this.useCourierRecommendation = useCourierRecommendation;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
     protected CartShipmentAddressFormData(Parcel in) {
+        hasError = in.readByte() != 0;
         isError = in.readByte() != 0;
         errorMessage = in.readString();
         errorCode = in.readInt();
@@ -107,10 +126,12 @@ public class CartShipmentAddressFormData implements Parcelable {
         keroDiscomToken = in.readString();
         keroUnixTime = in.readInt();
         donation = in.readParcelable(Donation.class.getClassLoader());
+        useCourierRecommendation = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (hasError ? 1 : 0));
         dest.writeByte((byte) (isError ? 1 : 0));
         dest.writeString(errorMessage);
         dest.writeInt(errorCode);
@@ -120,6 +141,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeString(keroDiscomToken);
         dest.writeInt(keroUnixTime);
         dest.writeParcelable(donation, flags);
+        dest.writeByte((byte) (useCourierRecommendation ? 1 : 0));
     }
 
     @Override

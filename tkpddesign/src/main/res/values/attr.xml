@@ -9,8 +9,9 @@
         <attr name="lv_image" format="reference" />
         <attr name="lv_image_width" format="dimension" />
         <attr name="lv_image_height" format="dimension" />
-        <attr name="lv_image_margin_right" format="dimension"/>
+        <attr name="lv_image_margin_right" format="dimension" />
         <attr name="lv_title" format="string" />
+        <attr name="lv_badge" format="string" />
         <attr name="lv_title_text_size" format="dimension" />
         <attr name="lv_title_color" format="color" />
         <attr name="lv_title_min_width" format="dimension" />
@@ -33,6 +34,7 @@
         </attr>
         <!-- value from 0 to 1 -->
         <attr name="lv_content_max_width_percentage" format="float" />
+        <attr name="lv_show_arrow" format="boolean"/>
     </declare-styleable>
 
     <declare-styleable name="SelectionLabelView">
@@ -43,7 +45,7 @@
         <attr name="siv_search_icon" format="reference" />
         <attr name="siv_search_text" format="string" />
         <attr name="siv_search_hint" format="string" />
-        <attr name="isEditable" format="boolean"/>
+        <attr name="isEditable" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="DecimalInputView">
@@ -119,7 +121,7 @@
         <attr name="lsv_empty_layout" format="reference" />
         <attr name="lsv_error_layout" format="reference" />
         <attr name="lsv_state" format="integer" />
-        <attr name="lsv_full_screen" format="boolean"/>
+        <attr name="lsv_full_screen" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="EmptyCardContentView">
@@ -136,6 +138,10 @@
         <attr name="tckv_background_color" format="color" />
         <attr name="tckv_indicator_on_color" format="color" />
         <attr name="tckv_indicator_off_color" format="color" />
+        <attr name="tckv_link_color" format="color" />
+        <attr name="tckv_show_close_button" format="boolean"/>
+        <attr name="tckv_show_link_underline" format="boolean"/>
+        <attr name="tckv_content_text_size" format="dimension" />
     </declare-styleable>
 
     <declare-styleable name="UserReputationView">
@@ -148,8 +154,8 @@
     </declare-styleable>
 
     <declare-styleable name="BottomActionView">
-        <attr name="bav_1_display" format="boolean"/>
-        <attr name="bav_2_display" format="boolean"/>
+        <attr name="bav_1_display" format="boolean" />
+        <attr name="bav_2_display" format="boolean" />
         <attr name="bav_icon_1" format="reference" />
         <attr name="bav_label_1" format="reference" />
         <attr name="bav_icon_2" format="reference" />
@@ -175,65 +181,65 @@
     <attr name="bottomSheetBuilderTitleTextColor" format="color" />
 
     <declare-styleable name="FloatingButton">
-        <attr name="text" format="string"/>
-        <attr name="buttonTextAllCaps" format="boolean"/>
+        <attr name="text" format="string" />
+        <attr name="buttonTextAllCaps" format="boolean" />
         <attr name="floatButtonType" format="enum">
-            <enum name="primary" value="1"/>
-            <enum name="secondary" value="2"/>
-            <enum name="disable" value="3"/>
+            <enum name="primary" value="1" />
+            <enum name="secondary" value="2" />
+            <enum name="disable" value="3" />
         </attr>
         <attr name="floatButtonSize" format="enum">
-            <enum name="big" value="4"/>
-            <enum name="medium" value="5"/>
-            <enum name="small" value="6"/>
+            <enum name="big" value="4" />
+            <enum name="medium" value="5" />
+            <enum name="small" value="6" />
         </attr>
-        <attr name="shadow" format="boolean"/>
-        <attr name="shadowLeft" format="boolean"/>
-        <attr name="shadowTop" format="boolean"/>
-        <attr name="shadowRight" format="boolean"/>
-        <attr name="shadowBottom" format="boolean"/>
+        <attr name="shadow" format="boolean" />
+        <attr name="shadowLeft" format="boolean" />
+        <attr name="shadowTop" format="boolean" />
+        <attr name="shadowRight" format="boolean" />
+        <attr name="shadowBottom" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="Tabs">
         <attr name="tabType" format="enum">
-            <enum name="main" value="1"/>
-            <enum name="secondary" value="2"/>
+            <enum name="main" value="1" />
+            <enum name="secondary" value="2" />
         </attr>
     </declare-styleable>
 
     <declare-styleable name="TextViewCompat">
-        <attr name="drawableLeftCompat" format="reference"/>
-        <attr name="drawableRightCompat" format="reference"/>
-        <attr name="drawableTopCompat" format="reference"/>
-        <attr name="drawableBottomCompat" format="reference"/>
+        <attr name="drawableLeftCompat" format="reference" />
+        <attr name="drawableRightCompat" format="reference" />
+        <attr name="drawableTopCompat" format="reference" />
+        <attr name="drawableBottomCompat" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="EditTextCompat">
-        <attr name="editTextDrawableLeftCompat" format="reference"/>
-        <attr name="editTextDrawableRightCompat" format="reference"/>
-        <attr name="editTextDrawableTopCompat" format="reference"/>
-        <attr name="editTextDrawableBottomCompat" format="reference"/>
+        <attr name="editTextDrawableLeftCompat" format="reference" />
+        <attr name="editTextDrawableRightCompat" format="reference" />
+        <attr name="editTextDrawableTopCompat" format="reference" />
+        <attr name="editTextDrawableBottomCompat" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="ButtonCompat">
         <attr name="buttonCompatType" format="enum">
-            <enum name="primary" value="1"/>
-            <enum name="secondary" value="2"/>
-            <enum name="disable" value="3"/>
+            <enum name="primary" value="1" />
+            <enum name="secondary" value="2" />
+            <enum name="disable" value="3" />
         </attr>
         <attr name="buttonCompatSize" format="enum">
-            <enum name="big" value="4"/>
-            <enum name="medium" value="5"/>
-            <enum name="small" value="6"/>
+            <enum name="big" value="4" />
+            <enum name="medium" value="5" />
+            <enum name="small" value="6" />
         </attr>
-        <attr name="buttonDrawableLeftCompat" format="reference"/>
-        <attr name="buttonDrawableRightCompat" format="reference"/>
-        <attr name="buttonDrawableTopCompat" format="reference"/>
-        <attr name="buttonDrawableBottomCompat" format="reference"/>
+        <attr name="buttonDrawableLeftCompat" format="reference" />
+        <attr name="buttonDrawableRightCompat" format="reference" />
+        <attr name="buttonDrawableTopCompat" format="reference" />
+        <attr name="buttonDrawableBottomCompat" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="DeletableItemView">
-        <attr name="layout" format="reference"/>
+        <attr name="layout" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="NumberPickerWithCounterView">
@@ -243,4 +249,15 @@
         <attr name="npc_enabled" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="CardWithActionView">
+        <attr name="cmv_title" format="string" />
+        <attr name="cmv_content" format="string" />
+        <attr name="cmv_content_info" format="string" />
+        <attr name="cmw_subcontent" format="string" />
+        <attr name="cmw_subcontent_info" format="string" />
+        <attr name="cmw_action" format="string" />
+    </declare-styleable>
+    <declare-styleable name="TouchViewPager">
+        <attr name="can_swipe" format="boolean" />
+    </declare-styleable>
 </resources>

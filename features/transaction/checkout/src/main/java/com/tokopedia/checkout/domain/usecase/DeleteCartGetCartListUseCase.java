@@ -85,7 +85,7 @@ public class DeleteCartGetCartListUseCase extends UseCase<DeleteAndRefreshCartLi
                 .flatMap(new Func1<DeleteAndRefreshCartListData, Observable<DeleteAndRefreshCartListData>>() {
                     @Override
                     public Observable<DeleteAndRefreshCartListData> call(final DeleteAndRefreshCartListData deleteAndRefreshCartListData) {
-                        return cartRepository.getCartList(paramGetCart)
+                        return cartRepository.getShopGroupList(paramGetCart)
                                 .map(new Func1<CartDataListResponse, DeleteAndRefreshCartListData>() {
                                     @Override
                                     public DeleteAndRefreshCartListData call(CartDataListResponse cartDataListResponse) {

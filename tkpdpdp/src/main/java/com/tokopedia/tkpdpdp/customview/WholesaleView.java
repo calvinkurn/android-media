@@ -14,30 +14,17 @@ import com.tokopedia.tkpdpdp.R;
 import com.tokopedia.tkpdpdp.R2;
 import com.tokopedia.tkpdpdp.listener.ProductDetailView;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import butterknife.BindViews;
 
 /**
  * @author Angga.Prasetiyo on 26/10/2015.
  */
 public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView> {
-    @BindViews({
-            R2.id.wholesale_1,
-            R2.id.wholesale_2,
-            R2.id.wholesale_3,
-            R2.id.wholesale_4,
-            R2.id.wholesale_5})
-    List<TableRow> rowWholesale;
-    @BindViews({R2.id.qty_ws_1, R2.id.qty_ws_2, R2.id.qty_ws_3, R2.id.qty_ws_4, R2.id.qty_ws_5})
-    List<TextView> wholesaleQty;
-    @BindViews({
-            R2.id.price_ws_1,
-            R2.id.price_ws_2,
-            R2.id.price_ws_3,
-            R2.id.price_ws_4,
-            R2.id.price_ws_5})
-    List<TextView> wholesalePrice;
+
+    List<TableRow> rowWholesale = new ArrayList<>();
+    List<TextView> wholesaleQty = new ArrayList<>();
+    List<TextView> wholesalePrice = new ArrayList<>();
 
     public WholesaleView(Context context) {
         super(context);
@@ -66,6 +53,22 @@ public class WholesaleView extends BaseView<ProductDetailData, ProductDetailView
     @Override
     protected void initView(Context context) {
         super.initView(context);
+        rowWholesale.add((TableRow) findViewById(R.id.wholesale_1));
+        rowWholesale.add((TableRow) findViewById(R.id.wholesale_2));
+        rowWholesale.add((TableRow) findViewById(R.id.wholesale_3));
+        rowWholesale.add((TableRow) findViewById(R.id.wholesale_4));
+        rowWholesale.add((TableRow) findViewById(R.id.wholesale_5));
+        wholesaleQty.add((TextView) findViewById(R.id.qty_ws_1));
+        wholesaleQty.add((TextView) findViewById(R.id.qty_ws_2));
+        wholesaleQty.add((TextView) findViewById(R.id.qty_ws_3));
+        wholesaleQty.add((TextView) findViewById(R.id.qty_ws_4));
+        wholesaleQty.add((TextView) findViewById(R.id.qty_ws_5));
+        wholesalePrice.add((TextView) findViewById(R.id.price_ws_1));
+        wholesalePrice.add((TextView) findViewById(R.id.price_ws_2));
+        wholesalePrice.add((TextView) findViewById(R.id.price_ws_3));
+        wholesalePrice.add((TextView) findViewById(R.id.price_ws_4));
+        wholesalePrice.add((TextView) findViewById(R.id.price_ws_5));
+
     }
 
     @Override
