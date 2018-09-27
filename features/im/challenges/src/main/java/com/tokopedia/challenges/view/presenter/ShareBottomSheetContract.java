@@ -22,9 +22,9 @@ public class ShareBottomSheetContract {
 
     public interface Presenter extends CustomerPresenter<View> {
 
-        void createAndShareChallenge(String packageName);
+        void createAndShareChallenge(String packageName, String name);
 
-        void createAndShareSubmission(String packageName);
+        void createAndShareSubmission(String packageName, String name);
 
         boolean getParticipatedStatus(SubmissionResult submissionResult);
     }

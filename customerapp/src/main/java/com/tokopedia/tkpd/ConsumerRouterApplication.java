@@ -2945,11 +2945,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public void generateBranchUrlForChallenge(Activity context, String url, String title, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
+    public void generateBranchUrlForChallenge(Activity context, String url, String title, String channel, String og_url, String og_title, String og_image, String deepLink, final BranchLinkGenerateListener listener) {
         ShareData shareData = ShareData.Builder.aShareData()
                 .setType(ShareData.INDI_CHALLENGE_TYPE)
                 .setName(title)
                 .setUri(url)
+                .setSource(channel)
                 .setOgUrl(og_url)
                 .setOgTitle(og_title)
                 .setOgImageUrl(og_image)

@@ -1,32 +1,20 @@
 package com.tokopedia.challenges.view.presenter;
 
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.Gravity;
-import android.view.View;
 import android.webkit.URLUtil;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
-import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
@@ -52,7 +40,6 @@ import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -62,13 +49,12 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     private static final String PACKAGENAME_WHATSAPP = "com.whatsapp";
     private static final String PACKAGENAME_FACEBOOK = "com.facebook.katana";
     private static final String PACKAGENAME_LINE = "jp.naver.line.android";
-    //private static final String PACKAGENAME_TWITTER = "com.twitter.composer.ComposerShareActivity";
     private static final String PACKAGENAME_GPLUS = "com.google.android.apps.plus";
-   // private static final String PACKAGENAME_INSTAGRAM_DIRECT = "com.instagram.direct.share.handler.DirectShareHandlerActivity";
     private static final String PACKAGENAME_INSTAGRAM = "com.instagram.android";
 
     private String[] ClassNameApplications = new String[]{PACKAGENAME_WHATSAPP, PACKAGENAME_INSTAGRAM,
             PACKAGENAME_FACEBOOK, PACKAGENAME_LINE, PACKAGENAME_GPLUS};
+
     public static final String POST_SHARE_TEXT = "Saya telah mengikuti %s di Tokopedia, bantu saya menang dengan share & like post Cek: %s";
     public static final String CHALLENGE_SHARE_TEXT = "Ikutan %s di Tokopedia Challenge bisa menang berbagai hadiah seru! Cek daftar Challenge yang bisa kamu ikuti di %s";
 
@@ -99,18 +85,17 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     }
 
     @Override
-    public void createAndShareChallenge(String packageName) {
+    public void createAndShareChallenge(String packageName, String name) {
         Result challengeItem = getView().getChallengeItem();
         if (challengeItem == null) {
             return;
         }
         String url = Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId());
         getView().showProgress("Please wait");
-        ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+        ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, challengeItem.getTitle(), name, challengeItem.getSharing().getMetaTags().getOgUrl(), challengeItem.getSharing().getMetaTags().getOgTitle(), challengeItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.CHALLENGES_DETAILS, challengeItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
             @Override
             public void onGenerateLink(String shareContents, String shareUri) {
                 getView().hideProgress();
-                //getView().setNewUrl(shareUri);
                 shareLink(true, shareUri, challengeItem.getTitle(), packageName);
             }
         });
@@ -118,7 +103,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     }
 
     @Override
-    public void createAndShareSubmission(String packageName) {
+    public void createAndShareSubmission(String packageName, String name) {
         SubmissionResult submissionItem = getView().getSubmissionItem();
         if (submissionItem == null) {
             return;
@@ -131,7 +116,7 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
             shareLink(false, url, submissionItem.getTitle(), packageName);
         } else {
             getView().showProgress("Please wait");
-            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
+            ((ChallengesModuleRouter) ((getView().getActivity()).getApplication())).generateBranchUrlForChallenge(getView().getActivity(), url, submissionItem.getTitle(), name, submissionItem.getSharing().getMetaTags().getOgUrl(), submissionItem.getSharing().getMetaTags().getOgTitle(), submissionItem.getSharing().getMetaTags().getOgImage(), Utils.getApplinkPathForBranch(ChallengesUrl.AppLink.SUBMISSION_DETAILS, submissionItem.getId()), new ChallengesModuleRouter.BranchLinkGenerateListener() {
                 @Override
                 public void onGenerateLink(String shareContents, String shareUri) {
                     getView().hideProgress();
@@ -157,10 +142,10 @@ public class ShareBottomSheetPresenter extends BaseDaggerPresenter<ShareBottomSh
     public List<ResolveInfo> appInstalledOrNot() {
         List<ResolveInfo> showApplications = new ArrayList<>();
         PackageManager pm = getView().getActivity().getPackageManager();
-        Intent shareIntent=new Intent();
+        Intent shareIntent = new Intent();
         shareIntent.setAction(Intent.ACTION_SEND);
         shareIntent.setType("text/plain");
-       // mainIntent.setType("image/*");
+        // mainIntent.setType("image/*");
         List<ResolveInfo> resolveInfos = pm.queryIntentActivities(shareIntent, 0); // returns all applications which can listen to the SEND Intent
         if (resolveInfos != null && !resolveInfos.isEmpty()) {
             for (ResolveInfo info : resolveInfos) {

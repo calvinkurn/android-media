@@ -90,7 +90,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         showHeading = getArguments().getBoolean(PARAM_IS_SHOW_HEADING, false);
 
         initView(view);
-       View headingView = view.findViewById(R.id.tv_heading);
+        View headingView = view.findViewById(R.id.tv_heading);
         closeButton = view.findViewById(R.id.item_close);
         closeButton.setOnClickListener(v -> dismiss());
         if (showHeading) {
@@ -98,12 +98,11 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
         } else {
             headingView.setVisibility(View.GONE);
         }
-        View titleView= view.findViewById(R.id.layout_title);
+        View titleView = view.findViewById(R.id.layout_title);
         titleView.setOnClickListener(view1 -> dismiss());
 
         return view;
     }
-
 
 
     public void initView(View view) {
@@ -146,10 +145,9 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
     @Override
     public void onItemClick(String packageName, String name) {
         if (isChallenge) {
-            presenter.createAndShareChallenge(packageName);
-
+            presenter.createAndShareChallenge(packageName, name);
         } else {
-            presenter.createAndShareSubmission(packageName);
+            presenter.createAndShareSubmission(packageName, name);
             if (submissionItem != null && submissionItem.getCollection() != null) {
                 ChallengesMoengageAnalyticsTracker.challengePostShared(getActivity(), submissionItem.getCollection().getTitle(),
                         submissionItem.getCollection().getId(), submissionItem.getId(), presenter.getParticipatedStatus(submissionItem), name);
