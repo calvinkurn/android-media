@@ -47,8 +47,8 @@ public class SummaryDepositParam {
         this.startDate = startDate;
     }
 
-    public Map<String, String> getParamSummaryDeposit() {
-        Map<String, String> param = new HashMap<>();
+    public Map<String, Object> getParamSummaryDeposit() {
+        Map<String, Object> param = new HashMap<>();
         param.put(PARAM_START_DATE, startDate);
         param.put(PARAM_END_DATE, endDate);
         param.put(PARAM_PER_PAGE, perPage);

@@ -12,6 +12,7 @@ import com.airbnb.deeplinkdispatch.DeepLinkHandler;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
+import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModule;
 import com.tokopedia.browse.common.applink.DigitalBrowseApplinkModuleLoader;
 import com.tokopedia.changepassword.common.applink.ChangePasswordDeeplinkModule;
@@ -75,13 +76,13 @@ import com.tokopedia.pushnotif.Constant;
 import com.tokopedia.pushnotif.HistoryNotification;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModule;
 import com.tokopedia.recentview.view.applink.RecentViewApplinkModuleLoader;
+import com.tokopedia.saldodetails.applink.SaldoDetailsAppLinkModuleLoader;
 import com.tokopedia.seller.applink.SellerApplinkModule;
 import com.tokopedia.seller.applink.SellerApplinkModuleLoader;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModule;
 import com.tokopedia.settingbank.applink.SettingBankApplinkModuleLoader;
 import com.tokopedia.shop.applink.ShopAppLinkModule;
 import com.tokopedia.shop.applink.ShopAppLinkModuleLoader;
-import com.tokopedia.applink.TkpdApplinkDelegate;
 import com.tokopedia.tkpd.deeplink.presenter.DeepLinkAnalyticsImpl;
 import com.tokopedia.tkpd.redirect.RedirectCreateShopActivity;
 import com.tokopedia.tkpd.tkpdreputation.applink.ReputationApplinkModule;
@@ -155,48 +156,49 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
     private static ApplinkDelegate applinkDelegate;
 
     public static ApplinkDelegate getApplinkDelegateInstance() {
-        if(applinkDelegate == null) {
+        if (applinkDelegate == null) {
             applinkDelegate = new TkpdApplinkDelegate(
-                new ConsumerDeeplinkModuleLoader(),
-                new ProductAddDeeplinkModuleLoader(),
-                new CoreDeeplinkModuleLoader(),
-                new InboxDeeplinkModuleLoader(),
-                new SellerApplinkModuleLoader(),
-                new TransactionApplinkModuleLoader(),
-                new DigitalApplinkModuleLoader(),
-                new PdpApplinkModuleLoader(),
-                new HomeApplinkModuleLoader(),
-                new DiscoveryApplinkModuleLoader(),
-                new SessionApplinkModuleLoader(),
-                new FeedDeeplinkModuleLoader(),
-                new FlightApplinkModuleLoader(),
-                new TrainApplinkModuleLoader(),
-                new DigitalBrowseApplinkModuleLoader(),
-                new ReputationApplinkModuleLoader(),
-                new TokoCashApplinkModuleLoader(),
-                new EventsDeepLinkModuleLoader(),
-                new LoyaltyAppLinkModuleLoader(),
-                new DealsDeepLinkModuleLoader(),
-                new ShopAppLinkModuleLoader(),
-                new GroupChatApplinkModuleLoader(),
-                new GamificationApplinkModuleLoader(),
-                new ProfileApplinkModuleLoader(),
-                new KolApplinkModuleLoader(),
-                new ExploreApplinkModuleLoader(),
-                new InterestPickApplinkModuleLoader(),
-                new TrackingAppLinkModuleLoader(),
-                new CheckoutAppLinkModuleLoader(),
-                new HowtopayApplinkModuleLoader(),
-                new CustomerCareApplinkModuleLoader(),
-                new TopChatAppLinkModuleLoader(),
-                new TokopointApplinkModuleLoader(),
-                new NotifCenterApplinkModuleLoader(),
-                new HomeNavigationApplinkModuleLoader(),
-                new AccountHomeApplinkModuleLoader(),
-                new InstantLoanAppLinkModuleLoader(),
-                new RecentViewApplinkModuleLoader(),
-                new ChangePasswordDeeplinkModuleLoader(),
-                new SettingBankApplinkModuleLoader()
+                    new ConsumerDeeplinkModuleLoader(),
+                    new ProductAddDeeplinkModuleLoader(),
+                    new CoreDeeplinkModuleLoader(),
+                    new InboxDeeplinkModuleLoader(),
+                    new SellerApplinkModuleLoader(),
+                    new TransactionApplinkModuleLoader(),
+                    new DigitalApplinkModuleLoader(),
+                    new PdpApplinkModuleLoader(),
+                    new HomeApplinkModuleLoader(),
+                    new DiscoveryApplinkModuleLoader(),
+                    new SessionApplinkModuleLoader(),
+                    new FeedDeeplinkModuleLoader(),
+                    new FlightApplinkModuleLoader(),
+                    new TrainApplinkModuleLoader(),
+                    new DigitalBrowseApplinkModuleLoader(),
+                    new ReputationApplinkModuleLoader(),
+                    new TokoCashApplinkModuleLoader(),
+                    new EventsDeepLinkModuleLoader(),
+                    new LoyaltyAppLinkModuleLoader(),
+                    new DealsDeepLinkModuleLoader(),
+                    new ShopAppLinkModuleLoader(),
+                    new GroupChatApplinkModuleLoader(),
+                    new GamificationApplinkModuleLoader(),
+                    new ProfileApplinkModuleLoader(),
+                    new KolApplinkModuleLoader(),
+                    new ExploreApplinkModuleLoader(),
+                    new InterestPickApplinkModuleLoader(),
+                    new TrackingAppLinkModuleLoader(),
+                    new CheckoutAppLinkModuleLoader(),
+                    new HowtopayApplinkModuleLoader(),
+                    new CustomerCareApplinkModuleLoader(),
+                    new TopChatAppLinkModuleLoader(),
+                    new TokopointApplinkModuleLoader(),
+                    new NotifCenterApplinkModuleLoader(),
+                    new HomeNavigationApplinkModuleLoader(),
+                    new AccountHomeApplinkModuleLoader(),
+                    new InstantLoanAppLinkModuleLoader(),
+                    new RecentViewApplinkModuleLoader(),
+                    new ChangePasswordDeeplinkModuleLoader(),
+                    new SettingBankApplinkModuleLoader(),
+                    new SaldoDetailsAppLinkModuleLoader()
             );
         }
 

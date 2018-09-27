@@ -175,10 +175,10 @@
             android:name=".peoplefave.activity.PeopleFavoritedShop"
             android:label="@string/title_activity_people_favorited_shop"
             android:screenOrientation="portrait" />
-        <activity
+        <!--<activity
             android:name=".deposit.activity.DepositActivity"
             android:label="@string/title_activity_people_deposit"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />-->
         <activity
             android:name=".deposit.activity.WithdrawActivity"
             android:label="@string/title_activity_people_withdraw_balance"

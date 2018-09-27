@@ -9,7 +9,7 @@ import java.util.Map;
 
 public interface DepositRetrofitInteractor {
 
-    void getSummaryDeposit(@NonNull Context context, @NonNull Map<String, String> params,
+    void getSummaryDeposit(@NonNull Context context, @NonNull Map<String, Object> params,
                            @NonNull DepositListener listener);
 
     void unsubscribe();

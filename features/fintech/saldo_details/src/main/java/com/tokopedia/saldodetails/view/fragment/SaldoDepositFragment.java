@@ -156,6 +156,18 @@ public class SaldoDepositFragment extends BaseListFragment<Deposit, SaldoDetailT
         amountBeingReviewed = view.findViewById(R.id.amount_review);
         topupButton = view.findViewById(R.id.topup_button);
         saldoFrameLayout = view.findViewById(R.id.saldo_prioritas_widget);
+
+        this.refreshHandler = new RefreshHandler(getActivity(), view, onRefresh());
+        snackbar = SnackbarManager.make(getActivity(), "", Snackbar.LENGTH_INDEFINITE);
+    }
+
+    private RefreshHandler.OnRefreshHandlerListener onRefresh() {
+        return new RefreshHandler.OnRefreshHandlerListener() {
+            @Override
+            public void onRefresh(View view) {
+                saldoDetailsPresenter.onRefresh();
+            }
+        };
     }
 
     @Override

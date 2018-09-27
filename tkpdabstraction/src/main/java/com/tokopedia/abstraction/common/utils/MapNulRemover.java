@@ -22,4 +22,15 @@ public class MapNulRemover {
         paramOrigin.putAll(paramNull);
         return paramOrigin;
     }
+
+    public static Map<String, Object> removeNullFromObjectMap(Map<String, Object> paramOrigin) {
+        Map<String, String> paramNull = new HashMap<>();
+        for (Map.Entry<String, Object> entry : paramOrigin.entrySet()) {
+            if (entry.getValue() == null) {
+                paramNull.put(entry.getKey(), "");
+            }
+        }
+        paramOrigin.putAll(paramNull);
+        return paramOrigin;
+    }
 }

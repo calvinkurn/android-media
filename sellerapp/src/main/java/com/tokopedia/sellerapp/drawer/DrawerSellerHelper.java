@@ -17,7 +17,6 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.deposit.activity.DepositActivity;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.DrawerAdapter;
@@ -537,9 +536,9 @@ public class DrawerSellerHelper extends DrawerHelper
 
     @Override
     public void onGoToDeposit() {
-        Intent intent = new Intent(context, DepositActivity.class);
+        /*Intent intent = new Intent(context, DepositActivity.class);
         context.startActivity(intent);
-        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);
+        sendGTMNavigationEvent(AppEventTracking.EventLabel.DEPOSIT);*/
     }
 
     @Override

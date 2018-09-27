@@ -8,14 +8,18 @@ import android.support.annotation.NonNull;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler;
 import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.saldodetails.R;
 import com.tokopedia.saldodetails.contract.SaldoDetailContract;
 import com.tokopedia.saldodetails.interactor.DepositCacheInteractor;
+import com.tokopedia.saldodetails.interactor.DepositCacheInteractorImpl;
 import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractor;
+import com.tokopedia.saldodetails.interactor.DepositRetrofitInteractorImpl;
 import com.tokopedia.saldodetails.response.model.SummaryDepositParam;
 import com.tokopedia.saldodetails.response.model.SummaryWithdraw;
+import com.tokopedia.saldodetails.usecase.GetSaldoSummaryUseCase;
 import com.tokopedia.saldodetails.usecase.SetMerchantSaldoStatus;
 import com.tokopedia.saldodetails.util.SaldoDatePickerUtil;
 
@@ -47,8 +51,13 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
 
     @Inject
-    public SaldoDetailsPresenter(@NonNull SetMerchantSaldoStatus setMerchantSaldoStatus) {
+    public SaldoDetailsPresenter(@ApplicationContext Context context,
+                                 @NonNull SetMerchantSaldoStatus setMerchantSaldoStatus,
+                                 GetSaldoSummaryUseCase getSaldoSummaryUseCase) {
         this.setMerchantSaldoStatusUseCase = setMerchantSaldoStatus;
+        depositCacheInteractor = new DepositCacheInteractorImpl(context);
+        this.paging = new PagingHandler();
+        networkInteractor = new DepositRetrofitInteractorImpl(context, getSaldoSummaryUseCase);
     }
 
 
@@ -215,11 +224,12 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
 
     @Override
     public void onRefresh() {
-
+        paging.resetPage();
+        getSummaryDeposit();
     }
 
 
-    private Map<String, String> getSummaryDepositParam() {
+    private Map<String, Object> getSummaryDepositParam() {
         SummaryDepositParam param = new SummaryDepositParam();
         SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT_VIEW);
         SimpleDateFormat sdf_ws = new SimpleDateFormat(DATE_FORMAT_WS);
@@ -273,10 +283,10 @@ public class SaldoDetailsPresenter extends BaseDaggerPresenter<SaldoDetailContra
         } else {
             getView().hideWarning();
         }
-//        getView().getAdapter().addElement(data.getList());
+        getView().getAdapter().addElement(data.getList());
 
         if (getView().getAdapter().getItemCount() == 0) {
-//            getView().getAdapter().showEmpty(true);
+//            getView().getAdapter().(true);
         }
 
         if (paging.CheckNextPage()) {
