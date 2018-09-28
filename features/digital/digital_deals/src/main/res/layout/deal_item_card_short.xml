@@ -104,14 +104,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_24"
             android:ellipsize="end"
             style="@style/TextView.Micro"
-            android:maxWidth="@dimen/dp_145"
             android:textColor="@color/black_38"
             android:lines="1"
             app:layout_constraintBottom_toBottomOf="@+id/iv_tag"
             app:layout_constraintLeft_toRightOf="@+id/iv_tag"
             app:layout_constraintTop_toTopOf="@+id/iv_tag"
+            app:layout_constraintRight_toLeftOf="@+id/tv_sales_price"
             tools:text="Bakerzin" />
 
 

@@ -76,8 +76,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private TextView tvExpandableDesc;
     private TextView tvExpandableTC;
-    private LinearLayout seeMoreButtonDesc;
-    private LinearLayout seeMoreButtonTC;
+    private TextView seeMoreButtonDesc;
+    private TextView seeMoreButtonTC;
 
     private AppBarLayout appBarLayout;
 
@@ -171,12 +171,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         toolbar.setNavigationIcon(ContextCompat.getDrawable(getActivity(), R.drawable.ic_action_back));
         buyDealNow = view.findViewById(R.id.ll_buynow);
         tvExpandableDesc = view.findViewById(R.id.tv_expandable_description);
-        seeMoreButtonDesc = view.findViewById(R.id.expand_view_description);
+        seeMoreButtonDesc = view.findViewById(R.id.seemorebutton_description);
         clDescription = view.findViewById(R.id.cl_description);
         clOutlets = view.findViewById(R.id.cl_outlets);
         clTnc = view.findViewById(R.id.cl_tnc);
         tvExpandableTC = view.findViewById(R.id.tv_expandable_tnc);
-        seeMoreButtonTC = view.findViewById(R.id.expand_view_tnc);
+        seeMoreButtonTC = view.findViewById(R.id.seemorebutton_tnc);
         recyclerViewDeals = view.findViewById(R.id.recycler_view);
         circlePageIndicator.setRadius(getResources().getDimension(R.dimen.dp_3));
         collapsingToolbarLayout = view.findViewById(R.id.collapsing_toolbar);
@@ -523,9 +523,9 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         dealDetail.setIsLiked(isLiked);
         dealDetail.setLikes(likes);
         if (isLiked) {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_filled);
+            ivFavourite.setImageResource(R.drawable.ic_wishlist_filled);
         } else {
-            ivFavourite.setBackgroundResource(R.drawable.ic_wishlist_unfilled);
+            ivFavourite.setImageResource(R.drawable.ic_wishlist_unfilled);
         }
         if (likes == 0) {
             tvLikes.setVisibility(View.GONE);
@@ -559,10 +559,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.expand_view_description) {
+        if (v.getId() == R.id.seemorebutton_description) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_DESCRIPTION_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getLongRichDesc(), getString(R.string.show_description), 0);
-        } else if (v.getId() == R.id.expand_view_tnc) {
+        } else if (v.getId() == R.id.seemorebutton_tnc) {
             sendEvent(DealsAnalytics.EVENT_CLICK_CHECK_TNC_PRODUCT_DETAIL);
             fragmentCallbacks.replaceFragment(dealDetail.getTnc(), getString(R.string.show_tnc), 0);
         } else if (v.getId() == R.id.tv_see_all_locations) {
