@@ -290,8 +290,19 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
             } else {
                 tv3SoldCnt.setVisibility(View.GONE);
             }
+            if (Utils.getSingletonInstance().containsLikedEvent(data.getId())) {
+                if (!data.isLiked()) {
+                    data.setLiked(true);
+                    data.setLikes();
+                }
+            } else {
+                if (data.isLiked()) {
+                    data.setLiked(false);
+                    data.setLikes();
+                }
+            }
             tvAddToWishlist.setText(String.valueOf(data.getLikes()));
-            if (data.isLiked()) {
+            if (Utils.getSingletonInstance().containsLikedEvent(data.getId())) {
                 tvAddToWishlist.setTextColor(mContext.getResources().getColor(R.color.red_1));
                 tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                         0, 0, 0);

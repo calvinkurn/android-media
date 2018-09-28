@@ -34,6 +34,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
@@ -50,6 +52,8 @@ import rx.schedulers.Schedulers;
 public class Utils {
     private static Utils singleInstance;
     private List<CategoryItemsViewModel> topEvents;
+    private HashSet<Integer> likedEventSet;
+    private HashSet<Integer> unLikedEventSet;
 
     synchronized public static Utils getSingletonInstance() {
         if (singleInstance == null)
@@ -59,6 +63,46 @@ public class Utils {
 
     private Utils() {
         Log.d("UTILS", "Utils Instance created");
+    }
+
+    public HashSet<Integer> getLikedEventSet() {
+        return likedEventSet;
+    }
+
+    public void addLikedEvent(int id) {
+        if (likedEventSet == null) {
+            likedEventSet = new HashSet<>();
+        }
+        likedEventSet.add(id);
+
+    }
+
+    public void removeLikedEvent(int id) {
+        if (likedEventSet != null && !likedEventSet.isEmpty())
+            likedEventSet.remove(id);
+    }
+
+    public boolean containsLikedEvent(int id) {
+        return likedEventSet != null && !likedEventSet.isEmpty() && likedEventSet.contains(id);
+    }
+
+    public void addUnlikedEvent(int id) {
+        if (unLikedEventSet == null)
+            unLikedEventSet = new HashSet<>();
+        unLikedEventSet.add(id);
+    }
+
+    public void removeUnlikedEvent(int id) {
+        if (unLikedEventSet != null && !unLikedEventSet.isEmpty())
+            unLikedEventSet.remove(id);
+    }
+
+    public boolean containsUnlikeEvent(int id) {
+        if (unLikedEventSet != null && !unLikedEventSet.isEmpty() && unLikedEventSet.contains(id)) {
+            removeUnlikedEvent(id);
+            return true;
+        }
+        return false;
     }
 
     public List<CategoryViewModel> convertIntoCategoryListVeiwModel(List<EventsCategoryDomain> categoryList) {
@@ -73,10 +117,12 @@ public class Utils {
                             convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
 
                 } else {
-                    categoryViewModels.add(new CategoryViewModel(eventsCategoryDomain.getTitle(),
+                    CategoryViewModel model = new CategoryViewModel(eventsCategoryDomain.getTitle(),
                             eventsCategoryDomain.getName(),
                             eventsCategoryDomain.getMediaURL(),
-                            convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems())));
+                            convertIntoCategoryListItemsVeiwModel(eventsCategoryDomain.getItems()));
+                    model.setCategoryId(eventsCategoryDomain.getId());
+                    categoryViewModels.add(model);
 
                 }
 
@@ -93,6 +139,7 @@ public class Utils {
                 CategoryItemsViewModel = new CategoryItemsViewModel();
                 CategoryItemsViewModel.setId(categoryEntity.getId());
                 CategoryItemsViewModel.setCategoryId(categoryEntity.getCategoryId());
+                CategoryItemsViewModel.setChildCategoryIds(categoryEntity.getChildCategoryIds());
                 CategoryItemsViewModel.setDisplayName(categoryEntity.getDisplayName());
                 CategoryItemsViewModel.setTitle(categoryEntity.getTitle());
                 CategoryItemsViewModel.setImageApp(categoryEntity.getImageApp());
@@ -110,6 +157,10 @@ public class Utils {
                 CategoryItemsViewModel.setUrl(categoryEntity.getUrl());
                 CategoryItemsViewModel.setSeoUrl(categoryEntity.getSeoUrl());
                 CategoryItemsViewModel.setMinLikes(categoryEntity.getLikes());
+                if (categoryEntity.isLiked())
+                    Utils.getSingletonInstance().addLikedEvent(categoryEntity.getId());
+                CategoryItemsViewModel.setWasLiked(categoryEntity.isLiked());
+                CategoryItemsViewModel.setLiked(categoryEntity.isLiked());
                 categoryItemsViewModelList.add(CategoryItemsViewModel);
             }
         }
@@ -351,8 +402,8 @@ public class Utils {
         static String PROMO_SUCCESS = "promocode_success_message";
         static String PROMO_STATUS = "promocode_status";
         public static String EVENT_OMS = "event_oms_android";
-        public static final String LIKED_EVENTS ="liked_events";
-        public static final String EVENTS_PREFS ="events_prefs";
+        public static final String LIKED_EVENTS = "liked_events";
+        public static final String EVENTS_PREFS = "events_prefs";
 
     }
 }

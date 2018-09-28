@@ -2,6 +2,7 @@ package com.tokopedia.events.view.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
+import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -38,6 +40,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     private List<CategoryItemsViewModel> categoryItems;
     private Context context;
     private int redColor;
+    private int blackColor;
     private boolean isFavActivity;
     private boolean isTrackingEnabled;
 
@@ -48,6 +51,7 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         if (!isFav)
             ((EventsHomeActivity) context).mPresenter.setupCallback(this);
         redColor = context.getResources().getColor(R.color.red_1);
+        blackColor = context.getResources().getColor(R.color.black_54);
     }
 
     @Override
@@ -81,17 +85,18 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         public TextView tvCalendar;
         private int index;
         private boolean isShown = false;
+        private String hyphen = "%1$s - %2$s";
 
         public ViewHolder(View itemLayoutView) {
             super(itemLayoutView);
             ButterKnife.bind(this, itemLayoutView);
         }
 
-        public void setViewHolder(CategoryItemsViewModel data, int position) {
+        void setViewHolder(CategoryItemsViewModel data, int position) {
             index = position;
             tvCalendar.setVisibility(View.GONE);
             eventTitle.setText(data.getDisplayName());
-            eventPrice.setText("Rp" + " " + CurrencyUtil.convertToCurrencyString(data.getSalesPrice()));
+            eventPrice.setText(String.format(context.getString(R.string.price_holder), CurrencyUtil.convertToCurrencyString(data.getSalesPrice())));
             eventLocation.setCompoundDrawablesWithIntrinsicBounds(R.drawable.event_ic_putih, 0, 0, 0);
             tvEventShare.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_share, 0, 0, 0);
             eventLocation.setText(data.getCityName());
@@ -102,8 +107,8 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 if (data.getMinStartDate() == data.getMaxEndDate())
                     eventTime.setText(Utils.convertEpochToString(data.getMinStartDate()));
                 else
-                    eventTime.setText(Utils.convertEpochToString(data.getMinStartDate())
-                            + " - " + Utils.convertEpochToString(data.getMaxEndDate()));
+                    eventTime.setText(String.format(hyphen, Utils.convertEpochToString(data.getMinStartDate())
+                            , Utils.convertEpochToString(data.getMaxEndDate())));
                 eventTime.setVisibility(View.VISIBLE);
             }
 
@@ -121,15 +126,27 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             } else {
                 tv3SoldCnt.setVisibility(View.GONE);
             }
+
+            if (Utils.getSingletonInstance().containsUnlikeEvent(data.getId())) {
+                data.setLiked(false);
+                data.setLikes();
+            } else if (Utils.getSingletonInstance().containsLikedEvent(data.getId())) {
+                if (!data.isLiked()) {
+                    data.setLiked(true);
+                    data.setLikes();
+                }
+            }
+
             tvAddToWishlist.setText(String.valueOf(data.getLikes()));
-            if (data.isLiked()) {
-                tvAddToWishlist.setTextColor(context.getResources().getColor(R.color.red_1));
+            if (Utils.getSingletonInstance().containsLikedEvent(data.getId())) {
+                tvAddToWishlist.setTextColor(redColor);
                 tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist_red,
                         0, 0, 0);
             } else {
                 tvAddToWishlist.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_event_wishlist,
                         0, 0, 0);
-                tvAddToWishlist.setTextColor(context.getResources().getColor(R.color.black_54));
+                tvAddToWishlist.setTextColor(blackColor);
+
             }
             ImageHandler.loadImageCover2(eventImage, categoryItems.get(getAdapterPosition()).getThumbnailApp());
 
@@ -162,8 +179,9 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             if (!isFavActivity)
                 ((EventsHomeActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
             else {
-                ((EventFavouriteActivity) context).mPresenter.setEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
-                categoryItems.remove(getAdapterPosition());
+                ((EventFavouriteActivity) context).mPresenter.removeEventLike(categoryItems.get(getAdapterPosition()), getAdapterPosition());
+                CategoryItemsViewModel item = categoryItems.remove(getAdapterPosition());
+                item.setLiked(false);
                 itemRemoved(getAdapterPosition());
             }
             UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_LIKE,
@@ -188,11 +206,11 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
             return this.index;
         }
 
-        public boolean isShown() {
+        boolean isShown() {
             return isShown;
         }
 
-        public void setShown(boolean shown) {
+        void setShown(boolean shown) {
             isShown = shown;
         }
     }
@@ -205,8 +223,9 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         return 0;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.event_category_item_revamp, parent, false);
 
@@ -214,14 +233,14 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         CategoryItemsViewModel model = categoryItems.get(position);
         holder.setViewHolder(model, position);
         holder.setShown(model.isTrack());
     }
 
     @Override
-    public void onViewAttachedToWindow(ViewHolder holder) {
+    public void onViewAttachedToWindow(@NonNull ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
         if (!holder.isShown() && isTrackingEnabled) {
             holder.setShown(true);
@@ -235,11 +254,6 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
         notifyItemRemoved(position);
         if (categoryItems.size() == 0)
             ((EventFavouriteActivity) context).toggleEmptyLayout(View.VISIBLE);
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
     }
 
     public void enableTracking() {

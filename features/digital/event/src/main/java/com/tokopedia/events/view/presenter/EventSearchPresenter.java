@@ -31,6 +31,7 @@ import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 import com.tokopedia.events.view.viewmodel.SearchViewModel;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
@@ -61,6 +62,7 @@ public class EventSearchPresenter
     private SearchDomainModel mSearchData;
     private String catgoryFilter = "";
     private String timeFilter = "";
+    private boolean sendLikeBroadcast = false;
     private long startDate = 0;
     private String highlight;
     private String previousSearch = "";
@@ -153,17 +155,19 @@ public class EventSearchPresenter
 
             @Override
             public void onError(Throwable e) {
-                Log.d("UPDATEEVENTLIKE", e.getLocalizedMessage());
                 e.printStackTrace();
             }
 
             @Override
             public void onNext(LikeUpdateResultDomain likeUpdateResultDomain) {
-                Log.d("UPDATEEVENTLIKE", "onNext");
                 if (likeUpdateResultDomain.isLiked() && model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().addLikedEvent(model.getId());
+                    Utils.getSingletonInstance().removeUnlikedEvent(model.getId());
                 } else if (!likeUpdateResultDomain.isLiked() && !model.isLiked()) {
                     model.setLikes();
+                    Utils.getSingletonInstance().removeLikedEvent(model.getId());
+                    Utils.getSingletonInstance().addUnlikedEvent(model.getId());
                 }
                 for (EventsContract.AdapterCallbacks adapterCallback : adapterCallbacks)
                     adapterCallback.notifyDatasetChanged(position);
