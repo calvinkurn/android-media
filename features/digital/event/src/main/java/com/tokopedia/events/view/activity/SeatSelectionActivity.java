@@ -37,10 +37,13 @@ import com.tokopedia.events.view.utils.CurrencyUtil;
 import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.FinishActivityReceiver;
 import com.tokopedia.events.view.utils.Utils;
+import com.tokopedia.events.view.viewmodel.LayoutDetailViewModel;
 import com.tokopedia.events.view.viewmodel.SeatLayoutViewModel;
+import com.tokopedia.events.view.viewmodel.SeatViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -103,6 +106,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     List<String> physicalRowIds = new ArrayList<>();
     List<String> seatIds = new ArrayList<>();
     List<String> actualseat = new ArrayList<>();
+    private HashMap<String, Integer> seatNumberMap;
     String areaId;
     private int quantity;
     FirebaseRemoteConfigImpl remoteConfig;
@@ -124,6 +128,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
+        seatNumberMap = new HashMap<>();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);
@@ -186,18 +191,23 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         int numOfRows = seatLayoutViewModel.getLayoutDetail().size();
         String currentChar = "";
         for (int i = 0; i < numOfRows; ) {
+            LayoutDetailViewModel layoutDetailViewModel = seatLayoutViewModel.getLayoutDetail().get(i);
             CustomSeatAreaLayout customSeatAreaLayout = new CustomSeatAreaLayout(this, mPresenter);
-            int rowId = seatLayoutViewModel.getLayoutDetail().get(i).getRowId();
-            if (Utils.isNotNullOrEmpty(seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId())) {
-                currentChar = seatLayoutViewModel.getLayoutDetail().get(i).getPhysicalRowId();
+            int rowId = layoutDetailViewModel.getRowId();
+            if (Utils.isNotNullOrEmpty(layoutDetailViewModel.getPhysicalRowId())) {
+                currentChar = layoutDetailViewModel.getPhysicalRowId();
                 customSeatAreaLayout.setSeatRow(currentChar);
             }
-            int numOfColumns = seatLayoutViewModel.getLayoutDetail().get(i).getSeat().size();
+            int numOfColumns = layoutDetailViewModel.getSeat().size();
             for (int j = 0; j < numOfColumns; j++) {
-                if (seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getNo() != 0) {
-                    customSeatAreaLayout.addColumn(String.valueOf(seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getActualSeat()),
-                            seatLayoutViewModel.getLayoutDetail().get(i).getSeat().get(j).getStatus(),
+                SeatViewModel seatViewModel = layoutDetailViewModel.getSeat().get(j);
+                if (seatViewModel.getNo() != 0 || seatViewModel.getActualSeat() != 0) {
+                    String seatPhysicalRow = String.valueOf(seatViewModel.getActualSeat());
+                    customSeatAreaLayout.addColumn(seatPhysicalRow,
+                            seatViewModel.getStatus(),
                             maxTickets, rowId, currentChar);
+                    String seatNumber = currentChar + seatPhysicalRow;
+                    seatNumberMap.put(seatNumber, seatViewModel.getNo());
                 } else {
                     customSeatAreaLayout.addColumn(".", 0, 0, 0, "");
                 }
@@ -303,6 +313,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         if (selectedSeats.size() > 0 && selectedSeats.size() == maxTickets) {
             for (int i = 0; i < selectedSeats.size(); i++) {
                 int k = 0;
+                String selectedSeat = selectedSeats.get(i);
                 Character firstChar = selectedSeats.get(i).charAt(k);
                 StringBuilder physicalRowID = new StringBuilder();
                 while (Character.isLetter(firstChar)) {
@@ -311,7 +322,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
                     firstChar = selectedSeats.get(i).charAt(k);
                 }
                 physicalRowIds.add(physicalRowID.toString());
-                seatIds.add(selectedSeats.get(i).substring(k, selectedSeats.get(i).length()));
+                seatIds.add(String.valueOf(seatNumberMap.get(selectedSeat)));
                 areacodes.add(seatLayoutViewModel.getArea().get(0).getAreaCode());
             }
             selectedSeatViewModel.setQuantity(selectedSeats.size());
