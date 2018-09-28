@@ -116,6 +116,7 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.seat_selection_layout);
+        seatNumberMap = new HashMap<>();
         ButterKnife.bind(this);
         executeInjector();
         selectedSeatViewModel = new SelectedSeatViewModel();
@@ -128,7 +129,6 @@ public class SeatSelectionActivity extends TActivity implements HasComponent<Eve
         mPresenter.getSeatSelectionDetails();
         setupToolbar();
         toolbar.setTitle(R.string.seat_selection_title);
-        seatNumberMap = new HashMap<>();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(EventModuleRouter.ACTION_CLOSE_ACTIVITY);
         LocalBroadcastManager.getInstance(this).registerReceiver(finishReceiver, intentFilter);

@@ -50,6 +50,10 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ListViewEtalaseEditor extends BaseAdapter {
     public static final String STUART = "STUART";
     public static final String SHOP_EDITOR = "Shop Editor";
