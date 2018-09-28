@@ -12,7 +12,7 @@ public class EntityPackageItem implements Parcelable {
     @SerializedName("price_per_seat")
     private int pricePerSeat;
 
-    @SerializedName("seat_row_id")
+    @SerializedName("seat_row_ids")
     private List<String> seatRowId;
 
     @SerializedName("quantity")
@@ -24,7 +24,7 @@ public class EntityPackageItem implements Parcelable {
     @SerializedName("seat_ids")
     private List<String> seatId;
 
-    @SerializedName("seat_physical_row_id")
+    @SerializedName("seat_physical_row_ids")
     private List<String> seatPhysicalRowId;
 
     @SerializedName("area_id")
