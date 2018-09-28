@@ -167,13 +167,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         }
     }
 
-    public void showEmpty(String query, boolean isFilterActive,
-                          FilterFlagSelectedModel filterFlagSelectedModel) {
-        clearData();
-        list.add(mappingEmptySearch(query, isFilterActive, filterFlagSelectedModel));
-        notifyDataSetChanged();
-    }
-
     public void showEmpty() {
         clearData();
         list.add(mappingEmptySearch());
@@ -187,22 +180,6 @@ public class ProductListAdapter extends SearchSectionGeneralAdapter {
         emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_1));
         emptySearchModel.setContent(context.getString(R.string.empty_search_content_template));
         emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
-        return emptySearchModel;
-    }
-
-    private EmptySearchModel mappingEmptySearch(String query, boolean isFilterActive,
-                                                FilterFlagSelectedModel filterFlagSelectedModel) {
-        emptySearchModel = new EmptySearchModel();
-        emptySearchModel.setImageRes(R.drawable.ic_empty_search);
-        if (isFilterActive) {
-            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_with_filter_1));
-            emptySearchModel.setContent(String.format(context.getString(R.string.msg_empty_search_with_filter_2), query));
-            emptySearchModel.setFilterFlagSelectedModel(filterFlagSelectedModel);
-        } else {
-            emptySearchModel.setTitle(context.getString(R.string.msg_empty_search_with_filter_1));
-            emptySearchModel.setContent(String.format(context.getString(R.string.empty_search_content_template), query));
-            emptySearchModel.setButtonText(context.getString(R.string.empty_search_button_text));
-        }
         return emptySearchModel;
     }
 
