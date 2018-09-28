@@ -663,97 +663,97 @@ public class TrackingUtils extends TrackingConfig {
         getAFEngine().sendTrackEvent(AFInAppEventType.CONTENT_VIEW, listViewEvent);
     }
 
-    public static void sendGTMEvent(Map<String, Object> dataLayers) {
-        getGTMEngine().sendEvent(dataLayers);
+    public static void sendGTMEvent(Context context, Map<String, Object> dataLayers) {
+        getGTMEngine(context).sendEvent(dataLayers);
     }
 
     public static void sendAppsFlyerDeeplink(Activity activity) {
-        getAFEngine().sendDeeplinkData(activity);
+        getAFEngine(activity).sendDeeplinkData(activity);
     }
 
-    public static String getClientID() {
-        return getGTMEngine().getClientIDString();
+    public static String getClientID(Context context) {
+        return getGTMEngine(context).getClientIDString();
     }
 
-    public static String getGtmString(String key) {
-        return getGTMEngine().getString(key);
+    public static String getGtmString(Context context, String key) {
+        return getGTMEngine(context).getString(key);
     }
 
-    public static boolean getBoolean(String key) {
-        return getGTMEngine().getBoolean(key);
+    public static boolean getBoolean(Context context, String key) {
+        return getGTMEngine(context).getBoolean(key);
     }
 
-    public static long getLong(String key) {
+    public static long getLong(Context context, String key) {
         return 0;
     }
 
-    public static double getDouble(String key) {
-        return getGTMEngine().getDouble(key);
+    public static double getDouble(Context context, String key) {
+        return getGTMEngine(context).getDouble(key);
     }
 
-    public static String getAfUniqueId() {
+    public static String getAfUniqueId(Context context) {
         return getAFEngine().getUniqueId();
     }
 
-    public static String getAdsId() {
+    public static String getAdsId(Context context) {
         return getAFEngine().getAdsIdDirect();
     }
 
-    public static Trace startTrace(String traceName) {
-        return getFPMEngine(traceName).startTrace();
+    public static Trace startTrace(Context context, String traceName) {
+        return getFPMEngine(context,traceName).startTrace();
     }
 
-    public static void eventClickHotlistProductFeatured(Hotlist hotlist) {
-        getGTMEngine().eventClickHotlistProductFeatured(hotlist);
+    public static void eventClickHotlistProductFeatured(Context context, Hotlist hotlist) {
+        getGTMEngine(context).eventClickHotlistProductFeatured(hotlist);
     }
 
-    public static void eventImpressionHotlistProductFeatured(Hotlist hotlist) {
-        getGTMEngine().eventImpressionHotlistProductFeatured(hotlist);
+    public static void eventImpressionHotlistProductFeatured(Context context, Hotlist hotlist) {
+        getGTMEngine(context).eventImpressionHotlistProductFeatured(hotlist);
     }
 
-    public static void impressionHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        getGTMEngine().impressionHotlistTracking(hotlistName, promoName, promoCode);
+    public static void impressionHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
+        getGTMEngine(context).impressionHotlistTracking(hotlistName, promoName, promoCode);
     }
 
-    public static void clickCopyButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        getGTMEngine().clickCopyButtonHotlistPromo(hotlistName, promoName, promoCode);
+    public static void clickCopyButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
+        getGTMEngine(context).clickCopyButtonHotlistPromo(hotlistName, promoName, promoCode);
     }
 
-    public static void clickTnCButtonHotlistPromo(String hotlistName, String promoName, String promoCode) {
-        getGTMEngine().clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
+    public static void clickTnCButtonHotlistPromo(Context context, String hotlistName, String promoName, String promoCode) {
+        getGTMEngine(context).clickTncButtonHotlistPromo(hotlistName, promoName, promoCode);
     }
 
-    public static void eventClearEnhanceEcommerce() {
-        getGTMEngine().clearEnhanceEcommerce();
+    public static void eventClearEnhanceEcommerce(Context context, ) {
+        getGTMEngine(context).clearEnhanceEcommerce();
     }
 
-    public static void eventTrackingEnhancedEcommerce(Map<String, Object> trackingData) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    public static void eventTrackingEnhancedEcommerce(Context context, Map<String, Object> trackingData) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventTrackingEnhancedEcommerce(trackingData);
 
     }
 
-    public static void eventImpressionPromoList(List<Object> list, String promoName) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventImpressionPromoList(list, promoName);
+    public static void eventImpressionPromoList(Context context, List<Object> list, String promoName) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventImpressionPromoList(list, promoName);
     }
 
-    public static void eventClickPromoListItem(List<Object> list, String promoName) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventClickPromoListItem(list, promoName);
+    public static void eventClickPromoListItem(Context context, List<Object> list, String promoName) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventClickPromoListItem(list, promoName);
     }
 
 
-    public static void eventCategoryLifestyleImpression(List<Object> list) {
-        getGTMEngine().eventImpressionCategoryLifestyle(list);
+    public static void eventCategoryLifestyleImpression(Context context, List<Object> list) {
+        getGTMEngine(context).eventImpressionCategoryLifestyle(list);
     }
 
-    public static void eventCategoryLifestyleClick(String categoryUrl, List<Object> list) {
-        getGTMEngine().eventClickCategoryLifestyle(categoryUrl, list);
+    public static void eventCategoryLifestyleClick(Context context, String categoryUrl, List<Object> list) {
+        getGTMEngine(context).eventClickCategoryLifestyle(categoryUrl, list);
     }
 
-    public static void setMoEngagePushPreference(Boolean status) {
-        getMoEngine().setPushPreference(status);
+    public static void setMoEngagePushPreference(Context context, Boolean status) {
+        getMoEngine(context).setPushPreference(status);
     }
 }
 

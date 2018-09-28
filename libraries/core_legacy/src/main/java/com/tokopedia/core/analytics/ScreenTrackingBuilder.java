@@ -1,13 +1,15 @@
 package com.tokopedia.core.analytics;
 
 import android.app.Activity;
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.tokopedia.core.analytics.nishikino.model.Authenticated;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 
 public class ScreenTrackingBuilder {
     private static final String AF_UNAVAILABLE_VALUE = "none";
+    private final SessionHandler sessionHandler;
 
     private Authenticated authEvent;
     private Activity mActivity;
@@ -25,11 +27,12 @@ public class ScreenTrackingBuilder {
         this.mOpenScreenAnalytics = openScreenAnalytics;
         this.mActivity = activity;
         authEvent = new Authenticated();
+        sessionHandler = new SessionHandler(activity);
 
-        authEvent.setUserFullName(SessionHandler.getLoginName(mActivity));
-        authEvent.setUserID(SessionHandler.getGTMLoginID(mActivity));
-        authEvent.setShopID(SessionHandler.getShopID(mActivity));
-        authEvent.setUserSeller(SessionHandler.isUserHasShop(mActivity) ? 1 : 0);
+        authEvent.setUserFullName(sessionHandler.getLoginName());
+        authEvent.setUserID(sessionHandler.getGTMLoginID());
+        authEvent.setShopID(sessionHandler.getShopID());
+        authEvent.setUserSeller(sessionHandler.isUserHasShop() ? 1 : 0);
         authEvent.setAfUniqueId(afUniqueId != null ? afUniqueId : AF_UNAVAILABLE_VALUE);
     }
 
@@ -45,11 +48,11 @@ public class ScreenTrackingBuilder {
     }
 
 
-    public void execute() {
+    public void execute(Context context) {
         if (mOpenScreenAnalytics == null || TextUtils.isEmpty(mOpenScreenAnalytics.getScreenName())) {
-            ScreenTracking.eventAuthScreen(authEvent, this.mActivity.getClass().getSimpleName());
+            ScreenTracking.eventAuthScreen(context, authEvent, this.mActivity.getClass().getSimpleName());
         } else {
-            ScreenTracking.eventAuthScreen(authEvent, mOpenScreenAnalytics.getScreenName());
+            ScreenTracking.eventAuthScreen(context, authEvent, mOpenScreenAnalytics.getScreenName());
         }
     }
 }

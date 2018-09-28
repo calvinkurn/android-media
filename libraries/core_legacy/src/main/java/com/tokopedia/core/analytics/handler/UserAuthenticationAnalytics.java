@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics.handler;
 
+import android.content.Context;
+
 import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
@@ -16,9 +18,9 @@ public class UserAuthenticationAnalytics {
         mDiskAnalyticsDataStore = new DiskAnalyticsDataStore();
     }
 
-    private static void checkNotNullAnalyticsData() {
+    private static void checkNotNullAnalyticsData(Context context) {
         if (mDiskAnalyticsDataStore == null) {
-            mDiskAnalyticsDataStore = new DiskAnalyticsDataStore();
+            mDiskAnalyticsDataStore = new DiskAnalyticsDataStore(context);
         }
     }
 

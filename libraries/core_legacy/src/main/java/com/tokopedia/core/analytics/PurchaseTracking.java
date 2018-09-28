@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 
 /**
@@ -21,15 +23,15 @@ public class PurchaseTracking extends TrackingUtils {
 
     public static final String USER_ID = "userId";
 
-    public static void marketplace(Purchase purchase) {
-        getGTMEngine().eventPurchaseMarketplace(purchase);
-        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
-        getGTMEngine().clearEnhanceEcommerce();
+    public static void marketplace(Context context, Purchase purchase) {
+        getGTMEngine(context).eventPurchaseMarketplace(purchase);
+        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX);
+        getGTMEngine(context).clearEnhanceEcommerce();
     }
 
-    public static void digital(Purchase purchase) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventPurchaseDigital(purchase);
-        getGTMEngine().sendScreen(AppScreen.SCREEN_FINISH_TX);
+    public static void digital(Context context, Purchase purchase) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventPurchaseDigital(purchase);
+        getGTMEngine(context).sendScreen(AppScreen.SCREEN_FINISH_TX);
     }
 }

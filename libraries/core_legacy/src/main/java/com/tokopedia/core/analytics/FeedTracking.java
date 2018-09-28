@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
 
 import java.util.List;
@@ -23,7 +25,8 @@ public class FeedTracking extends TrackingUtils {
     public static final String STATIC_VALUE_FEED_CLICK_CARD_ITEM = "feed - click card item";
     public static final String STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT = "/feed - product %d - %s";
 
-    public static void trackEventClickProductUploadEnhanced(String name,
+    public static void trackEventClickProductUploadEnhanced(Context context,
+                                                            String name,
                                                             String id,
                                                             String price,
                                                             String productUrl,
@@ -32,14 +35,16 @@ public class FeedTracking extends TrackingUtils {
                                                             String userId,
                                                             String eventLabel) {
         String actionField = String.format(STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT, rowNumber, eventLabel);
-        eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
+        eventClickFeedProductItem(context,
+                createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
                 productUrl
         );
     }
 
-    public static void trackEventClickInspirationEnhanced(String name,
+    public static void trackEventClickInspirationEnhanced(Context context,
+                                                          String name,
                                                           String id,
                                                           String price,
                                                           String productUrl,
@@ -49,7 +54,8 @@ public class FeedTracking extends TrackingUtils {
                                                           String userId,
                                                           String eventLabel) {
         String actionField = String.format(STATIC_FORMAT_ACTION_FIELD_FEED_PRODUCT, rowNumber, eventLabel);
-        eventClickFeedProductItem(createProductList(name, id, price, itemPosition, actionField, userId),
+        eventClickFeedProductItem(context,
+                createProductList(name, id, price, itemPosition, actionField, userId),
                 eventLabel,
                 actionField,
                 productUrl
@@ -78,21 +84,21 @@ public class FeedTracking extends TrackingUtils {
         return product.getProductAsDataLayerForFeedRecomItemClick();
     }
 
-    public static void eventImpressionFeedInspiration(List<Object> list, String eventLabel) {
-        eventImpressionFeedProductItem(list, eventLabel);
+    public static void eventImpressionFeedInspiration(Context context, List<Object> list, String eventLabel) {
+        eventImpressionFeedProductItem(context, list, eventLabel);
     }
 
-    public static void eventImpressionFeedUploadedProduct(List<Object> list, String eventLabel) {
-        eventImpressionFeedProductItem(list, eventLabel);
+    public static void eventImpressionFeedUploadedProduct(Context context, List<Object> list, String eventLabel) {
+        eventImpressionFeedProductItem(context, list, eventLabel);
     }
 
-    private static void eventTrackingEnhanceFeed(Map<String, Object> trackingData) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(trackingData);
+    private static void eventTrackingEnhanceFeed(Context context, Map<String, Object> trackingData) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventTrackingEnhancedEcommerce(trackingData);
     }
 
-    private static void eventImpressionFeedProductItem(List<Object> list, String eventLabel) {
-        eventTrackingEnhanceFeed(
+    private static void eventImpressionFeedProductItem(Context context, List<Object> list, String eventLabel) {
+        eventTrackingEnhanceFeed(context,
                 DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_VIEW,
                         EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
                         EVENT_ACTION, STATIC_VALUE_FEED_ITEM_IMPRESSION,
@@ -106,11 +112,13 @@ public class FeedTracking extends TrackingUtils {
         );
     }
 
-    private static void eventClickFeedProductItem(Map<String, Object> objects,
+    private static void eventClickFeedProductItem(Context context,
+                                                  Map<String, Object> objects,
                                                   String eventLabel,
                                                   String actionField,
                                                   String productUrl) {
         eventTrackingEnhanceFeed(
+                context,
                 DataLayer.mapOf(EVENT_NAME, STATIC_VALUE_PRODUCT_CLICK,
                         EVENT_CATEGORY, STATIC_VALUE_HOMEPAGE,
                         EVENT_ACTION, STATIC_VALUE_FEED_CLICK_CARD_ITEM,

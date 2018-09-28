@@ -3,9 +3,9 @@ package com.tokopedia.core.analytics.handler;
 import android.text.TextUtils;
 
 import com.google.gson.reflect.TypeToken;
-import com.tokopedia.core.database.CacheUtil;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
-import com.tokopedia.core.drawer2.data.pojo.UserData;
+//import com.tokopedia.core.database.CacheUtil;
+//import com.tokopedia.core.database.manager.GlobalCacheManager;
+//import com.tokopedia.core.drawer2.data.pojo.UserData;
 
 import rx.Single;
 import rx.SingleSubscriber;
@@ -31,7 +31,7 @@ public class AnalyticsCacheHandler {
 //        subscription = new CompositeSubscription();
     }
 
-    public void getUserAttrGraphQLCache(final GetUserDataListener listener) {
+//    public void getUserAttrGraphQLCache(final GetUserDataListener listener) {
 
 //        Single<UserData> getData = Single.just(USER_ATTR)
 //                .map(new Func1<String, UserData>() {
@@ -53,7 +53,7 @@ public class AnalyticsCacheHandler {
 //            }
 //        });
 
-    }
+//    }
 
     public String getAdsId() {
         return null;

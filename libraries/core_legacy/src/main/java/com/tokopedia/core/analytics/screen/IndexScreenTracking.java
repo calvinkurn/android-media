@@ -7,7 +7,7 @@ import android.content.pm.PackageManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.ScreenTrackingBuilder;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+//import com.tokopedia.core.database.manager.GlobalCacheManager;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,27 +33,27 @@ public class IndexScreenTracking extends TrackingUtils {
             ScreenTrackingBuilder
                     .newInstance(activity, openScreenAnalytics, getAfUniqueId())
                     .setNetworkSpeed(getNetworkSpeed(activity))
-                    .setKeyCompetitorIntelligence(getCIData(activity))
-                    .execute();
+//                    .setKeyCompetitorIntelligence(getCIData(activity))
+                    .execute(activity);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    private static String getCIData(Context context) {
-        GlobalCacheManager cache = new GlobalCacheManager();
-        if (!cache.isExpired(CI_DATA)) {
-            return cache.get(CI_DATA);
-        } else {
-            String value = getCurrentInstalledList(context);
-            cache.setKey(CI_DATA);
-            cache.setCacheDuration(EXPIRED_TIME);
-            cache.setValue(value);
-            cache.store();
-
-            return value;
-        }
-    }
+//    private static String getCIData(Context context) {
+//        GlobalCacheManager cache = new GlobalCacheManager();
+//        if (!cache.isExpired(CI_DATA)) {
+//            return cache.get(CI_DATA);
+//        } else {
+//            String value = getCurrentInstalledList(context);
+//            cache.setKey(CI_DATA);
+//            cache.setCacheDuration(EXPIRED_TIME);
+//            cache.setValue(value);
+//            cache.store();
+//
+//            return value;
+//        }
+//    }
 
     private static String getCurrentInstalledList(Context context) {
         String[] competitions = {

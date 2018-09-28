@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
+
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.analytics.nishikino.model.Promotion;
 
@@ -21,14 +23,14 @@ public class HomePageTracking extends TrackingUtils {
     public static final String AJUKAN_INI_ITU_CLICK = "ajukan ini itu click";
     public static final String JUAL_INI_ITU_CLICK = "jual ini itu click";
 
-    public static void eventPromoImpression(Promotion promotion) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getImpressionDataLayer());
+    public static void eventPromoImpression(Context context, Promotion promotion) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventTrackingEnhancedEcommerce(promotion.getImpressionDataLayer());
     }
 
-    public static void eventPromoClick(Promotion promotion) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
+    public static void eventPromoClick(Context context, Promotion promotion) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventTrackingEnhancedEcommerce(promotion.getClickDataLayer());
     }
 
     public static void eventClickViewAllPromo() {

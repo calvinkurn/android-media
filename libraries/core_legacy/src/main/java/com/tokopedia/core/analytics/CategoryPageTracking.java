@@ -1,5 +1,7 @@
 package com.tokopedia.core.analytics;
 
+import android.content.Context;
+
 import java.util.Map;
 
 /**
@@ -8,9 +10,9 @@ import java.util.Map;
 
 public class CategoryPageTracking extends TrackingUtils {
 
-    public static void eventEnhance(Map<String, Object> dataLayer) {
-        getGTMEngine().clearEnhanceEcommerce();
-        getGTMEngine().eventTrackingEnhancedEcommerce(dataLayer);
+    public static void eventEnhance(Context context, Map<String, Object> dataLayer) {
+        getGTMEngine(context).clearEnhanceEcommerce();
+        getGTMEngine(context).eventTrackingEnhancedEcommerce(dataLayer);
     }
 
 }

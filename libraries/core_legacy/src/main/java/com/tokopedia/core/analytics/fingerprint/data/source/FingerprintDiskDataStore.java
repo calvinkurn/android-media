@@ -59,8 +59,8 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .language(deviceLanguage)
                                 .ssid(ssid)
                                 .carrier(carrier)
-                                .deviceLat(LocationCache.getLatitudeCache())
-                                .deviceLng(LocationCache.getLongitudeCache())
+                                .deviceLat(new LocationCache(context).getLatitudeCache())
+                                .deviceLng(new LocationCache(context).getLongitudeCache())
                                 .build();
 
                         return fp;
