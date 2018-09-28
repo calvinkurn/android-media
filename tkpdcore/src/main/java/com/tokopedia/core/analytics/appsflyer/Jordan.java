@@ -55,27 +55,6 @@ public class Jordan {
             @Override
             public void onInstallConversionDataLoaded(Map<String, String> conversionData) {
                 // @TODO
-                for (String attrName : conversionData.keySet()) {
-                    Log.d(AppsFlyerLib.LOG_TAG, "attribute: " + attrName + " = " +
-                            conversionData.get(attrName));
-                }
-
-                //get first launch and deeplink
-                String isFirstLaunch = conversionData.get("is_first_launch");
-                String deeplink = conversionData.get("af_dp");
-
-                if (!TextUtils.isEmpty(isFirstLaunch) && isFirstLaunch.equalsIgnoreCase("true") && !TextUtils.isEmpty(deeplink) && context != null) {
-                    //open deeplink
-                    try {
-                        Uri uri = Uri.parse(Constants.Schemes.APPLINKS + "://" + deeplink);
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(uri);
-                        context.startActivity(intent);
-                        Toast.makeText(context, "open " + deeplink, Toast.LENGTH_LONG).show();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
             }
 
             @Override
