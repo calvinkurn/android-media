@@ -1902,7 +1902,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productData.getInfo().getProductName(),productData.getBreadcrumb().get(0).getDepartmentName()
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
@@ -1919,7 +1919,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productData.getInfo().getProductName(),productData.getInfo().getProductCatalogName()
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);

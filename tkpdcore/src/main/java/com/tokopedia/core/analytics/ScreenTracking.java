@@ -70,12 +70,11 @@ public class ScreenTracking extends TrackingUtils {
 
                 Map<String, Object> values = new HashMap<>();
                 values.put(Jordan.AF_KEY_ADS_ID, adsID);
-                values.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_SCREEN_PRODUCT);
+                values.put(AFInAppEventParameterName.DESCRIPTION, data.getInfo().getProductName());
                 values.put(AFInAppEventParameterName.CONTENT_ID, productID);
-                values.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
                 values.put(AFInAppEventParameterName.PRICE, productPrice);
                 values.put(AFInAppEventParameterName.CURRENCY, "IDR");
-                values.put(AFInAppEventParameterName.QUANTITY, 1);
+                values.put(Jordan.AF_KEY_CATEGORY_NAME,data.getBreadcrumb().get(0).getDepartmentName());
                 if (!analHandler.isAdsIdAvailable()) {
                     analHandler.setAdsId(adsID);
                 }
