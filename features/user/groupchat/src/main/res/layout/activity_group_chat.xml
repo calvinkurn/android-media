@@ -92,13 +92,34 @@
                 android:layout_height="@dimen/dp_8"/>
         </LinearLayout>
 
+        <RelativeLayout
+            android:id="@+id/video_container_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
+            tools:ignore="MergeRootFrame"
+            tools:visibility="visible"
+            >
+
+            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                      xmlns:tools="http://schemas.android.com/tools"
+                      android:id="@+id/video_container"
+                      android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
+                      android:layout_width="match_parent"
+                      android:layout_height="match_parent"
+                />
+
+        </RelativeLayout>
+
         <android.support.v7.widget.CardView
             android:id="@+id/tab_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardElevation="@dimen/space_tiny"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/video_container"
+            app:layout_constraintTop_toBottomOf="@+id/video_container_layout"
             tools:visibility="gone">
 
             <android.support.v7.widget.RecyclerView
@@ -117,7 +138,8 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tab_container">
+            app:layout_constraintTop_toBottomOf="@id/tab_container"
+            tools:visibility="gone">
 
             <include
                 layout="@layout/channel_not_found_layout"
@@ -126,21 +148,6 @@
 
         </RelativeLayout>
 
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                  xmlns:tools="http://schemas.android.com/tools"
-                  android:id="@+id/video_container"
-                  android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
-                  android:layout_width="0dp"
-                  android:layout_height="0dp"
-                  app:layout_constraintBottom_toTopOf="@id/container"
-                  app:layout_constraintEnd_toEndOf="parent"
-                  app:layout_constraintHorizontal_bias="0.5"
-                  app:layout_constraintHorizontal_weight="1"
-                  app:layout_constraintStart_toStartOf="parent"
-                  app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
-                  app:layout_constraintVertical_weight="0.5"
-                  tools:ignore="MergeRootFrame"/>
-
         <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                      xmlns:tools="http://schemas.android.com/tools"
                      android:id="@+id/container"
@@ -148,10 +155,10 @@
                      android:layout_height="0dp"
                      app:layout_constraintBottom_toBottomOf="parent"
                      app:layout_constraintEnd_toEndOf="parent"
-                     app:layout_constraintHorizontal_bias="0.5"
+                     app:layout_constraintHorizontal_bias="0.0"
                      app:layout_constraintHorizontal_weight="1"
                      app:layout_constraintStart_toStartOf="parent"
-                     app:layout_constraintTop_toBottomOf="@+id/video_container"
+                     app:layout_constraintTop_toBottomOf="@+id/tab_container"
                      app:layout_constraintVertical_weight="0.5"
                      tools:ignore="MergeRootFrame"/>
 
