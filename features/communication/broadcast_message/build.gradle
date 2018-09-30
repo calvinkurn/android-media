@@ -17,6 +17,12 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.multiDex
 
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+
+    implementation (rootProject.ext.miscDependencies.loaderviewlibrary){
+        exclude group: 'com.android.support'
+    }
+
     implementation rootProject.ext.permissionDispatcherDependencies.permissionDispatcher
     kapt  rootProject.ext.permissionDispatcherDependencies.permissionDispatcherProcessor
 

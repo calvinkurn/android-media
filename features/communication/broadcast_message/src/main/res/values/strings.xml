@@ -7,4 +7,14 @@
     <string name="bm_list_title">Sebar Pesan</string>
     <string name="recipient">Penerima:</string>
     <string name="upload">Upload Gambar</string>
+    <string name="desc_linked_image">Gambar akan memiliki link yang terhubung dengan toko Anda</string>
+    <string name="attach_my_product">Lampirkan produk saya</string>
+    <string name="message_label">Isi Pesan</string>
+    <string name="message_content_desc">Sampaikan informasi promo toko Anda  secara jelas dan singkat</string>
+    <string name="bm_continue">Lanjutkan</string>
+    <string name="preview_desc">Ini adalah preview yang akan diterima followers Anda</string>
+    <string name="see_now">Cek Sekarang</string>
+    <string name="temp_message">Cek www.tokopedia/modostore.com. Ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan menarik di tanggal 17 Agustus ini. Nantikan ya!</string>
+    <string name="time_template">%1$s  •</string>
+    <string name="temp_message_time">10:00  •</string>
 </resources>
