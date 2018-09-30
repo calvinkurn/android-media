@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +32,7 @@ import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
-import com.tokopedia.hadi.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
@@ -53,8 +52,6 @@ import com.tokopedia.topchat.common.InboxChatConstant;
 import com.tokopedia.topchat.common.InboxMessageConstant;
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics;
 import com.tokopedia.topchat.common.di.DaggerInboxChatComponent;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -92,7 +92,7 @@ import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.common.di.module.GMModule;
 import com.tokopedia.gm.featured.domain.interactor.GMFeaturedProductGetListUseCase;
 import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.hadi.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
 import com.tokopedia.imageuploader.ImageUploaderRouter;
 import com.tokopedia.inbox.rescenter.detailv2.view.activity.DetailResChatActivity;
 import com.tokopedia.inbox.rescenter.inbox.activity.InboxResCenterActivity;

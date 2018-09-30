@@ -11,6 +11,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imagePicker)
     implementation project(rootProject.ext.libraries.graphql)
 
+    implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
 
     implementation rootProject.ext.networkDependencies.glide

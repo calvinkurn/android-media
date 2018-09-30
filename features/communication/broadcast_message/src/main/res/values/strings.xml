@@ -17,4 +17,11 @@
     <string name="temp_message">Cek www.tokopedia/modostore.com. Ulang tahun Tokopedia yang ke 9, Toko Modo Store akan ada kejutan menarik di tanggal 17 Agustus ini. Nantikan ya!</string>
     <string name="time_template">%1$s  •</string>
     <string name="temp_message_time">10:00  •</string>
+    <string name="create_bm">Tambah Broadcast Chat</string>
+    <string name="bm_choose_picture">Pilih Gambar</string>
+    <plurals name="template_follower">
+        <item quantity="zero">%d follower</item>
+        <item quantity="one">%d follower</item>
+        <item quantity="other">%d followers</item>
+    </plurals>
 </resources>

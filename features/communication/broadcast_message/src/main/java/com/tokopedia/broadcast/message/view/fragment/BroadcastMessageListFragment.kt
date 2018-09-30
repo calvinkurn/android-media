@@ -18,10 +18,11 @@ import com.tokopedia.abstraction.base.view.listener.EndlessLayoutManagerListener
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSeller
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageTypeFactory
 import com.tokopedia.broadcast.message.R
-import com.tokopedia.broadcast.message.common.di.BroadcastMessageComponent
+import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.extensions.toISO8601Date
 import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActivity
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter
 import com.tokopedia.graphql.data.GraphqlClient
@@ -96,7 +97,11 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
     }
 
     override fun onEmptyButtonClicked() {
+        gotoCreateBroadcast()
+    }
 
+    private fun gotoCreateBroadcast() {
+        context?.let { startActivity(BroadcastMessageCreateActivity.createIntent(it)) }
     }
 
     override fun onSuccessGetMetaData(metaData: TopChatBlastSellerMetaData?) {

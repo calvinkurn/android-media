@@ -5,8 +5,8 @@ import android.content.Intent
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.broadcast.message.common.di.BroadcastMessageComponent
-import com.tokopedia.broadcast.message.common.di.DaggerBroadcastMessageComponent
+import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
+import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessageComponent
 import com.tokopedia.broadcast.message.view.fragment.BroadcastMessageListFragment
 
 class BroadcastMessageListActivity: BaseSimpleActivity(), HasComponent<BroadcastMessageComponent> {

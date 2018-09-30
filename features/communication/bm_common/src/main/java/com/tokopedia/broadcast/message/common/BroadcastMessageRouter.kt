@@ -1,4 +1,4 @@
-package com.tokopedia.hadi.broadcast.message.common
+package com.tokopedia.broadcast.message.common
 
 import android.content.Context
 import android.support.v4.app.Fragment

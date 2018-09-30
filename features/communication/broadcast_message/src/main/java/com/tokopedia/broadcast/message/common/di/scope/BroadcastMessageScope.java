@@ -1,4 +1,4 @@
-package com.tokopedia.broadcast.message.common.di;
+package com.tokopedia.broadcast.message.common.di.scope;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

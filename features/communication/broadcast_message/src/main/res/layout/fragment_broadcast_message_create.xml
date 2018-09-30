@@ -8,13 +8,28 @@
 
     <LinearLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        <TextView style="@style/TextView.Small.BlackSecondary"
-            tools:text="@string/recipient"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:padding="@dimen/dp_16"
             android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginBottom="@dimen/dp_4"/>
+            android:layout_marginBottom="@dimen/dp_4">
+
+            <TextView style="@style/TextView.Small.BlackSecondary"
+                android:text="@string/recipient" />
+
+            <TextView style="@style/TextView.Small.BlackPrimary"
+                android:id="@+id/total_follower"
+                android:layout_marginLeft="@dimen/dp_8"
+                android:layout_marginStart="@dimen/dp_8"
+                tools:text="@string/recipient"/>
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,7 +75,7 @@
 
             <Switch
                 style="@style/Switch"
-                android:id="@+id/switch_facebook"
+                android:id="@+id/switch_upload_product"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical" />
@@ -98,9 +113,6 @@
 
             <EditText
                 android:id="@+id/edit_text_message"
-                android:overScrollMode="always"
-                android:scrollbarStyle="insideInset"
-                android:scrollbars="vertical"
                 style="@style/EditText"
                 android:layout_width="match_parent"
                 android:gravity="top"
