@@ -189,6 +189,15 @@ android {
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
+        }
+
+    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
