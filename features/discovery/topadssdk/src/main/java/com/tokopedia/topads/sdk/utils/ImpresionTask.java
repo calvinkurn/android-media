@@ -25,14 +25,17 @@ public class ImpresionTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected String doInBackground(String... params) {
-        HttpRequest request = new HttpRequest.HttpRequestBuilder()
-                .setBaseUrl(params[0])
-                .setMethod(HttpMethod.GET)
-                .build();
-        try {
-            return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
-        } catch (IOException e) {
-            e.printStackTrace();
+        String url = params[0];
+        if(url!=null) {
+            HttpRequest request = new HttpRequest.HttpRequestBuilder()
+                    .setBaseUrl(url)
+                    .setMethod(HttpMethod.GET)
+                    .build();
+            try {
+                return RawHttpRequestExecutor.newInstance(request).executeAsGetRequest();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

@@ -91,7 +91,6 @@ public class BannerShopViewHolder extends AbstractViewHolder<BannerShopViewModel
                     imageContainer.setVisibility(View.VISIBLE);
                     final Product product = cpm.getCpmShop().getProducts().get(0);
                     imageLoader.loadImage(product.getImageProduct().getImageUrl(), productImage);
-
                     productImage.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
