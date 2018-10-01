@@ -11,7 +11,8 @@ public interface TrainEventTracking {
         String PRODUCT_VIEW = "productView";
         String PRODUCT_CLICK = "productClick";
         String VIEW_PRODUCT = "viewProduct";
-        Object ADD_TO_CART = "addToCart";
+        String ADD_TO_CART = "addToCart";
+        String KAI_CLICK = "digitalKAIClick";
     }
 
     interface Category {

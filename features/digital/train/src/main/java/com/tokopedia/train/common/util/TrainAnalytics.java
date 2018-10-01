@@ -1,8 +1,11 @@
 package com.tokopedia.train.common.util;
 
+import android.support.annotation.NonNull;
+
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.train.common.constant.TrainEventTracking;
+import com.tokopedia.train.scheduledetail.presentation.model.TrainScheduleDetailViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -236,7 +239,7 @@ public class TrainAnalytics {
 
     public void eventClickDetail(String origin, String destination, String trainClass, String trainName) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_DETAIL,
                 origin + " - " + destination + " - " + trainClass + " - " + trainName
@@ -245,7 +248,7 @@ public class TrainAnalytics {
 
     public void eventClickNextOnCustomersPage() {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_NEXT_ON_CUSTOMERS_PAGE,
                 ""
@@ -254,7 +257,7 @@ public class TrainAnalytics {
 
     public void eventClickUseVoucherCode(String voucherCode) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_USE_VOUCHER_CODE,
                 voucherCode
@@ -263,7 +266,7 @@ public class TrainAnalytics {
 
     public void eventVoucherSuccess(String successMessage) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_SUCCESS,
                 successMessage
@@ -272,7 +275,7 @@ public class TrainAnalytics {
 
     public void eventVoucherError(String errorMessage) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_ERROR,
                 errorMessage
@@ -282,11 +285,28 @@ public class TrainAnalytics {
     public void eventProceedToPayment(String origin, String destination, String trainClass,
                                       String trainName) {
         analyticTracker.sendEventTracking(
-                "",
+                TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.PROCEED_TO_PAYMENT,
                 origin + " - " + destination + " - " + trainClass + " - " + trainName
         );
     }
 
+    public void eventProceedToPayment(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
+        analyticTracker.sendEventTracking(
+                TrainEventTracking.Event.KAI_CLICK,
+                TrainEventTracking.Category.DIGITAL_TRAIN,
+                TrainEventTracking.Action.PROCEED_TO_PAYMENT,
+                buildRoundTripLabel(departureTripViewModel, returnTripViewModel)
+        );
+    }
+
+    @NonNull
+    private String buildRoundTripLabel(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
+        return String.format("%s, %s - %s, %s - %s, %s - %s, %s",
+                departureTripViewModel.getOriginStationCode(), returnTripViewModel.getOriginStationCode(),
+                departureTripViewModel.getDestinationStationCode(), returnTripViewModel.getDestinationStationCode(),
+                departureTripViewModel.getTrainClass(), returnTripViewModel.getTrainClass(),
+                departureTripViewModel.getTrainName(), returnTripViewModel.getTrainName());
+    }
 }

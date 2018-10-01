@@ -186,12 +186,19 @@ public class TrainReviewDetailFragment extends BaseListFragment<TrainReviewPasse
         });
 
         buttonSubmit.setOnClickListener(v -> {
-            trainAnalytics.eventProceedToPayment(
-                    departureTripViewModel.getOriginStationCode(),
-                    departureTripViewModel.getDestinationStationCode(),
-                    departureTripViewModel.getTrainClass(),
-                    departureTripViewModel.getTrainName()
-            );
+            if (returnTripViewModel != null) {
+                trainAnalytics.eventProceedToPayment(
+                        departureTripViewModel,
+                        returnTripViewModel
+                );
+            } else {
+                trainAnalytics.eventProceedToPayment(
+                        departureTripViewModel.getOriginStationCode(),
+                        departureTripViewModel.getDestinationStationCode(),
+                        departureTripViewModel.getTrainClass(),
+                        departureTripViewModel.getTrainName()
+                );
+            }
 
             trainReviewDetailPresenter.checkout(trainSoftbook.getReservationId(),
                     trainSoftbook.getReservationCode(),
