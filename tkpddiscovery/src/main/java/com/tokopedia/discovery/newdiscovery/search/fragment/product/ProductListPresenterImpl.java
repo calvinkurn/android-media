@@ -2,6 +2,7 @@ package com.tokopedia.discovery.newdiscovery.search.fragment.product;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.tokopedia.core.base.adapter.Visitable;
@@ -98,26 +99,39 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
                 removeWishlist(productItem.getProductID(), getView().getUserId());
             } else if(productItem.getProductWishlistUrl() != null){
                 com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
-                productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onNext(Response<String> stringResponse) {
-                    }
-                });
+                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL,
+                        productItem.getProductWishlistUrl());
+                productWishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
             } else {
                 addWishlist(productItem.getProductID(), getView().getUserId());
             }
         } else {
             launchLoginActivity(productItem.getProductID());
         }
+    }
+
+    @NonNull
+    protected Subscriber<Boolean> getWishlistSubscriber(ProductItem productItem) {
+        return new Subscriber<Boolean>() {
+            @Override
+            public void onCompleted() {}
+
+            @Override
+            public void onError(Throwable e) {
+                productItem.setWishlisted(false);
+                getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
+            }
+
+            @Override
+            public void onNext(Boolean result) {
+                productItem.setWishlisted(result);
+                if(result){
+                    getView().onSuccessAddWishlist(productItem.getProductID());
+                } else {
+                    getView().onSuccessRemoveWishlist(productItem.getProductID());
+                }
+            }
+        };
     }
 
     private void launchLoginActivity(String productId) {
