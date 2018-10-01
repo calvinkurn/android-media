@@ -28,7 +28,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -37,6 +36,7 @@ import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
@@ -238,7 +238,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             initialFragment = CHATROOM_FRAGMENT;
         }
+
         isFirstTime = true;
+
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(ARGS_VIEW_MODEL);
         } else if (getIntent().getExtras() != null) {
@@ -267,12 +269,13 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
-            findViewById(R.id.video_container).setVisibility(View.VISIBLE);
+            initVideoSize();
+
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
             if (videoFragment == null)
                 return;
 
-            if(youTubePlayer != null){
+            if (youTubePlayer != null) {
                 youTubePlayer.pause();
                 youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
                 return;
@@ -292,10 +295,11 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                         youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
                             String TAG = "youtube";
+
                             @Override
                             public void onPlaying() {
                                 Log.i(TAG, "onPlaying: ");
-                                if(onPlayTime == 0) {
+                                if (onPlayTime == 0) {
                                     onPlayTime = System.currentTimeMillis() / 1000L;
                                 }
                             }
@@ -303,7 +307,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                             @Override
                             public void onPaused() {
                                 Log.i(TAG, "onPaused: ");
-                                 onPauseTime = System.currentTimeMillis() / 1000L;
+                                onPauseTime = System.currentTimeMillis() / 1000L;
                             }
 
                             @Override
@@ -324,6 +328,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                         youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                             String TAG = "youtube";
+
                             @Override
                             public void onLoading() {
                                 Log.i(TAG, "onLoading: ");
@@ -338,7 +343,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                             @Override
                             public void onAdStarted() {
-                                Log.i(TAG,"onAdStarted: ");
+                                Log.i(TAG, "onAdStarted: ");
                             }
 
                             @Override
@@ -354,7 +359,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
                             @Override
                             public void onError(YouTubePlayer.ErrorReason errorReason) {
-                                Log.i(TAG, errorReason.getDeclaringClass() + " onError: "+ errorReason.name() );
+                                Log.i(TAG, errorReason.getDeclaringClass() + " onError: " + errorReason.name());
                             }
                         });
                     }
@@ -367,15 +372,27 @@ public class GroupChatActivity extends BaseSimpleActivity
             });
 
             sponsorLayout.setVisibility(View.GONE);
-        }else{
-            findViewById(R.id.video_container).setVisibility(View.GONE);
+        } else {
+            findViewById(R.id.video_container_layout).setVisibility(View.GONE);
             sponsorLayout.setVisibility(View.VISIBLE);
         }
 
     }
 
-    private boolean isEnabledGroupChatRoom() {
-        return true;
+    private void initVideoSize() {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int width = displayMetrics.widthPixels;
+
+        RelativeLayout videoContainer = findViewById(R.id.video_container_layout);
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) videoContainer
+                .getLayoutParams();
+        params.height = width / 16 * 9;
+        videoContainer.setLayoutParams(params);
+
+        videoContainer.setVisibility(View.VISIBLE);
+
+
     }
 
     @Override
@@ -977,7 +994,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     private void setToolbarAppearance() {
-        if(TextUtils.isEmpty(getChannelInfoViewModel().getVideoId())) {
+        if (TextUtils.isEmpty(getChannelInfoViewModel().getVideoId())) {
             setupToolbar();
         } else {
             setToolbarWhite();
@@ -1456,8 +1473,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (findViewById(R.id.shadow_layer) != null) {
             findViewById(R.id.shadow_layer).setVisibility(View.GONE);
         }
-        if (findViewById(R.id.video_container) != null) {
-            findViewById(R.id.video_container).setVisibility(View.GONE);
+        if (findViewById(R.id.video_container_layout) != null) {
+            findViewById(R.id.video_container_layout).setVisibility(View.GONE);
         }
     }
 
@@ -1485,7 +1502,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         toolbar.setTitleMarginTop((int) getResources().getDimension(R.dimen.dp_16));
     }
 
-    private void setToolbarWhite(){
+    private void setToolbarWhite() {
         toolbar.setContentInsetStartWithNavigation(0);
         toolbar.setTitleTextColor(getResources().getColor(R.color.black_70));
         toolbar.setSubtitleTextColor(getResources().getColor(R.color.black_70));
@@ -1534,9 +1551,9 @@ public class GroupChatActivity extends BaseSimpleActivity
             updateAds((AdsViewModel) map);
         } else if (map instanceof GroupChatQuickReplyViewModel) {
             updateQuickReply(((GroupChatQuickReplyViewModel) map).getList());
-        } else if (map instanceof PinnedMessageViewModel){
+        } else if (map instanceof PinnedMessageViewModel) {
             updatePinnedMessage((PinnedMessageViewModel) map);
-        } else if (map instanceof VideoViewModel){
+        } else if (map instanceof VideoViewModel) {
             updateVideo((VideoViewModel) map);
         }
 
