@@ -270,14 +270,38 @@ public class FlightAnalytics {
     private String transformEventDetailLabel(FlightDetailViewModel viewModel) {
         StringBuilder result = new StringBuilder();
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
-            result.append(transformAirlines(viewModel));
-
+            String airlines = viewModel.getRouteList().get(0).getAirlineName();
+            result.append(airlines);
             String timeResult = String.format(" - %s", viewModel.getRouteList().get(0).getDepartureTimestamp());
             timeResult += String.format(" - %s ", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.getIsRefundable()));
-        result.append(Label.NORMAL_PRICE);
+        result.append(String.format(" - %s", String.valueOf(viewModel.getAdultNumericPrice())));
+        return result.toString();
+    }
+
+    private String transformEventDetailLabel(FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
+        StringBuilder result = new StringBuilder();
+        if (departureViewModel.getRouteList() != null && departureViewModel.getRouteList().size() > 0) {
+            String airlines = departureViewModel.getRouteList().get(0).getAirlineName();
+            if (returnViewModel.getRouteList() != null && returnViewModel.getRouteList().size() > 0) {
+                airlines += ", " + returnViewModel.getRouteList().get(0).getAirlineName();
+            }
+            result.append(airlines);
+
+            String timeResult = String.format(" - %s, %s",
+                    departureViewModel.getRouteList().get(0).getDepartureTimestamp(),
+                    returnViewModel.getRouteList().get(0).getDepartureTimestamp());
+            timeResult += String.format(" - %s, %s ",
+                    departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1).getArrivalTimestamp(),
+                    returnViewModel.getRouteList().get(returnViewModel.getRouteList().size() - 1).getArrivalTimestamp());
+            result.append(timeResult);
+        }
+        String refundable = String.format("%s, %s", transformRefundableLabel(departureViewModel.getIsRefundable()), transformRefundableLabel(returnViewModel.getIsRefundable()));
+        result.append(refundable);
+        String price = String.format(" - %s, %s", String.valueOf(departureViewModel.getAdultNumericPrice()), String.valueOf(returnViewModel.getAdultNumericPrice()));
+        result.append(price);
         return result.toString();
     }
 
@@ -376,18 +400,12 @@ public class FlightAnalytics {
         );
     }
 
-    private void eventAddToCart(FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.ADD_TO_CART,
-                transformEventDetailLabel(viewModel)
-        );
-
+    private void eventAddToCart(String label, FlightDetailViewModel viewModel, Object actionField, List<Object> products) {
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", ATC_EVENT,
                         "eventCategory", GENERIC_CATEGORY,
                         "eventAction", Category.ADD_TO_CART,
-                        "eventLabel", transformEventDetailLabel(viewModel),
+                        "eventLabel", label,
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "add", DataLayer.mapOf(
@@ -427,11 +445,19 @@ public class FlightAnalytics {
                 "coupon", coupon
         );
 
+        List<Object> products = new ArrayList<>();
+
+        String label = "";
         if (departureViewModel != null) {
-            eventAddToCart(departureViewModel, actionField, constructEnhanceEcommerceProduct(departureViewModel, cartData.getId(), coupon, flightClass.getTitle()));
+            products = constructEnhanceEcommerceProduct(departureViewModel, cartData.getId(), coupon, flightClass.getTitle());
+            if (returnViewModel != null) {
+                products.add(constructEnhanceEcommerceProduct(returnViewModel, cartData.getId(), coupon, flightClass.getTitle()));
+                label = transformEventDetailLabel(departureViewModel, returnViewModel);
+            } else {
+                label = transformEventDetailLabel(departureViewModel);
+            }
         }
-        if (returnViewModel != null)
-            eventAddToCart(returnViewModel, actionField, constructEnhanceEcommerceProduct(returnViewModel, cartData.getId(), coupon, flightClass.getTitle()));
+        eventAddToCart(label, returnViewModel, actionField, products);
     }
 
     private List<Object> constructEnhanceEcommerceProduct(FlightDetailViewModel departureViewModel, String cartId, String coupon, String flightClass) {
