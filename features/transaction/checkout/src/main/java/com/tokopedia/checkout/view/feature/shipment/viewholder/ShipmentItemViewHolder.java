@@ -523,6 +523,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             tvDash.setVisibility(View.VISIBLE);
             llShipmentOptionViewLayout.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.VISIBLE);
+            llCourierStateLoading.setVisibility(View.GONE);
         } else {
             llShippingOptionsContainer.setVisibility(View.GONE);
             llSelectedCourier.setVisibility(View.GONE);

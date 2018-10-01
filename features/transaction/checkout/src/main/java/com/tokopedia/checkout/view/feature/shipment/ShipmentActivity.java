@@ -103,6 +103,7 @@ public class ShipmentActivity extends BaseCheckoutActivity {
     @Override
     public void onBackPressed() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
+        super.onBackPressed();
     }
 
     void showResetDialog() {
