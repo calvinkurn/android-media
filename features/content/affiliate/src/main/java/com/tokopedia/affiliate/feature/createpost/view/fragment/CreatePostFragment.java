@@ -22,6 +22,8 @@ import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImageP
 import com.tokopedia.affiliate.feature.createpost.data.pojo.Medium;
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostExampleActivity;
+import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
@@ -195,6 +197,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private void setupHeader(Guide guide) {
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
+        seeExample.setOnClickListener(v -> {
+            startActivity(CreatePostExampleActivity.createIntent(
+                    getContext(),
+                    guide.getImageUrl(),
+                    guide.getImageDescription()
+            ));
+        });
     }
 
     private void setupViewPager() {

@@ -13,10 +13,10 @@ public class CreatePostExampleActivity extends BaseSimpleActivity {
     public static final String PARAM_TITLE = "title";
     public static final String PARAM_IMAGE = "image";
 
-    public static Intent createIntent(Context context, String title, String image) {
+    public static Intent createIntent(Context context, String image, String title) {
         Intent intent = new Intent(context, CreatePostExampleActivity.class);
-        intent.putExtra(PARAM_TITLE, title);
         intent.putExtra(PARAM_IMAGE, image);
+        intent.putExtra(PARAM_TITLE, title);
         return intent;
     }
 
