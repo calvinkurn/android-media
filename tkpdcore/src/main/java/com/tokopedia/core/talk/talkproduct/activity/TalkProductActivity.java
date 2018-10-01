@@ -17,6 +17,7 @@ import com.tokopedia.core.talk.receiver.intentservice.InboxTalkIntentService;
 import com.tokopedia.core.talk.receiver.intentservice.InboxTalkResultReceiver;
 import com.tokopedia.core.talk.talkproduct.fragment.TalkProductFragment;
 
+@Deprecated
 public class TalkProductActivity extends TActivity implements InboxTalkResultReceiver.Receiver {
 
     public final static String RESULT_TALK_HAS_ADDED = "RESULT_TALK_HAS_ADDED";
@@ -29,7 +30,6 @@ public class TalkProductActivity extends TActivity implements InboxTalkResultRec
 
     InboxTalkResultReceiver mReceiver;
 
-    @DeepLink(Constants.Applinks.PRODUCT_TALK)
     public static Intent getCallingTaskStack(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, TalkProductActivity.class)

@@ -58,6 +58,8 @@
 /features/user/logout/                  @tokopedia/minion-kevin
 /features/user/bankdb/                  @tokopedia/minion-kevin
 /features/user/notifcenter/             @tokopedia/minion-kevin
+/features/user/attachproduct/           @tokopedia/minion-kevin
+/features/user/talk/                    @tokopedia/minion-kevin
 /features/content/feed/                 @tokopedia/minion-kevin
 /features/content/kol/                  @tokopedia/minion-kevin
 /features/content/kol_common/           @tokopedia/minion-kevin
