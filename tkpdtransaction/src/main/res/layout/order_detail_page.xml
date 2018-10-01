@@ -194,6 +194,55 @@
                 android:layout_height="1dp"
                 android:background="@color/grey_300"/>
 
+            <LinearLayout
+                android:id="@+id/booking_code_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="center_vertical"
+                android:padding="@dimen/activity_vertical_margin">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_12"
+                        android:textColor="@color/black_54"
+                        android:text="@string/kode_booking_label"/>
+
+                    <TextView
+                        android:id="@+id/booking_code"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/sp_16"
+                        tools:text="TJNE-8K4LFVPNMT6"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/see_detail_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="@string/lihat_detail"
+                    android:textColor="@color/green_500"
+                    android:textStyle="bold"/>
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_300"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/item_list"
                 android:layout_width="match_parent"
