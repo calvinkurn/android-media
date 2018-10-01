@@ -171,7 +171,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
     @BindView(R2.id.top_ads_banner)
     TopAdsBannerView topAdsBannerView;
 
-    TextView btnSeeAllOfficialBrand;
+    private TextView btnSeeAllOfficialBrand;
 
     private CirclePageIndicator bannerIndicator;
     private View banner;
