@@ -9,7 +9,8 @@ class FlightSearchSingleDataDbSource(val journeyDao: JourneyDao,
                                      val routeDao: RouteDao) {
 
     fun getSearchSingle(): Observable<List<Journey>> {
-
+        val journeys = arrayListOf<Journey>()
+        return Observable.just(journeys)
     }
 
     fun insert(item: List<Journey>) {

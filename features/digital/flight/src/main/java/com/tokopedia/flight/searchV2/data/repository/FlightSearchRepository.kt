@@ -3,20 +3,21 @@ package com.tokopedia.flight.searchV2.data.repository
 import com.tokopedia.flight.search.data.cloud.FlightSearchDataCloudSource
 import com.tokopedia.flight.search.data.cloud.model.response.FlightDataResponse
 import com.tokopedia.flight.search.data.cloud.model.response.FlightSearchData
-import com.tokopedia.flight.searchV2.NetworkBoundResourceObservable
+import com.tokopedia.flight.searchV2.data.db.NetworkBoundResourceObservable
 import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataApiSource
 import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse
 import com.tokopedia.flight.searchV2.data.db.*
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel
 import rx.Observable
 import java.util.*
 
 /**
  * Created by Rizky on 20/09/18.
  */
-class FlightSearchRepository(val flightSearchCombinedDataApiSource: FlightSearchCombinedDataApiSource,
-                             val flightSearchDataCloudSource: FlightSearchDataCloudSource,
-                             val flightSearchCombinedDataDbSource: FlightSearchCombinedDataDbSource,
-                             val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource) {
+class FlightSearchRepository(private val flightSearchCombinedDataApiSource: FlightSearchCombinedDataApiSource,
+                             private val flightSearchDataCloudSource: FlightSearchDataCloudSource,
+                             private val flightSearchCombinedDataDbSource: FlightSearchCombinedDataDbSource,
+                             private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource) {
 
     fun getSearchCombined(params: HashMap<String, Any>): Observable<List<Combo>>? {
         val journeyId = ""
@@ -45,7 +46,7 @@ class FlightSearchRepository(val flightSearchCombinedDataApiSource: FlightSearch
         }.asObservable()
     }
 
-    fun getSearchSingle(params: HashMap<String, Any>) : Observable<List<Journey>>? {
+    fun getSearchSingle(params: HashMap<String, Any>) : Observable<FlightSearchMetaViewModel>? {
         return object : NetworkBoundResourceObservable<List<Journey>,
                 FlightDataResponse<List<FlightSearchData>>>() {
             override fun loadFromDb(): Observable<List<Journey>> {
@@ -105,7 +106,9 @@ class FlightSearchRepository(val flightSearchCombinedDataApiSource: FlightSearch
             override fun saveCallResult(item: List<Journey>) {
                 flightSearchSingleDataDbSource.insert(item)
             }
-        }.asObservable()
+        }.asObservable()?.map {
+            FlightSearchMetaViewModel()
+        }
     }
 
 }

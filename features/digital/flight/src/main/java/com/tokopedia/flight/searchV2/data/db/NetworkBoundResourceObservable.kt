@@ -1,4 +1,4 @@
-package com.tokopedia.flight.searchV2
+package com.tokopedia.flight.searchV2.data.db
 
 import rx.Observable
 
@@ -13,7 +13,7 @@ abstract class NetworkBoundResourceObservable<ResultType, RequestType> {
         @Suppress("LeakingThis")
 
         result = loadFromDb()
-                .flatMap {
+                .flatMap { it ->
                     if (shouldFetch(it)) {
                         createCall()
                                 .map {
