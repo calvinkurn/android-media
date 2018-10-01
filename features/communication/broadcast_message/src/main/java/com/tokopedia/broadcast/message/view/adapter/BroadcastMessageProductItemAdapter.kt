@@ -10,7 +10,8 @@ import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.view.viewholder.PlaceholderViewHolder
 import kotlinx.android.synthetic.main.item_product.view.*
 
-class BroadcastMessageProductItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BroadcastMessageProductItemAdapter(private val addProductListener: (() -> Unit),
+                                         private val removeProduct: ((Int, Int) -> Unit)) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     companion object {
         private const val MAX_PRODUCT = 3
         private const val TYPE_PLACEHOLDER = 1
@@ -41,6 +42,8 @@ class BroadcastMessageProductItemAdapter : RecyclerView.Adapter<RecyclerView.Vie
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is ProductItemViewHolder){
             holder.bind(products[position])
+        } else {
+            holder.itemView.setOnClickListener {addProductListener()}
         }
     }
 
@@ -50,7 +53,19 @@ class BroadcastMessageProductItemAdapter : RecyclerView.Adapter<RecyclerView.Vie
     }
 
     fun removeProductAt(position: Int){
+        val productId = products[position].productId
         products.removeAt(position)
+        notifyDataSetChanged()
+        removeProduct(productId, position)
+    }
+
+    fun addProducts(products: List<MyProduct>) {
+        this.products.addAll(products)
+        notifyDataSetChanged()
+    }
+
+    fun clearProducts() {
+        products.clear()
         notifyDataSetChanged()
     }
 
@@ -63,12 +78,7 @@ class BroadcastMessageProductItemAdapter : RecyclerView.Adapter<RecyclerView.Vie
         }
 
         fun bind(product: MyProduct){
-            if (product.productUrl.isEmpty()){
-                itemView.attach_product_image.setImageResource(R.color.tkpd_main_green)
-            } else {
-                ImageHandler.LoadImage(itemView.attach_product_image, product.productUrl)
-            }
-
+            ImageHandler.LoadImage(itemView.attach_product_image, product.productThumbnail)
             itemView.attach_product_name.text = product.productName
             itemView.attach_product_price.text = product.productPrice
         }

@@ -181,6 +181,7 @@ import com.tokopedia.topads.dashboard.di.module.TopAdsModule;
 import com.tokopedia.topads.dashboard.domain.interactor.GetDepositTopAdsUseCase;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsCheckProductPromoActivity;
 import com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity;
+import com.tokopedia.topchat.attachproduct.view.activity.BMAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -191,6 +192,7 @@ import com.tokopedia.transaction.purchase.detail.activity.OrderHistoryActivity;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -1526,5 +1528,14 @@ public abstract class SellerRouterApplication extends MainApplication
         } else {
             fragment.startActivity(BroadcastMessageListActivity.createIntent(context));
         }
+    }
+
+    @NonNull
+    @Override
+    public Intent getBMAttachProductIntent(@NonNull Context context, @NonNull String shopId,
+                                           @NonNull String shopName, boolean isSeller,
+                                           @NonNull List<Integer> selectedIds,
+                                           @NonNull ArrayList<HashMap<String, String>> hashProducts) {
+        return BMAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 }

@@ -30,6 +30,8 @@ import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.ApplinkRouter;
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.broadcast.message.view.activity.BroadcastMessageListActivity;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.domain.usecase.GetCouponListCartMarketPlaceUseCase;
@@ -288,6 +290,7 @@ import com.tokopedia.tokocash.pendingcashback.receiver.TokocashPendingDataBroadc
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.topads.common.TopAdsWebViewRouter;
 import com.tokopedia.topads.sourcetagging.util.TopAdsAppLinkUtil;
+import com.tokopedia.topchat.attachproduct.view.activity.BMAttachProductActivity;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatroom.view.activity.ChatRoomActivity;
 import com.tokopedia.topchat.common.TopChatRouter;
@@ -377,7 +380,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         OmsModuleRouter,
         ProductEditModuleRouter,
         TopAdsWebViewRouter,
-        ShopSettingRouter {
+        ShopSettingRouter,
+        BroadcastMessageRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -2424,5 +2428,23 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Intent getCategoryPickerIntent(Context context, int categoryId) {
         return CategoryPickerActivity.createIntent(context, categoryId);
+    }
+
+    @Override
+    public void gotoBroadcastMessageList(@NonNull Context context, Fragment fragment) {
+        if (fragment == null){
+            context.startActivity(BroadcastMessageListActivity.createIntent(context));
+        } else {
+            fragment.startActivity(BroadcastMessageListActivity.createIntent(context));
+        }
+    }
+
+    @NonNull
+    @Override
+    public Intent getBMAttachProductIntent(@NonNull Context context, @NonNull String shopId,
+                                           @NonNull String shopName, boolean isSeller,
+                                           @NonNull List<Integer> selectedIds,
+                                           @NonNull ArrayList<HashMap<String, String>> hashProducts) {
+        return BMAttachProductActivity.createInstance(context, shopId, shopName, isSeller, selectedIds, hashProducts);
     }
 }

@@ -7,13 +7,17 @@ import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.LinearLayoutManager
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.broadcast.message.R
+import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcasteMessageCreateComponent
 import com.tokopedia.broadcast.message.data.model.MyProduct
@@ -31,11 +35,30 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     companion object {
         private const val REQUEST_CODE_IMAGE = 0x01
+        private const val REQUEST_CODE_PRODUCT = 0x02
+        private const val PARAM_PRODUCT_RESULT = "TKPD_ATTACH_PRODUCT_RESULTS"
     }
 
+    @Inject lateinit var userSession: UserSession
     @Inject lateinit var presenter: BroadcastMessageCreatePresenter
+    private var shopName: String = ""
     private var savedLocalImageUrl: String? = null
-    private val productAdapter = BroadcastMessageProductItemAdapter()
+    private val selectedProducts = mutableListOf<MyProduct>()
+    private val productIds = mutableListOf<Int>()
+    private val hashProducList = ArrayList<HashMap<String, String>>()
+    private val productAdapter = BroadcastMessageProductItemAdapter({gotoAddProduct()}){
+            productId, position -> productIds.remove(productId); selectedProducts.removeAt(position)
+                                    hashProducList.removeAt(position); updateBackgroundImage()}
+
+    private fun gotoAddProduct() {
+        val app = activity?.application
+        if (app == null) return
+
+        if (app is BroadcastMessageRouter && context != null){
+            startActivityForResult(app.getBMAttachProductIntent(context!!, userSession.shopId, shopName,
+                    !userSession.shopId.isNullOrEmpty(), productIds, hashProducList), REQUEST_CODE_PRODUCT)
+        }
+    }
 
     override fun getScreenName(): String? = null
 
@@ -62,9 +85,20 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
             list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
+            needEnabledSubmitButton()
         }
-        productAdapter.addProduct(MyProduct(productName = "Oneplus 6", productPrice = "Rp7.700.000"))
+        edit_text_message.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                needEnabledSubmitButton()
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
         presenter.getShopInfo()
+        needEnabledSubmitButton()
     }
 
     private fun openImagePicker() {
@@ -84,11 +118,30 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null && requestCode == REQUEST_CODE_IMAGE){
-            val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
-            if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
-                savedLocalImageUrl = imageUrlOrPathList[0]
-                updateBackgroundImage()
+        if (resultCode == Activity.RESULT_OK && data != null){
+            if (requestCode == REQUEST_CODE_IMAGE) {
+                val imageUrlOrPathList = data.getStringArrayListExtra(ImagePickerActivity.PICKER_RESULT_PATHS)
+                if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
+                    savedLocalImageUrl = imageUrlOrPathList[0]
+                    updateBackgroundImage()
+                }
+            } else if (requestCode == REQUEST_CODE_PRODUCT){
+                val productList = data.getSerializableExtra(PARAM_PRODUCT_RESULT) as List<HashMap<String, String>>
+                selectedProducts.clear()
+                productIds.clear()
+                hashProducList.clear()
+
+                hashProducList.addAll(productList)
+                productList.forEach {
+                    productIds.add(it.get("id")?.toInt() ?: -1)
+                    selectedProducts.add(MyProduct(productId = it.get("id")?.toInt() ?: -1,
+                            productName = it.get("name") ?: "", productPrice = it.get("price") ?: "Rp0",
+                            productThumbnail = it.get("thumbnail"), productUrl = it.get("url") ?: ""))
+                }
+
+                productAdapter.clearProducts()
+                productAdapter.addProducts(selectedProducts)
+                needEnabledSubmitButton()
             }
         }
     }
@@ -103,7 +156,16 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
                 bg_image.clipToOutline = true
         }
+        needEnabledSubmitButton()
+    }
 
+    private fun needEnabledSubmitButton(){
+        var valid = true
+        valid = valid && !savedLocalImageUrl.isNullOrEmpty()
+        valid = valid && (!switch_upload_product.isChecked || (switch_upload_product.isChecked && !productIds.isEmpty()))
+        valid = valid && !edit_text_message.text.toString().isEmpty()
+
+        button_save.isEnabled = valid
     }
 
     override fun onDestroyView() {
@@ -116,5 +178,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         total_follower.text = resources.getQuantityString(R.plurals.template_follower, shopInfo.info.shopTotalFavorit.toInt(),
                 shopInfo.info.shopTotalFavorit.toInt())
+        shopName = shopInfo.info.shopName
     }
 }
