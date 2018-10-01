@@ -275,11 +275,6 @@ import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
 import com.tokopedia.product.manage.item.common.domain.interactor.GetShopInfoUseCase;
-import com.tokopedia.seller.shopsettings.edit.presenter.ShopSettingView;
-import com.tokopedia.seller.shopsettings.edit.view.ShopEditorActivity;
-import com.tokopedia.seller.shopsettings.address.activity.ManageShopAddress;
-import com.tokopedia.seller.shopsettings.etalase.activity.EtalaseShopEditor;
-import com.tokopedia.seller.shopsettings.notes.activity.ManageShopNotesActivity;
 import com.tokopedia.seller.shopsettings.shipping.EditShippingActivity;
 import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
@@ -2679,9 +2674,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void goToShopEditor(Context context) {
-        Intent intent = new Intent(context, ShopEditorActivity.class);
-        intent.putExtra(ShopSettingView.FRAGMENT_TO_SHOW, ShopSettingView.EDIT_SHOP_FRAGMENT_TAG);
         UnifyTracking.eventManageShopInfo();
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsBasicInfoActivity(context);
         context.startActivity(intent);
     }
 
@@ -2694,19 +2688,22 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public void goToManageShopEtalase(Context context) {
         UnifyTracking.eventManageShopEtalase();
-        context.startActivity(new Intent(context, EtalaseShopEditor.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsEtalaseActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
     public void goTotManageShopNotes(Context context) {
         UnifyTracking.eventManageShopNotes();
-        context.startActivity(new Intent(context, ManageShopNotesActivity.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsNotesActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
     public void goToManageShopLocation(Context context) {
         UnifyTracking.eventManageShopLocation();
-        context.startActivity(new Intent(context, ManageShopAddress.class));
+        Intent intent = ShopSettingsInternalRouter.getShopSettingsLocationActivity(context);
+        context.startActivity(intent);
     }
 
     @Override
