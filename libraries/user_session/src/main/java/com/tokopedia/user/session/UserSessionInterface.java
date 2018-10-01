@@ -35,6 +35,8 @@ public interface UserSessionInterface {
 
     String getRefreshTokenIV();
 
+    boolean isFirstTimeUser();
+
 
     /**
      * SETTER METHOD

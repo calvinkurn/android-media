@@ -261,7 +261,8 @@ public class UserSession implements UserSessionInterface {
         editor.apply();
     }
 
-    public static boolean isFirstTimeUser(Context context) {
+    @Override
+    public boolean isFirstTimeUser() {
         SharedPreferences sharedPreferences = context.getSharedPreferences(LOGIN_SESSION, Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean(IS_FIRST_TIME_USER_NEW_ONBOARDING, true);
     }

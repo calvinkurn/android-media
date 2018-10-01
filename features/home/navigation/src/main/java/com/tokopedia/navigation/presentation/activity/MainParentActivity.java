@@ -20,7 +20,6 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,7 +29,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -68,9 +66,9 @@ import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -85,8 +83,6 @@ public class MainParentActivity extends BaseActivity implements
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
-    public static final String ARGS_EXPLORE_CATEGORY = "EXPLORE_CATEGORY";
-    public static final int ONBOARDING_REQUEST = 101;
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int INBOX_MENU = 2;
@@ -103,7 +99,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String SHORTCUT_SHOP_ID = "Jual";
 
     @Inject
-    com.tokopedia.abstraction.common.data.model.session.UserSession userSession;
+    UserSessionInterface userSession;
     @Inject
     MainParentPresenter presenter;
     @Inject
@@ -206,7 +202,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     public boolean isFirstTimeUser(){
-        return UserSession.isFirstTimeUser(MainParentActivity.this);
+        return userSession.isFirstTimeUser();
     }
 
     private void createView(Bundle savedInstanceState) {
@@ -363,7 +359,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void setUserSession(com.tokopedia.abstraction.common.data.model.session.UserSession userSession) {
+    public void setUserSession(UserSessionInterface userSession) {
         this.userSession = userSession;
     }
 
@@ -645,12 +641,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void showHockeyAppDialog() {
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
-    }
-
-    public static class UserSession {
-        public static boolean isFirstTimeUser(Context context) {
-            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
-        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
