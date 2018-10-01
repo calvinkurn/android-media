@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author by yfsx on 19/09/18.
  */
-public class DashboardPojo {
+public class DashboardProduct {
 
     @SerializedName("pagination")
     @Expose
@@ -16,9 +16,6 @@ public class DashboardPojo {
     @SerializedName("affiliatedProducts")
     @Expose
     private List<DashboardItemPojo> affiliatedProducts;
-    @SerializedName("header")
-    @Expose
-    private DashboardHeaderPojo header;
 
     public DashboardPagingPojo getPagination() {
         return pagination;
@@ -34,13 +31,5 @@ public class DashboardPojo {
 
     public void setAffiliatedProducts(List<DashboardItemPojo> affiliatedProducts) {
         this.affiliatedProducts = affiliatedProducts;
-    }
-
-    public DashboardHeaderPojo getHeader() {
-        return header;
-    }
-
-    public void setHeader(DashboardHeaderPojo header) {
-        this.header = header;
     }
 }

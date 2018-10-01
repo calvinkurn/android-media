@@ -7,38 +7,38 @@ import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardLoadMoreSubscriber;
 import com.tokopedia.affiliate.feature.dashboard.view.subscriber.GetDashboardSubscriber;
 
+import javax.inject.Inject;
+
 /**
  * @author by yfsx on 13/09/18.
  */
 public class DashboardPresenter extends BaseDaggerPresenter<DashboardContract.View> implements DashboardContract.Presenter {
 
-    private DashboardContract.View mainView;
     private final GetDashboardUseCase getDashboardUseCase;
     private final GetDashboardLoadMoreUseCase getDashboardLoadMoreUseCase;
 
-//    @Inject
+    @Inject
     public DashboardPresenter(
             GetDashboardUseCase getDashboardUseCase,
                               GetDashboardLoadMoreUseCase getDashboardLoadMoreUseCase) {
-        this.mainView = getView();
         this.getDashboardUseCase = getDashboardUseCase;
         this.getDashboardLoadMoreUseCase = getDashboardLoadMoreUseCase;
     }
 
     @Override
-    public void loadDashboardItem() {
-        mainView.showLoading();
+    public void loadDashboardItem(boolean isPullToRefresh) {
+        if (!isPullToRefresh) getView().showLoading();
         getDashboardUseCase.clearRequest();
         getDashboardUseCase.addRequest(getDashboardUseCase.getRequest());
-        getDashboardUseCase.execute(new GetDashboardSubscriber(mainView));
+        getDashboardUseCase.execute(new GetDashboardSubscriber(getView()));
     }
 
     @Override
     public void loadMoreDashboardItem(String cursor) {
-        mainView.showLoading();
+        getView().showLoading();
         getDashboardLoadMoreUseCase.clearRequest();
         getDashboardLoadMoreUseCase.addRequest(getDashboardLoadMoreUseCase.getRequest());
-        getDashboardLoadMoreUseCase.execute(new GetDashboardLoadMoreSubscriber(mainView));
+        getDashboardLoadMoreUseCase.execute(new GetDashboardLoadMoreSubscriber(getView()));
     }
 
     @Override

@@ -95,7 +95,7 @@ public class DashboardFragment
         tvRecommendationCount = (TextView) view.findViewById(R.id.tv_recommendation_count);
         swipeToRefresh = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
-//        presenter.attachView(this);
+        presenter.attachView(this);
         return view;
     }
 
@@ -104,16 +104,14 @@ public class DashboardFragment
         super.onViewCreated(view, savedInstanceState);
         progressBar.setVisibility(View.GONE);
         cvRecommendation.setVisibility(View.GONE);
+
         initView();
         initViewListener();
     }
 
     @Override
     public void onRefresh() {
-        if (!swipeToRefresh.isRefreshing()) {
-            swipeToRefresh.setRefreshing(true);
-            loadFirstData();
-        }
+        loadFirstData(true);
     }
 
     @Override
@@ -138,13 +136,13 @@ public class DashboardFragment
         rvHistory.setLayoutManager(layoutManager);
         rvHistory.setAdapter(adapter);
         rvHistory.addOnScrollListener(onScrollListener());
-        loadFirstData();
+        loadFirstData(false);
 //        testData();
     }
 
-    private void loadFirstData() {
+    private void loadFirstData(boolean isPullToRefresh) {
         isCanLoadMore = true;
-        presenter.loadDashboardItem();
+        presenter.loadDashboardItem(isPullToRefresh);
     }
 
     private void initDefaultValue() {
@@ -188,18 +186,19 @@ public class DashboardFragment
 
     @Override
     public void onSuccessGetDashboardItem(DashboardHeaderViewModel header, List<DashboardItemViewModel> itemList, String cursor) {
+        adapter.clearAllElements();
         if (swipeToRefresh.isRefreshing()) swipeToRefresh.setRefreshing(false);
+        adapter.addElement(header);
         if (itemList.size() == 0) {
             EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel();
             adapter.addElement(emptyDashboardViewModel);
             adapter.notifyDataSetChanged();
         } else {
-            adapter.addElement(header);
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
         }
 
-        if (TextUtils.isEmpty(cursor)) {
+        if (TextUtils.isEmpty(cursor) || cursor.equals("1")) {
             isCanLoadMore = false;
             this.cursor = "";
         } else {
@@ -214,7 +213,7 @@ public class DashboardFragment
                 getView().getRootView(),
                 error,
                 () -> {
-                    presenter.loadDashboardItem();
+                    presenter.loadDashboardItem(false);
                 }
                 );
     }

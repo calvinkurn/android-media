@@ -1,5 +1,5 @@
-query GetDashboard($limit: Int!) {
-  affiliatedProduct(limit:$limit) {
+query GetDashboard() {
+  affiliatedProduct {
     products {
       id
       image
@@ -9,21 +9,21 @@ query GetDashboard($limit: Int!) {
       totalClick
       commission
     }
-    pagination {
+    pagination{
       nextCursor
     }
   }
-  affiliateStats() {
+  affiliateStats{
     totalCommission
     productClick
     profileView
     productSold
   }
-  affiliateCheck() {
+  affiliateCheck{
     isAffiliate
     status
   }
-  affiliatePostQuota() {
+  affiliatePostQuota{
     formatted
     number
   }

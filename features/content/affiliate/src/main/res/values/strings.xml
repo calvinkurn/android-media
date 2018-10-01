@@ -4,6 +4,7 @@
     <!--DASHBOARD-->
     <string name="title_af_dashboard">Pencapaian Saya</string>
     <string name="title_af_dashboard_saldo">Total komisi masuk ke Saldo Tokopedia</string>
+    <string name="title_af_dashboard_saldo_sub">sebelum dipotong <i>service fee</i></string>
     <string name="title_profil_dilihat">Profil Dilihat</string>
     <string name="title_klik_produk">Klik Produk</string>
     <string name="title_produk_dibeli">Produk Dibeli</string>
@@ -16,7 +17,7 @@
     <string name="text_af_recommendation_left">Jatah Rekomendasi Tersisa</string>
     <string name="text_empty_start_recommendation_string">Mulai Rekomendasi, Yuk!</string>
     <string name="text_empty_start_recommendation_btn">Mulai Rekomendasi</string>
-    <string name="text_empty_have_recommendation">Kamu masih memiliki 10 jatah rekomendasi yang bisa diambil.</string>
+    <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah rekomendasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di ByMe</string>

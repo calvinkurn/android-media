@@ -5,6 +5,8 @@ import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 
+import java.util.ArrayList;
+
 import rx.Subscriber;
 
 /**
@@ -13,6 +15,7 @@ import rx.Subscriber;
 public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> {
 
     private DashboardContract.View mainView;
+
 
     public GetDashboardLoadMoreSubscriber(DashboardContract.View mainView) {
         this.mainView = mainView;
@@ -34,7 +37,9 @@ public class GetDashboardLoadMoreSubscriber extends Subscriber<GraphqlResponse> 
         mainView.hideLoading();
         DashboardQuery query = response.getData(DashboardQuery.class);
         mainView.onSuccessLoadMoreDashboardItem(
-                GetDashboardSubscriber.mappingListItem(query.getDashboard().getAffiliatedProducts()),
-                query.getDashboard().getPagination().getNextCursor());
+                query.getProduct().getAffiliatedProducts() != null?
+                        GetDashboardSubscriber.mappingListItem(query.getProduct().getAffiliatedProducts())
+                        : new ArrayList<>(),
+                query.getProduct().getPagination().getNextCursor());
     }
 }

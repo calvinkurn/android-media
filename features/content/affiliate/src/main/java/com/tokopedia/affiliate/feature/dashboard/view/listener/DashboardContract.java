@@ -35,7 +35,7 @@ public interface DashboardContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        void loadDashboardItem();
+        void loadDashboardItem(boolean isPullToRefresh);
 
         void loadMoreDashboardItem(String cursor);
     }
