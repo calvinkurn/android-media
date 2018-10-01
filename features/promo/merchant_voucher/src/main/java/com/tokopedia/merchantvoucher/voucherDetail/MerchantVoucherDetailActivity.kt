@@ -18,7 +18,7 @@ class MerchantVoucherDetailActivity : BaseSimpleActivity(), HasComponent<Merchan
     override fun getComponent() = DaggerMerchantVoucherComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
-    override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance()
+    override fun getNewFragment(): Fragment = MerchantVoucherDetailFragment.createInstance()
 
     companion object {
         @JvmStatic

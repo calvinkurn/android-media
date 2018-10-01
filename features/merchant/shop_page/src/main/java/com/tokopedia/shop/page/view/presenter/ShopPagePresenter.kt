@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
 import com.tokopedia.gm.common.domain.interactor.DeleteFeatureProductListCacheUseCase
 import com.tokopedia.reputation.common.domain.interactor.DeleteReputationSpeedDailyCacheUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
-import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoUseCase
+import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -30,7 +30,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val toggleFavouriteShopAndDeleteCacheUseCase: ToggleFavouriteShopAndDeleteCacheUseCase,
             private val deleteShopProductUseCase: DeleteShopProductUseCase,
             private val deleteFeatureProductListCacheUseCase: DeleteFeatureProductListCacheUseCase,
-            private val deleteShopInfoUseCase: DeleteShopInfoUseCase,
+            private val deleteShopInfoCacheUseCase: DeleteShopInfoCacheUseCase,
             private val deleteShopEtalaseUseCase: DeleteShopEtalaseUseCase,
             private val deleteShopNoteUseCase: DeleteShopNoteUseCase,
             private val deleteReputationSpeedDailyUseCase: DeleteReputationSpeedDailyCacheUseCase,
@@ -87,7 +87,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
     }
 
     fun clearCache() {
-        deleteShopInfoUseCase.executeSync()
+        deleteShopInfoCacheUseCase.executeSync()
         deleteShopProductUseCase.executeSync()
         deleteShopEtalaseUseCase.executeSync()
         deleteShopNoteUseCase.executeSync()
@@ -101,7 +101,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         getShopInfoUseCase.unsubscribe()
         getShopInfoByDomainUseCase.unsubscribe()
         toggleFavouriteShopAndDeleteCacheUseCase.unsubscribe()
-        deleteShopInfoUseCase.unsubscribe()
+        deleteShopInfoCacheUseCase.unsubscribe()
         deleteShopProductUseCase.unsubscribe()
         deleteShopEtalaseUseCase.unsubscribe()
         deleteShopNoteUseCase.unsubscribe()

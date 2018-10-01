@@ -2,14 +2,13 @@ package com.tokopedia.merchantvoucher.voucherList
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.Menu
 import android.view.MenuItem
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent
@@ -19,16 +18,25 @@ import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent
  */
 class MerchantVoucherListActivity : BaseSimpleActivity(), HasComponent<MerchantVoucherComponent> {
 
-//    var shopInfo: ShopInfo? = null
+    lateinit var shopId: String
 
     override fun getComponent() = DaggerMerchantVoucherComponent.builder().baseAppComponent(
             (application as BaseMainApplication).getBaseAppComponent()).build()
 
-    override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance()
+    override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance(shopId)
 
     companion object {
+        const val SHOP_ID = "shop_id"
+
         @JvmStatic
-        fun createIntent(context: Context, shopId:String) = Intent(context, MerchantVoucherListActivity::class.java)
+        fun createIntent(context: Context, shopId: String): Intent {
+            return Intent(context, MerchantVoucherListActivity::class.java).apply { putExtra(SHOP_ID, shopId) }
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        shopId = intent.getStringExtra(SHOP_ID)
+        super.onCreate(savedInstanceState)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
