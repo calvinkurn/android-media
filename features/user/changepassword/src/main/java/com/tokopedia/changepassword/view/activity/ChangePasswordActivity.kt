@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.changepassword.view.fragment.ChangePasswordFragment
 
 class ChangePasswordActivity : BaseSimpleActivity() {
@@ -17,8 +19,16 @@ class ChangePasswordActivity : BaseSimpleActivity() {
         return ChangePasswordFragment()
     }
 
-     companion object {
-         open fun createIntent(context: Context): Intent {
+    companion object {
+        open fun createIntent(context: Context): Intent {
+            return Intent(context, ChangePasswordActivity::class.java)
+        }
+    }
+
+    object DeeplinkIntents {
+        @JvmStatic
+        @DeepLink(ApplinkConst.CHANGE_PASSWORD)
+        fun defaultIntent(context: Context, extras: Bundle): Intent {
             return Intent(context, ChangePasswordActivity::class.java)
         }
     }

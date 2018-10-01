@@ -1,4 +1,3 @@
-include ':settingbank'
 ext.isCiServer = System.getenv().containsKey("CI")
 
 buildCache {
@@ -8,7 +7,7 @@ buildCache {
     remote(HttpBuildCache) {
         url = "${ci_url}"
         push = isCiServer
-        allowUntrustedServer = true
+//        allowUntrustedServer = true
         credentials {
             username = "${ci_username}"
             password = "${ci_password}"
@@ -16,13 +15,12 @@ buildCache {
     }
 }
 
-
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
 include 'customerapp'
 include 'tkpdloyalty'
-include 'tkpdride'
+//include 'tkpdride'
 include 'tkpdfeed'
 include 'tkpdcore'
 include 'tkpdinbox'

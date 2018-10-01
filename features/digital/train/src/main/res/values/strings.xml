@@ -37,6 +37,9 @@
     <string name="train_select_passenger_toolbar_title">Pilih Penumpang</string>
     <string name="message_voucher_code_banner_copied">Kode voucher telah tersalin.</string>
 
+    <string name="train_calendar_label_choose_departure_trip_date">Pilih Tanggal Pergi</string>
+    <string name="train_calendar_label_choose_return_trip_date">Pilih Tanggal Pulang</string>
+
     <!-- search -->
     <string name="train_search_no_result_default">Rute tidak tersedia. Silakan ganti pencarian.</string>
     <string name="train_search_reset_button">Ganti Pencarian</string>
@@ -201,5 +204,7 @@
     <string name="train_sorting_latest_arrival">Waktu Tiba Termalam</string>
     <string name="train_sorting_cheapest">Harga Termurah</string>
     <string name="train_sorting_most_expensive">Harga Termahal</string>
+    <string name="train_error_dialog_default_button">OK</string>
+    <string name="train_error_dialog_failed_booking">Pemesanan Gagal</string>
 
 </resources>

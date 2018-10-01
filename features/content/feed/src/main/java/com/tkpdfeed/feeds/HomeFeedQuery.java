@@ -23,6 +23,7 @@ public final class HomeFeedQuery implements Query<HomeFeedQuery.Data, HomeFeedQu
   public static final String OPERATION_DEFINITION = "query HomeFeedQuery($userID: Int!, $limit: Int!, $cursor: String) {\n"
           + "  feed(limit: $limit, cursor: $cursor, userID: $userID, source: \"home\") {\n"
           + "    __typename\n"
+          + "    title\n"
           + "    data {\n"
           + "      __typename\n"
           + "      id\n"
@@ -1664,16 +1665,23 @@ public final class HomeFeedQuery implements Query<HomeFeedQuery.Data, HomeFeedQu
     }
 
     public static class Feed {
+      private final @Nullable String title;
+
       private final @Nullable List<Datum> data;
 
       private final @Nullable Links links;
 
       private final @Nullable Meta meta;
 
-      public Feed(@Nullable List<Datum> data, @Nullable Links links, @Nullable Meta meta) {
+      public Feed(@Nullable String title, @Nullable List<Datum> data, @Nullable Links links, @Nullable Meta meta) {
+        this.title = title;
         this.data = data;
         this.links = links;
         this.meta = meta;
+      }
+
+      public @Nullable String title() {
+        return this.title;
       }
 
       public @Nullable List<Datum> data() {
@@ -1731,6 +1739,7 @@ public final class HomeFeedQuery implements Query<HomeFeedQuery.Data, HomeFeedQu
         final Meta.Mapper metaFieldMapper = new Meta.Mapper();
 
         final Field[] fields = {
+                Field.forString("title", "title", null, true),
                 Field.forList("data", "data", null, true, new Field.ObjectReader<Datum>() {
                   @Override public Datum read(final ResponseReader reader) throws IOException {
                     return datumFieldMapper.map(reader);
@@ -1750,10 +1759,11 @@ public final class HomeFeedQuery implements Query<HomeFeedQuery.Data, HomeFeedQu
 
         @Override
         public Feed map(ResponseReader reader) throws IOException {
-          final List<Datum> data = reader.read(fields[0]);
-          final Links links = reader.read(fields[1]);
-          final Meta meta = reader.read(fields[2]);
-          return new Feed(data, links, meta);
+          final String title = reader.read(fields[0]);
+          final List<Datum> data = reader.read(fields[1]);
+          final Links links = reader.read(fields[2]);
+          final Meta meta = reader.read(fields[3]);
+          return new Feed(title, data, links, meta);
         }
       }
     }

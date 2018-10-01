@@ -1,5 +1,7 @@
 package com.tokopedia.core.deposit.presenter;
 
+import android.content.Intent;
+
 import com.tkpd.library.ui.utilities.DatePickerUtil;
 import com.tokopedia.core.customadapter.RetryDataBinder;
 
@@ -7,7 +9,7 @@ import com.tokopedia.core.customadapter.RetryDataBinder;
  * Created by Nisie on 3/30/16.
  */
 public interface DepositFragmentPresenter {
-    void onDrawClicked();
+    void onDrawClicked(Intent intent);
 
     void onSearchClicked();
 
@@ -22,6 +24,8 @@ public interface DepositFragmentPresenter {
     void setFirstDateParameter();
 
     void setCache();
+
+    void getMerchantSaldoDetails();
 
     void loadMore(int lastItemPosition, int visibleItem);
 

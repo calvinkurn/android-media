@@ -658,6 +658,7 @@ public class TkpdBaseURL {
         public static final String PATH_CHECK_WISHLIST = "/v1/users/{userId}/wishlist/check/{listId}";
         public static final String PATH_V1_BRAND_CAMPAIGN_PRODUCT = "/os/v1/campaign/product/info";
         public static final String PATH_OS_BANNER = "/os/api/search/banner/android";
+        public static final String API_V1_WISHLIST_COUNT = "/wishlist/count/v1";
     }
 
     public static class KunyitTalk {
@@ -795,6 +796,7 @@ public class TkpdBaseURL {
         public static final String PATH_SUBSCRIPTIONS = "subscribe/";
         public static final String PATH_FAVORITE_NUMBER = "favorite-list/";
         public static final String PARAM_DIGITAL_ISPULSA = "?ispulsa=1";
+        public static final String PATH_MY_BILLS = "mybills/";
     }
 
     public static class TrainWebsite {

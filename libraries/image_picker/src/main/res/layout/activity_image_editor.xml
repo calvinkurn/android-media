@@ -83,10 +83,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.tokopedia.imagepicker.common.widget.NonSwipeableViewPager
+                    <com.tokopedia.abstraction.base.view.widget.TouchViewPager
                         android:id="@+id/view_pager"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        app:can_swipe="false"/>
 
                     <ProgressBar
                         android:id="@+id/crop_progressbar"
@@ -231,7 +232,7 @@
                             android:paddingTop="@dimen/dp_20"
                             android:paddingBottom="@dimen/dp_20"
                             android:textSize="@dimen/sp_18"
-                            android:text="@string/cancel"
+                            android:text="@string/image_picker_label_cancel"
                             android:clickable="true"
                             android:focusable="true"/>
 

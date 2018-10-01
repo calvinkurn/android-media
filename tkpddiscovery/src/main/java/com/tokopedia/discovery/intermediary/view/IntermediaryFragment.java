@@ -281,6 +281,7 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         adsBannerParams.getParam().put(TopAdsParams.KEY_SRC, SRC_INTERMEDIARY_VALUE);
         adsBannerParams.getParam().put(TopAdsParams.KEY_DEPARTEMENT_ID, departmentId);
         adsBannerParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        adsBannerParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(getActivity()));
 
         Config configAdsBanner = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
@@ -291,9 +292,14 @@ public class IntermediaryFragment extends BaseDaggerFragment implements Intermed
         topAdsBannerView.setConfig(configAdsBanner);
         topAdsBannerView.setTopAdsBannerClickListener(new TopAdsBannerClickListener() {
             @Override
-            public void onBannerAdsClicked(String applink) {
-                if (!TextUtils.isEmpty(applink)) {
-                    ((TkpdCoreRouter) getActivity().getApplication()).actionApplink(getActivity(), applink);
+            public void onBannerAdsClicked(String appLink) {
+                TkpdCoreRouter router = ((TkpdCoreRouter) getActivity().getApplicationContext());
+                if (router.isSupportedDelegateDeepLink(appLink)) {
+                    router.actionApplink(getActivity(), appLink);
+                } else if (appLink != "") {
+                    Intent intent = new Intent(getContext(), BannerWebView.class);
+                    intent.putExtra("url", appLink);
+                    startActivity(intent);
                 }
             }
         });

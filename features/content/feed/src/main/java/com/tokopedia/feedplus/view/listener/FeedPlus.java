@@ -139,6 +139,8 @@ public interface FeedPlus {
 
         void finishLoading();
 
+        void showInterestPick();
+
         void updateCursor(String currentCursor);
 
         void onSuccessGetFeed(ArrayList<Visitable> visitables);
@@ -158,10 +160,6 @@ public interface FeedPlus {
         String getString(int msg_network_error);
 
         int getColor(int black);
-
-        void onSeeAllRecentView();
-
-        void onShowEmptyWithRecentView(ArrayList<Visitable> recentProduct);
 
         void onShowEmpty();
 

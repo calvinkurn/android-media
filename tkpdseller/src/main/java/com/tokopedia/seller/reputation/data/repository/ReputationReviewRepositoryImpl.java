@@ -5,8 +5,8 @@ import com.tokopedia.core.shopinfo.models.shopmodel.ShopModel;
 import com.tokopedia.seller.reputation.data.source.cloud.CloudReputationReviewDataSource;
 import com.tokopedia.seller.reputation.domain.ReputationReviewRepository;
 import com.tokopedia.seller.reputation.domain.model.SellerReputationDomain;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepository;
-import com.tokopedia.seller.shop.common.domain.repository.ShopInfoRepositoryImpl;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
+import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
 import com.tokopedia.seller.util.ShopNetworkController;
 
 import java.util.Map;

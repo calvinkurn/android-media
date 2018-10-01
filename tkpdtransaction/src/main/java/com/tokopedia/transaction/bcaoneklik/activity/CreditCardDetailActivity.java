@@ -168,7 +168,8 @@ public class CreditCardDetailActivity extends TActivity
         }
     }
 
-    private void setLightToolbarStyle() {
+    @Override
+    protected void setLightToolbarStyle() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             toolbar.setElevation(10);
             toolbar.setBackgroundResource(com.tokopedia.core.R.color.white);

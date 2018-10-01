@@ -33,7 +33,11 @@ public class ContentExplorePresenter
 
     @Override
     public void getExploreData(boolean clearData) {
-        getView().showLoading();
+        if (clearData) {
+            getView().showRefreshing();
+        } else {
+            getView().showLoading();
+        }
         getExploreDataUseCase.execute(
                 GetExploreDataUseCase.getVariables(categoryId, cursor, search),
                 new GetExploreDataSubscriber(getView(), clearData)
@@ -42,7 +46,7 @@ public class ContentExplorePresenter
 
     @Override
     public void refreshExploreData() {
-        getExploreDataUseCase.execute(
+        getExploreDataUseCase.executeNoCache(
                 GetExploreDataUseCase.getVariables(categoryId, cursor, search),
                 new GetExploreDataSubscriber(getView(), true)
         );
