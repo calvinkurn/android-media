@@ -14,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.tokopedia.design.R;
@@ -80,6 +81,7 @@ public class TickerView extends BaseCustomView {
 
     private Handler tickerHandler;
     private Runnable tickerRunnable;
+    private int tickerHeight;
 
     public void setStateVisibility(int stateVisibility) {
         this.stateVisibility = stateVisibility;
@@ -151,6 +153,8 @@ public class TickerView extends BaseCustomView {
             isShowCloseButton = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_close_button, true);
             isUnderlinedLink = styledAttributes.getBoolean(R.styleable.TickerView_tckv_show_link_underline, true);
             contentTextSize = styledAttributes.getDimension(R.styleable.TickerView_tckv_content_text_size, getResources().getDimension(R.dimen.sp_14));
+            tickerHeight = styledAttributes.getDimensionPixelSize(R.styleable.TickerView_tckv_content_height,
+                    getResources().getDimensionPixelSize(R.dimen.dp_96));
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
@@ -246,6 +250,7 @@ public class TickerView extends BaseCustomView {
         setTextColor(defaultTextColor);
         setPageIndicatorOnColor(defaultPageIndicatorOnColor);
         setPageIndicatorOffColor(defaultPageIndicatorOffColor);
+        setTickerHeight(tickerHeight);
         prepareView();
         invalidate();
         requestLayout();
@@ -435,6 +440,7 @@ public class TickerView extends BaseCustomView {
     }
 
     public void setTickerHeight(int height) {
+        this.tickerHeight = height;
         ViewGroup.LayoutParams layoutParams = tickerHighlightView.getLayoutParams();
         layoutParams.height = height;
 
