@@ -1,8 +1,9 @@
 package com.tokopedia.affiliate.feature.createpost.view.subscriber;
 
-import android.util.Log;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.ContentFormData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -30,11 +31,20 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        view.onErrorGetContentForm(
+                ErrorHandler.getErrorMessage(view.getContext(), e)
+        );
     }
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
         ContentFormData data = graphqlResponse.getData(ContentFormData.class);
-        Log.d("milhamj", data.getFeedContentForm().getError());
+        if (data == null || data.getFeedContentForm() == null) {
+            throw new RuntimeException();
+        } else if (!TextUtils.isEmpty(data.getFeedContentForm().getError())) {
+            view.onErrorGetContentForm(data.getFeedContentForm().getError());
+            return;
+        }
+        view.onSuccessGetContentForm(data.getFeedContentForm());
     }
 }

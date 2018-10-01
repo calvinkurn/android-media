@@ -49,6 +49,7 @@ class PostImageAdapter: PagerAdapter() {
     }
 
     fun setList(imageList: ArrayList<String>) {
+        this.imageList.clear()
         this.imageList.addAll(imageList)
         notifyDataSetChanged()
     }

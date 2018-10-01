@@ -19,9 +19,12 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.Guide;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostImagePickerActivity;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.Medium;
 import com.tokopedia.affiliate.feature.createpost.di.DaggerCreatePostComponent;
 import com.tokopedia.affiliate.feature.createpost.view.activity.CreatePostActivity;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
+import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
+import com.tokopedia.affiliatecommon.view.adapter.PostImageAdapter;
 import com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager;
 import com.tokopedia.design.component.ButtonCompat;
 
@@ -32,13 +35,11 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-        .RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
     private static final int REQUEST_IMAGE_PICKER = 1234;
-    private ArrayList<String> selectedImage = new ArrayList<>();
 
     private TextView title;
     private TextView seeExample;
@@ -50,6 +51,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private String productId = "";
     private String adId = "";
+    private CreatePostViewModel viewModel;
+    private PostImageAdapter adapter;
 
     @Inject
     CreatePostContract.Presenter presenter;
@@ -63,7 +66,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     protected void initInjector() {
         BaseAppComponent baseAppComponent
-                = ((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent();
+                = ((BaseMainApplication) Objects.requireNonNull(getActivity()).getApplication())
+                .getBaseAppComponent();
         DaggerCreatePostComponent.builder()
                 .baseAppComponent(baseAppComponent)
                 .build()
@@ -73,6 +77,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initVar(savedInstanceState);
     }
 
     @Nullable
@@ -94,7 +104,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
-        initVar(savedInstanceState);
         initView();
         presenter.fetchContentForm(productId, adId);
     }
@@ -123,7 +132,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                         = data.getStringArrayListExtra(RESULT_PREVIOUS_IMAGE);
                 ArrayList<String> imageListDescription
                         = data.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST);
-                selectedImage = imageListResult;
+
+                viewModel.getImageList().clear();
+                viewModel.getImageList().addAll(imageListResult);
+                setupViewPager();
             }
         }
     }
@@ -132,6 +144,18 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     public void onSuccessGetContentForm(FeedContentForm feedContentForm) {
         if (!feedContentForm.getGuides().isEmpty()) {
             setupHeader(feedContentForm.getGuides().get(0));
+        }
+        if (!feedContentForm.getMedia().getMedia().isEmpty()) {
+            viewModel.getImageList().clear();
+            for (int i = 0; i < feedContentForm.getMedia().getMedia().size(); i++) {
+                Medium medium = feedContentForm.getMedia().getMedia().get(i);
+                if (i == feedContentForm.getMedia().getMedia().size() - 1) {
+                    viewModel.setPdpImage(medium.getMediaUrl());
+                } else {
+                    viewModel.getImageList().add(medium.getMediaUrl());
+                }
+            }
+            setupViewPager();
         }
     }
 
@@ -150,6 +174,9 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             productId = getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
             adId = getArguments().getString(CreatePostActivity.PARAM_AD_ID, "");
         }
+
+        viewModel = new CreatePostViewModel();
+        adapter = new PostImageAdapter();
     }
 
     private void initView() {
@@ -160,7 +187,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
                             Objects.requireNonNull(getActivity()),
-                            selectedImage),
+                            viewModel.getImageList()),
                     REQUEST_IMAGE_PICKER);
         });
     }
@@ -168,5 +195,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private void setupHeader(Guide guide) {
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
+    }
+
+    private void setupViewPager() {
+        adapter.setList(viewModel.getCompleteList());
+        imageViewPager.setAdapter(adapter);
+        imageViewPager.setOffscreenPageLimit(adapter.getCount());
+        tabLayout.setupWithViewPager(imageViewPager);
     }
 }

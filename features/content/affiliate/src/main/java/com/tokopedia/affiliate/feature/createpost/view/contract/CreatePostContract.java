@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.feature.createpost.view.contract;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.FeedContentForm;
@@ -9,6 +11,8 @@ import com.tokopedia.affiliate.feature.createpost.data.pojo.FeedContentForm;
  */
 public interface CreatePostContract {
     interface View extends CustomerView {
+        Context getContext();
+
         void onSuccessGetContentForm(FeedContentForm feedContentForm);
 
         void onErrorGetContentForm(String message);
