@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.airbnb.deeplinkdispatch.DeepLinkHandler;
+import com.appsflyer.AppsFlyerLib;
 import com.tokopedia.applink.ApplinkDelegate;
 import com.tokopedia.applink.SessionApplinkModule;
 import com.tokopedia.applink.SessionApplinkModuleLoader;
@@ -213,6 +214,11 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         initBranchSession();
         ApplinkDelegate deepLinkDelegate = getApplinkDelegateInstance();
+
+        if (GlobalConfig.isCustomerApp()) {
+            AppsFlyerLib.getInstance().sendDeepLinkData(this);
+        }
+
         DeepLinkAnalyticsImpl presenter = new DeepLinkAnalyticsImpl();
         if (getIntent() != null) {
             Intent intent = getIntent();
