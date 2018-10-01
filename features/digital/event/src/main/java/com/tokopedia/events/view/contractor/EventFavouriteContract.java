@@ -37,7 +37,7 @@ public class EventFavouriteContract {
 
         public String getSCREEN_NAME();
 
-        void setEventLike(CategoryItemsViewModel model, int position);
+        void removeEventLike(CategoryItemsViewModel model, int position);
 
         void shareEvent(CategoryItemsViewModel model);
     }
