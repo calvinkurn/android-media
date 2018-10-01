@@ -459,7 +459,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void onProductItemClicked(int position, Product product) {
         cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
-                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position));
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 
