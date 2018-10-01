@@ -267,13 +267,13 @@ public class TopEventsSuggestionsAdapter extends RecyclerView.Adapter<RecyclerVi
                 tvCalendar.setVisibility(View.GONE);
             } else {
                 if (data.getMinStartDate() == data.getMaxEndDate())
-                    eventTime.setText(Utils.convertEpochToString(data.getMinStartDate()));
+                    eventTime.setText(Utils.getSingletonInstance().convertEpochToString(data.getMinStartDate()));
                 else
-                    eventTime.setText(String.format(hyphen, Utils.convertEpochToString(data.getMinStartDate()),
-                            Utils.convertEpochToString(data.getMaxEndDate())));
+                    eventTime.setText(String.format(hyphen, Utils.getSingletonInstance().convertEpochToString(data.getMinStartDate()),
+                            Utils.getSingletonInstance().convertEpochToString(data.getMaxEndDate())));
                 eventTime.setVisibility(View.VISIBLE);
                 Utils.getSingletonInstance().setCalendar(tvCalendar,
-                        Utils.getDateArray(Utils.convertEpochToString(data.getMinStartDate())));
+                        Utils.getDateArray(Utils.getSingletonInstance().convertEpochToString(data.getMinStartDate())));
                 tvCalendar.setVisibility(View.VISIBLE);
             }
 

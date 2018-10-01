@@ -278,7 +278,7 @@ public class Utils {
     }
 
 
-    public static String convertEpochToString(int time) {
+    public String convertEpochToString(int time) {
         SimpleDateFormat sdf = new SimpleDateFormat("EEEE, d MMM yyyy", new Locale("in", "ID", ""));
         sdf.setTimeZone(TimeZone.getTimeZone("Asia/Jakarta"));
         Long epochTime = time * 1000L;
@@ -286,7 +286,7 @@ public class Utils {
         return sdf.format(date);
     }
 
-    public static String convertLongEpoch(long epoch) {
+    public String convertLongEpoch(long epoch) {
         SimpleDateFormat sdf = new SimpleDateFormat("dd'/'MM'/'yy", new Locale("in", "ID", ""));
         Date date = new Date(epoch);
         return sdf.format(date);

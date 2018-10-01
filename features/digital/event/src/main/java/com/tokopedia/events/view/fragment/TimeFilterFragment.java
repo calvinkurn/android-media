@@ -227,7 +227,7 @@ public class TimeFilterFragment extends Fragment {
         startDate = inTimeMillis;
         timeRange = "";
         deselectButton(selectedButton);
-        tvFromDate.setText(Utils.convertLongEpoch(inTimeMillis));
+        tvFromDate.setText(Utils.getSingletonInstance().convertLongEpoch(inTimeMillis));
     }
 
     public interface OnSelectTimeFilterListener {

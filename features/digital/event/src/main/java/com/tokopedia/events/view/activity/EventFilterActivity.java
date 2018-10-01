@@ -148,7 +148,7 @@ public class EventFilterActivity
     @Override
     public void onFragmentInteraction(String timerange, long startdate) {
         if (startdate > 0) {
-            itemCalendar.setText(Utils.convertLongEpoch(startdate));
+            itemCalendar.setText(Utils.getSingletonInstance().convertLongEpoch(startdate));
             selectedTime.setVisibility(View.VISIBLE);
         } else {
             int index = -1;

@@ -24,7 +24,6 @@ import com.tokopedia.events.view.utils.EventsGAConst;
 import com.tokopedia.events.view.utils.Utils;
 import com.tokopedia.events.view.viewmodel.CategoryItemsViewModel;
 
-import java.util.HashSet;
 import java.util.List;
 
 import butterknife.BindView;
@@ -105,10 +104,10 @@ public class EventCategoryAdapterRevamp extends RecyclerView.Adapter<EventCatego
                 eventTime.setVisibility(View.GONE);
             } else {
                 if (data.getMinStartDate() == data.getMaxEndDate())
-                    eventTime.setText(Utils.convertEpochToString(data.getMinStartDate()));
+                    eventTime.setText(Utils.getSingletonInstance().convertEpochToString(data.getMinStartDate()));
                 else
-                    eventTime.setText(String.format(hyphen, Utils.convertEpochToString(data.getMinStartDate())
-                            , Utils.convertEpochToString(data.getMaxEndDate())));
+                    eventTime.setText(String.format(hyphen, Utils.getSingletonInstance().convertEpochToString(data.getMinStartDate())
+                            , Utils.getSingletonInstance().convertEpochToString(data.getMaxEndDate())));
                 eventTime.setVisibility(View.VISIBLE);
             }
 

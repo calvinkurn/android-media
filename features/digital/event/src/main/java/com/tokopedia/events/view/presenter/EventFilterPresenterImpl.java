@@ -67,7 +67,7 @@ public class EventFilterPresenterImpl
         }
         filterStartDate = inIntent.getLongExtra(START_DATE, 0);
         if (filterStartDate > 0 && filterTimeRange.isEmpty()) {
-            timefiltertext = Utils.convertLongEpoch(filterStartDate);
+            timefiltertext = Utils.getSingletonInstance().convertLongEpoch(filterStartDate);
         } else {
             for (int i = 0; i < TIME_ID.length; i++) {
                 if (TIME_ID[i].equals(filterTimeRange)) {
