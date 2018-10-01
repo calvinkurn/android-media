@@ -1,9 +1,12 @@
 package com.tokopedia.affiliate.feature.createpost.view.viewmodel;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.File;
 import java.util.ArrayList;
 
-public class CreatePostViewModel {
+public class CreatePostViewModel implements Parcelable {
     private static final String FILE_PREFIX = "file:";
 
     private String pdpImage;
@@ -58,4 +61,33 @@ public class CreatePostViewModel {
             return false;
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.pdpImage);
+        dest.writeStringList(this.imageList);
+    }
+
+    protected CreatePostViewModel(Parcel in) {
+        this.pdpImage = in.readString();
+        this.imageList = in.createStringArrayList();
+    }
+
+    public static final Parcelable.Creator<CreatePostViewModel> CREATOR = new Parcelable
+            .Creator<CreatePostViewModel>() {
+        @Override
+        public CreatePostViewModel createFromParcel(Parcel source) {
+            return new CreatePostViewModel(source);
+        }
+
+        @Override
+        public CreatePostViewModel[] newArray(int size) {
+            return new CreatePostViewModel[size];
+        }
+    };
 }

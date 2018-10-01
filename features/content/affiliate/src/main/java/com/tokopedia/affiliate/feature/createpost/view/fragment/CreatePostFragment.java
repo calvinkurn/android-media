@@ -37,10 +37,12 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+        .RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
+    private static final String VIEW_MODEL = "view_model";
     private static final int REQUEST_IMAGE_PICKER = 1234;
 
     private TextView title;
@@ -115,6 +117,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         super.onSaveInstanceState(outState);
         outState.putString(CreatePostActivity.PARAM_PRODUCT_ID, productId);
         outState.putString(CreatePostActivity.PARAM_AD_ID, adId);
+        outState.putParcelable(VIEW_MODEL, viewModel);
     }
 
     @Override
@@ -148,12 +151,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             setupHeader(feedContentForm.getGuides().get(0));
         }
         if (!feedContentForm.getMedia().getMedia().isEmpty()) {
-            viewModel.getImageList().clear();
-            for (int i = 0; i < feedContentForm.getMedia().getMedia().size(); i++) {
-                Medium medium = feedContentForm.getMedia().getMedia().get(i);
-                if (i == feedContentForm.getMedia().getMedia().size() - 1) {
-                    viewModel.setPdpImage(medium.getMediaUrl());
-                } else {
+            int lastIndex = feedContentForm.getMedia().getMedia().size() - 1;
+            Medium medium = feedContentForm.getMedia().getMedia().get(lastIndex);
+            viewModel.setPdpImage(medium.getMediaUrl());
+
+            if (viewModel.getImageList().isEmpty()) {
+                viewModel.getImageList().clear();
+                for (int i = 0; i < lastIndex; i++) {
+                    medium = feedContentForm.getMedia().getMedia().get(i);
                     viewModel.getImageList().add(medium.getMediaUrl());
                 }
             }
@@ -169,16 +174,21 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void initVar(Bundle savedInstanceState) {
+        if (viewModel == null) {
+            viewModel = new CreatePostViewModel();
+        }
+        if (adapter == null) {
+            adapter = new PostImageAdapter();
+        }
+
         if (savedInstanceState != null) {
             productId = savedInstanceState.getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
             adId = savedInstanceState.getString(CreatePostActivity.PARAM_AD_ID, "");
+            viewModel = savedInstanceState.getParcelable(VIEW_MODEL);
         } else if (getArguments() != null) {
             productId = getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
             adId = getArguments().getString(CreatePostActivity.PARAM_AD_ID, "");
         }
-
-        viewModel = new CreatePostViewModel();
-        adapter = new PostImageAdapter();
     }
 
     private void initView() {
