@@ -31,6 +31,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_ORDER = "viewOrder";
         String CLICK_ORDER = "clickOrder";
         String CLICK_ADDRESS = "clickAddress";
+        String PRODUCT_CLICK = "productClick";
     }
 
     interface EventCategory {
@@ -185,6 +186,14 @@ public interface ConstantTransactionAnalytics {
         String CLICK_CHANGE_COURIER_OPTION = "click change courier option";
         String CLICK_X_PADA_KURIR_PENGIRIMAN = "click x pada kurir pengiriman";
         String CLICK_UBAH_DURASI = "click ubah durasi";
+
+        //EMPTY CART
+        String CLICK_LIHAT_LAINNYA = "click lihat lainnya on empty cart";
+        String CLICK_LIHAT_SEMUA_WISHLIST = "click lihat semua wishlist on empty cart";
+        String CLICK_LIHAT_SEMUA_LAST_SEEN = "click lihat semua last seen on empty cart";
+        String CLICK_PRODUCT_WISHLIST = "click product wishlist on empty cart";
+        String CLICK_PRODUCT_LAST_SEEN = "click product last seen on empty cart";
+        String CLICK_PRODUCT_RECOMMENDATION = "click product recommendation on empty cart";
     }
 
     interface EventLabel {

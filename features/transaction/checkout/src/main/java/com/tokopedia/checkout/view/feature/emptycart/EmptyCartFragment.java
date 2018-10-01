@@ -458,6 +458,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
+        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 
@@ -477,7 +479,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onItemWishListClicked(Wishlist wishlist) {
+    public void onItemWishListClicked(Wishlist wishlist, int position) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(wishlist, position));
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
                 wishlist.getId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
@@ -493,7 +497,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onItemRecentViewClicked(RecentView recentView) {
+    public void onItemRecentViewClicked(RecentView recentView, int position) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(recentView, position));
+
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
                 recentView.getProductId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
