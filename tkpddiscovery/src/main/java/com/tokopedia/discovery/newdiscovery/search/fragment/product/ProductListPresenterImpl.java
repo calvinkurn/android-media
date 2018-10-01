@@ -93,24 +93,28 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     @Override
     public void handleWishlistButtonClicked(ProductItem productItem) {
         if (getView().isUserHasLogin()) {
-//            getView().disableWishlistButton(productItem.getProductID());
-//            if (productItem.isWishlisted()) {
-//                removeWishlist(productItem.getProductID(), getView().getUserId());
-//            } else {
-//                addWishlist(productItem.getProductID(), getView().getUserId());
-//            }
-            com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
-            params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
-            productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
-                @Override
-                public void onCompleted() {}
+            getView().disableWishlistButton(productItem.getProductID());
+            if (productItem.isWishlisted()) {
+                removeWishlist(productItem.getProductID(), getView().getUserId());
+            } else if(productItem.getProductWishlistUrl() != null){
+                com.tokopedia.usecase.RequestParams params = com.tokopedia.usecase.RequestParams.create();
+                params.putString(ProductWishlistUrlUseCase.PRODUCT_WISHLIST_URL, productItem.getProductWishlistUrl());
+                productWishlistUrlUseCase.execute(params, new Subscriber<Response<String>>() {
+                    @Override
+                    public void onCompleted() {
+                    }
 
-                @Override
-                public void onError(Throwable e) {}
+                    @Override
+                    public void onError(Throwable e) {
+                    }
 
-                @Override
-                public void onNext(Response<String> stringResponse) {}
-            });
+                    @Override
+                    public void onNext(Response<String> stringResponse) {
+                    }
+                });
+            } else {
+                addWishlist(productItem.getProductID(), getView().getUserId());
+            }
         } else {
             launchLoginActivity(productItem.getProductID());
         }
