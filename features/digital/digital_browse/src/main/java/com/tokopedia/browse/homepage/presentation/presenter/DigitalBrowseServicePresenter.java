@@ -96,7 +96,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
         int lastTitlePosition = 0;
 
         for (Map.Entry<String, IndexPositionModel> entry : titleMap.entrySet()) {
-            if (lastTitlePosition < entry.getValue().getIndexPositionInList() &&
+            if (lastTitlePosition <= entry.getValue().getIndexPositionInList() &&
                     entry.getValue().getIndexPositionInList() < itemPositionInList) {
 
                 lastTitlePosition = entry.getValue().getIndexPositionInList();
@@ -106,7 +106,7 @@ public class DigitalBrowseServicePresenter extends BaseDaggerPresenter<DigitalBr
             }
         }
 
-        model.setIconPosition(itemPositionInList - lastTitlePosition + 1);
+        model.setIconPosition(itemPositionInList - lastTitlePosition);
 
         return model;
     }
