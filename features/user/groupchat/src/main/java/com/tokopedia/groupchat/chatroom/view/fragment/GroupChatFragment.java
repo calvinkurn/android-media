@@ -433,6 +433,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
 
     private void showPinnedMessageBottomSheet(PinnedMessageViewModel pinnedMessage) {
         CloseableBottomSheetDialog dialog = CloseableBottomSheetDialog.createInstance(getActivity());
+        View view = createContentView(pinnedMessage);
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
@@ -443,10 +444,10 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 if (bottomSheet != null) {
                     BottomSheetBehavior.from(bottomSheet)
                             .setState(BottomSheetBehavior.STATE_EXPANDED);
+                    view.findViewById(R.id.thumbnail).setVisibility(View.VISIBLE);
                 }
             }
         });
-        View view = createContentView(pinnedMessage);
         dialog.setContentView(view, "Pinned Chat");
         view.setOnClickListener(null);
         dialog.show();
@@ -460,7 +461,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
         ((TextView) view.findViewById(R.id.chat_header).findViewById(R.id.nickname))
                 .setText(channelInfoViewModel.getAdminName());
         ((TextView) view.findViewById(R.id.message)).setText(pinnedMessage.getMessage());
-        ImageHandler.loadImage(getActivity(), (ImageView) view.findViewById(R.id.thumbnail)
+        ImageHandler.loadImage(getActivity(), view.findViewById(R.id.thumbnail)
                 , pinnedMessage.getThumbnail(), R.drawable.loading_page);
         if (!TextUtils.isEmpty(pinnedMessage.getImageUrl())) {
             view.findViewById(R.id.thumbnail).setOnClickListener(new View.OnClickListener() {
@@ -471,6 +472,7 @@ public class GroupChatFragment extends BaseDaggerFragment implements ChatroomCon
                 }
             });
         }
+        view.findViewById(R.id.thumbnail).setVisibility(View.GONE);
         return view;
     }
 

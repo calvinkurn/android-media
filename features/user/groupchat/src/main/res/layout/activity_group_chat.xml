@@ -95,21 +95,20 @@
         <RelativeLayout
             android:id="@+id/video_container_layout"
             android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_height="0dp"
             android:visibility="gone"
+            app:layout_constraintDimensionRatio="16:9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/sponsor_layout"
             tools:ignore="MergeRootFrame"
-            tools:visibility="visible"
-            >
+            tools:visibility="visible">
 
             <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                      xmlns:tools="http://schemas.android.com/tools"
-                      android:id="@+id/video_container"
-                      android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
-                      android:layout_width="match_parent"
-                      android:layout_height="match_parent"
-                />
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/video_container"
+                android:name="com.tokopedia.groupchat.chatroom.view.fragment.GroupChatVideoFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </RelativeLayout>
 
