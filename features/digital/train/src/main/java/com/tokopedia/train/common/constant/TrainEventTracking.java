@@ -5,6 +5,12 @@ package com.tokopedia.train.common.constant;
  */
 public interface TrainEventTracking {
 
+    String EVENT_CATEGORY = "eventCategory";
+    String EVENT_ACTION = "eventAction";
+    String EVENT_LABEL = "eventLabel";
+    String EVENT = "event";
+    String ECOMMERCE = "ecommerce";
+
     interface Event {
         String GENERIC_TRAIN_EVENT = "genericTrainEvent";
         String PROMO_CLICK = "promoCLick";
@@ -49,6 +55,17 @@ public interface TrainEventTracking {
 
     interface Label {
 
+    }
+
+    interface EnhanceEcommerce {
+        String NAME = "name";
+        String ID = "id";
+        String PRICE = "price";
+        String CATEGORY = "category";
+        String VARIANT = "variant";
+        String QUANTITY = "quantity";
+        String COUPON = "coupon";
+        String LIST = "list";
     }
 
 }
