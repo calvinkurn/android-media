@@ -283,4 +283,6 @@
     <string name="tkpdtransaction_label_tx_processed">Pesanan Diproses</string>
     <string name="tkpdtransaction_label_tx_shipped">Sedang Dikirim</string>
     <string name="tkpdtransaction_label_tx_delivered">Sampai Tujuan</string>
+    <string name="kode_booking_label">Kode booking pengiriman</string>
+    <string name="lihat_detail">Lihat Detail</string>
 </resources>
