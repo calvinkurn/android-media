@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
@@ -30,6 +31,8 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardVi
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 //import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
 
@@ -59,7 +62,7 @@ public class DashboardFragment
     private boolean isCanLoadMore = false;
     private String cursor = "";
 
-//    @Inject
+    @Inject
     DashboardPresenter presenter;
 
     public static DashboardFragment getInstance(Bundle bundle) {
@@ -72,10 +75,10 @@ public class DashboardFragment
     protected void initInjector() {
         DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
                 .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
-//
-//        DaggerDashboardComponent.builder()
-//                .affiliateComponent(affiliateComponent)
-//                .build().inject(this);
+
+        DaggerDashboardComponent.builder()
+                .affiliateComponent(affiliateComponent)
+                .build().inject(this);
     }
 
     @Override
@@ -135,8 +138,8 @@ public class DashboardFragment
         rvHistory.setLayoutManager(layoutManager);
         rvHistory.setAdapter(adapter);
         rvHistory.addOnScrollListener(onScrollListener());
-//        loadFirstData();
-        testData();
+        loadFirstData();
+//        testData();
     }
 
     private void loadFirstData() {
@@ -244,7 +247,7 @@ public class DashboardFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        presenter.detachView();
+        presenter.detachView();
     }
 
     private void testData() {

@@ -1,6 +1,9 @@
 package com.tokopedia.affiliate.common.di;
 
+import android.content.Context;
+
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 
 import dagger.Component;
 
@@ -10,4 +13,8 @@ import dagger.Component;
 @AffiliateScope
 @Component(modules = AffiliateModule.class, dependencies = BaseAppComponent.class)
 public interface AffiliateComponent {
+
+    @ApplicationContext
+    Context getContext();
+
 }
