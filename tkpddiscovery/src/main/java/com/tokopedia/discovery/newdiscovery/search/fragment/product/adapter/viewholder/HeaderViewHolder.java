@@ -58,6 +58,7 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
     private QuickFilterAdapter quickFilterAdapter;
     private RecyclerView guidedSearchRecyclerView;
     private GuidedSearchAdapter guidedSearchAdapter;
+    private boolean isAdsBannerLoaded = false;
 
     public HeaderViewHolder(View itemView, ItemClickListener clickListener, Config topAdsConfig) {
         super(itemView);
@@ -111,7 +112,10 @@ public class HeaderViewHolder extends AbstractViewHolder<HeaderViewModel> {
 
     @Override
     public void bind(final HeaderViewModel element) {
-        adsBannerView.displayAds(element.getCpmModel());
+        if (!isAdsBannerLoaded) {
+            adsBannerView.displayAds(element.getCpmModel());
+            isAdsBannerLoaded = true;
+        }
         if (element.getSuggestionModel() != null) {
             suggestionContainer.removeAllViews();
             View suggestionView = LayoutInflater.from(context).inflate(R.layout.suggestion_layout, null);
