@@ -23,6 +23,12 @@ public class CheckPhoneOvoEntity {
     @SerializedName("change_msisdn_applink")
     @Expose
     private String changeMsisdnApplink;
+    @SerializedName("is_allow")
+    @Expose
+    private boolean isAllow;
+    @SerializedName("action")
+    @Expose
+    private PhoneActionEntity phoneActionEntity;
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -42,5 +48,13 @@ public class CheckPhoneOvoEntity {
 
     public String getChangeMsisdnApplink() {
         return changeMsisdnApplink;
+    }
+
+    public boolean isAllow() {
+        return isAllow;
+    }
+
+    public PhoneActionEntity getPhoneActionEntity() {
+        return phoneActionEntity;
     }
 }

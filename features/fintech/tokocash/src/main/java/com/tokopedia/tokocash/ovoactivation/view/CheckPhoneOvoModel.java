@@ -13,6 +13,8 @@ public class CheckPhoneOvoModel implements Parcelable {
     private String registeredApplink;
     private String notRegisteredApplink;
     private String changeMsisdnApplink;
+    private boolean isAllow;
+    private PhoneActionModel phoneActionModel;
 
     public CheckPhoneOvoModel() {
     }
@@ -23,6 +25,22 @@ public class CheckPhoneOvoModel implements Parcelable {
         registeredApplink = in.readString();
         notRegisteredApplink = in.readString();
         changeMsisdnApplink = in.readString();
+        isAllow = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(phoneNumber);
+        dest.writeByte((byte) (isRegistered ? 1 : 0));
+        dest.writeString(registeredApplink);
+        dest.writeString(notRegisteredApplink);
+        dest.writeString(changeMsisdnApplink);
+        dest.writeByte((byte) (isAllow ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<CheckPhoneOvoModel> CREATOR = new Creator<CheckPhoneOvoModel>() {
@@ -77,17 +95,19 @@ public class CheckPhoneOvoModel implements Parcelable {
         this.changeMsisdnApplink = changeMsisdnApplink;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
+    public boolean isAllow() {
+        return isAllow;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(phoneNumber);
-        parcel.writeByte((byte) (isRegistered ? 1 : 0));
-        parcel.writeString(registeredApplink);
-        parcel.writeString(notRegisteredApplink);
-        parcel.writeString(changeMsisdnApplink);
+    public void setAllow(boolean allow) {
+        isAllow = allow;
+    }
+
+    public PhoneActionModel getPhoneActionModel() {
+        return phoneActionModel;
+    }
+
+    public void setPhoneActionModel(PhoneActionModel phoneActionModel) {
+        this.phoneActionModel = phoneActionModel;
     }
 }

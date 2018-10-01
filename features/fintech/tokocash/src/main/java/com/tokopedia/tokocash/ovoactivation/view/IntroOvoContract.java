@@ -24,6 +24,8 @@ public interface IntroOvoContract {
         void showProgressBar();
 
         void hideProgressBar();
+
+        void showDialogErrorPhoneNumber(PhoneActionModel phoneActionModel);
     }
 
     interface Presenter extends CustomerPresenter<View> {

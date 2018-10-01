@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
+import com.tokopedia.design.component.Dialog;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.tokocash.R;
 import com.tokopedia.tokocash.TokoCashComponentInstance;
@@ -137,6 +138,29 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
             startActivity(intentRegisteredApplink);
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void showDialogErrorPhoneNumber(PhoneActionModel phoneActionModel) {
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        dialog.setTitle(phoneActionModel.getTitlePhoneAction());
+        dialog.setDesc(phoneActionModel.getDescPhoneAction());
+        dialog.setBtnOk(phoneActionModel.getLabelBtnPhoneAction());
+        dialog.setOnOkClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                directPageWithApplink(phoneActionModel.getApplinkPhoneAction());
+                dialog.dismiss();
+            }
+        });
+        dialog.setBtnCancel(getString(R.string.button_label_cancel));
+        dialog.setOnCancelClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     @Override

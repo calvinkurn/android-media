@@ -59,13 +59,17 @@ public class IntroOvoPresenter extends BaseDaggerPresenter<IntroOvoContract.View
                             @Override
                             public void onNext(CheckPhoneOvoModel checkPhoneOvoModel) {
                                 getView().hideProgressBar();
-                                if (checkPhoneOvoModel.isRegistered()) {
-                                    getView().directPageWithApplink(checkPhoneOvoModel.getRegisteredApplink());
+                                if (!checkPhoneOvoModel.isAllow()) {
+                                    getView().showDialogErrorPhoneNumber(checkPhoneOvoModel.getPhoneActionModel());
                                 } else {
-                                    getView().directPageWithExtraApplink(checkPhoneOvoModel.getNotRegisteredApplink(),
-                                            checkPhoneOvoModel.getRegisteredApplink(),
-                                            checkPhoneOvoModel.getPhoneNumber(),
-                                            checkPhoneOvoModel.getChangeMsisdnApplink());
+                                    if (checkPhoneOvoModel.isRegistered()) {
+                                        getView().directPageWithApplink(checkPhoneOvoModel.getRegisteredApplink());
+                                    } else {
+                                        getView().directPageWithExtraApplink(checkPhoneOvoModel.getNotRegisteredApplink(),
+                                                checkPhoneOvoModel.getRegisteredApplink(),
+                                                checkPhoneOvoModel.getPhoneNumber(),
+                                                checkPhoneOvoModel.getChangeMsisdnApplink());
+                                    }
                                 }
                             }
                         })
