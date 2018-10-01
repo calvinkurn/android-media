@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
-import com.tokopedia.abstraction.base.view.fragment.BaseSessionWebViewFragment;
 
 /**
  * @author anggaprasetiyo on 22/05/18.
@@ -26,6 +25,6 @@ public class SimpleWebViewActivity extends BaseWebViewActivity {
 
     @Override
     protected Fragment getNewFragment() {
-        return BaseSessionWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL));
+        return ExternalWebViewFragment.newInstance(getIntent().getStringExtra(EXTRA_URL));
     }
 }
