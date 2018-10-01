@@ -14,11 +14,10 @@ import android.view.ViewTreeObserver;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.design.loading.LoadingStateView;
-import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.R;
-import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetBuyerGraph;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetKeyword;
 import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetPopularProduct;
@@ -26,14 +25,15 @@ import com.tokopedia.gm.statistic.data.source.cloud.model.graph.GetProductGraph;
 import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticDashboardComponent;
 import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticGrossViewHolder;
+import com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticProductViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticSummaryViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GMStatisticTransactionViewHolder;
 import com.tokopedia.gm.statistic.view.holder.GmStatisticBuyerViewHolder;
-import com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticDashboardView;
 import com.tokopedia.gm.statistic.view.model.GMTransactionGraphMergeModel;
 import com.tokopedia.gm.statistic.view.presenter.GMDashboardPresenter;
+import com.tokopedia.gm.subscribe.view.activity.GmSubscribeHomeActivity;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ import javax.inject.Inject;
  * created by norman 02/01/2017
  */
 public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragment
-        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder.Listener {
+        implements GMStatisticDashboardView, GMStatisticTransactionViewHolder.Listener, GMStatisticMarketInsightViewHolder.Listener {
 
     @Inject
     GMDashboardPresenter gmDashboardPresenter;
@@ -56,7 +56,7 @@ public class GMStatisticDashboardFragment extends GMStatisticBaseDatePickerFragm
     private GMStatisticProductViewHolder gmStatisticProductViewHolder;
     private GMStatisticTransactionViewHolder gmStatisticTransactionViewHolder;
     private GmStatisticBuyerViewHolder gmStatisticBuyerViewHolder;
-    private com.tokopedia.gm.statistic.view.holder.GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
+    private GMStatisticMarketInsightViewHolder GMStatisticMarketInsightViewHolder;
 
     private SnackbarRetry snackbarRetry;
 

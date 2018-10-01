@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
@@ -549,6 +550,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductTalkClicked(@NonNull Bundle bundle) {
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getAskSellerIntent(getActivityContext(),
+                        String.valueOf(productData.getShopInfo().getShopId()),
+                        productData.getShopInfo().getShopName(),
+                        productData.getInfo().getProductName(),
+                        productData.getInfo().getProductUrl(),
+                        TkpdInboxRouter.PRODUCT,
+                        productData.getShopInfo().getShopAvatar());
+        bundle.putParcelable("intent_chat", intent);
         presenter.processToTalk(getActivity(), bundle);
     }
 

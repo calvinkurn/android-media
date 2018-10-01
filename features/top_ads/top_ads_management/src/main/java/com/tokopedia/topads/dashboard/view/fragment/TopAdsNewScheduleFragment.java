@@ -19,7 +19,7 @@ import com.tokopedia.seller.base.view.activity.BaseStepperActivity;
 import com.tokopedia.seller.base.view.fragment.BasePresenterFragment;
 import com.tokopedia.seller.base.view.listener.StepperListener;
 import com.tokopedia.seller.base.view.model.StepperModel;
-import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
+import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
 import com.tokopedia.topads.dashboard.constant.TopAdsConstant;
 import com.tokopedia.topads.dashboard.constant.TopAdsExtraConstant;
 import com.tokopedia.topads.dashboard.view.dialog.DatePickerDialog;
