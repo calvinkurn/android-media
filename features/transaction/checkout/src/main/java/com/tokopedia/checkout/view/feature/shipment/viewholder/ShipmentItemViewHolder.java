@@ -135,7 +135,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvPromoText;
     private TextView tvPromoPrice;
     private RelativeLayout rlShipmentCost;
-    private ProgressBar pbCourierState;
     private LinearLayout llSelectedCourier;
     private TextView tvCourierName;
     private TextView tvCourierPrice;
@@ -178,6 +177,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout llShipmentInfoTicker;
     private TextView tvTickerInfo;
     private LinearLayout layoutWarningAndError;
+    private LinearLayout llCourierStateLoading;
 
     private List<ShipmentData> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
@@ -234,7 +234,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvExpandOtherProduct = itemView.findViewById(R.id.tv_expand_other_product);
         rlExpandOtherProduct = itemView.findViewById(R.id.rl_expand_other_product);
         tvTextShipment = itemView.findViewById(R.id.tv_text_shipment);
-        pbCourierState = itemView.findViewById(R.id.pb_courier_state);
         chooseCourierButton = itemView.findViewById(R.id.choose_courier_button);
         llShipmentOptionViewLayout = itemView.findViewById(R.id.ll_shipment_option_view_layout);
         tvCartSubTotal = itemView.findViewById(R.id.tv_cart_sub_total);
@@ -293,6 +292,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvTickerInfo = itemView.findViewById(R.id.tv_ticker_info);
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
+        llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -529,9 +529,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
 
             if (shipmentCartItemModel.isStateLoadingCourierState()) {
-                pbCourierState.setVisibility(View.VISIBLE);
+                llCourierStateLoading.setVisibility(View.VISIBLE);
+                llShipmentOptionViewLayout.setVisibility(View.GONE);
             } else {
-                pbCourierState.setVisibility(View.GONE);
+                llCourierStateLoading.setVisibility(View.GONE);
                 if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
                     if (shipmentDetailData == null) {
                         RecipientAddressModel tmpRecipientAddressModel;
@@ -549,11 +550,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                     shipmentCartItemModel.getShopShipmentList());
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
-                            pbCourierState.setVisibility(View.VISIBLE);
+                            llCourierStateLoading.setVisibility(View.VISIBLE);
+                            llShipmentOptionViewLayout.setVisibility(View.GONE);
                         }
                     }
                 } else {
-                    pbCourierState.setVisibility(View.GONE);
+                    llCourierStateLoading.setVisibility(View.GONE);
+                    llShipmentOptionViewLayout.setVisibility(View.VISIBLE);
                 }
             }
 

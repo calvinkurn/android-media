@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/ll_courier_state_loading"
+        layout="@layout/partial_shimmering_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_16" />
+
     <LinearLayout
         android:id="@+id/ll_shipment_option_view_layout"
         android:layout_width="match_parent"
@@ -29,36 +36,21 @@
             android:paddingTop="@dimen/dp_16"
             android:text="@string/label_courier" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/choose_courier_button"
+            style="@style/TextSmallMedium"
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/dp_32"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
             android:background="@drawable/green_button_rounded_unify"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:foreground="?selectableItemBackground"
             android:paddingBottom="@dimen/dp_9"
-            android:paddingTop="@dimen/dp_9">
-
-            <ProgressBar
-                android:id="@+id/pb_courier_state"
-                android:layout_width="@dimen/dp_16"
-                android:layout_height="@dimen/dp_16"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/choose_courier_button"
-                style="@style/TextSmallMedium"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:foreground="?selectableItemBackground"
-                android:paddingLeft="@dimen/dp_16"
-                android:paddingRight="@dimen/dp_16"
-                android:text="@string/label_button_choose_courier"
-                android:textColor="@color/white" />
-
-        </LinearLayout>
+            android:paddingLeft="@dimen/dp_27"
+            android:paddingRight="@dimen/dp_27"
+            android:paddingTop="@dimen/dp_9"
+            android:text="@string/label_button_choose_courier"
+            android:textColor="@color/white" />
 
     </LinearLayout>
 
