@@ -18,6 +18,7 @@ public class ImageProduct {
     private String productName;
     private String imageUrl;
     private String imageClickUrl;
+    private boolean loaded;
 
     public ImageProduct(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_PRODUCT_ID)) {
@@ -64,5 +65,13 @@ public class ImageProduct {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public boolean isLoaded() {
+        return loaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        this.loaded = loaded;
     }
 }
