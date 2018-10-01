@@ -93,6 +93,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
         deleteShopNoteUseCase.executeSync()
         deleteFeatureProductListCacheUseCase.executeSync()
         deleteReputationSpeedDailyUseCase.executeSync()
+        deleteFeatureProductListCacheUseCase.executeSync()
     }
 
     override fun detachView() {
