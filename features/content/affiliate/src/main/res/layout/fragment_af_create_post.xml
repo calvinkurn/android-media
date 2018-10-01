@@ -40,10 +40,14 @@
 
     <com.tokopedia.affiliatecommon.view.widget.WrapContentViewPager
         android:id="@+id/imageViewPager"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/seeExample" />
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
+        app:layout_constraintTop_toBottomOf="@id/seeExample"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
     <android.support.design.widget.TabLayout
