@@ -973,7 +973,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                 channelInfoViewModel.getBannerUrl(),
                 channelInfoViewModel.getTotalView(),
                 channelInfoViewModel.getBlurredBannerUrl());
-//        setToolbarAppearance();
         setSponsorData();
     }
 
