@@ -21,6 +21,12 @@ public class ReactNativeMybillsActivity extends BaseSimpleActivity {
     public static final String DEEP_LINK_URI = "deep_link_uri";
 
     @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+    }
+
+    @Override
     protected Fragment getNewFragment() {
         return ReactNativeMybillsFragment.createInstance(getReactNativeProps());
     }
