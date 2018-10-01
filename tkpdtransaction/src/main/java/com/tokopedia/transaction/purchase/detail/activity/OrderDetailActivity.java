@@ -15,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -43,7 +44,6 @@ import com.tokopedia.core.util.MethodChecker;
 import com.tokopedia.design.bottomsheet.BottomSheetCallAction;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 import com.tokopedia.transaction.R;
-import com.tokopedia.transaction.applink.TransactionAppLink;
 import com.tokopedia.transaction.purchase.constant.OrderShipmentTypeDef;
 import com.tokopedia.transaction.purchase.detail.adapter.OrderItemAdapter;
 import com.tokopedia.transaction.purchase.detail.customview.OrderDetailButtonLayout;
@@ -149,11 +149,23 @@ public class OrderDetailActivity extends TActivity
         setItemListView(data);
         setAwbLayout(data);
         setInvoiceView(data);
+        setBookingCode(data);
         setDescriptionView(data);
         setPriceView(data);
         setButtonView(data);
         setPickupPointView(data);
         setUploadAwb(data);
+    }
+
+    private void setBookingCode(OrderDetailData data) {
+        ViewGroup layout = findViewById(R.id.booking_code_layout);
+        if (data.getBookingCode() != null) {
+            TextView text = findViewById(R.id.booking_code);
+            text.setText(data.getBookingCode());
+            layout.setOnClickListener(null);
+        } else {
+            layout.setVisibility(View.GONE);
+        }
     }
 
     private void setUploadAwb(final OrderDetailData data) {
@@ -492,6 +504,7 @@ public class OrderDetailActivity extends TActivity
 
     @Override
     public void onError(String errorMessage) {
+        Log.d(OrderDetailActivity.class.getSimpleName(), "onError: " + errorMessage);
         NetworkErrorHelper.showEmptyState(this,
                 getMainView(),
                 new NetworkErrorHelper.RetryClickedListener() {
@@ -514,7 +527,8 @@ public class OrderDetailActivity extends TActivity
     @Override
     public void trackShipment(String orderId, String trackingUrl) {
         String routingAppLink;
-        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);;
+        routingAppLink = ApplinkConst.ORDER_TRACKING.replace("{order_id}", orderId);
+        ;
         Uri.Builder uriBuilder = new Uri.Builder();
         uriBuilder.appendQueryParameter(ApplinkConst.Query.ORDER_TRACKING_URL_LIVE_TRACKING, trackingUrl);
         routingAppLink += uriBuilder.toString();
