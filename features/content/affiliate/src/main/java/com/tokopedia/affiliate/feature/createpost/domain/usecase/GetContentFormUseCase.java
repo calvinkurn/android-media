@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.ContentFormData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;

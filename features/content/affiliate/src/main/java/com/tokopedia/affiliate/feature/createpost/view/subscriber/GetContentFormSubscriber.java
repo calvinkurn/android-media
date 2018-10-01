@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.ContentFormData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.ContentFormData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.FeedContentForm;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 
 /**
  * @author by milhamj on 9/26/18.
