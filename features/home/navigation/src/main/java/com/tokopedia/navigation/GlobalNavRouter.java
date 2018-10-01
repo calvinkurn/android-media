@@ -18,7 +18,9 @@ public interface GlobalNavRouter {
 
     Fragment getFeedPlusFragment(Bundle bundle);
 
-    Fragment getCartFragment();
+    Fragment getCartFragment(Bundle bundle);
+
+    Fragment getEmptyCartFragment(String autoApplyMessage);
 
     Intent getInboxTalkCallingIntent(Context context);
 

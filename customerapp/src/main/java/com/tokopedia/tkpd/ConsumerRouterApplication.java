@@ -45,6 +45,7 @@ import com.tokopedia.checkout.router.ICheckoutModuleRouter;
 import com.tokopedia.checkout.view.di.component.CartComponentInjector;
 import com.tokopedia.checkout.view.feature.cartlist.CartActivity;
 import com.tokopedia.checkout.view.feature.cartlist.CartFragment;
+import com.tokopedia.checkout.view.feature.emptycart.EmptyCartFragment;
 import com.tokopedia.contactus.ContactUsModuleRouter;
 import com.tokopedia.contactus.createticket.ContactUsConstant;
 import com.tokopedia.contactus.createticket.activity.ContactUsActivity;
@@ -262,6 +263,7 @@ import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
+import com.tokopedia.recentview.view.activity.RecentViewActivity;
 import com.tokopedia.searchbar.SearchBarRouter;
 import com.tokopedia.seller.LogisticRouter;
 import com.tokopedia.seller.SellerModuleRouter;
@@ -1002,8 +1004,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetHomeFeedIntent(Context context) {
-        return MainParentActivity.getApplinkFeedIntent(context);
+    public Intent checkoutModuleRouterGetHomeIntent(Context context) {
+        return MainParentActivity.getApplinkIntent(context, null);
     }
 
     @Override
@@ -1905,6 +1907,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
+    public Intent checkoutModuleRouterGetRecentViewIntent() {
+        return RecentViewActivity.newInstance(this);
+    }
+
+    @Override
     public ChuckInterceptor loyaltyModuleRouterGetCartCheckoutChuckInterceptor() {
         return getAppComponent().chuckInterceptor();
     }
@@ -1949,8 +1956,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass) {
-        return ProductInfoActivity.createInstance(getAppContext(), productPass);
+    public Intent checkoutModuleRouterGetProductDetailIntent(String productId) {
+        return ProductInfoActivity.createInstance(this, productId);
     }
 
     @Override
@@ -2677,8 +2684,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     @Override
-    public Fragment getCartFragment() {
-        return CartFragment.newInstance(CartFragment.class.getSimpleName());
+    public Fragment getCartFragment(Bundle bundle) {
+        return CartFragment.newInstance(bundle, CartFragment.class.getSimpleName());
+    }
+
+    @Override
+    public Fragment getEmptyCartFragment(String autoApplyMessage) {
+        return EmptyCartFragment.newInstance(autoApplyMessage, EmptyCartFragment.class.getSimpleName());
     }
 
     @Override

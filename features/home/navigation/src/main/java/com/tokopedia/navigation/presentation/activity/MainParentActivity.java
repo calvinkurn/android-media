@@ -20,17 +20,16 @@ import android.os.PersistableBundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -53,16 +52,22 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -70,7 +75,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -80,7 +84,7 @@ import javax.inject.Inject;
  */
 public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -117,6 +121,8 @@ public class MainParentActivity extends BaseActivity implements
     private List<String> titles;
     private Notification notification;
     Fragment currentFragment;
+    Fragment cartFragment;
+    Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
@@ -166,7 +172,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         createView(savedInstanceState);
@@ -207,7 +213,7 @@ public class MainParentActivity extends BaseActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser(){
+    public boolean isFirstTimeUser() {
         return UserSession.isFirstTimeUser(MainParentActivity.this);
     }
 
@@ -285,7 +291,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(GlobalNavComponent globalNavComponent){
+    public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
 
         presenter.setView(this);
@@ -408,7 +414,8 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
+            cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
@@ -440,13 +447,16 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     @Override
-    public void onStartLoading() { }
+    public void onStartLoading() {
+    }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+    }
 
     @Override
-    public void onHideLoading() { }
+    public void onHideLoading() {
+    }
 
     @Override
     public Context getContext() {
@@ -492,7 +502,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void saveInstanceState(Bundle outState) {
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
         }
     }
@@ -651,6 +661,28 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (emptyCartFragment == null) {
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+            }
+            fragmentList.set(CART_MENU, emptyCartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (cartFragment == null) {
+                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            }
+            fragmentList.set(CART_MENU, cartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
     public static class UserSession {
         public static boolean isFirstTimeUser(Context context) {
             return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
@@ -690,7 +722,7 @@ public class MainParentActivity extends BaseActivity implements
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                            .setIntents(new Intent[]{ intentHome, productIntent })
+                            .setIntents(new Intent[]{intentHome, productIntent})
                             .build();
                     shortcutInfos.add(productShortcut);
 
@@ -722,7 +754,7 @@ public class MainParentActivity extends BaseActivity implements
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
-                                .setIntents(new Intent[]{ intentHome, shopIntent })
+                                .setIntents(new Intent[]{intentHome, shopIntent})
                                 .build();
                         shortcutInfos.add(shopShortcut);
 
@@ -734,7 +766,7 @@ public class MainParentActivity extends BaseActivity implements
                                     .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                     .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                     .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                                    .setIntents(new Intent[]{ intentHome, referralIntent })
+                                    .setIntents(new Intent[]{intentHome, referralIntent})
                                     .build();
                             shortcutInfos.add(referralShortcut);
                         }
