@@ -188,6 +188,37 @@ public class TrainAnalytics {
         );
     }
 
+
+    public void eventAddToCart(String trip, String origin, String destination, String departureScheduleId, String departureTrainClass, String departureTrainName, double departurePrice, int numOfTotalPassenger) {
+        Object departureItem = DataLayer.mapOf(
+                "name", departureTrainName,
+                "id", departureScheduleId,
+                "category", "train ticket",
+                "variant", departureTrainClass,
+                "price", departurePrice,
+                "list", "/kereta-api",
+                "quantity", numOfTotalPassenger
+        );
+
+        List<Object> dataLayerList = new ArrayList<>();
+        dataLayerList.add(departureItem);
+
+        analyticTracker.sendEnhancedEcommerce(
+                DataLayer.mapOf("event", TrainEventTracking.Event.ADD_TO_CART,
+                        "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
+                        "eventAction", TrainEventTracking.Action.ADD_TO_CART,
+                        "eventLabel", String.format("%s - %s - %s - %s - %s",
+                                origin, destination, departureTrainClass, departureTrainName, trip),
+                        "ecommerce", DataLayer.mapOf(
+                                "add", DataLayer.mapOf(
+                                        "products", DataLayer.listOf(
+                                                dataLayerList.toArray(new Object[dataLayerList.size()])
+                                        ))
+                        )
+                )
+        );
+    }
+
     public void eventAddToCart(String trip,
                                String origin, String destination,
                                String departureScheduleId,
@@ -225,8 +256,12 @@ public class TrainAnalytics {
                 DataLayer.mapOf("event", TrainEventTracking.Event.ADD_TO_CART,
                         "eventCategory", TrainEventTracking.Category.DIGITAL_TRAIN,
                         "eventAction", TrainEventTracking.Action.ADD_TO_CART,
-                        "eventLabel", origin + " - " + destination + " - " +
-                                departureTrainClass + " - " + departureTrainName + " - " + trip,
+                        "eventLabel", String.format("%s - %s - %s - %s - %s",
+                                origin,
+                                destination,
+                                (departureTrainClass + ", " + returnTrainClass),
+                                (departureTrainName + ", " + returnTrainName),
+                                trip),
                         "ecommerce", DataLayer.mapOf(
                                 "add", DataLayer.mapOf(
                                         "products", DataLayer.listOf(

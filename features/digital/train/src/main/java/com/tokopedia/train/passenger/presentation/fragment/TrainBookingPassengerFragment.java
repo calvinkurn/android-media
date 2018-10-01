@@ -189,7 +189,7 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     private void initializeActionButton() {
         submitButton.setOnClickListener(view -> {
-            String trip = "single trip";
+
             String origin = departureScheduleViewModel.getOrigin();
             String destination = departureScheduleViewModel.getDestination();
 
@@ -203,24 +203,31 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
             String returnTrainClass = null;
             String returnTrainName = null;
             double returnPrice = 0;
+            int numOfTotalPassenger = trainScheduleBookingPassData.getAdultPassenger() +
+                    trainScheduleBookingPassData.getInfantPassenger();
 
             if (returnScheduleViewModel != null) {
+                String trip = "round trip";
                 returnScheduleId = trainScheduleBookingPassData.getReturnScheduleId();
                 returnTrainClass = returnScheduleViewModel.getDisplayClass();
                 returnTrainName = returnScheduleViewModel.getTrainName();
                 returnPrice = returnScheduleViewModel.getAdultFare()
                         + returnScheduleViewModel.getInfantFare();
+                trainAnalytics.eventAddToCart(
+                        trip, origin, destination,
+                        departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
+                        returnScheduleId, returnTrainClass, returnTrainName, returnPrice,
+                        numOfTotalPassenger
+                );
+            } else {
+                String trip = "single trip";
+                trainAnalytics.eventAddToCart(
+                        trip, origin, destination,
+                        departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
+                        numOfTotalPassenger
+                );
             }
 
-            int numOfTotalPassenger = trainScheduleBookingPassData.getAdultPassenger() +
-                    trainScheduleBookingPassData.getInfantPassenger();
-
-            trainAnalytics.eventAddToCart(
-                    trip, origin, destination,
-                    departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
-                    returnScheduleId, returnTrainClass, returnTrainName, returnPrice,
-                    numOfTotalPassenger
-            );
 
             trainAnalytics.eventClickNextOnCustomersPage();
 
