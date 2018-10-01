@@ -25,7 +25,6 @@ public class FlightSearchFragment extends BaseDaggerFragment
     public FlightSearchPresenter flightSearchPresenter;
     FlightSearchComponent flightSearchComponent;
 
-
     FlightSearchPassDataViewModel passDataViewModel;
 
     public static FlightSearchFragment newInstance(FlightSearchPassDataViewModel passDataViewModel) {
@@ -54,5 +53,11 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     public void loadData() {
 
+    }
+
+    public interface OnFlightSearchFragmentListener {
+        void selectFlight(String selectedFlightID);
+
+        void changeDate(FlightSearchPassDataViewModel flightSearchPassDataViewModel);
     }
 }
