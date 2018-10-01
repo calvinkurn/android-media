@@ -245,19 +245,27 @@
     </entry>
     <entry>
         <key>mainapp_wallet_label_register</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink_register</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_applink</key>
-        <value></value>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_wallet_label_name</key>
-        <value></value>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>mainapp_is_enabled_new_talk</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>sellerapp_is_enabled_new_talk</key>
+        <value>true</value>
     </entry>
     <entry>
         <key>mainapp_enable_feed_shop_page</key>

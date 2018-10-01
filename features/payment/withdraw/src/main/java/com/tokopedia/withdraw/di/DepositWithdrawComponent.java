@@ -1,5 +1,6 @@
 package com.tokopedia.withdraw.di;
 
+import com.tokopedia.withdraw.view.activity.WithdrawActivity;
 import com.tokopedia.withdraw.view.fragment.WithdrawFragment;
 
 import dagger.Component;
@@ -14,4 +15,6 @@ import dagger.Component;
 public interface DepositWithdrawComponent {
 
     void inject(WithdrawFragment fragment);
+
+    void inject(WithdrawActivity withdrawActivity);
 }

@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
 import android.support.design.widget.BottomNavigationView;
@@ -119,6 +121,8 @@ public class MainParentActivity extends BaseActivity implements
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
 
+    private Handler handler = new Handler();
+
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
         return start(context);
@@ -172,10 +176,18 @@ public class MainParentActivity extends BaseActivity implements
     protected void onStart() {
         super.onStart();
         if (presenter.isFirstTimeUser()) {
+            setDefaultShakeEnable();
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             finish();
         }
+    }
+
+    private void setDefaultShakeEnable() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(getString(R.string.pref_receive_shake), true);
+        editor.apply();
     }
 
     @Override
@@ -319,25 +331,27 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void openFragment(Fragment fragment) {
-        String backStateName = fragment.getClass().getName();
+        handler.post(() -> {
+            String backStateName = fragment.getClass().getName();
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction ft = manager.beginTransaction();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction ft = manager.beginTransaction();
 
-        Fragment currentFrag = manager.findFragmentByTag(backStateName);
-        if (currentFrag != null && manager.getFragments().size() > 0) {
-            for (int i = 0; i < manager.getFragments().size(); i++) {
-                Fragment frag = manager.getFragments().get(i);
-                if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    ft.show(frag); // only show fragment what you want to show
-                } else {
-                    ft.hide(frag); // hide all fragment
+            Fragment currentFrag = manager.findFragmentByTag(backStateName);
+            if (currentFrag != null && manager.getFragments().size() > 0) {
+                for (int i = 0; i < manager.getFragments().size(); i++) {
+                    Fragment frag = manager.getFragments().get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                        ft.show(frag); // only show fragment what you want to show
+                    } else {
+                        ft.hide(frag); // hide all fragment
+                    }
                 }
+            } else {
+                ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-        } else {
-            ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
-        }
-        ft.commit();
+            ft.commitAllowingStateLoss();
+        });
     }
 
     private void scrollToTop(Fragment fragment) {

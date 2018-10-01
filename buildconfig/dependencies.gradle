@@ -85,6 +85,8 @@ ext {
     tkpdUpdateInactivePhoneVersion = '2.22'
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
+    tkpdTalkVersion = '2.22'
+    tkpdAttachProductVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -299,7 +301,10 @@ ext {
             digitalDeals          : "com.tokopedia.digital_deals:digital_deals:${tkpdDealsVersion}",
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
-            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}"
+            paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
+            talk                  : "com.tokopedia.talk:talk:${tkpdTalkVersion}",
+            attachproduct         : "com.tokopedia.attachproduct:attachproduct:${tkpdAttachProductVersion}"
+
     ]
 
     tkpdLibDependencies = [
@@ -365,6 +370,8 @@ ext {
             topchat               : ":features:user:topchat",
             changepassword        : ":features:user:changepassword",
             bankdb                : ":features:user:bankdb",
+            talk                  : ":features:user:talk",
+            attachproduct         : ":features:user:attachproduct",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
             notifCenter           : ":features:user:notifcenter",
@@ -375,7 +382,6 @@ ext {
             tracking              : ":features:logistic:tracking",
             logisticuploadawb     : ":features:logistic:logisticuploadawb",
             districtrecommendation: ":features:logistic:district_recommendation",
-            vote                  : ":features:user:vote",
             logout                : ":features:user:logout",
             instantLoan           : ":features:fintech:instant_loan",
             tokopoints            : ":features:promo:tokopoints",
@@ -408,7 +414,6 @@ ext {
             williamchart      : ":libraries:williamchart",
             fingerprint       : ":libraries:fingerprint",
             bottomSheetBuilder: ":libraries:bottom_sheet_builder",
-            userSession       : ":libraries:user_session",
             imagePicker       : ":libraries:image_picker",
             cameraView        : ":libraries:camera_view",
             imageuploader     : ":libraries:imageuploader",
