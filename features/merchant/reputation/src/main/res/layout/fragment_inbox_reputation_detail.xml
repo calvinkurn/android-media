@@ -3,7 +3,8 @@
                 android:id="@+id/main"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@color/white">
 
     <com.tokopedia.core.customwidget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
@@ -19,9 +20,9 @@
             android:divider="@android:color/transparent"
             android:groupIndicator="@null"
             android:listSelector="@android:color/transparent"
-            android:padding="@dimen/dp_5"
             android:scrollbars="vertical"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:paddingBottom="@dimen/dp_10"/>
 
     </com.tokopedia.core.customwidget.SwipeToRefresh>
 </RelativeLayout>

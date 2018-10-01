@@ -33,8 +33,9 @@ import com.tokopedia.core.util.RefreshHandler;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public class ManageShopNotesFragment extends BasePresenterFragment<ManageShopNotesPresenter>
         implements ManageShopNotesView {
     RecyclerView shopNotes;

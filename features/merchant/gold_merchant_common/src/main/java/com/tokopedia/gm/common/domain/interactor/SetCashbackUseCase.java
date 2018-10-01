@@ -1,6 +1,5 @@
 package com.tokopedia.gm.common.domain.interactor;
 
-import com.tokopedia.gm.common.constant.GMParamConstant;
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;

@@ -163,6 +163,7 @@
     <style name="TextView.Micro.Green">
         <item name="android:textColor">@color/tkpd_main_green</item>
     </style>
+
     <style name="TextView.Micro.Green.Bold">
         <item name="android:textStyle">bold</item>
     </style>

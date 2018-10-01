@@ -344,4 +344,3 @@
 
 -dontwarn com.clevertap.android.sdk.**
 -dontwarn com.segment.analytics.**
-

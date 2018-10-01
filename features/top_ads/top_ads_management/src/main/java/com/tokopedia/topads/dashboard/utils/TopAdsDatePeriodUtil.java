@@ -2,8 +2,8 @@ package com.tokopedia.topads.dashboard.utils;
 
 import android.content.Context;
 
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 import com.tokopedia.topads.R;
 
 import java.util.ArrayList;

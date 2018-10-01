@@ -35,7 +35,9 @@ import static android.text.TextUtils.isEmpty;
 
 /**
  * Created by Erry on 5/30/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public class ShopScheduleDialog extends DialogFragment {
 
     public static final String DETAIL = "detail";
