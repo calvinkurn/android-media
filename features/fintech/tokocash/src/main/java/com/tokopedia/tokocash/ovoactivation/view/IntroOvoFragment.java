@@ -142,7 +142,7 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
 
     @Override
     public void showDialogErrorPhoneNumber(PhoneActionModel phoneActionModel) {
-        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+        final Dialog dialog = new Dialog(getActivity(), Dialog.Type.LONG_PROMINANCE);
         dialog.setTitle(phoneActionModel.getTitlePhoneAction());
         dialog.setDesc(phoneActionModel.getDescPhoneAction());
         dialog.setBtnOk(phoneActionModel.getLabelBtnPhoneAction());

@@ -8,5 +8,12 @@
         not_registered_url
         change_msisdn_applink
         change_msisdn_url
+        is_allow
+        action {
+            Title
+            Description
+            Text
+            Applink
+        }
   }
 }
