@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/activate_ic_tokocash_benefit"
+        app:srcCompat="@drawable/wallet_ic_activation_ovo"
         android:layout_marginTop="@dimen/dp_15"
         android:layout_gravity="center_horizontal"/>
 

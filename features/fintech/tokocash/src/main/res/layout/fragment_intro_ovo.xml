@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/dp_15"
-            app:srcCompat="@drawable/activate_ic_tokocash_benefit" />
+            app:srcCompat="@drawable/wallet_ic_intro_ovo" />
 
         <TextView
             android:layout_width="match_parent"

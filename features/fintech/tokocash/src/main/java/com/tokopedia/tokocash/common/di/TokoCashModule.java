@@ -38,7 +38,6 @@ import com.tokopedia.tokocash.network.interceptor.WalletGqlAuthInterceptor;
 import com.tokopedia.tokocash.network.model.ActivateTokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.TokoCashErrorResponse;
 import com.tokopedia.tokocash.network.model.WalletErrorResponse;
-import com.tokopedia.tokocash.pendingcashback.data.PendingCashbackRepository;
 import com.tokopedia.tokocash.pendingcashback.domain.GetPendingCasbackUseCase;
 import com.tokopedia.tokocash.qrpayment.data.repository.QrPaymentRepository;
 import com.tokopedia.tokocash.qrpayment.domain.GetInfoQrTokoCashUseCase;
@@ -173,12 +172,6 @@ public class TokoCashModule {
     @TokoCashScope
     RequestOtpTokoCashUseCase provideRequestOtpTokoCashUseCase(ActivateRepository activateRepository) {
         return new RequestOtpTokoCashUseCase(activateRepository);
-    }
-
-    @Provides
-    @TokoCashScope
-    GetPendingCasbackUseCase provideGetPendingCasbackUseCase(PendingCashbackRepository pendingCashbackRepository) {
-        return new GetPendingCasbackUseCase(pendingCashbackRepository);
     }
 
     @Provides

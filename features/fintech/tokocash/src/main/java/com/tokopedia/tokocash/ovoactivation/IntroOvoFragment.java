@@ -93,8 +93,8 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
             }
         };
         ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),
-                R.color.tkpd_main_green)), 31, 37, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        ss.setSpan(clickableSpan, 31, 37, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                R.color.tkpd_main_green)), 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpan, 31, 38, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tncOvo.setMovementMethod(LinkMovementMethod.getInstance());
         tncOvo.setText(ss);
     }

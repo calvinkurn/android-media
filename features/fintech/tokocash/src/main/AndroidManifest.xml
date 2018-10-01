@@ -69,10 +69,12 @@
         <activity
             android:name=".ovoactivation.IntroOvoActivity"
             android:screenOrientation="portrait"
+            android:label="@string/title_header_ovo"
             android:theme="@style/Theme.White.PopupTransparent" />
         <activity
             android:name=".ovoactivation.ActivationOvoActivity"
             android:screenOrientation="portrait"
+            android:label="@string/title_header_ovo"
             android:theme="@style/Theme.White.PopupTransparent" />
     </application>
 

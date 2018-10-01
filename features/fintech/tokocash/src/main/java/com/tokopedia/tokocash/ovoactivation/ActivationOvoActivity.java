@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.tokocash.ApplinkConstant;
+import com.tokopedia.tokocash.R;
 
 /**
  * Created by nabillasabbaha on 20/09/18.
@@ -31,11 +32,5 @@ public class ActivationOvoActivity extends BaseOvoActivationActivity {
     protected Fragment getNewFragment() {
         return ActivationOvoFragment.newInstance(getIntent().getStringExtra(REGISTERED_APPLINK),
                 getIntent().getStringExtra(PHONE_NUMBER), getIntent().getStringExtra(CHANGE_MSISDN_APPLINK));
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        String registeredApplink = getIntent().getStringExtra(REGISTERED_APPLINK);
     }
 }

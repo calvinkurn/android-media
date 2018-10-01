@@ -1,9 +1,17 @@
 package com.tokopedia.tokocash.ovoactivation;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.tokocash.R;
 
@@ -65,7 +74,7 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
         phoneNumber = getArguments().getString(ActivationOvoActivity.PHONE_NUMBER);
         changeMsisdnApplink = getArguments().getString(ActivationOvoActivity.CHANGE_MSISDN_APPLINK);
 
-        activationDesc.setText(String.format(getString(R.string.activation_ovo_desc), phoneNumber));
+        activationDesc.setText(setContentAndBoldPhoneNumber());
         activationNewAccountBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +87,14 @@ public class ActivationOvoFragment extends BaseDaggerFragment {
                 directPageWithApplink(changeMsisdnApplink);
             }
         });
+    }
+
+    private SpannableString setContentAndBoldPhoneNumber() {
+        String activationDesc = String.format(getString(R.string.activation_ovo_desc), phoneNumber);
+        SpannableString spannableString = new SpannableString(activationDesc);
+        int endIndex = 22 + phoneNumber.length();
+        spannableString.setSpan( new StyleSpan(Typeface.BOLD), 22, endIndex, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     public void directPageWithApplink(String ApplinkSchema) {
