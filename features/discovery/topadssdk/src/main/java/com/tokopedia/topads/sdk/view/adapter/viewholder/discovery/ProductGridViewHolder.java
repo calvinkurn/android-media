@@ -1,24 +1,15 @@
 package com.tokopedia.topads.sdk.view.adapter.viewholder.discovery;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.style.BulletSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.adapter.viewholder.AbstractViewHolder;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -27,12 +18,7 @@ import com.tokopedia.topads.sdk.domain.model.Product;
 import com.tokopedia.topads.sdk.domain.model.Shop;
 import com.tokopedia.topads.sdk.listener.LocalAdsClickListener;
 import com.tokopedia.topads.sdk.utils.ImageLoader;
-import com.tokopedia.topads.sdk.utils.ImpresionTask;
-import com.tokopedia.topads.sdk.utils.LabelLoader;
-import com.tokopedia.topads.sdk.view.FlowLayout;
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.discovery.ProductGridViewModel;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -93,20 +79,24 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
             bindProduct(data.getProduct());
         }
         if (data.getShop() != null) {
-            bindShop(data.getShop());
+            bindShopLocation(data.getShop());
         }
     }
 
-    private void bindShop(Shop shop) {
-        if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+    private void bindShopLocation(Shop shop) {
+        if (shop.getBadges() != null && shop.getLocation() != null && !shop.getLocation().isEmpty()) {
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
-            if(isBadgesExist(shop.getBadges())) {
+            shopLocation.setVisibility(View.VISIBLE);
+            if (isBadgesExist(shop.getBadges())) {
                 shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
             } else {
                 shopLocation.setText(shop.getLocation());
             }
-        } else {
+        } else if (shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+            shopLocation.setVisibility(View.VISIBLE);
             shopLocation.setText(shop.getLocation());
+        } else {
+            shopLocation.setVisibility(View.GONE);
         }
     }
 
@@ -155,7 +145,7 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
                 bottomLabelContainer.addView(label);
             }
         }
-        renderWishlistButton(data.isWislished());
+        renderWishlistButton(data.getProduct().isWishlist());
     }
 
     private int getStarCount(int rating) {
@@ -165,10 +155,10 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            if(v.getId() == R.id.container) {
+            if (v.getId() == R.id.container) {
                 itemClickListener.onProductItemClicked(clickPosition, data);
             }
-            if(v.getId() == R.id.wishlist_button_container){
+            if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish(clickPosition, data);
                 data.setWislished(!data.isWislished());
                 renderWishlistButton(data.isWislished());

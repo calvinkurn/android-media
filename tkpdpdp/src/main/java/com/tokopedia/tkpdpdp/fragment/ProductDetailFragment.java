@@ -43,6 +43,7 @@ import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
@@ -549,6 +550,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductTalkClicked(@NonNull Bundle bundle) {
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getAskSellerIntent(getActivityContext(),
+                        String.valueOf(productData.getShopInfo().getShopId()),
+                        productData.getShopInfo().getShopName(),
+                        productData.getInfo().getProductName(),
+                        productData.getInfo().getProductUrl(),
+                        TkpdInboxRouter.PRODUCT,
+                        productData.getShopInfo().getShopAvatar());
+        bundle.putParcelable("intent_chat", intent);
         presenter.processToTalk(getActivity(), bundle);
     }
 
@@ -1899,10 +1909,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+        }
+        String departmentName = "";
+        if(productData.getBreadcrumb().size()>0) {
+           departmentName =  productData.getBreadcrumb().get(0).getDepartmentName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productName,departmentName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
@@ -1916,10 +1934,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        String cataglogName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+            cataglogName = productData.getInfo().getProductCatalogName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productName,cataglogName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
