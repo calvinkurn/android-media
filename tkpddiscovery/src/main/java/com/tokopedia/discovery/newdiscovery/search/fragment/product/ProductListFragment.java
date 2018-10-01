@@ -85,9 +85,6 @@ public class ProductListFragment extends SearchSectionFragment
     private static final int REQUEST_ACTIVITY_FILTER_PRODUCT = 4320;
 
     private static final String ARG_VIEW_MODEL = "ARG_VIEW_MODEL";
-    private static final String EXTRA_PRODUCT_LIST = "EXTRA_PRODUCT_LIST";
-    private static final String EXTRA_SEARCH_PARAMETER = "EXTRA_SEARCH_PARAMETER";
-    private static final String EXTRA_FORCE_SEARCH = "EXTRA_FORCE_SEARCH";
     private static int PRODUCT_POSITION = 2;
     protected RecyclerView recyclerView;
     @Inject
@@ -121,20 +118,9 @@ public class ProductListFragment extends SearchSectionFragment
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         similarSearchManager = SimilarSearchManager.getInstance(getContext());
-        if (savedInstanceState != null) {
-            loadDataFromSavedState(savedInstanceState);
-        } else {
-            loadDataFromArguments();
-        }
+        loadDataFromArguments();
         sessionHandler = new SessionHandler(getContext());
         gcmHandler = new GCMHandler(getContext());
-    }
-
-    private void loadDataFromSavedState(Bundle savedInstanceState) {
-        productViewModel = savedInstanceState.getParcelable(EXTRA_PRODUCT_LIST);
-        setSearchParameter((SearchParameter) savedInstanceState.getParcelable(EXTRA_SEARCH_PARAMETER));
-        setForceSearch(savedInstanceState.getBoolean(EXTRA_FORCE_SEARCH));
-        renderDynamicFilter(productViewModel.getDynamicFilterModel());
     }
 
     private void loadDataFromArguments() {
@@ -435,14 +421,6 @@ public class ProductListFragment extends SearchSectionFragment
     @Override
     protected boolean isSortEnabled() {
         return true;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable(EXTRA_PRODUCT_LIST, productViewModel);
-        outState.putParcelable(EXTRA_SEARCH_PARAMETER, getSearchParameter());
-        outState.putBoolean(EXTRA_FORCE_SEARCH, isForceSearch());
     }
 
     @Override
