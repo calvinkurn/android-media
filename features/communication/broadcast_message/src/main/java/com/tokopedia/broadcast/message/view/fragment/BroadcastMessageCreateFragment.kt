@@ -20,7 +20,9 @@ import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcasteMessageCreateComponent
+import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
 import com.tokopedia.broadcast.message.data.model.MyProduct
+import com.tokopedia.broadcast.message.data.model.ProductPayloadMutation
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageProductItemAdapter
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageCreatePresenter
@@ -97,8 +99,22 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
+        button_save.setOnClickListener { moveToPreview() }
+
         presenter.getShopInfo()
         needEnabledSubmitButton()
+    }
+
+    private fun moveToPreview() {
+        var productsPayload = listOf<ProductPayloadMutation>()
+        if (switch_upload_product.isChecked){
+            productsPayload = selectedProducts.map {
+                val profile = ProductPayloadMutation.ProductProfileMutation(it.productName, it.productPrice, it.productThumbnail, it.productUrl)
+                ProductPayloadMutation(it.productId, profile)
+            }
+        }
+        val modelMutation = BlastMessageMutation(edit_text_message.text.toString(), "", savedLocalImageUrl!!,
+                switch_upload_product.isChecked, productsPayload.toTypedArray())
     }
 
     private fun openImagePicker() {
@@ -136,7 +152,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                     productIds.add(it.get("id")?.toInt() ?: -1)
                     selectedProducts.add(MyProduct(productId = it.get("id")?.toInt() ?: -1,
                             productName = it.get("name") ?: "", productPrice = it.get("price") ?: "Rp0",
-                            productThumbnail = it.get("thumbnail"), productUrl = it.get("url") ?: ""))
+                            productThumbnail = it.get("thumbnail") ?: "", productUrl = it.get("url") ?: ""))
                 }
 
                 productAdapter.clearProducts()
