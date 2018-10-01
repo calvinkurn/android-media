@@ -1899,10 +1899,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+        }
+        String departmentName = "";
+        if(productData.getBreadcrumb().size()>0) {
+           departmentName =  productData.getBreadcrumb().get(0).getDepartmentName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity,productData.getInfo().getProductName(),productData.getBreadcrumb().get(0).getDepartmentName()
+                selectedQuantity,productName,departmentName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
@@ -1916,10 +1924,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        String cataglogName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+            cataglogName = productData.getInfo().getProductCatalogName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity,productData.getInfo().getProductName(),productData.getInfo().getProductCatalogName()
+                selectedQuantity,productName,cataglogName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
