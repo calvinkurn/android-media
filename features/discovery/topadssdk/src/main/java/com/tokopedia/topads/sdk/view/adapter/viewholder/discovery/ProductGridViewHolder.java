@@ -6,8 +6,10 @@ import android.support.annotation.LayoutRes;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tokopedia.topads.sdk.R;
@@ -47,14 +49,20 @@ public class ProductGridViewHolder extends AbstractViewHolder<ProductGridViewMod
     private TextView reviewCount;
     private LinearLayout topLabelContainer;
     private LinearLayout bottomLabelContainer;
+    private RelativeLayout wishlistBtnContainer;
     private ImageView btnWishList;
     private int clickPosition;
 
 
-    public ProductGridViewHolder(View itemView, ImageLoader imageLoader, LocalAdsClickListener itemClickListener, int clickPosition) {
+    public ProductGridViewHolder(View itemView, ImageLoader imageLoader,
+                                 LocalAdsClickListener itemClickListener,
+                                 int clickPosition,
+                                 boolean enableWishlist) {
         super(itemView);
         itemView.findViewById(R.id.container).setOnClickListener(this);
-        itemView.findViewById(R.id.wishlist_button_container).setOnClickListener(this);
+        wishlistBtnContainer = itemView.findViewById(R.id.wishlist_button_container);
+        wishlistBtnContainer.setVisibility(enableWishlist ? View.VISIBLE : View.GONE);
+        wishlistBtnContainer.setOnClickListener(this);
         this.itemClickListener = itemClickListener;
         this.imageLoader = imageLoader;
         this.clickPosition = clickPosition;
