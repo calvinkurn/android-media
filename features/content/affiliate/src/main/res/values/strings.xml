@@ -42,10 +42,11 @@
     <string name="af_done">Selesai</string>
     <string name="af_add_more_image_to_product">Tambah gambar agar produk rekomendasimu semakin dilirik.</string>
     <string name="af_see_example">Lihat Contoh</string>
-
-    <!--CREATE POST-->
+    <string name="af_title_ok">Oke</string>
     <string name="title_image_picker">Image Picker</string>
     <string name="title_image_editor">Image Editor</string>
     <string name="title_create_post">Create Post</string>
+    <string name="title_create_post_example">Contoh Gambar</string>
+    <string name="af_use_image_to_show">Gunakan gambar yang menampilkan produk rekomendasimu.</string>
 
 </resources>
