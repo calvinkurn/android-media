@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">@string/merchant_voucher_code</string>
+    <string name="merchant_voucher_code">Kode Voucher Toko</string>
+</resources>
