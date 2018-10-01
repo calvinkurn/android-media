@@ -818,6 +818,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (getActivity() != null) {
             getActivity().setResult(resultCode);
             getActivity().finish();
+            getActivity().recreate();
         }
     }
 
