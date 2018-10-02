@@ -11,6 +11,7 @@ public interface ConstantTransactionAnalytics {
         String EVENT_ACTION = "eventAction";
         String EVENT_LABEL = "eventLabel";
         String E_COMMERCE = "ecommerce";
+        String PAYMENT_ID = "payment_id";
     }
 
 
