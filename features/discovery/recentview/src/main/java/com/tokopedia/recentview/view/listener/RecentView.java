@@ -5,8 +5,11 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.core.base.presentation.CustomerPresenter;
 import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.recentview.domain.model.RecentViewProductDomain;
+import com.tokopedia.recentview.view.viewmodel.RecentViewDetailProductViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author by nisie on 7/4/17.
@@ -29,6 +32,11 @@ public interface RecentView {
         void onSuccessGetRecentView(ArrayList<Visitable> listProduct);
 
         void onEmptyGetRecentView();
+
+        void sendRecentViewImpressionTracking(List<RecentViewDetailProductViewModel> recentViewModel);
+
+        void sendRecentViewClickTracking(RecentViewDetailProductViewModel element);
+
 
         Context getContext();
     }

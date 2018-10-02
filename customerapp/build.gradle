@@ -28,6 +28,11 @@ def isProduction() {
     return project.hasProperty('tkpdBuildType') && tkpdBuildType == "production";
 }
 
+def allowSplit() {
+    return gradle.startParameter.taskNames.contains("assembleLiveRelease") &&
+            (project.hasProperty('tkpdBuildType') && tkpdBuildType == "productionsplit");
+}
+
 def allowDistribution() {
     if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
         return "true";
@@ -148,6 +153,9 @@ android {
             ext.enableHansel=false
         }
         release {
+            if (!isProduction() && !allowDistribution()) {
+                signingConfig signingConfigs.debug
+            }
             ext.enableHansel=true
             minifyEnabled true
             zipAlignEnabled true
@@ -162,9 +170,34 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
+
+            if (allowSplit()) {
+                applicationVariants.all { variant ->
+                    variant.outputs.each { output ->
+                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
+                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + generateBuildId(density);
+                    }
+                    variant.assemble.doLast {
+                        variant.outputs.each { output ->
+                            if (output.zipAlign) {
+                                archiveAPK(variant, output);
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
+    splits {
+        density {
+            enable allowSplit()
+            reset()
+            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+            compatibleScreens 'small', 'normal', 'large', 'xlarge'
+        }
+
+    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -227,6 +260,7 @@ dependencies {
     implementation project(rootProject.ext.features.interestPick)
     implementation project(rootProject.ext.features.shopPage)
     implementation project(rootProject.ext.features.shopOpen)
+    implementation project(rootProject.ext.features.shopSettings)
     implementation project(rootProject.ext.features.goldMerchantSubscribe)
     implementation project(rootProject.ext.features.home)
     implementation project(rootProject.ext.features.vote)
@@ -272,6 +306,7 @@ dependencies {
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productManageItem)
+    implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.train)
     implementation project(rootProject.ext.features.browse)
     implementation project(rootProject.ext.features.notifCenter)
@@ -281,6 +316,8 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.attachproduct)
+    implementation project(rootProject.ext.features.talk)
 
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
@@ -300,6 +337,7 @@ dependencies {
     implementation project(rootProject.ext.features.productDraftDatabase)
     implementation project(rootProject.ext.libraries.graphql)
     implementation project(rootProject.ext.libraries.travelCalendar)
+    implementation project(rootProject.ext.libraries.datePickerRange)
     implementation project(rootProject.ext.libraries.commonNetwork)
 
     implementation rootProject.ext.miscDependencies.bcaOneClick

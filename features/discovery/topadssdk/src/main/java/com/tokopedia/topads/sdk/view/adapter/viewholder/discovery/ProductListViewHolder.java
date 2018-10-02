@@ -72,8 +72,7 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         data = element.getData();
         Product product = data.getProduct();
         if (product != null) {
-            imageLoader.loadImage(product.getImage().getS_ecs(), product.getImage().getS_url(),
-                    productImage);
+            imageLoader.loadImage(product, productImage, clickPosition);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 productName.setText(Html.fromHtml(product.getName(),
                         Html.FROM_HTML_MODE_LEGACY));
@@ -130,18 +129,22 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
         }
         Shop shop = data.getShop();
         if (shop != null) {
-            if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+            if (shop.getBadges() != null && shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+                shopLocation.setVisibility(View.VISIBLE);
                 imageLoader.loadBadge(badgeContainer, shop.getBadges());
-                if(isBadgesExist(shop.getBadges())) {
+                if (isBadgesExist(shop.getBadges())) {
                     shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
                 } else {
                     shopLocation.setText(shop.getLocation());
                 }
-            } else {
+            } else if (shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+                shopLocation.setVisibility(View.VISIBLE);
                 shopLocation.setText(shop.getLocation());
+            } else {
+                shopLocation.setVisibility(View.GONE);
             }
         }
-        renderWishlistButton(data.isWislished());
+        renderWishlistButton(data.getProduct().isWishlist());
     }
 
     private int getStarCount(int rating) {
@@ -151,10 +154,10 @@ public class ProductListViewHolder extends AbstractViewHolder<ProductListViewMod
     @Override
     public void onClick(View v) {
         if (itemClickListener != null) {
-            if(v.getId() == R.id.container) {
+            if (v.getId() == R.id.container) {
                 itemClickListener.onProductItemClicked(clickPosition, data);
             }
-            if(v.getId() == R.id.wishlist_button_container){
+            if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish(clickPosition, data);
                 data.setWislished(!data.isWislished());
                 renderWishlistButton(data.isWislished());

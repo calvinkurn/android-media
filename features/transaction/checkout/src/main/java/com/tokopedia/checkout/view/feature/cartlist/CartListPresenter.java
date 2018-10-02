@@ -546,7 +546,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
-//                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
             }
@@ -782,7 +781,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
-//                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
@@ -888,16 +886,6 @@ public class CartListPresenter implements ICartListPresenter {
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
-    }
-
-    @Override
-    public ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData) {
-        return ProductPass.Builder.aProductPass()
-                .setProductId(originData.getProductId())
-                .setProductImage(originData.getProductImage())
-                .setProductName(originData.getProductName())
-                .setProductPrice(originData.getPriceFormatted())
-                .build();
     }
 
     @Override

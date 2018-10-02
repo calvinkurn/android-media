@@ -4,9 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.widget.EditText;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.events.view.viewmodel.PackageViewModel;
 import com.tokopedia.events.view.viewmodel.SelectedSeatViewModel;
 
@@ -35,14 +34,9 @@ public class EventReviewTicketsContractor {
 
         void initForms(String[] hintText, String[] regex);
 
-
-        RequestParams getParams();
-
         android.view.View getRootView();
 
         void showPromoSuccessMessage(String text, int color);
-
-        void showCashbackMessage(String text);
 
         void hideSuccessMessage();
 
