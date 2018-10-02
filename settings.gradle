@@ -18,9 +18,9 @@ buildCache {
 apply from: "features/settings-features.gradle"
 apply from: "libraries/settings-libraries.gradle"
 
-//include 'customerapp'
+include 'customerapp'
 include 'tkpdloyalty'
-//include 'tkpdride'
+include 'tkpdride'
 include 'tkpdcore'
 include 'tkpdinbox'
 include 'tkpddiscovery'
@@ -33,4 +33,4 @@ include 'tkpdseller'
 include 'tkpdtokocash'
 include 'tkpdabstraction'
 include 'tkpdtransaction-common'
-//include 'posapp'
+include 'posapp'
