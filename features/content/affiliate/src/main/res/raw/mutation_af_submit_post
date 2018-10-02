@@ -1,25 +1,5 @@
-mutation{
-  feed_content_submit(Input:{
-    type:"affiliate"
-    authorType:"content-user",
-    authorID:"1335214",
-    caption:"Your caption here",
-    adID:"383322",
-    productID:"15233940",
-    token:"1234567890",
-    media:[
-      {
-        mediaURL:"https://ecs7.tokopedia.net/img/cache/500/attachment/2018/6/12/5510248/5510248_527913da-8a8a-4d36-97ec-89e223ec5bd9.jpg",
-        type:"image",
-        order: 0,
-      },
-      {
-        mediaURL:"https://ecs7.tokopedia.net/img/cache/500/attachment/2018/6/12/5510248/5510248_527913da-8a8a-4d36-97ec-89e223ec5bd9.jpg",
-        type:"image",
-        order: 1,
-			}
-    ]
-  }){
+mutation SubmitPost($input:ContentSubmitInput!) {
+  feed_content_submit(Input:$input){
     success
     redirectURI
     error

@@ -1,11 +1,11 @@
-package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost;
+package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class SubmitPostRequest {
+public class ContentSubmitInput {
 
     @SerializedName("type")
     @Expose
@@ -30,7 +30,7 @@ public class SubmitPostRequest {
     private String token;
     @SerializedName("media")
     @Expose
-    private List<Medium> media = null;
+    private List<SubmitPostMedium> media = null;
 
     public String getType() {
         return type;
@@ -88,11 +88,11 @@ public class SubmitPostRequest {
         this.token = token;
     }
 
-    public List<Medium> getMedia() {
+    public List<SubmitPostMedium> getMedia() {
         return media;
     }
 
-    public void setMedia(List<Medium> media) {
+    public void setMedia(List<SubmitPostMedium> media) {
         this.media = media;
     }
 

@@ -1,9 +1,9 @@
-package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost;
+package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Medium {
+public class SubmitPostMedium {
 
     @SerializedName("mediaURL")
     @Expose
@@ -14,6 +14,12 @@ public class Medium {
     @SerializedName("order")
     @Expose
     private int order;
+
+    public SubmitPostMedium(String mediaURL, String type, int order) {
+        this.mediaURL = mediaURL;
+        this.type = type;
+        this.order = order;
+    }
 
     public String getMediaURL() {
         return mediaURL;
