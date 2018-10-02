@@ -1,6 +1,6 @@
 package com.tokopedia.merchantvoucher.common.gql.domain.mapper
 
-import com.tokopedia.merchantvoucher.common.gql.data.GraphQLSuccessMessage
+import com.tokopedia.merchantvoucher.common.gql.data.base.GraphQLSuccessMessage
 
 
 /**

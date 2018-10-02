@@ -3,8 +3,13 @@ package com.tokopedia.merchantvoucher.voucherList
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
+import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
@@ -48,20 +53,23 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
 
     override fun initInjector() {
         activity?.run {
-            if (this.application is BaseMainApplication) {
-                DaggerMerchantVoucherComponent.builder()
-                        .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                        .shopCommonModule(ShopCommonModule())
-                        .build()
-                        .inject(this@MerchantVoucherListFragment)
-                presenter.attachView(this@MerchantVoucherListFragment)
-            }
+            DaggerMerchantVoucherComponent.builder()
+                    .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                    .shopCommonModule(ShopCommonModule())
+                    .build()
+                    .inject(this@MerchantVoucherListFragment)
+            presenter.attachView(this@MerchantVoucherListFragment)
         }
 
     }
 
     override fun loadData(page: Int) {
-        //TODO
+        presenter.getVoucherList(shopId)
+    }
+
+    override fun onSwipeRefresh() {
+        presenter.clearCache()
+        super.onSwipeRefresh()
     }
 
     companion object {
@@ -84,7 +92,7 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
         if (shopInfo == null) {
             getShopInfo()
         }
-        getVoucherList()
+        loadInitialData()
     }
 
     override fun callInitialLoadAutomatically() = false
@@ -101,16 +109,36 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
     }
 
     override fun onErrorGetShopInfo(e: Throwable) {
-        //TODO show snackbar or full page
+        //no op, share will not shown.
     }
 
-    private fun getVoucherList() {
+    override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
+        super.renderList(merchantVoucherViewModelList, false)
+    }
 
+    override fun onErrorGetMerchantVoucherList(e: Throwable) {
+        // TODO need custom error network?
+        // adapter.errorNetworkModel = ErrorNetworkModel().apply {  }
+        super.showGetListError(e)
+    }
+
+    override fun getEmptyDataViewModel(): Visitable<*> {
+        val emptyModel = EmptyModel()
+        emptyModel.iconRes = R.drawable.ic_empty_state
+        //TODO error message when voucher empty
+//        emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
+//        emptyModel.content = getString(R.string.change_your_keyword)
+        return emptyModel
     }
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
         onMerchantVoucherListFragmentListener = context as OnMerchantVoucherListFragmentListener
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
     }
 
 }

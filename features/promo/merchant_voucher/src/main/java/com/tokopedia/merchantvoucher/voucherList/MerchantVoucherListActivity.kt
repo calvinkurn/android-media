@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
@@ -44,6 +45,7 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         shopId = intent.getStringExtra(SHOP_ID)
         shopName = intent.getStringExtra(SHOP_NAME)
+        GraphqlClient.init(this)
         super.onCreate(savedInstanceState)
         if (!shopName.isNullOrEmpty()) {
             supportActionBar?.title = getString(R.string.merchant_voucher_x, shopName)

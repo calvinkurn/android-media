@@ -31,7 +31,8 @@ constructor(@ApplicationContext context: Context) : UseCase<ArrayList<ShopEtalas
                 return variables
             }
         }
-        graphQLUseCase.useCache = true
+        setForceNetwork(false)
+        graphQLUseCase.useCacheAfterNetworkSuccess = true
     }
 
     fun setForceNetwork(forceNetwork: Boolean) {

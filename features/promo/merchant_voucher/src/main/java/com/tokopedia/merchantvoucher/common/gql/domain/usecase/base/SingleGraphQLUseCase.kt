@@ -1,4 +1,4 @@
-package com.tokopedia.merchantvoucher.common.gql.domain.usecase
+package com.tokopedia.merchantvoucher.common.gql.domain.usecase.base
 
 import android.content.Context
 import android.text.TextUtils
@@ -24,12 +24,7 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
     // default, always use network.
     // do not change to false. Other use-cases might not handling force network when swipe refresh.
     var forceNetwork: Boolean = true
-
-    var useCache: Boolean
-        get() = !forceNetwork
-        set(value) {
-            forceNetwork = value
-        }
+    var useCacheAfterNetworkSuccess: Boolean = false
 
     init {
         this.graphqlUseCase = GraphqlUseCase()
@@ -59,7 +54,9 @@ abstract class SingleGraphQLUseCase<T>(private val context: Context, private val
                     Observable.error(MessageErrorException(errorMessage))
                 }
             } else {
-                forceNetwork = false
+                if (useCacheAfterNetworkSuccess) {
+                    forceNetwork = false
+                }
                 Observable.just(data)
             }
         }

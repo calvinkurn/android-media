@@ -2,10 +2,12 @@ package com.tokopedia.merchantvoucher.voucherDetail
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -23,5 +25,10 @@ class MerchantVoucherDetailActivity : BaseSimpleActivity(), HasComponent<Merchan
     companion object {
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, MerchantVoucherListActivity::class.java)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        GraphqlClient.init(this)
+        super.onCreate(savedInstanceState)
     }
 }
