@@ -54,8 +54,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private ButtonCompat doneBtn;
     private ButtonCompat addImageBtn;
 
-    private String productId = "";
-    private String adId = "";
     private CreatePostViewModel viewModel;
     private PostImageAdapter adapter;
 
@@ -110,14 +108,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         super.onViewCreated(view, savedInstanceState);
         presenter.attachView(this);
         initView();
-        presenter.fetchContentForm(productId, adId);
+        presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(CreatePostActivity.PARAM_PRODUCT_ID, productId);
-        outState.putString(CreatePostActivity.PARAM_AD_ID, adId);
         outState.putParcelable(VIEW_MODEL, viewModel);
     }
 
@@ -148,6 +144,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onSuccessGetContentForm(FeedContentForm feedContentForm) {
+        viewModel.setToken(feedContentForm.getToken());
         if (!feedContentForm.getGuides().isEmpty()) {
             setupHeader(feedContentForm.getGuides().get(0));
         }
@@ -170,7 +167,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     @Override
     public void onErrorGetContentForm(String message) {
         NetworkErrorHelper.showEmptyState(getContext(), getView(), message, () -> {
-            presenter.fetchContentForm(productId, adId);
+            presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
         });
     }
 
@@ -193,19 +190,20 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         }
 
         if (savedInstanceState != null) {
-            productId = savedInstanceState.getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
-            adId = savedInstanceState.getString(CreatePostActivity.PARAM_AD_ID, "");
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL);
         } else if (getArguments() != null) {
-            productId = getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, "");
-            adId = getArguments().getString(CreatePostActivity.PARAM_AD_ID, "");
+            viewModel.setProductId(getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, ""));
+            viewModel.setAdId(getArguments().getString(CreatePostActivity.PARAM_AD_ID, ""));
         }
     }
 
     private void initView() {
-        doneBtn.setOnClickListener(view -> {
-            presenter.submitPost(productId, adId, "", viewModel.getCompleteList());
-        });
+        doneBtn.setOnClickListener(view -> presenter.submitPost(
+                viewModel.getProductId(),
+                viewModel.getAdId(),
+                viewModel.getToken(),
+                viewModel.getCompleteList()
+        ));
         addImageBtn.setOnClickListener(view -> {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -218,13 +216,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private void setupHeader(Guide guide) {
         title.setText(guide.getHeader());
         seeExample.setText(guide.getMoreText());
-        seeExample.setOnClickListener(v -> {
-            startActivity(CreatePostExampleActivity.createIntent(
-                    getContext(),
-                    guide.getImageUrl(),
-                    guide.getImageDescription()
-            ));
-        });
+        seeExample.setOnClickListener(v -> startActivity(CreatePostExampleActivity.createIntent(
+                getContext(),
+                guide.getImageUrl(),
+                guide.getImageDescription()
+        )));
     }
 
     private void setupViewPager() {

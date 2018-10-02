@@ -21,8 +21,8 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     private final SubmitPostUseCase submitPostUseCase;
 
     @Inject
-    public CreatePostPresenter(GetContentFormUseCase getContentFormUseCase, SubmitPostUseCase
-            submitPostUseCase) {
+    public CreatePostPresenter(GetContentFormUseCase getContentFormUseCase,
+                               SubmitPostUseCase submitPostUseCase) {
         this.getContentFormUseCase = getContentFormUseCase;
         this.submitPostUseCase = submitPostUseCase;
     }
