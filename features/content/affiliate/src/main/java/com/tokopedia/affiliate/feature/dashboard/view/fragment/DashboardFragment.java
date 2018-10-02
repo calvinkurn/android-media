@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -138,7 +139,6 @@ public class DashboardFragment
         rvHistory.setAdapter(adapter);
         rvHistory.addOnScrollListener(onScrollListener());
         loadFirstData(false);
-//        testData();
     }
 
     private void loadFirstData(boolean isPullToRefresh) {
@@ -163,14 +163,14 @@ public class DashboardFragment
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
-//                if (isCanLoadMore
-//                        && !TextUtils.isEmpty(cursor)
-//                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
-//                    isCanLoadMore = false;
-//                    swipeToRefresh.setRefreshing(true);
-//                    adapter.addElement(new LoadingModel());
-//                    presenter.loadMoreDashboardItem(cursor);
-//                }
+                if (isCanLoadMore
+                        && !TextUtils.isEmpty(cursor)
+                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
+                    isCanLoadMore = false;
+                    swipeToRefresh.setRefreshing(true);
+                    adapter.addElement(new LoadingModel());
+                    presenter.loadMoreDashboardItem(cursor);
+                }
             }
         };
     }
@@ -253,19 +253,5 @@ public class DashboardFragment
     public void onDestroy() {
         super.onDestroy();
         presenter.detachView();
-    }
-
-    private void testData() {
-        DashboardHeaderViewModel headerModel = new DashboardHeaderViewModel("Rp. 123.456", "12x Dilihat", "10 Di klik", "2 Dibeli");
-        List<DashboardItemViewModel> itemList = new ArrayList<>();
-        itemList.add(new DashboardItemViewModel(
-                "123",
-                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
-                "Nasi Goreng",
-                "Rp 12.000",
-                "12x diklik",
-                "1 Dibeli",
-                true));
-        onSuccessGetDashboardItem(headerModel, itemList,"");
     }
 }

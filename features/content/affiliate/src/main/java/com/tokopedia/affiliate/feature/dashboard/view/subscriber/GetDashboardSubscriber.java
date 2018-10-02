@@ -45,7 +45,8 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
         mainView.onSuccessGetDashboardItem(
                 mappingHeader(query.getAffiliateStats()),
                 query.getProduct().getAffiliatedProducts() != null ? mappingListItem(query.getProduct().getAffiliatedProducts()) : new ArrayList<>(),
-                query.getProduct().getPagination().getNextCursor()
+                query.getProduct().getPagination().getNextCursor(),
+                mappingFloatingItem(query.getPostQuota())
         );
     }
 
