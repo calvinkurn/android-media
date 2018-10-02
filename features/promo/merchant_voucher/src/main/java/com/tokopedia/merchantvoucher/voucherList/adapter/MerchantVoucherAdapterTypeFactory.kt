@@ -10,13 +10,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmering
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingShimmeringListViewHolder
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherList.adapter.viewholder.MerchantVoucherViewHolder
 
 /**
  * Created by hendry on 01/10/18.
  */
 
-class MerchantVoucherAdapterTypeFactory() : BaseAdapterTypeFactory() {
+class MerchantVoucherAdapterTypeFactory(onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener)
+    : BaseAdapterTypeFactory() {
+    private var onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener? = null
+
+    init {
+        this.onMerchantVoucherViewListener = onMerchantVoucherViewListener
+    }
 
     fun type(viewModel: MerchantVoucherViewModel): Int {
         return MerchantVoucherViewHolder.LAYOUT
@@ -30,7 +37,7 @@ class MerchantVoucherAdapterTypeFactory() : BaseAdapterTypeFactory() {
         return if (type == LoadingShimmeringListViewHolder.LAYOUT) {
             LoadingShimmeringGridViewHolder(parent)
         } else if (type == MerchantVoucherViewHolder.LAYOUT) {
-            MerchantVoucherViewHolder(parent)
+            MerchantVoucherViewHolder(parent, onMerchantVoucherViewListener)
         } else {
             super.createViewHolder(parent, type)
         }

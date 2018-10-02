@@ -4,18 +4,26 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+import kotlinx.android.synthetic.main.item_merchant_voucher.view.*
 
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewHolder(val itemView: View) : AbstractViewHolder<MerchantVoucherViewModel>(itemView) {
+class MerchantVoucherViewHolder(itemView: View,
+                                onMerchantVoucherViewListener: MerchantVoucherView.OnMerchantVoucherViewListener?)
+    : AbstractViewHolder<MerchantVoucherViewModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_merchant_voucher
     }
 
+    init {
+        itemView.merchantVoucherView.onMerchantVoucherViewListener = onMerchantVoucherViewListener
+    }
+
     override fun bind(element: MerchantVoucherViewModel?) {
-        //TODO
+        itemView.merchantVoucherView.merchantVoucherViewModel = element
     }
 
 }

@@ -7,9 +7,9 @@ import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterT
 /**
  * Created by hendry on 01/10/18.
  */
-class MerchantVoucherViewModel : Visitable<MerchantVoucherAdapterTypeFactory>{
+class MerchantVoucherViewModel(merchantVoucherModel: MerchantVoucherModel) : Visitable<MerchantVoucherAdapterTypeFactory>{
 
-    constructor(merchantVoucherModel: MerchantVoucherModel){
+    init {
         //TODO map here
     }
 

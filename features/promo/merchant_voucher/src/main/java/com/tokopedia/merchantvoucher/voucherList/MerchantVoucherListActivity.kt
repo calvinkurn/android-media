@@ -30,8 +30,8 @@ class MerchantVoucherListActivity : BaseSimpleActivity(),
     override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance(shopId)
 
     companion object {
-        const val SHOP_ID = "shop_id"
-        const val SHOP_NAME = "shop_name"
+        const val SHOP_ID = "shop_id"       // to get voucher list by shop, to get shop detail
+        const val SHOP_NAME = "shop_name"   // placeholder for shop name first time (optional)
 
         @JvmStatic
         fun createIntent(context: Context, shopId: String, shopName: String? = null): Intent {

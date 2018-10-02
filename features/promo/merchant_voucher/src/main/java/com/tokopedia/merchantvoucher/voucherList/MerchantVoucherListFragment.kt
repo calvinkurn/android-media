@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
@@ -27,7 +29,7 @@ import javax.inject.Inject
  */
 
 class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>(),
-        MerchantVoucherListView {
+        MerchantVoucherListView, MerchantVoucherView.OnMerchantVoucherViewListener {
 
     lateinit var shopId: String
     var shopInfo: ShopInfo? = null
@@ -43,11 +45,7 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
     }
 
     override fun getAdapterTypeFactory(): MerchantVoucherAdapterTypeFactory {
-        return MerchantVoucherAdapterTypeFactory()
-    }
-
-    override fun onItemClicked(t: MerchantVoucherViewModel?) {
-        //TODO
+        return MerchantVoucherAdapterTypeFactory(this)
     }
 
     override fun getScreenName(): String {
@@ -143,6 +141,17 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
 //        emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
 //        emptyModel.content = getString(R.string.change_your_keyword)
         return emptyModel
+    }
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        // TODO if not login, open login activity
+        // TODO if login, make call to use the voucher
+        Log.i("Test", "Test")
+    }
+
+    override fun onItemClicked(t: MerchantVoucherViewModel?) {
+        //TODO go to detail activity
+        Log.i("Test", "Test")
     }
 
     override fun onAttachActivity(context: Context?) {
