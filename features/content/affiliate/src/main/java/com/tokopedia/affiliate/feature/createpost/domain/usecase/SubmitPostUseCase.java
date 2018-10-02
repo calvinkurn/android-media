@@ -5,8 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request.SubmitPostMedium;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request.ContentSubmitInput;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.request.SubmitPostMedium;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.response.SubmitPostData;
 import com.tokopedia.graphql.data.model.GraphqlRequest;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
 import com.tokopedia.graphql.domain.GraphqlUseCase;
@@ -25,7 +26,7 @@ import rx.functions.Func1;
 /**
  * @author by milhamj on 10/1/18.
  */
-public class SubmitPostUseCase extends UseCase<Boolean> {
+public class SubmitPostUseCase extends UseCase<SubmitPostData> {
     private static final String PARAM_TYPE = "type";
     private static final String PARAM_AD_ID = "adID";
     private static final String PARAM_PRODUCT_ID = "productID";
@@ -34,6 +35,8 @@ public class SubmitPostUseCase extends UseCase<Boolean> {
     private static final String PARAM_INPUT = "input";
     private static final String TYPE_AFFILIATE = "affiliate";
     private static final String TYPE_IMAGE = "image";
+
+    public static final int SUCCESS = 1;
 
     private final Context context;
     private final UploadMultipleImageUseCase uploadMultipleImageUseCase;
@@ -50,14 +53,14 @@ public class SubmitPostUseCase extends UseCase<Boolean> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public Observable<Boolean> createObservable(RequestParams requestParams) {
+    public Observable<SubmitPostData> createObservable(RequestParams requestParams) {
         List<String> imageList = (List<String>) requestParams.getObject(PARAM_IMAGE_LIST);
         return uploadMultipleImageUseCase
                 .createObservable(UploadMultipleImageUseCase.createRequestParams(imageList))
                 .flatMap(submitPostToGraphql(requestParams));
     }
 
-    private Func1<List<String>, Observable<Boolean>> submitPostToGraphql(RequestParams
+    private Func1<List<String>, Observable<SubmitPostData>> submitPostToGraphql(RequestParams
                                                                                  requestParams) {
         return imageUrlList -> {
             String query = GraphqlHelper.loadRawString(
@@ -70,7 +73,7 @@ public class SubmitPostUseCase extends UseCase<Boolean> {
 
             GraphqlRequest graphqlRequest = new GraphqlRequest(
                     query,
-                    ContentSubmitInput.class,
+                    SubmitPostData.class,
                     variables);
 
             graphqlUseCase.clearRequest();
@@ -82,10 +85,8 @@ public class SubmitPostUseCase extends UseCase<Boolean> {
         };
     }
 
-    private Func1<GraphqlResponse, Boolean> mapGraphqlResponse() {
-        return graphqlResponse -> {
-            return false;
-        };
+    private Func1<GraphqlResponse, SubmitPostData> mapGraphqlResponse() {
+        return graphqlResponse -> graphqlResponse.getData(SubmitPostData.class);
     }
 
     private ContentSubmitInput getContentSubmitInput(RequestParams requestParams,
