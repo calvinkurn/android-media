@@ -66,6 +66,7 @@ public interface TrainEventTracking {
         String QUANTITY = "quantity";
         String COUPON = "coupon";
         String LIST = "list";
+        String BRAND = "brand";
     }
 
 }

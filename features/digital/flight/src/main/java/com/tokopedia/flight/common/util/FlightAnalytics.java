@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 public class FlightAnalytics {
     private AnalyticTracker analyticTracker;
+    private FlightDateUtil flightDateUtil;
     private String GENERIC_EVENT = "genericFlightEvent";
     private String ATC_EVENT = "addToCart";
     private String PROMO_CLICK_EVENT = "promoClick";
@@ -39,8 +40,9 @@ public class FlightAnalytics {
     private String ECOMMERCE = "ecommerce";
 
     @Inject
-    public FlightAnalytics(AnalyticTracker analyticTracker) {
+    public FlightAnalytics(AnalyticTracker analyticTracker, FlightDateUtil flightDateUtil) {
         this.analyticTracker = analyticTracker;
+        this.flightDateUtil = flightDateUtil;
     }
 
     public void eventClickTransactions(String screenName) {
@@ -55,7 +57,10 @@ public class FlightAnalytics {
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_PROMOTION,
-                String.format(getDefaultLocale(), "%d-%s-%s", position, banner.getAttributes().getDescription(), banner.getAttributes().getLinkUrl())
+                String.format(getDefaultLocale(), "%d-%s-%s",
+                        position,
+                        banner.getAttributes().getDescription(),
+                        banner.getAttributes().getLinkUrl())
         );
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
@@ -70,7 +75,11 @@ public class FlightAnalytics {
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
                         EVENT_CATEGORY, GENERIC_CATEGORY,
                         EVENT_ACTION, Action.PROMOTION_CLICK,
-                        EVENT_LABEL, String.format(getDefaultLocale(), "%d-%s-%s", position, banner.getAttributes().getDescription(), banner.getAttributes().getLinkUrl()),
+                        EVENT_LABEL, String.format(getDefaultLocale(), "%d-%s-%s",
+                                position,
+                                banner.getAttributes().getDescription(),
+                                banner.getAttributes().getLinkUrl()
+                        ),
                         ECOMMERCE, DataLayer.mapOf(
                                 "promoClick",
                                 DataLayer.mapOf(
@@ -130,7 +139,7 @@ public class FlightAnalytics {
 
     public void eventSearchProductClickFromDetail(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
-        result.append(Label.NORMAL_PRICE);
+        result.append(String.format("%s%s", Label.PRICE_PREFIX, String.valueOf(viewModel.getFare().getAdultNumeric())));
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
@@ -142,7 +151,7 @@ public class FlightAnalytics {
 
     public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
-        result.append(Label.NORMAL_PRICE);
+        result.append(String.format("%s%d", Label.PRICE_PREFIX, viewModel.getFare().getAdultNumeric()));
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
@@ -210,7 +219,7 @@ public class FlightAnalytics {
     public void eventSearchProductClickFromList(FlightSearchPassDataViewModel flightSearchPassData, FlightSearchViewModel viewModel, int adapterPosition) {
         StringBuilder result = transformSearchProductClickLabel(viewModel);
         result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
-        result.append(Label.NORMAL_PRICE);
+        result.append(String.format("%s%s", Label.PRICE_PREFIX, String.valueOf(viewModel.getFare().getAdultNumeric())));
         analyticTracker.sendEventTracking(GENERIC_EVENT,
                 GENERIC_CATEGORY,
                 Category.CLICK_SEARCH_PRODUCT,
@@ -232,8 +241,8 @@ public class FlightAnalytics {
         }
 
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
-            String timeResult = viewModel.getRouteList().get(0).getDepartureTimestamp();
-            timeResult += " - " + viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp();
+            String timeResult = String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(0).getDepartureTimestamp()));
+            timeResult += " - " + String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp()));
             result.append(String.format(" - %s", timeResult));
         }
         return result;
@@ -277,8 +286,8 @@ public class FlightAnalytics {
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
             String airlines = viewModel.getRouteList().get(0).getAirlineName();
             result.append(airlines);
-            String timeResult = String.format(" - %s", viewModel.getRouteList().get(0).getDepartureTimestamp());
-            timeResult += String.format(" - %s ", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
+            String timeResult = String.format(" - %s", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(0).getDepartureTimestamp())));
+            timeResult += String.format(" - %s ", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp())));
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.getIsRefundable()));
@@ -296,11 +305,11 @@ public class FlightAnalytics {
             result.append(airlines);
 
             String timeResult = String.format(" - %s, %s",
-                    departureViewModel.getRouteList().get(0).getDepartureTimestamp(),
-                    returnViewModel.getRouteList().get(0).getDepartureTimestamp());
+                    String.valueOf(flightDateUtil.getDayDiff(departureViewModel.getRouteList().get(0).getDepartureTimestamp())),
+                    String.valueOf(flightDateUtil.getDayDiff(returnViewModel.getRouteList().get(0).getDepartureTimestamp())));
             timeResult += String.format(" - %s, %s ",
-                    departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1).getArrivalTimestamp(),
-                    returnViewModel.getRouteList().get(returnViewModel.getRouteList().size() - 1).getArrivalTimestamp());
+                    String.valueOf(flightDateUtil.getDayDiff(departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1).getArrivalTimestamp())),
+                    String.valueOf(flightDateUtil.getDayDiff(returnViewModel.getRouteList().get(returnViewModel.getRouteList().size() - 1).getArrivalTimestamp())));
             result.append(timeResult);
         }
         String refundable = String.format("%s, %s", transformRefundableLabel(departureViewModel.getIsRefundable()), transformRefundableLabel(returnViewModel.getIsRefundable()));
@@ -333,13 +342,13 @@ public class FlightAnalytics {
         }
 
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
-            String timeResult = String.format(" - %s", viewModel.getRouteList().get(0).getDepartureTimestamp());
-            timeResult += String.format(" - %s", viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp());
+            String timeResult = String.format(" - %s", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(0).getDepartureTimestamp())));
+            timeResult += String.format(" - %s", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp())));
             result.append(timeResult);
         }
         result.append(transformRefundableLabel(viewModel.isRefundable()));
-        result.append(String.format(getDefaultLocale(), " - %d", adapterPosition));
-        result.append(Label.NORMAL_PRICE);
+        result.append(String.format(getDefaultLocale(), " - %d - ", adapterPosition));
+        result.append(String.valueOf(viewModel.getFare().getAdultNumeric()));
         return result;
     }
 
@@ -652,7 +661,7 @@ public class FlightAnalytics {
         static String FAILED_PURCHASE = "FAILED";
         static String SUCCESS_PURCHASE = "SUCCESS";
         static String CANCEL_PURCHASE = "CANCEL";
-        static String NORMAL_PRICE = " - Normal Price";
+        static String PRICE_PREFIX = " - ";
         static String ADULT = "adult";
         static String CHILD = "child";
         static String INFANT = "baby";

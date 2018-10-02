@@ -214,17 +214,12 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
                 returnPrice = returnScheduleViewModel.getAdultFare()
                         + returnScheduleViewModel.getInfantFare();
                 trainAnalytics.eventAddToCart(
-                        trip, origin, destination,
-                        departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
-                        returnScheduleId, returnTrainClass, returnTrainName, returnPrice,
-                        numOfTotalPassenger
+                        departureScheduleViewModel, returnScheduleViewModel, numOfTotalPassenger
                 );
             } else {
                 String trip = "single trip";
                 trainAnalytics.eventAddToCart(
-                        trip, origin, destination,
-                        departureScheduleId, departureTrainClass, departureTrainName, departurePrice,
-                        numOfTotalPassenger
+                        departureScheduleViewModel, numOfTotalPassenger
                 );
             }
 
@@ -332,16 +327,16 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
 
     @Override
     public void loadDetailSchedule(TrainScheduleViewModel trainScheduleViewModel, CardWithAction cardWithAction) {
-        cardWithAction.setContentInfo("(" + TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        cardWithAction.setContentInfo("(" + TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.DEFAULT_VIEW_FORMAT, trainScheduleViewModel.getDepartureTimestamp()) + ")");
         cardWithAction.setSubContent(trainScheduleViewModel.getTrainName() + " " + trainScheduleViewModel.getTrainNumber());
-        String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeDepartureString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getDepartureTimestamp());
-        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String timeArrivalString = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_TIME, trainScheduleViewModel.getArrivalTimestamp());
-        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String departureHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, trainScheduleViewModel.getDepartureTimestamp());
-        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.FORMAT_DATE_API,
+        String arrivalHour = TrainDateUtil.formatDate(TrainDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z,
                 TrainDateUtil.FORMAT_DAY, trainScheduleViewModel.getArrivalTimestamp());
         int deviationDay = Integer.parseInt(arrivalHour) - Integer.parseInt(departureHour);
         String deviationDayString = deviationDay > 0 ? " (+" + deviationDay + "h)" : "";

@@ -72,8 +72,8 @@ public class FlightSearchReturnPresenter extends BaseDaggerPresenter<FlightSearc
             if (departureViewModel.getRouteList().size() > 0 && returnViewModel.getRouteList().size() > 0) {
                 Route lastDepartureRoute = departureViewModel.getRouteList().get(departureViewModel.getRouteList().size() - 1);
                 Route firstReturnRoute = returnViewModel.getRouteList().get(0);
-                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, lastDepartureRoute.getArrivalTimestamp());
-                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.FORMAT_DATE_API, firstReturnRoute.getDepartureTimestamp());
+                Date departureArrivalTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, lastDepartureRoute.getArrivalTimestamp());
+                Date returnDepartureTime = FlightDateUtil.stringToDate(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, firstReturnRoute.getDepartureTimestamp());
                 long different = returnDepartureTime.getTime() - departureArrivalTime.getTime();
                 if (different >= 0) {
                     long hours = different / ONE_HOUR;

@@ -136,7 +136,7 @@ public class FlightOrderWaitingForPaymentViewHolder extends FlightOrderBaseViewH
                 tvPaymentUniqueCode.setText(element.getPayment().getTransactionCode());
             }
 
-            tvPaymentDueDate.setText(FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.FORMAT_DATE_API, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
+            tvPaymentDueDate.setText(FlightDateUtil.formatDateByUsersTimezone(FlightDateUtil.YYYY_MM_DD_T_HH_MM_SS_Z, FlightDateUtil.DEFAULT_VIEW_TIME_FORMAT, element.getPayment().getExpireOn()));
 
         } else {
             paymentLayout.setVisibility(View.GONE);
