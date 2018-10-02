@@ -18,7 +18,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderV
  */
 public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeaderViewModel> {
 
-    private static final String URL_BACKGROUND = "https://ecs7.tokopedia.net/img/android/bg_af_dashboard/drawable-hdpi/bg_af_dashboard.png";
+    private static final String URL_BACKGROUND = "https://ecs7.tokopedia.net/img/android/bg_af_dashboard/drawable-xhdpi/bg_af_dashboard.png";
 
     private static final int TEXT_TYPE_PROFILE_SEEN = 1;
     private static final int TEXT_TYPE_PRODUCT_CLICKED = 2;
@@ -53,7 +53,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     }
 
     private void initView(DashboardHeaderViewModel element) {
-        ImageHandler.LoadImage(ivSaldo, URL_BACKGROUND);
+        ImageHandler.loadImage2(ivSaldo, URL_BACKGROUND, R.drawable.ic_loading_image);
         if (element == null) {
             initDefaultValue();
         } else {

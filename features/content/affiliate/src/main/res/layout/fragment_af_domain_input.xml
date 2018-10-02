@@ -48,6 +48,7 @@
             android:layout_marginStart="-4dp"
             android:layout_marginTop="@dimen/dp_16"
             android:hint="@string/af_type_username"
+            app:helper="Harus 3 karakter"
             android:textColorHint="@color/black_56"
             app:layout_constraintTop_toBottomOf="@id/title">
 

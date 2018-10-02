@@ -14,7 +14,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -162,14 +161,14 @@ public class DashboardFragment
                 super.onScrolled(recyclerView, dx, dy);
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisibleItemPos = layoutManager.findLastVisibleItemPosition();
-                if (isCanLoadMore
-                        && !TextUtils.isEmpty(cursor)
-                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
-                    isCanLoadMore = false;
-                    swipeToRefresh.setRefreshing(true);
-                    adapter.addElement(new LoadingModel());
-                    presenter.loadMoreDashboardItem(cursor);
-                }
+//                if (isCanLoadMore
+//                        && !TextUtils.isEmpty(cursor)
+//                        && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
+//                    isCanLoadMore = false;
+//                    swipeToRefresh.setRefreshing(true);
+//                    adapter.addElement(new LoadingModel());
+//                    presenter.loadMoreDashboardItem(cursor);
+//                }
             }
         };
     }
