@@ -208,7 +208,7 @@ public class TrainHomepageFragment extends BaseDaggerFragment implements TrainHo
 
             @Override
             public void navigateToPromoPage() {
-                Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity());
+                Intent intentToPromoList = trainRouter.getPromoListIntent(getActivity(), "4", "378");
                 startActivity(intentToPromoList);
             }
 
