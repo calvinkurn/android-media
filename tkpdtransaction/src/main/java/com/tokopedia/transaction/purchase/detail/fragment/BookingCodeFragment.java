@@ -12,21 +12,25 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
-import com.tokopedia.core.network.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.adapter.MessageAdapter;
 import com.tokopedia.transaction.purchase.detail.activity.BookingCodeContract;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
+import com.tokopedia.transaction.purchase.detail.presenter.BookingCodePresenter;
 
 public class BookingCodeFragment extends BaseDaggerFragment implements BookingCodeContract.BookingView {
 
     TextView bookingCode;
+    ImageView barcodeImg;
     RecyclerView recyclerView;
     ViewGroup copyLayout;
     OnlineBooking mData;
+    BookingCodeContract.BookingPresenter mPresenter;
 
     public BookingCodeFragment() {
     }
@@ -40,6 +44,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mData = getArguments() != null ? getArguments().getParcelable("data") : null;
+        mPresenter = new BookingCodePresenter();
         initView(view);
     }
 
@@ -59,6 +64,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         copyLayout = view.findViewById(R.id.ll_code);
         copyLayout.setOnClickListener(this::copyCode);
         recyclerView = view.findViewById(R.id.rv_message);
+        barcodeImg = view.findViewById(R.id.barcode_img);
 
         if(mData != null) {
             bookingCode.setText(mData.getBookingCode());
@@ -66,6 +72,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setHasFixedSize(true);
             recyclerView.setAdapter(adapter);
+            showBarcode(mPresenter.generateBarcode(mData.getBookingCode(), mData.getBarcodeType()));
         }
     }
 
@@ -78,14 +85,13 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         clipboardManager.setPrimaryClip(
                 ClipData.newPlainText("booking code", code)
         );
-        NetworkErrorHelper.showSnackbar(
-                getActivity(),
-                getString(R.string.notification_awb_copied)
-        );
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
+                getString(R.string.notification_awb_copied));
     }
 
     @Override
     public void showBarcode(Bitmap bitmap) {
-
+        // TODO: Use Glide
+        barcodeImg.setImageBitmap(bitmap);
     }
 }

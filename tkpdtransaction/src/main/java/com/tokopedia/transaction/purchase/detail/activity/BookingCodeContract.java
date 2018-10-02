@@ -18,6 +18,8 @@ public interface BookingCodeContract {
 
         Bitmap generateBarcode(String code, String type);
 
+        void setView(BookingView view);
+
     }
 
 }
