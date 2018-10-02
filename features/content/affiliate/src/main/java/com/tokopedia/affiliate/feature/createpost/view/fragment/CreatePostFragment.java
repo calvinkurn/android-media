@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.FeedContentForm;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.getcontentform.Guide;
@@ -46,10 +48,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private static final String VIEW_MODEL = "view_model";
     private static final int REQUEST_IMAGE_PICKER = 1234;
 
+    private View mainView;
+    private View scrollView;
+    private View footerView;
     private TextView title;
     private TextView seeExample;
     private WrapContentViewPager imageViewPager;
     private TabLayout tabLayout;
+    private TextView setMain;
     private View deleteImageLayout;
     private ButtonCompat doneBtn;
     private ButtonCompat addImageBtn;
@@ -94,10 +100,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_af_create_post, container, false);
+        mainView = view.findViewById(R.id.mainView);
+        scrollView = view.findViewById(R.id.scrollView);
+        footerView = view.findViewById(R.id.footerView);
         title = view.findViewById(R.id.title);
         seeExample = view.findViewById(R.id.seeExample);
         imageViewPager = view.findViewById(R.id.imageViewPager);
         tabLayout = view.findViewById(R.id.tabLayout);
+        setMain = view.findViewById(R.id.setMain);
         deleteImageLayout = view.findViewById(R.id.deleteImageLayout);
         doneBtn = view.findViewById(R.id.doneBtn);
         addImageBtn = view.findViewById(R.id.addImageBtn);
@@ -178,7 +188,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onErrorGetContentForm(String message) {
-        NetworkErrorHelper.showEmptyState(getContext(), getView(), message, () -> {
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, message, () -> {
             presenter.fetchContentForm(viewModel.getProductId(), viewModel.getAdId());
         });
     }
@@ -192,7 +202,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void onErrorSubmitPost(String message) {
-        NetworkErrorHelper.showEmptyState(getContext(), getView(), message, this::submitPost);
+        NetworkErrorHelper.showEmptyState(getContext(), mainView, message, this::submitPost);
     }
 
     private void initVar(Bundle savedInstanceState) {
@@ -206,13 +216,27 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL);
         } else if (getArguments() != null) {
-            viewModel.setProductId(getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID,
-                    ""));
-            viewModel.setAdId(getArguments().getString(CreatePostActivity.PARAM_AD_ID, ""));
+            viewModel.setProductId(
+                    getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, "")
+            );
+            viewModel.setAdId(
+                    getArguments().getString(CreatePostActivity.PARAM_AD_ID, "")
+            );
         }
     }
 
     private void initView() {
+        footerView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        footerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+
+                        scrollView.setPadding(0, 0, 0, footerView.getHeight());
+                        scrollView.requestLayout();
+                    }
+                }
+        );
         doneBtn.setOnClickListener(view -> submitPost());
         addImageBtn.setOnClickListener(view -> {
             startActivityForResult(
@@ -225,6 +249,10 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
             viewModel.getImageList().remove(tabLayout.getSelectedTabPosition());
             adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
             adapter.notifyDataSetChanged();
+        });
+        setMain.setOnClickListener(v -> {
+            viewModel.setMainImageIndex(tabLayout.getSelectedTabPosition());
+            updateSetMainView();
         });
     }
 
@@ -249,7 +277,13 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                 deleteImageLayout.setVisibility(
                         tab.getPosition() == adapter.getCount() - 1
                                 ? View.GONE
-                                : View.VISIBLE);
+                                : View.VISIBLE
+                );
+                setMain.setVisibility(tab.getPosition() == adapter.getCount() - 1
+                        ? View.INVISIBLE
+                        : View.VISIBLE
+                );
+                updateSetMainView();
             }
 
             @Override
@@ -262,6 +296,21 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
             }
         });
+    }
+
+    private void updateSetMainView() {
+        if (viewModel.getMainImageIndex() == tabLayout.getSelectedTabPosition()) {
+            setMain.setTextColor(MethodChecker.getColor(getContext(), R.color.black_38));
+            setMain.setCompoundDrawablesWithIntrinsicBounds(
+                    null,
+                    null,
+                    MethodChecker.getDrawable(getContext(), R.drawable.ic_af_check_gray),
+                    null
+            );
+        } else {
+            setMain.setTextColor(MethodChecker.getColor(getContext(), R.color.medium_green));
+            setMain.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+        }
     }
 
     private void submitPost() {

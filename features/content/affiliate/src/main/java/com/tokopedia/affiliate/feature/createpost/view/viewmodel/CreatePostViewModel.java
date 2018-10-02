@@ -13,7 +13,16 @@ public class CreatePostViewModel implements Parcelable {
     private String adId = "";
     private String token = "";
     private String pdpImage = "";
+    private int mainImageIndex = 0;
     private ArrayList<String> imageList = new ArrayList<>();
+
+    public int getMainImageIndex() {
+        return mainImageIndex;
+    }
+
+    public void setMainImageIndex(int mainImageIndex) {
+        this.mainImageIndex = mainImageIndex;
+    }
 
     public String getProductId() {
         return productId;
@@ -100,6 +109,7 @@ public class CreatePostViewModel implements Parcelable {
         dest.writeString(this.adId);
         dest.writeString(this.token);
         dest.writeString(this.pdpImage);
+        dest.writeInt(this.mainImageIndex);
         dest.writeStringList(this.imageList);
     }
 
@@ -111,6 +121,7 @@ public class CreatePostViewModel implements Parcelable {
         this.adId = in.readString();
         this.token = in.readString();
         this.pdpImage = in.readString();
+        this.mainImageIndex = in.readInt();
         this.imageList = in.createStringArrayList();
     }
 
