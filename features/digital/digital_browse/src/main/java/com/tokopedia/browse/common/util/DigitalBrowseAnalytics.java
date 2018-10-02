@@ -2,6 +2,7 @@ package com.tokopedia.browse.common.util;
 
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.browse.common.data.DigitalBrowsePopularAnalyticsModel;
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel;
 
 import java.util.ArrayList;
@@ -43,56 +44,55 @@ public class DigitalBrowseAnalytics {
                 "");
     }
 
-    public void eventPromoImpressionPopularBrand(long bannerId,
-                                                 String creativeName,
-                                                 int position) {
-        Object promotion = DataLayer.mapOf(
-                "id", bannerId,
-                "name", "/belanja - Brand Pilihan",
-                "creative", creativeName,
-                "position", position);
+    public void eventPromoImpressionPopularBrand(List<DigitalBrowsePopularAnalyticsModel> promotionDatas) {
+        try {
+            List<Object> promotions = new ArrayList<>();
 
-        List<Object> promotions = new ArrayList<>();
-        promotions.add(promotion);
+            for (DigitalBrowsePopularAnalyticsModel promotionItem : promotionDatas) {
+                Object promotion = tranformPromotionModel(promotionItem);
 
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf(
-                        "event", Event.IMPRESSION_PROMO,
-                        "eventCategory", GENERIC_CATEGORY,
-                        "eventAction", Action.IMPRESSION_BRAND_BELANJA,
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                                "promoView", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(promotions.toArray()))
-                        )
-                )
-        );
+                promotions.add(promotion);
+            }
+
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", Event.IMPRESSION_PROMO,
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", Action.IMPRESSION_BRAND_BELANJA,
+                            "eventLabel", "",
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoView", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(promotions.toArray()))
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public void eventPromoClickPopularBrand(long bannerId,
-                                            String creativeName,
-                                            int position) {
-        Object promotion = DataLayer.mapOf(
-                "id", bannerId,
-                "name", "/belanja - Brand Pilihan",
-                "creative", creativeName,
-                "position", position);
+    public void eventPromoClickPopularBrand(DigitalBrowsePopularAnalyticsModel promotionItem) {
+        try {
+            Object promotion = tranformPromotionModel(promotionItem);
 
-        List<Object> promotions = new ArrayList<>();
-        promotions.add(promotion);
+            List<Object> promotions = new ArrayList<>();
+            promotions.add(promotion);
 
-        analyticTracker.sendEnhancedEcommerce(
-                DataLayer.mapOf(
-                        "event", Event.CLICK_PROMO,
-                        "eventCategory", GENERIC_CATEGORY,
-                        "eventAction", Action.CLICK_BRAND_BELANJA,
-                        "eventLabel", creativeName,
-                        "ecommerce", DataLayer.mapOf(
-                                "promoClick", DataLayer.mapOf(
-                                        "promotions", DataLayer.listOf(promotions.toArray()))
-                        )
-                )
-        );
+            analyticTracker.sendEnhancedEcommerce(
+                    DataLayer.mapOf(
+                            "event", Event.CLICK_PROMO,
+                            "eventCategory", GENERIC_CATEGORY,
+                            "eventAction", Action.CLICK_BRAND_BELANJA,
+                            "eventLabel", promotionItem.getBrandName(),
+                            "ecommerce", DataLayer.mapOf(
+                                    "promoClick", DataLayer.mapOf(
+                                            "promotions", DataLayer.listOf(promotions.toArray()))
+                            )
+                    )
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void eventImpressionHomePage(String iconName, int iconPosition) {
@@ -143,6 +143,14 @@ public class DigitalBrowseAnalytics {
                 String.format(Action.CLICK_ICON_LAYANAN, analyticsModel.getHeaderName()),
                 analyticsModel.getIconName() + "_" + analyticsModel.getHeaderPosition()
                         + "_" + analyticsModel.getIconPosition());
+    }
+
+    private Object tranformPromotionModel(DigitalBrowsePopularAnalyticsModel promotionItem) {
+        return DataLayer.mapOf(
+                "id", Long.toString(promotionItem.getBannerId()),
+                "name", "/belanja - Brand Pilihan",
+                "creative", promotionItem.getBrandName(),
+                "position", Integer.toString(promotionItem.getPosition()));
     }
 
 }

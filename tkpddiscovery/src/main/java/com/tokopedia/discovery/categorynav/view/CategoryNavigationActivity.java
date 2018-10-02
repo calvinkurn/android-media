@@ -3,10 +3,9 @@ package com.tokopedia.discovery.categorynav.view;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.design.widget.AppBarLayout;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
@@ -15,15 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.R2;
 import com.tokopedia.core.app.BasePresenterNoLayoutActivity;
 import com.tokopedia.discovery.R;
 import com.tokopedia.discovery.applink.DiscoveryAppLink;
-import com.tokopedia.discovery.dynamicfilter.presenter.DynamicFilterPresenter;
-import com.tokopedia.discovery.fragment.BrowseParentFragment;
-import com.tokopedia.discovery.intermediary.view.IntermediaryFragment;
-import com.tokopedia.tkpdpdp.InstallmentActivity;
 
 import butterknife.BindView;
 
@@ -34,6 +28,7 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
     public static final int DESTROY_INTERMEDIARY = 98;
     public static final String EXTRA_SELECTED_CATEGORY_ID = "EXTRA_SELECTED_CATEGORY_ID";
     public static final String EXTRA_SELECTED_CATEGORY_NAME = "EXTRA_SELECTED_CATEGORY_NAME";
+    public static final String EXTRA_DEPARTMENT_ID = "EXTRA_DEPARTMENT_ID";
 
     private FragmentManager fragmentManager;
     private String departmentId = "0";
@@ -65,8 +60,8 @@ public class CategoryNavigationActivity extends BasePresenterNoLayoutActivity {
 
     @Override
     protected void setupBundlePass(Bundle extras) {
-        if ( extras.getString(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID) !=null) {
-            departmentId = extras.getString(DynamicFilterPresenter.EXTRA_DEPARTMENT_ID);
+        if ( extras.getString(EXTRA_DEPARTMENT_ID) !=null) {
+            departmentId = extras.getString(EXTRA_DEPARTMENT_ID);
         }
     }
 

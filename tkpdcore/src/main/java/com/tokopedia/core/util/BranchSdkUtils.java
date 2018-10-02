@@ -35,6 +35,7 @@ import io.branch.referral.util.BranchEvent;
 import io.branch.referral.util.ContentMetadata;
 import io.branch.referral.util.CurrencyType;
 import io.branch.referral.util.LinkProperties;
+import io.branch.referral.util.ProductCategory;
 
 /**
  * Created by ashwanityagi on 04/10/17.
@@ -174,6 +175,7 @@ public class BranchSdkUtils {
                                             .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
                                             .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
                                             .setSku(String.valueOf(product.get(Product.KEY_ID)))
+                                            .setProductCategory(ProductCategory.getValue(String.valueOf(product.get(Product.KEY_CAT))))
                                             .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
                     branchUniversalObjects.add(buo);
                 }

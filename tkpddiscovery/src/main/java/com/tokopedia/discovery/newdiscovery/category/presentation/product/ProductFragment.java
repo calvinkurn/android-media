@@ -725,7 +725,7 @@ public class ProductFragment extends BrowseSectionFragment
     @Override
     public void onAddWishList(int position, Data data) {
         ProductItem productItem = new ProductItem();
-        productItem.setWishlisted(data.isWislished());
+        productItem.setWishlisted(data.getProduct().isWishlist());
         productItem.setProductID(data.getProduct().getId());
         presenter.handleWishlistButtonClicked(productItem);
     }
@@ -781,7 +781,9 @@ public class ProductFragment extends BrowseSectionFragment
 
     @Override
     public void backToTop() {
-        recyclerView.scrollToPosition(0);
+        if (recyclerView != null) {
+            recyclerView.scrollToPosition(0);
+        }
     }
 
     public void setProductList(List<Visitable> productList) {
