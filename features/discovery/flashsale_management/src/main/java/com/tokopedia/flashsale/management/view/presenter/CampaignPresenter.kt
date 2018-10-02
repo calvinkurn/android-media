@@ -1,8 +1,8 @@
 package com.tokopedia.flashsale.management.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.flashsale.management.data.campaign_label.DataCampaignLabel
-import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
+import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
+import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.flashsale.management.domain.GetCampaignLabelUsecase
 import com.tokopedia.flashsale.management.domain.GetCampaignListUsecase
 import com.tokopedia.flashsale.management.view.contract.CampaignContract

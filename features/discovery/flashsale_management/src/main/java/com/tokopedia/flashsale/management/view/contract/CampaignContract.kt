@@ -2,8 +2,8 @@ package com.tokopedia.flashsale.management.view.contract
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
-import com.tokopedia.flashsale.management.data.campaign_label.DataCampaignLabel
-import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
+import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
+import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 
 interface CampaignContract{
 

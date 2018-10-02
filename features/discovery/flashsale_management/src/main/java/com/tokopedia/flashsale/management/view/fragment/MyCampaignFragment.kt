@@ -1,20 +1,33 @@
 package com.tokopedia.flashsale.management.view.fragment
 
-import android.os.Bundle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
+import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
+import com.tokopedia.flashsale.management.view.contract.CampaignContract
+import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.EmptyMyCampaignViewModel
 
-class MyCampaignFragment : BaseCampaignFragment(){
+class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, CampaignStatusListViewHolder.OnCampaignStatusListViewHolderListener{
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun loadInitialData() {
+        super.loadInitialData()
+        reloadProductData()
         presenter.getCampaignLabel()
     }
 
     override fun loadData(page: Int) {
         presenter.getCampaignList(CAMPAIGN_LIST_TYPE, page, DEFAULT_ROWS, CAMPAIGN_TYPE, "", "1,2,3")
+    }
+
+    override fun getAdapterTypeFactory(): CampaignAdapterTypeFactory {
+        return CampaignAdapterTypeFactory(this)
+    }
+
+    private fun reloadProductData() {
+        showLoading()
+        loadData(defaultInitialPage)
     }
 
     override fun onSearchTextChanged(text: String) {
@@ -39,6 +52,10 @@ class MyCampaignFragment : BaseCampaignFragment(){
                 iconRes = R.drawable.ic_empty_search
             }
         }
+    }
+
+    override fun onCampaignStatusClicked(campaignStatusViewModel: CampaignStatusViewModel) {
+        reloadProductData()
     }
 
     companion object {

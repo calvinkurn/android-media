@@ -3,6 +3,7 @@ package com.tokopedia.flashsale.management.view.fragment
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 
 class UpcomingCampaignFragment : BaseCampaignFragment(){
 

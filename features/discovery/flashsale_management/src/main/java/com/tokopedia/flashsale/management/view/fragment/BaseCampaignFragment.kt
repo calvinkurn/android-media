@@ -6,14 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.campaign_label.DataCampaignLabel
-import com.tokopedia.flashsale.management.data.campaign_list.Campaign
-import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
+import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
+import com.tokopedia.flashsale.management.data.campaignlist.Campaign
+import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.flashsale.management.di.CampaignComponent
 import com.tokopedia.flashsale.management.ekstension.toCampaignViewModel
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
+import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
 import com.tokopedia.flashsale.management.view.contract.CampaignContract
 import com.tokopedia.flashsale.management.view.presenter.CampaignPresenter
+import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusListViewModel
+import com.tokopedia.flashsale.management.view.viewmodel.CampaignStatusViewModel
 import com.tokopedia.flashsale.management.view.viewmodel.CampaignViewModel
 import com.tokopedia.graphql.data.GraphqlClient
 import javax.inject.Inject
@@ -63,7 +66,9 @@ abstract class BaseCampaignFragment : BaseSearchListFragment<CampaignViewModel, 
     }
 
     override fun onSuccessGetCampaignLabel(data: DataCampaignLabel) {
-
+        val campaignStatusListViewModel = CampaignStatusListViewModel()
+        campaignStatusListViewModel.campaignStatusList = data.data
+        adapter.addElement(0, campaignStatusListViewModel)
     }
 
     override fun onErrorGetCampaignLabel(throwable: Throwable) {
