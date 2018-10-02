@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".purchase.detail.activity.BookingCodeActivity">
 
@@ -41,14 +42,14 @@
 
         <ImageView
             android:id="@+id/barcode_img"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:layout_width="256dp"
+            android:layout_height="61dp"
             android:contentDescription="@string/barcode_image_content_description" />
 
     </android.support.v7.widget.CardView>
 
-
-    <!--TODO try compound textview-->
     <LinearLayout
         android:id="@+id/ll_code"
         android:layout_width="wrap_content"

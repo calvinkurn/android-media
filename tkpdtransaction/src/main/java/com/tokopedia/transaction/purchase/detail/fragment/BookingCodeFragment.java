@@ -86,12 +86,11 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
                 ClipData.newPlainText("booking code", code)
         );
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
-                getString(R.string.notification_awb_copied));
+                getString(R.string.booking_code_copied_notif));
     }
 
     @Override
     public void showBarcode(Bitmap bitmap) {
-        // TODO: Use Glide
         barcodeImg.setImageBitmap(bitmap);
     }
 }

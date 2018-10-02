@@ -107,7 +107,7 @@
 
         <activity android:name=".purchase.detail.activity.BookingCodeActivity"
             android:label="@string/title_booking_code_detail"
-            android:theme="@style/Toolbar.White" />
+            android:theme="@style/Theme.White" />
 
         <service
             android:name=".purchase.services.TxActionIntentService"
