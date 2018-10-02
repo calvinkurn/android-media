@@ -455,7 +455,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TrainRouter,
         WithdrawRouter,
         EventModuleRouter,
-        TravelCalendarRouter {
+        TravelCalendarRouter,
+        MerchantVoucherModuleRouter {
 
     private  static final String EXTRA = "extra";
 

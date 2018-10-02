@@ -311,6 +311,8 @@ dependencies {
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)
+    implementation project(rootProject.ext.features.merchantVoucher)
+
     implementation project(rootProject.ext.libraries.pushNotif)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.reactNative)
