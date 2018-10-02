@@ -1,0 +1,827 @@
+package com.tokopedia.loginregister.login.view.fragment;
+
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
+import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
+import com.tokopedia.design.text.TextDrawable;
+import com.tokopedia.design.text.TkpdHintTextInputLayout;
+import com.tokopedia.loginregister.LoginRegisterRouter;
+import com.tokopedia.loginregister.R;
+import com.tokopedia.loginregister.common.data.DiscoverItemViewModel;
+import com.tokopedia.loginregister.common.data.GetUserInfoDomainData;
+import com.tokopedia.loginregister.common.data.SecurityDomain;
+import com.tokopedia.loginregister.common.view.GetFacebookCredentialSubscriber;
+import com.tokopedia.loginregister.login.analytics.LoginAnalytics;
+import com.tokopedia.loginregister.login.view.listener.LoginContract;
+import com.tokopedia.loginregister.login.view.presenter.LoginPresenter;
+import com.tokopedia.loginregister.register.RegisterInitialActivity;
+import com.tokopedia.user.session.UserSessionInterface;
+
+import java.util.ArrayList;
+
+import javax.inject.Inject;
+
+/**
+ * @author by nisie on 12/18/17.
+ */
+
+public class LoginFragment extends BaseDaggerFragment implements LoginContract.View {
+
+
+    private static final String COLOR_WHITE = "#FFFFFF";
+    private static final String FACEBOOK = "facebook";
+    private static final String GPLUS = "gplus";
+    private static final String PHONE_NUMBER = "tokocash";
+
+    private static final int REQUEST_SMART_LOCK = 101;
+    private static final int REQUEST_SAVE_SMART_LOCK = 102;
+    private static final int REQUEST_LOGIN_WEBVIEW = 103;
+    private static final int REQUEST_SECURITY_QUESTION = 104;
+    private static final int REQUEST_LOGIN_PHONE_NUMBER = 105;
+    private static final int REQUESTS_CREATE_PASSWORD = 106;
+    private static final int REQUEST_ACTIVATE_ACCOUNT = 107;
+    private static final int REQUEST_VERIFY_PHONE = 108;
+    private static final int REQUEST_ADD_NAME = 109;
+
+
+    public static final int TYPE_SQ_PHONE = 1;
+    public static final int TYPE_SQ_EMAIL = 2;
+
+    public static final String IS_AUTO_LOGIN = "auto_login";
+    public static final String AUTO_LOGIN_METHOD = "method";
+
+    public static final String AUTO_LOGIN_EMAIL = "email";
+    public static final String AUTO_LOGIN_PASS = "pw";
+    private static final int MINIMAL_HEIGHT = 1200;
+
+    public static final String IS_AUTO_FILL = "auto_fill";
+    public static final String AUTO_FILL_EMAIL = "email";
+    public static final String IS_FROM_REGISTER = "is_from_register";
+
+    private static final int ID_ACTION_REGISTER = 111;
+
+    AutoCompleteTextView emailEditText;
+    TextInputEditText passwordEditText;
+    ScrollView loginView;
+    View loadingView;
+    View rootView;
+    TextView forgotPass;
+    LinearLayout loginLayout;
+    LinearLayout loginButtonsContainer;
+    TextView loginButton;
+    TkpdHintTextInputLayout wrapperEmail;
+    TkpdHintTextInputLayout wrapperPassword;
+    ImageView loadMoreFab;
+
+    ArrayAdapter<String> autoCompleteAdapter;
+    CallbackManager callbackManager;
+
+    @Inject
+    LoginPresenter presenter;
+
+    @Inject
+    UserSessionInterface userSession;
+
+    @Inject
+    LoginAnalytics analytics;
+
+    public static Fragment createInstance(Bundle bundle) {
+        Fragment fragment = new LoginFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    protected String getScreenName() {
+        return LoginAnalytics.SCREEN_LOGIN;
+    }
+
+    @Override
+    protected void initInjector() {
+//        AppComponent appComponent = getComponent(AppComponent.class);
+//
+//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+//                DaggerSessionComponent.builder()
+//                        .appComponent(appComponent)
+//                        .build();
+//
+//        daggerSessionComponent.inject(this);
+    }
+
+//    public void initOuterInjector(SessionModule sessionModule) {
+//        AppComponent appComponent = getComponent(AppComponent.class);
+//        DaggerSessionComponent daggerSessionComponent = (DaggerSessionComponent)
+//                DaggerSessionComponent.builder()
+//                        .appComponent(appComponent)
+//                        .sessionModule(sessionModule)
+//                        .build();
+//        daggerSessionComponent.inject(this);
+//
+//        presenter.attachView(this);
+//    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        analytics.trackScreen(getActivity(), getScreenName());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (userSession != null
+                && userSession.isLoggedIn()
+                && getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.add(Menu.NONE, ID_ACTION_REGISTER, 0, "");
+        MenuItem menuItem = menu.findItem(ID_ACTION_REGISTER);
+        menuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if (getDraw() != null) {
+            menuItem.setIcon(getDraw());
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private Drawable getDraw() {
+        TextDrawable drawable = null;
+        if (getActivity() != null) {
+            drawable = new TextDrawable(getActivity());
+            drawable.setText(getResources().getString(R.string.register));
+            drawable.setTextColor(getResources().getColor(R.color.tkpd_main_green));
+        }
+        return drawable;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == ID_ACTION_REGISTER) {
+            goToRegisterInitial();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        callbackManager = CallbackManager.Factory.create();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup parent, @Nullable Bundle
+            savedInstanceState) {
+        setHasOptionsMenu(true);
+        View view = inflater.inflate(R.layout.fragment_login, parent, false);
+        rootView = view.findViewById(R.id.root);
+        emailEditText = view.findViewById(R.id.email_auto);
+        passwordEditText = view.findViewById(R.id.password);
+        loginView = view.findViewById(R.id.login_form);
+        loadingView = view.findViewById(R.id.login_status);
+        forgotPass = view.findViewById(R.id.forgot_pass);
+        loginLayout = view.findViewById(R.id.login_layout);
+        loginButton = view.findViewById(R.id.accounts_sign_in);
+        wrapperEmail = view.findViewById(R.id.wrapper_email);
+        wrapperPassword = view.findViewById(R.id.wrapper_password);
+        loadMoreFab = view.findViewById(R.id.btn_load_more);
+        loginButtonsContainer = view.findViewById(R.id.login_buttons_container);
+        prepareView();
+        presenter.attachView(this);
+        return view;
+    }
+
+    private void prepareView() {
+
+        passwordEditText.setOnEditorActionListener(
+                (textView, id, keyEvent) -> {
+                    if (id == R.id.ime_login || id == EditorInfo.IME_NULL) {
+                        presenter.login(emailEditText.getText().toString().trim(),
+                                passwordEditText.getText().toString());
+                        return true;
+                    }
+
+                    return false;
+                });
+
+        passwordEditText.addTextChangedListener(watcher(wrapperPassword));
+
+
+        loginButton.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                KeyboardHandler.hideSoftKeyboard(getActivity());
+                presenter.saveLoginEmail(emailEditText.getText().toString());
+                presenter.login(emailEditText.getText().toString().trim(),
+                        passwordEditText.getText().toString());
+                analytics.eventClickLoginButton();
+//                SessionTrackingUtils.loginPageClickLogin();
+            }
+        });
+
+        emailEditText.addTextChangedListener(watcher(wrapperEmail));
+
+        forgotPass.setOnClickListener(v -> goToForgotPassword());
+
+        loginView.getViewTreeObserver().addOnScrollChangedListener(() -> {
+            if (isLastItem()) {
+                loadMoreFab.setVisibility(View.GONE);
+            } else {
+                loadMoreFab.setVisibility(View.VISIBLE);
+            }
+
+        });
+
+        loadMoreFab.setOnClickListener(v -> loginView.post(() -> loginView.fullScroll(View.FOCUS_DOWN)));
+
+    }
+
+    private void goToForgotPassword() {
+        if (getActivity() != null
+                && getActivity().getApplicationContext() instanceof LoginRegisterRouter) {
+            Intent intent = ((LoginRegisterRouter) getActivity().getApplicationContext())
+                    .getForgotPasswordIntent(getActivity(), emailEditText.getText().toString()
+                            .trim());
+            intent.setFlags(Intent.FLAG_ACTIVITY_FORWARD_RESULT);
+            startActivity(intent);
+//            SessionTrackingUtils.loginPageClickForgotPassword("ForgotPasswordActivity");
+        }
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
+//        autoCompleteAdapter = new ArrayAdapter<>(getActivity(),
+//                android.R.layout.simple_dropdown_item_1line,
+//                presenter.getLoginIdList());
+//        emailEditText.setAdapter(autoCompleteAdapter);
+//
+//        presenter.discoverLogin();
+
+//        if (getArguments().getBoolean(IS_AUTO_FILL, false)) {
+//            emailEditText.setText(getArguments().getString(AUTO_FILL_EMAIL, ""));
+//        } else if (getArguments().getBoolean(IS_AUTO_LOGIN, false)) {
+//            switch (getArguments().getInt(AUTO_LOGIN_METHOD)) {
+//                case LoginActivity.METHOD_FACEBOOK:
+//                    onLoginFacebookClick();
+//                    break;
+//                case LoginActivity.METHOD_GOOGLE:
+//                    onLoginGoogleClick();
+//                    break;
+//                case LoginActivity.METHOD_WEBVIEW:
+//                    if (!TextUtils.isEmpty(getArguments().getString(LoginActivity
+//                            .AUTO_WEBVIEW_NAME, ""))
+//                            && !TextUtils.isEmpty(getArguments().getString(LoginActivity
+//                            .AUTO_WEBVIEW_URL, ""))) {
+//                        onLoginWebviewClick(getArguments().getString(LoginActivity.AUTO_WEBVIEW_NAME,
+//                                ""),
+//                                getArguments().getString(LoginActivity.AUTO_WEBVIEW_URL,
+//                                        ""));
+//                    }
+//                    break;
+//                case LoginActivity.METHOD_EMAIL:
+//                    String email = getArguments().getString(AUTO_LOGIN_EMAIL, "");
+//                    String pw = getArguments().getString(AUTO_LOGIN_PASS, "");
+//                    emailEditText.setText(email);
+//                    passwordEditText.setText(pw);
+//                    presenter.login(email, pw);
+//                    break;
+//                default:
+//                    showSmartLock();
+//                    break;
+//            }
+//        } else {
+//            showSmartLock();
+//        }
+    }
+
+    private void showSmartLock() {
+//        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(SmartLockActivity.STATE, SmartLockActivity.RC_READ);
+//        intent.putExtras(bundle);
+//        startActivityForResult(intent, REQUEST_SMART_LOCK);
+    }
+
+    private void goToRegisterInitial() {
+        if (getActivity() != null) {
+            analytics.eventClickRegisterFromLogin();
+            Intent intent = RegisterInitialActivity.getCallingIntent(getActivity());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+
+
+    @Override
+    public void resetError() {
+        setWrapperError(wrapperEmail, null);
+        setWrapperError(wrapperPassword, null);
+    }
+
+    @Override
+    public void showLoadingLogin() {
+        showLoading(true);
+    }
+
+    private void showLoading(final boolean isLoading) {
+//        int shortAnimTime = getResources().getInteger(
+//                android.R.integer.config_shortAnimTime);
+//
+//        loadingView.animate().setDuration(shortAnimTime)
+//                .alpha(isLoading ? 1 : 0)
+//                .setListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        if (loadingView != null) {
+//                            loadingView.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+//                        }
+//                    }
+//                });
+//
+//        loginView.animate().setDuration(shortAnimTime)
+//                .alpha(isLoading ? 0 : 1)
+//                .setListener(new AnimatorListenerAdapter() {
+//                    @Override
+//                    public void onAnimationEnd(Animator animation) {
+//                        if (loginView != null) {
+//                            loginView.setVisibility(isLoading ? View.GONE : View.VISIBLE);
+//                        }
+//                    }
+//                });
+//
+    }
+
+    @Override
+    public void dismissLoadingLogin() {
+        showLoading(false);
+    }
+
+    @Override
+    public void showErrorPassword(int resId) {
+        setWrapperError(wrapperPassword, getString(resId));
+        passwordEditText.requestFocus();
+        analytics.eventLoginErrorPassword();
+    }
+
+    @Override
+    public void showErrorEmail(int resId) {
+        setWrapperError(wrapperEmail, getString(resId));
+        emailEditText.requestFocus();
+        analytics.eventLoginErrorEmail();
+
+    }
+
+    private void saveSmartLock(int state, String email, String password) {
+//        Intent intent = new Intent(getActivity(), SmartLockActivity.class);
+//        Bundle bundle = new Bundle();
+//        bundle.putInt(SmartLockActivity.STATE, state);
+//        if (state == SmartLockActivity.RC_SAVE_SECURITY_QUESTION || state == SmartLockActivity.RC_SAVE) {
+//            bundle.putString(SmartLockActivity.USERNAME, email);
+//            bundle.putString(SmartLockActivity.PASSWORD, password);
+//        }
+//        intent.putExtras(bundle);
+//        startActivityForResult(intent, REQUEST_SAVE_SMART_LOCK);
+    }
+
+    @Override
+    public void onSuccessLogin() {
+        if (getActivity() != null) {
+            getActivity().setResult(Activity.RESULT_OK);
+            getActivity().finish();
+
+            ((LoginRegisterRouter) getActivity().getApplicationContext()).setTrackingUserId
+                    (userSession.getUserId());
+        }
+    }
+
+    @Override
+    public void onErrorLogin(String errorMessage) {
+        NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
+    }
+
+    @Override
+    public void setAutoCompleteAdapter(ArrayList<String> listId) {
+        autoCompleteAdapter.clear();
+        autoCompleteAdapter.addAll(listId);
+        autoCompleteAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showLoadingDiscover() {
+        ProgressBar pb = new ProgressBar(getActivity(), null, android.R.attr.progressBarStyle);
+        int lastPos = loginLayout.getChildCount() - 1;
+        if (loginLayout != null && !(loginLayout.getChildAt(lastPos) instanceof ProgressBar)) {
+            loginLayout.addView(pb, loginLayout.getChildCount());
+        }
+    }
+
+    @Override
+    public void dismissLoadingDiscover() {
+        int lastPos = loginLayout.getChildCount() - 1;
+        if (loginLayout != null && loginLayout.getChildAt(lastPos) instanceof ProgressBar) {
+            loginLayout.removeViewAt(loginLayout.getChildCount() - 1);
+        }
+    }
+
+    @Override
+    public void onErrorDiscoverLogin(String errorMessage) {
+        NetworkErrorHelper.createSnackbarWithAction(getActivity(), errorMessage, new NetworkErrorHelper.RetryClickedListener() {
+            @Override
+            public void onRetryClicked() {
+                presenter.discoverLogin();
+            }
+        }).showRetrySnackbar();
+    }
+
+    @Override
+    public void onSuccessDiscoverLogin(ArrayList<DiscoverItemViewModel> listProvider) {
+        if (!GlobalConfig.isSellerApp()) listProvider.add(2, getLoginPhoneNumberBean());
+
+//        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+//                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+//        layoutParams.setMargins(0, 20, 0, 15);
+//        loginButtonsContainer.removeAllViews();
+//        for (int i = 0; i < listProvider.size(); i++) {
+//            int colorInt = Color.parseColor(COLOR_WHITE);
+//            LoginTextView tv = new LoginTextView(getActivity(), colorInt);
+//            tv.setTag(listProvider.get(i).getId());
+//            tv.setText(listProvider.get(i).getName());
+//            if (!TextUtils.isEmpty(listProvider.get(i).getImage())) {
+//                tv.setImage(listProvider.get(i).getImage());
+//            } else if (listProvider.get(i).getImageResource() != 0) {
+//                tv.setImageResource(listProvider.get(i).getImageResource());
+//            }
+//            tv.setRoundCorner(10);
+//
+//            setDiscoverListener(listProvider.get(i), tv);
+//            if (loginButtonsContainer != null) {
+//                loginButtonsContainer.addView(tv, loginButtonsContainer.getChildCount(), layoutParams);
+//            }
+//        }
+//
+//        enableArrow();
+    }
+
+    @Override
+    public GetFacebookCredentialSubscriber.GetFacebookCredentialListener getFacebookCredentialListener() {
+        return new GetFacebookCredentialSubscriber.GetFacebookCredentialListener() {
+
+            @Override
+            public void onErrorGetFacebookCredential(Exception e) {
+                if (isAdded() && getActivity() != null) {
+                    NetworkErrorHelper.showSnackbar(getActivity(), ErrorHandler.getErrorMessage
+                            (getContext(), e));
+                }
+            }
+
+            @Override
+            public void onSuccessGetFacebookCredential(AccessToken accessToken, String email) {
+                presenter.loginFacebook(accessToken, email);
+            }
+        };
+    }
+
+    @Override
+    public void onGoToCreatePasswordPage(GetUserInfoDomainData userInfoDomainData) {
+//        Intent intent = CreatePasswordActivity.getCallingIntent(getActivity(),
+//                new CreatePasswordViewModel(
+//                        userInfoDomainData.getEmail(),
+//                        userInfoDomainData.getFullName(),
+//                        userInfoDomainData.getBdayYear(),
+//                        userInfoDomainData.getBdayMonth(),
+//                        userInfoDomainData.getBdayDay(),
+//                        userInfoDomainData.getCreatePasswordList(),
+//                        String.valueOf(userInfoDomainData.getUserId())));
+//        startActivityForResult(intent, REQUESTS_CREATE_PASSWORD);
+    }
+
+    @Override
+    public void onGoToPhoneVerification() {
+//        startActivityForResult(
+//                PhoneVerificationActivationActivity.getCallingIntent(getActivity()),
+//                REQUEST_VERIFY_PHONE);
+    }
+
+    @Override
+    public void onGoToSecurityQuestion(SecurityDomain securityDomain, String fullName,
+                                       String email, String phone) {
+//        Intent intent = VerificationActivity.getShowChooseVerificationMethodIntent(
+//                getActivity(), RequestOtpUseCase.OTP_TYPE_SECURITY_QUESTION, phone, email);
+//        startActivityForResult(intent, REQUEST_SECURITY_QUESTION);
+
+    }
+
+    @Override
+    public void onGoToAddName(GetUserInfoDomainData getUserInfoDomainData) {
+//        Intent intent = AddNameActivity.newInstance(getActivity());
+//        startActivityForResult(intent, REQUEST_ADD_NAME);
+    }
+
+    @Override
+    public void setSmartLock() {
+//        saveSmartLock(SmartLockActivity.RC_SAVE_SECURITY_QUESTION,
+//                emailEditText.getText().toString(),
+//                passwordEditText.getText().toString());
+    }
+
+    @Override
+    public void onErrorLogin(String errorMessage, int codeError) {
+        onErrorLogin(errorMessage + getString(R.string.code_error) + " " + codeError);
+    }
+
+    @Override
+    public void onGoToActivationPage(String email) {
+//        Intent intent = ActivationActivity.getCallingIntent(getActivity(),
+//                email, passwordEditText.getText().toString());
+//        startActivityForResult(intent, REQUEST_ACTIVATE_ACCOUNT);
+    }
+
+    @Override
+    public void onSuccessLoginEmail() {
+        analytics.eventSuccessLoginEmail();
+//        TrackingUtils.setMoEUserAttributesLogin(
+//                sessionHandler.getLoginID(),
+//                sessionHandler.getLoginName(),
+//                sessionHandler.getEmail(),
+//                sessionHandler.getPhoneNumber(),
+//                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
+//                sessionHandler.getShopName(),
+//                sessionHandler.getShopID(),
+//                !TextUtils.isEmpty(sessionHandler.getShopID()),
+//                LoginAnalytics.Label.EMAIL
+//        );
+//        BranchSdkUtils.sendLoginEvent(getActivity());
+
+        onSuccessLogin();
+    }
+
+    @Override
+    public void onSuccessLoginSosmed(String loginMethod) {
+        analytics.eventSuccessLoginSosmed(loginMethod);
+
+//        TrackingUtils.setMoEUserAttributesLogin(
+//                sessionHandler.getLoginID(),
+//                sessionHandler.getLoginName(),
+//                sessionHandler.getEmail(),
+//                sessionHandler.getPhoneNumber(),
+//                sessionHandler.isGoldMerchant(MainApplication.getAppContext()),
+//                sessionHandler.getShopName(),
+//                sessionHandler.getShopID(),
+//                !TextUtils.isEmpty(sessionHandler.getShopID()),
+//                loginMethod
+//        );
+//        BranchSdkUtils.sendLoginEvent(getActivity());
+        onSuccessLogin();
+    }
+
+    @Override
+    public void disableArrow() {
+        loadMoreFab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void enableArrow() {
+        ViewTreeObserver observer = loginView.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(() -> {
+            int viewHeight = loginView.getMeasuredHeight();
+            int contentHeight = loginView.getChildAt(0).getHeight();
+            if (viewHeight - contentHeight < 0
+                    && !isLastItem()) {
+                loadMoreFab.setVisibility(View.VISIBLE);
+            } else {
+                loadMoreFab.setVisibility(View.GONE);
+            }
+        });
+    }
+
+    @Override
+    public void onForbidden() {
+//        ForbiddenActivity.startActivity(getActivity());
+    }
+
+    private boolean isLastItem() {
+        return loginView.getChildAt(0).getBottom() <= (loginView.getHeight() + loginView
+                .getScrollY());
+    }
+
+    //    private void setDiscoverListener(final DiscoverItemViewModel discoverItemViewModel,
+//                                     LoginTextView tv) {
+//        if (discoverItemViewModel.getId().equalsIgnoreCase(FACEBOOK)) {
+//            tv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    onLoginFacebookClick();
+//                }
+//            });
+//        } else if (discoverItemViewModel.getId().equalsIgnoreCase(GPLUS)) {
+//            tv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    onLoginGoogleClick();
+//                }
+//            });
+//        } else if (discoverItemViewModel.getId().equalsIgnoreCase(PHONE_NUMBER)) {
+//            tv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    onLoginPhoneNumberClick();
+//                }
+//            });
+//        } else {
+//            tv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    onLoginWebviewClick(discoverItemViewModel.getName(),
+//                            discoverItemViewModel.getUrl());
+//                }
+//            });
+//        }
+//    }
+
+    private void onLoginWebviewClick(String name, String url) {
+        analytics.eventClickLoginWebview(name);
+
+//        if (getFragmentManager() != null && getActivity() != null) {
+//            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+//            WebViewLoginFragment newFragment = WebViewLoginFragment
+//                    .createInstance(url, name);
+//            newFragment.setTargetFragment(this, REQUEST_LOGIN_WEBVIEW);
+//            newFragment.show(fragmentTransaction, "dialog");
+//            getActivity().getWindow().setSoftInputMode(
+//                    WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+//
+//            fragmentTransaction.commitAllowingStateLoss();
+//
+//        }
+    }
+
+    private void onLoginPhoneNumberClick() {
+        analytics.eventClickLoginPhoneNumber();
+//        Intent intent = LoginPhoneNumberActivity.getCallingIntent(getActivity());
+//        startActivityForResult(intent, REQUEST_LOGIN_PHONE_NUMBER);
+//        SessionTrackingUtils.loginPageClickLoginPhone("LoginPhoneNumberActivity");
+
+    }
+
+    private void onLoginGoogleClick() {
+        analytics.eventClickLoginGoogle();
+//        Intent intent = new Intent(getActivity(), GoogleSignInActivity.class);
+//        startActivityForResult(intent, RC_SIGN_IN_GOOGLE);
+//        SessionTrackingUtils.loginPageClickLoginGoogle("GoogleSignInActivity");
+
+    }
+
+    private void onLoginFacebookClick() {
+        analytics.eventClickLoginFacebook();
+        presenter.getFacebookCredential(this, callbackManager);
+//        SessionTrackingUtils.loginPageClickLoginFacebook("Facebook");
+    }
+
+    private DiscoverItemViewModel getLoginPhoneNumberBean() {
+        DiscoverItemViewModel phoneNumberBean = new DiscoverItemViewModel(
+                PHONE_NUMBER,
+                getString(R.string.phone_number),
+                "",
+                "",
+                COLOR_WHITE
+        );
+        phoneNumberBean.setImageResource(R.drawable.ic_phone);
+        return phoneNumberBean;
+    }
+
+    private void setWrapperError(TkpdHintTextInputLayout wrapper, String s) {
+        if (s == null) {
+            wrapper.setError(null);
+            wrapper.setErrorEnabled(false);
+        } else {
+            wrapper.setErrorEnabled(true);
+            wrapper.setError(s);
+        }
+    }
+
+    private TextWatcher watcher(final TkpdHintTextInputLayout wrapper) {
+        return new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0) {
+                    setWrapperError(wrapper, null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == 0) {
+                    setWrapperError(wrapper, getString(R.string.error_field_required));
+                }
+            }
+        };
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == REQUEST_SMART_LOCK
+//                && resultCode == Activity.RESULT_OK
+//                && data != null
+//                && data.getExtras() != null
+//                && data.getExtras().getString(SmartLockActivity.USERNAME) != null
+//                && data.getExtras().getString(SmartLockActivity.PASSWORD) != null) {
+//            emailEditText.setText(data.getExtras().getString(SmartLockActivity.USERNAME));
+//            passwordEditText.setText(data.getExtras().getString(SmartLockActivity.PASSWORD));
+//            presenter.login(data.getExtras().getString(SmartLockActivity.USERNAME),
+//                    data.getExtras().getString(SmartLockActivity.PASSWORD));
+//        } else if (requestCode == RC_SIGN_IN_GOOGLE && data != null) {
+//            GoogleSignInAccount googleSignInAccount = data.getParcelableExtra(KEY_GOOGLE_ACCOUNT);
+//            String email = googleSignInAccount.getEmail();
+//            String accessToken = data.getStringExtra(KEY_GOOGLE_ACCOUNT_TOKEN);
+//            presenter.loginGoogle(accessToken, email);
+//        } else if (requestCode == REQUEST_LOGIN_WEBVIEW && resultCode == Activity.RESULT_OK) {
+//            presenter.loginWebview(data);
+//        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_OK) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUEST_SECURITY_QUESTION && resultCode == Activity.RESULT_CANCELED) {
+//            dismissLoadingLogin();
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_OK) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUEST_LOGIN_PHONE_NUMBER && resultCode == Activity.RESULT_CANCELED) {
+//            dismissLoadingLogin();
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_OK) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUESTS_CREATE_PASSWORD && resultCode == Activity.RESULT_CANCELED) {
+//            dismissLoadingLogin();
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_OK) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUEST_ACTIVATE_ACCOUNT && resultCode == Activity.RESULT_CANCELED) {
+//            dismissLoadingLogin();
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//        } else if (requestCode == REQUEST_VERIFY_PHONE) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_OK) {
+//            onSuccessLogin();
+//        } else if (requestCode == REQUEST_ADD_NAME && resultCode == Activity.RESULT_CANCELED) {
+//            sessionHandler.clearUserData(getActivity());
+//            dismissLoadingLogin();
+//            getActivity().setResult(Activity.RESULT_CANCELED);
+//            getActivity().finish();
+//        } else {
+//            super.onActivityResult(requestCode, resultCode, data);
+//        }
+    }
+
+    @Override
+    public boolean isFromRegister() {
+        return getActivity() != null
+                && getActivity().getIntent() != null
+                && getActivity().getIntent().getBooleanExtra(IS_FROM_REGISTER, false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.detachView();
+    }
+}

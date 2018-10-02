@@ -86,6 +86,7 @@ ext {
     tkpdBankDBVersion = '2.22'
     transactionCheckoutVersion = '2.22'
     tkpdForgotPasswordVersion = '2.22'
+    tkpdLoginRegisterVersion = '2.22'
 
     groupIdTransaction = 'com.tokopedia.transaction'
     artifactIdCheckout = 'checkout'
@@ -297,7 +298,8 @@ ext {
             omsApi                : "com.tokopedia.oms:oms:${tkpdOmsVersion}",
             paymentManagementSystem: "com.tokopedia.pms:pms:${tkpdPaymentManagementSystem}",
             paymentSetting        : "com.tokopedia.payment:payment_setting:${tkpdPaymentVersion}",
-            forgotPassword        : "com.tokopedia.forgotpassword:forgotpassword:${tkpdForgotPasswordVersion}"
+            forgotpassword        : "com.tokopedia.forgotpassword:forgotpassword:${tkpdForgotPasswordVersion}",
+            loginregister         : "com.tokopedia.loginregister:loginregister:${tkpdLoginRegisterVersion}"
     ]
 
     tkpdLibDependencies = [
@@ -360,6 +362,7 @@ ext {
             changepassword        : ":features:user:changepassword",
             bankdb                : ":features:user:bankdb",
             forgotpassword        : ":features:user:forgotpassword",
+            loginregister         : ":features:user:loginregister",
             otp                   : ":features:user:otp",
             vote                  : ":features:user:vote",
             notifCenter           : ":features:user:notifcenter",

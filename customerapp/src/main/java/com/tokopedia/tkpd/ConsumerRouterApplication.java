@@ -17,6 +17,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.TextUtils;
 
+import com.crashlytics.android.Crashlytics;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.readystatesoftware.chuck.ChuckInterceptor;
@@ -205,6 +206,7 @@ import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment;
 import com.tokopedia.kol.feature.following_list.view.activity.KolFollowingListActivity;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostFragment;
 import com.tokopedia.kol.feature.post.view.fragment.KolPostShopFragment;
+import com.tokopedia.loginregister.LoginRegisterRouter;
 import com.tokopedia.logisticuploadawb.ILogisticUploadAwbRouter;
 import com.tokopedia.logisticuploadawb.UploadAwbLogisticActivity;
 import com.tokopedia.loyalty.LoyaltyRouter;
@@ -457,7 +459,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
-        DigitalBrowseRouter {
+        DigitalBrowseRouter,
+        LoginRegisterRouter {
 
     private static final String EXTRA = "extra";
 
@@ -2943,5 +2946,12 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
         final String resourceUrl = baseUrl + TkpdBaseURL.Payment.CDN_IMG_ANDROID_DOMAIN;
         return resourceUrl;
+    }
+
+    @Override
+    public void setTrackingUserId(String userId) {
+        TrackingUtils.eventPushUserID();
+        Crashlytics.setUserIdentifier(userSession.getUserId());
+        BranchSdkUtils.sendIdentityEvent(userSession.getUserId());
     }
 }
