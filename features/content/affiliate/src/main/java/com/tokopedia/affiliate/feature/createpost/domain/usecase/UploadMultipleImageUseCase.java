@@ -1,6 +1,6 @@
 package com.tokopedia.affiliate.feature.createpost.domain.usecase;
 
-import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.view.viewmodel.CreatePostViewModel;
 import com.tokopedia.imageuploader.domain.UploadImageUseCase;
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel;
@@ -35,11 +35,11 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
     private static final String RESOLUTION_300 = "300";
     private static final String TEXT_PLAIN = "text/plain";
 
-    private final UploadImageUseCase<UploadImageData> uploadImageUseCase;
+    private final UploadImageUseCase<UploadImageResponse> uploadImageUseCase;
     private final UserSession userSession;
 
     @Inject
-    UploadMultipleImageUseCase(UploadImageUseCase<UploadImageData> uploadImageUseCase,
+    UploadMultipleImageUseCase(UploadImageUseCase<UploadImageResponse> uploadImageUseCase,
                                UserSession userSession) {
         this.uploadImageUseCase = uploadImageUseCase;
         this.userSession = userSession;
@@ -63,8 +63,14 @@ public class UploadMultipleImageUseCase extends UseCase<List<String>> {
         };
     }
 
-    private Func1<ImageUploadDomainModel<UploadImageData>, String> mapToUrl() {
-        return uploadDomainModel -> uploadDomainModel.getDataResultImageUpload().getPicSrc();
+    private Func1<ImageUploadDomainModel<UploadImageResponse>, String> mapToUrl() {
+        return uploadDomainModel -> {
+            String imageUrl = uploadDomainModel.getDataResultImageUpload().getData().getPicSrc();
+            if (imageUrl != null && imageUrl.contains(DEFAULT_RESOLUTION)) {
+                imageUrl = imageUrl.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_300);
+            }
+            return imageUrl;
+        };
     }
 
     private RequestParams createUploadParams(String fileLocation) {

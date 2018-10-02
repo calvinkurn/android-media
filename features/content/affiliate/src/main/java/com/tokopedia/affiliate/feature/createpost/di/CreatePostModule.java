@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
-import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageData;
+import com.tokopedia.affiliate.feature.createpost.data.pojo.uploadimage.UploadImageResponse;
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.GetContentFormUseCase;
 import com.tokopedia.affiliate.feature.createpost.domain.usecase.SubmitPostUseCase;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
@@ -28,18 +28,18 @@ public class CreatePostModule {
 
     @Provides
     @CreatePostScope
-    public UploadImageUseCase<UploadImageData>
-    provideAttachmentImageModelUploadImageUseCase(@ImageUploaderQualifier UploadImageRepository uploadImageRepository,
-                                                  @ImageUploaderQualifier GenerateHostRepository generateHostRepository,
-                                                  @ImageUploaderQualifier Gson gson,
-                                                  @ImageUploaderQualifier com.tokopedia.abstraction.common.data.model.session.UserSession userSession,
-                                                  @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
+    public UploadImageUseCase<UploadImageResponse> provideUploadImageUseCase(
+            @ImageUploaderQualifier UploadImageRepository uploadImageRepository,
+            @ImageUploaderQualifier GenerateHostRepository generateHostRepository,
+            @ImageUploaderQualifier Gson gson,
+            @ImageUploaderQualifier com.tokopedia.abstraction.common.data.model.session.UserSession userSession,
+            @ImageUploaderQualifier ImageUploaderUtils imageUploaderUtils) {
         return new UploadImageUseCase<>(
                 uploadImageRepository,
                 generateHostRepository,
                 gson,
                 userSession,
-                UploadImageData.class,
+                UploadImageResponse.class,
                 imageUploaderUtils
         );
     }
