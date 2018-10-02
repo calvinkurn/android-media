@@ -112,7 +112,7 @@ public class FlightSearchActivity extends BaseFlightActivity
                             if (fragment instanceof FlightSearchFragment) {
                                 ((FlightSearchFragment) fragment).flightSearchPresenter
                                         .attachView((FlightSearchFragment) fragment);
-                                ((FlightSearchFragment) fragment).loadData();
+                                ((FlightSearchFragment) fragment).loadInitialData();
                             }
                             break;
                         case FlightFlowConstant.EXPIRED_JOURNEY:

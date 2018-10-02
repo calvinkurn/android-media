@@ -15,4 +15,9 @@ public class FlightSearchPresenter extends BaseDaggerPresenter<FlightSearchContr
     @Inject
     public FlightSearchPresenter() {
     }
+
+    @Override
+    public void initialize() {
+
+    }
 }
