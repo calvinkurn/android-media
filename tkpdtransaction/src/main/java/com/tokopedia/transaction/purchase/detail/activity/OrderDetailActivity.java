@@ -59,6 +59,7 @@ import com.tokopedia.transaction.purchase.detail.fragment.CancelShipmentFragment
 import com.tokopedia.transaction.purchase.detail.fragment.ChangeAwbFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RejectOrderFragment;
 import com.tokopedia.transaction.purchase.detail.fragment.RequestPickupFragment;
+import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.model.detail.viewmodel.OrderDetailData;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
@@ -66,6 +67,7 @@ import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterI
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -159,10 +161,23 @@ public class OrderDetailActivity extends TActivity
 
     private void setBookingCode(OrderDetailData data) {
         ViewGroup layout = findViewById(R.id.booking_code_layout);
+//        OnlineBooking codeData = new OnlineBooking(
+////                data.getBookingCode(),data.getBarcodeType(), data.getBookingCodeMessage()
+////        );
+        // test
+        List<String> list = new ArrayList<>();
+        list.add("bla bla bla");
+        list.add("bli bli bli");
+        OnlineBooking codeData = new OnlineBooking("JLFJSA0FDS-FDSLFJ", "8FJ", list);
+        layout.setOnClickListener(view -> {
+            startActivity(BookingCodeActivity.createInstance(this, codeData));
+        });
         if (data.getBookingCode() != null) {
             TextView text = findViewById(R.id.booking_code);
             text.setText(data.getBookingCode());
-            layout.setOnClickListener(null);
+//            layout.setOnClickListener(view -> {
+//                startActivity(BookingCodeActivity.createInstance(this));
+//            });
         } else {
             layout.setVisibility(View.GONE);
         }
