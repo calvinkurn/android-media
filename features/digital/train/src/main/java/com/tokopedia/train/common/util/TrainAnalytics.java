@@ -120,8 +120,8 @@ public class TrainAnalytics {
                 DataLayer.mapOf(TrainEventTracking.EVENT, TrainEventTracking.Event.PRODUCT_CLICK,
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.PRODUCT_CLICK,
-                        TrainEventTracking.EVENT_LABEL, origin + " - " + destination + " - " + trainClass + " - " +
-                                trainName + " - " + specialTagging,
+                        TrainEventTracking.EVENT_LABEL, origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " +
+                                trainName.toLowerCase() + " - " + specialTagging.toLowerCase(),
                         TrainEventTracking.ECOMMERCE, DataLayer.mapOf("click",
                                 DataLayer.mapOf(
                                         "actionField", DataLayer.mapOf(
@@ -204,8 +204,8 @@ public class TrainAnalytics {
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
                         TrainEventTracking.EVENT_LABEL, String.format("%s - %s - %s - %s",
-                                scheduleViewModel.getTrainName(),
-                                scheduleViewModel.getOrigin(),
+                                scheduleViewModel.getTrainName().toLowerCase(),
+                                scheduleViewModel.getOrigin().toLowerCase(),
                                 String.valueOf(trainDateUtil.getDayDiff(scheduleViewModel.getDepartureTimestamp())),
                                 String.valueOf(scheduleViewModel.getAdultFare())),
                         TrainEventTracking.ECOMMERCE, DataLayer.mapOf(
@@ -245,8 +245,8 @@ public class TrainAnalytics {
                         TrainEventTracking.EVENT_CATEGORY, TrainEventTracking.Category.DIGITAL_TRAIN,
                         TrainEventTracking.EVENT_ACTION, TrainEventTracking.Action.ADD_TO_CART,
                         TrainEventTracking.EVENT_LABEL, String.format("%s - %s - %s - %s",
-                                (scheduleViewModel.getTrainName() + ", " + returnScheduleViewModel.getTrainName()),
-                                (scheduleViewModel.getOrigin() + ", " + returnScheduleViewModel.getOrigin()),
+                                (scheduleViewModel.getTrainName().toLowerCase() + ", " + returnScheduleViewModel.getTrainName().toLowerCase()),
+                                (scheduleViewModel.getOrigin().toLowerCase() + ", " + returnScheduleViewModel.getOrigin().toLowerCase()),
                                 (trainDateUtil.getDayDiff(scheduleViewModel.getDepartureTimestamp()) + ", " + trainDateUtil.getDayDiff(returnScheduleViewModel.getDepartureTimestamp())),
                                 (String.valueOf(scheduleViewModel.getAdultFare()) + ", " + String.valueOf(returnScheduleViewModel.getAdultFare()))),
                         TrainEventTracking.ECOMMERCE, DataLayer.mapOf(
@@ -264,7 +264,7 @@ public class TrainAnalytics {
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.CLICK_DETAIL,
-                origin + " - " + destination + " - " + trainClass + " - " + trainName
+                origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
         );
     }
 
@@ -291,7 +291,7 @@ public class TrainAnalytics {
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_SUCCESS,
-                successMessage
+                successMessage.toLowerCase()
         );
     }
 
@@ -300,7 +300,7 @@ public class TrainAnalytics {
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.VOUCHER_ERROR,
-                errorMessage
+                errorMessage.toLowerCase()
         );
     }
 
@@ -310,7 +310,7 @@ public class TrainAnalytics {
                 TrainEventTracking.Event.KAI_CLICK,
                 TrainEventTracking.Category.DIGITAL_TRAIN,
                 TrainEventTracking.Action.PROCEED_TO_PAYMENT,
-                origin + " - " + destination + " - " + trainClass + " - " + trainName
+                origin.toLowerCase() + " - " + destination.toLowerCase() + " - " + trainClass.toLowerCase() + " - " + trainName.toLowerCase()
         );
     }
 
@@ -326,9 +326,9 @@ public class TrainAnalytics {
     @NonNull
     private String buildRoundTripLabel(TrainScheduleDetailViewModel departureTripViewModel, TrainScheduleDetailViewModel returnTripViewModel) {
         return String.format("%s, %s - %s, %s - %s, %s - %s, %s",
-                departureTripViewModel.getOriginStationCode(), returnTripViewModel.getOriginStationCode(),
-                departureTripViewModel.getDestinationStationCode(), returnTripViewModel.getDestinationStationCode(),
-                departureTripViewModel.getTrainClass(), returnTripViewModel.getTrainClass(),
-                departureTripViewModel.getTrainName(), returnTripViewModel.getTrainName());
+                departureTripViewModel.getOriginStationCode().toLowerCase(), returnTripViewModel.getOriginStationCode().toLowerCase(),
+                departureTripViewModel.getDestinationStationCode().toLowerCase(), returnTripViewModel.getDestinationStationCode().toLowerCase(),
+                departureTripViewModel.getTrainClass().toLowerCase(), returnTripViewModel.getTrainClass().toLowerCase(),
+                departureTripViewModel.getTrainName().toLowerCase(), returnTripViewModel.getTrainName().toLowerCase());
     }
 }

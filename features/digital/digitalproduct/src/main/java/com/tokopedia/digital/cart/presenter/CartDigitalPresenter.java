@@ -4,11 +4,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.core.analytics.TrackingUtils;
-import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.analytics.nishikino.model.GTMCart;
-import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.exception.HttpErrorException;
 import com.tokopedia.core.network.exception.ResponseDataNullException;
@@ -175,8 +171,8 @@ public class CartDigitalPresenter implements ICartDigitalPresenter {
     }
 
     @Override
-    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData) {
-        digitalAnalytics.eventAddToCart(cartDigitalInfoData);
+    public void sendAnalyticsATCSuccess(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
+        digitalAnalytics.eventAddToCart(cartDigitalInfoData, extraComeFrom);
         digitalAnalytics.eventCheckout(cartDigitalInfoData);
     }
 

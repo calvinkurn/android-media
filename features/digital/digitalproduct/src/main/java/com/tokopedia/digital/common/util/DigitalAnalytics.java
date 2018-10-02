@@ -9,6 +9,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.nishikino.model.EventTracking;
 import com.tokopedia.core.router.digitalmodule.passdata.DigitalCheckoutPassData;
+import com.tokopedia.digital.cart.activity.CartDigitalActivity;
 import com.tokopedia.digital.cart.model.CartDigitalInfoData;
 import com.tokopedia.digital.cart.model.CheckoutDigitalData;
 import com.tokopedia.digital.common.constant.DigitalEventTracking;
@@ -42,7 +43,7 @@ public class DigitalAnalytics {
         );
     }
 
-    public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData) {
+    public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData, int extraComeFrom) {
         String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
                 cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
@@ -50,10 +51,11 @@ public class DigitalAnalytics {
 
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf("event", DigitalEventTracking.Event.ADD_TO_CART,
-                        "eventCategory", DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
+                        "eventCategory", extraComeFrom == CartDigitalActivity.PARAM_WIDGET ? DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET :
+                                DigitalEventTracking.Category.DIGITAL_NATIVE,
                         "eventAction", DigitalEventTracking.Action.CLICK_BELI,
                         "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() +
-                                " - " + (cartDigitalInfoData.isInstantCheckout()?"instant":"non instant"),
+                                " - " + (cartDigitalInfoData.isInstantCheckout() ? "instant" : "non instant"),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
                                 "add", DataLayer.mapOf(

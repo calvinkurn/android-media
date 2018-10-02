@@ -69,7 +69,7 @@ public class FlightAnalytics {
                         EVENT_ACTION, Action.PROMOTION_CLICK,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%d-%s-%s",
                                 position,
-                                banner.getAttributes().getDescription().toLowerCase(),
+                                banner.getAttributes().getPromoCode(),
                                 banner.getAttributes().getLinkUrl()
                         ),
                         ECOMMERCE, DataLayer.mapOf(
@@ -227,7 +227,7 @@ public class FlightAnalytics {
         if (viewModel.getAirlineList() != null) {
             List<String> airlines = new ArrayList<>();
             for (FlightAirlineDB airlineDB : viewModel.getAirlineList()) {
-                airlines.add(airlineDB.getShortName());
+                airlines.add(airlineDB.getShortName().toLowerCase());
             }
             result.append(TextUtils.join(",", airlines));
         }
@@ -276,7 +276,7 @@ public class FlightAnalytics {
     private String transformEventDetailLabel(FlightDetailViewModel viewModel) {
         StringBuilder result = new StringBuilder();
         if (viewModel.getRouteList() != null && viewModel.getRouteList().size() > 0) {
-            String airlines = viewModel.getRouteList().get(0).getAirlineName();
+            String airlines = viewModel.getRouteList().get(0).getAirlineName().toLowerCase();
             result.append(airlines);
             String timeResult = String.format(" - %s", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(0).getDepartureTimestamp())));
             timeResult += String.format(" - %s ", String.valueOf(flightDateUtil.getDayDiff(viewModel.getRouteList().get(viewModel.getRouteList().size() - 1).getArrivalTimestamp())));
@@ -290,9 +290,9 @@ public class FlightAnalytics {
     private String transformEventDetailLabel(FlightDetailViewModel departureViewModel, FlightDetailViewModel returnViewModel) {
         StringBuilder result = new StringBuilder();
         if (departureViewModel.getRouteList() != null && departureViewModel.getRouteList().size() > 0) {
-            String airlines = departureViewModel.getRouteList().get(0).getAirlineName();
+            String airlines = departureViewModel.getRouteList().get(0).getAirlineName().toLowerCase();
             if (returnViewModel.getRouteList() != null && returnViewModel.getRouteList().size() > 0) {
-                airlines += ", " + returnViewModel.getRouteList().get(0).getAirlineName();
+                airlines += ", " + returnViewModel.getRouteList().get(0).getAirlineName().toLowerCase();
             }
             result.append(airlines);
 
