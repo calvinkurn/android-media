@@ -4,7 +4,9 @@ import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardHeaderPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardItemPojo;
 import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuery;
+import com.tokopedia.affiliate.feature.dashboard.data.pojo.DashboardQuotaStatus;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardFloatingButtonViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
 import com.tokopedia.graphql.data.model.GraphqlResponse;
@@ -69,5 +71,9 @@ public class GetDashboardSubscriber extends Subscriber<GraphqlResponse> {
             itemList.add(item);
         }
         return itemList;
+    }
+
+    public static DashboardFloatingButtonViewModel mappingFloatingItem(DashboardQuotaStatus pojo) {
+        return new DashboardFloatingButtonViewModel(pojo.getFormatted(), pojo.getNumber());
     }
 }

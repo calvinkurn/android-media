@@ -63,8 +63,7 @@
                         android:layout_gravity="center"
                         android:gravity="center"
                         android:textColor="@color/font_black_disabled_38"
-                        android:layout_marginTop="@dimen/dp_2"
-                        android:textSize="@dimen/sp_12"
+                        android:textSize="@dimen/sp_10"
                         android:fontFamily="sans-serif"
                         android:text="@string/title_af_dashboard_saldo_sub"/>
 

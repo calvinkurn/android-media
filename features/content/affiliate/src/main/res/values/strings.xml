@@ -18,6 +18,7 @@
     <string name="text_empty_start_recommendation_string">Mulai Rekomendasi, Yuk!</string>
     <string name="text_empty_start_recommendation_btn">Mulai Rekomendasi</string>
     <string name="text_empty_have_recommendation">Kamu masih memiliki 15 jatah rekomendasi yang bisa diambil.</string>
+    <string name="text_empty_have_recommendation_formatted">Kamu masih memiliki %1$s jatah rekomendasi yang bisa diambil.</string>
 
     <!--EXPLORE-->
     <string name="text_search_hint">Cari Produk di ByMe</string>

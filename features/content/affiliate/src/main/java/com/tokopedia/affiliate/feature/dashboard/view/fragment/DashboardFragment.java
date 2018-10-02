@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
 import com.tokopedia.affiliate.feature.dashboard.di.DaggerDashboardComponent;
@@ -24,6 +25,7 @@ import com.tokopedia.affiliate.feature.dashboard.view.adapter.DashboardAdapter;
 import com.tokopedia.affiliate.feature.dashboard.view.adapter.factory.DashboardItemTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.presenter.DashboardPresenter;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardFloatingButtonViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.EmptyDashboardViewModel;
@@ -184,15 +186,20 @@ public class DashboardFragment
     }
 
     @Override
-    public void onSuccessGetDashboardItem(DashboardHeaderViewModel header, List<DashboardItemViewModel> itemList, String cursor) {
+    public void onSuccessGetDashboardItem(DashboardHeaderViewModel header,
+                                          List<DashboardItemViewModel> itemList,
+                                          String cursor,
+                                          DashboardFloatingButtonViewModel floatingModel) {
         adapter.clearAllElements();
         if (swipeToRefresh.isRefreshing()) swipeToRefresh.setRefreshing(false);
         adapter.addElement(header);
         if (itemList.size() == 0) {
-            EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel();
+            EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel(floatingModel.getCount());
             adapter.addElement(emptyDashboardViewModel);
             adapter.notifyDataSetChanged();
         } else {
+            cvRecommendation.setVisibility(View.VISIBLE);
+            tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
         }

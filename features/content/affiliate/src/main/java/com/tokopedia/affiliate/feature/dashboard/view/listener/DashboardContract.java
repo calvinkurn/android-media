@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
+import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardFloatingButtonViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardItemViewModel;
 
@@ -22,7 +23,10 @@ public interface DashboardContract {
 
         void hideLoading();
 
-        void onSuccessGetDashboardItem(DashboardHeaderViewModel header, List<DashboardItemViewModel> itemList, String cursor);
+        void onSuccessGetDashboardItem(DashboardHeaderViewModel header,
+                                       List<DashboardItemViewModel> itemList,
+                                       String cursor,
+                                       DashboardFloatingButtonViewModel floatingModel);
 
         void onErrorGetDashboardItem(String error);
 
