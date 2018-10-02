@@ -3,12 +3,15 @@ package com.tokopedia.merchantvoucher.voucherList
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
+import android.support.v7.widget.RecyclerView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
-import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -51,6 +54,10 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
         return ""
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_merchant_voucher_list, container, false)
+    }
+
     override fun initInjector() {
         activity?.run {
             DaggerMerchantVoucherComponent.builder()
@@ -60,11 +67,18 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
                     .inject(this@MerchantVoucherListFragment)
             presenter.attachView(this@MerchantVoucherListFragment)
         }
-
     }
 
     override fun loadData(page: Int) {
         presenter.getVoucherList(shopId)
+    }
+
+    override fun getRecyclerView(view: View?): RecyclerView {
+        val recyclerView: RecyclerView = super.getRecyclerView(view)
+        if (recyclerView is VerticalRecyclerView) {
+            recyclerView.clearItemDecoration()
+        }
+        return recyclerView
     }
 
     override fun onSwipeRefresh() {

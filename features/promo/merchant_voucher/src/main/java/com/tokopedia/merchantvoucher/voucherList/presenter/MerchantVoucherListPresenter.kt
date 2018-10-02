@@ -2,7 +2,6 @@ package com.tokopedia.merchantvoucher.voucherList.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -10,7 +9,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.domain.interactor.DeleteShopInfoCacheUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoUseCase
 import rx.Subscriber
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
 /**
