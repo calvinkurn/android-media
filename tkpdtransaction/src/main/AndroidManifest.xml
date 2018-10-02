@@ -105,6 +105,8 @@
             android:name=".pickuppoint.view.activity.PickupPointMapActivity"
             android:label="@string/title_send_to_pick_up_booth" />
 
+        <activity android:name=".purchase.detail.activity.BookingCodeActivity" />
+
         <service
             android:name=".purchase.services.TxActionIntentService"
             android:exported="false" />
