@@ -29,6 +29,7 @@ public class Product implements Parcelable {
     private boolean productReturnable;
     private boolean productIsFreeReturns;
     private boolean productIsPreorder;
+    private int preOrderDurationDay;
     private String productCashback;
     private int productMinOrder;
     private int productInvenageValue;
@@ -311,6 +312,14 @@ public class Product implements Parcelable {
         this.cartId = cartId;
     }
 
+    public int getPreOrderDurationDay() {
+        return preOrderDurationDay;
+    }
+
+    public void setPreOrderDurationDay(int preOrderDurationDay) {
+        this.preOrderDurationDay = preOrderDurationDay;
+    }
+
     public Product() {
     }
 
@@ -353,6 +362,7 @@ public class Product implements Parcelable {
         dest.writeTypedList(this.productShipmentMapping);
         dest.writeInt(this.productCatId);
         dest.writeInt(this.productCatalogId);
+        dest.writeInt(this.preOrderDurationDay);
     }
 
     protected Product(Parcel in) {
@@ -388,6 +398,7 @@ public class Product implements Parcelable {
         this.productShipmentMapping = in.createTypedArrayList(ProductShipmentMapping.CREATOR);
         this.productCatId = in.readInt();
         this.productCatalogId = in.readInt();
+        this.preOrderDurationDay = in.readInt();
     }
 
     public static final Creator<Product> CREATOR = new Creator<Product>() {

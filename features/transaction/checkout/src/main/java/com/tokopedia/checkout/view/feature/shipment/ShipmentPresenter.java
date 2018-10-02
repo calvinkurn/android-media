@@ -59,6 +59,7 @@ import com.tokopedia.transactiondata.entity.request.DataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ProductDataCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.ShopProductCheckoutRequest;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.SaveShipmentStateRequest;
+import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductPreorder;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateDropshipData;
 import com.tokopedia.transactiondata.entity.request.saveshipmentstate.ShipmentStateProductData;
@@ -1158,6 +1159,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
             ShipmentStateProductData.Builder builder = new ShipmentStateProductData.Builder()
                     .productId(cartItemModel.getProductId());
+            if (cartItemModel.isPreOrder()) {
+                ShipmentStateProductPreorder.Builder shipmentStateProductPreorder =
+                        new ShipmentStateProductPreorder.Builder()
+                                .durationDay(cartItemModel.getPreOrderDurationDay());
+                builder.productPreorder(shipmentStateProductPreorder.build());
+            }
             shipmentStateProductDataList.add(builder.build());
         }
 

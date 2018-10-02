@@ -32,6 +32,7 @@ public class CartItemModel implements Parcelable {
 
     private String cashback;
     private String freeReturnLogo;
+    private int preOrderDurationDay;
 
     private boolean isCashback;
     private boolean isPreOrder;
@@ -229,6 +230,14 @@ public class CartItemModel implements Parcelable {
         this.errorMessage = errorMessage;
     }
 
+    public int getPreOrderDurationDay() {
+        return preOrderDurationDay;
+    }
+
+    public void setPreOrderDurationDay(int preOrderDurationDay) {
+        this.preOrderDurationDay = preOrderDurationDay;
+    }
+
     public CartItemModel() {
     }
 
@@ -263,6 +272,7 @@ public class CartItemModel implements Parcelable {
                 .append(isCashback(), that.isCashback())
                 .append(getFreeReturnLogo(), that.getFreeReturnLogo())
                 .append(getErrorMessage(), that.getErrorMessage())
+                .append(getPreOrderDurationDay(), that.getPreOrderDurationDay())
                 .isEquals();
     }
 
@@ -291,6 +301,7 @@ public class CartItemModel implements Parcelable {
                 .append(isfCancelPartial())
                 .append(isError())
                 .append(getErrorMessage())
+                .append(getPreOrderDurationDay())
                 .toHashCode();
     }
 
@@ -324,6 +335,7 @@ public class CartItemModel implements Parcelable {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
         dest.writeParcelable(this.analyticsProductCheckoutData, flags);
+        dest.writeInt(this.preOrderDurationDay);
     }
 
     protected CartItemModel(Parcel in) {
@@ -350,6 +362,7 @@ public class CartItemModel implements Parcelable {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
         this.analyticsProductCheckoutData = in.readParcelable(AnalyticsProductCheckoutData.class.getClassLoader());
+        this.preOrderDurationDay = in.readInt();
     }
 
     public static final Creator<CartItemModel> CREATOR = new Creator<CartItemModel>() {

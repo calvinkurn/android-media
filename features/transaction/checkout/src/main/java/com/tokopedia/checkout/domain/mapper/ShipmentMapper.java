@@ -207,6 +207,8 @@ public class ShipmentMapper implements IShipmentMapper {
                                 productResult.setProductReturnable(product.getProductReturnable() == 1);
                                 productResult.setProductIsFreeReturns(product.getProductIsFreeReturns() == 1);
                                 productResult.setProductIsPreorder(product.getProductIsPreorder() == 1);
+                                productResult.setPreOrderDurationDay(product.getProductPreorder() != null ?
+                                        product.getProductPreorder().getDurationDay() : 0);
                                 productResult.setProductCashback(product.getProductCashback());
                                 productResult.setProductMinOrder(product.getProductMinOrder());
                                 productResult.setProductInvenageValue(product.getProductInvenageValue());
