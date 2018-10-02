@@ -72,6 +72,7 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void hideSoftKeyboard();
 
     void onLoadShippingState(int shipperId, int spId, int itemPosition,
-                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList,
+                             boolean isCourierRecommendation);
 
 }

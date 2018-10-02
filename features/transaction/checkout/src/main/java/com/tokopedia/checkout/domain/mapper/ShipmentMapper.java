@@ -46,7 +46,8 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
-        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
+//        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
+        dataResult.setUseCourierRecommendation(true);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
@@ -107,8 +108,8 @@ public class ShipmentMapper implements IShipmentMapper {
 
                         groupShopResult.setShippingId(groupShop.getShippingId());
                         groupShopResult.setSpId(groupShop.getSpId());
-                        groupShopResult.setDropshipperName(groupShop.getDropshiper().getName());
-                        groupShopResult.setDropshipperPhone(groupShop.getDropshiper().getTelpNo());
+                        groupShopResult.setDropshipperName(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getName() : "");
+                        groupShopResult.setDropshipperPhone(groupShop.getDropshiper() != null ? groupShop.getDropshiper().getTelpNo() : "");
                         groupShopResult.setUseInsurance(groupShop.isInsurance());
 
                         if (groupShop.getShop() != null) {

@@ -32,7 +32,7 @@ public class GroupShop {
     @SerializedName("sp_id")
     @Expose
     private int spId;
-    @SerializedName("dropshiper")
+    @SerializedName("dropshipper")
     @Expose
     private Dropshiper dropshiper;
     @SerializedName("is_insurance")

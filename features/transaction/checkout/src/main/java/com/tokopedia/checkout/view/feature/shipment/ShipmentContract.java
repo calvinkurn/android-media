@@ -19,6 +19,7 @@ import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.transactiondata.entity.request.CheckPromoCodeCartShipmentRequest;
 import com.tokopedia.transactiondata.entity.request.DataChangeAddressRequest;
@@ -198,6 +199,9 @@ public interface ShipmentContract {
         void processGetRates(int shipperId, int spId, int itemPosition,
                              ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
 
+        void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
+                                             ShipmentDetailData shipmentDetailData, List<ShopShipment> shopShipmentList);
+
         RecipientAddressModel getRecipientAddressModel();
 
         void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
@@ -243,6 +247,10 @@ public interface ShipmentContract {
         void setCartItemPromoHolderData(CartItemPromoHolderData cartItemPromoHolderData);
 
         CartItemPromoHolderData getCartItemPromoHolderData();
+
+        void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState);
+
+        List<ShippingCourierViewModel> getShippingCourierViewModelsState();
 
     }
 

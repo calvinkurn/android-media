@@ -8,6 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
@@ -33,15 +34,20 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateUseCase;
 import com.tokopedia.checkout.view.common.holderitemdata.CartItemPromoHolderData;
+import com.tokopedia.checkout.view.feature.shipment.subscriber.GetCourierRecommendationSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.GetRatesSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.subscriber.SaveShipmentStateSubscriber;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentCartItemModel;
 import com.tokopedia.checkout.view.feature.shipment.viewmodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierViewModel;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationViewModel;
 import com.tokopedia.core.gcm.GCMHandler;
 import com.tokopedia.core.geolocation.model.autocomplete.LocationPass;
 import com.tokopedia.core.util.SessionHandler;
@@ -104,6 +110,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final ChangeShippingAddressUseCase changeShippingAddressUseCase;
     private final SaveShipmentStateUseCase saveShipmentStateUseCase;
     private final GetRatesUseCase getRatesUseCase;
+    private final GetCourierRecommendationUseCase getCourierRecommendationUseCase;
+    private final ShippingCourierConverter shippingCourierConverter;
 
     private CartItemPromoHolderData cartItemPromoHolderData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
@@ -118,6 +126,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private List<DataChangeAddressRequest> changeAddressRequestList;
     private CheckoutData checkoutData;
     private boolean partialCheckout;
+    private List<ShippingCourierViewModel> shippingCourierViewModelsState;
 
     private ShipmentContract.AnalyticsActionListener analyticsActionListener;
 
@@ -133,6 +142,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              ChangeShippingAddressUseCase changeShippingAddressUseCase,
                              SaveShipmentStateUseCase saveShipmentStateUseCase,
                              GetRatesUseCase getRatesUseCase,
+                             GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                             ShippingCourierConverter shippingCourierConverter,
                              ShipmentContract.AnalyticsActionListener shipmentAnalyticsActionListener) {
         this.compositeSubscription = compositeSubscription;
         this.checkoutUseCase = checkoutUseCase;
@@ -145,6 +156,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.changeShippingAddressUseCase = changeShippingAddressUseCase;
         this.saveShipmentStateUseCase = saveShipmentStateUseCase;
         this.getRatesUseCase = getRatesUseCase;
+        this.getCourierRecommendationUseCase = getCourierRecommendationUseCase;
+        this.shippingCourierConverter = shippingCourierConverter;
         this.analyticsActionListener = shipmentAnalyticsActionListener;
     }
 
@@ -157,6 +170,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void detachView() {
         super.detachView();
         compositeSubscription.unsubscribe();
+        getCourierRecommendationUseCase.unsubscribe();
     }
 
     @Override
@@ -1433,5 +1447,25 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         })
         );
+    }
+
+    @Override
+    public void processGetCourierRecommendation(int shipperId, int spId, int itemPosition,
+                                                ShipmentDetailData shipmentDetailData,
+                                                List<ShopShipment> shopShipmentList) {
+        String query = GraphqlHelper.loadRawString(getView().getActivityContext().getResources(), R.raw.rates_v3_query);
+        getCourierRecommendationUseCase.execute(query, shipmentDetailData, 0,
+                shopShipmentList, new GetCourierRecommendationSubscriber(
+                        getView(), this, shipperId, spId, itemPosition, shippingCourierConverter));
+    }
+
+    @Override
+    public List<ShippingCourierViewModel> getShippingCourierViewModelsState() {
+        return shippingCourierViewModelsState;
+    }
+
+    @Override
+    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState) {
+        this.shippingCourierViewModelsState = shippingCourierViewModelsState;
     }
 }

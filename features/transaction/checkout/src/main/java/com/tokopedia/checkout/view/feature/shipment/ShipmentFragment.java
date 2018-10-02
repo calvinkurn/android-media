@@ -1497,6 +1497,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                         RecipientAddressModel recipientAddressModel,
                                         int cartPosition) {
         sendAnalyticsOnClickChangeCourierShipmentRecommendation();
+        if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
+                shipmentPresenter.getShippingCourierViewModelsState() != null) {
+            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState();
+        }
         shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
                 shippingCourierViewModels, recipientAddressModel, cartPosition);
         shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
@@ -1516,7 +1520,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onLoadShippingState(int shipperId, int spId, int itemPosition,
                                     ShipmentDetailData shipmentDetailData,
-                                    List<ShopShipment> shopShipmentList) {
-        shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+                                    List<ShopShipment> shopShipmentList,
+                                    boolean useCourierRecommendation) {
+        if (useCourierRecommendation) {
+            shipmentPresenter.processGetCourierRecommendation(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+        } else {
+            shipmentPresenter.processGetRates(shipperId, spId, itemPosition, shipmentDetailData, shopShipmentList);
+        }
     }
 }

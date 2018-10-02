@@ -13,6 +13,7 @@ import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartListUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckPromoCodeCartShipmentUseCase;
 import com.tokopedia.checkout.domain.usecase.CheckoutUseCase;
 import com.tokopedia.checkout.domain.usecase.EditAddressUseCase;
+import com.tokopedia.checkout.domain.usecase.GetCourierRecommendationUseCase;
 import com.tokopedia.checkout.domain.usecase.GetRatesUseCase;
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormUseCase;
 import com.tokopedia.checkout.domain.usecase.GetThanksToppayUseCase;
@@ -30,6 +31,8 @@ import com.tokopedia.checkout.view.feature.shipment.ShipmentPresenter;
 import com.tokopedia.checkout.view.feature.shipment.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.feature.shipment.converter.ShipmentDataRequestConverter;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingcourier.view.ShippingCourierConverter;
+import com.tokopedia.checkout.view.feature.shippingrecommendation.shippingduration.view.ShippingDurationConverter;
 import com.tokopedia.core.network.apiservices.transaction.TXActService;
 import com.tokopedia.transactiondata.repository.ICartRepository;
 import com.tokopedia.transactiondata.repository.ITopPayRepository;
@@ -128,6 +131,24 @@ public class ShipmentModule {
 
     @Provides
     @ShipmentScope
+    ShippingDurationConverter provideShippingDurationConverter() {
+        return new ShippingDurationConverter();
+    }
+
+    @Provides
+    @ShipmentScope
+    GetCourierRecommendationUseCase provideGetCourierRecommendationUseCase(ShippingDurationConverter shippingDurationConverter) {
+        return new GetCourierRecommendationUseCase(shippingDurationConverter);
+    }
+
+    @Provides
+    @ShipmentScope
+    ShippingCourierConverter provideShippingCourierConverter() {
+        return new ShippingCourierConverter();
+    }
+
+    @Provides
+    @ShipmentScope
     ShipmentContract.Presenter provideShipmentPresenter(CompositeSubscription compositeSubscription,
                                                         CheckoutUseCase checkoutUseCase,
                                                         GetThanksToppayUseCase getThanksToppayUseCase,
@@ -138,11 +159,14 @@ public class ShipmentModule {
                                                         CancelAutoApplyCouponUseCase cancelAutoApplyCouponUseCase,
                                                         ChangeShippingAddressUseCase changeShippingAddressUseCase,
                                                         SaveShipmentStateUseCase saveShipmentStateUseCase,
-                                                        GetRatesUseCase getRatesUseCase) {
+                                                        GetRatesUseCase getRatesUseCase,
+                                                        GetCourierRecommendationUseCase getCourierRecommendationUseCase,
+                                                        ShippingCourierConverter shippingCourierConverter) {
         return new ShipmentPresenter(compositeSubscription, checkoutUseCase, getThanksToppayUseCase,
                 checkPromoCodeCartShipmentUseCase, getShipmentAddressFormUseCase,
                 checkPromoCodeCartListUseCase, editAddressUseCase, cancelAutoApplyCouponUseCase,
-                changeShippingAddressUseCase, saveShipmentStateUseCase, getRatesUseCase, shipmentAnalyticsActionListener);
+                changeShippingAddressUseCase, saveShipmentStateUseCase, getRatesUseCase,
+                getCourierRecommendationUseCase, shippingCourierConverter, shipmentAnalyticsActionListener);
     }
 
     @Provides

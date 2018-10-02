@@ -178,6 +178,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvTickerInfo;
     private LinearLayout layoutWarningAndError;
     private LinearLayout llCourierStateLoading;
+    private LinearLayout llCourierRecommendationStateLoading;
 
     private List<ShipmentData> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
@@ -293,6 +294,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         llShipmentInfoTicker = itemView.findViewById(R.id.ll_shipment_info_ticker);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
+        llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -361,7 +363,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
         if (shipmentCartItemModel.isUseCourierRecommendation()) {
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
-                    recipientAddressModel, shipmentCartItemModel.getShopShipmentList());
+                    recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
             if (showCaseObjectList.size() == 1) {
                 showCaseObjectList.add(new ShowCaseObject(llSelectShipmentRecommendation,
                         llSelectShipmentRecommendation.getContext().getString(R.string.label_title_showcase_shipment_courier_recommendation),
@@ -548,7 +550,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                         if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
                             mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
                                     shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
-                                    shipmentCartItemModel.getShopShipmentList());
+                                    shipmentCartItemModel.getShopShipmentList(), false);
                             shipmentCartItemModel.setStateLoadingCourierState(true);
                             shipmentCartItemModel.setStateHasLoadCourierState(true);
                             llCourierStateLoading.setVisibility(View.VISIBLE);
@@ -568,7 +570,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private void renderCourierRecommendation(ShipmentCartItemModel shipmentCartItemModel,
                                              ShipmentDetailData shipmentDetailData,
                                              RecipientAddressModel recipientAddressModel,
-                                             List<ShopShipment> shopShipmentList) {
+                                             List<ShopShipment> shopShipmentList,
+                                             RatesDataConverter ratesDataConverter) {
         RecipientAddressModel currentAddress;
         if (recipientAddressModel == null) {
             currentAddress = shipmentCartItemModel.getRecipientAddressModel();
@@ -631,10 +634,44 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
             tvSelectedCourierRecommendation.setText(shipmentDetailData.getSelectedCourier().getName());
             tvSelectedPriceRecommendation.setText(CurrencyFormatUtil.convertPriceValueToIdrFormat(
                     shipmentDetailData.getSelectedCourier().getShipperPrice(), false));
+            llCourierRecommendationStateLoading.setVisibility(View.GONE);
         } else {
             llSelectedShipmentRecommendation.setVisibility(View.GONE);
             llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
             llShippingOptionsContainer.setVisibility(View.GONE);
+
+            if (shipmentCartItemModel.isStateLoadingCourierState()) {
+                llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                llSelectShipmentRecommendation.setVisibility(View.GONE);
+            } else {
+                llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                if (shipmentCartItemModel.getShippingId() != 0 && shipmentCartItemModel.getSpId() != 0) {
+                    if (shipmentDetailData == null) {
+                        RecipientAddressModel tmpRecipientAddressModel;
+                        if (recipientAddressModel != null) {
+                            tmpRecipientAddressModel = recipientAddressModel;
+                        } else {
+                            tmpRecipientAddressModel = shipmentCartItemModel.getRecipientAddressModel();
+                        }
+                        ShipmentDetailData tmpShipmentDetailData = ratesDataConverter.getShipmentDetailData(
+                                shipmentCartItemModel, tmpRecipientAddressModel);
+
+                        if (!shipmentCartItemModel.isStateHasLoadCourierState()) {
+                            mActionListener.onLoadShippingState(shipmentCartItemModel.getShippingId(),
+                                    shipmentCartItemModel.getSpId(), getAdapterPosition(), tmpShipmentDetailData,
+                                    shipmentCartItemModel.getShopShipmentList(), true);
+                            shipmentCartItemModel.setStateLoadingCourierState(true);
+                            shipmentCartItemModel.setStateHasLoadCourierState(true);
+                            llCourierRecommendationStateLoading.setVisibility(View.VISIBLE);
+                            llSelectShipmentRecommendation.setVisibility(View.GONE);
+                        }
+                    }
+                } else {
+                    llCourierRecommendationStateLoading.setVisibility(View.GONE);
+                    llSelectShipmentRecommendation.setVisibility(View.VISIBLE);
+                }
+            }
+
         }
     }
 
