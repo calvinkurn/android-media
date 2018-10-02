@@ -269,8 +269,6 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
-//            initVideoSize();
-
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
             if (videoFragment == null)
                 return;
@@ -374,7 +372,7 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.GONE);
         } else {
             findViewById(R.id.video_container_layout).setVisibility(View.GONE);
-            sponsorLayout.setVisibility(View.VISIBLE);
+            setSponsorData();
         }
 
     }
