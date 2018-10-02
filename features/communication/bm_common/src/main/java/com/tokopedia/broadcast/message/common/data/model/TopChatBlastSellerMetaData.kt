@@ -1,4 +1,4 @@
-package com.tokopedia.broadcast.message.data.model
+package com.tokopedia.broadcast.message.common.data.model
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

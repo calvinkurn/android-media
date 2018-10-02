@@ -1,22 +1,20 @@
-package com.tokopedia.broadcast.message.domain.interactor
+package com.tokopedia.broadcast.message.common.domain.interactor
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.broadcast.message.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.R
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-import com.tokopedia.broadcast.message.R
 import rx.Observable
-import javax.inject.Inject
 
-class GetChatBlastSellerMetaDataUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                            @ApplicationContext val context: Context):
+class GetChatBlastSellerMetaDataUseCase (private val graphqlUseCase: GraphqlUseCase,
+                                                            val context: Context):
         UseCase<TopChatBlastSellerMetaData>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<TopChatBlastSellerMetaData> {

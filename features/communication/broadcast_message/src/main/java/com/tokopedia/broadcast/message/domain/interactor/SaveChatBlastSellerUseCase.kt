@@ -2,7 +2,6 @@ package com.tokopedia.broadcast.message.domain.interactor
 
 import android.content.Context
 import android.text.TextUtils
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
@@ -11,6 +10,7 @@ import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
 import com.tokopedia.broadcast.message.data.model.BlastMessageResponse
 import com.tokopedia.broadcast.message.data.model.ImageAttachment
+import com.tokopedia.broadcast.message.data.model.ProductPayloadMutation
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -27,7 +27,7 @@ class SaveChatBlastSellerUseCase @Inject constructor(
         private val userSession: UserSession,
         @ApplicationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ImageAttachment>
+        private val uploadImageUseCase: UploadImageUseCase<ImageAttachment.Data>
 ): UseCase<BlastMessageResponse>() {
 
     override fun createObservable(requestParams: RequestParams?): Observable<BlastMessageResponse> {
@@ -38,11 +38,7 @@ class SaveChatBlastSellerUseCase @Inject constructor(
                     if (imageAttachment == null)
                         throw RuntimeException()
 
-                    val errorMessages = imageAttachment.messageError
-                    if (errorMessages.isNotEmpty() && !errorMessages[0].isEmpty()){
-                        throw MessageErrorException(errorMessages[0])
-                    }
-                    createGqlSubmitBlastSeller(imageAttachment.data?.picSrc, requestParams)
+                    createGqlSubmitBlastSeller(imageAttachment.picSrc, requestParams)
                 }
     }
 
@@ -68,12 +64,14 @@ class SaveChatBlastSellerUseCase @Inject constructor(
         }.map { it.result }
     }
 
-    private fun createSubmitVariable(imageUrl: String?, requestParams: RequestParams?) = mutableMapOf(
-            PARAM_MESSAGE to (requestParams?.getString(PARAM_MESSAGE, "") ?: ""),
-            PARAM_IMAGE_URL to (imageUrl ?: ""),
-            PARAM_HAS_PRODUCT to (requestParams?.getBoolean(PARAM_HAS_PRODUCT, false) == true),
-            PARAM_PRODUCT to (requestParams?.getString(PARAM_PRODUCT, "[]") ?: "[]")
-    )
+    private fun createSubmitVariable(imageUrl: String?, requestParams: RequestParams?): MutableMap<String, Any> {
+        return mutableMapOf(
+                PARAM_MESSAGE to (requestParams?.getString(PARAM_MESSAGE, "") ?: ""),
+                PARAM_IMAGE_URL to (imageUrl ?: ""),
+                PARAM_HAS_PRODUCT to (requestParams?.getBoolean(PARAM_HAS_PRODUCT, false) == true),
+                PARAM_PRODUCT to (requestParams?.getObject(PARAM_PRODUCT) ?: arrayOf<ProductPayloadMutation>())
+        )
+    }
 
     companion object {
         private const val PARAM_PATH_IMAGE = "path_image"
@@ -85,16 +83,14 @@ class SaveChatBlastSellerUseCase @Inject constructor(
         private const val PARAM_MESSAGE = "message"
         private const val PARAM_IMAGE_URL = "mtImageUrl"
         private const val PARAM_HAS_PRODUCT = "hasProducts"
-        private const val PARAM_PRODUCT = "products"
-
-        val gson = Gson()
+        private const val PARAM_PRODUCT = "productsPayload"
 
         fun createRequestParams(mutationModel: BlastMessageMutation) = RequestParams.create()
                 .apply {
                     putString(PARAM_PATH_IMAGE, mutationModel.imagePath)
                     putString(PARAM_MESSAGE, mutationModel.message)
                     putBoolean(PARAM_HAS_PRODUCT, mutationModel.hasProducts)
-                    putString(PARAM_HAS_PRODUCT, if (mutationModel.hasProducts) gson.toJson(mutationModel.productsPayload) else "[]")
+                    putObject(PARAM_PRODUCT, mutationModel.productsPayload)
                 }
     }
 

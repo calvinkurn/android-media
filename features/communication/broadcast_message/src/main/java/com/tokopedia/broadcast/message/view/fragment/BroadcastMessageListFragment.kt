@@ -21,7 +21,7 @@ import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.extensions.toISO8601Date
 import com.tokopedia.broadcast.message.common.extensions.toStringDayMonth
-import com.tokopedia.broadcast.message.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
 import com.tokopedia.broadcast.message.view.activity.BroadcastMessageCreateActivity
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageListPresenter

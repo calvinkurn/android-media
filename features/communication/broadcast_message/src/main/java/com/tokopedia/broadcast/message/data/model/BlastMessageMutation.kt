@@ -7,7 +7,7 @@ data class BlastMessageMutation(val message: String,
                                 val mtImageUrl: String,
                                 val imagePath: String,
                                 val hasProducts: Boolean,
-                                val productsPayload: Array<ProductPayloadMutation>): Parcelable {
+                                val productsPayload: Array<ProductPayloadMutation> = arrayOf()): Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),

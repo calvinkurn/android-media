@@ -33,6 +33,7 @@
             <TextView style="@style/TextView.Small.Green"
                 android:id="@+id/tv_bm_action"
                 android:text="@string/option_broadcast"
+                android:visibility="gone"
                 android:layout_gravity="end"
                 android:drawableLeft="@drawable/ic_bm_speaker"
                 android:drawableStart="@drawable/ic_bm_speaker"

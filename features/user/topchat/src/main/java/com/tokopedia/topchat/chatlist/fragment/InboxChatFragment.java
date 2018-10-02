@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog;
 import com.tkpd.library.utils.KeyboardHandler;
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.base.di.component.AppComponent;
@@ -33,6 +35,7 @@ import com.tokopedia.core.network.SnackbarRetry;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
+import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.topchat.R;
 import com.tokopedia.topchat.chatlist.activity.InboxChatActivity;
 import com.tokopedia.topchat.chatlist.adapter.InboxChatAdapter;
@@ -130,6 +133,12 @@ public class InboxChatFragment extends BaseDaggerFragment
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        GraphqlClient.init(context);
     }
 
     @Nullable
@@ -281,6 +290,7 @@ public class InboxChatFragment extends BaseDaggerFragment
 
         searchLoading.setVisibility(View.VISIBLE);
         presenter.getMessage();
+        presenter.getBlastMetaData();
     }
 
     @Override
@@ -677,5 +687,11 @@ public class InboxChatFragment extends BaseDaggerFragment
         if(getActivity() instanceof InboxChatActivity){
             ((InboxChatActivity)getActivity()).updateNotifDrawerData();
         }
+    }
+
+    @Override
+    public void handleBroadcastChatMetaData(TopChatBlastSellerMetaData topChatBlastSellerMetaData) {
+        boolean isValidToCreateBroadcast = topChatBlastSellerMetaData.getStatus() == 1;
+        sendBroadcast.setVisibility(isValidToCreateBroadcast? View.VISIBLE : View.GONE);
     }
 }

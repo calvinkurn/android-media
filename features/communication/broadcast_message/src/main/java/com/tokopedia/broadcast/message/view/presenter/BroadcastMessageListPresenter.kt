@@ -2,8 +2,8 @@ package com.tokopedia.broadcast.message.view.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.broadcast.message.data.model.TopChatBlastSeller
-import com.tokopedia.broadcast.message.data.model.TopChatBlastSellerMetaData
-import com.tokopedia.broadcast.message.domain.interactor.GetChatBlastSellerMetaDataUseCase
+import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaData
+import com.tokopedia.broadcast.message.common.domain.interactor.GetChatBlastSellerMetaDataUseCase
 import com.tokopedia.broadcast.message.domain.interactor.GetChatBlastSellerUseCase
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageListView
 import rx.Subscriber
