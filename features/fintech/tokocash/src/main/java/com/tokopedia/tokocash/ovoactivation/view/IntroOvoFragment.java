@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -123,6 +124,13 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
             @Override
             public void onClick(View view) {
                 directHelpPageWithApplink(tncApplink);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(false);
+                ds.setColor(ContextCompat.getColor(getActivity(), R.color.tkpd_main_green));
             }
         };
         ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(getActivity(),

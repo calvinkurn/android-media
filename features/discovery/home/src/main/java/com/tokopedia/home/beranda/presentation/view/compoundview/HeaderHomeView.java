@@ -43,6 +43,7 @@ public class HeaderHomeView extends BaseCustomView {
     private ProgressBar tokocashProgressBar;
     private LinearLayout tokocashActionContainer;
     private ImageView imageInfoBtn;
+    private TextView pointsOvo;
 
     private View tokoPointHolder;
     private TextView tvTitleTokoPoint;
@@ -101,6 +102,7 @@ public class HeaderHomeView extends BaseCustomView {
             tokocashProgressBar = view.findViewById(R.id.progress_bar_tokocash);
             tokocashActionContainer = view.findViewById(R.id.container_action_tokocash);
             imageInfoBtn = view.findViewById(R.id.info_button);
+            pointsOvo = view.findViewById(R.id.tv_ovo_point);
 
             tokoPointHolder = view.findViewById(R.id.container_tokopoint);
             tvTitleTokoPoint = view.findViewById(R.id.tv_title_tokopoint);
@@ -220,6 +222,7 @@ public class HeaderHomeView extends BaseCustomView {
 
     private void successRenderTokoCash(HomeHeaderWalletAction homeHeaderWalletAction) {
         tokocashProgressBar.setVisibility(GONE);
+        pointsOvo.setVisibility(GONE);
         tokocashActionContainer.setVisibility(VISIBLE);
         tvTitleTokocash.setText(homeHeaderWalletAction.getLabelTitle());
         tvActionTokocash.setText(homeHeaderWalletAction.getLabelActionButton());
@@ -231,7 +234,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setText(homeHeaderWalletAction.getBalance());
-            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
+            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
             tvBalanceTokocash.setTypeface(null, Typeface.BOLD);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
@@ -250,7 +253,7 @@ public class HeaderHomeView extends BaseCustomView {
                     tvBalanceTokocash.setVisibility(VISIBLE);
                     tvBalanceTokocash.setText(headerViewModel.getCashBackData().getAmountText());
                     tvBalanceTokocash.setTextColor(
-                            getContext().getResources().getColor(R.color.black_38)
+                            getContext().getResources().getColor(R.color.font_black_disabled_38)
                     );
                     imageInfoBtn.setVisibility(VISIBLE);
                     imageInfoBtn.setOnClickListener(
@@ -276,11 +279,13 @@ public class HeaderHomeView extends BaseCustomView {
 
         if (homeHeaderWalletAction.isLinked()) {
             tvTitleTokocash.setText(homeHeaderWalletAction.getCashBalance());
+            tvTitleTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
             tvBalanceTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             tvBalanceTokocash.setVisibility(VISIBLE);
-            tvBalanceTokocash.setText("Points " + homeHeaderWalletAction.getPointBalance());
-            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.black_70));
+            tvBalanceTokocash.setText(homeHeaderWalletAction.getPointBalance());
+            tvBalanceTokocash.setTextColor(getContext().getResources().getColor(R.color.font_black_primary_70));
             tvBalanceTokocash.setTypeface(null, Typeface.NORMAL);
+            pointsOvo.setVisibility(VISIBLE);
 
             tvActionTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? VISIBLE : GONE);
             tvTitleTokocash.setVisibility(homeHeaderWalletAction.isVisibleActionButton() ? GONE : VISIBLE);
@@ -291,6 +296,7 @@ public class HeaderHomeView extends BaseCustomView {
             tvActionTokocash.setVisibility(VISIBLE);
             tvBalanceTokocash.setVisibility(GONE);
             imageInfoBtn.setVisibility(GONE);
+            pointsOvo.setVisibility(GONE);
             tvActionTokocash.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
             if (headerViewModel.isPendingTokocashChecked()
                     && headerViewModel.getCashBackData() != null) {
