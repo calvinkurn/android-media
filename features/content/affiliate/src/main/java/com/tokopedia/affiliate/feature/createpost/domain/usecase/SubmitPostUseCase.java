@@ -107,12 +107,12 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
         return input;
     }
 
-    public static RequestParams createRequestParams(String adId, String productId, String token,
+    public static RequestParams createRequestParams(String productId, String adId, String token,
                                                     List<String> imageList) {
         RequestParams requestParams = RequestParams.create();
         requestParams.putString(PARAM_TYPE, TYPE_AFFILIATE);
-        requestParams.putString(PARAM_AD_ID, adId);
         requestParams.putString(PARAM_PRODUCT_ID, productId);
+        requestParams.putString(PARAM_AD_ID, adId);
         requestParams.putString(PARAM_TOKEN, token);
         requestParams.putObject(PARAM_IMAGE_LIST, imageList);
         return requestParams;

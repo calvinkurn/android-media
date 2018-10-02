@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -173,6 +174,16 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         });
     }
 
+    @Override
+    public void showLoading() {
+        Toast.makeText(getContext(), "Loading~", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void hideLoading() {
+        Toast.makeText(getContext(), "Done loading~", Toast.LENGTH_SHORT).show();
+    }
+
     private void initVar(Bundle savedInstanceState) {
         if (viewModel == null) {
             viewModel = new CreatePostViewModel();
@@ -193,7 +204,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     private void initView() {
         doneBtn.setOnClickListener(view -> {
-            //TODO milhamj
+            presenter.submitPost(productId, adId, "", viewModel.getCompleteList());
         });
         addImageBtn.setOnClickListener(view -> {
             startActivityForResult(

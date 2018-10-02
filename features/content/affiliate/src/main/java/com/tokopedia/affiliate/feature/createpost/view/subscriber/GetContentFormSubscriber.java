@@ -31,6 +31,7 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
         if (GlobalConfig.isAllowDebuggingTools()) {
             e.printStackTrace();
         }
+        view.hideLoading();
         view.onErrorGetContentForm(
                 ErrorHandler.getErrorMessage(view.getContext(), e)
         );
@@ -38,6 +39,7 @@ public class GetContentFormSubscriber extends Subscriber<GraphqlResponse> {
 
     @Override
     public void onNext(GraphqlResponse graphqlResponse) {
+        view.hideLoading();
         ContentFormData data = graphqlResponse.getData(ContentFormData.class);
         if (data == null || data.getFeedContentForm() == null) {
             throw new RuntimeException();
