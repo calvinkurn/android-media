@@ -19,6 +19,8 @@
     <string name="temp_message_time">10:00  •</string>
     <string name="create_bm">Tambah Broadcast Chat</string>
     <string name="bm_choose_picture">Pilih Gambar</string>
+    <string name="preview_bm">Preview</string>
+    <string name="send_message">Kirim</string>
     <plurals name="template_follower">
         <item quantity="zero">%d follower</item>
         <item quantity="one">%d follower</item>

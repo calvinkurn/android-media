@@ -6,7 +6,6 @@
     android:layout_height="@dimen/dp_80">
 
     <android.support.constraint.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/preview_right_bubble_bordered"
@@ -31,7 +30,7 @@
             android:layout_width="0dp"
             android:id="@+id/attach_product_name"
             android:lineSpacingExtra="@dimen/sp_10"
-            android:maxLines="2"
+            android:singleLine="true"
             android:ellipsize="end"
             tools:text="Nama Produk"
             android:layout_marginLeft="@dimen/dp_8"
