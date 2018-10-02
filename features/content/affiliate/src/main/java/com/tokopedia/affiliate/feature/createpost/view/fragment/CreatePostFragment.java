@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -38,8 +37,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-        .RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
@@ -53,6 +51,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     private View deleteImageLayout;
     private ButtonCompat doneBtn;
     private ButtonCompat addImageBtn;
+    private View loadingView;
 
     private CreatePostViewModel viewModel;
     private PostImageAdapter adapter;
@@ -100,6 +99,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         deleteImageLayout = view.findViewById(R.id.deleteImageLayout);
         doneBtn = view.findViewById(R.id.doneBtn);
         addImageBtn = view.findViewById(R.id.addImageBtn);
+        loadingView = view.findViewById(R.id.loadingView);
         return view;
     }
 
@@ -173,12 +173,12 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
 
     @Override
     public void showLoading() {
-        Toast.makeText(getContext(), "Loading~", Toast.LENGTH_SHORT).show();
+        loadingView.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void hideLoading() {
-        Toast.makeText(getContext(), "Done loading~", Toast.LENGTH_SHORT).show();
+        loadingView.setVisibility(View.GONE);
     }
 
     private void initVar(Bundle savedInstanceState) {
