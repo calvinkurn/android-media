@@ -15,13 +15,17 @@ public interface CreatePostContract {
     interface View extends CustomerView {
         Context getContext();
 
+        void showLoading();
+
+        void hideLoading();
+
         void onSuccessGetContentForm(FeedContentForm feedContentForm);
 
         void onErrorGetContentForm(String message);
 
-        void showLoading();
+        void onSuccessSubmitPost();
 
-        void hideLoading();
+        void onErrorSubmitPost(String message);
     }
     interface Presenter extends CustomerPresenter<View> {
         void fetchContentForm(String productId, String adId);

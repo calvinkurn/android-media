@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -143,6 +144,16 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     @Override
+    public void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onSuccessGetContentForm(FeedContentForm feedContentForm) {
         viewModel.setToken(feedContentForm.getToken());
         if (!feedContentForm.getGuides().isEmpty()) {
@@ -172,13 +183,15 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     @Override
-    public void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
+    public void onSuccessSubmitPost() {
+        //TODO milhamj
+        Toast.makeText(getContext(), "Create post success", Toast.LENGTH_LONG).show();
+        getActivity().finish();
     }
 
     @Override
-    public void hideLoading() {
-        loadingView.setVisibility(View.GONE);
+    public void onErrorSubmitPost(String message) {
+        NetworkErrorHelper.showEmptyState(getContext(), getView(), message, this::submitPost);
     }
 
     private void initVar(Bundle savedInstanceState) {
@@ -198,12 +211,7 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void initView() {
-        doneBtn.setOnClickListener(view -> presenter.submitPost(
-                viewModel.getProductId(),
-                viewModel.getAdId(),
-                viewModel.getToken(),
-                viewModel.getCompleteList()
-        ));
+        doneBtn.setOnClickListener(view -> submitPost());
         addImageBtn.setOnClickListener(view -> {
             startActivityForResult(
                     CreatePostImagePickerActivity.getInstance(
@@ -228,5 +236,14 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
         tabLayout.setupWithViewPager(imageViewPager);
+    }
+
+    private void submitPost() {
+        presenter.submitPost(
+                viewModel.getProductId(),
+                viewModel.getAdId(),
+                viewModel.getToken(),
+                viewModel.getCompleteList()
+        );
     }
 }

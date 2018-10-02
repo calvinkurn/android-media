@@ -1,6 +1,9 @@
 package com.tokopedia.affiliate.feature.createpost.view.subscriber;
 
+import android.text.TextUtils;
+
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost.response.SubmitPostData;
 import com.tokopedia.affiliate.feature.createpost.view.contract.CreatePostContract;
 
@@ -28,12 +31,18 @@ public class SubmitPostSubscriber extends Subscriber<SubmitPostData> {
             e.printStackTrace();
         }
         view.hideLoading();
-
+        view.onErrorSubmitPost(ErrorHandler.getErrorMessage(view.getContext(), e));
     }
 
     @Override
     public void onNext(SubmitPostData submitPostData) {
         view.hideLoading();
-
+        if (submitPostData == null || submitPostData.getFeedContentSubmit() == null) {
+            throw new RuntimeException();
+        } else if (!TextUtils.isEmpty(submitPostData.getFeedContentSubmit().getError())) {
+            view.onErrorSubmitPost(submitPostData.getFeedContentSubmit().getError());
+            return;
+        }
+        view.onSuccessSubmitPost();
     }
 }
