@@ -1,14 +1,12 @@
 package com.tokopedia.withdraw.view.fragment;
 
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +20,7 @@ import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.utils.StringUtils;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.di.DaggerDoWithdrawComponent;
 import com.tokopedia.withdraw.di.DaggerWithdrawComponent;
 import com.tokopedia.withdraw.di.WithdrawComponent;
@@ -48,6 +47,9 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
     
     @Inject
     WithdrawPasswordPresenter presenter;
+
+    @Inject
+    WithdrawAnalytics analytics;
 
     @Override
     protected void initInjector() {
@@ -101,6 +103,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                 Bundle bundle = new Bundle();
                 intent.putExtras(bundle);
                 startActivityForResult(intent, 65);
+                analytics.eventClickForgotPassword();
             }
         });
 
@@ -109,6 +112,7 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
                 .setAction(getActivity().getString(R.string.title_close), new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        analytics.eventClickCloseErrorMessage();
                         snackBarError.dismiss();
                     }
                 });
@@ -123,29 +127,21 @@ public class WithdrawPasswordFragment extends BaseDaggerFragment implements With
 
     @Override
     public void showError(String error) {
+        analytics.eventClickWithdrawalConfirm(error);
         snackBarError.setText(error);
         snackBarError.show();
     }
 
     @Override
     public void showErrorPassword(String error) {
+        analytics.eventClickWithdrawalConfirm(error);
         wrapperPassword.setError(error);
     }
 
     @Override
     public void showSuccessWithdraw() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle(getActivity().getString(R.string.alert_success_withdraw_title))
-                .setMessage(getActivity().getString(R.string.alert_success_withdraw_body))
-                .setPositiveButton(getActivity().getString(R.string.alert_success_withdraw_positive), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                })
-                .setCancelable(false)
-                .show();
+        analytics.eventClickWithdrawalConfirm(getActivity().getString(R.string.label_analytics_success_withdraw));
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
     }
 }

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.tokopedia.topads.sdk.R;
 import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.base.adapter.Item;
+import com.tokopedia.topads.sdk.domain.model.Cpm;
 import com.tokopedia.topads.sdk.domain.model.CpmData;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.listener.TopAdsBannerClickListener;
@@ -82,7 +83,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         }
     }
 
-    private void createViewCpmShop(Context context, final CpmData.Cpm cpm, String appLink, String adsClickUrl) {
+    private void createViewCpmShop(Context context, final Cpm cpm, String appLink, String adsClickUrl) {
         if (activityIsFinishing(context))
             return;
 
@@ -93,6 +94,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         bannerAdsAdapter = new BannerAdsAdapter(new BannerAdsAdapterTypeFactory(topAdsBannerClickListener));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(bannerAdsAdapter);
+        recyclerView.setOnFlingListener(null);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
         if (cpm != null && cpm.getCpmShop() != null) {
@@ -147,7 +149,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
         str.setSpan(new TypefaceSpan("sans-serif"), i, i + subtext.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
     }
 
-    private void createViewCpmDigital(Context context, final CpmData.Cpm cpm) {
+    private void createViewCpmDigital(Context context, final Cpm cpm) {
         if (activityIsFinishing(context))
             return;
         inflate(getContext(), R.layout.layout_ads_banner_digital, this);
@@ -186,7 +188,7 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
 
     @Override
     public void displayAds(CpmModel cpmModel) {
-        if (cpmModel.getData().size() > 0) {
+        if (cpmModel != null && cpmModel.getData().size() > 0) {
             final CpmData data = cpmModel.getData().get(0);
             if (data != null && data.getCpm() != null) {
                 if (data.getCpm().getCpmShop() != null && isResponseValid(data)) {
