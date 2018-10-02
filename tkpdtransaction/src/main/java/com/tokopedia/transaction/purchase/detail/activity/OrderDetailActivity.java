@@ -161,23 +161,15 @@ public class OrderDetailActivity extends TActivity
 
     private void setBookingCode(OrderDetailData data) {
         ViewGroup layout = findViewById(R.id.booking_code_layout);
-//        OnlineBooking codeData = new OnlineBooking(
-////                data.getBookingCode(),data.getBarcodeType(), data.getBookingCodeMessage()
-////        );
-        // test
-        List<String> list = new ArrayList<>();
-        list.add("Resi akan otomatis terisi maksimal 1 x 24 jam setelah kode booking di-scan.");
-        list.add("Lakukan cek berkala untuk memastikan pesanan sudah pindah ke daftar transaksi.");
-        OnlineBooking codeData = new OnlineBooking("TJNE-8K4LFVPNMT6", "8FJ", list);
-        layout.setOnClickListener(view -> {
-            startActivity(BookingCodeActivity.createInstance(this, codeData));
-        });
         if (data.getBookingCode() != null) {
             TextView text = findViewById(R.id.booking_code);
             text.setText(data.getBookingCode());
-//            layout.setOnClickListener(view -> {
-//                startActivity(BookingCodeActivity.createInstance(this));
-//            });
+            OnlineBooking codeData = new OnlineBooking(
+                    data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
+            );
+            layout.setOnClickListener(view -> {
+                startActivity(BookingCodeActivity.createInstance(this, codeData));
+            });
         } else {
             layout.setVisibility(View.GONE);
         }
