@@ -610,6 +610,11 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void launchLoginActivity(Bundle extras) {
         Intent intent = ((DiscoveryRouter) MainApplication.getAppContext()).getLoginIntent
                 (getActivity());

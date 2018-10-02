@@ -63,4 +63,6 @@ public interface ProductListFragmentView extends SearchSectionFragmentView {
     void onSuccessRemoveWishlist(String productId);
 
     void onErrorAddWishList(String errorMessage, String productId);
+
+    void notifyAdapter();
 }

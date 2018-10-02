@@ -114,7 +114,9 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     protected Subscriber<Boolean> getWishlistSubscriber(ProductItem productItem) {
         return new Subscriber<Boolean>() {
             @Override
-            public void onCompleted() {}
+            public void onCompleted() {
+                getView().notifyAdapter();
+            }
 
             @Override
             public void onError(Throwable e) {
