@@ -268,12 +268,17 @@ public class GroupChatActivity extends BaseSimpleActivity
     }
 
     public void initVideoFragment(ChannelInfoViewModel channelInfoViewModel) {
+        findViewById(R.id.video_container_layout).setVisibility(View.GONE);
+        setSponsorData();
+
         if (!TextUtils.isEmpty(channelInfoViewModel.getVideoId())) {
             videoFragment = (GroupChatVideoFragment) getSupportFragmentManager().findFragmentById(R.id.video_container);
             if (videoFragment == null)
                 return;
+            findViewById(R.id.video_container_layout).setVisibility(View.VISIBLE);
+            sponsorLayout.setVisibility(View.GONE);
 
-            if (youTubePlayer != null) {
+             if (youTubePlayer != null) {
                 youTubePlayer.pause();
                 youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
                 return;
@@ -368,11 +373,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                     Log.e(GroupChatActivity.class.getSimpleName(), "Youtube Player View initialization failed");
                 }
             });
-            findViewById(R.id.video_container_layout).setVisibility(View.VISIBLE);
-            sponsorLayout.setVisibility(View.GONE);
-        } else {
-            findViewById(R.id.video_container_layout).setVisibility(View.GONE);
-            setSponsorData();
         }
 
     }
