@@ -53,7 +53,7 @@ public class CreatePostViewModel implements Parcelable {
         return fileImageList;
     }
 
-    private static boolean urlIsFile(String input) {
+    public static boolean urlIsFile(String input) {
         if (input.startsWith(FILE_PREFIX)) return true;
         try {
             return new File(input).exists();

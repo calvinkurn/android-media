@@ -1,5 +1,4 @@
-
-package com.tokopedia.affiliate.feature.createpost.data.pojo.submitform;
+package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

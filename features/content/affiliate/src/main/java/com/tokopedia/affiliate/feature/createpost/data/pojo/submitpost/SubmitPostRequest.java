@@ -1,12 +1,11 @@
-
-package com.tokopedia.affiliate.feature.createpost.data.pojo.submitform;
+package com.tokopedia.affiliate.feature.createpost.data.pojo.submitpost;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class SubmitFormRequest {
+public class SubmitPostRequest {
 
     @SerializedName("type")
     @Expose
