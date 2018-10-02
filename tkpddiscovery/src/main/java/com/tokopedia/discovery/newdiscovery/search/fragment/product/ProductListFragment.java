@@ -513,7 +513,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistButtonClicked(ProductItem productItem) {
+    public void onWishlistButtonClicked(final ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }
 

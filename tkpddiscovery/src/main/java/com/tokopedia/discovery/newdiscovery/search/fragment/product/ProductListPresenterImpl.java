@@ -92,7 +92,7 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @Override
-    public void handleWishlistButtonClicked(ProductItem productItem) {
+    public void handleWishlistButtonClicked(final ProductItem productItem) {
         if (getView().isUserHasLogin()) {
             getView().disableWishlistButton(productItem.getProductID());
             if (productItem.isWishlisted()) {
@@ -111,26 +111,24 @@ public class ProductListPresenterImpl extends SearchSectionFragmentPresenterImpl
     }
 
     @NonNull
-    protected Subscriber<Boolean> getWishlistSubscriber(ProductItem productItem) {
+    protected Subscriber<Boolean> getWishlistSubscriber(final ProductItem productItem) {
         return new Subscriber<Boolean>() {
             @Override
             public void onCompleted() {
-                getView().notifyAdapter();
             }
 
             @Override
             public void onError(Throwable e) {
-                productItem.setWishlisted(false);
                 getView().onErrorAddWishList(e.getMessage(), productItem.getProductID());
+                getView().notifyAdapter();
             }
 
             @Override
             public void onNext(Boolean result) {
-                productItem.setWishlisted(result);
                 if(result){
                     getView().onSuccessAddWishlist(productItem.getProductID());
                 } else {
-                    getView().onSuccessRemoveWishlist(productItem.getProductID());
+                    getView().notifyAdapter();
                 }
             }
         };
