@@ -65,7 +65,7 @@ public class SubmitPostUseCase extends UseCase<SubmitPostData> {
         return imageUrlList -> {
             String query = GraphqlHelper.loadRawString(
                     context.getResources(),
-                    R.raw.query_af_content_form
+                    R.raw.mutation_af_submit_post
             );
 
             HashMap<String, Object> variables = new HashMap<>();
