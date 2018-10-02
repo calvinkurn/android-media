@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">@string/merchant_voucher_code</string>
-    <string name="merchant_voucher_code">Kode Voucher Toko</string>
+    <string name="app_name">@string/merchant_voucher</string>
+    <string name="merchant_voucher">Voucher Toko</string>
+    <string name="merchant_voucher_x">Voucher Toko %1$s</string>
+    <string name="merchant_voucher_detail">Detail Voucher</string>
     <string name="shop_label_share_formatted">%1$s - %2$s | Tokopedia</string>
 </resources>

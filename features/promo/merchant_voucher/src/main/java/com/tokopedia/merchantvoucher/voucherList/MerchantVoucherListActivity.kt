@@ -19,31 +19,44 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 /**
  * Created by hendry on 21/09/18.
  */
-class MerchantVoucherListActivity : BaseSimpleActivity(), HasComponent<MerchantVoucherComponent> {
+class MerchantVoucherListActivity : BaseSimpleActivity(),
+        MerchantVoucherListFragment.OnMerchantVoucherListFragmentListener {
 
     lateinit var shopId: String
-
-    override fun getComponent() = DaggerMerchantVoucherComponent.builder().baseAppComponent(
-            (application as BaseMainApplication).getBaseAppComponent()).build()
+    var shopInfo: ShopInfo? = null
+    var shopName: String? = null
 
     override fun getNewFragment(): Fragment = MerchantVoucherListFragment.createInstance(shopId)
 
     companion object {
         const val SHOP_ID = "shop_id"
+        const val SHOP_NAME = "shop_name"
 
         @JvmStatic
-        fun createIntent(context: Context, shopId: String): Intent {
-            return Intent(context, MerchantVoucherListActivity::class.java).apply { putExtra(SHOP_ID, shopId) }
+        fun createIntent(context: Context, shopId: String, shopName: String? = null): Intent {
+            return Intent(context, MerchantVoucherListActivity::class.java).apply {
+                putExtra(SHOP_ID, shopId)
+                putExtra(SHOP_NAME, shopName)
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         shopId = intent.getStringExtra(SHOP_ID)
+        shopName = intent.getStringExtra(SHOP_NAME)
         super.onCreate(savedInstanceState)
+        if (!shopName.isNullOrEmpty()) {
+            supportActionBar?.title = getString(R.string.merchant_voucher_x, shopName)
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_share, menu)
+        if (shopInfo == null) {
+            menu?.clear()
+        } else {
+            menuInflater.inflate(R.menu.menu_share, menu)
+        }
         return true
     }
 
@@ -53,6 +66,14 @@ class MerchantVoucherListActivity : BaseSimpleActivity(), HasComponent<MerchantV
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun enableShare(shopInfo: ShopInfo) {
+        this.shopInfo = shopInfo
+        this.shopName = shopInfo.info.shopName
+        title = getString(R.string.merchant_voucher_x, shopName)
+        supportActionBar?.title = title
+        invalidateOptionsMenu()
     }
 
     fun onShareShop() {

@@ -1,5 +1,6 @@
 package com.tokopedia.merchantvoucher.voucherList
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,15 +18,21 @@ import javax.inject.Inject
  * Created by hendry on 21/09/18.
  */
 
-class MerchantVoucherListFragment: BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>() ,
+class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>(),
         MerchantVoucherListView {
 
     lateinit var shopId: String
     var shopInfo: ShopInfo? = null
-    get
+        get
 
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter
+
+    lateinit var onMerchantVoucherListFragmentListener: OnMerchantVoucherListFragmentListener
+
+    interface OnMerchantVoucherListFragmentListener {
+        fun enableShare(shopInfo: ShopInfo)
+    }
 
     override fun getAdapterTypeFactory(): MerchantVoucherAdapterTypeFactory {
         return MerchantVoucherAdapterTypeFactory()
@@ -61,7 +68,7 @@ class MerchantVoucherListFragment: BaseListFragment<MerchantVoucherViewModel, Me
         const val EXTRA_SHOP_ID = "shop_id"
 
         @JvmStatic
-        fun createInstance(shopId:String) :Fragment {
+        fun createInstance(shopId: String): Fragment {
             return MerchantVoucherListFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_SHOP_ID, shopId)
@@ -76,32 +83,34 @@ class MerchantVoucherListFragment: BaseListFragment<MerchantVoucherViewModel, Me
 
         if (shopInfo == null) {
             getShopInfo()
-        } else {
-            getVoucherList()
         }
+        getVoucherList()
     }
 
     override fun callInitialLoadAutomatically() = false
 
     override fun hasInitialSwipeRefresh() = true
 
-    private fun getShopInfo(){
+    private fun getShopInfo() {
         presenter.getShopInfo(shopId)
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        shopInfo.run {
-            this@MerchantVoucherListFragment.shopInfo = this
-            getVoucherList()
-        }
+        this@MerchantVoucherListFragment.shopInfo = shopInfo
+        this.onMerchantVoucherListFragmentListener.enableShare(shopInfo)
     }
 
     override fun onErrorGetShopInfo(e: Throwable) {
         //TODO show snackbar or full page
     }
 
-    private fun getVoucherList(){
+    private fun getVoucherList() {
 
+    }
+
+    override fun onAttachActivity(context: Context?) {
+        super.onAttachActivity(context)
+        onMerchantVoucherListFragmentListener = context as OnMerchantVoucherListFragmentListener
     }
 
 }
