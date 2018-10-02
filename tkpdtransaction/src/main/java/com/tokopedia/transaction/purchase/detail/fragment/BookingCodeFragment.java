@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.transaction.R;
 import com.tokopedia.transaction.purchase.adapter.MessageAdapter;
+import com.tokopedia.transaction.purchase.detail.activity.BookingCodeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.BookingCodeContract;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.presenter.BookingCodePresenter;
@@ -43,7 +44,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        mData = getArguments() != null ? getArguments().getParcelable("data") : null;
+        mData = getArguments() != null ? getArguments().getParcelable(BookingCodeActivity.JOB_CODE_EXTRA) : null;
         mPresenter = new BookingCodePresenter();
         initView(view);
     }

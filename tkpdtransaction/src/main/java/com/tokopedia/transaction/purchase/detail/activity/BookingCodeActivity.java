@@ -12,9 +12,11 @@ import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBoo
 
 public class BookingCodeActivity extends BaseSimpleActivity {
 
+    public static final String JOB_CODE_EXTRA = "job_parcel";
+
     public static Intent createInstance(Context context, OnlineBooking data) {
         Intent i = new Intent(context, BookingCodeActivity.class);
-        i.putExtra("data", data);
+        i.putExtra(JOB_CODE_EXTRA, data);
         return i;
     }
 
@@ -26,7 +28,7 @@ public class BookingCodeActivity extends BaseSimpleActivity {
     @Override
     protected Fragment getNewFragment() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable("data", getIntent().getExtras().getParcelable("data"));
+        bundle.putParcelable(JOB_CODE_EXTRA, getIntent().getExtras().getParcelable(JOB_CODE_EXTRA));
         BookingCodeFragment fragment = new BookingCodeFragment();
         fragment.setArguments(bundle);
         return fragment;
