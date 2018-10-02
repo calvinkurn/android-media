@@ -12,7 +12,7 @@ import com.tokopedia.affiliatecommon.R
 /**
  * @author by milhamj on 9/21/18.
  */
-class PostImageAdapter: PagerAdapter() {
+class PostImageAdapter : PagerAdapter() {
     val imageList: ArrayList<String> = ArrayList()
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean = view == `object`
@@ -47,6 +47,8 @@ class PostImageAdapter: PagerAdapter() {
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         container.removeView(`object` as View)
     }
+
+    override fun getItemPosition(`object`: Any) = PagerAdapter.POSITION_NONE;
 
     fun setList(imageList: ArrayList<String>) {
         this.imageList.clear()

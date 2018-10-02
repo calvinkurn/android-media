@@ -38,7 +38,8 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
+        .RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
@@ -205,7 +206,8 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         if (savedInstanceState != null) {
             viewModel = savedInstanceState.getParcelable(VIEW_MODEL);
         } else if (getArguments() != null) {
-            viewModel.setProductId(getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID, ""));
+            viewModel.setProductId(getArguments().getString(CreatePostActivity.PARAM_PRODUCT_ID,
+                    ""));
             viewModel.setAdId(getArguments().getString(CreatePostActivity.PARAM_AD_ID, ""));
         }
     }
@@ -218,6 +220,11 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
                             Objects.requireNonNull(getActivity()),
                             viewModel.getImageList()),
                     REQUEST_IMAGE_PICKER);
+        });
+        deleteImageLayout.setOnClickListener(v -> {
+            viewModel.getImageList().remove(tabLayout.getSelectedTabPosition());
+            adapter.getImageList().remove(tabLayout.getSelectedTabPosition());
+            adapter.notifyDataSetChanged();
         });
     }
 
@@ -236,6 +243,25 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
         imageViewPager.setAdapter(adapter);
         imageViewPager.setOffscreenPageLimit(adapter.getCount());
         tabLayout.setupWithViewPager(imageViewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                deleteImageLayout.setVisibility(
+                        tab.getPosition() == adapter.getCount() - 1
+                                ? View.GONE
+                                : View.VISIBLE);
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     private void submitPost() {
