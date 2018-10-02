@@ -31,4 +31,9 @@ public class BookingCodeActivity extends BaseSimpleActivity {
         fragment.setArguments(bundle);
         return fragment;
     }
+
+    @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
 }
