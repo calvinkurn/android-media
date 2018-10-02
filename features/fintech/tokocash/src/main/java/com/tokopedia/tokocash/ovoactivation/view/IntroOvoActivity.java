@@ -7,31 +7,35 @@ import android.support.v4.app.Fragment;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.tokocash.ApplinkConstant;
-import com.tokopedia.tokocash.R;
 
 /**
  * Created by nabillasabbaha on 20/09/18.
  */
-public class IntroOvoActivity extends BaseOvoActivationActivity {
+public class IntroOvoActivity extends BaseOvoActivationActivity implements IntroOvoFragment.OvoFragmentListener {
+
+    public static final String TOKOCASH_ACTIVE = "tokocash_active";
 
     @SuppressWarnings("unused")
     @DeepLink(ApplinkConstant.WALLET_INTRODUCTION_OVO)
     public static Intent getcallingIntent(Context context, Bundle extras) {
-        return IntroOvoActivity.newInstance(context);
+        boolean tokocashActive = Boolean.parseBoolean(
+                extras.getString(ApplinkConstant.WALLET_TOKOCASH_ACTIVE, "false"));
+        return IntroOvoActivity.newInstance(context, tokocashActive);
     }
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setTitle(getString(R.string.title_header_ovo));
-    }
-
-    public static Intent newInstance(Context context) {
-        return new Intent(context, IntroOvoActivity.class);
+    public static Intent newInstance(Context context, boolean tokocashActive) {
+        Intent intentIntroOvo = new Intent(context, IntroOvoActivity.class);
+        intentIntroOvo.putExtra(TOKOCASH_ACTIVE, tokocashActive);
+        return intentIntroOvo;
     }
 
     @Override
     protected Fragment getNewFragment() {
-        return IntroOvoFragment.newInstance();
+        return IntroOvoFragment.newInstance(getIntent().getBooleanExtra(TOKOCASH_ACTIVE, false));
+    }
+
+    @Override
+    public void setTitleHeader(String titleHeader) {
+        updateTitle(titleHeader);
     }
 }

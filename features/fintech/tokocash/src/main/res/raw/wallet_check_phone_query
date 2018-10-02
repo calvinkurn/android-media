@@ -10,10 +10,10 @@
         change_msisdn_url
         is_allow
         action {
-            Title
-            Description
-            Text
-            Applink
+            title
+            description
+            text
+            applink
         }
   }
 }

@@ -1,5 +1,6 @@
 package com.tokopedia.tokocash.ovoactivation.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -14,10 +15,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
+import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.applink.RouteManager;
@@ -37,15 +40,24 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
     private Button activationOvoBtn;
     private Button learnMoreOvoBtn;
     private TextView tncOvo;
+    private TextView titleOvo;
+    private TextView descFirstOvo;
+    private TextView descSecondOvo;
+    private ImageView imgIntroOvo;
     private ProgressBar progressBar;
-
-    public static IntroOvoFragment newInstance() {
-        IntroOvoFragment fragment = new IntroOvoFragment();
-        return fragment;
-    }
+    private OvoFragmentListener listener;
+    private boolean tokocashActive;
 
     @Inject
     IntroOvoPresenter presenter;
+
+    public static IntroOvoFragment newInstance(boolean tokocashActive) {
+        IntroOvoFragment fragment = new IntroOvoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(IntroOvoActivity.TOKOCASH_ACTIVE, tokocashActive);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     protected void initInjector() {
@@ -68,6 +80,10 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         activationOvoBtn = view.findViewById(R.id.activation_ovo_btn);
         learnMoreOvoBtn = view.findViewById(R.id.learn_more_ovo_btn);
         tncOvo = view.findViewById(R.id.tnc_ovo);
+        titleOvo = view.findViewById(R.id.title_intro);
+        descFirstOvo = view.findViewById(R.id.description_1);
+        descSecondOvo = view.findViewById(R.id.description_2);
+        imgIntroOvo = view.findViewById(R.id.image_ovo);
         progressBar = view.findViewById(R.id.progress_bar);
         return view;
     }
@@ -76,6 +92,22 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         presenter.getBalanceWallet();
+
+        tokocashActive = getArguments().getBoolean(IntroOvoActivity.TOKOCASH_ACTIVE);
+
+        if (tokocashActive) {
+            listener.setTitleHeader(getString(R.string.title_header_ovo));
+            titleOvo.setText(getString(R.string.announcement_ovo_title));
+            descFirstOvo.setText(getString(R.string.announcement_ovo_description));
+            descSecondOvo.setText(getString(R.string.announcement_ovo_second_desc));
+            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_ovo);
+        } else {
+            listener.setTitleHeader(getString(R.string.title_header_activation_ovo));
+            titleOvo.setText(getString(R.string.announcement_activation_ovo_title));
+            descFirstOvo.setText(getString(R.string.announcement_activaiton_ovo_description));
+            descSecondOvo.setText(getString(R.string.announcement_activation_ovo_second_desc));
+            ImageHandler.loadImageWithId(imgIntroOvo, R.drawable.wallet_ic_intro_activation);
+        }
 
         activationOvoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,5 +217,15 @@ public class IntroOvoFragment extends BaseDaggerFragment implements IntroOvoCont
         if (progressBar != null) {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    protected void onAttachActivity(Context context) {
+        super.onAttachActivity(context);
+        listener = (OvoFragmentListener) context;
+    }
+
+    interface OvoFragmentListener {
+        void setTitleHeader(String titleHeader);
     }
 }

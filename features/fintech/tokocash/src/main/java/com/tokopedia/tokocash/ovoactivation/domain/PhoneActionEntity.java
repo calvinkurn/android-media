@@ -8,16 +8,16 @@ import com.google.gson.annotations.SerializedName;
  */
 public class PhoneActionEntity {
 
-    @SerializedName("Title")
+    @SerializedName("title")
     @Expose
     private String title;
-    @SerializedName("Description")
+    @SerializedName("description")
     @Expose
     private String description;
-    @SerializedName("Text")
+    @SerializedName("text")
     @Expose
     private String text;
-    @SerializedName("Applink")
+    @SerializedName("applink")
     @Expose
     private String applink;
 
