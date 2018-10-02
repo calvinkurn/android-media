@@ -170,8 +170,8 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
             }
             if (v.getId() == R.id.wishlist_button_container) {
                 itemClickListener.onAddWishLish(clickPosition, data);
-                data.setWislished(!data.isWislished());
-                renderWishlistButton(data.isWislished());
+                data.getProduct().setWishlist(!data.getProduct().isWishlist());
+                renderWishlistButton(data.getProduct().isWishlist());
             }
         }
     }
