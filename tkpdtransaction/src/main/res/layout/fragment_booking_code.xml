@@ -41,9 +41,8 @@
 
         <ImageView
             android:id="@+id/barcode_img"
-            android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/grey_500"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:contentDescription="@string/barcode_image_content_description" />
 
     </android.support.v7.widget.CardView>
