@@ -1,6 +1,8 @@
 package com.tokopedia.broadcast.message.view.fragment
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.broadcast.message.R
+import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcastMessagePreviewComponent
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
@@ -16,6 +20,8 @@ import com.tokopedia.broadcast.message.data.model.BlastMessageResponse
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessagePreviewView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessagePreviewPresenter
 import com.tokopedia.broadcast.message.view.widget.PreviewProductWidget
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_broadcast_message_preview.*
 import javax.inject.Inject
@@ -97,7 +103,19 @@ class BroadcastMessagePreviewFragment: BaseDaggerFragment(), BroadcastMessagePre
         loading.visibility = View.GONE
     }
 
-    override fun onErrorSubmitBlastMessage(t: Throwable?) {}
+    override fun onErrorSubmitBlastMessage(t: Throwable?) {
+        if (view == null || context == null) return
+        ToasterError.make(view, ErrorHandler.getErrorMessage(context!!, t), BaseToaster.LENGTH_LONG)
+                .setAction(R.string.retry){
+                    presenter.sendBlastMessage(mutationModel!!)
+                }.show()
+    }
 
-    override fun onSuccessSubmitBlastMessage(result: BlastMessageResponse) {}
+    override fun onSuccessSubmitBlastMessage(result: BlastMessageResponse) {
+        val data = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, result.success)
+        activity?.run {
+            setResult(Activity.RESULT_OK, data)
+            finish()
+        }
+    }
 }

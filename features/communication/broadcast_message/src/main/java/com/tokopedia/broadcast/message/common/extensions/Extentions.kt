@@ -6,7 +6,7 @@ import java.util.Locale
 import java.util.TimeZone
 
 fun String.toISO8601Date(): Date {
-    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault())
+    val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'", Locale.getDefault())
     formatter.timeZone = TimeZone.getTimeZone("UTC")
     return formatter.parse(this)
 }

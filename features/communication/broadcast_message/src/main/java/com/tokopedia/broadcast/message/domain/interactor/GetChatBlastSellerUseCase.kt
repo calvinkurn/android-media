@@ -16,9 +16,9 @@ import rx.Observable
 import javax.inject.Inject
 
 class GetChatBlastSellerUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase,
-                                                    @ApplicationContext val context: Context): UseCase<TopChatBlastSeller.Response>() {
+                                                    @ApplicationContext val context: Context): UseCase<TopChatBlastSeller.BlastSellerList>() {
 
-    override fun createObservable(requestParams: RequestParams?): Observable<TopChatBlastSeller.Response> {
+    override fun createObservable(requestParams: RequestParams?): Observable<TopChatBlastSeller.BlastSellerList> {
         val query = GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_bm_list)
         val graphqlRequest = GraphqlRequest(query, TopChatBlastSeller.Response::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
@@ -28,11 +28,11 @@ class GetChatBlastSellerUseCase @Inject constructor(private val graphqlUseCase: 
             val response = graphqlResponse.getData<TopChatBlastSeller.Response>(TopChatBlastSeller.Response::class.java)
 
             if (errors.isEmpty()){
-                Observable.just(response)
+                Observable.just(response.result)
             } else {
                 val error = errors[0].message
                 if (TextUtils.isEmpty(error)){
-                    Observable.just(response)
+                    Observable.just(response.result)
                 } else {
                     Observable.error(MessageErrorException(error))
                 }

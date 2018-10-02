@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.broadcast.message.R
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter
+import com.tokopedia.broadcast.message.common.constant.BroadcastMessageConstant
 import com.tokopedia.broadcast.message.common.di.component.BroadcastMessageComponent
 import com.tokopedia.broadcast.message.common.di.component.DaggerBroadcasteMessageCreateComponent
 import com.tokopedia.broadcast.message.data.model.BlastMessageMutation
@@ -40,6 +41,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         private const val REQUEST_CODE_IMAGE = 0x01
         private const val REQUEST_CODE_PRODUCT = 0x02
         private const val PARAM_PRODUCT_RESULT = "TKPD_ATTACH_PRODUCT_RESULTS"
+        private const val REQUEST_MOVE_PREVIEW = 0x03
     }
 
     @Inject lateinit var userSession: UserSession
@@ -52,6 +54,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     private val productAdapter = BroadcastMessageProductItemAdapter({gotoAddProduct()}){
             productId, position -> productIds.remove(productId); selectedProducts.removeAt(position)
                                     hashProducList.removeAt(position); updateBackgroundImage()}
+    var isShowDialogWhenBack: Boolean = false
 
     private fun gotoAddProduct() {
         val app = activity?.application
@@ -87,11 +90,13 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         list_product_upload.adapter = productAdapter
         list_product_upload.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         switch_upload_product.setOnCheckedChangeListener { _, isChecked ->
+            isShowDialogWhenBack = true
             list_product_upload.visibility = if (isChecked) View.VISIBLE else View.GONE
             needEnabledSubmitButton()
         }
         edit_text_message.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
+                isShowDialogWhenBack = true
                 needEnabledSubmitButton()
             }
 
@@ -116,7 +121,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
         }
         val modelMutation = BlastMessageMutation(edit_text_message.text.toString(), "", savedLocalImageUrl!!,
                 switch_upload_product.isChecked, productsPayload.toTypedArray())
-        context?.let { startActivity(BroadcastMessagePreviewActivity.createIntent(it, modelMutation)) }
+        context?.let { startActivityForResult(BroadcastMessagePreviewActivity.createIntent(it, modelMutation), REQUEST_MOVE_PREVIEW) }
     }
 
     private fun openImagePicker() {
@@ -142,6 +147,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 if (imageUrlOrPathList != null && imageUrlOrPathList.size > 0) {
                     savedLocalImageUrl = imageUrlOrPathList[0]
                     updateBackgroundImage()
+                    isShowDialogWhenBack = true
                 }
             } else if (requestCode == REQUEST_CODE_PRODUCT){
                 val productList = data.getSerializableExtra(PARAM_PRODUCT_RESULT) as List<HashMap<String, String>>
@@ -160,6 +166,14 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
                 productAdapter.clearProducts()
                 productAdapter.addProducts(selectedProducts)
                 needEnabledSubmitButton()
+                isShowDialogWhenBack = true
+            } else if (requestCode == REQUEST_MOVE_PREVIEW){
+                val needRefresh = data.getBooleanExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, false)
+                val data = Intent().putExtra(BroadcastMessageConstant.PARAM_NEED_REFRESH, needRefresh)
+                activity?.run {
+                    setResult(Activity.RESULT_OK, data)
+                    finish()
+                }
             }
         }
     }

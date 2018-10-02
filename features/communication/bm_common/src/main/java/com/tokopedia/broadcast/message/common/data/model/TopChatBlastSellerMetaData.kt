@@ -21,7 +21,7 @@ data class TopChatBlastSellerMetaData(
         val status: Int = 0
 ) {
     val hasActiveQuota: Boolean
-        get() = status == 1
+        get() = status == 1 && quota > 0
 
     data class Response(
             @SerializedName("chatBlastSellerMetadata")

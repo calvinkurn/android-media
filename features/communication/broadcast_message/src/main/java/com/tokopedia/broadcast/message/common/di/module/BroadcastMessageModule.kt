@@ -12,7 +12,6 @@ import dagger.Provides
 @Module
 class BroadcastMessageModule {
 
-    @BroadcastMessageScope
     @Provides
     fun provideGraphqlUseCase() = GraphqlUseCase()
 

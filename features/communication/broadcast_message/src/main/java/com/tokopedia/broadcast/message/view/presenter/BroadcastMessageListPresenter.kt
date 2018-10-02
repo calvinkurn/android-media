@@ -30,8 +30,8 @@ class BroadcastMessageListPresenter @Inject
 
     fun getBlastMessage(page: Int, perPage: Int = 10){
         getChatBlastSellerUseCase.execute(GetChatBlastSellerUseCase.createRequestParams(page, perPage),
-                object : Subscriber<TopChatBlastSeller.Response>() {
-                    override fun onNext(response: TopChatBlastSeller.Response?) {
+                object : Subscriber<TopChatBlastSeller.BlastSellerList>() {
+                    override fun onNext(response: TopChatBlastSeller.BlastSellerList?) {
                         view?.onSuccessGetBlastMessage(response)
                     }
 

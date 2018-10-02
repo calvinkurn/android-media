@@ -24,7 +24,7 @@ data class TopChatBlastSeller(
 
         @SerializedName("products")
         @Expose
-        val products: List<AttachmentAttributesProduct>? = null,
+        val products: List<AttachmentProduct>? = null,
 
         @SerializedName("state")
         @Expose
@@ -100,7 +100,7 @@ data class TopChatBlastSeller(
             val totalTarget: Int = 0
     )
 
-    data class Response(
+    data class BlastSellerList (
             @SerializedName("list")
             @Expose
             val list: List<TopChatBlastSeller>? = null,
@@ -113,4 +113,7 @@ data class TopChatBlastSeller(
             @Expose
             val currentPage: Int = 0
     )
+
+    data class Response (@SerializedName("chatBlastSellerList")
+                         @Expose val result: BlastSellerList? = null)
 }

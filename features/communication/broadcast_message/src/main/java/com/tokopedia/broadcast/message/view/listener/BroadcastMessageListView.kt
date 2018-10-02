@@ -7,6 +7,6 @@ import com.tokopedia.broadcast.message.common.data.model.TopChatBlastSellerMetaD
 interface BroadcastMessageListView: CustomerView {
     fun onSuccessGetMetaData(metaData: TopChatBlastSellerMetaData?)
     fun onErrorGetMetaData(throwable: Throwable)
-    fun onSuccessGetBlastMessage(response: TopChatBlastSeller.Response?)
+    fun onSuccessGetBlastMessage(response: TopChatBlastSeller.BlastSellerList?)
     fun onErrorGetBlastMessage(throwable: Throwable?)
 }
