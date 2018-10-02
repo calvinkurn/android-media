@@ -54,22 +54,14 @@ public class FlightAnalytics {
     }
 
     public void eventPromotionClick(int position, BannerDetail banner) {
-        analyticTracker.sendEventTracking(GENERIC_EVENT,
-                GENERIC_CATEGORY,
-                Category.CLICK_PROMOTION,
-                String.format(getDefaultLocale(), "%d-%s-%s",
-                        position,
-                        banner.getAttributes().getDescription(),
-                        banner.getAttributes().getLinkUrl())
-        );
         List<Object> promos = new ArrayList<>();
         promos.add(DataLayer.mapOf(
                 EnhanceEccomerce.ID, banner.getId(),
                 EnhanceEccomerce.NAME, "/flight",
                 "position", String.valueOf(position),
-                "creative", banner.getAttributes().getDescription(),
+                "creative", banner.getAttributes().getDescription().toLowerCase(),
                 "promo_id", banner.getId(),
-                "promo_code", banner.getAttributes().getPromoCode()
+                "promo_code", banner.getAttributes().getPromoCode().toLowerCase()
         ));
         analyticTracker.sendEnhancedEcommerce(
                 DataLayer.mapOf(EVENT, PROMO_CLICK_EVENT,
@@ -77,7 +69,7 @@ public class FlightAnalytics {
                         EVENT_ACTION, Action.PROMOTION_CLICK,
                         EVENT_LABEL, String.format(getDefaultLocale(), "%d-%s-%s",
                                 position,
-                                banner.getAttributes().getDescription(),
+                                banner.getAttributes().getDescription().toLowerCase(),
                                 banner.getAttributes().getLinkUrl()
                         ),
                         ECOMMERCE, DataLayer.mapOf(

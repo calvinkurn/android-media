@@ -38,13 +38,13 @@ public class DigitalAnalytics {
                 DIGITAL_GENERAL_EVENT,
                 DIGITAL_NATIVE,
                 CLICK_PANDUAN_SECTION,
-                categoryName
+                categoryName.toLowerCase()
         );
     }
 
     public void eventAddToCart(CartDigitalInfoData cartDigitalInfoData) {
-        String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
-                cartDigitalInfoData.getAttributes().getPrice();
+        String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
+                cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
 
@@ -52,7 +52,7 @@ public class DigitalAnalytics {
                 DataLayer.mapOf("event", DigitalEventTracking.Event.ADD_TO_CART,
                         "eventCategory", DigitalEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                         "eventAction", DigitalEventTracking.Action.CLICK_BELI,
-                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName() +
+                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase() +
                                 " - " + (cartDigitalInfoData.isInstantCheckout()?"instant":"non instant"),
                         "ecommerce", DataLayer.mapOf(
                                 "currencyCode", "IDR",
@@ -72,8 +72,8 @@ public class DigitalAnalytics {
                 "name", productName,
                 "id", cartDigitalInfoData.getRelationships().getRelationProduct().getData().getId(),
                 "price", String.valueOf(cartDigitalInfoData.getAttributes().getPricePlain()),
-                "brand", cartDigitalInfoData.getAttributes().getOperatorName(),
-                "category", cartDigitalInfoData.getAttributes().getCategoryName(),
+                "brand", cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase(),
+                "category", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase(),
                 "variant", "none",
                 "quantity", "1",
                 "category_id", cartDigitalInfoData.getRelationships().getRelationCategory().getData().getId(),
@@ -82,8 +82,8 @@ public class DigitalAnalytics {
     }
 
     public void eventCheckout(CartDigitalInfoData cartDigitalInfoData) {
-        String productName = cartDigitalInfoData.getAttributes().getOperatorName() + " " +
-                cartDigitalInfoData.getAttributes().getPrice();
+        String productName = cartDigitalInfoData.getAttributes().getOperatorName().toLowerCase() + " " +
+                cartDigitalInfoData.getAttributes().getPrice().toLowerCase();
         List<Object> products = new ArrayList<>();
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName));
 
@@ -92,7 +92,7 @@ public class DigitalAnalytics {
                         "event", DigitalEventTracking.Event.CHECKOUT,
                         "eventCategory", DigitalEventTracking.Category.DIGITAL_CHECKOUT,
                         "eventAction", DigitalEventTracking.Action.VIEW_CHECKOUT,
-                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName(),
+                        "eventLabel", cartDigitalInfoData.getAttributes().getCategoryName().toLowerCase(),
                         "ecommerce", DataLayer.mapOf(
                                 "checkout", DataLayer.mapOf(
                                         "products", DataLayer.listOf(
@@ -109,7 +109,7 @@ public class DigitalAnalytics {
                 DigitalEventTracking.Event.HOMEPAGE_INTERACTION,
                 DigitalEventTracking.Category.DIGITAL_CHECKOUT,
                 DigitalEventTracking.Action.CLICK_PROCEED_PAYMENT,
-                cartDataInfo.getAttributes().getCategoryName() + " - " +
+                cartDataInfo.getAttributes().getCategoryName().toLowerCase() + " - " +
                         (voucherCode != null && voucherCode.length() > 0 ? "promo" : "no promo")
         );
     }
