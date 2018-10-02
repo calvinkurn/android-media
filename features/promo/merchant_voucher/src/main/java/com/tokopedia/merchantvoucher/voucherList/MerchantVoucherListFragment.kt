@@ -22,6 +22,7 @@ class MerchantVoucherListFragment: BaseListFragment<MerchantVoucherViewModel, Me
 
     lateinit var shopId: String
     var shopInfo: ShopInfo? = null
+    get
 
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter

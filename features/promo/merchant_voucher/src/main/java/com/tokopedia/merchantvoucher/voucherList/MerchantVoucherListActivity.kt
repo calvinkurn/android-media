@@ -9,9 +9,12 @@ import android.view.MenuItem
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.merchantvoucher.MerchantVoucherModuleRouter
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.di.MerchantVoucherComponent
+import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 
 /**
  * Created by hendry on 21/09/18.
@@ -53,9 +56,13 @@ class MerchantVoucherListActivity : BaseSimpleActivity(), HasComponent<MerchantV
     }
 
     fun onShareShop() {
-//        (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
-//                shopId, info.shopUrl, getString(R.string.shop_label_share_formatted,
-//                MethodChecker.fromHtml(info.shopName).toString(), info.shopLocation))
-
+        if (fragment!= null && fragment is MerchantVoucherListFragment){
+            val shopInfo: ShopInfo? = (fragment as MerchantVoucherListFragment).shopInfo
+            if (shopInfo!= null) {
+                (application as MerchantVoucherModuleRouter).goToShareShop(this@MerchantVoucherListActivity,
+                shopId, shopInfo.info.shopUrl, getString(R.string.shop_label_share_formatted,
+                MethodChecker.fromHtml(shopInfo.info.shopName).toString(), shopInfo.info.shopLocation))
+            }
+        }
     }
 }
