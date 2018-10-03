@@ -15,6 +15,7 @@ import com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragm
 
 import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL;
 import static com.tokopedia.digital.applink.DigitalApplinkConstant.DIGITAL_CATEGORY;
+import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.FROM_SELLER;
 import static com.tokopedia.digital.categorylist.view.fragment.DigitalCategoryListFragment.PARAM_IS_COUPON_ACTIVE;
 
 /**
@@ -104,6 +105,9 @@ public class DigitalCategoryListActivity extends BasePresenterActivity {
                             getIntent().getIntExtra(PARAM_IS_COUPON_ACTIVE, 0)
                     );
                 }
+                Bundle bundle = new Bundle();
+                bundle.putBoolean(FROM_SELLER, getIntent().getBooleanExtra(FROM_SELLER,false));
+                digitalCategoryListFragment.setArguments(bundle);
             }
 
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
