@@ -2,6 +2,8 @@ package com.tokopedia.affiliate.feature.dashboard.view.adapter.viewholder;
 
 import android.support.annotation.LayoutRes;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,6 +39,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     private TextView tvSaldo, tvProfileSeen, tvProductClicked, tvProductBought;
     private LinearLayout layoutProfileSeen, layoutProductClicked, layoutProductBought;
     private ImageView ivSaldo;
+    private FrameLayout layoutSaldo;
 
     public DashboardHeaderViewHolder(View itemView, DashboardContract.View mainView) {
         super(itemView);
@@ -49,6 +52,7 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
         layoutProfileSeen = (LinearLayout) itemView.findViewById(R.id.layout_profile_seen);
         layoutProductClicked = (LinearLayout) itemView.findViewById(R.id.layout_product_clicked);
         layoutProductBought = (LinearLayout) itemView.findViewById(R.id.layout_product_bought);
+        layoutSaldo = (FrameLayout) itemView.findViewById(R.id.layout_saldo);
     }
 
     @Override
@@ -57,6 +61,12 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     }
 
     private void initView(DashboardHeaderViewModel element) {
+        ViewTreeObserver observer = layoutSaldo.getViewTreeObserver();
+        observer.addOnGlobalLayoutListener(() -> {
+            int height = layoutSaldo.getHeight();
+            ivSaldo.setMinimumHeight(height);
+            layoutSaldo.getViewTreeObserver().removeOnGlobalLayoutListener(this::initDefaultValue);
+        });
         String imageUrl = String.format("%s/%s/%s/%s.png",
                 ANDROID_IMAGE_URL,
                 FINISH_IMAGE_NAME,
