@@ -284,6 +284,7 @@ dependencies {
     implementation project(rootProject.ext.features.accountHome)
     implementation project(rootProject.ext.features.updateinactivephone)
     implementation project(rootProject.ext.features.mitraToppers)
+    implementation project(rootProject.ext.features.changePhoneNumber)
 
     implementation project(rootProject.ext.features.paymentManagementSystem)
     implementation project(rootProject.ext.features.recentview)

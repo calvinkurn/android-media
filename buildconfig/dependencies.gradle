@@ -384,7 +384,8 @@ ext {
             updateinactivephone   : ":features:user:updateinactivephone",
             paymentSetting        : ":features:payment:payment_setting",
             browse                : ":features:digital:digital_browse",
-            saldodetails            : ":features:fintech:saldo_details"
+            saldodetails          : ":features:fintech:saldo_details",
+            changePhoneNumber     : ":features:user:changephonenumber"
     ]
 
     libraries = [

@@ -39,6 +39,8 @@ import com.tokopedia.browse.common.DigitalBrowseRouter;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase;
 import com.tokopedia.changepassword.ChangePasswordRouter;
 import com.tokopedia.changepassword.view.activity.ChangePasswordActivity;
+import com.tokopedia.changephonenumber.ChangePhoneNumberRouter;
+import com.tokopedia.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.checkout.CartConstant;
 import com.tokopedia.checkout.domain.usecase.AddToCartUseCase;
 import com.tokopedia.checkout.router.ICheckoutModuleRouter;
@@ -197,7 +199,6 @@ import com.tokopedia.inbox.rescenter.inboxv2.view.activity.ResoInboxActivity;
 import com.tokopedia.instantloan.di.module.InstantLoanChuckRouter;
 import com.tokopedia.instantloan.router.InstantLoanRouter;
 import com.tokopedia.instantloan.view.activity.InstantLoanActivity;
-import com.tokopedia.interestpick.view.activity.InterestPickActivity;
 import com.tokopedia.kol.KolComponentInstance;
 import com.tokopedia.kol.KolRouter;
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity;
@@ -289,7 +290,6 @@ import com.tokopedia.session.addchangeemail.view.activity.AddEmailActivity;
 import com.tokopedia.session.addchangepassword.view.activity.AddPasswordActivity;
 import com.tokopedia.session.changename.view.activity.ChangeNameActivity;
 import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberRequestActivity;
-import com.tokopedia.session.changephonenumber.view.activity.ChangePhoneNumberWarningActivity;
 import com.tokopedia.session.forgotpassword.activity.ForgotPasswordActivity;
 import com.tokopedia.session.login.loginemail.view.activity.LoginActivity;
 import com.tokopedia.session.register.view.activity.RegisterInitialActivity;
@@ -360,7 +360,6 @@ import com.tokopedia.train.common.domain.TrainRepository;
 import com.tokopedia.train.common.util.TrainAnalytics;
 import com.tokopedia.train.passenger.presentation.viewmodel.ProfileBuyerInfo;
 import com.tokopedia.train.reviewdetail.domain.TrainCheckVoucherUseCase;
-import com.tokopedia.transaction.bcaoneklik.activity.ListPaymentTypeActivity;
 import com.tokopedia.transaction.bcaoneklik.usecase.CreditCardFingerPrintUseCase;
 import com.tokopedia.transaction.insurance.view.InsuranceTnCActivity;
 import com.tokopedia.transaction.orders.orderlist.view.activity.OrderListActivity;
@@ -393,7 +392,8 @@ import rx.functions.Func1;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_FROM_DEEPLINK;
-import static com.tokopedia.core.router.productdetail.ProductDetailRouter.ARG_PARAM_PRODUCT_PASS_DATA;
+import static com.tokopedia.core.router.productdetail.ProductDetailRouter
+        .ARG_PARAM_PRODUCT_PASS_DATA;
 import static com.tokopedia.core.router.productdetail.ProductDetailRouter.SHARE_DATA;
 
 /**
@@ -459,7 +459,8 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         TravelCalendarRouter,
         MitraToppersRouter,
         PaymentSettingRouter,
-        DigitalBrowseRouter {
+        DigitalBrowseRouter,
+        ChangePhoneNumberRouter{
 
     private static final String EXTRA = "extra";
 

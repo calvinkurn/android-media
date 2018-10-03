@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="PhoneNumberTextInput">
+        <item name="colorControlActivated">@color/medium_green</item>
+    </style>
+</resources>

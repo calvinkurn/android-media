@@ -32,24 +32,17 @@ import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
 import com.tokopedia.profilecompletion.domain.GetUserInfoUseCase;
 import com.tokopedia.session.changename.data.mapper.ChangeNameMapper;
 import com.tokopedia.session.changename.data.source.ChangeNameSource;
-import com.tokopedia.session.changename.di.ChangeNameScope;
 import com.tokopedia.session.changename.domain.usecase.ChangeNameUseCase;
 import com.tokopedia.session.changephonenumber.data.repository.ChangePhoneNumberRepositoryImpl;
 import com.tokopedia.session.changephonenumber.data.source.CloudGetWarningSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudSendEmailSource;
-import com.tokopedia.session.changephonenumber.data.source.CloudValidateEmailCodeSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateNumberSource;
 import com.tokopedia.session.changephonenumber.data.source.CloudValidateOtpStatus;
 import com.tokopedia.session.changephonenumber.domain.ChangePhoneNumberRepository;
 import com.tokopedia.session.changephonenumber.domain.interactor.GetWarningUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.SendEmailUseCase;
-import com.tokopedia.session.changephonenumber.domain.interactor.ValidateEmailCodeUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateNumberUseCase;
 import com.tokopedia.session.changephonenumber.domain.interactor.ValidateOtpStatusUseCase;
-import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberEmailVerificationFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberInputFragmentListener;
 import com.tokopedia.session.changephonenumber.view.listener.ChangePhoneNumberWarningFragmentListener;
-import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberEmailVerificationPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberInputPresenter;
 import com.tokopedia.session.changephonenumber.view.presenter.ChangePhoneNumberWarningPresenter;
 import com.tokopedia.session.data.source.CloudDiscoverDataSource;
@@ -60,10 +53,10 @@ import com.tokopedia.session.domain.interactor.MakeLoginUseCase;
 import com.tokopedia.session.domain.mapper.DiscoverMapper;
 import com.tokopedia.session.domain.mapper.MakeLoginMapper;
 import com.tokopedia.session.domain.mapper.TokenMapper;
+import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.data.mapper.RegisterValidationMapper;
 import com.tokopedia.session.register.data.source.RegisterValidationSource;
 import com.tokopedia.session.register.domain.interactor.registerinitial.GetFacebookCredentialUseCase;
-import com.tokopedia.session.register.data.mapper.CreatePasswordMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.CheckMsisdnMapper;
 import com.tokopedia.session.register.registerphonenumber.data.mapper.RegisterPhoneNumberMapper;
 import com.tokopedia.session.register.registerphonenumber.data.source.CheckMsisdnSource;
@@ -80,8 +73,6 @@ import dagger.Module;
 import dagger.Provides;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-
-import static com.tokopedia.di.UserModule.BEARER_SERVICE;
 
 
 /**
@@ -234,24 +225,12 @@ public class SessionModule {
     @SessionScope
     @Provides
     ChangePhoneNumberRepository provideChangePhoneNumberRepository(CloudGetWarningSource cloudGetWarningSource,
-                                                                   CloudSendEmailSource cloudSendEmailSource,
                                                                    CloudValidateNumberSource cloudValidateNumberSource,
-                                                                   CloudValidateEmailCodeSource cloudValidateEmailCodeSource,
                                                                    CloudValidateOtpStatus cloudValidateOtpStatus) {
         return new ChangePhoneNumberRepositoryImpl(cloudGetWarningSource,
-                cloudSendEmailSource,
                 cloudValidateNumberSource,
-                cloudValidateEmailCodeSource,
                 cloudValidateOtpStatus);
     }
-
-    @SessionScope
-    @Provides
-    ChangePhoneNumberEmailVerificationFragmentListener.Presenter ChangePhoneNumberEmailVerificationPresenter(SendEmailUseCase sendEmailUseCase,
-                                                                                                             ValidateEmailCodeUseCase validateEmailCodeUseCase) {
-        return new ChangePhoneNumberEmailVerificationPresenter(sendEmailUseCase, validateEmailCodeUseCase);
-    }
-
 
     @SessionScope
     @Provides
