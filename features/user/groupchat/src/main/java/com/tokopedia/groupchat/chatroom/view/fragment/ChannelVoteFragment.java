@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -322,6 +323,9 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                 || voteInfoViewModel.getStatusId() == VoteInfoViewModel.STATUS_FORCE_ACTIVE)) {
             canVote = false;
             boolean voted = voteInfoViewModel.isVoted();
+            loading.setVisibility(View.VISIBLE);
+            getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             presenter.sendVote(userSession, voteInfoViewModel.getPollId(), voted, element);
 
             if (getActivity() != null
@@ -361,6 +365,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     public void onSuccessVote(VoteViewModel element, VoteStatisticDomainModel voteStatisticViewModel) {
         canVote = true;
         if (voteInfoViewModel != null) {
+            loading.setVisibility(View.GONE);
+            getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             voteAdapter.change(voteInfoViewModel, element, voteStatisticViewModel);
             voteInfoViewModel.setVoted(true);
             voteInfoViewModel.setParticipant(
@@ -378,6 +384,8 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
     @Override
     public void onErrorVote(String errorMessage) {
         canVote = true;
+        loading.setVisibility(View.GONE);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
