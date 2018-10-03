@@ -167,7 +167,6 @@ public class DashboardFragment
                         && !TextUtils.isEmpty(cursor)
                         && totalItemCount <= lastVisibleItemPos + ITEM_COUNT) {
                     isCanLoadMore = false;
-                    swipeToRefresh.setRefreshing(true);
                     adapter.addElement(new LoadingModel());
                     presenter.loadMoreDashboardItem(cursor);
                 }
@@ -193,15 +192,19 @@ public class DashboardFragment
         adapter.clearAllElements();
         if (swipeToRefresh.isRefreshing()) swipeToRefresh.setRefreshing(false);
         adapter.addElement(header);
+
         if (itemList.size() == 0) {
             EmptyDashboardViewModel emptyDashboardViewModel = new EmptyDashboardViewModel(floatingModel.getCount());
             adapter.addElement(emptyDashboardViewModel);
             adapter.notifyDataSetChanged();
         } else {
-            cvRecommendation.setVisibility(View.VISIBLE);
-            tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
             adapter.addElement(itemList);
             adapter.notifyDataSetChanged();
+        }
+
+        if (floatingModel.getCount() != 0) {
+            cvRecommendation.setVisibility(View.VISIBLE);
+            tvRecommendationCount.setText(MethodChecker.fromHtml(floatingModel.getText()));
         }
 
         if (TextUtils.isEmpty(cursor) || cursor.equals("1")) {
@@ -229,7 +232,7 @@ public class DashboardFragment
         adapter.hideLoading();
         adapter.addElement(itemList);
         adapter.notifyDataSetChanged();
-        if (TextUtils.isEmpty(cursor)) {
+        if (TextUtils.isEmpty(cursor) || itemList.size() == 0) {
             isCanLoadMore = false;
             this.cursor = "";
         } else {

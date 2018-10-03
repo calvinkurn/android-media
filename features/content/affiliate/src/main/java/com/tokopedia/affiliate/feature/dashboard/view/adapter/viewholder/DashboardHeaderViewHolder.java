@@ -7,18 +7,22 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.dashboard.view.listener.DashboardContract;
 import com.tokopedia.affiliate.feature.dashboard.view.viewmodel.DashboardHeaderViewModel;
 
+import java.util.Objects;
+
 /**
  * @author by yfsx on 19/09/18.
  */
 public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeaderViewModel> {
 
-    private static final String URL_BACKGROUND = "https://ecs7.tokopedia.net/img/android/bg_af_dashboard/drawable-xhdpi/bg_af_dashboard.png";
+    private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
+    private static final String FINISH_IMAGE_NAME = "bg_af_dashboard";
 
     private static final int TEXT_TYPE_PROFILE_SEEN = 1;
     private static final int TEXT_TYPE_PRODUCT_CLICKED = 2;
@@ -53,7 +57,13 @@ public class DashboardHeaderViewHolder extends AbstractViewHolder<DashboardHeade
     }
 
     private void initView(DashboardHeaderViewModel element) {
-        ImageHandler.loadImage2(ivSaldo, URL_BACKGROUND, R.drawable.ic_loading_image);
+        String imageUrl = String.format("%s/%s/%s/%s.png",
+                ANDROID_IMAGE_URL,
+                FINISH_IMAGE_NAME,
+                "drawable-"+DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(mainView.getContext())),
+                FINISH_IMAGE_NAME
+        );
+        ImageHandler.loadImageWithoutPlaceholder(ivSaldo, imageUrl);
         if (element == null) {
             initDefaultValue();
         } else {

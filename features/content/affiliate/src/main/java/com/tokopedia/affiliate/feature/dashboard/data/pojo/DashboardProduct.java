@@ -13,7 +13,7 @@ public class DashboardProduct {
     @SerializedName("pagination")
     @Expose
     private DashboardPagingPojo pagination;
-    @SerializedName("affiliatedProducts")
+    @SerializedName("products")
     @Expose
     private List<DashboardItemPojo> affiliatedProducts;
 
