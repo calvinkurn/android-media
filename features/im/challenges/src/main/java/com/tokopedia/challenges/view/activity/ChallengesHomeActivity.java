@@ -21,7 +21,7 @@ import com.tokopedia.design.utils.TabUtil;
  * Created by ashwanityagi on 06/08/18.
  */
 
-public class ChallengesHomeActivity extends BaseActivity {
+public class ChallengesHomeActivity extends ChallengesBaseActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private ChallengesGaAnalyticsTracker analytics;

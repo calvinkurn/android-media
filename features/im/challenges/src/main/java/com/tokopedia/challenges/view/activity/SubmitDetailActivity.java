@@ -20,7 +20,7 @@ import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.ArrayList;
 
-public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFragment.ImageListener {
+public class SubmitDetailActivity extends ChallengesBaseActivity implements SubmitDetailFragment.ImageListener {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, SubmitDetailActivity.class);
@@ -90,5 +90,14 @@ public class SubmitDetailActivity extends BaseActivity implements SubmitDetailFr
         transaction.add(R.id.parent_view, fragemnt);
         transaction.addToBackStack("ImageViewer");
         transaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
+            inflateFragment();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

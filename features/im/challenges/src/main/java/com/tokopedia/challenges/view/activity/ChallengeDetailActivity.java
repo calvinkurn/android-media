@@ -13,16 +13,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.data.source.ChallengesUrl;
-import com.tokopedia.challenges.view.fragments.AllSubmissionFragment;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 import com.tokopedia.challenges.view.fragments.TncBottomSheetFragment;
-import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.utils.ChallengesFragmentCallbacks;
 import com.tokopedia.challenges.view.utils.Utils;
 
-import java.util.List;
-
-public class ChallengeDetailActivity extends BaseActivity implements ChallengesFragmentCallbacks {
+public class ChallengeDetailActivity extends ChallengesBaseActivity implements ChallengesFragmentCallbacks {
 
 
     public static final int REQUEST_CODE_SUBMISSIONDETAILACTIVITY = 10;
@@ -73,4 +69,12 @@ public class ChallengeDetailActivity extends BaseActivity implements ChallengesF
         transaction.commit();
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode == RESULT_OK) {
+            inflateFragment();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }

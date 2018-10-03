@@ -3,7 +3,9 @@ package com.tokopedia.challenges.view.presenter;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.domain.usecase.GetChallengeDetailsAndSttingsUseCase;
 import com.tokopedia.challenges.domain.usecase.GetDetailsSubmissionsUseCase;
@@ -134,6 +136,10 @@ public class SubmitDetailPresenter extends BaseDaggerPresenter<SubmitDetailContr
 
     @Override
     public void getSubmissionDetails(String submissionId) {
+        UserSession userSession = ((AbstractionRouter) getView().getActivity().getApplication()).getSession();
+        if (!userSession.isLoggedIn()) {
+            return;
+        }
         getDetailsSubmissionsUseCase.setRequestParams(submissionId);
         getDetailsSubmissionsUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override

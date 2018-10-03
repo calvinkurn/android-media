@@ -370,6 +370,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     @Override
     public void setSubmittResult(SubmissionResult submissionResult) {
         this.submissionResult = submissionResult;
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override
@@ -384,12 +385,14 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
 
     @Override
     public void showDialogInfo(String title, String desc) {
-        Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
-        dialog.setTitle(title);
-        dialog.setDesc(desc);
-        dialog.setBtnOk("ok");
-        dialog.setOnOkClickListener(v -> getActivity().finish());
-        dialog.show();
+        if (getActivity() != null) {
+            Dialog dialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
+            dialog.setTitle(title);
+            dialog.setDesc(desc);
+            dialog.setBtnOk("ok");
+            dialog.setOnOkClickListener(v -> getActivity().finish());
+            dialog.show();
+        }
     }
 
     @Override
@@ -425,8 +428,6 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
             likesCountView.setVisibility(View.GONE);
             approvedView.setVisibility(View.GONE);
             likesImageView.setVisibility(View.GONE);
-
-
         }
     }
 
@@ -440,13 +441,13 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         btnSubmit.setVisibility(View.GONE);
     }
 
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         if (presenter.getParticipatedStatus(submissionResult)) {
             inflater.inflate(R.menu.menu_submission_detail, menu);
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.tokopedia.challenges.view.fragments.AllSubmissionFragment;
 
-public class AllSubmissionsActivity extends BaseActivity {
+public class AllSubmissionsActivity extends ChallengesBaseActivity {
 
     public static Intent newInstance(Context context) {
         return new Intent(context, AllSubmissionsActivity.class);

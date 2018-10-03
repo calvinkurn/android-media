@@ -1,9 +1,6 @@
 package com.tokopedia.challenges.view.share;
 
-import android.app.DownloadManager;
 import android.app.ProgressDialog;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -16,18 +13,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.di.ChallengesComponent;
-import com.tokopedia.challenges.view.activity.BaseActivity;
+import com.tokopedia.challenges.view.activity.ChallengesBaseActivity;
 import com.tokopedia.challenges.view.analytics.ChallengesMoengageAnalyticsTracker;
-import com.tokopedia.challenges.view.model.Challenge;
 import com.tokopedia.challenges.view.model.Result;
 import com.tokopedia.challenges.view.model.challengesubmission.SubmissionResult;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetContract;
 import com.tokopedia.challenges.view.presenter.ShareBottomSheetPresenter;
-import com.tokopedia.challenges.view.utils.Utils;
 
 import java.util.List;
 
@@ -106,7 +100,7 @@ public class ShareBottomSheet extends BottomSheetDialogFragment implements Botto
 
 
     public void initView(View view) {
-        challengesComponent = ((BaseActivity) getActivity()).getComponent();
+        challengesComponent = ((ChallengesBaseActivity) getActivity()).getComponent();
         challengesComponent.inject(this);
         presenter.attachView(this);
         mRecyclerView = view.findViewById(R.id.recyclerview);

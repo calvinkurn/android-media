@@ -2,6 +2,7 @@ package com.tokopedia.challenges.view.analytics;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.challenges.ChallengesModuleRouter;
@@ -64,22 +65,6 @@ public class ChallengesMoengageAnalyticsTracker {
         values.put(challenge_joined, is_participated);
         values.put(channel, channelName);
         sendEvent(activity, Challenge_Post_Shared, values);
-    }
-
-    public static void challengePostApproved(Activity activity, String challengeName, String challengeId, String postId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put(challenge_name, challengeName);
-        values.put(challenge_id, challengeId);
-        values.put(postId, postId);
-        sendEvent(activity, Challenge_Post_Approved, values);
-    }
-
-    public static void challengePostRejected(Activity activity, String challengeName, String challengeId, String postId) {
-        Map<String, Object> values = new HashMap<>();
-        values.put(challenge_name, challengeName);
-        values.put(challenge_id, challengeId);
-        values.put(postId, postId);
-        sendEvent(activity, Challenge_Post_Disapproved, values);
     }
 
     public static void challenge_DeleteSubmission(Activity activity, String challengeName, String challengeId, String postId) {

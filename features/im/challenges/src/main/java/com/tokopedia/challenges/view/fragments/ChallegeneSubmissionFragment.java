@@ -161,7 +161,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
 
     @Override
     public void onPause() {
-        if (videoPlayer != null) {
+         if (videoPlayer != null) {
             VIDEO_POS = videoPlayer.getPosition();
             isVideoPlaying = false;
             videoPlayer.pause();
@@ -548,6 +548,7 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
         setSnackBarErrorMessage(message, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             }
         });
     }

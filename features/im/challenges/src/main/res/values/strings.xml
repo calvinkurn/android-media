@@ -87,7 +87,8 @@
     <string name="ch_uploading_failed"> Gagal mengunggah!</string>
     <string name="ch_no_past_challenge_msg">Challenge tidak tersedia. Coba beberapa saat lagi.</string>
     <string name="ch_no_challenge_msg">Challenge tidak tersedia. Coba beberapa saat lagi.</string>
-    <string name="ch_network_error_msg">Oops! Terjadi kesalahan saat mengunggah foto atau video. Silahkan coba lagi.</string>
+    <string name="ch_network_error_msg">Oops! Terjadi kesalahan saat. Silahkan coba lagi.</string>
     <string name="ch_must_approved_msg">Semua postingan dari peserta harus disetujui oleh Tokopedia</string>
+    <string name="ch_not_participated_error_msg">Anda belum bergabung dalam Challenge mana pun.  Coba beberapa saat lagi.</string>
 
 </resources>

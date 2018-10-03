@@ -67,7 +67,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
         listAdpater = new MySubmissionsListAdapter(getActivity(), null, this);
         recyclerView.setAdapter(listAdpater);
         swipeRefreshLayout = view.findViewById(R.id.swipe_container);
-        recyclerView.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         mySubmissionsHomePresenter.getMySubmissionsList(isFirst);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -100,7 +100,7 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
     public void setSubmissionsDataToUI(List<SubmissionResult> resultList) {
 
         if (resultList != null) {
-            recyclerView.setVisibility(View.VISIBLE);
+            swipeRefreshLayout.setVisibility(View.VISIBLE);
             listAdpater.addAll(resultList);
             EmptyStateViewHelper.hideEmptyState(getView());
         }
@@ -108,12 +108,12 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     public void showErrorNetwork(String errorMessage) {
+        swipeRefreshLayout.setVisibility(View.GONE);
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
-                "Oops!",
-                "You have not participate in any challenges.\n" +
-                        "Click this button to see active challenges.",
-                "Coba Lagi", R.drawable.ic_offline2,
+                "",
+                getString(R.string.ch_network_error_msg),
+                "Coba lagi", R.drawable.ic_offline2,
                 getMySubmissionsRetryListener()
         );
     }
@@ -121,13 +121,11 @@ public class MySubmissionsFragment extends BaseDaggerFragment implements MySubmi
 
     @Override
     public void renderEmptyList() {
-        recyclerView.setVisibility(View.GONE);
-        //emptyLayout.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.GONE);
         EmptyStateViewHelper.showEmptyState(
                 getActivity(), getView(),
                 "Oops!",
-                "There are no challenges available.\n" +
-                        "Please check again later.",
+                getString(R.string.ch_not_participated_error_msg) ,
                 "Coba Lagi", R.drawable.empty_mysubmission_active,
                 getMySubmissionsRetryListener()
         );

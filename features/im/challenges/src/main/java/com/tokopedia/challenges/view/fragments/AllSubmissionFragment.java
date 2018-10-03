@@ -52,7 +52,6 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     private static final int SORT_POINTS = 2;
     private int currentFilter;
     private boolean isPastChallenge;
-    private List<SubmissionResult> submissions;
     private String challengeId;
 
     public static Fragment createInstance(Bundle extras) {
@@ -77,7 +76,7 @@ public class AllSubmissionFragment extends BaseDaggerFragment implements AllSubm
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_all_submissions, container, false);
         setUpVariables(view);
-        recyclerview.setAdapter(new SubmissionItemAdapter(submissions, this, LinearLayoutManager.VERTICAL, isPastChallenge));
+        recyclerview.setAdapter(new SubmissionItemAdapter(null, this, LinearLayoutManager.VERTICAL, isPastChallenge));
         mPresenter.setChallengeId(challengeId);
 
         mPresenter.loadMoreItems(true);

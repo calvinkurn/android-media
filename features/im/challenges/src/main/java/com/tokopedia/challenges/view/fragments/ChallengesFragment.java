@@ -135,7 +135,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public void setChallengeDataToUI(List<Result> resultList, boolean isPastChallenge) {
         this.isPastChallenge = isPastChallenge;
-        recyclerView.setVisibility(View.VISIBLE);
+        swipeRefreshLayout.setVisibility(View.VISIBLE);
         if (isPastChallenge) {
             pastChallenges = resultList;
         } else {
@@ -171,6 +171,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void showErrorNetwork(String errorMessage) {
+        swipeRefreshLayout.setVisibility(View.GONE);
         NetworkErrorHelper.showEmptyState(
                 getActivity(), getView(),
                 "",
@@ -182,7 +183,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
 
     @Override
     public void renderEmptyList() {
-        recyclerView.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.GONE);
         String error_msg;
         if(isPastChallenge){
             error_msg= getString(R.string.ch_no_past_challenge_msg);
@@ -193,7 +194,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
                 getActivity(), getView(),
                 "Oops!",
                 error_msg,
-                null, R.drawable.empty_challenge_active,
+                "Coba lagi", R.drawable.empty_challenge_active,
                 getChallengesRetryClickedListener()
         );
 
@@ -207,7 +208,7 @@ public class ChallengesFragment extends BaseDaggerFragment implements Challenges
     @Override
     public void showProgressBarView() {
         progressBar.setVisibility(View.VISIBLE);
-        recyclerView.setVisibility(View.GONE);
+        swipeRefreshLayout.setVisibility(View.GONE);
         EmptyStateViewHelper.hideEmptyState(getView());
     }
 

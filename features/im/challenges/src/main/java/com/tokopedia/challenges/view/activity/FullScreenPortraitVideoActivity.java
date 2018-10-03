@@ -15,7 +15,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.CustomMediaController;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
-public class FullScreenPortraitVideoActivity extends BaseActivity implements CustomMediaController.ICurrentPos {
+public class FullScreenPortraitVideoActivity extends ChallengesBaseActivity implements CustomMediaController.ICurrentPos {
 
     private VideoView videoView;
     private MediaController mediaController;

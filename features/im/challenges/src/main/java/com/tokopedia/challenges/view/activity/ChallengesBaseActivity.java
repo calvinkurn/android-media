@@ -11,7 +11,9 @@ import com.tokopedia.challenges.ChallengesModuleRouter;
 import com.tokopedia.challenges.di.ChallengesComponent;
 import com.tokopedia.challenges.di.ChallengesComponentInstance;
 
-public abstract class BaseActivity extends BaseSimpleActivity implements HasComponent<ChallengesComponent> {
+public abstract class ChallengesBaseActivity extends BaseSimpleActivity implements HasComponent<ChallengesComponent> {
+
+    protected static final int LOGIN_REQUEST_CODE = 23;
 
     @Override
     public ChallengesComponent getComponent() {
@@ -29,7 +31,14 @@ public abstract class BaseActivity extends BaseSimpleActivity implements HasComp
 
     private void navigateToLoginPage() {
         Intent intent = ((ChallengesModuleRouter) (this.getApplication())).getLoginIntent(this);
-        startActivity(intent);
-        finish();
+        startActivityForResult(intent, LOGIN_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_REQUEST_CODE && resultCode != RESULT_OK) {
+            finish();
+        }
     }
 }

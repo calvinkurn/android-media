@@ -9,7 +9,7 @@ import com.tokopedia.challenges.view.fragments.submit.ChallengesSubmitFragment;
 import com.tokopedia.challenges.view.model.upload.ChallengeSettings;
 import com.tokopedia.challenges.view.utils.Utils;
 
-public class ChallengesSubmitActivity extends BaseActivity {
+public class ChallengesSubmitActivity extends ChallengesBaseActivity {
 
     public static Intent getStartingIntent(Context context, ChallengeSettings settings, String channelId, String channelTitle, String channelDesc) {
         Intent intent = new Intent(context, ChallengesSubmitActivity.class);

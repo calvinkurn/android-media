@@ -13,7 +13,7 @@ import com.tokopedia.challenges.R;
 import com.tokopedia.challenges.view.customview.CustomMediaController;
 import com.tokopedia.challenges.view.fragments.ChallegeneSubmissionFragment;
 
-public class FullScreenLandscapeActivity extends BaseActivity implements CustomMediaController.ICurrentPos {
+public class FullScreenLandscapeActivity extends ChallengesBaseActivity implements CustomMediaController.ICurrentPos {
 
     public static final String VIDEO_URL_PARAM = "videoUrl";
     public static final String SEEK_POS_PARAM = "seekpos";
