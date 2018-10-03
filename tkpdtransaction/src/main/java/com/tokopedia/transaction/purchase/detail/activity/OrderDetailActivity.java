@@ -65,9 +65,9 @@ import com.tokopedia.transaction.purchase.detail.model.rejectorder.EmptyVarianPr
 import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductPriceWeightEditable;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
+import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -92,6 +92,7 @@ public class OrderDetailActivity extends TActivity
     private static final int CONFIRM_SHIPMENT_REQUEST_CODE = 16;
     private static final int BUYER_MODE = 1;
     private static final int SELLER_MODE = 2;
+    private OrderDetailAnalytics orderDetailAnalytics;
 
     @Inject
     OrderDetailPresenterImpl presenter;
@@ -133,6 +134,8 @@ public class OrderDetailActivity extends TActivity
         initInjector();
         presenter.setMainViewListener(this);
         presenter.fetchData(this, getExtraOrderId(), getExtraUserMode());
+        orderDetailAnalytics =
+                new OrderDetailAnalytics((ITransactionOrderDetailRouter) getApplication());
     }
 
     private void initInjector() {
@@ -168,6 +171,7 @@ public class OrderDetailActivity extends TActivity
                     data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
             );
             layout.setOnClickListener(view -> {
+                orderDetailAnalytics.sendAnalyticsClickShipping("click button lihat detail", "");
                 startActivity(BookingCodeActivity.createInstance(this, codeData));
             });
         } else {
