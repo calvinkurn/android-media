@@ -1,5 +1,6 @@
 package com.tokopedia.flight.searchV2.presentation.fragment;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,10 +13,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.adapter.model.ErrorNetworkModel;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
@@ -24,8 +27,13 @@ import com.tokopedia.design.button.BottomActionView;
 import com.tokopedia.flight.FlightComponentInstance;
 import com.tokopedia.flight.R;
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel;
+import com.tokopedia.flight.common.util.FlightDateUtil;
 import com.tokopedia.flight.common.view.HorizontalProgressBar;
+import com.tokopedia.flight.detail.view.activity.FlightDetailActivity;
+import com.tokopedia.flight.detail.view.model.FlightDetailViewModel;
 import com.tokopedia.flight.search.constant.FlightSortOption;
+import com.tokopedia.flight.search.view.adapter.viewholder.EmptyResultViewHolder;
+import com.tokopedia.flight.search.view.model.EmptyResultViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.searchV2.di.DaggerFlightSearchComponent;
 import com.tokopedia.flight.searchV2.di.FlightSearchComponent;
@@ -40,6 +48,8 @@ import com.tokopedia.flight.searchV2.presentation.presenter.FlightSearchPresente
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -125,11 +135,12 @@ public class FlightSearchFragment extends BaseDaggerFragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(getLayout(), container, false);
         progressBar = (HorizontalProgressBar) view.findViewById(R.id.horizontal_progress_bar);
-        recyclerView = view.findViewById(R.id.recycler_view);
         setUpProgress();
         setUpBottomAction(view);
         setUpSwipeRefresh(view);
-        setUpRecyclerView();
+        setUpRecyclerView(view);
+
+        showFilterAndSortView();
         return view;
     }
 
@@ -187,12 +198,12 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public boolean isDoneLoadData() {
-        return false;
+        return progress >= MAX_PROGRESS;
     }
 
     @Override
     public boolean isNeedRefreshAirline() {
-        return false;
+        return needRefreshAirline;
     }
 
     @Override
@@ -218,7 +229,13 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void addBottomPaddingForSortAndFilterActionButton() {
-
+        float scale = getResources().getDisplayMetrics().density;
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                (int) (scale * PADDING_SEARCH_LIST + DEFAULT_DIMENS_MULTIPLIER)
+        );
     }
 
     @Override
@@ -244,12 +261,13 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void setSelectedSortItem(int itemId) {
-
+        selectedSortOption = itemId;
+        setUIMarkSort();
     }
 
     @Override
     public void setNeedRefreshAirline(boolean needRefresh) {
-
+        this.needRefreshAirline = needRefresh;
     }
 
     @Override
@@ -274,17 +292,18 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void showFilterAndSortView() {
-
+        filterAndSortBottomAction.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void showEmptyFlightStateView() {
-
+        adapter.addElement(getEmptyDataViewModel());
     }
 
     @Override
     public void showNoRouteFlightEmptyState(String message) {
-
+        adapter.clearAllElements();
+        adapter.addElement(getNoFlightRouteDataViewModel(message));
     }
 
     @Override
@@ -294,7 +313,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void hideFilterAndSortView() {
-
+        filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
     @Override
@@ -304,12 +323,17 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void removeBottomPaddingForSortAndFilterActionButton() {
-
+        recyclerView.setPadding(
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN,
+                EMPTY_MARGIN
+        );
     }
 
     @Override
     public void clearAdapterData() {
-
+        adapter.setElement(new ArrayList<>());
     }
 
     @Override
@@ -319,22 +343,63 @@ public class FlightSearchFragment extends BaseDaggerFragment
 
     @Override
     public void navigateToNextPage(String selectedId) {
-
+        if (onFlightSearchFragmentListener != null) {
+            onFlightSearchFragmentListener.selectFlight(selectedId);
+        }
     }
 
     @Override
     public void onRetryClicked() {
-
+        adapter.clearAllElements();
+        flightSearchPresenter.initialize();
     }
 
     @Override
     public void onDetailClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
-
+        flightSearchPresenter.onSeeDetailItemClicked(journeyViewModel, adapterPosition);
+        FlightDetailViewModel flightDetailViewModel = new FlightDetailViewModel();
+        flightDetailViewModel.build(journeyViewModel);
+        flightDetailViewModel.build(passDataViewModel);
+        startActivityForResult(FlightDetailActivity.createIntent(getActivity(),
+                flightDetailViewModel, true),
+                REQUEST_CODE_SEE_DETAIL_FLIGHT);
     }
 
     @Override
     public void onItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition) {
+        flightSearchPresenter.onSearchItemClicked(journeyViewModel, adapterPosition);
+    }
 
+    public void onItemClicked(FlightJourneyViewModel journeyViewModel) {
+        flightSearchPresenter.onSearchItemClicked(journeyViewModel);
+    }
+
+    public void onResetFilterClicked() {
+        flightFilterModel = new FlightFilterModel();
+        adapter.clearAllNonDataElement();
+        showLoading();
+        setUIMarkFilter();
+        reloadDataFromCache();
+    }
+
+    public void onChangeDateClicked() {
+        if (!getActivity().isFinishing()) {
+            final String dateInput = passDataViewModel.getDate(isReturning());
+            Date date = FlightDateUtil.stringToDate(dateInput);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(),
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                            flightSearchPresenter.onSuccessDateChanged(year, month, dayOfMonth);
+                        }
+                    }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE));
+            DatePicker datePicker = datePickerDialog.getDatePicker();
+            setMinMaxDatePicker(datePicker);
+
+            datePickerDialog.show();
+        }
     }
 
     protected FlightAirportViewModel getDepartureAirport() {
@@ -401,8 +466,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
         filterAndSortBottomAction.setButton1OnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                flightSearchPresenter.getFlightStatistic(isReturning());
-/*                FlightSearchFragment.this.addToolbarElevation();
+                /*FlightSearchFragment.this.addToolbarElevation();
                 startActivityForResult(FlightSearchFilterActivity.createInstance(getActivity(),
                         isReturning(),
                         flightFilterModel),
@@ -412,7 +476,67 @@ public class FlightSearchFragment extends BaseDaggerFragment
         filterAndSortBottomAction.setVisibility(View.GONE);
     }
 
-    private void setUpRecyclerView() {
+    protected Visitable getEmptyDataViewModel() {
+        EmptyResultViewModel emptyResultViewModel;
+        if (inFilterMode) {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+            emptyResultViewModel.setContentRes(R.string.flight_there_is_zero_flight_for_the_filter);
+            emptyResultViewModel.setButtonTitleRes(R.string.reset_filter);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
+
+                }
+
+                @Override
+                public void onEmptyButtonClicked() {
+                    onResetFilterClicked();
+                }
+            });
+
+
+        } else {
+            emptyResultViewModel = new EmptyResultViewModel();
+            emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+            emptyResultViewModel.setContentRes(R.string.flight_there_is_no_flight_available);
+            emptyResultViewModel.setButtonTitleRes(R.string.change_date);
+            emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+                @Override
+                public void onEmptyContentItemTextClicked() {
+
+                }
+
+                @Override
+                public void onEmptyButtonClicked() {
+                    onChangeDateClicked();
+                }
+            });
+        }
+        return emptyResultViewModel;
+    }
+
+    protected Visitable getNoFlightRouteDataViewModel(String message) {
+        EmptyResultViewModel emptyResultViewModel = new EmptyResultViewModel();
+        emptyResultViewModel.setIconRes(R.drawable.ic_flight_empty_state);
+        emptyResultViewModel.setTitle(message);
+        emptyResultViewModel.setButtonTitleRes(R.string.flight_change_search_content_button);
+        emptyResultViewModel.setCallback(new EmptyResultViewHolder.Callback() {
+            @Override
+            public void onEmptyContentItemTextClicked() {
+
+            }
+
+            @Override
+            public void onEmptyButtonClicked() {
+                finishFragment();
+            }
+        });
+
+        return emptyResultViewModel;
+    }
+
+    private void setUpRecyclerView(View view) {
         FlightSearchAdapterTypeFactory adapterTypeFactory = new FlightSearchAdapterTypeFactory(this);
         adapter = new FlightSearchAdapter(adapterTypeFactory, new ArrayList<>());
 
@@ -420,6 +544,8 @@ public class FlightSearchFragment extends BaseDaggerFragment
         errorNetworkModel.setIconDrawableRes(R.drawable.ic_flight_empty_state);
         errorNetworkModel.setOnRetryListener(this);
         adapter.setErrorNetworkModel(errorNetworkModel);
+
+        recyclerView = view.findViewById(R.id.recycler_view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
@@ -462,7 +588,7 @@ public class FlightSearchFragment extends BaseDaggerFragment
             if (progress >= MAX_PROGRESS) {
                 progress = MAX_PROGRESS;
                 progressBar.setProgress(MAX_PROGRESS);
-//                flightSearchPresenter.setDelayHorizontalProgress();
+                flightSearchPresenter.setDelayHorizontalProgress();
             } else {
                 progressBar.setProgress(progress);
             }
@@ -478,6 +604,33 @@ public class FlightSearchFragment extends BaseDaggerFragment
         swipeToRefresh.setRefreshing(false);
 
         adapter.hideLoading();
+    }
+
+    private void setMinMaxDatePicker(DatePicker datePicker) {
+        Date maxDate = FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 2);
+        maxDate = FlightDateUtil.addTimeToSpesificDate(maxDate, Calendar.DATE, -1);
+        maxDate = FlightDateUtil.trimDate(maxDate);
+
+        if (isReturning()) {
+            String dateDepStr = passDataViewModel.getDate(false);
+            Date dateDep = FlightDateUtil.stringToDate(dateDepStr);
+            dateDep = FlightDateUtil.trimDate(dateDep);
+            datePicker.setMinDate(dateDep.getTime());
+            datePicker.setMaxDate(maxDate.getTime());
+        } else {
+            Date dateNow = FlightDateUtil.trimDate(FlightDateUtil.getCurrentDate());
+            datePicker.setMinDate(dateNow.getTime());
+
+            boolean isOneWay = passDataViewModel.isOneWay();
+            if (!isOneWay) {
+                String dateReturnStr = passDataViewModel.getDate(true);
+                Date dateReturn = FlightDateUtil.stringToDate(dateReturnStr);
+                dateReturn = FlightDateUtil.trimDate(dateReturn);
+                datePicker.setMaxDate(dateReturn.getTime());
+            } else {
+                datePicker.setMaxDate(maxDate.getTime());
+            }
+        }
     }
 
     private void showMessageErrorInSnackbar(int resId) {

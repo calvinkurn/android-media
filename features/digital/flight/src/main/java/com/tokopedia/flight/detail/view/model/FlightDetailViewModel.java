@@ -7,11 +7,12 @@ import com.tokopedia.flight.airline.data.db.model.FlightAirlineDB;
 import com.tokopedia.flight.search.view.model.FlightSearchPassDataViewModel;
 import com.tokopedia.flight.search.view.model.FlightSearchViewModel;
 import com.tokopedia.flight.search.view.model.filter.RefundableEnum;
+import com.tokopedia.flight.searchV2.presentation.model.FlightJourneyViewModel;
 
 import java.util.List;
 
 /**
- * @author  by zulfikarrahman on 11/20/17.
+ * @author by zulfikarrahman on 11/20/17.
  */
 
 public class FlightDetailViewModel implements Parcelable {
@@ -95,6 +96,33 @@ public class FlightDetailViewModel implements Parcelable {
             setDepartureTime(flightSearchViewModel.getDepartureTime());
             setArrivalTime(flightSearchViewModel.getArrivalTime());
             setAirlineDataList(flightSearchViewModel.getAirlineList());
+            return this;
+        } else {
+            return null;
+        }
+    }
+
+    public FlightDetailViewModel build(FlightJourneyViewModel flightSearchViewModel) {
+        if (flightSearchViewModel != null) {
+            setId(flightSearchViewModel.getId());
+            setDepartureAirport(flightSearchViewModel.getDepartureAirport());
+            setDepartureAirportCity(flightSearchViewModel.getDepartureAirportCity());
+            setArrivalAirport(flightSearchViewModel.getArrivalAirport());
+            setArrivalAirportCity(flightSearchViewModel.getArrivalAirportCity());
+            setTotalTransit(flightSearchViewModel.getTotalTransit());
+            setTotal(flightSearchViewModel.getTotal());
+            setTotalNumeric(flightSearchViewModel.getTotalNumeric());
+            setBeforeTotal(flightSearchViewModel.getBeforeTotal());
+            setIsRefundable(flightSearchViewModel.isRefundable());
+            setAdultNumericPrice(flightSearchViewModel.getFare().getAdultNumeric());
+            setChildNumericPrice(flightSearchViewModel.getFare().getChildNumeric());
+            setInfantNumericPrice(flightSearchViewModel.getFare().getInfantNumeric());
+            FlightDetailRouteInfoViewModelMapper flightDetailRouteInfoViewModelMapper = new FlightDetailRouteInfoViewModelMapper();
+            FlightDetailRouteViewModelMapper mapper = new FlightDetailRouteViewModelMapper(flightDetailRouteInfoViewModelMapper);
+            setRouteList(mapper.transform(flightSearchViewModel.getRouteList(), flightSearchViewModel.getAirlineDataList()));
+            setDepartureTime(flightSearchViewModel.getDepartureTime());
+            setArrivalTime(flightSearchViewModel.getArrivalTime());
+            setAirlineDataList(flightSearchViewModel.getAirlineDataList());
             return this;
         } else {
             return null;

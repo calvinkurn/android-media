@@ -82,6 +82,15 @@ public interface FlightSearchContract {
 
         void initialize();
 
+        void onSeeDetailItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+
+        void onSearchItemClicked(FlightJourneyViewModel journeyViewModel, int adapterPosition);
+
+        void onSearchItemClicked(FlightJourneyViewModel journeyViewModel);
+
+        void onSuccessDateChanged(int year, int month, int dayOfMonth);
+
+        void setDelayHorizontalProgress();
     }
 
 }
