@@ -1,19 +1,27 @@
 package com.tokopedia.groupchat.chatroom.view.presenter;
 
+import android.support.annotation.NonNull;
+import android.util.Log;
+
 import com.sendbird.android.OpenChannel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
-import com.tokopedia.groupchat.chatroom.view.activity.GroupChatActivity;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
+import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
 
 import javax.inject.Inject;
 
+import okhttp3.WebSocket;
+import okio.ByteString;
 import rx.Subscriber;
+import rx.Subscription;
+import rx.subscriptions.CompositeSubscription;
 
 /**
  * @author by nisie on 3/21/18.
@@ -26,6 +34,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     private final LoginGroupChatUseCase loginGroupChatUseCase;
     private final LogoutGroupChatUseCase logoutGroupChatUseCase;
     private final ChannelHandlerUseCase channelHandlerUseCase;
+    private CompositeSubscription mSubscription;
 
     @Inject
     public GroupChatPresenter(LoginGroupChatUseCase loginGroupChatUseCase,
@@ -40,9 +49,10 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
     @Override
     public void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
-                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken) {
+                             LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken, String deviceId, String accessToken) {
         loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
                 userAvatar, loginGroupChatListener, sendBirdToken);
+        connect(userId, deviceId, accessToken);
     }
 
     @Override
@@ -116,6 +126,9 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     public void detachView() {
         super.detachView();
         getChannelInfoUseCase.unsubscribe();
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
+        }
     }
 
     public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
@@ -123,7 +136,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     }
 
     public void enterChannelAfterRefresh(String userId, String channelUrl, String userName, String
-            userAvatar, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken) {
+            userAvatar, LoginGroupChatUseCase.LoginGroupChatListener loginGroupChatListener, String sendBirdToken, String deviceId, String accessToken) {
         loginGroupChatUseCase.execute(getView().getContext(), channelUrl, userId, userName,
                 userAvatar, new LoginGroupChatUseCase.LoginGroupChatListener() {
                     @Override
@@ -147,5 +160,58 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
                     }
                 }, sendBirdToken);
+        connect(userId, deviceId, accessToken);
+    }
+
+    private void connect(String userId, String deviceId, String accessToken) {
+        if (mSubscription == null || mSubscription.isUnsubscribed()) {
+            mSubscription = new CompositeSubscription();
+        }
+
+        String magicString = "wss://chat.tokopedia.com" +
+                "/connect" +
+                "?os_type=1" +
+                "&device_id=" + deviceId +
+                "&user_id=" + userId;
+
+        WebSocketSubscriber subscriber = new WebSocketSubscriber() {
+            @Override
+            protected void onOpen(@NonNull WebSocket webSocket) {
+                Log.d("MainActivity", " on WebSocket open");
+            }
+
+            @Override
+            protected void onMessage(@NonNull String text) {
+                Log.d("MainActivity", text);
+            }
+
+            @Override
+            protected void onMessage(@NonNull ByteString byteString) {
+                Log.d("MainActivity", byteString.toString());
+            }
+
+            @Override
+            protected void onReconnect() {
+                Log.d("MainActivity", "onReconnect");
+            }
+
+            @Override
+            protected void onClose() {
+                Log.d("MainActivity", "onClose");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        };
+        Subscription subscription = RxWebSocket.get(magicString, accessToken)
+                //RxLifecycle : https://github.com/dhhAndroid/RxLifecycle
+                .subscribe(subscriber);
+
+
+        if (subscriber != null) {
+            mSubscription.add(subscription);
+        }
     }
 }

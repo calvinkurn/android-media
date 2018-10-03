@@ -90,7 +90,8 @@ public interface GroupChatContract {
 
         void enterChannel(String userId, String channelUrl, String userName, String userAvatar,
                           LoginGroupChatUseCase.LoginGroupChatListener
-                                  loginGroupChatListener, String sendBirdToken);
+                                  loginGroupChatListener, String sendBirdToken, String deviceId,
+                          String accessToken);
 
         void refreshChannelInfo(String channelUuid);
     }

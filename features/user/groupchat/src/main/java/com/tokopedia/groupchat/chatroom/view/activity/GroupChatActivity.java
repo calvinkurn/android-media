@@ -900,7 +900,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             }
 
             presenter.enterChannel(userSession.getUserId(), viewModel.getChannelInfoViewModel().getChannelUrl(),
-                    userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken());
+                    userSession.getName(), userSession.getProfilePicture(), this, channelInfoViewModel.getSendBirdToken(),
+                    userSession.getDeviceId(), userSession.getAccessToken());
 
             Intent intent = new Intent();
             intent.putExtra(TOTAL_VIEW, channelInfoViewModel.getTotalView());
@@ -1192,7 +1193,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         presenter.enterChannelAfterRefresh(userSession.getUserId(),
                 viewModel.getChannelInfoViewModel().getChannelUrl(),
                 userSession.getName(), userSession.getProfilePicture(),
-                this, channelInfoViewModel.getSendBirdToken());
+                this, channelInfoViewModel.getSendBirdToken(),
+                userSession.getDeviceId(), userSession.getAccessToken());
 
 
     }
@@ -1424,7 +1426,8 @@ public class GroupChatActivity extends BaseSimpleActivity
             public void onRetryClicked() {
                 presenter.enterChannel(userSession.getUserId(), viewModel.getChannelUuid(),
                         userSession.getName(), userSession.getProfilePicture(),
-                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken());
+                        GroupChatActivity.this, viewModel.getChannelInfoViewModel().getSendBirdToken()
+                ,userSession.getDeviceId(), userSession.getAccessToken());
             }
         });
     }
