@@ -121,6 +121,9 @@
             android:name=".changephonenumber.view.activity.ChangePhoneNumberWarningActivity"
             android:label=""
             android:screenOrientation="portrait"/>
+
+        <activity android:name=".changephonenumber.view.activity.OvoWebViewActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".changephonenumber.view.activity.ChangePhoneNumberInputActivity"
             android:label="@string/change_phone_number"
