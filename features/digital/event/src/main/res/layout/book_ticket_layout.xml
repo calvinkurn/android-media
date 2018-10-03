@@ -220,6 +220,7 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:background="@color/black_12"
         android:clickable="true"
+        android:elevation="@dimen/dp_4"
         android:focusable="true"
         android:visibility="gone">
 

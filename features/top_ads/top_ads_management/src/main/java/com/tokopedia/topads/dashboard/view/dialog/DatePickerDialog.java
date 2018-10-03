@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.Window;
 import android.widget.DatePicker;
 
-import com.tokopedia.seller.common.datepicker.view.widget.DatePickerLabelView;
+import com.tokopedia.datepicker.range.view.widget.DatePickerLabelView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

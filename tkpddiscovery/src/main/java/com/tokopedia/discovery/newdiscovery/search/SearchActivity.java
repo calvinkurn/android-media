@@ -46,6 +46,8 @@ import com.tokopedia.discovery.newdiscovery.widget.BottomSheetFilterView;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterDetailActivityRouter;
 import com.tokopedia.discovery.newdynamicfilter.helper.FilterFlagSelectedModel;
 import com.tokopedia.discovery.search.view.DiscoverySearchView;
+import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.topads.sdk.domain.model.TopAdsModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,7 +98,6 @@ public class SearchActivity extends DiscoveryActivity
     private String catalogTabTitle;
     private String shopTabTitle;
     private boolean forceSwipeToShop;
-
     private BottomSheetFilterView bottomSheetFilterView;
     private SearchNavigationListener.ClickListener searchNavigationClickListener;
 
@@ -152,6 +153,7 @@ public class SearchActivity extends DiscoveryActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        GraphqlClient.init(this);
         initInjector();
 
         if (savedInstanceState != null) {
@@ -170,7 +172,6 @@ public class SearchActivity extends DiscoveryActivity
         initResources();
         ProductViewModel productViewModel =
                 intent.getParcelableExtra(EXTRA_PRODUCT_VIEW_MODEL);
-
         String searchQuery = getIntent().getStringExtra(EXTRAS_SEARCH_TERM);
         String categoryId = getIntent().getStringExtra(DEPARTMENT_ID);
 
