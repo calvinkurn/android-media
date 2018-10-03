@@ -149,9 +149,6 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(visitables -> {
-                    compositeSubscription.add(getDataFromNetwork().subscribe(createHomeDataSubscriber()));
-                })
                 .onErrorResumeNext(getDataFromNetwork())
                 .subscribe(createHomeDataSubscriber());
         compositeSubscription.add(subscription);
