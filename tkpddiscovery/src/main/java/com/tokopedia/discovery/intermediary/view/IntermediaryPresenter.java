@@ -65,7 +65,7 @@ public class IntermediaryPresenter extends BaseDaggerPresenter<IntermediaryContr
     @Override
     public void addWishLish(int position, Data data) {
         if (getView().isUserHasLogin()) {
-            if (data.isWislished()) {
+            if (data.getProduct().isWishlist()) {
                 removeWishlist(data.getProduct().getId(), getView().getUserId());
             } else {
                 addWishlist(data.getProduct().getId(), getView().getUserId());
