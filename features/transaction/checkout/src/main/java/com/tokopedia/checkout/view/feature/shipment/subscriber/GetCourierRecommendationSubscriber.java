@@ -60,10 +60,10 @@ public class GetCourierRecommendationSubscriber extends Subscriber<List<Shipping
                                 shippingCourierViewModel.getProductData().getShipperId() == shipperId) {
                             if (shippingCourierViewModel.getProductData().getError() != null &&
                                     !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getError().getErrorMessage())) {
-                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList());
                                 view.renderCourierStateFailed(itemPosition);
                                 return;
                             } else {
+                                presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList());
                                 CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
                                 view.renderCourierStateSuccess(courierItemData, itemPosition);
                                 return;
