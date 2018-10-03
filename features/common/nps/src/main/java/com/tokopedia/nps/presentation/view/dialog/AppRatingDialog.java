@@ -9,11 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 
 import com.tkpd.library.utils.LocalCacheHandler;
-import com.tokopedia.core.database.manager.GlobalCacheManager;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
+import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.remoteconfig.RemoteConfig;
-import com.tokopedia.core.util.GlobalConfig;
-import com.tokopedia.core.var.TkpdCache;
+
+import static com.tokopedia.nps.NpsConstant.Key.APP_RATING;
 
 /**
  * Created by okasurya on 1/10/18.
@@ -29,15 +31,15 @@ public abstract class AppRatingDialog {
     protected Activity activity;
     protected RemoteConfig remoteConfig;
     protected LocalCacheHandler cacheHandler;
-    protected GlobalCacheManager globalCacheManager;
+    protected CacheManager globalCacheManager;
     @Nullable
     protected AppRatingListener listener;
 
     protected AppRatingDialog(Activity activity) {
         this.activity = activity;
         this.remoteConfig = new FirebaseRemoteConfigImpl(activity);
-        cacheHandler = new LocalCacheHandler(activity, TkpdCache.APP_RATING);
-        globalCacheManager = new GlobalCacheManager();
+        cacheHandler = new LocalCacheHandler(activity, APP_RATING);
+        globalCacheManager = ((AbstractionRouter) activity.getApplication()).getGlobalCacheManager();
     }
 
     public static void openPlayStore(Context context) {

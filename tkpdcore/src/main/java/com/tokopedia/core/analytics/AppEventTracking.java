@@ -162,10 +162,6 @@ public interface AppEventTracking {
         String EVENT_CLICK_HOME_DIGITAL_WIDGET = "clickHomeDigitalWidget";
         String EVENT_ADD_TO_CART_DIGITAL = "addToCartDigital";
 
-        String IMPRESSION_APP_RATING = "impressionAppRating";
-        String CLICK_APP_RATING = "clickAppRating";
-        String CANCEL_APP_RATING = "cancelAppRating";
-
         String EVENT_IMPRESSION_HOME_PAGE = "eventImpressionHomePage";
         String SELLER_INFO = "clickSellerInfo";
         String EVENT_ONBOARDING = "onBoardingEvent";
@@ -293,7 +289,6 @@ public interface AppEventTracking {
         String TOKO_POINTS_PROMO_HOMEPAGE = "homepage-tokopoints";
         String TOKOPOINTS_USER_PAGE = "tokopoints - user profile page";
         String TOKOPOINTS_POP_UP = "tokopoints - pop up";
-        String APP_RATING = "Application Rating";
         String FEED_CONTENT_COMMENT_DETAIL = "content - comment detail";
         String ONBOARDING = "onboarding";
         String RESOLUTION_CENTER = "resolution center";

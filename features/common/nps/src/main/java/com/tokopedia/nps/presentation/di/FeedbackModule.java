@@ -36,16 +36,4 @@ public class FeedbackModule {
     FeedbackRepository provideFeedbackRepository(FeedbackDataRepository repository) {
         return repository;
     }
-
-    @FeedbackScope
-    @Provides
-    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
-        return ((AbstractionRouter)context).getAnalyticTracker();
-    }
-
-    @FeedbackScope
-    @Provides
-    NpsAnalytics proviveNpsAnalytics(AnalyticTracker analyticTracker){
-        return new NpsAnalytics(analyticTracker);
-    }
 }
