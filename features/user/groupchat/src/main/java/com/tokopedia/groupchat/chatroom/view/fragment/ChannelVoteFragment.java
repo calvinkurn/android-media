@@ -415,6 +415,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
             }
             if (getActivity() instanceof GroupChatActivity) {
                 ((GroupChatActivity) getActivity()).onSuccessLogin();
+                getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         }
     }
