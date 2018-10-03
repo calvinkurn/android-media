@@ -53,6 +53,10 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * use ShopSettings Module
+ */
+@Deprecated
 public class ShopAddressForm extends TActivity {
     private static final String TOKEN_KEY_PARAM = "token";
     private static final int DISTRICT_RECOMMENDATION_REQUEST_CODE = 199;

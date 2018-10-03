@@ -48,8 +48,6 @@ public interface ICartListPresenter {
 
     void processRemoveFromWishlist(String productId, String userId, WishListActionListener wishListActionListener);
 
-    ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData);
-
     void setHasPerformChecklistChange();
 
     boolean dataHasChanged();

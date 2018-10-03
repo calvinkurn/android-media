@@ -1,12 +1,17 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class ImageShop {
+public class ImageShop implements Parcelable {
 
     private static final String KEY_COVER = "cover";
     private static final String KEY_S_URL = "s_url";
@@ -15,11 +20,17 @@ public class ImageShop {
     private static final String KEY_S_ECS = "s_ecs";
     private static final String KEY_XS_ECS = "xs_ecs";
 
+    @SerializedName(KEY_COVER)
     private String cover;
+    @SerializedName(KEY_S_URL)
     private String sUrl;
+    @SerializedName(KEY_XS_URL)
     private String xsUrl;
+    @SerializedName(KEY_COVER_ECS)
     private String coverEcs;
+    @SerializedName(KEY_S_ECS)
     private String sEcs;
+    @SerializedName(KEY_XS_ECS)
     private String xsEcs;
 
     public ImageShop(JSONObject object) throws JSONException {
@@ -42,6 +53,42 @@ public class ImageShop {
             setXsEcs(object.getString(KEY_XS_ECS));
         }
     }
+
+    protected ImageShop(Parcel in) {
+        cover = in.readString();
+        sUrl = in.readString();
+        xsUrl = in.readString();
+        coverEcs = in.readString();
+        sEcs = in.readString();
+        xsEcs = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(cover);
+        dest.writeString(sUrl);
+        dest.writeString(xsUrl);
+        dest.writeString(coverEcs);
+        dest.writeString(sEcs);
+        dest.writeString(xsEcs);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ImageShop> CREATOR = new Creator<ImageShop>() {
+        @Override
+        public ImageShop createFromParcel(Parcel in) {
+            return new ImageShop(in);
+        }
+
+        @Override
+        public ImageShop[] newArray(int size) {
+            return new ImageShop[size];
+        }
+    };
 
     public String getCover() {
         return cover;

@@ -30,8 +30,9 @@ import rx.subscriptions.CompositeSubscription;
 
 /**
  * Created by nisie on 10/26/16.
+ * use ShopSettings Module
  */
-
+@Deprecated
 public class ManageShopNotesRetrofitInteractorImpl implements ManageShopNotesRetrofitInteractor {
 
     private static final String TAG = WithdrawRetrofitInteractorImpl.class.getSimpleName();
