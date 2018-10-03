@@ -20,10 +20,11 @@
             android:orientation="horizontal">
             <ImageView
                 android:id="@+id/ivVoucherLogo"
-                android:layout_width="@dimen/dp_24"
-                android:layout_height="@dimen/dp_24"
+                android:layout_width="@dimen/dp_16"
+                android:layout_height="@dimen/dp_16"
                 tools:src="@mipmap/ic_launcher"
-                android:layout_marginRight="@dimen/dp_8" />
+                android:layout_marginRight="@dimen/dp_8"
+                android:layout_gravity="center_vertical"/>
             <TextView
                 android:id="@+id/tvVoucherTitle"
                 android:singleLine="true"

@@ -22,7 +22,7 @@ constructor(private val getShopInfoUseCase: GetShopInfoUseCase,
             private val userSession: UserSession)
     : BaseDaggerPresenter<MerchantVoucherListView>(){
 
-    fun isMyShop(shopId: String) = (userSession.shopId == shopId)
+    fun isLogin() = userSession.isLoggedIn
 
     fun getShopInfo(shopId: String) {
         getShopInfoUseCase.execute(GetShopInfoUseCase.createRequestParam(shopId), object : Subscriber<ShopInfo>() {

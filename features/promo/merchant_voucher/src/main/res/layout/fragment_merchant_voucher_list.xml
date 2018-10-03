@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/dp_8"
-            android:paddingBottom="@dimen/dp_8"/>
+            android:paddingBottom="@dimen/dp_8"
+            android:clipToPadding="false"/>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 </RelativeLayout>

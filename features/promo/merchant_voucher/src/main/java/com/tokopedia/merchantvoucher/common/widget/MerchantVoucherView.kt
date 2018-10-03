@@ -49,7 +49,7 @@ class MerchantVoucherView : CustomVoucherView {
         mScallopRelativePosition = 0.65f
         mShadowRadius = dpToPx(2f)
         mDashWidth = dpToPx(2f)
-        mDashGap = dpToPx(6f)
+        mDashGap = dpToPx(4f)
         mDashColor = ContextCompat.getColor(this.context, R.color.colorGray)
         LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
                 this, true)

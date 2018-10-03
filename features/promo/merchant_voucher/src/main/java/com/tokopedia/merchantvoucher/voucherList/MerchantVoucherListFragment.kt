@@ -1,10 +1,11 @@
 package com.tokopedia.merchantvoucher.voucherList
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +14,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.merchantvoucher.R
 import com.tokopedia.merchantvoucher.common.di.DaggerMerchantVoucherComponent
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.common.widget.MerchantVoucherView
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.adapter.MerchantVoucherAdapterTypeFactory
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListPresenter
 import com.tokopedia.merchantvoucher.voucherList.presenter.MerchantVoucherListView
@@ -24,21 +28,22 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
 import com.tokopedia.shop.common.di.ShopCommonModule
 import javax.inject.Inject
 
-/**
- * Created by hendry on 21/09/18.
- */
 
-class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>(),
+open class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, MerchantVoucherAdapterTypeFactory>(),
         MerchantVoucherListView, MerchantVoucherView.OnMerchantVoucherViewListener {
 
-    lateinit var shopId: String
+    var shopId: String? = null
+
     var shopInfo: ShopInfo? = null
         get
+
+    // only load data only if view created already
+    var viewCreated: Boolean = false
 
     @Inject
     lateinit var presenter: MerchantVoucherListPresenter
 
-    lateinit var onMerchantVoucherListFragmentListener: OnMerchantVoucherListFragmentListener
+    var onMerchantVoucherListFragmentListener: OnMerchantVoucherListFragmentListener? = null
 
     interface OnMerchantVoucherListFragmentListener {
         fun enableShare(shopInfo: ShopInfo)
@@ -68,7 +73,11 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
     }
 
     override fun loadData(page: Int) {
-        presenter.getVoucherList(shopId)
+        shopId?.let {
+            presenter?.run {
+                getVoucherList(it)
+            }
+        }
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -87,6 +96,9 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
     companion object {
         const val EXTRA_SHOP_ID = "shop_id"
 
+        const val REQUEST_CODE_LOGIN = 3001
+        const val REQUEST_CODE_MERCHANT_DETAIL = 3004
+
         @JvmStatic
         fun createInstance(shopId: String): Fragment {
             return MerchantVoucherListFragment().apply {
@@ -98,12 +110,19 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        shopId = arguments!!.getString(MerchantVoucherListActivity.SHOP_ID)
-        super.onCreate(savedInstanceState)
-
-        if (shopInfo == null) {
-            getShopInfo()
+        arguments?.run {
+            shopId = getString(MerchantVoucherListActivity.SHOP_ID)
         }
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        loadAllData()
+    }
+
+    open fun loadAllData() {
+        getShopInfo()
         loadInitialData()
     }
 
@@ -111,13 +130,15 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
 
     override fun hasInitialSwipeRefresh() = true
 
-    private fun getShopInfo() {
-        presenter.getShopInfo(shopId)
+    protected open fun getShopInfo() {
+        shopId?.let {
+            presenter.getShopInfo(it)
+        }
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         this@MerchantVoucherListFragment.shopInfo = shopInfo
-        this.onMerchantVoucherListFragmentListener.enableShare(shopInfo)
+        this.onMerchantVoucherListFragmentListener?.enableShare(shopInfo)
     }
 
     override fun onErrorGetShopInfo(e: Throwable) {
@@ -138,25 +159,48 @@ class MerchantVoucherListFragment : BaseListFragment<MerchantVoucherViewModel, M
         val emptyModel = EmptyModel()
         emptyModel.iconRes = R.drawable.ic_empty_state
         //TODO error message when voucher empty
-//        emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
-//        emptyModel.content = getString(R.string.change_your_keyword)
+        //        emptyModel.title = getString(R.string.shop_has_no_etalase_search, searchText)
+        //        emptyModel.content = getString(R.string.change_your_keyword)
         return emptyModel
     }
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        // TODO if not login, open login activity
+        if (context == null) {
+            return
+        }
+        if (presenter.isLogin() == false) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.LOGIN)
+            startActivityForResult(intent, REQUEST_CODE_LOGIN)
+            activity?.finish()
+            return
+        }
         // TODO if login, make call to use the voucher
-        Log.i("Test", "Test")
     }
 
     override fun onItemClicked(t: MerchantVoucherViewModel?) {
-        //TODO go to detail activity
-        Log.i("Test", "Test")
+        context?.let {
+            val intent = MerchantVoucherDetailActivity.createIntent(it, 1234)
+            startActivityForResult(intent, REQUEST_CODE_MERCHANT_DETAIL)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        when (requestCode) {
+            REQUEST_CODE_MERCHANT_DETAIL -> if (resultCode == Activity.RESULT_OK) {
+                //TODO refresh the UI, show snackbar voucher is used. change the voucher to used.
+            }
+            REQUEST_CODE_LOGIN -> if (resultCode == Activity.RESULT_OK) {
+                //TODO use the voucher marked before.
+            }
+            else -> super.onActivityResult(requestCode, resultCode, data)
+        }
     }
 
     override fun onAttachActivity(context: Context?) {
         super.onAttachActivity(context)
-        onMerchantVoucherListFragmentListener = context as OnMerchantVoucherListFragmentListener
+        if (context is OnMerchantVoucherListFragmentListener) {
+            onMerchantVoucherListFragmentListener = context
+        }
     }
 
     override fun onDestroy() {

@@ -2,6 +2,7 @@ package com.tokopedia.merchantvoucher.voucherDetail.presenter
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.abstraction.common.data.model.session.UserSession
+import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherDetailUseCase
 import com.tokopedia.merchantvoucher.common.gql.domain.usecase.GetMerchantVoucherListUseCase
