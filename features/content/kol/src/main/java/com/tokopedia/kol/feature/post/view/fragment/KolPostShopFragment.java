@@ -110,6 +110,18 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
         adapter.showErrorNetwork(message, this::fetchData);
     }
 
+    @Override
+    public void goToCreatePost() {
+        if (!TextUtils.isEmpty(createPostUrl)) {
+            startActivityForResult(
+                    CreatePostImagePickerActivity.getInstance(
+                            getActivity(),
+                            createPostUrl),
+                    CREATE_POST
+            );
+        }
+    }
+
     private EmptyResultViewModel getEmptyResultViewModel() {
         if (emptyResultViewModel == null) {
             emptyResultViewModel = new EmptyResultViewModel();
@@ -127,12 +139,7 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
 
                     @Override
                     public void onEmptyButtonClicked() {
-                        startActivityForResult(
-                                CreatePostImagePickerActivity.getInstance(
-                                        getActivity(),
-                                        createPostUrl),
-                                CREATE_POST
-                        );
+                        goToCreatePost();
                     }
                 });
             }

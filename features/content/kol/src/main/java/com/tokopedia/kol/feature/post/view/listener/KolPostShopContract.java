@@ -18,6 +18,8 @@ public interface KolPostShopContract {
 
         void onErrorGetKolPostShop(String message);
 
+        void goToCreatePost();
+
         interface Like {
             Context getContext();
 
