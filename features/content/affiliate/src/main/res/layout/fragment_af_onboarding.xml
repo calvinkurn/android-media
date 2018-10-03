@@ -49,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_24"
+        android:textAllCaps="false"
         app:buttonCompatSize="big"
         app:buttonCompatType="primary"
         android:text="@string/af_try_now"/>

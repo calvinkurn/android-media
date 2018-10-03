@@ -31,7 +31,8 @@
     <string name="af_onboarding_start_by_me">Mulailah Dari By.Me!</string>
     <string name="af_make_by_me_profile">Mulai Buat Profil By.Me</string>
     <string name="af_type_username">Ketik Username:</string>
-    <string name="af_agree_terms"><![CDATA[Dengan melanjutkan, saya setuju dengan \nSyarat & Ketentuan By.Me]]></string>
+    <string name="af_agree_terms">Dengan melanjutkan, saya setuju dengan</string>
+    <string name="af_terms_and_condition">Syarat &amp; Ketentuan By.Me</string>
     <string name="af_save">Simpan</string>
     <string name="af_by_me_domain">by.me/\u0020</string>
     <string name="af_complete_profile">Lengkapi Profil By.Me Milikmu</string>

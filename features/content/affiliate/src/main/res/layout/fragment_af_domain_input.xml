@@ -48,8 +48,8 @@
             android:layout_marginStart="-4dp"
             android:layout_marginTop="@dimen/dp_16"
             android:hint="@string/af_type_username"
-            app:helper="Harus 3 karakter"
             android:textColorHint="@color/black_56"
+            app:helper="Harus 3 karakter"
             app:layout_constraintTop_toBottomOf="@id/title">
 
             <com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText
@@ -97,11 +97,24 @@
             android:fontFamily="sans-serif"
             android:gravity="center_horizontal"
             android:lineSpacingExtra="4sp"
+            android:text="@string/af_terms_and_condition"
+            android:textColor="@color/af_terms_and_condition"
+            android:textSize="@dimen/sp_12"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/agreeTerms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:gravity="center_horizontal"
+            android:lineSpacingExtra="4sp"
             android:text="@string/af_agree_terms"
             android:textColor="@color/black_54"
             android:textSize="@dimen/sp_12"
             android:textStyle="normal"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toTopOf="@id/termsAndCondition" />
 
         <com.tokopedia.design.component.ButtonCompat
             android:id="@+id/saveBtn"
@@ -109,8 +122,9 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_16"
             android:text="@string/af_save"
+            android:textAllCaps="false"
             app:buttonCompatSize="big"
             app:buttonCompatType="primary"
-            app:layout_constraintBottom_toTopOf="@id/termsAndCondition" />
+            app:layout_constraintBottom_toTopOf="@id/agreeTerms" />
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

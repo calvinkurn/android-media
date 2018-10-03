@@ -8,4 +8,5 @@
     <color name="color_ongoing_bg">#d7f6f8</color>
     <color name="color_ongoing_text">#1c9ba5</color>
     <color name="color_finished_bg">#e0e0e0</color>
+    <color name="af_terms_and_condition">#399c3f</color>
 </resources>
