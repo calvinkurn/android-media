@@ -144,9 +144,9 @@ public class ChallegeneSubmissionFragment extends BaseDaggerFragment implements 
     @Override
     public void onStart() {
         super.onStart();
-        if (ChallengesCacheHandler.CHALLENGES_SUBMISSTIONS_LIST_CACHE) {
-            ChallengesCacheHandler.CHALLENGES_ALL_SUBMISSTIONS_LIST_CACHE = true;// for all submission list
-            mPresenter.loadSubmissions();
+
+        if (ChallengesCacheHandler.CHALLENGES_DETAILS_CACHE) {
+            mPresenter.getSubmissionChallenges(true, challengeResult);
         }
     }
 

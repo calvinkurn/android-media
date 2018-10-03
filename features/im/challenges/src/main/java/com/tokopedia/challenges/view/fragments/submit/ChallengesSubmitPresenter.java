@@ -155,6 +155,7 @@ public class ChallengesSubmitPresenter extends BaseDaggerPresenter<IChallengesSu
                 if (intent.getAction() == ACTION_UPLOAD_COMPLETE) {
                     if (!TextUtils.isEmpty(postId)) {
                         getSubmissionDetail();
+                        ChallengesCacheHandler.resetCache();
                         ChallengesMoengageAnalyticsTracker.challengeSubmitFinished(getView().getActivity(), getView().getChallengeTitle(),
                                 getView().getChallengeId(), postId);
                     }
