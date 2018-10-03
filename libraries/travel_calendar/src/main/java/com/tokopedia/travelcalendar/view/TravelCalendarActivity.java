@@ -43,6 +43,7 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
     public static final String EXTRA_MAX_DATE = "maxdate";
     public static final int DEPARTURE_TYPE = 1;
     public static final int RETURN_TYPE = 2;
+    public static final int DEFAULT_TYPE = 0;
     public static final String EXTRA_SCHEDULE_TYPE = "schedule_type";
 
 
@@ -81,10 +82,12 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
 
     private void updateTitleToolbar() {
         int scheduleType = getIntent().getIntExtra(EXTRA_SCHEDULE_TYPE, 0);
-        if (scheduleType == 1) {
+        if (scheduleType == DEPARTURE_TYPE) {
             updateTitle(getResources().getString(R.string.travel_calendar_label_choose_departure_trip_date));
-        } else {
+        } else if (scheduleType == RETURN_TYPE) {
             updateTitle(getResources().getString(R.string.travel_calendar_label_choose_return_trip_date));
+        } else {
+            updateTitle(getResources().getString(R.string.travel_calendar_label_choose_date));
         }
     }
 
@@ -188,11 +191,11 @@ public class TravelCalendarActivity extends BaseSimpleActivity implements Travel
         String errorMessage = ErrorHandler.getErrorMessage(this, throwable);
         NetworkErrorHelper.createSnackbarWithAction(this, errorMessage,
                 new NetworkErrorHelper.RetryClickedListener() {
-            @Override
-            public void onRetryClicked() {
-                presenter.getHolidayEvents();
-            }
-        }).showRetrySnackbar();
+                    @Override
+                    public void onRetryClicked() {
+                        presenter.getHolidayEvents();
+                    }
+                }).showRetrySnackbar();
     }
 
     @Override

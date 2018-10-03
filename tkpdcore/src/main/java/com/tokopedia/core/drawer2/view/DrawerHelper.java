@@ -21,11 +21,12 @@ import com.tokopedia.core.drawer2.data.viewmodel.DrawerProfile;
 import com.tokopedia.core.drawer2.view.databinder.DrawerItemDataBinder;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerGroup;
 import com.tokopedia.core.drawer2.view.viewmodel.DrawerItem;
+import com.tokopedia.core.loyaltysystem.util.URLGenerator;
 import com.tokopedia.core.referral.ReferralActivity;
 import com.tokopedia.core.router.InboxRouter;
-import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.network.constant.TkpdBaseURL;
 
 import java.util.ArrayList;
 
@@ -93,7 +94,7 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
                 }
                 break;
             case TkpdState.DrawerPosition.INBOX_TALK:
-                intent = InboxRouter.getInboxTalkActivityIntent(context);
+                intent = ((TkpdCoreRouter) context.getApplication()).getInboxTalkCallingIntent(context);
                 context.startActivity(intent);
                 sendGTMNavigationEvent(AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), AppEventTracking.EventLabel.INBOX, AppEventTracking.EventLabel.PRODUCT_DISCUSSION);
@@ -132,7 +133,9 @@ public abstract class DrawerHelper implements DrawerItemDataBinder.DrawerItemLis
 
                 break;
             case TkpdState.DrawerPosition.CONTACT_US:
-                intent = ((TkpdInboxRouter)context.getApplication()).getContactUsIntent(context);
+                intent = InboxRouter.getContactUsActivityIntent(context);
+                intent.putExtra(InboxRouter.PARAM_URL,
+                        URLGenerator.generateURLContactUs(TkpdBaseURL.BASE_CONTACT_US, context));
                 context.startActivity(intent);
                 AnalyticsEventTrackingHelper.hamburgerOptionClicked(intent.getComponent().getClassName(), "Contact_Us");
 

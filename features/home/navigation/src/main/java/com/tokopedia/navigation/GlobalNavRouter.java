@@ -50,5 +50,5 @@ public interface GlobalNavRouter {
 
     Intent getReferralIntent(Context context);
 
-    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 }

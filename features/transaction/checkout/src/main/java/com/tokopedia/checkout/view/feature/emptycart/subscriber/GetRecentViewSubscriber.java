@@ -12,6 +12,7 @@ import rx.Subscriber;
 
 public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
 
+    private static final int ITEM_SHOW_COUNT = 2;
     private final EmptyCartContract.View view;
     private final EmptyCartContract.Presenter presenter;
 
@@ -42,7 +43,7 @@ public class GetRecentViewSubscriber extends Subscriber<GraphqlResponse> {
                         gqlRecentViewResponse.getGqlRecentView().getRecentViewList() != null &&
                         gqlRecentViewResponse.getGqlRecentView().getRecentViewList().size() > 0) {
                     presenter.setRecentViewListModels(gqlRecentViewResponse.getGqlRecentView().getRecentViewList());
-                    view.renderHasRecentView();
+                    view.renderHasRecentView(gqlRecentViewResponse.getGqlRecentView().getRecentViewList().size() > ITEM_SHOW_COUNT);
                 } else {
                     view.renderHasNoRecentView();
                 }

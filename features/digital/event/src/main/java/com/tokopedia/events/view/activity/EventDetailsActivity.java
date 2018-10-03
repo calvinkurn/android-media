@@ -204,10 +204,10 @@ public class EventDetailsActivity extends TActivity implements HasComponent<Even
 
         if (homedata.getMinStartDate() > 0) {
             if (homedata.getMinStartDate() == homedata.getMaxEndDate()) {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate());
             } else {
-                dateRange = Utils.convertEpochToString(homedata.getMinStartDate())
-                        + " - " + Utils.convertEpochToString(homedata.getMaxEndDate());
+                dateRange = Utils.getSingletonInstance().convertEpochToString(homedata.getMinStartDate())
+                        + " - " + Utils.getSingletonInstance().convertEpochToString(homedata.getMaxEndDate());
             }
         } else {
             timeView.setVisibility(View.GONE);

@@ -85,21 +85,24 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
     }
 
     private void bindShop(Shop shop) {
-        if (shop.getBadges() != null && !shop.getLocation().isEmpty()) {
+        if (shop.getBadges() != null && shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+            shopLocation.setVisibility(View.VISIBLE);
             imageLoader.loadBadge(badgeContainer, shop.getBadges());
             if(isBadgesExist(shop.getBadges())) {
                 shopLocation.setText(String.format(" \u2022 %s", shop.getLocation()));
             } else {
                 shopLocation.setText(shop.getLocation());
             }
-        } else {
+        } else if (shop.getLocation() != null && !shop.getLocation().isEmpty()) {
+            shopLocation.setVisibility(View.VISIBLE);
             shopLocation.setText(shop.getLocation());
+        } else {
+            shopLocation.setVisibility(View.GONE);
         }
     }
 
     private void bindProduct(final Product product) {
-        imageLoader.loadImage(product.getImage().getM_ecs(), product.getImage().getM_url(),
-                productImage);
+        imageLoader.loadImage(product, productImage, clickPosition);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             productName.setText(Html.fromHtml(product.getName(),
                     Html.FROM_HTML_MODE_LEGACY));
@@ -143,7 +146,7 @@ public class ProductBigViewHolder extends AbstractViewHolder<ProductBigViewModel
                 bottomLabelContainer.addView(label);
             }
         }
-        renderWishlistButton(data.isWislished());
+        renderWishlistButton(data.getProduct().isWishlist());
     }
 
     private int getStarCount(int rating) {

@@ -11,29 +11,28 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.db.williamchart.util.GMStatisticUtil;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.customadapter.NoResultDataBinder;
 import com.tokopedia.core.customadapter.RetryDataBinder;
-import com.tokopedia.gm.common.di.component.GMComponent;
+import com.tokopedia.datepicker.range.model.DatePickerViewModel;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
-import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
-import com.tokopedia.seller.base.view.fragment.BaseListDateFragment;
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
-import com.tokopedia.product.manage.item.common.model.DatePickerViewModel;
+import com.tokopedia.gm.common.di.component.GMComponent;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortBy;
 import com.tokopedia.gm.statistic.constant.GMTransactionTableSortType;
 import com.tokopedia.gm.statistic.di.component.DaggerGMStatisticTransactionComponent;
 import com.tokopedia.gm.statistic.di.module.GMStatisticModule;
 import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
-import com.db.williamchart.util.GMStatisticUtil;
 import com.tokopedia.gm.statistic.view.adapter.GMStatRetryDataBinder;
 import com.tokopedia.gm.statistic.view.adapter.GMStatisticTransactionTableAdapter;
 import com.tokopedia.gm.statistic.view.adapter.model.GMStatisticTransactionTableModel;
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder;
 import com.tokopedia.gm.statistic.view.listener.GMStatisticTransactionTableView;
 import com.tokopedia.gm.statistic.view.presenter.GMStatisticTransactionTablePresenter;
+import com.tokopedia.seller.base.view.adapter.BaseListAdapter;
+import com.tokopedia.seller.base.view.emptydatabinder.EmptyDataBinder;
 
 import java.util.Date;
 

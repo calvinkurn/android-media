@@ -47,7 +47,7 @@ public interface ICheckoutModuleRouter {
 
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
-    Intent checkoutModuleRouterGetHomeFeedIntent(Context context);
+    Intent checkoutModuleRouterGetHomeIntent(Context context);
 
     boolean checkoutModuleRouterGetEnableFingerprintPayment();
 

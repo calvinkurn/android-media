@@ -12,6 +12,7 @@ import rx.Subscriber;
 
 public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
 
+    private static final int ITEM_SHOW_COUNT = 2;
     private EmptyCartContract.View view;
     private EmptyCartContract.Presenter presenter;
 
@@ -42,7 +43,7 @@ public class GetWishlistSubscriber extends Subscriber<GraphqlResponse> {
                         getWishlistResponse.getGqlWishList().getWishlistDataList() != null &&
                         getWishlistResponse.getGqlWishList().getWishlistDataList().size() > 0) {
                     presenter.setWishListViewModels(getWishlistResponse.getGqlWishList().getWishlistDataList());
-                    view.renderHasWishList();
+                    view.renderHasWishList(getWishlistResponse.getGqlWishList().getWishlistDataList().size() > ITEM_SHOW_COUNT);
                 } else {
                     view.renderHasNoWishList();
                 }

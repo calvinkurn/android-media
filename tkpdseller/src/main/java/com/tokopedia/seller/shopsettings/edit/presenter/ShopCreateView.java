@@ -7,7 +7,9 @@ import com.tokopedia.seller.shopsettings.shipping.model.openshopshipping.OpenSho
 
 /**
  * Created by Toped18 on 5/19/2016.
+ * use ShopSettings Module
  */
+@Deprecated
 public interface ShopCreateView extends BaseView {
 
     int REQUEST_EDIT_SHIPPING = 100;

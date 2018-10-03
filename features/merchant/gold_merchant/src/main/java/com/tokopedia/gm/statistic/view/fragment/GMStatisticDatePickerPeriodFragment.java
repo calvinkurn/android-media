@@ -9,10 +9,10 @@ import android.view.ViewGroup;
 
 import com.tokopedia.expandable.ExpandableOptionSwitch;
 import com.tokopedia.gm.R;
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.fragment.DatePickerPeriodFragment;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
-import com.tokopedia.seller.common.datepicker.view.widget.DatePeriodView;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.fragment.DatePickerPeriodFragment;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.widget.DatePeriodView;
 import com.tokopedia.gm.statistic.utils.GMStatisticDateUtils;
 
 import java.util.ArrayList;

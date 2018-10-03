@@ -8,6 +8,9 @@ import java.util.List;
 
 public class GMFeaturedProduct {
 
+    @SerializedName("parent_id")
+    @Expose
+    private String parentId;
     @SerializedName("product_id")
     @Expose
     private String productId;
@@ -50,6 +53,14 @@ public class GMFeaturedProduct {
     @SerializedName("total_review")
     @Expose
     private String totalReview;
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
     public String getProductId() {
         return productId;

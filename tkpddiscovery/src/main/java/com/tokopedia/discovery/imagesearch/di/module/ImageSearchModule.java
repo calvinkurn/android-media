@@ -50,7 +50,7 @@ public class ImageSearchModule {
 
     @SearchScope
     @Provides
-    ImageSearchPresenter provideImageSearchPresenter(GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
-        return new ImageSearchPresenter(getProductUseCase, getImageSearchUseCase);
+    ImageSearchPresenter provideImageSearchPresenter(@ApplicationContext Context context, GetProductUseCase getProductUseCase, GetImageSearchUseCase getImageSearchUseCase) {
+        return new ImageSearchPresenter(context, getProductUseCase, getImageSearchUseCase);
     }
 }

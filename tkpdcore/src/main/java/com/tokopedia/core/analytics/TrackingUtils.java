@@ -638,7 +638,7 @@ public class TrackingUtils extends TrackingConfig {
         getGTMEngine().eventNetworkError(error);
     }
 
-    static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
+    public static void eventAppsFlyerViewListingSearch(JSONArray productsId, String keyword, ArrayList<String> prodIds) {
         Map<String, Object> listViewEvent = new HashMap<>();
         listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
@@ -658,6 +658,7 @@ public class TrackingUtils extends TrackingConfig {
         listViewEvent.put(AFInAppEventParameterName.CONTENT_ID, prodIds);
         listViewEvent.put(AFInAppEventParameterName.CURRENCY, "IDR");
         listViewEvent.put(AFInAppEventParameterName.CONTENT_TYPE, Jordan.AF_VALUE_PRODUCTTYPE);
+        listViewEvent.put(AFInAppEventParameterName.DESCRIPTION, Jordan.AF_VALUE_PRODUCTTYPE);
         listViewEvent.put(AFInAppEventParameterName.SEARCH_STRING, keyword);
         if (productsId.length() > 0) {
             listViewEvent.put(AFInAppEventParameterName.SUCCESS, "success");
