@@ -207,10 +207,6 @@ android {
     flavorDimensions "tier"
 
     productFlavors {
-        staging {
-            dimension "tier"
-        }
-
         live {
             dimension "tier"
         }
@@ -436,7 +432,6 @@ dependencies {
 
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.features.challenges)
-
 }
 
 
