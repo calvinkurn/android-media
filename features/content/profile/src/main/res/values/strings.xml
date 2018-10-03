@@ -7,4 +7,6 @@
     <string name="profile_followers_and_following" formatted="false">%s • %s</string>
     <string name="profile_follow">Follow</string>
     <string name="profile_following">Following</string>
+    <string name="af_profile_rec_qutoa" formatted="false">Sisa jatah rekomendasi: %s</string>
+    <string name="af_profile_add_rec">Tambah Rekomendasi</string>
 </resources>
