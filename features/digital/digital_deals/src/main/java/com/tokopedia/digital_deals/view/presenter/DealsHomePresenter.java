@@ -172,7 +172,7 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
 
     @Override
     public boolean onOptionMenuClick(int id) {
-        if (id == R.id.search_input_view) {
+        if (id == R.id.search_input_view || id == R.id.action_menu_search) {
             Intent searchIntent = new Intent(getView().getActivity(), DealsSearchActivity.class);
             TopDealsCacheHandler.init().setTopDeals(getCarouselOrTop(categoryItems, TOP).getItems());
 //            searchIntent.putParcelableArrayListExtra("TOPDEALS", (ArrayList<? extends Parcelable>) getCarouselOrTop(categoryItems, TOP).getItems());
