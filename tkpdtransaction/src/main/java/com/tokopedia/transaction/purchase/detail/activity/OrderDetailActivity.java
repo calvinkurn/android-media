@@ -66,6 +66,7 @@ import com.tokopedia.transaction.purchase.detail.model.rejectorder.WrongProductP
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
 import com.tokopedia.transaction.purchase.receiver.TxListUIReceiver;
 import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
+import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
 import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import java.util.List;
@@ -171,7 +172,9 @@ public class OrderDetailActivity extends TActivity
                     data.getBookingCode(), data.getBarcodeType(), data.getBookingCodeMessage()
             );
             layout.setOnClickListener(view -> {
-                orderDetailAnalytics.sendAnalyticsClickShipping("click button lihat detail", "");
+                orderDetailAnalytics.sendAnalyticsClickShipping(
+                        OrderDetailConstant.VALUE_CLICK_BUTTON_DETAIL,
+                        OrderDetailConstant.VALUE_EMPTY);
                 startActivity(BookingCodeActivity.createInstance(this, codeData));
             });
         } else {
