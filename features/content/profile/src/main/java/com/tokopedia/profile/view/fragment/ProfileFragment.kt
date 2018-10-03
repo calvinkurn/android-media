@@ -128,15 +128,6 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     private fun initView() {
-        footer.viewTreeObserver.addOnGlobalLayoutListener(
-                object : ViewTreeObserver.OnGlobalLayoutListener {
-                    override fun onGlobalLayout() {
-                        footer.viewTreeObserver.removeOnGlobalLayoutListener(this)
 
-                        recyclerView.setPadding(0 ,0, 0, footer.height)
-                        recyclerView.requestLayout()
-                    }
-                }
-        )
     }
 }

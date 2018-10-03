@@ -9,7 +9,6 @@ import android.support.design.widget.TabLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,8 +39,7 @@ import javax.inject.Inject;
 
 import static com.tokopedia.imagepicker.editor.main.view.ImageEditorActivity.RESULT_PREVIOUS_IMAGE;
 import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS;
-import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
-        .RESULT_IMAGE_DESCRIPTION_LIST;
+import static com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST;
 
 public class CreatePostFragment extends BaseDaggerFragment implements CreatePostContract.View {
 
@@ -226,17 +224,6 @@ public class CreatePostFragment extends BaseDaggerFragment implements CreatePost
     }
 
     private void initView() {
-        footerView.getViewTreeObserver().addOnGlobalLayoutListener(
-                new ViewTreeObserver.OnGlobalLayoutListener() {
-                    @Override
-                    public void onGlobalLayout() {
-                        footerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
-                        scrollView.setPadding(0, 0, 0, footerView.getHeight());
-                        scrollView.requestLayout();
-                    }
-                }
-        );
         doneBtn.setOnClickListener(view -> submitPost());
         addImageBtn.setOnClickListener(view -> {
             startActivityForResult(
