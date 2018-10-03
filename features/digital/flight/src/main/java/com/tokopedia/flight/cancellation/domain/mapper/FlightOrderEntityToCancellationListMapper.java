@@ -57,9 +57,7 @@ public class FlightOrderEntityToCancellationListMapper {
         cancellationItem.setCreateTime(FlightDateUtil.formatDate(
                 FORMAT_DATE_API, DEFAULT_VIEW_TIME_FORMAT, cancellation.getCreateTime()));
         cancellationItem.setEstimatedRefund(cancellation.getEstimatedRefund());
-        cancellationItem.setEstimatedRefundNumeric(cancellation.getEstimatedRefundNumeric());
         cancellationItem.setRealRefund(cancellation.getRealRefund());
-        cancellationItem.setRealRefundNumeric(cancellation.getRealRefundNumeric());
         cancellationItem.setRefundId(cancellation.getRefundId());
         cancellationItem.setStatus(cancellation.getStatus());
         cancellationItem.setJourneys(transform(orderEntity.getAttributes().getFlight().getJourneys(),

@@ -22,6 +22,7 @@
     <string name="total_tickets">%d Tiket</string>
     <string name="fare_breakup">Fare Breakup for %s</string>
     <string name="pay_button">Lanjut Pembayaran</string>
+    <string name="date_hint">DD/MM/YY</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="x_type">%1$d x %2$s</string>
@@ -90,6 +91,25 @@
     <string name="biaya_layanan">Biaya Layanan</string>
     <string name="total_diskon">Total Diskon</string>
     <string name="discount">- Rp %1$d</string>
+    <string name="event_kategory">Kategori</string>
+    <string name="event_kalender_event">Kalender Event</string>
+    <string name="event_rentang_waktu">Rentang Waktu</string>
+    <string name="event_everyday">Tersedia Setiap Hari</string>
+    <string name="event_simpan">Simpan</string>
+    <string name="event_open_trip">Open Trip</string>
+    <string name="event_hiburan">Hiburan</string>
+    <string name="event_aktivitas">Aktivitas</string>
+    <string name="event_musik">Musik</string>
+    <string name="event_olahraga">Olahraga</string>
+    <string name="event_teater">Teater</string>
+    <string name="event_seminar">Seminar</string>
+    <string name="event_internasional">Internasional</string>
+    <string name="event_mulai_dari_tanggal">Mulai Dari Tanggal</string>
+    <string name="event_close_filter_screen">Close Filter Screen</string>
+    <string name="event_bulan_depan">Bulan Depan</string>
+    <string name="event_minggu_depan">Minggu Depan</string>
+    <string name="event_besok">Besok</string>
+    <string name="event_hari_ini">Hari Ini</string>
     <string name="owner_profile">Data Pemilik Tiket</string>
     <string name="userName">Nama Lengkap</string>
     <string name="userGender">Jenis Kelamin</string>

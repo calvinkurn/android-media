@@ -41,18 +41,6 @@
         <attr name="vlv_content_text_size" format="dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="DatePickerLabelView">
-        <attr name="date_picker_title" format="string"/>
-        <attr name="date_picker_content" format="string"/>
-        <attr name="date_picker_content_color" format="color"/>
-    </declare-styleable>
-
-    <declare-styleable name="DatePeriodView">
-        <attr name="date_period_title" format="string" />
-        <attr name="date_period_content" format="string" />
-        <attr name="date_period_selected" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CircleProgress">
         <attr name="circle_progress" format="integer" />
         <attr name="circle_max" format="integer" />
