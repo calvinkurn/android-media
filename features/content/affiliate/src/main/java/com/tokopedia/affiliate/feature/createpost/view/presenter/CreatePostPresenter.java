@@ -31,6 +31,7 @@ public class CreatePostPresenter extends BaseDaggerPresenter<CreatePostContract.
     public void detachView() {
         super.detachView();
         getContentFormUseCase.unsubcribe();
+        submitPostUseCase.unsubscribe();
     }
 
     @Override
