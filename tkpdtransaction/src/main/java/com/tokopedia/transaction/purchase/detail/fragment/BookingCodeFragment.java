@@ -1,11 +1,8 @@
 package com.tokopedia.transaction.purchase.detail.fragment;
 
-import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -92,11 +89,7 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         String code = tvCode.getText().toString().trim();
         ClipboardManager clipboardManager =
                 (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-        clipboardManager.setPrimaryClip(
-                ClipData.newPlainText("booking code", code)
-        );
-        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
-                getString(R.string.booking_code_copied_notif));
+        mPresenter.sendClipboard(clipboardManager, code);
     }
 
     @Override
@@ -108,5 +101,11 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     public void zoomBarcode() {
         filterView.setVisibility(View.VISIBLE);
         filterView.setOnClickListener(view -> view.setVisibility(View.GONE));
+    }
+
+    @Override
+    public void showSuccessOnCopy() {
+        NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
+                getString(R.string.booking_code_copied_notif));
     }
 }
