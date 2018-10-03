@@ -7,12 +7,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:padding="@dimen/dp_8">
 
-    <ImageView
+    <com.tokopedia.design.image.SquareImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/dp_50"
-        tools:background="@drawable/ic_check"
+        android:scaleType="centerCrop"
+        tools:background="@drawable/ic_byme"
         android:layout_alignParentTop="true"/>
 
     <FrameLayout
@@ -20,14 +21,13 @@
         android:id="@+id/iv_byme"
         android:background="@drawable/bg_byme"
         android:layout_width="@dimen/dp_32"
-        android:layout_height="@dimen/dp_32"
-        android:elevation="@dimen/dp_4">
+        android:layout_height="@dimen/dp_32">
 
         <ImageView
             android:layout_width="@dimen/dp_25"
             android:layout_height="@dimen/dp_25"
             android:layout_gravity="center"
-            android:src="@drawable/ic_check"/>
+            android:src="@drawable/ic_byme"/>
 
     </FrameLayout>
 

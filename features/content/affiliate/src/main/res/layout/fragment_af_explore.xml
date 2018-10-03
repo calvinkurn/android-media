@@ -2,26 +2,42 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="@dimen/dp_8">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:visibility="gone">
+        android:visibility="visible">
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view"
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-8dp"
-            android:fitsSystemWindows="true"
-            android:visibility="gone"
-            app:siv_search_hint="@string/text_search_hint" />
+            app:layout_scrollFlags="scroll|enterAlways">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
+                <ImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_back"
+                    android:tint="@color/black_70"
+                    android:layout_marginLeft="@dimen/dp_16"
+                    android:layout_gravity="center"/>
+
+                <com.tokopedia.design.text.SearchInputView
+                    android:id="@+id/search_input_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    app:siv_search_hint="@string/text_search_hint" />
+            </LinearLayout>
+        </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
@@ -29,12 +45,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
+        android:padding="@dimen/dp_8"
+
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_explore"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>

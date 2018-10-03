@@ -39,7 +39,6 @@ public interface ExploreContract {
 
         void getFirstData(String searchKey);
 
-
         void loadMoreData(String cursor, String searchKey);
     }
 }

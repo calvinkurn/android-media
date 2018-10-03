@@ -14,7 +14,7 @@
         android:padding="@dimen/dp_10"
         android:orientation="horizontal">
             
-        <ImageView
+        <com.tokopedia.design.image.SquareImageView
             android:id="@+id/iv_item"
             android:layout_width="@dimen/dp_100"
             android:layout_height="match_parent"

@@ -9,14 +9,18 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.affiliate.R;
+import com.tokopedia.affiliate.common.di.DaggerAffiliateComponent;
+import com.tokopedia.affiliate.feature.explore.di.DaggerExploreComponent;
 import com.tokopedia.affiliate.feature.explore.view.adapter.ExploreAdapter;
 import com.tokopedia.affiliate.feature.explore.view.adapter.typefactory.ExploreTypeFactoryImpl;
 import com.tokopedia.affiliate.feature.explore.view.listener.ExploreContract;
@@ -27,6 +31,8 @@ import com.tokopedia.design.text.SearchInputView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * @author by yfsx on 24/09/18.
@@ -42,6 +48,7 @@ public class ExploreFragment
     private SwipeToRefresh swipeRefreshLayout;
     private SearchInputView searchView;
     private ExploreAdapter adapter;
+    private ImageView ivBack;
     private ProgressBar progressBar;
     private static final int ITEM_COUNT = 10;
 
@@ -49,6 +56,7 @@ public class ExploreFragment
     private boolean isCanLoadMore;
     private String searchKey;
 
+    @Inject
     ExplorePresenter presenter;
 
     public static ExploreFragment getInstance(Bundle bundle) {
@@ -66,6 +74,8 @@ public class ExploreFragment
         swipeRefreshLayout = (SwipeToRefresh) view.findViewById(R.id.swipe_refresh_layout);
         searchView = (SearchInputView) view.findViewById(R.id.search_input_view);
         progressBar = (ProgressBar) view.findViewById(R.id.progress_bar);
+        ivBack = (ImageView) view.findViewById(R.id.iv_back);
+        presenter.attachView(this);
         return view;
     }
 
@@ -95,13 +105,20 @@ public class ExploreFragment
     }
 
     private void initListener() {
-
+        ivBack.setOnClickListener(view -> {
+            getActivity().onBackPressed();
+        });
     }
-
 
     @Override
     protected void initInjector() {
 
+        DaggerAffiliateComponent affiliateComponent = (DaggerAffiliateComponent) DaggerAffiliateComponent.builder()
+                .baseAppComponent(((BaseMainApplication)getActivity().getApplicationContext()).getBaseAppComponent()).build();
+
+        DaggerExploreComponent.builder()
+                .affiliateComponent(affiliateComponent)
+                .build().inject(this);
     }
 
     @Override
@@ -241,6 +258,40 @@ public class ExploreFragment
 
     private void testData() {
         List<Visitable> itemList = new ArrayList<>();
+
+        itemList.add(new ExploreViewModel(
+                "1",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng",
+                "Rp. 10.000"));
+
+        itemList.add(new ExploreViewModel(
+                "2",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "Nasi Goreng Sapi",
+                "Rp. 12.000"));
+        itemList.add(new ExploreViewModel(
+                "1",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng",
+                "Rp. 10.000"));
+
+        itemList.add(new ExploreViewModel(
+                "2",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "Nasi Goreng Sapi",
+                "Rp. 12.000"));
+        itemList.add(new ExploreViewModel(
+                "1",
+                "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
+                "Nasi Goreng",
+                "Rp. 10.000"));
+
+        itemList.add(new ExploreViewModel(
+                "2",
+                "https://i0.wp.com/resepkoki.id/wp-content/uploads/2016/10/Resep-Nasgor-sapi.jpg?fit=3264%2C2448&ssl=1",
+                "Nasi Goreng Sapi",
+                "Rp. 12.000"));
         itemList.add(new ExploreViewModel(
                 "1",
                 "https://www.bbcgoodfood.com/sites/default/files/styles/recipe/public/recipe/recipe-image/2016/05/nasi-goreng.jpg?itok=f6_VrVGC",
