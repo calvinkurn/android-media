@@ -8,12 +8,15 @@ import android.widget.Button;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.var.TkpdCache;
+import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.R;
 import com.tokopedia.nps.presentation.widget.AppRatingView;
 import com.tokopedia.nps.presentation.view.activity.FeedbackActivity;
 import com.tokopedia.nps.presentation.view.activity.FeedbackThankPageActivity;
 
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
 
 /**
  * Created by okasurya on 1/10/18.
@@ -61,18 +64,15 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
                 .setView(dialogView)
                 .create();
 
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
-                dialog.dismiss();
-                saveVersionCodeForState();
-                saveRating(appRatingView.getRating());
-                if(appRatingView.getRating() > MIN_RATING) {
-                    FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
-                } else {
-                    FeedbackActivity.start(activity, appRatingView.getRating());
-                }
+        buttonSend.setOnClickListener(v -> {
+            UnifyTracking.eventClickAppRating(LABEL_CLICK_ADVANCED_APP_RATING + appRatingView.getRating());
+            dialog.dismiss();
+            saveVersionCodeForState();
+            saveRating(appRatingView.getRating());
+            if(appRatingView.getRating() > MIN_RATING) {
+                FeedbackThankPageActivity.startActivity(activity, appRatingView.getRating());
+            } else {
+                FeedbackActivity.start(activity, appRatingView.getRating());
             }
         });
 

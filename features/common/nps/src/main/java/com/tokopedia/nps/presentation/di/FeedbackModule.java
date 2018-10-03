@@ -2,7 +2,11 @@ package com.tokopedia.nps.presentation.di;
 
 import android.content.Context;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.nps.NpsAnalytics;
 import com.tokopedia.nps.data.repository.FeedbackDataRepository;
 import com.tokopedia.nps.domain.repository.FeedbackRepository;
 
@@ -21,13 +25,27 @@ public class FeedbackModule {
         this.context = context;
     }
 
+    @FeedbackScope
     @Provides
     Context provideContext() {
         return this.context;
     }
 
+    @FeedbackScope
     @Provides
     FeedbackRepository provideFeedbackRepository(FeedbackDataRepository repository) {
         return repository;
+    }
+
+    @FeedbackScope
+    @Provides
+    AnalyticTracker provideAnalyticTracker(@ApplicationContext Context context) {
+        return ((AbstractionRouter)context).getAnalyticTracker();
+    }
+
+    @FeedbackScope
+    @Provides
+    NpsAnalytics proviveNpsAnalytics(AnalyticTracker analyticTracker){
+        return new NpsAnalytics(analyticTracker);
     }
 }
