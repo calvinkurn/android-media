@@ -660,6 +660,34 @@ public class MainParentActivity extends BaseActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (emptyCartFragment == null) {
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+            }
+            fragmentList.set(CART_MENU, emptyCartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (cartFragment == null) {
+                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            }
+            fragmentList.set(CART_MENU, cartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
+    public static class UserSession {
+        public static boolean isFirstTimeUser(Context context) {
+            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
+        }
+    }
+
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
         return presenter;
@@ -748,5 +776,15 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+
     }
 }
