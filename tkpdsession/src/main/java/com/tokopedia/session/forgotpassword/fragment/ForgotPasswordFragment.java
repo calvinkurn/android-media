@@ -41,7 +41,6 @@ import rx.subscriptions.CompositeSubscription;
  * Created by Alifa on 10/17/2016.
  */
 
-@Deprecated
 public class ForgotPasswordFragment extends BaseDaggerFragment
         implements ForgotPasswordFragmentView {
 
