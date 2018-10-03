@@ -1,5 +1,6 @@
 package com.tokopedia.digital_deals.view.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -127,6 +128,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private TextView tvDealDetails;
     private View dividerDesc;
     private View dividerTnC;
+    private boolean forceRefresh;
+    private DealsCategoryAdapter dealsAdapter;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -203,7 +206,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         clRedeemInstuctns.setOnClickListener(this);
         mLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerViewDeals.setLayoutManager(mLayoutManager);
-        recyclerViewDeals.setAdapter(new DealsCategoryAdapter(null, DealsCategoryAdapter.DETAIL_PAGE, this, IS_SHORT_LAYOUT));
+        dealsAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.DETAIL_PAGE, this, IS_SHORT_LAYOUT);
+        recyclerViewDeals.setAdapter(dealsAdapter);
         recyclerViewDeals.addOnScrollListener(rvOnScrollListener);
     }
 
@@ -398,7 +402,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void addDealsToCards(List<ProductItem> productItems) {
         ((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).addAll(productItems);
-        if (((DealsCategoryAdapter) recyclerViewDeals.getAdapter()).getItemCount() > 0)
+        if (recyclerViewDeals.getAdapter().getItemCount() > 0)
             tvRecommendedDeals.setVisibility(View.VISIBLE);
     }
 
@@ -494,11 +498,12 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         setLikes(dealDetail.getLikes(), dealDetail.getIsLiked());
     }
 
+    @SuppressLint("Range")
     @Override
     public void showLoginSnackbar(String message, int position) {
 
         SnackbarManager.make(getActivity(), message, Snackbar.LENGTH_LONG).setAction(
-                getResources().getString(R.string.title_activity_login), (View.OnClickListener) v -> {
+                getResources().getString(R.string.title_activity_login), v -> {
                     Intent intent = ((DealsModuleRouter) getActivity().getApplication()).
                             getLoginIntent(getActivity());
                     startActivityForResult(intent, LIKE_REQUEST_CODE);
@@ -574,7 +579,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         } else if (v.getId() == R.id.tv_view_map) {
             Utils.getSingletonInstance().openGoogleMapsActivity(getContext(), latLng);
         } else if (v.getId() == R.id.iv_wish_list) {
-            boolean isLoggedIn = mPresenter2.setDealLike(dealDetail, 0);
+            boolean isLoggedIn = mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
             if (isLoggedIn) {
                 if (dealDetail.getIsLiked()) {
                     setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
@@ -617,7 +622,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (requestCode == LIKE_REQUEST_CODE) {
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             if (userSession.isLoggedIn()) {
-                mPresenter2.setDealLike(dealDetail, 0);
+                mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0,dealDetail.getLikes() );
                 if (dealDetail.getIsLiked()) {
                     setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
                 } else {
@@ -643,5 +648,20 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void onNavigateToActivityRequest(Intent intent, int requestCode, int position) {
         navigateToActivityRequest(intent, requestCode);
+    }
+
+    @Override
+    public void onStop() {
+        forceRefresh = true;
+        super.onStop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (forceRefresh) {
+            dealsAdapter.notifyDataSetChanged();
+            forceRefresh = false;
+        }
     }
 }

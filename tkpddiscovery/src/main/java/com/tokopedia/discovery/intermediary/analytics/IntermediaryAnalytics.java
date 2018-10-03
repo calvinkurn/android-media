@@ -9,7 +9,7 @@ import com.tokopedia.core.analytics.AppEventTracking;
 public class IntermediaryAnalytics {
     public static final String clickIntermediaryEvent = "clickIntermediary";
     public static final String clickIntermediaryCategory = "intermediary page";
-    public static final String clickIntermediaryActionLihatSemuaOs = "click lihat semua on os widget"
+    public static final String clickIntermediaryActionLihatSemuaOs = "click lihat semua on os widget";
 
 
     public static void eventClickSeeAllOfficialStores(Context context) {
