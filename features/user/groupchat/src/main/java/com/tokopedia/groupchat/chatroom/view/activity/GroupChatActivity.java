@@ -280,7 +280,7 @@ public class GroupChatActivity extends BaseSimpleActivity
 
              if (youTubePlayer != null) {
                 youTubePlayer.pause();
-                youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                youTubePlayer.loadVideo(channelInfoViewModel.getVideoId());
                 return;
             }
 
@@ -294,7 +294,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
 
                         //cue the 1st video by default
-                        youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                        youTubePlayer.loadVideo(channelInfoViewModel.getVideoId());
 
                         youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
                             String TAG = "youtube";
@@ -304,6 +304,7 @@ public class GroupChatActivity extends BaseSimpleActivity
                                 Log.i(TAG, "onPlaying: ");
                                 if (onPlayTime == 0) {
                                     onPlayTime = System.currentTimeMillis() / 1000L;
+                                    analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
                                 }
                             }
 
@@ -340,8 +341,6 @@ public class GroupChatActivity extends BaseSimpleActivity
                             @Override
                             public void onLoaded(String s) {
                                 Log.i(TAG, "onLoaded: ");
-                                youTubePlayer.play();
-                                analytics.eventClickAutoPlayVideo(getChannelInfoViewModel().getChannelId());
                             }
 
                             @Override
