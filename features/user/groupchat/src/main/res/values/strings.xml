@@ -2,7 +2,7 @@
     <string name="app_name">TkpdStream</string>
 
     <!--Channel List-->
-    <string name="activity_channel">Group Chat</string>
+    <string name="activity_channel">Play</string>
     <string name="error_open_group_chat">Gagal masuk ke ruangan.</string>
     <string name="dot">●</string>
     <string name="vote">Vote</string>
