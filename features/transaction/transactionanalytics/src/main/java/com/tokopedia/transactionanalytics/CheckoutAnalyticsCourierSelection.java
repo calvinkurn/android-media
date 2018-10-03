@@ -299,6 +299,7 @@ public class CheckoutAnalyticsCourierSelection extends TransactionAnalytics {
         );
     }
 
+    @Deprecated
     public void eventClickCourierSelectionClickSelectCourierOnCart() {
         sendEventCategoryAction(
                 EventName.CLICK_COURIER,

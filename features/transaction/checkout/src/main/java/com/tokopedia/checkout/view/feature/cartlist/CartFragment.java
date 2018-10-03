@@ -386,7 +386,6 @@ public class CartFragment extends BaseCheckoutFragment implements CartAdapter.Ac
         return view -> {
             if (message == null) {
                 dPresenter.processToUpdateCartData(getSelectedCartDataList());
-                sendAnalyticsOnButtonCheckoutClicked();
             } else {
                 showToastMessageRed(message);
                 sendAnalyticsOnButtonCheckoutClickedFailed();
