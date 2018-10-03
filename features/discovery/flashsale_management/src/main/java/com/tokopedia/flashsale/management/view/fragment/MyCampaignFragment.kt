@@ -3,6 +3,7 @@ package com.tokopedia.flashsale.management.view.fragment
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.flashsale.management.R
+import com.tokopedia.flashsale.management.ekstension.convertIdtoCommaString
 import com.tokopedia.flashsale.management.view.adapter.CampaignAdapterTypeFactory
 import com.tokopedia.flashsale.management.view.adapter.viewholder.CampaignStatusListViewHolder
 import com.tokopedia.flashsale.management.view.contract.CampaignContract
@@ -13,7 +14,7 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, Campai
 
     override fun loadInitialData() {
         super.loadInitialData()
-        reloadProductData()
+        reloadCampaignData()
         presenter.getCampaignLabel()
     }
 
@@ -25,7 +26,7 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, Campai
         return CampaignAdapterTypeFactory(this)
     }
 
-    private fun reloadProductData() {
+    private fun reloadCampaignData() {
         showLoading()
         loadData(defaultInitialPage)
     }
@@ -55,7 +56,7 @@ class MyCampaignFragment : BaseCampaignFragment(), CampaignContract.View, Campai
     }
 
     override fun onCampaignStatusClicked(campaignStatusViewModel: CampaignStatusViewModel) {
-        reloadProductData()
+        presenter.getCampaignList(CAMPAIGN_LIST_TYPE, DEFAULT_PAGE, DEFAULT_ROWS, CAMPAIGN_TYPE, searchInputView.searchText, campaignStatusViewModel.convertIdtoCommaString())
     }
 
     companion object {

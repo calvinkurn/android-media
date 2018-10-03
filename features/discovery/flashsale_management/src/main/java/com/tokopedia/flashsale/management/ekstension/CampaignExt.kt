@@ -18,7 +18,11 @@ fun Campaign.toCampaignViewModel(): CampaignViewModel {
 
 fun CampaignStatus.toCampaignStatusViewModel(): CampaignStatusViewModel {
     return CampaignStatusViewModel().also {
-        it.label_name = this.label_name
+        it.labelName = this.label_name
         it.status_id = this.status_id
     }
+}
+
+fun CampaignStatusViewModel.convertIdtoCommaString(): String {
+    return this.status_id.joinToString(",") { it.toString() }
 }
