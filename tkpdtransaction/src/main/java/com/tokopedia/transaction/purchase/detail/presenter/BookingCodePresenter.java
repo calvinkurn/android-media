@@ -1,5 +1,7 @@
 package com.tokopedia.transaction.purchase.detail.presenter;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.graphics.Bitmap;
 
 import com.google.zxing.BarcodeFormat;
@@ -29,6 +31,14 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
             e.printStackTrace();
         }
         return bitmap;
+    }
+
+    @Override
+    public void sendClipboard(ClipboardManager clipboardManager, String text) {
+        clipboardManager.setPrimaryClip(
+                ClipData.newPlainText("booking code", text)
+        );
+        mView.showSuccessOnCopy();
     }
 
     @Override

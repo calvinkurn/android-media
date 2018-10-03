@@ -1,5 +1,6 @@
 package com.tokopedia.transaction.purchase.detail.activity;
 
+import android.content.ClipboardManager;
 import android.graphics.Bitmap;
 import android.view.View;
 
@@ -15,11 +16,15 @@ public interface BookingCodeContract {
 
         void zoomBarcode();
 
+        void showSuccessOnCopy();
+
     }
 
      interface BookingPresenter {
 
         Bitmap generateBarcode(String code, String type);
+
+        void sendClipboard(ClipboardManager clipboardManager, String text);
 
         void setView(BookingView view);
 
