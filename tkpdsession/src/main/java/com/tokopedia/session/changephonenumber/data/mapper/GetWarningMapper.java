@@ -1,9 +1,12 @@
 package com.tokopedia.session.changephonenumber.data.mapper;
 
-import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.ErrorMessageException;
 import com.tokopedia.session.changephonenumber.data.model.GetWarningData;
 import com.tokopedia.session.changephonenumber.view.viewmodel.WarningViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,8 +37,13 @@ public class GetWarningMapper implements Func1<Response<TkpdResponse>, WarningVi
                 model.setTokopediaBalance(data.getSaldo());
                 model.setTokocashNumber(data.getTokocashNumber());
                 model.setTokopediaBalanceNumber(data.getSaldoNumber());
-                model.setWarningList(data.getWarning());
+                List<String> warningList = new ArrayList<>();
+                for(GetWarningData.WarningItem item : data.getWarning()){
+                    warningList.add(item.getMsg());
+                }
+                model.setWarningList(warningList);
                 model.setHasBankAccount(data.getHasBankAccount());
+                model.setOvoEligible(data.isOvoEligible());
             } else {
                 if (tkpdResponseResponse.body().getErrorMessages() != null &&
                         !tkpdResponseResponse.body().getErrorMessages().isEmpty()) {
