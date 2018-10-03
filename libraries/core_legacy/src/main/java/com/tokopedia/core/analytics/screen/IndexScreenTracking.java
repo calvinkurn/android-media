@@ -1,9 +1,12 @@
 package com.tokopedia.core.analytics.screen;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageManager;
 
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.ScreenTrackingBuilder;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -33,27 +36,31 @@ public class IndexScreenTracking extends TrackingUtils {
             ScreenTrackingBuilder
                     .newInstance(activity, openScreenAnalytics, getAfUniqueId(activity))
                     .setNetworkSpeed(getNetworkSpeed(activity))
-//                    .setKeyCompetitorIntelligence(getCIData(activity))
+                    .setKeyCompetitorIntelligence(getCIData(activity))
                     .execute(activity);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-//    private static String getCIData(Context context) {
-//        GlobalCacheManager cache = new GlobalCacheManager();
-//        if (!cache.isExpired(CI_DATA)) {
-//            return cache.get(CI_DATA);
-//        } else {
-//            String value = getCurrentInstalledList(context);
-//            cache.setKey(CI_DATA);
-//            cache.setCacheDuration(EXPIRED_TIME);
-//            cache.setValue(value);
-//            cache.store();
-//
-//            return value;
-//        }
-//    }
+    private static String getCIData(Context context) {
+        if(context instanceof Application && context instanceof AbstractionRouter){
+            CacheManager cache = ((AbstractionRouter)context).getGlobalCacheManager();
+            if (!cache.isExpired(CI_DATA)) {
+                return cache.get(CI_DATA);
+            } else {
+                String value = getCurrentInstalledList(context);
+                cache.save(
+                        CI_DATA,
+                        value,
+                        EXPIRED_TIME
+                );
+                return value;
+            }
+        }else{
+            return null;
+        }
+    }
 
     private static String getCurrentInstalledList(Context context) {
         String[] competitions = {

@@ -1,14 +1,20 @@
 package com.tokopedia.core.util;
 
 import android.app.Activity;
+import android.app.Application;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.abstraction.AbstractionRouter;
+import com.tokopedia.abstraction.BaseAbstractionRouter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.BranchIOPayment;
 import com.tokopedia.core.analytics.nishikino.model.Product;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
 import com.tokopedia.core.deprecated.Constants;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.deprecated.ShareData;
 
 import org.json.JSONObject;
@@ -149,54 +155,58 @@ public class BranchSdkUtils {
 //        return url;
 //    }
 //
-//    public static void sendCommerceEvent(Purchase purchase, String productType) {
-//        try {
-//            if (purchase != null && purchase.getListProduct() != null) {
-//                List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
-//                SessionHandler sessionHandler = new SessionHandler(MainApplication.getAppContext());
-//                for (Object objProduct : purchase.getListProduct()) {
-//                    Map<String, Object> product = (Map<String, Object>) objProduct;
-//                    BranchUniversalObject buo = new BranchUniversalObject()
-//                            .setTitle(String.valueOf(product.get(Product.KEY_NAME)))
-//                            .setContentMetadata(
-//                                    new ContentMetadata()
-//                                            .setPrice(convertIDRtoDouble(String.valueOf(product.get(Product.KEY_PRICE))), CurrencyType.IDR)
-//                                            .setProductBrand(String.valueOf(product.get(Product.KEY_BRAND)))
-//                                            .setProductName(String.valueOf(product.get(Product.KEY_NAME)))
-//                                            .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
-//                                            .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
-//                                            .setSku(String.valueOf(product.get(Product.KEY_ID)))
-//                                            .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
-//                    branchUniversalObjects.add(buo);
-//                }
-//
-//                double revenuePrice;
-//                double shippingPrice;
-//                if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(productType)) {
-//                    revenuePrice = Double.parseDouble(String.valueOf(purchase.getRevenue()));
-//                    shippingPrice = Double.parseDouble(String.valueOf(purchase.getShipping()));
-//                } else {
-//                    revenuePrice = convertIDRtoDouble(String.valueOf(purchase.getRevenue()));
-//                    shippingPrice = convertIDRtoDouble(String.valueOf(purchase.getShipping()));
-//                }
-//
-//                new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
-//                        .setTransactionID(String.valueOf(purchase.getTransactionID()))
-//                        .setCurrency(CurrencyType.IDR)
-//                        .setShipping(shippingPrice)
-//                        .setRevenue(revenuePrice)
-//                        .addCustomDataProperty(PAYMENT_KEY, purchase.getPaymentId())
-//                        .addCustomDataProperty(PRODUCTTYPE_KEY, productType)
-//                        .addCustomDataProperty(USERID_KEY, sessionHandler.getLoginID())
-//                        .addContentItems(branchUniversalObjects)
-//                        .logEvent(MainApplication.getAppContext());
-//            }
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//        }
-//
-//    }
-//
+    public static void sendCommerceEvent(Context context, Purchase purchase, String productType) {
+
+        if(context instanceof Application && context instanceof BaseAbstractionRouter){
+            AbstractionRouter router = (AbstractionRouter) context;
+            UserSession session = router.getSession();
+
+            try {
+                if (purchase != null && purchase.getListProduct() != null) {
+                    List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
+                    for (Object objProduct : purchase.getListProduct()) {
+                        Map<String, Object> product = (Map<String, Object>) objProduct;
+                        BranchUniversalObject buo = new BranchUniversalObject()
+                                .setTitle(String.valueOf(product.get(Product.KEY_NAME)))
+                                .setContentMetadata(
+                                        new ContentMetadata()
+                                                .setPrice(convertIDRtoDouble(String.valueOf(product.get(Product.KEY_PRICE))), CurrencyType.IDR)
+                                                .setProductBrand(String.valueOf(product.get(Product.KEY_BRAND)))
+                                                .setProductName(String.valueOf(product.get(Product.KEY_NAME)))
+                                                .setProductVariant(String.valueOf(product.get(Product.KEY_VARIANT)))
+                                                .setQuantity(convertStringToDouble(String.valueOf(product.get(Product.KEY_QTY))))
+                                                .setSku(String.valueOf(product.get(Product.KEY_ID)))
+                                                .setContentSchema(BranchContentSchema.COMMERCE_PRODUCT));
+                        branchUniversalObjects.add(buo);
+                    }
+
+                    double revenuePrice;
+                    double shippingPrice;
+                    if (PRODUCTTYPE_MARKETPLACE.equalsIgnoreCase(productType)) {
+                        revenuePrice = Double.parseDouble(String.valueOf(purchase.getRevenue()));
+                        shippingPrice = Double.parseDouble(String.valueOf(purchase.getShipping()));
+                    } else {
+                        revenuePrice = convertIDRtoDouble(String.valueOf(purchase.getRevenue()));
+                        shippingPrice = convertIDRtoDouble(String.valueOf(purchase.getShipping()));
+                    }
+
+                    new BranchEvent(BRANCH_STANDARD_EVENT.PURCHASE)
+                            .setTransactionID(String.valueOf(purchase.getTransactionID()))
+                            .setCurrency(CurrencyType.IDR)
+                            .setShipping(shippingPrice)
+                            .setRevenue(revenuePrice)
+                            .addCustomDataProperty(PAYMENT_KEY, purchase.getPaymentId())
+                            .addCustomDataProperty(PRODUCTTYPE_KEY, productType)
+                            .addCustomDataProperty(USERID_KEY, session.getUserId())
+                            .addContentItems(branchUniversalObjects)
+                            .logEvent(context);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
 //    public static void sendCommerceEvent(BranchIOPayment branchIOPayment) {
 //        try {
 //            List<BranchUniversalObject> branchUniversalObjects = new ArrayList<>();
@@ -273,27 +283,34 @@ public class BranchSdkUtils {
 //                .logEvent(MainApplication.getAppContext());
 //
 //    }
-//
-//    private static double convertIDRtoDouble(String value) {
-//        double result = 0;
-//        try {
-//            result = CurrencyFormatHelper.convertRupiahToLong(value);
-//        } catch (NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return result;
-//    }
-//
-//    private static double convertStringToDouble(String value) {
-//        double result = 0;
-//        try {
-//            result = Double.parseDouble(value);
-//        } catch (NumberFormatException ex) {
-//            ex.printStackTrace();
-//        }
-//        return result;
-//    }
-//
+
+    private static double convertIDRtoDouble(String value) {
+        double result = 0;
+        try {
+            result = convertRupiahToLong(value);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
+    public static long convertRupiahToLong(String rupiah) {
+        rupiah = rupiah.replace("Rp", "");
+        rupiah = rupiah.replace(".", "");
+        rupiah = rupiah.replace(" ", "");
+        return Long.parseLong(rupiah);
+    }
+
+    private static double convertStringToDouble(String value) {
+        double result = 0;
+        try {
+            result = Double.parseDouble(value);
+        } catch (NumberFormatException ex) {
+            ex.printStackTrace();
+        }
+        return result;
+    }
+
 //    public static Boolean isAppShowReferralButtonActivated(Context context) {
 //        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(context);
 //        return remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.APP_SHOW_REFERRAL_BUTTON);
