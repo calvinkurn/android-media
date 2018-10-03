@@ -101,10 +101,9 @@ public class KolPostShopFragment extends KolPostFragment implements KolPostShopC
             } else {
                 adapter.showEmpty();
             }
-        } else if (adapter.getList().isEmpty()) {
-            if (adapter.getList().isEmpty()) {
-                adapter.addItem(new EntryPointViewModel(v -> goToCreatePost()));
-            }
+        } else if (adapter.getList().isEmpty()
+                && TextUtils.equals(userSession.getShopId(), shopId)) {
+            adapter.addItem(new EntryPointViewModel(v -> goToCreatePost()));
             adapter.addList(visitables);
         } else {
             adapter.addList(visitables);
