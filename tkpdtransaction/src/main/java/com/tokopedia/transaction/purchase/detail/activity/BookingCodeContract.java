@@ -12,6 +12,9 @@ public interface BookingCodeContract {
         void copyCode(View view);
 
         void showBarcode(Bitmap bitmap);
+
+        void zoomBarcode();
+
     }
 
      interface BookingPresenter {

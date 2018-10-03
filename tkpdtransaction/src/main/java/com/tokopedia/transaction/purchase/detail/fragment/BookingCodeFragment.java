@@ -4,9 +4,12 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,7 +32,9 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     TextView bookingCode;
     ImageView barcodeImg;
     RecyclerView recyclerView;
+    View filterView;
     ViewGroup copyLayout;
+    CardView cardBarcode;
     OnlineBooking mData;
     BookingCodeContract.BookingPresenter mPresenter;
 
@@ -66,6 +71,9 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
         copyLayout.setOnClickListener(this::copyCode);
         recyclerView = view.findViewById(R.id.rv_message);
         barcodeImg = view.findViewById(R.id.barcode_img);
+        filterView = view.findViewById(R.id.filter_view);
+        cardBarcode = view.findViewById(R.id.card_barcode);
+        cardBarcode.setOnClickListener(view1 -> zoomBarcode());
 
         if(mData != null) {
             bookingCode.setText(mData.getBookingCode());
@@ -93,5 +101,11 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     @Override
     public void showBarcode(Bitmap bitmap) {
         barcodeImg.setImageBitmap(bitmap);
+    }
+
+    @Override
+    public void zoomBarcode() {
+        filterView.setVisibility(View.VISIBLE);
+        filterView.setOnClickListener(view -> view.setVisibility(View.GONE));
     }
 }
