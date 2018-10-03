@@ -12,17 +12,23 @@ import android.widget.TextView;
 
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.withdraw.R;
+import com.tokopedia.withdraw.WithdrawAnalytics;
 import com.tokopedia.withdraw.view.listener.WithdrawContract;
 import com.tokopedia.withdraw.view.viewmodel.BankAccountViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by Steven on 7/24/18.
  */
 public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
+
+    WithdrawAnalytics analytics;
+
 
     int selectedItem;
     public interface OnBankClickListener {
@@ -37,16 +43,17 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
     private OnBankClickListener listener;
     private BankAccountViewModel accountButton;
 
-    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
+    public BankAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
         this.context = context;
         this.listBank = listBank;
         this.selectedBankId = "";
         this.selectedItem = -1;
         this.accountButton = new BankAccountViewModel();
+        this.analytics = analytics;
     }
 
-    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank) {
-        return new BankAdapter(context, listBank);
+    public static BankAdapter createAdapter(WithdrawContract.View context, List<BankAccountViewModel> listBank, WithdrawAnalytics analytics) {
+        return new BankAdapter(context, listBank, analytics);
     }
 
     public void setList(List<BankAccountViewModel> listBank) {
@@ -139,6 +146,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         if(listBank.size()<4){
+                            analytics.eventClickAddAccount();
                             context.goToAddBank();
                         }else {
                             context.goToSettingBank();
@@ -153,6 +161,7 @@ public class BankAdapter extends RecyclerView.Adapter<BankAdapter.ViewHolder> {
                 BankAccountViewModel thisItem = listBank.get(position);
 
                 View.OnClickListener l = (View v) -> {
+                    analytics.eventClickAccountBank();
                     changeItemSelected(position);
                 };
                 holder.itemView.setOnClickListener(l);

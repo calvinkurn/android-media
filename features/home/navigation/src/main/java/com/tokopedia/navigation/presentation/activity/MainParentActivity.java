@@ -8,6 +8,7 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -16,22 +17,23 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.RestrictTo;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-import android.support.v7.app.AppCompatActivity;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation_common.listener.CartNotifyListener;
@@ -50,16 +52,22 @@ import com.tokopedia.applink.RouteManager;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
+import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.GlobalNavRouter;
 import com.tokopedia.navigation.R;
 import com.tokopedia.navigation.domain.model.Notification;
 import com.tokopedia.navigation.presentation.di.DaggerGlobalNavComponent;
+import com.tokopedia.navigation.presentation.di.GlobalNavComponent;
 import com.tokopedia.navigation.presentation.di.GlobalNavModule;
 import com.tokopedia.navigation.presentation.fragment.InboxFragment;
 import com.tokopedia.navigation.presentation.presenter.MainParentPresenter;
 import com.tokopedia.navigation.presentation.view.MainParentView;
+import com.tokopedia.navigation_common.listener.CartNotifyListener;
+import com.tokopedia.navigation_common.listener.EmptyCartListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
+import com.tokopedia.navigation_common.listener.NotificationListener;
+import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseContentPosition;
 import com.tokopedia.showcase.ShowCaseDialog;
@@ -67,7 +75,6 @@ import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -75,9 +82,9 @@ import javax.inject.Inject;
 /**
  * Created by meta on 19/06/18.
  */
-public class MainParentActivity extends AppCompatActivity implements
+public class MainParentActivity extends BaseActivity implements
         NavigationView.OnNavigationItemSelectedListener, HasComponent,
-        MainParentView, ShowCaseListener, CartNotifyListener {
+        MainParentView, ShowCaseListener, CartNotifyListener, EmptyCartListener {
 
     public static final String FORCE_HOCKEYAPP = "com.tokopedia.tkpd.FORCE_HOCKEYAPP";
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -89,6 +96,7 @@ public class MainParentActivity extends AppCompatActivity implements
     public static final int INBOX_MENU = 2;
     public static final int CART_MENU = 3;
     public static final int ACCOUNT_MENU = 4;
+    public static final int RECOMENDATION_LIST = 5;
     private static final int EXIT_DELAY_MILLIS = 2000;
     private static final String IS_RECURRING_APPLINK = "IS_RECURRING_APPLINK";
     public static final String DEFAULT_NO_SHOP = "0";
@@ -113,9 +121,13 @@ public class MainParentActivity extends AppCompatActivity implements
     private List<String> titles;
     private Notification notification;
     Fragment currentFragment;
+    Fragment cartFragment;
+    Fragment emptyCartFragment;
     private boolean isUserFirstTimeLogin = false;
     private boolean doubleTapExit = false;
     private BroadcastReceiver hockeyBroadcastReceiver;
+
+    private Handler handler = new Handler();
 
     @DeepLink({ApplinkConst.HOME, ApplinkConst.HOME_CATEGORY})
     public static Intent getApplinkIntent(Context context, Bundle bundle) {
@@ -129,9 +141,24 @@ public class MainParentActivity extends AppCompatActivity implements
         return intent;
     }
 
+    @DeepLink({ApplinkConst.HOME_ACCOUNT})
+    public static Intent getApplinkAccountIntent(Context context, Bundle bundle) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, ACCOUNT_MENU);
+        return intent;
+    }
+
     public static Intent getApplinkFeedIntent(Context context) {
         Intent intent = start(context);
         intent.putExtra(ARGS_TAB_POSITION, FEED_MENU);
+        return intent;
+    }
+    public static final String SCROLL_RECOMMEND_LIST = "recommend_list";
+    @DeepLink({ApplinkConst.HOME_RECOMMENDATION})
+    public static Intent getApplinkRecommendationEvent(Context context) {
+        Intent intent = start(context);
+        intent.putExtra(ARGS_TAB_POSITION, RECOMENDATION_LIST);
+        intent.putExtra(SCROLL_RECOMMEND_LIST,true);
         return intent;
     }
 
@@ -145,7 +172,7 @@ public class MainParentActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         initInjector();
         presenter.setView(this);
-        if(savedInstanceState != null) {
+        if (savedInstanceState != null) {
             presenter.setIsRecurringApplink(savedInstanceState.getBoolean(IS_RECURRING_APPLINK, false));
         }
         createView(savedInstanceState);
@@ -155,10 +182,18 @@ public class MainParentActivity extends AppCompatActivity implements
     protected void onStart() {
         super.onStart();
         if (presenter.isFirstTimeUser()) {
+            setDefaultShakeEnable();
             startActivity(((GlobalNavRouter) getApplicationContext())
                     .getOnBoardingIntent(this));
             finish();
         }
+    }
+
+    private void setDefaultShakeEnable() {
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(getString(R.string.pref_receive_shake), true);
+        editor.apply();
     }
 
     @Override
@@ -178,7 +213,7 @@ public class MainParentActivity extends AppCompatActivity implements
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    public boolean isFirstTimeUser(){
+    public boolean isFirstTimeUser() {
         return UserSession.isFirstTimeUser(MainParentActivity.this);
     }
 
@@ -217,6 +252,11 @@ public class MainParentActivity extends AppCompatActivity implements
                     bottomNavigation.getMenu().findItem(R.id.menu_feed).setChecked(true);
                     onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_feed));
                     break;
+                case ACCOUNT_MENU:
+                    bottomNavigation.getMenu().findItem(R.id.menu_account).setChecked(true);
+                    onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_account));
+                    break;
+                case RECOMENDATION_LIST:
                 case HOME_MENU:
                 default:
                     bottomNavigation.getMenu().findItem(R.id.menu_home).setChecked(true);
@@ -251,7 +291,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
-    public void reInitInjector(GlobalNavComponent globalNavComponent){
+    public void reInitInjector(GlobalNavComponent globalNavComponent) {
         globalNavComponent.inject(this);
 
         presenter.setView(this);
@@ -297,25 +337,27 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     private void openFragment(Fragment fragment) {
-        String backStateName = fragment.getClass().getName();
+        handler.post(() -> {
+            String backStateName = fragment.getClass().getName();
 
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction ft = manager.beginTransaction();
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction ft = manager.beginTransaction();
 
-        Fragment currentFrag = manager.findFragmentByTag(backStateName);
-        if (currentFrag != null && manager.getFragments().size() > 0) {
-            for (int i = 0; i < manager.getFragments().size(); i++) {
-                Fragment frag = manager.getFragments().get(i);
-                if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
-                    ft.show(frag); // only show fragment what you want to show
-                } else {
-                    ft.hide(frag); // hide all fragment
+            Fragment currentFrag = manager.findFragmentByTag(backStateName);
+            if (currentFrag != null && manager.getFragments().size() > 0) {
+                for (int i = 0; i < manager.getFragments().size(); i++) {
+                    Fragment frag = manager.getFragments().get(i);
+                    if (frag.getClass().getName().equalsIgnoreCase(fragment.getClass().getName())) {
+                        ft.show(frag); // only show fragment what you want to show
+                    } else {
+                        ft.hide(frag); // hide all fragment
+                    }
                 }
+            } else {
+                ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
             }
-        } else {
-            ft.add(R.id.container, fragment, backStateName); // add fragment if there re not registered on fragmentManager
-        }
-        ft.commit();
+            ft.commitAllowingStateLoss();
+        });
     }
 
     private void scrollToTop(Fragment fragment) {
@@ -369,10 +411,11 @@ public class MainParentActivity extends AppCompatActivity implements
     private List<Fragment> fragments() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (MainParentActivity.this.getApplication() instanceof GlobalNavRouter) {
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment());
+            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getHomeFragment(getIntent().getBooleanExtra(SCROLL_RECOMMEND_LIST,false)));
             fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getFeedPlusFragment(getIntent().getExtras()));
             fragmentList.add(InboxFragment.newInstance());
-            fragmentList.add(((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment());
+            cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(null);
+            fragmentList.add(cartFragment);
             fragmentList.add(AccountHomeFragment.newInstance());
         }
         return fragmentList;
@@ -404,13 +447,16 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onStartLoading() { }
+    public void onStartLoading() {
+    }
 
     @Override
-    public void onError(String message) { }
+    public void onError(String message) {
+    }
 
     @Override
-    public void onHideLoading() { }
+    public void onHideLoading() {
+    }
 
     @Override
     public Context getContext() {
@@ -456,7 +502,7 @@ public class MainParentActivity extends AppCompatActivity implements
     }
 
     private void saveInstanceState(Bundle outState) {
-        if(getIntent() != null) {
+        if (getIntent() != null) {
             outState.putBoolean(IS_RECURRING_APPLINK, presenter.isRecurringApplink());
         }
     }
@@ -615,6 +661,28 @@ public class MainParentActivity extends AppCompatActivity implements
         ((GlobalNavRouter) this.getApplicationContext()).showHockeyAppDialog(this);
     }
 
+    @Override
+    public void onCartEmpty(String autoApplyMessage) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (emptyCartFragment == null) {
+                emptyCartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getEmptyCartFragment(autoApplyMessage);
+            }
+            fragmentList.set(CART_MENU, emptyCartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
+    @Override
+    public void onCartNotEmpty(Bundle bundle) {
+        if (fragmentList != null && fragmentList.get(CART_MENU) != null) {
+            if (cartFragment == null) {
+                cartFragment = ((GlobalNavRouter) MainParentActivity.this.getApplication()).getCartFragment(bundle);
+            }
+            fragmentList.set(CART_MENU, cartFragment);
+            onNavigationItemSelected(bottomNavigation.getMenu().findItem(R.id.menu_cart));
+        }
+    }
+
     public static class UserSession {
         public static boolean isFirstTimeUser(Context context) {
             return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
@@ -654,7 +722,7 @@ public class MainParentActivity extends AppCompatActivity implements
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setIcon(Icon.createWithResource(this, R.drawable.ic_beli))
-                            .setIntents(new Intent[]{ intentHome, productIntent })
+                            .setIntents(new Intent[]{intentHome, productIntent})
                             .build();
                     shortcutInfos.add(productShortcut);
 
@@ -686,7 +754,7 @@ public class MainParentActivity extends AppCompatActivity implements
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setIcon(Icon.createWithResource(this, R.drawable.ic_jual))
-                                .setIntents(new Intent[]{ intentHome, shopIntent })
+                                .setIntents(new Intent[]{intentHome, shopIntent})
                                 .build();
                         shortcutInfos.add(shopShortcut);
 
@@ -698,7 +766,7 @@ public class MainParentActivity extends AppCompatActivity implements
                                     .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                     .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                     .setIcon(Icon.createWithResource(this, R.drawable.ic_referral))
-                                    .setIntents(new Intent[]{ intentHome, referralIntent })
+                                    .setIntents(new Intent[]{intentHome, referralIntent})
                                     .build();
                             shortcutInfos.add(referralShortcut);
                         }

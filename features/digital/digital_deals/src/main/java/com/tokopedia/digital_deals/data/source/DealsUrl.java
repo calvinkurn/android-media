@@ -9,6 +9,7 @@ public class DealsUrl {
         String DEALS_LIST_SEARCH = "v1/api/s/deal";
         String DEALS_LOCATIONS = "v1/api/location/deal";
         String DEALS_PRODUCT = "v1/api/p";
+        String DEALS_CATEGORY = "v1/api/h/deal/c/";
         String DEALS_LIKES = "v1/api/deal/rating";
         String DEALS_LIKES_PRODUCT = "v1/api/deal/rating/product";
     }
@@ -24,5 +25,6 @@ public class DealsUrl {
         String DEALS = "deals";
         String DIGITAL_DEALS = "tokopedia://deals";
         String DIGITAL_DEALS_DETAILS = "tokopedia://deals/{slug}";
+        String DIGITAL_DEALS_CATEGORY="tokopedia://deals/category/page";
     }
 }

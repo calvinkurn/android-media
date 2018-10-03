@@ -1,0 +1,11 @@
+query officialStoreBrands($lang: String!, $source: String!, $total: Int!) {
+    officialStoreBrands(device: android, lang: $lang, source: $source, total: $total) {
+      data: shops {
+        id
+        name
+        isNew
+        logoUrl
+        url
+      }
+    }
+}

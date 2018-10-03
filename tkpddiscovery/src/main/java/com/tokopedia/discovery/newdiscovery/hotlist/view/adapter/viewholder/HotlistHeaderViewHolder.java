@@ -73,6 +73,7 @@ public class HotlistHeaderViewHolder extends AbstractViewHolder<HotlistHeaderVie
         adsParams.getParam().put(TopAdsParams.KEY_SRC, HOTLIST_ADS_SRC);
         adsParams.getParam().put(TopAdsParams.KEY_QUERY, searchQuery);
         adsParams.getParam().put(TopAdsParams.KEY_ITEM, DEFAULT_ITEM_VALUE);
+        adsParams.getParam().put(TopAdsParams.KEY_USER_ID, SessionHandler.getLoginID(context));
         Config config = new Config.Builder()
                 .setSessionId(GCMHandler.getRegistrationId(MainApplication.getAppContext()))
                 .setUserId(SessionHandler.getLoginID(context))

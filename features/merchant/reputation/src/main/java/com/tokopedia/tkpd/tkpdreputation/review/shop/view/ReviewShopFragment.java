@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,8 +98,9 @@ public class ReviewShopFragment extends BaseListFragment<ReviewShopModelContent,
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        VerticalRecyclerView recyclerView = view.findViewById(R.id.recycler_view);
-        recyclerView.clearItemDecoration();
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
+        dividerItemDecoration.setDrawable(ContextCompat.getDrawable(getContext(), R.drawable.divider_vertical_product_review));
+        getRecyclerView(view).addItemDecoration(dividerItemDecoration);
     }
 
     @Override

@@ -148,4 +148,10 @@ public class BuyerAccountFragment extends BaseAccountFragment implements
             recyclerView.scrollToPosition(0);
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        presenter.detachView();
+    }
 }

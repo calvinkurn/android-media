@@ -15,11 +15,15 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.app.BasePresenterActivity;
 import com.tokopedia.nps.presentation.view.dialog.AdvancedAppRatingDialog;
 import com.tokopedia.nps.presentation.view.dialog.AppRatingDialog;
-import com.tokopedia.tkpd.R;
 import com.tokopedia.tkpd.home.fragment.ReactNativeThankYouPageFragment;
 import com.tokopedia.tkpd.thankyou.domain.model.ThanksTrackerConst;
 import com.tokopedia.tkpd.thankyou.view.viewmodel.ThanksTrackerData;
 import com.tokopedia.tkpdreactnative.react.ReactConst;
+import com.tokopedia.tkpd.R;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Arrays;
 
 
 public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
@@ -132,6 +136,14 @@ public class ReactNativeThankYouPageActivity extends BasePresenterActivity {
         data.setPlatform(initialProps.getString(ThanksTrackerConst.Key.PLATFORM));
         data.setTemplate(initialProps.getString(ThanksTrackerConst.Key.TEMPLATE));
         data.setId(initialProps.getString(ThanksTrackerConst.Key.ID));
+        if (initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES) != null &&
+                !initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES).isEmpty()){
+            try {
+                data.setShopTypes(Arrays.asList(URLDecoder.decode(initialProps.getString(ThanksTrackerConst.Key.SHOP_TYPES), "UTF-8").split(",")));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
         ThanksTrackerService.start(this, data);
     }
 

@@ -546,7 +546,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (cartListData.getShopGroupDataList().isEmpty()) {
                     view.renderEmptyCartData(cartListData);
                 } else {
-//                    view.disableSwipeRefresh();
                     view.renderInitialGetCartListDataSuccess(cartListData);
                 }
             }
@@ -720,23 +719,36 @@ public class CartListPresenter implements ICartListPresenter {
     private int getChecklistCondition() {
         int checklistCondition = ITEM_CHECKED_ALL_WITHOUT_CHANGES;
         List<CartShopHolderData> cartShopHolderDataList = view.getAllShopDataList();
-        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-            if (cartShopHolderData.isPartialSelected() || !cartShopHolderData.isAllSelected()) {
-                checklistCondition = ITEM_CHECKED_PARTIAL_SHOP;
-                break;
-            }
-        }
 
-        for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
-            for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+        if (cartShopHolderDataList.size() == 1) {
+            for (CartItemHolderData cartItemHolderData : cartShopHolderDataList.get(0).getShopGroupData().getCartItemDataList()) {
                 if (!cartItemHolderData.isSelected()) {
-                    if (checklistCondition == ITEM_CHECKED_PARTIAL_SHOP) {
-                        checklistCondition = ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM;
-                    } else {
-                        checklistCondition = ITEM_CHECKED_PARTIAL_ITEM;
-                    }
+                    checklistCondition = ITEM_CHECKED_PARTIAL_ITEM;
                     break;
                 }
+            }
+        } else if (cartShopHolderDataList.size() > 1) {
+            int allSelectedItemShopCount = 0;
+            boolean selectPartialShopAndItem = false;
+            for (CartShopHolderData cartShopHolderData : cartShopHolderDataList) {
+                if (cartShopHolderData.isAllSelected()) {
+                    allSelectedItemShopCount++;
+                } else {
+                    int selectedItem = 0;
+                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                        if (!cartItemHolderData.isSelected()) {
+                            selectedItem++;
+                        }
+                    }
+                    if (!selectPartialShopAndItem && selectedItem != cartShopHolderData.getShopGroupData().getCartItemDataList().size()) {
+                        selectPartialShopAndItem = true;
+                    }
+                }
+            }
+            if (selectPartialShopAndItem) {
+                checklistCondition = ITEM_CHECKED_PARTIAL_SHOP_AND_ITEM;
+            } else if (allSelectedItemShopCount < cartShopHolderDataList.size()) {
+                checklistCondition = ITEM_CHECKED_PARTIAL_SHOP;
             }
         }
 
@@ -769,7 +781,6 @@ public class CartListPresenter implements ICartListPresenter {
                 if (resetAndRefreshCartListData.getCartListData() == null) {
                     view.renderErrorInitialGetCartListData(resetAndRefreshCartListData.getResetCartData().getMessage());
                 } else {
-//                    view.disableSwipeRefresh();
                     if (resetAndRefreshCartListData.getCartListData().getShopGroupDataList().isEmpty()) {
                         view.renderEmptyCartData(resetAndRefreshCartListData.getCartListData());
                     } else {
@@ -875,16 +886,6 @@ public class CartListPresenter implements ICartListPresenter {
     public void processRemoveFromWishlist(String productId, String userId, WishListActionListener listener) {
         view.showProgressLoading();
         removeWishListUseCase.createObservable(productId, userId, listener);
-    }
-
-    @Override
-    public ProductPass generateProductPassProductDetailPage(CartItemData.OriginData originData) {
-        return ProductPass.Builder.aProductPass()
-                .setProductId(originData.getProductId())
-                .setProductImage(originData.getProductImage())
-                .setProductName(originData.getProductName())
-                .setProductPrice(originData.getPriceFormatted())
-                .build();
     }
 
     @Override

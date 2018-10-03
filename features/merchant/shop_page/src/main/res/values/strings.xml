@@ -39,6 +39,7 @@
     <string name="shop_info_title_tab_info">Info</string>
     <string name="shop_info_title_tab_review">Ulasan</string>
     <string name="shop_info_title_tab_discussion">Diskusi</string>
+    <string name="shop_info_title_tab_feed">Feed</string>
 
     <string name="shop_info_title_tab_shop_info">Informasi Toko</string>
     <string name="shop_info_title_tab_note">Catatan</string>
@@ -140,5 +141,6 @@
     <string name="shop_product_my_empty_follower_title">Toko Anda belum memiliki follower</string>
     <string name="shop_product_empty_product_title_desc">Jadi yang pertama untuk follow Toko %1$s dan temukan update tentang toko ini di feed Anda.</string>
     <string name="search_keyword_at_tokopedia">Cari \"%1$s\" di Tokopedia</string>
+    <string name="tablayout_new_text">Baru</string>
 
 </resources>

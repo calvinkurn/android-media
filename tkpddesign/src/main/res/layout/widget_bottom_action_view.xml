@@ -33,7 +33,7 @@
 
             <TextView
                 android:id="@+id/text_view_label_1"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
                 tools:text="@string/app_name" />
 
             <View
@@ -80,7 +80,7 @@
 
             <TextView
                 android:id="@+id/text_view_label_2"
-                style="@style/TextView.Micro"
+                style="@style/TextView.Micro.Bold"
                 tools:text="@string/app_name" />
 
             <View

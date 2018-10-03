@@ -1,7 +1,7 @@
 package com.tokopedia.core.home;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,7 +34,7 @@ public class SimpleWebViewWithFilePickerActivity extends TkpdCoreWebViewActivity
         String url = getIntent().getExtras().getString(EXTRA_URL);
         fragment = SimpleWebViewWithFilePickerFragment.createInstance(url);
         if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getFragmentManager();
+            FragmentManager fragmentManager = getSupportFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             fragmentTransaction.add(R.id.container, fragment);
             fragmentTransaction.commit();

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 
-import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.home.account.analytics.data.model.UserAttributeData;
 import com.tokopedia.home.account.di.AccountHomeInjection;
 import com.tokopedia.navigation_common.model.WalletModel;
@@ -56,7 +55,7 @@ public interface AccountHomeRouter {
 
     String getStringRemoteConfig(String key, String defaultValue);
 
-    Boolean getBooleanRemoteConfig(String key, Boolean defaultValue);
+    boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     Intent getTrainOrderListIntent(Context context);
 
@@ -67,4 +66,8 @@ public interface AccountHomeRouter {
     void setPromoPushPreference(Boolean newValue);
 
     Observable<WalletModel> getTokoCashAccountBalance();
+
+    boolean isEnableInterestPick();
+  
+    Intent getMitraToppersActivityIntent(Context context);
 }

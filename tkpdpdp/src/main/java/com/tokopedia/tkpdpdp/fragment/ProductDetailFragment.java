@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +24,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.view.Gravity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,25 +37,26 @@ import android.widget.TextView;
 import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.google.gson.Gson;
-import com.tkpd.library.utils.LocalCacheHandler;
 import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.data.model.analytic.AnalyticTracker;
 import com.tokopedia.abstraction.common.data.model.session.UserSession;
-import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.core.base.di.component.AppComponent;
 import com.tokopedia.core.gcm.GCMHandler;
+import com.tokopedia.core.router.TkpdInboxRouter;
 import com.tokopedia.core.router.productdetail.ProductDetailRouter;
 import com.tokopedia.core.var.ProductItem;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.component.badge.BadgeView;
 import com.tokopedia.tkpdpdp.customview.CountDrawable;
+import com.tokopedia.tkpdpdp.domain.GetWishlistCountUseCase;
+import com.tokopedia.tkpdpdp.presenter.di.DaggerProductDetailComponent;
+import com.tokopedia.tkpdpdp.presenter.di.ProductDetailComponent;
 import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.app.BasePresenterFragmentV4;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.app.TkpdCoreRouter;
-import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
-import com.tokopedia.core.drawer2.view.DrawerHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.entity.variant.Child;
 import com.tokopedia.core.network.entity.variant.Option;
@@ -145,7 +144,6 @@ import com.tokopedia.topads.sdk.listener.TopAdsItemClickListener;
 import com.tokopedia.topads.sdk.listener.TopAdsItemImpressionListener;
 import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.widget.TopAdsCarouselView;
-import com.tokopedia.tkpdpdp.tracking.ProductPageTracking;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsAddToCart;
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption;
 import com.tokopedia.transactionanalytics.data.EnhancedECommerceCartMapData;
@@ -161,6 +159,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnNeverAskAgain;
@@ -297,6 +297,9 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     private String lastStateOnClickBuyWhileRequestVariant;
     private RemoteConfig firebaseRemoteConfig;
 
+    @Inject
+    GetWishlistCountUseCase getWishlistCountUseCase;
+
     public static ProductDetailFragment newInstance(@NonNull ProductPass productPass) {
         ProductDetailFragment fragment = new ProductDetailFragment();
         Bundle args = new Bundle();
@@ -325,6 +328,7 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        initInjector();
         super.onCreate(savedInstanceState);
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         if (!remoteConfig.getBoolean(ENABLE_VARIANT)) {
@@ -336,9 +340,17 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
         localCacheHandler.applyEditor();
     }
 
+    private void initInjector() {
+        AppComponent appComponent = ((MainApplication) getActivity().getApplication()).getAppComponent();
+        ProductDetailComponent productDetailComponent = DaggerProductDetailComponent.builder()
+                .appComponent(appComponent)
+                .build();
+        productDetailComponent.inject(this);
+    }
+
     @Override
     protected void initialPresenter() {
-        this.presenter = new ProductDetailPresenterImpl(this, this);
+        this.presenter = new ProductDetailPresenterImpl(getWishlistCountUseCase, this, this);
         this.presenter.initGetRateEstimationUseCase();
     }
 
@@ -538,6 +550,15 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
 
     @Override
     public void onProductTalkClicked(@NonNull Bundle bundle) {
+        Intent intent = ((TkpdInboxRouter) MainApplication.getAppContext())
+                .getAskSellerIntent(getActivityContext(),
+                        String.valueOf(productData.getShopInfo().getShopId()),
+                        productData.getShopInfo().getShopName(),
+                        productData.getInfo().getProductName(),
+                        productData.getInfo().getProductUrl(),
+                        TkpdInboxRouter.PRODUCT,
+                        productData.getShopInfo().getShopAvatar());
+        bundle.putParcelable("intent_chat", intent);
         presenter.processToTalk(getActivity(), bundle);
     }
 
@@ -846,6 +867,11 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
             fabWishlist.setImageDrawable(getResources().getDrawable(R.drawable.ic_wishlist));
         }
         fabWishlist.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onWishlistCountLoaded(@NonNull String wishlistCountText){
+        transactionDetailView.renderWishlistCount(wishlistCountText);
     }
 
     @Override
@@ -1883,10 +1909,18 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccessOpenCart(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+        }
+        String departmentName = "";
+        if(productData.getBreadcrumb().size()>0) {
+           departmentName =  productData.getBreadcrumb().get(0).getDepartmentName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productName,departmentName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);
@@ -1900,10 +1934,16 @@ public class ProductDetailFragment extends BasePresenterFragmentV4<ProductDetail
     @Override
     public void renderAddToCartSuccess(AddToCartResult addToCartResult) {
         buttonBuyView.removeLoading();
+        String productName = "";
+        String cataglogName = "";
+        if(productData.getInfo()!= null) {
+            productName  = productData.getInfo().getProductName();
+            cataglogName = productData.getInfo().getProductCatalogName();
+        }
         ProductPageTracking.eventAppsFlyer(
                 String.valueOf(productData.getInfo().getProductId()),
                 productData.getInfo().getProductPrice(),
-                selectedQuantity
+                selectedQuantity,productName,cataglogName
         );
         updateCartNotification();
         enhanceEcommerceAtc(addToCartResult);

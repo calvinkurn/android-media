@@ -68,4 +68,6 @@ public interface ShipmentAdapterActionListener extends CartAdapterActionListener
     void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
                                  RecipientAddressModel recipientAddressModel, int position);
 
+    void hideSoftKeyboard();
+
 }
