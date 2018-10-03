@@ -445,10 +445,9 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    Intent digitalIntent = ((IDigitalModuleRouter) context.getApplication())
-                            .instanceIntentDigitalCategoryList();
-                    digitalIntent.putExtra("from_seller",true);
-                    context.startActivity(digitalIntent);UnifyTracking.eventClickPaymentAndTopupOnDrawer();
+                    context.startActivity(((IDigitalModuleRouter) context.getApplication())
+                            .instanceIntentDigitalCategoryList());
+                    UnifyTracking.eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
                     if (remoteConfig.getBoolean(TkpdCache.RemoteConfigKey.FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY, true))
