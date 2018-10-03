@@ -50,7 +50,7 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
 
     @Override
     public int type(EntryPointViewModel entryPointViewModel) {
-        return ExploreViewHolder.LAYOUT;
+        return EntryPointViewHolder.LAYOUT;
     }
 
     @Override
@@ -70,7 +70,7 @@ public class KolPostTypeFactoryImpl extends BaseAdapterTypeFactory implements Ko
         else if (viewType == ExploreViewHolder.LAYOUT)
             abstractViewHolder = new ExploreViewHolder(view, viewListener);
         else if (viewType == EntryPointViewHolder.LAYOUT)
-            abstractViewHolder = new EntryPointViewHolder(view, viewListener)
+            abstractViewHolder = new EntryPointViewHolder(view);
         else
             abstractViewHolder = super.createViewHolder(view, viewType);
         return abstractViewHolder;
