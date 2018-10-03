@@ -10,7 +10,6 @@ import com.tokopedia.transaction.purchase.detail.domain.OrderDetailRepository;
 import com.tokopedia.transaction.purchase.detail.domain.mapper.OrderDetailMapper;
 import com.tokopedia.transaction.purchase.detail.interactor.OrderDetailInteractorImpl;
 import com.tokopedia.transaction.purchase.detail.presenter.OrderDetailPresenterImpl;
-import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 import dagger.Module;
 import dagger.Provides;
