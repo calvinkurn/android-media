@@ -622,7 +622,7 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
         if (requestCode == LIKE_REQUEST_CODE) {
             UserSession userSession = ((AbstractionRouter) getActivity().getApplication()).getSession();
             if (userSession.isLoggedIn()) {
-                mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0,dealDetail.getLikes() );
+                mPresenter2.setDealLike(dealDetail.getId(), dealDetail.getIsLiked(), 0, dealDetail.getLikes());
                 if (dealDetail.getIsLiked()) {
                     setLikes(dealDetail.getLikes() - 1, !dealDetail.getIsLiked());
                 } else {
@@ -660,7 +660,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     public void onResume() {
         super.onResume();
         if (forceRefresh) {
-            dealsAdapter.notifyDataSetChanged();
+            if (dealsAdapter != null)
+                dealsAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
     }

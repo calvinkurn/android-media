@@ -344,7 +344,8 @@ public class BrandDetailsFragment extends BaseDaggerFragment implements BrandDet
     public void onResume() {
         super.onResume();
         if (forceRefresh) {
-            dealsAdapter.notifyDataSetChanged();
+            if (dealsAdapter != null)
+                dealsAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
     }

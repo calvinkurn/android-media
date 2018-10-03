@@ -396,6 +396,7 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
         adapterPosition = position;
         navigateToActivityRequest(intent, requestCode);
     }
+
     @Override
     public void onStop() {
         forceRefresh = true;
@@ -406,7 +407,8 @@ public class CategoryDetailHomeFragment extends BaseDaggerFragment implements De
     public void onResume() {
         super.onResume();
         if (forceRefresh) {
-            dealsAdapter.notifyDataSetChanged();
+            if (dealsAdapter != null)
+                dealsAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
     }

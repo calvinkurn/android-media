@@ -477,7 +477,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void onResume() {
         super.onResume();
         if (forceRefresh) {
-            categoryAdapter.notifyDataSetChanged();
+            if (categoryAdapter != null)
+                categoryAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
     }
