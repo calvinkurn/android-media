@@ -34,8 +34,8 @@ public class UnifyTracking extends TrackingUtils {
 
     public static final String EXTRA_LABEL = "label";
 
-    public static void eventHomeTab(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHomeTab(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOMEPAGE_UNIFY,
                 AppEventTracking.Category.HOMEPAGE_UNIFY,
                 String.format("click %s", label),
@@ -43,8 +43,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHomeCategory(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHomeCategory(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
@@ -52,8 +52,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHomeTopPicksItem(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHomeTopPicksItem(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TOP_PICKS,
                 AppEventTracking.Category.TOP_PICKS_HOME,
                 action,
@@ -64,8 +64,8 @@ public class UnifyTracking extends TrackingUtils {
     /* VARIANT */
 
 
-    public static void eventClickVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_VARIANTS,
@@ -73,8 +73,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBuyPDPVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventBuyPDPVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ADD_TO_CART_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_BUY_VARIANT_PDP,
@@ -82,8 +82,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickCartVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCartVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_CART_BUTTON_VARIANT,
@@ -91,8 +91,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectColorVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectColorVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.SELECT_COLOR_VARIANT,
@@ -100,8 +100,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectSizeVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectSizeVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.SELECT_SIZE_VARIANT,
@@ -109,8 +109,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBuyPageVariant(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventBuyPageVariant(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ADD_TO_CART_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.CLICK_BUY_VARIANT_PAGE,
@@ -120,8 +120,8 @@ public class UnifyTracking extends TrackingUtils {
 
     /* CATEGORY IMPROVEMENT*/
 
-    public static void eventExpandCategoryIntermediary(String parentCat) {
-        sendGTMEvent(new EventTracking(
+    public static void eventExpandCategoryIntermediary(Context context, String parentCat) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.NAVIGATION_CLICK,
@@ -129,8 +129,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBottomCategoryNavigation(String parentCat, String categoryId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventBottomCategoryNavigation(Context context, String parentCat, String categoryId) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.BOTTOM_NAVIGATION_CATEGORY,
@@ -138,8 +138,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBannerClickCategory(String parentCat, String bannerName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventBannerClickCategory(Context context, String parentCat, String bannerName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.BANNER_CLICK,
@@ -147,8 +147,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOfficialStoreIntermediary(String parentCat, String brandName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOfficialStoreIntermediary(Context context, String parentCat, String brandName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.OFFICIAL_STORE_CLICK,
@@ -156,8 +156,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventVideoIntermediary(String parentCat, String videoName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventVideoIntermediary(Context context, String parentCat, String videoName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.INTERMEDIARY_VIDEO_CLICK,
@@ -165,8 +165,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCategoryDrawer() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCategoryDrawer(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.DRAWER_CATEGORY,
                 AppEventTracking.Category.CATEGORY_DRAWER,
                 AppEventTracking.Action.CLICK_CATEGORY,
@@ -174,8 +174,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventProductOnCategory(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventProductOnCategory(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PRODUCT,
                 AppEventTracking.Action.PRODUCT_CATEGORY,
@@ -183,8 +183,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLevelCategory(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventLevelCategory(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_LEVEL,
@@ -192,8 +192,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLevelCategoryIntermediary(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventLevelCategoryIntermediary(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_LEVEL,
@@ -201,8 +201,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHotlistIntermediary(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlistIntermediary(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.HOTLIST,
@@ -210,9 +210,9 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCuratedIntermediary(String parentCat, String curatedProductName,
+    public static void eventCuratedIntermediary(Context context, String parentCat, String curatedProductName,
                                                 String productName) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.INTERMEDIARY_PAGE,
                 AppEventTracking.Category.INTERMEDIARY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CURATED + " " + curatedProductName,
@@ -220,8 +220,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShowMoreCategory(String parentCat) {
-        sendGTMEvent(new EventTracking(
+    public static void eventShowMoreCategory(Context context, String parentCat) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_MORE,
@@ -229,8 +229,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSortCategory(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSortCategory(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_SORT,
@@ -238,8 +238,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFilterCategory(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFilterCategory(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_FILTER,
@@ -247,8 +247,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDisplayCategory(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDisplayCategory(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_DISLPAY,
@@ -256,8 +256,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShareCategory(String parentCat, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventShareCategory(Context context, String parentCat, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATEGORY_PAGE,
                 AppEventTracking.Category.CATEGORY_PAGE + "-" + parentCat,
                 AppEventTracking.Action.CATEGORY_SHARE,
@@ -267,8 +267,8 @@ public class UnifyTracking extends TrackingUtils {
 
     /* CATEGORY IMPROVEMENT*/
 
-    public static void eventHomeTopPicksTitle(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHomeTopPicksTitle(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TOP_PICKS,
                 AppEventTracking.Category.TOP_PICKS_HOME,
                 AppEventTracking.Action.CLICK,
@@ -276,8 +276,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventNewOrderDetail() {
-        sendGTMEvent(new EventTracking(
+    public static void eventNewOrderDetail(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NEW_ORDER,
                 AppEventTracking.Category.NEW_ORDER,
                 AppEventTracking.Action.CLICK,
@@ -287,8 +287,8 @@ public class UnifyTracking extends TrackingUtils {
         sendMoEngageClickedNewOrder();
     }
 
-    public static void eventTrackOrder() {
-        sendGTMEvent(new EventTracking(
+    public static void eventTrackOrder(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.STATUS,
                 AppEventTracking.Category.STATUS,
                 AppEventTracking.Action.CLICK,
@@ -296,8 +296,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAcceptOrder() {
-        sendGTMEvent(new EventTracking(
+    public static void eventAcceptOrder(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NEW_ORDER,
                 AppEventTracking.Category.NEW_ORDER,
                 AppEventTracking.Action.CLICK,
@@ -305,8 +305,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRejectOrder() {
-        sendGTMEvent(new EventTracking(
+    public static void eventRejectOrder(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NEW_ORDER,
                 AppEventTracking.Category.NEW_ORDER,
                 AppEventTracking.Action.CLICK,
@@ -314,8 +314,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventConfirmShipping() {
-        sendGTMEvent(new EventTracking(
+    public static void eventConfirmShipping(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CONFIRM_SHIPPING,
                 AppEventTracking.Category.SHIPPING,
                 AppEventTracking.Action.CLICK,
@@ -323,8 +323,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventMessageDetail(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventMessageDetail(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.MESSAGE,
                 AppEventTracking.Category.MESSAGE,
                 AppEventTracking.Action.VIEW,
@@ -332,8 +332,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventMessageSend(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventMessageSend(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.MESSAGE,
                 AppEventTracking.Category.MESSAGE,
                 AppEventTracking.Action.SEND,
@@ -341,8 +341,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscussionProductDetail(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscussionProductDetail(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DISCUSSION,
                 AppEventTracking.Category.PRODUCT_DISCUSSION,
                 AppEventTracking.Action.VIEW,
@@ -350,8 +350,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscussionProductSend(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscussionProductSend(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DISCUSSION,
                 AppEventTracking.Category.PRODUCT_DISCUSSION,
                 AppEventTracking.Action.SEND,
@@ -359,8 +359,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventReviewDetail(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventReviewDetail(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REVIEW,
                 AppEventTracking.Category.REVIEW,
                 AppEventTracking.Action.VIEW,
@@ -368,8 +368,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventReviewDetail() {
-        sendGTMEvent(new EventTracking(
+    public static void eventReviewDetail(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REVIEW,
                 AppEventTracking.Category.REVIEW,
                 AppEventTracking.Action.VIEW,
@@ -377,8 +377,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventConfirmShippingDetails() {
-        sendGTMEvent(new EventTracking(
+    public static void eventConfirmShippingDetails(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CONFIRM_SHIPPING,
                 AppEventTracking.Category.SHIPPING,
                 AppEventTracking.Action.CLICK,
@@ -386,8 +386,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventConfirmShippingCancel() {
-        sendGTMEvent(new EventTracking(
+    public static void eventConfirmShippingCancel(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CONFIRM_SHIPPING,
                 AppEventTracking.Category.SHIPPING,
                 AppEventTracking.Action.CLICK,
@@ -395,8 +395,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscussionDetail() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscussionDetail(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DISCUSSION,
                 AppEventTracking.Category.PRODUCT_DISCUSSION,
                 AppEventTracking.Action.VIEW,
@@ -404,8 +404,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscussionSendSuccess(String from) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscussionSendSuccess(Context context, String from) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DISCUSSION,
                 AppEventTracking.Category.PRODUCT_DISCUSSION,
                 AppEventTracking.Action.SEND,
@@ -413,8 +413,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscussionSendError(String from) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscussionSendError(Context context, String from) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DISCUSSION,
                 AppEventTracking.Category.PRODUCT_DISCUSSION,
                 AppEventTracking.Action.ERROR,
@@ -422,8 +422,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResolutionDetail() {
-        sendGTMEvent(new EventTracking(
+    public static void eventResolutionDetail(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION,
                 AppEventTracking.Action.VIEW,
@@ -431,8 +431,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResolutionDetail(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventResolutionDetail(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION,
                 AppEventTracking.Action.VIEW,
@@ -440,8 +440,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventEtalaseAdd() {
-        sendGTMEvent(new EventTracking(
+    public static void eventEtalaseAdd(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ETALASE,
                 AppEventTracking.Category.ETALASE,
                 AppEventTracking.Action.CLICK,
@@ -449,8 +449,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventForgotPassword() {
-        sendGTMEvent(new EventTracking(
+    public static void eventForgotPassword(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FORGOT_PASSWORD,
                 AppEventTracking.Category.FORGOT_PASSWORD,
                 AppEventTracking.Action.RESET_SUCCESS,
@@ -458,8 +458,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResendNotification() {
-        sendGTMEvent(new EventTracking(
+    public static void eventResendNotification(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESEND_EMAIL,
                 AppEventTracking.Category.EMAIL_ACTIVATION,
                 AppEventTracking.Action.CLICK,
@@ -467,8 +467,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateShop() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateShop(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CREATE_SHOP,
                 AppEventTracking.Category.CREATE_SHOP,
                 AppEventTracking.Action.CLICK,
@@ -476,8 +476,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateShopSuccess() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateShopSuccess(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CREATE_SHOP,
                 AppEventTracking.Category.CREATE_SHOP,
                 AppEventTracking.Action.SUCCESS,
@@ -485,8 +485,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResolutionSendSuccess() {
-        sendGTMEvent(new EventTracking(
+    public static void eventResolutionSendSuccess(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION,
                 AppEventTracking.Action.SEND,
@@ -494,8 +494,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResolutionSendError() {
-        sendGTMEvent(new EventTracking(
+    public static void eventResolutionSendError(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION,
                 AppEventTracking.Action.ERROR,
@@ -503,8 +503,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventResolutionEditSolution() {
-        sendGTMEvent(new EventTracking(
+    public static void eventResolutionEditSolution(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION,
                 AppEventTracking.Action.CLICK,
@@ -512,8 +512,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventReviewCompleteBuyer() {
-        sendGTMEvent(new EventTracking(
+    public static void eventReviewCompleteBuyer(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REVIEW,
                 AppEventTracking.Category.REVIEW,
                 AppEventTracking.Action.CLICK,
@@ -521,8 +521,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventReceivedShipping() {
-        sendGTMEvent(new EventTracking(
+    public static void eventReceivedShipping(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED,
                 AppEventTracking.Category.RECEIVED,
                 AppEventTracking.Action.CLICK,
@@ -530,8 +530,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProduct() {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProduct(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ADD_PRODUCT,
                 AppEventTracking.Category.ADD_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -539,8 +539,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductMore() {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductMore(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ADD_PRODUCT,
                 AppEventTracking.Category.ADD_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -548,8 +548,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventATCAddAddress() {
-        sendGTMEvent(new EventTracking(
+    public static void eventATCAddAddress(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ATC,
                 AppEventTracking.Category.ADD_TO_CART,
                 AppEventTracking.Action.CLICK,
@@ -557,8 +557,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventATCBuy() {
-        sendGTMEvent(new EventTracking(
+    public static void eventATCBuy(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ATC,
                 AppEventTracking.Category.ADD_TO_CART,
                 AppEventTracking.Action.CLICK,
@@ -566,8 +566,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventATCChangeAddress() {
-        sendGTMEvent(new EventTracking(
+    public static void eventATCChangeAddress(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.ATC,
                 AppEventTracking.Category.ADD_TO_CART,
                 AppEventTracking.Action.CLICK,
@@ -575,8 +575,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySearchShop() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySearchShop(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT,
                 AppEventTracking.Action.CLICK,
@@ -584,8 +584,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySearchShopDetail() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySearchShopDetail(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH,
                 AppEventTracking.Category.SHOP_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -593,8 +593,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTalkSuccessSend() {
-        sendGTMEvent(new EventTracking(
+    public static void eventTalkSuccessSend(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TALK_SUCCESS,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.TALK_SUCCESS,
@@ -602,8 +602,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySearchCatalog() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySearchCatalog(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SEARCH_RESULT,
                 AppEventTracking.Action.CLICK,
@@ -611,8 +611,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryFilter(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryFilter(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FILTER,
                 AppEventTracking.Category.FILTER,
                 AppEventTracking.Action.CLICK,
@@ -620,8 +620,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySort(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySort(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SORT,
                 AppEventTracking.Category.SORT,
                 AppEventTracking.Action.CLICK,
@@ -629,8 +629,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySearch(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySearch(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_PRODUCT,
@@ -638,8 +638,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoverySearchShop(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoverySearchShop(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.SEARCH_SHOP,
@@ -647,8 +647,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryVoiceSearch(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryVoiceSearch(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH,
                 AppEventTracking.Category.SEARCH,
                 AppEventTracking.Action.VOICE_SEARCH,
@@ -656,8 +656,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryCameraImageSearch() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryCameraImageSearch(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH,
                 AppEventTracking.Action.CAMERA_SEARCH,
@@ -665,8 +665,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryGalleryImageSearch() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryGalleryImageSearch(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH,
                 AppEventTracking.Action.GALLERY_SEARCH,
@@ -674,8 +674,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryExternalImageSearch(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryExternalImageSearch(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH,
                 AppEventTracking.Action.EXTERNAL_IMAGE_SEARCH,
@@ -683,8 +683,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryCameraImageSearchResult(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryCameraImageSearchResult(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH,
                 AppEventTracking.Action.CAMERA_SEARCH_RESULT,
@@ -692,8 +692,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryGalleryImageSearchResult(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryGalleryImageSearchResult(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMAGE_SEARCH_CLICK,
                 AppEventTracking.Category.IMAGE_SEARCH,
                 AppEventTracking.Action.GALLERY_SEARCH_RESULT,
@@ -701,8 +701,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartAbandon() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartAbandon(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.BACK_CLICK,
                 AppEventTracking.Category.PAYMENT,
                 AppEventTracking.Action.ABANDON,
@@ -710,8 +710,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventR3(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventR3(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.R3,
                 AppEventTracking.Category.R3USER,
                 action,
@@ -719,8 +719,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventR3Product(String productId, String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventR3Product(Context context, String productId, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.R3,
                 AppEventTracking.Category.R3USER,
                 action,
@@ -732,8 +732,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedView(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedView(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -746,8 +746,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedViewShop(String screenName, String shopId, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedViewShop(Context context, String screenName, String shopId, String label) {
+        sendGTMEvent(context, new EventTracking(
                 screenName,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -760,8 +760,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedViewProduct(String screenName, String productId, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedViewProduct(Context context, String screenName, String productId, String label) {
+        sendGTMEvent(context, new EventTracking(
                 screenName,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -774,8 +774,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedViewProduct(String screenName, String productId, String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedViewProduct(Context context, String screenName, String productId, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 screenName,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -788,8 +788,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedViewAll() {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedViewAll(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -802,8 +802,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedClick(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedClick(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -816,8 +816,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventOfficialStoreBrandSeeAll(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOfficialStoreBrandSeeAll(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppScreen.UnifyScreenTracker.SCREEN_UNIFY_HOME_FEED,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.HOMEPAGE.toLowerCase(),
@@ -830,8 +830,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedClickProduct(String screenName, String productId, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedClickProduct(Context context, String screenName, String productId, String label) {
+        sendGTMEvent(context, new EventTracking(
                 screenName,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -844,8 +844,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventFeedClickShop(String screenName, String shopId, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedClickShop(Context context, String screenName, String shopId, String label) {
+        sendGTMEvent(context, new EventTracking(
                 screenName,
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
@@ -858,8 +858,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventCampaign(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCampaign(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CAMPAIGN,
                 AppEventTracking.Category.CAMPAIGN,
                 AppEventTracking.Action.DEEPLINK,
@@ -867,8 +867,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartPayment() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartPayment(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CHECKOUT,
                 AppEventTracking.Category.CHECKOUT,
                 AppEventTracking.Action.CLICK,
@@ -876,8 +876,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartDeposit() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartDeposit(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CHECKOUT,
                 AppEventTracking.Category.CHECKOUT,
                 AppEventTracking.Action.CLICK,
@@ -885,8 +885,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartDropshipper() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartDropshipper(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CHECKOUT,
                 AppEventTracking.Category.CHECKOUT,
                 AppEventTracking.Action.CLICK,
@@ -894,8 +894,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartThankYou() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartThankYou(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CONFIRM_PAYMENT,
                 AppEventTracking.Category.PAYMENT,
                 AppEventTracking.Action.CLICK,
@@ -903,8 +903,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartPayNow() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartPayNow(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PAYMENT,
                 AppEventTracking.Category.PAYMENT,
                 AppEventTracking.Action.CLICK,
@@ -912,8 +912,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDiscoveryNoResult(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDiscoveryNoResult(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NO_RESULT,
                 AppEventTracking.Category.NO_RESULT,
                 AppEventTracking.Action.NO_RESULT,
@@ -921,8 +921,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHomeGimmick(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHomeGimmick(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.GIMMICK,
                 AppEventTracking.Category.GIMMICK,
                 AppEventTracking.Action.CLICK,
@@ -930,8 +930,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventWishlistView(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventWishlistView(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.VIEW,
@@ -939,8 +939,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventWishlistBuy() {
-        sendGTMEvent(new EventTracking(
+    public static void eventWishlistBuy(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.CLICK,
@@ -948,8 +948,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFeedRecent(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeedRecent(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FEED,
                 AppEventTracking.Category.FEED,
                 AppEventTracking.Action.VIEW_RECENT,
@@ -957,8 +957,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHotlist(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlist(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Category.HOTLIST,
                 AppEventTracking.Action.CLICK,
@@ -966,8 +966,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFavoriteView(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFavoriteView(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FAVORITE,
                 AppEventTracking.Category.FAVORITE,
                 AppEventTracking.Action.VIEW_WISHLIST,
@@ -975,8 +975,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFavoriteViewRecommendation() {
-        sendGTMEvent(new EventTracking(
+    public static void eventFavoriteViewRecommendation(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FAVORITE,
                 AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                 AppEventTracking.Action.CLICK_SHOP_FAVORITE,
@@ -984,8 +984,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterSuccess(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventRegisterSuccess(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REGISTER_SUCCESS,
                 AppEventTracking.Category.REGISTER,
                 AppEventTracking.Action.REGISTER_SUCCESS,
@@ -993,8 +993,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLoginSuccess(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventLoginSuccess(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LOGIN,
                 AppEventTracking.Category.LOGIN,
                 AppEventTracking.Action.LOGIN_SUCCESS,
@@ -1002,8 +1002,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegister(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventRegister(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REGISTER,
                 AppEventTracking.Category.REGISTER,
                 AppEventTracking.Action.CLICK,
@@ -1011,8 +1011,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterChannel(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventRegisterChannel(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REGISTER,
                 AppEventTracking.Category.REGISTER,
                 AppEventTracking.Action.CLICK_CHANNEL,
@@ -1020,8 +1020,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterError(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventRegisterError(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REGISTER_ERROR,
                 AppEventTracking.Category.REGISTER,
                 AppEventTracking.Action.REGISTER_ERROR,
@@ -1029,8 +1029,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShareProduct() {
-        sendGTMEvent(new EventTracking(
+    public static void eventShareProduct(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1038,8 +1038,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPOrientationChanged(String productId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPOrientationChanged(Context context, String productId) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.VIEW_PDP,
                 AppEventTracking.Category.PRODUCT_DETAIL.toLowerCase(),
                 AppEventTracking.Action.LANDSCAPE_VIEW,
@@ -1047,8 +1047,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPCart() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPCart(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.BUY,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1056,8 +1056,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPTalk() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPTalk(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1065,8 +1065,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPReputation() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPReputation(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1074,8 +1074,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPWishlit() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPWishlit(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1083,8 +1083,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShare(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventShare(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1092,8 +1092,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPExpandDescription() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPExpandDescription(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_DETAIL_PAGE,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1101,8 +1101,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPAddToWishlist(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPAddToWishlist(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.WISHLIST,
                 AppEventTracking.Category.WISHLIST,
                 AppEventTracking.Action.CLICK,
@@ -1110,8 +1110,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPReport() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPReport(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REPORT,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1119,8 +1119,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPReportNotLogin() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPReportNotLogin(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REPORT,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1128,8 +1128,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPSendMessage() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPSendMessage(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.MESSAGE_SHOP,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1137,8 +1137,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPDPFavorite() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPDPFavorite(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FAVORITE_SHOP,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.CLICK,
@@ -1146,8 +1146,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventWishlistAll() {
-        sendGTMEvent(new EventTracking(
+    public static void eventWishlistAll(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FAVORITE,
                 AppEventTracking.Category.FAVORITE,
                 AppEventTracking.Action.VIEW_RECOMMENDATION,
@@ -1155,8 +1155,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFavoriteShop() {
-        sendGTMEvent(new EventTracking(
+    public static void eventFavoriteShop(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.FAVORITE,
                 AppEventTracking.Category.HOMEPAGE.toLowerCase(),
                 AppEventTracking.Action.CLICK_SHOP_FAVORITE,
@@ -1164,8 +1164,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCartCheckout() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCartCheckout(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CHECKOUT,
                 AppEventTracking.Category.CHECKOUT,
                 AppEventTracking.Action.CLICK,
@@ -1173,8 +1173,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDrawerClick(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDrawerClick(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.HAMBURGER,
                 AppEventTracking.Action.CLICK,
@@ -1182,8 +1182,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDeleteShopNotes() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDeleteShopNotes(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NOTES,
                 AppEventTracking.Category.NOTES,
                 AppEventTracking.Action.CLICK,
@@ -1191,8 +1191,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopInfo() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopInfo(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1200,8 +1200,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopShipping() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopShipping(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1209,8 +1209,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopPayment() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopPayment(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1218,8 +1218,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopEtalase() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopEtalase(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1227,8 +1227,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopNotes() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopNotes(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1236,8 +1236,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageShopLocation() {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageShopLocation(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE,
                 AppEventTracking.Action.CLICK,
@@ -1245,8 +1245,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShopDeleteAddress() {
-        sendGTMEvent(new EventTracking(
+    public static void eventShopDeleteAddress(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LOCATION,
                 AppEventTracking.Category.LOCATION,
                 AppEventTracking.Action.CLICK,
@@ -1254,8 +1254,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSuccessReport() {
-        sendGTMEvent(new EventTracking(
+    public static void eventSuccessReport(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REPORT_SUCCESS,
                 AppEventTracking.Category.PRODUCT_DETAIL,
                 AppEventTracking.Action.REPORT_SUCCESS,
@@ -1263,8 +1263,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShopTabSelected(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventShopTabSelected(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SALES,
                 AppEventTracking.Category.SALES,
                 AppEventTracking.Action.CLICK,
@@ -1272,8 +1272,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDepositTopUp() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDepositTopUp(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.DEPOSIT,
                 AppEventTracking.Category.DEPOSIT,
                 AppEventTracking.Action.CLICK,
@@ -1281,8 +1281,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDepositWithdraw() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDepositWithdraw(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.DEPOSIT,
                 AppEventTracking.Category.DEPOSIT,
                 AppEventTracking.Action.CLICK,
@@ -1290,8 +1290,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOTPSend() {
-        sendGTMEvent(new EventTracking(
+    public static void eventOTPSend(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.OTP,
                 AppEventTracking.Category.OTP,
                 AppEventTracking.Action.CLICK,
@@ -1299,8 +1299,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOTPVerif() {
-        sendGTMEvent(new EventTracking(
+    public static void eventOTPVerif(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.OTP,
                 AppEventTracking.Category.OTP,
                 AppEventTracking.Action.CLICK,
@@ -1308,8 +1308,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventRegisterThroughLogin() {
-        sendGTMEvent(new EventTracking(
+    public static void eventRegisterThroughLogin(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.REGISTER_LOGIN,
                 AppEventTracking.Category.LOGIN,
                 AppEventTracking.Action.REGISTER,
@@ -1317,12 +1317,12 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCTAAction() {
+    public static void eventCTAAction(Context context) {
         eventCTAAction(AppEventTracking.EventLabel.CTA);
     }
 
-    public static void eventCTAAction(String channel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCTAAction(Context context, String channel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LOGIN_CLICK,
                 AppEventTracking.Category.LOGIN,
                 AppEventTracking.Action.CLICK,
@@ -1330,8 +1330,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLoginError(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventLoginError(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LOGIN_ERROR,
                 AppEventTracking.Category.LOGIN,
                 AppEventTracking.Action.LOGIN_ERROR,
@@ -1402,8 +1402,8 @@ public class UnifyTracking extends TrackingUtils {
         getAFEngine(context).sendTrackEvent(AFInAppEventType.COMPLETE_REGISTRATION, eventVal);
     }
 
-    public static void eventGoldMerchantSuccess() {
-        sendGTMEvent(new EventTracking(
+    public static void eventGoldMerchantSuccess(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.GMSUBSCRIBE,
                 AppEventTracking.Category.GOLD_MERCHANT,
                 AppEventTracking.Action.SUBSCRIBE,
@@ -1412,8 +1412,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventTrueCaller(String userId) {
-        sendGTMEvent(new EventTracking(
+    public static void eventTrueCaller(Context context, String userId) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TRUECALLER,
                 AppEventTracking.Category.TRUECALLER,
                 AppEventTracking.Action.INSTALLED,
@@ -1421,8 +1421,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickCatalog(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCatalog(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CATALOG,
                 AppEventTracking.Category.CATALOG,
                 AppEventTracking.Action.CLICK,
@@ -1430,8 +1430,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickOfficialStore(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickOfficialStore(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.OFFICIAL_STORE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
@@ -1439,8 +1439,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLoadGMStat() {
-        sendGTMEvent(new EventTracking(
+    public static void eventLoadGMStat(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LOAD_GM_STAT,
                 AppEventTracking.Category.FULLY_LOAD,
                 AppEventTracking.Action.LOAD,
@@ -1448,8 +1448,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventScrollGMStat() {
-        sendGTMEvent(new EventTracking(
+    public static void eventScrollGMStat(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SCROLL_GM_STAT,
                 AppEventTracking.Category.GM_STAT,
                 AppEventTracking.Action.SCROLL,
@@ -1457,8 +1457,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickAddProduct(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickAddProduct(Context context, String eventCategory, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_ADD_PRODUCT,
                 eventCategory,
                 AppEventTracking.Action.CLICK,
@@ -1466,77 +1466,77 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickAPManageProductPlus() {
-        eventClickAddProduct(
+    public static void eventClickAPManageProductPlus(Context context) {
+        eventClickAddProduct(context,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.EventLabel.ADD_PRODUCT_PLUS
         );
     }
 
-    public static void eventClickAPManageProductTop() {
-        eventClickAddProduct(
+    public static void eventClickAPManageProductTop(Context context) {
+        eventClickAddProduct(context,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.EventLabel.ADD_PRODUCT_TOP
         );
     }
 
-    public static void eventClickAddProduct() {
-        eventClickAddProduct(
+    public static void eventClickAddProduct(Context context) {
+        eventClickAddProduct(context,
                 AppEventTracking.Category.GM_STATISTIC_PRODUCT,
                 AppEventTracking.EventLabel.ADD_PRODUCT
         );
     }
 
-    public static void eventClickGMStatProduct(String eventLabel) {
+    public static void eventClickGMStatProduct(Context context, String eventLabel) {
         eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT, eventLabel);
     }
 
-    public static void eventClickGMStat() {
-        eventClickGMStat(AppEventTracking.Category.HAMBURGER,
+    public static void eventClickGMStat(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.HAMBURGER,
                 AppEventTracking.EventLabel.STATISTIC);
     }
 
-    public static void eventClickGMStatSeeDetailTransaction() {
-        eventClickGMStat(AppEventTracking.Category.GMSTAT_TRANSACTION,
+    public static void eventClickGMStatSeeDetailTransaction(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GMSTAT_TRANSACTION,
                 AppEventTracking.EventLabel.SEE_DETAIL);
     }
 
-    public static void eventClickGMStatBuyGMDetailTransaction() {
-        eventClickGMStat(AppEventTracking.Category.GM_STAT,
+    public static void eventClickGMStatBuyGMDetailTransaction(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GM_STAT,
                 AppEventTracking.EventLabel.BUY_GM);
     }
 
-    public static void eventClickGMStatDatePickerWOCompareTransaction() {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+    public static void eventClickGMStatDatePickerWOCompareTransaction(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
                 AppEventTracking.EventLabel.CHANGE_DATE);
     }
 
-    public static void eventClickGMStatDatePickerWCompareTransaction() {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
+    public static void eventClickGMStatDatePickerWCompareTransaction(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_DATE_PICKER,
                 AppEventTracking.EventLabel.CHANGE_DATE_COMPARE);
     }
 
-    public static void eventClickGMStatManageTopAds() {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TOP_ADS,
+    public static void eventClickGMStatManageTopAds(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_TOP_ADS,
                 AppEventTracking.EventLabel.MANAGE_TOPADS);
     }
 
-    public static void eventClickGMStatProductSoldTransaction() {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+    public static void eventClickGMStatProductSoldTransaction(Context context) {
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
                 AppEventTracking.EventLabel.PRODUCT_SOLD);
     }
 
-    public static void eventClickGMStatFilterNameTransaction(String filterName) {
+    public static void eventClickGMStatFilterNameTransaction(Context context, String filterName) {
         eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
                 AppEventTracking.EventLabel.GRAPH_X + filterName);
     }
 
-    public static void eventClickGMStatFilterTypeProductSold(String filterType) {
+    public static void eventClickGMStatFilterTypeProductSold(Context context, String filterType) {
         eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_SOLD, filterType);
     }
 
-    private static void eventClickGMStat(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    private static void eventClickGMStat(Context context, String eventCategory, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_GM_STAT,
                 eventCategory,
                 AppEventTracking.Action.CLICK,
@@ -1544,8 +1544,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    private static void eventClickFilterGMStat(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    private static void eventClickFilterGMStat(Context context, String eventCategory, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_GM_STAT,
                 eventCategory,
                 AppEventTracking.Action.FILTER,
@@ -1553,13 +1553,13 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickGMStatMarketInsight() {
+    public static void eventClickGMStatMarketInsight(Context context) {
         eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_INSIGHT,
                 AppEventTracking.EventLabel.ADD_PRODUCT);
     }
 
-    public static void eventClickInstoped() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickInstoped(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_INSTOPED,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -1567,15 +1567,15 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventChangeCurrencyProductList() {
+    public static void eventChangeCurrencyProductList(Context context) {
         eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST);
     }
 
-    public static void eventChangeCurrencyDropDown() {
+    public static void eventChangeCurrencyDropDown(Context context) {
         eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN);
     }
 
-    public static void eventCopyProduct() {
+    public static void eventCopyProduct(Context context) {
         eventManageProductClicked(AppEventTracking.EventLabel.COPY_PRODUCT);
     }
 
@@ -1588,8 +1588,8 @@ public class UnifyTracking extends TrackingUtils {
         getMoEngine(context).sendRegisterEvent(name, mobileNo);
     }
 
-    public static void eventOTPSuccess() {
-        sendGTMEvent(new EventTracking(
+    public static void eventOTPSuccess(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.OTP_SUCCESS,
@@ -1597,40 +1597,40 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventChangeCategoryProductGear() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR);
+    public static void eventChangeCategoryProductGear(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_GEAR);
     }
 
-    public static void eventChangeCategoryProductTopMenu() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU);
+    public static void eventChangeCategoryProductTopMenu(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_CATEGORY_PRODUCT_TOPMENU);
     }
 
-    public static void eventChangeEtalaseProductGear() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR);
+    public static void eventChangeEtalaseProductGear(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_GEAR);
     }
 
-    public static void eventChangeEtalaseProductTopMenu() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU);
+    public static void eventChangeEtalaseProductTopMenu(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_ETALASE_PRODUCT_TOPMENU);
     }
 
-    public static void eventChangeInsuranceProductGear() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR);
+    public static void eventChangeInsuranceProductGear(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_GEAR);
     }
 
-    public static void eventChangeInsuranceProductTopMenu() {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU);
+    public static void eventChangeInsuranceProductTopMenu(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_INSURANCE_PRODUCT_TOPMENU);
     }
 
-    public static void eventDeleteProductGear() {
-        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR);
+    public static void eventDeleteProductGear(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.DELETE_PRODUCT_GEAR);
     }
 
-    public static void eventDeleteProductTopMenu() {
-        eventManageProductClicked(AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU);
+    public static void eventDeleteProductTopMenu(Context context) {
+        eventManageProductClicked(context, AppEventTracking.EventLabel.DELETE_PRODUCT_TOPMENU);
     }
 
-    public static void eventClickImageInAddProduct(String itemSettings) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickImageInAddProduct(Context context, String itemSettings) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
                 AppEventTracking.Category.ADD_PRODUCT,
                 AppEventTracking.Action.CLICK_IMAGE_SETTINGS,
@@ -1638,8 +1638,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickImageInEditProduct(String itemSettings) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickImageInEditProduct(Context context, String itemSettings) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
                 AppEventTracking.Category.EDIT_PRODUCT,
                 AppEventTracking.Action.CLICK_IMAGE_SETTINGS,
@@ -1647,8 +1647,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickSaveEditImageProduct(String editSequence) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickSaveEditImageProduct(Context context, String editSequence) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
                 AppEventTracking.Category.EDIT_PRODUCT_IMAGE,
                 AppEventTracking.Action.CLICK_SAVE_EDIT,
@@ -1656,8 +1656,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickGMSwitcher(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickGMSwitcher(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TOP_SELLER,
                 AppEventTracking.Category.GM_SWITCHER,
                 AppEventTracking.Action.CLICK,
@@ -1666,8 +1666,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventPersonalizedClicked(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPersonalizedClicked(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.OPEN,
@@ -1675,8 +1675,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventImageUploadSuccessInstagram() {
-        sendGTMEvent(new EventTracking(
+    public static void eventImageUploadSuccessInstagram(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_ADD_PRODUCT,
                 AppEventTracking.Category.ADD_PRODUCT,
                 AppEventTracking.Action.UPLOAD_SUCCESS,
@@ -1684,8 +1684,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSlideBannerClicked(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSlideBannerClicked(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SLIDE_BANNER,
                 AppEventTracking.Category.SLIDER,
                 AppEventTracking.Action.CLICK,
@@ -1693,8 +1693,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPushNotifLowTopadsReceived() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPushNotifLowTopadsReceived(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.RECEIVED,
@@ -1702,8 +1702,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPushNotifSuccessTopadsReceived() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPushNotifSuccessTopadsReceived(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECEIVED_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.RECEIVED,
@@ -1711,8 +1711,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOpenTopadsPushNotification(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOpenTopadsPushNotification(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.OPEN_PUSH_NOTIFICATION,
                 AppEventTracking.Category.PUSH_NOTIFICATION,
                 AppEventTracking.Action.OPEN,
@@ -1720,8 +1720,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSmartLock(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSmartLock(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SUCCESS_SMART_LOCK,
                 AppEventTracking.Category.SMART_LOCK,
                 AppEventTracking.Action.SUCCESS,
@@ -1729,8 +1729,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventViewAllOSNonLogin() {
-        sendGTMEvent(new EventTracking(
+    public static void eventViewAllOSNonLogin(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_VIEW_ALL_OS,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
@@ -1738,8 +1738,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventViewAllOSLogin() {
-        sendGTMEvent(new EventTracking(
+    public static void eventViewAllOSLogin(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_VIEW_ALL_OS,
                 AppEventTracking.Category.HOMEPAGE_OFFICIAL_STORE_WIDGET,
                 AppEventTracking.Action.CLICK_VIEW_ALL,
@@ -1747,8 +1747,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickOsBanner(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickOsBanner(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_AD_BANNER,
                 AppEventTracking.Category.OS_AD_BANNER,
                 AppEventTracking.Action.CLICK,
@@ -1756,8 +1756,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventImpressionOsBanner(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventImpressionOsBanner(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_AD_BANNER,
                 AppEventTracking.Category.OS_AD_BANNER,
                 AppEventTracking.Action.IMPRESSION,
@@ -1765,8 +1765,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventBannerEmptyFeedOS() {
-        sendGTMEvent(new EventTracking(
+    public static void eventBannerEmptyFeedOS(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_OS_BANNER_EMPTY_FEED,
                 AppEventTracking.Category.PRODUCT_FEED,
                 AppEventTracking.Action.CLICK,
@@ -1774,8 +1774,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductErrorServer(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductErrorServer(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR_SERVER,
@@ -1783,8 +1783,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductError(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductError(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ERROR,
@@ -1792,8 +1792,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductAdd(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductAdd(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ADD,
@@ -1801,8 +1801,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductEdit(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductEdit(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_EDIT_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_EDIT,
@@ -1810,8 +1810,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAddProductAddMore(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddProductAddMore(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.AddProduct.EVENT_CLICK_ADD_PRODUCT,
                 AppEventTracking.AddProduct.CATEGORY_ADD_PRODUCT,
                 AppEventTracking.AddProduct.EVENT_ACTION_ADD_MORE,
@@ -1819,8 +1819,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventManageProductClicked(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventManageProductClicked(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_MANAGE_PRODUCT,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -1828,8 +1828,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDraftProductClicked(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventDraftProductClicked(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_DRAFT_PRODUCT,
                 AppEventTracking.Category.DRAFT_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -1838,8 +1838,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventClickCategoriesIcon(String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCategoriesIcon(Context context, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.CLICK,
@@ -1849,8 +1849,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // cart digital
 
-    public static void eventClickViewAllPromo() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickViewAllPromo(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_BANNER,
                 AppEventTracking.Action.CLICK_VIEW_ALL,
@@ -1858,8 +1858,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickVoucher(String ec, String ea, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickVoucher(Context context, String ec, String ea, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_USE_VOUCHER + ea,
@@ -1867,8 +1867,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickCancelVoucher(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCancelVoucher(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_CANCEL_VOUCHER,
@@ -1876,8 +1876,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickBeliInstantSaldoWidget(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickBeliInstantSaldoWidget(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_BELI_INSTANT_SALDO_WIDGET,
@@ -1885,8 +1885,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickBeliWidget(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickBeliWidget(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_BELI_WIDGET,
@@ -1894,8 +1894,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventViewCheckoutPage(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventViewCheckoutPage(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.VIEW_CHECKOUT_PAGE,
@@ -1903,8 +1903,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickLanjutCheckoutPage(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickLanjutCheckoutPage(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_LANJUT_CHECKOUT,
@@ -1912,8 +1912,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickTruecaller() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickTruecaller(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.CLICK,
@@ -1921,8 +1921,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickTruecallerConfirm() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickTruecallerConfirm(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.CLICK,
@@ -1930,8 +1930,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTruecallerImpression() {
-        sendGTMEvent(new EventTracking(
+    public static void eventTruecallerImpression(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMPRESSION_OTP,
                 AppEventTracking.Category.SECURITY_QUESTION,
                 AppEventTracking.Action.IMPRESSION,
@@ -1939,8 +1939,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventGMSwitcherManageShop(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventGMSwitcherManageShop(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.SHOP_MANAGE_GM_SWITCHER,
                 AppEventTracking.Action.CLICK,
@@ -1948,8 +1948,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTopAdsSwitcher(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventTopAdsSwitcher(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.TOPADS_SWITCHER,
                 AppEventTracking.Action.CLICK,
@@ -1957,8 +1957,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOpenShopSwitcher(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOpenShopSwitcher(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.OPENSHOP_SWITCHER,
                 AppEventTracking.Action.CLICK,
@@ -1966,8 +1966,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDownloadFromSwitcher() {
-        sendGTMEvent(new EventTracking(
+    public static void eventDownloadFromSwitcher(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.NAVIGATION_DRAWER,
                 AppEventTracking.Category.SWITCHER,
                 AppEventTracking.Action.CLICK,
@@ -1975,8 +1975,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventVoucherError(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventVoucherError(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
                 AppEventTracking.Category.RECHARGE,
                 AppEventTracking.Action.VOUCHER_ERROR + action,
@@ -1984,8 +1984,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventVoucherSuccess(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventVoucherSuccess(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.RECHARGE_TRACKING,
                 AppEventTracking.Category.RECHARGE,
                 AppEventTracking.Action.VOUCHER_SUCCESS + action,
@@ -1993,8 +1993,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickPhoneIcon(String category, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickPhoneIcon(Context context, String category, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + category,
                 AppEventTracking.Action.CLICK_PHONEBOOK_ICON,
@@ -2003,8 +2003,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventClickDaftarTransaksiEvent(String category, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickDaftarTransaksiEvent(Context context, String category, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + category,
                 AppEventTracking.Action.CLICK_DAFTAR_TX,
@@ -2012,16 +2012,16 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSwitchRpToDollarAddProduct() {
+    public static void eventSwitchRpToDollarAddProduct(Context context) {
         eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
     }
 
-    public static void eventClickVideoAddProduct() {
+    public static void eventClickVideoAddProduct(Context context) {
         eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
     }
 
-    public static void eventClickYesGoldMerchantAddProduct() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickYesGoldMerchantAddProduct(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_GOLD_MERCHANT,
                 AppEventTracking.Category.GOLD_MERCHANT,
                 AppEventTracking.Action.CLICK,
@@ -2029,8 +2029,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickGoldMerchantViaDrawer() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickGoldMerchantViaDrawer(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_NAVIGATION_DRAWER,
                 AppEventTracking.Category.HAMBURGER,
                 AppEventTracking.Action.CLICK,
@@ -2039,7 +2039,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventImpressionAppUpdate(boolean isForceUpdate) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_UPDATE,
                 AppEventTracking.Category.APP_UPDATE,
                 AppEventTracking.Action.IMPRESSION,
@@ -2049,8 +2049,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickAppUpdate(boolean isForceUpdate) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickAppUpdate(Context context, boolean isForceUpdate) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_APP_UPDATE,
                 AppEventTracking.Category.APP_UPDATE,
                 AppEventTracking.Action.CLICK,
@@ -2060,8 +2060,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickCancelAppUpdate(boolean isForceUpdate) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCancelAppUpdate(Context context, boolean isForceUpdate) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_CANCEL_APP_UPDATE,
                 AppEventTracking.Category.APP_UPDATE,
                 AppEventTracking.Action.CLICK,
@@ -2071,20 +2071,20 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventWidgetInstalled() {
-        eventWidget(AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
+    public static void eventWidgetInstalled(Context context) {
+        eventWidget(context,AppEventTracking.Action.INSTALL, AppEventTracking.EventLabel.WIDGET_ORDER);
     }
 
-    public static void eventWidgetRemoved() {
-        eventWidget(AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
+    public static void eventWidgetRemoved(Context context) {
+        eventWidget(context,AppEventTracking.Action.REMOVE, AppEventTracking.EventLabel.WIDGET_ORDER);
     }
 
-    public static void eventAccessAppViewWidget() {
-        eventWidget(AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
+    public static void eventAccessAppViewWidget(Context context) {
+        eventWidget(context,AppEventTracking.Action.CLICK, AppEventTracking.EventLabel.TO_APP_ORDER);
     }
 
-    public static void eventWidget(String action, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventWidget(Context context, String action, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SELLER_WIDGET,
                 AppEventTracking.Category.SELLER_APP_WIDGET,
                 action,
@@ -2092,16 +2092,16 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventDrawerTopads() {
-        eventDrawerClick(AppEventTracking.EventLabel.TOPADS);
+    public static void eventDrawerTopads(Context context) {
+        eventDrawerClick(context,AppEventTracking.EventLabel.TOPADS);
     }
 
-    public static void eventDrawerSellerHome() {
-        eventDrawerClick(AppEventTracking.EventLabel.SELLER_HOME);
+    public static void eventDrawerSellerHome(Context context) {
+        eventDrawerClick(context,AppEventTracking.EventLabel.SELLER_HOME);
     }
 
-    public static void eventUssd(String action, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventUssd(Context context, String action, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + AppEventTracking.Category.PULSA,
                 action,
@@ -2109,8 +2109,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventUssdAttempt(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventUssdAttempt(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_IMPRESSION_HOME_PAGE,
                 AppEventTracking.Category.DIGITAL + AppEventTracking.Category.PULSA,
                 AppEventTracking.Action.USSD_ATTEMPT,
@@ -2118,8 +2118,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickPaymentAndTopupOnDrawer() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickPaymentAndTopupOnDrawer(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HAMBURGER,
                 AppEventTracking.Action.CLICK,
@@ -2127,8 +2127,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickDigitalTransactionListOnDrawer() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickDigitalTransactionListOnDrawer(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HAMBURGER,
                 AppEventTracking.Action.CLICK,
@@ -2136,8 +2136,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTopAds(String category, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventTopAds(Context context, String category, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.TOP_ADS_SELLER_APP,
                 category,
                 AppEventTracking.Action.CLICK,
@@ -2145,216 +2145,216 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTopAdsProduct(String eventLabel) {
-        eventTopAds(AppEventTracking.Category.TOP_ADS_PRODUCT, eventLabel);
+    public static void eventTopAdsProduct(Context context, String eventLabel) {
+        eventTopAds(context, AppEventTracking.Category.TOP_ADS_PRODUCT, eventLabel);
     }
 
-    public static void eventTopAdsShop(String eventLabel) {
-        eventTopAds(AppEventTracking.Category.TOP_ADS_SHOP, eventLabel);
+    public static void eventTopAdsShop(Context context, String eventLabel) {
+        eventTopAds(context, AppEventTracking.Category.TOP_ADS_SHOP, eventLabel);
     }
 
-    public static void eventTopAdsProductShop(String eventLabel) {
-        eventTopAds(AppEventTracking.Category.TOP_ADS_PRODUCT_SHOP, eventLabel);
+    public static void eventTopAdsProductShop(Context context, String eventLabel) {
+        eventTopAds(context, AppEventTracking.Category.TOP_ADS_PRODUCT_SHOP, eventLabel);
     }
 
-    public static void eventTopAdsProductAddBalance() {
-        eventTopAdsProductShop(AppEventTracking.EventLabel.ADD_BALANCE);
+    public static void eventTopAdsProductAddBalance(Context context) {
+        eventTopAdsProductShop(context, AppEventTracking.EventLabel.ADD_BALANCE);
     }
 
-    public static void eventTopAdsProductStatisticDashboard(String statisticOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_DASHBOARD + statisticOption);
+    public static void eventTopAdsProductStatisticDashboard(Context context, String statisticOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.STATISTIC_DASHBOARD + statisticOption);
     }
 
-    public static void eventTopAdsProductStatisticBar(String statisticOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
+    public static void eventTopAdsProductStatisticBar(Context context, String statisticOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
     }
 
-    public static void eventTopAdsProductGroupsFilter(String groupFilterOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.GROUPS_FILTER + groupFilterOption);
+    public static void eventTopAdsProductGroupsFilter(Context context, String groupFilterOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.GROUPS_FILTER + groupFilterOption);
     }
 
-    public static void eventTopAdsProductNewKeyword(String keywordTypeOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD_POSITIF + keywordTypeOption);
+    public static void eventTopAdsProductNewKeyword(Context context, String keywordTypeOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.KEYWORD_POSITIF + keywordTypeOption);
     }
 
-    public static void eventTopAdsProductNewKeywordNegatif(String keywordTypeOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD_NEGATIF + keywordTypeOption);
+    public static void eventTopAdsProductNewKeywordNegatif(Context context, String keywordTypeOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.KEYWORD_NEGATIF + keywordTypeOption);
     }
 
-    public static void eventTopAdsProductDeleteGrup() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DELETE_GROUP);
+    public static void eventTopAdsProductDeleteGrup(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DELETE_GROUP);
     }
 
-    public static void eventTopAdsProductMainPageDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_MAIN_PAGE + periodOption);
+    public static void eventTopAdsProductMainPageDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_MAIN_PAGE + periodOption);
     }
 
-    public static void eventTopAdsProductMainPageDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_MAIN_PAGE);
+    public static void eventTopAdsProductMainPageDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_MAIN_PAGE);
     }
 
-    public static void eventTopAdsProductStatistikDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_STATISTIK + periodOption);
+    public static void eventTopAdsProductStatistikDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_STATISTIK + periodOption);
     }
 
-    public static void eventTopAdsProductStatistikDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_STATISTIK);
+    public static void eventTopAdsProductStatistikDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_STATISTIK);
     }
 
-    public static void eventTopAdsProductPageGroupDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_GROUP + periodOption);
+    public static void eventTopAdsProductPageGroupDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_GROUP + periodOption);
     }
 
-    public static void eventTopAdsProductPageGroupDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_GROUP);
+    public static void eventTopAdsProductPageGroupDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_GROUP);
     }
 
-    public static void eventTopAdsProductPageProductDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_PRODUCT + periodOption);
+    public static void eventTopAdsProductPageProductDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_PRODUCT + periodOption);
     }
 
-    public static void eventTopAdsProductPageProductDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_PRODUCT);
+    public static void eventTopAdsProductPageProductDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_PRODUCT);
     }
 
-    public static void eventTopAdsProductDetailGroupPageDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_GROUP_DETAIL + periodOption);
+    public static void eventTopAdsProductDetailGroupPageDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_GROUP_DETAIL + periodOption);
     }
 
-    public static void eventTopAdsProductDetailGroupPageDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_GROUP_DETAIL);
+    public static void eventTopAdsProductDetailGroupPageDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_GROUP_DETAIL);
     }
 
-    public static void eventTopAdsProductDetailProductPageDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION_PRODUCT_DETAIL + periodOption);
+    public static void eventTopAdsProductDetailProductPageDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION_PRODUCT_DETAIL + periodOption);
     }
 
-    public static void eventTopAdsProductDetailProductPageDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM_PRODUCT_DETAIL);
+    public static void eventTopAdsProductDetailProductPageDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM_PRODUCT_DETAIL);
     }
 
-    public static void eventTopadsEditGroupPromoAddProduct() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_ADD_PRODUCT);
+    public static void eventTopadsEditGroupPromoAddProduct(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_ADD_PRODUCT);
     }
 
-    public static void eventTopAdsProductNewPromo(String promoOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO + promoOption);
+    public static void eventTopAdsProductNewPromo(Context context, String promoOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PROMO + promoOption);
     }
 
-    public static void eventTopAdsProductNewPromoGroup() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_GROUP);
+    public static void eventTopAdsProductNewPromoGroup(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PROMO_GROUP);
     }
 
-    public static void eventTopAdsProductNewPromoProduct() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_PRODUCT);
+    public static void eventTopAdsProductNewPromoProduct(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PROMO_PRODUCT);
     }
 
-    public static void eventTopAdsProductNewPromoKeywordPositif() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_POSITIF);
+    public static void eventTopAdsProductNewPromoKeywordPositif(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_POSITIF);
     }
 
-    public static void eventTopAdsProductNewPromoKeywordNegatif() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_NEGATIVE);
+    public static void eventTopAdsProductNewPromoKeywordNegatif(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PROMO_KEYWORD_NEGATIVE);
     }
 
-    public static void eventTopAdsProductAddPromoStep1() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_1);
+    public static void eventTopAdsProductAddPromoStep1(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddPromoStep2(String budgetOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_2 + budgetOption);
+    public static void eventTopAdsProductAddPromoStep2(Context context, String budgetOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_GROUP_STEP_2 + budgetOption);
     }
 
-    public static void eventTopAdsProductAddPromoStep3(String showTimeOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_GROUP_STEP_3 + showTimeOption);
+    public static void eventTopAdsProductAddPromoStep3(Context context, String showTimeOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_GROUP_STEP_3 + showTimeOption);
     }
 
-    public static void eventTopAdsProductAddPromoExistingGroupStep1() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_EXISTING_GROUP_STEP_1);
+    public static void eventTopAdsProductAddPromoExistingGroupStep1(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PRODUCT_EXISTING_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddPromoWithoutGroupStep1() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_1);
+    public static void eventTopAdsProductAddPromoWithoutGroupStep1(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_1);
     }
 
-    public static void eventTopAdsProductAddPromoWithoutGroupStep2(String budgetOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_2 + budgetOption);
+    public static void eventTopAdsProductAddPromoWithoutGroupStep2(Context context, String budgetOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.ADD_PRODUCT_WITHOUT_GROUP_STEP_2 + budgetOption);
     }
 
-    public static void eventTopAdsProductFilter(String filterOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PRODUCT + filterOption);
+    public static void eventTopAdsProductFilter(Context context, String filterOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PRODUCT + filterOption);
     }
 
-    public static void eventTopAdsProductClickDetailGroupPDP() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DETAIL_PROMO_PRODUCT_PDP);
+    public static void eventTopAdsProductClickDetailGroupPDP(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DETAIL_PROMO_PRODUCT_PDP);
     }
 
-    public static void eventTopAdsProductClickDetailProductPDP() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DETAIL_PROMO_PRODUCT_GROUP);
+    public static void eventTopAdsProductClickDetailProductPDP(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DETAIL_PROMO_PRODUCT_GROUP);
     }
 
-    public static void eventTopAdsProductEditGroupName() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_NAME);
+    public static void eventTopAdsProductEditGroupName(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_NAME);
     }
 
-    public static void eventTopAdsProductEditGrupManage(String groupOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_MANAGE_GROUP + groupOption);
+    public static void eventTopAdsProductEditGrupManage(Context context, String groupOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_MANAGE_GROUP + groupOption);
     }
 
-    public static void eventTopAdsProductEditGrupCost(String budgetOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_COST + budgetOption);
+    public static void eventTopAdsProductEditGrupCost(Context context, String budgetOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_COST + budgetOption);
     }
 
-    public static void eventTopAdsProductEditProductCost(String budgetOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_PRODUCT_COST + budgetOption);
+    public static void eventTopAdsProductEditProductCost(Context context, String budgetOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_PRODUCT_COST + budgetOption);
     }
 
-    public static void eventTopAdsProductEditGrupSchedule(String showTimeOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_GROUP_SCHEDULE + showTimeOption);
+    public static void eventTopAdsProductEditGrupSchedule(Context context, String showTimeOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_GROUP_SCHEDULE + showTimeOption);
     }
 
-    public static void eventTopAdsProductEditProductSchedule(String showTimeOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.EDIT_PRODUCT_SCHEDULE + showTimeOption);
+    public static void eventTopAdsProductEditProductSchedule(Context context, String showTimeOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.EDIT_PRODUCT_SCHEDULE + showTimeOption);
     }
 
-    public static void eventTopAdsShopDatePeriod(String periodOption) {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PERIOD_OPTION + periodOption);
+    public static void eventTopAdsShopDatePeriod(Context context, String periodOption) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PERIOD_OPTION + periodOption);
     }
 
-    public static void eventTopAdsShopChooseDateCustom() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.DATE_CUSTOM);
+    public static void eventTopAdsShopChooseDateCustom(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.DATE_CUSTOM);
     }
 
-    public static void eventTopAdsShopStatistic(String statisticOption) {
-        eventTopAdsShop(AppEventTracking.EventLabel.STATISTIC_WITH_DASH + statisticOption);
+    public static void eventTopAdsShopStatistic(Context context, String statisticOption) {
+        eventTopAdsShop(context, AppEventTracking.EventLabel.STATISTIC_WITH_DASH + statisticOption);
     }
 
-    public static void eventTopAdsShopStatisticBar(String statisticOption) {
-        eventTopAdsShop(AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
+    public static void eventTopAdsShopStatisticBar(Context context, String statisticOption) {
+        eventTopAdsShop(context, AppEventTracking.EventLabel.STATISTIC_BAR + statisticOption);
     }
 
-    public static void eventTopAdsShopAddPromoBudget(String budgetOption) {
-        eventTopAdsShop(AppEventTracking.EventLabel.ADD_SHOP_PROMO_BUDGET + budgetOption);
+    public static void eventTopAdsShopAddPromoBudget(Context context, String budgetOption) {
+        eventTopAdsShop(context, AppEventTracking.EventLabel.ADD_SHOP_PROMO_BUDGET + budgetOption);
     }
 
-    public static void eventTopAdsShopAddPromoShowTime(String showTimeOption) {
-        eventTopAdsShop(AppEventTracking.EventLabel.ADD_SHOP_PROMO_SHOWTIME + showTimeOption);
+    public static void eventTopAdsShopAddPromoShowTime(Context context, String showTimeOption) {
+        eventTopAdsShop(context, AppEventTracking.EventLabel.ADD_SHOP_PROMO_SHOWTIME + showTimeOption);
     }
 
-    public static void eventTopAdsProductClickGroupDashboard() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.GROUP);
+    public static void eventTopAdsProductClickGroupDashboard(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.GROUP);
     }
 
-    public static void eventTopAdsProductClickProductDashboard() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.PRODUCT_WITHOUT_DASH);
+    public static void eventTopAdsProductClickProductDashboard(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.PRODUCT_WITHOUT_DASH);
     }
 
-    public static void eventTopAdsProductClickKeywordDashboard() {
-        eventTopAdsProduct(AppEventTracking.EventLabel.KEYWORD);
+    public static void eventTopAdsProductClickKeywordDashboard(Context context) {
+        eventTopAdsProduct(context, AppEventTracking.EventLabel.KEYWORD);
     }
 
-    public static void eventCheckoutGoldMerchant(String eventCategory, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCheckoutGoldMerchant(Context context, String eventCategory, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_GOLD_MERCHANT,
                 eventCategory,
                 AppEventTracking.Action.CLICK,
@@ -2362,20 +2362,20 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickSubscribeGoldMerchant(String packageType) {
-        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_ATC, packageType);
+    public static void eventClickSubscribeGoldMerchant(Context context, String packageType) {
+        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_ATC, packageType);
     }
 
-    public static void eventClickChangePackageGoldMerchant() {
-        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.CHANGE_PACKAGE_GOLD_MERCHANT);
+    public static void eventClickChangePackageGoldMerchant(Context context) {
+        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.CHANGE_PACKAGE_GOLD_MERCHANT);
     }
 
-    public static void eventClickSubscribeCheckoutGoldMerchant() {
-        eventCheckoutGoldMerchant(AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.GM_CHECKOUT);
+    public static void eventClickSubscribeCheckoutGoldMerchant(Context context) {
+        eventCheckoutGoldMerchant(context, AppEventTracking.Category.GOLD_MERCHANT_CHECKOUT, AppEventTracking.EventLabel.GM_CHECKOUT);
     }
 
-    public static void eventCreateShopSellerApp(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateShopSellerApp(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_CREATE_SHOP,
                 AppEventTracking.Category.CREATE_SHOP,
                 AppEventTracking.Action.CLICK,
@@ -2383,33 +2383,33 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventLoginCreateShopSellerApp() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.ENTER);
+    public static void eventLoginCreateShopSellerApp(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.ENTER);
     }
 
-    public static void eventClickCreateShopOnBoardingSellerApp() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.OPEN_SHOP_ONBOARDING);
+    public static void eventClickCreateShopOnBoardingSellerApp(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.OPEN_SHOP_ONBOARDING);
     }
 
-    public static void eventCreateShopFillBiodata() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA);
+    public static void eventCreateShopFillBiodata(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA);
     }
 
-    public static void eventCreateShopFillBiodataError() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA_ERROR);
+    public static void eventCreateShopFillBiodataError(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.CONTINUE_SHOP_BIODATA_ERROR);
     }
 
-    public static void eventCreateShopFillLogistic() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.SAVE_LOGISTIC);
+    public static void eventCreateShopFillLogistic(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.SAVE_LOGISTIC);
     }
 
-    public static void eventCreateShopFillLogisticError() {
-        eventCreateShopSellerApp(AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
+    public static void eventCreateShopFillLogisticError(Context context) {
+        eventCreateShopSellerApp(context, AppEventTracking.EventLabel.SAVE_LOGISTIC_ERROR);
     }
 
-    public static void eventOpportunity(String event, String category,
+    public static void eventOpportunity(Context context, String event, String category,
                                         String action, String label) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(context, new EventTracking(
                 event,
                 category,
                 action,
@@ -2417,10 +2417,10 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventOpportunityCustom(String event, String category,
+    public static void eventOpportunityCustom(Context context, String event, String category,
                                               String action, String label,
                                               HashMap<String, String> customDimension) {
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(context, new EventTracking(
                 event,
                 category,
                 action,
@@ -2430,43 +2430,43 @@ public class UnifyTracking extends TrackingUtils {
         );
     }
 
-    public static void eventTopChatSearch(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventTopChatSearch(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventAttachment(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAttachment(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventInsertAttachment(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventInsertAttachment(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventSendAttachment(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSendAttachment(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void sendChat(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void sendChat(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventOpenTopChat(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOpenTopChat(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventClickTemplate(String category, String action, String event) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickTemplate(Context context, String category, String action, String event) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, "").getEvent());
     }
 
-    public static void eventPDPSendChat() {
-        sendGTMEvent(new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
+    public static void eventPDPSendChat(Context context) {
+        sendGTMEvent(context, new EventTracking(AppEventTracking.Event.PRODUCT_PAGE
                 , AppEventTracking.Category.PRODUCT_PAGE
                 , AppEventTracking.Action.PRODUCT_PAGE
                 , AppEventTracking.EventLabel.PRODUCT_PAGE
@@ -2474,16 +2474,16 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventSendMessagePage() {
-        sendGTMEvent(new EventTracking(AppEventTracking.Event.SEND_MESSAGE_PAGE
+    public static void eventSendMessagePage(Context context) {
+        sendGTMEvent(context, new EventTracking(AppEventTracking.Event.SEND_MESSAGE_PAGE
                 , AppEventTracking.Category.SEND_MESSAGE_PAGE
                 , AppEventTracking.Action.SEND_MESSAGE_PAGE
                 , ""
         ).getEvent());
     }
 
-    public static void eventShopSendChat() {
-        sendGTMEvent(new EventTracking(AppEventTracking.Event.SHOP_PAGE
+    public static void eventShopSendChat(Context context) {
+        sendGTMEvent(context, new EventTracking(AppEventTracking.Event.SHOP_PAGE
                 , AppEventTracking.Category.SHOP_PAGE
                 , AppEventTracking.Action.SHOP_PAGE
                 , ""
@@ -2491,14 +2491,14 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventClickThumbnailMarketing(String category, String action, String event, String id) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickThumbnailMarketing(Context context, String category, String action, String event, String id) {
+        sendGTMEvent(context, new EventTracking(
                 event, category, action, id).getEvent());
     }
 
 
-    public static void eventSellerHomeDashboardClick(String main, String item) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSellerHomeDashboardClick(Context context, String main, String item) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOME_DASHBOARD_CLICK_SELLER,
                 AppEventTracking.Category.DASHBOARD,
                 AppEventTracking.Action.CLICK + " " + main,
@@ -2507,8 +2507,8 @@ public class UnifyTracking extends TrackingUtils {
                 .getEvent());
     }
 
-    public static void eventReferralAndShare(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventReferralAndShare(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_REFERRAL,
                 AppEventTracking.Category.REFERRAL,
                 action,
@@ -2516,8 +2516,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventAppShareWhenReferralOff(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAppShareWhenReferralOff(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_APP_SHARE_WHEN_REFERRAL_OFF,
                 AppEventTracking.Category.APPSHARE,
                 action,
@@ -2525,8 +2525,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventFeaturedProduct(String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventFeaturedProduct(Context context, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SHOP_MANAGE,
                 AppEventTracking.Category.FEATURED_PRODUCT,
                 AppEventTracking.Action.CLICK,
@@ -2534,8 +2534,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSellerInfo(String eventAction, String eventLabel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSellerInfo(Context context, String eventAction, String eventLabel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SELLER_INFO,
                 AppEventTracking.Category.SELLER_INFO_HOMEPAGE,
                 eventAction,
@@ -2543,44 +2543,44 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickMenuSellerInfo() {
-        eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
+    public static void eventClickMenuSellerInfo(Context context) {
+        eventSellerInfo(context,AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
     }
 
-    public static void eventClickItemSellerInfo(String articleName) {
-        eventSellerInfo(AppEventTracking.Action.CLICK_ARTICLE, articleName);
+    public static void eventClickItemSellerInfo(Context context, String articleName) {
+        eventSellerInfo(context,AppEventTracking.Action.CLICK_ARTICLE, articleName);
     }
 
-    public static void eventClickMenuFeaturedProduct() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.FEATURED_PRODUCT);
+    public static void eventClickMenuFeaturedProduct(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.FEATURED_PRODUCT);
     }
 
-    public static void eventClickAddFeaturedProduct() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
+    public static void eventClickAddFeaturedProduct(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.ADD_FEATURED_PRODUCT);
     }
 
-    public static void eventTickErrorFeaturedProduct() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.TICK_ERROR);
+    public static void eventTickErrorFeaturedProduct(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.TICK_ERROR);
     }
 
-    public static void eventSavePickFeaturedProduct(String counterProduct) {
-        eventFeaturedProduct(AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
+    public static void eventSavePickFeaturedProduct(Context context, String counterProduct) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.SAVE_FEATURED_PRODUCT_PICKER + counterProduct);
     }
 
-    public static void eventSortFeaturedProductChange() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
+    public static void eventSortFeaturedProductChange(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_CHANGE);
     }
 
-    public static void eventSortFeaturedProductNotChange() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
+    public static void eventSortFeaturedProductNotChange(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.SORT_FEATURED_PRODUCT_NO_CHANGE);
     }
 
-    public static void eventDeleteFeaturedProduct() {
-        eventFeaturedProduct(AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
+    public static void eventDeleteFeaturedProduct(Context context) {
+        eventFeaturedProduct(context,AppEventTracking.EventLabel.DELETE_FEATURED_PRODUCT);
     }
 
-    public static void eventClickCart() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickCart(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_TOP_NAV,
                 AppEventTracking.Category.EVENT_TOP_NAV,
                 AppEventTracking.Action.CLICK_CART_BUTTON,
@@ -2588,8 +2588,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventProductManage(String action, String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventProductManage(Context context, String action, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_MANAGE_PRODUCT,
                 AppEventTracking.Category.MANAGE_PRODUCT,
                 action,
@@ -2597,34 +2597,34 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventProductManageTopNav(String label) {
-        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV, label);
+    public static void eventProductManageTopNav(Context context, String label) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_TOP_NAV, label);
     }
 
-    public static void eventProductManageSearch() {
-        eventProductManage(AppEventTracking.Action.CLICK_TOP_NAV, AppEventTracking.EventLabel.SEARCH_PRODUCT);
+    public static void eventProductManageSearch(Context context) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_TOP_NAV, AppEventTracking.EventLabel.SEARCH_PRODUCT);
     }
 
-    public static void eventProductManageClickDetail() {
-        eventProductManage(AppEventTracking.Action.CLICK_PRODUCT_LIST, AppEventTracking.EventLabel.CLICK_PRODUCT_LIST);
+    public static void eventProductManageClickDetail(Context context) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_PRODUCT_LIST, AppEventTracking.EventLabel.CLICK_PRODUCT_LIST);
     }
 
-    public static void eventProductManageSortProduct(String label) {
-        eventProductManage(AppEventTracking.Action.CLICK_SORT_PRODUCT, label);
+    public static void eventProductManageSortProduct(Context context, String label) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_SORT_PRODUCT, label);
     }
 
-    public static void eventProductManageFilterProduct(String label) {
-        eventProductManage(AppEventTracking.Action.CLICK_FILTER_PRODUCT, label);
+    public static void eventProductManageFilterProduct(Context context, String label) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_FILTER_PRODUCT, label);
     }
 
-    public static void eventProductManageOverflowMenu(String label) {
-        eventProductManage(AppEventTracking.Action.CLICK_OVERFLOW_MENU, label);
+    public static void eventProductManageOverflowMenu(Context context, String label) {
+        eventProductManage(context, AppEventTracking.Action.CLICK_OVERFLOW_MENU, label);
     }
 
     // digital widget
 
-    public static void eventClickWidgetBar(String categoryItem) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickWidgetBar(Context context, String categoryItem) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.CLICK_WIDGET_BAR,
@@ -2632,8 +2632,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectOperatorOnWidget(String categoryItem, String operator) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectOperatorOnWidget(Context context, String categoryItem, String operator) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.SELECT_OPERATOR,
@@ -2641,8 +2641,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectProductOnWidget(String categoryItem, String product) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectProductOnWidget(Context context, String categoryItem, String product) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.SELECT_PRODUCT,
@@ -2650,8 +2650,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickBuyOnWidget(String categoryItem, String instant) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickBuyOnWidget(Context context, String categoryItem, String instant) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.CLICK_BELI_LOWER + " - " + categoryItem,
@@ -2661,8 +2661,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital user profile
 
-    public static void eventSelectNumberOnUserProfileNative(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectNumberOnUserProfileNative(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
                 AppEventTracking.Category.RECHARGE + label,
                 AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
@@ -2670,8 +2670,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectNumberOnUserProfileWidget(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectNumberOnUserProfileWidget(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL_WIDGET,
                 AppEventTracking.Action.SELECT_NUMBER_ON_USER_PROFILE,
@@ -2681,8 +2681,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital native
 
-    public static void eventSelectOperatorOnNativePage(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectOperatorOnNativePage(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.DIGITAL + ec,
                 AppEventTracking.Action.SELECT_OPERATOR,
@@ -2690,8 +2690,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSelectProductOnNativePage(String categoryName, String productName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSelectProductOnNativePage(Context context, String categoryName, String productName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.DIGITAL + categoryName,
                 AppEventTracking.Action.SELECT_PRODUCT,
@@ -2699,8 +2699,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCheckInstantSaldo(String ec, String el, boolean toggle) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCheckInstantSaldo(Context context, String ec, String el, boolean toggle) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + ec,
                 toggle ? AppEventTracking.Action.CHECK_INSTANT_SALDO : AppEventTracking.Action.UNCHECK_INSTANT_SALDO,
@@ -2708,8 +2708,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickBuyOnNative(String categoryItem, String instant) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickBuyOnNative(Context context, String categoryItem, String instant) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.DIGITAL + categoryItem,
                 AppEventTracking.Action.CLICK_BELI_LOWER + " - " + categoryItem,
@@ -2717,8 +2717,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickSearchBar(String ec, String el) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickSearchBar(Context context, String ec, String el) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.RECHARGE + ec,
                 AppEventTracking.Action.CLICK_SEARCH_BAR,
@@ -2728,8 +2728,8 @@ public class UnifyTracking extends TrackingUtils {
 
     // digital homepage
 
-    public static void eventClickLihatSemua() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickLihatSemua(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL,
                 AppEventTracking.Action.CLICK_LIHAT_SEMUA_PRODUK,
@@ -2737,8 +2737,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickProductOnDigitalHomepage(String category) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickProductOnDigitalHomepage(Context context, String category) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_DIGITAL,
                 AppEventTracking.Action.SELECT_CATEGORY,
@@ -2746,8 +2746,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTokoCashActivateClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventTokoCashActivateClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
                 AppEventTracking.Action.CLICK_ACTIVATE,
@@ -2755,8 +2755,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTokoCashCheckSaldoClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventTokoCashCheckSaldoClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE_TOKOCASH_WIDGET,
                 AppEventTracking.Action.CLICK_SALDO,
@@ -2764,8 +2764,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventMyCouponClicked() {
-        sendGTMEvent(new EventTracking(
+    public static void eventMyCouponClicked(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
                 AppEventTracking.Action.CLICK_MY_COUPON,
@@ -2773,8 +2773,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCouponChosen(String couponName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCouponChosen(Context context, String couponName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
                 AppEventTracking.Action.CHOOSE_COUPON,
@@ -2782,8 +2782,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCouponPageClosed() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCouponPageClosed(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_COUPON_PAGE,
                 AppEventTracking.Action.CLOSE_COUPON_PAGE,
@@ -2791,8 +2791,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventUserClickedPoints() {
-        sendGTMEvent(new EventTracking(
+    public static void eventUserClickedPoints(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOMEPAGE,
                 AppEventTracking.Category.TOKO_POINTS_PROMO_HOMEPAGE,
                 AppEventTracking.Action.CLICK_TOKO_POINTS_STATUS,
@@ -2800,8 +2800,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventUserProfileTokopoints() {
-        sendGTMEvent(new EventTracking(
+    public static void eventUserProfileTokopoints(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKOPOINTS_USER_PAGE,
                 AppEventTracking.Action.CLICK_TOKO_POINTS,
@@ -2809,8 +2809,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventViewTokopointPopup() {
-        sendGTMEvent(new EventTracking(
+    public static void eventViewTokopointPopup(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKOPOINTS_POP_UP,
                 AppEventTracking.Action.TOKOPOINTS_POP_UP_IMPRESSION,
@@ -2818,8 +2818,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickTokoPointPopup() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickTokoPointPopup(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_TOKO_POINT,
                 AppEventTracking.Category.TOKOPOINTS_POP_UP,
                 AppEventTracking.Action.TOKOPOINTS_POP_UP_CLICK,
@@ -2828,8 +2828,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventAppRatingImpression(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAppRatingImpression(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.IMPRESSION,
@@ -2837,8 +2837,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickAppRating(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickAppRating(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
@@ -2846,8 +2846,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCancelAppRating(String label) {
-        sendGTMEvent(new EventTracking(
+    public static void eventCancelAppRating(Context context, String label) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CANCEL_APP_RATING,
                 AppEventTracking.Category.APP_RATING,
                 AppEventTracking.Action.CLICK,
@@ -2855,8 +2855,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventKolRecommendationViewAllClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventKolRecommendationViewAllClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_VIEW_ALL_KOL_RECOMMENDATION,
@@ -2864,8 +2864,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventKolRecommendationGoToProfileClick(String kolCategory, String kolName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventKolRecommendationGoToProfileClick(Context context, String kolCategory, String kolName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_CLICK_KOL_RECOMMENDATION_PROFILE,
@@ -2873,8 +2873,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventKolRecommendationUnfollowClick(String kolCategory, String kolName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventKolRecommendationUnfollowClick(Context context, String kolCategory, String kolName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_UNFOLLOW_KOL_RECOMMENDATION,
@@ -2882,8 +2882,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventKolRecommendationFollowClick(String kolCategory, String kolName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventKolRecommendationFollowClick(Context context, String kolCategory, String kolName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.USER_INTERACTION_HOMEPAGE,
                 AppEventTracking.Category.HOMEPAGE,
                 AppEventTracking.Action.FEED_FOLLOW_KOL_RECOMMENDATION,
@@ -2895,8 +2895,8 @@ public class UnifyTracking extends TrackingUtils {
         return kolCategory + " - " + kolName;
     }
 
-    public static void eventOnboardingSkip(int pageNumber) {
-        sendGTMEvent(new EventTracking(
+    public static void eventOnboardingSkip(Context context, int pageNumber) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_ONBOARDING,
                 AppEventTracking.Category.ONBOARDING,
                 AppEventTracking.Action.ONBOARDING_SKIP,
@@ -2904,8 +2904,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventOnboardingStartNow() {
-        sendGTMEvent(new EventTracking(
+    public static void eventOnboardingStartNow(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_ONBOARDING,
                 AppEventTracking.Category.ONBOARDING,
                 AppEventTracking.Action.ONBOARDING_START,
@@ -2915,8 +2915,8 @@ public class UnifyTracking extends TrackingUtils {
 
 
     //Resolution Tracking
-    public static void eventCreateResoStep1SaveAndChooseOther() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoStep1SaveAndChooseOther(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
@@ -2924,8 +2924,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoStep1Save() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoStep1Save(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
@@ -2933,8 +2933,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoStep1Continue() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoStep1Continue(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_PRODUCT_PROBLEM,
@@ -2942,8 +2942,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoStep2Continue() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoStep2Continue(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_SOLUTION,
@@ -2951,8 +2951,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoStep3Continue() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoStep3Continue(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_PROVE,
@@ -2960,8 +2960,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoPre() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoPre(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_CREATE_RESO,
@@ -2969,8 +2969,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoConfirm() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoConfirm(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_CREATE_RESO,
@@ -2978,8 +2978,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoUnconfirm() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoUnconfirm(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_CREATE_RESO,
@@ -2987,8 +2987,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventCreateResoAbandon() {
-        sendGTMEvent(new EventTracking(
+    public static void eventCreateResoAbandon(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION,
                 AppEventTracking.Category.RESOLUTION_CENTER,
                 AppEventTracking.Action.CLICK_CREATE_RESO_ABANDON,
@@ -2996,8 +2996,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickChangePhoneNumber() {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickChangePhoneNumber(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
                 AppEventTracking.Category.PROFILE_PAGE,
                 AppEventTracking.Action.CLICK_CHANGE_PHONE_NUMBER,
@@ -3005,8 +3005,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSuccessChangePhoneNumber() {
-        sendGTMEvent(new EventTracking(
+    public static void eventSuccessChangePhoneNumber(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_CLICK_USER_PROFILE,
                 AppEventTracking.Category.MANAGE_PROFILE,
                 AppEventTracking.Action.SUCCESS_CHANGE_PHONE_NUMBER,
@@ -3014,11 +3014,11 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventTracking(EventTracking eventTracking) {
-        sendGTMEvent(eventTracking.getEvent());
+    public static void eventTracking(Context context, EventTracking eventTracking) {
+        sendGTMEvent(context, eventTracking.getEvent());
     }
 
-    public static EventTracking eventResoDetailClickBackEditAddressPage(String resolutionId) {
+    public static EventTracking eventResoDetailClickBackEditAddressPage(Context context, String resolutionId) {
         return new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION_CENTER,
@@ -3027,7 +3027,7 @@ public class UnifyTracking extends TrackingUtils {
         ).setCustomEvent(AppEventTracking.ResoDimension.RESOLUTION_ID, resolutionId);
     }
 
-    public static EventTracking eventResoDetailClickBackInputAddressPage(String resolutionId) {
+    public static EventTracking eventResoDetailClickBackInputAddressPage(Context context, String resolutionId) {
         return new EventTracking(
                 AppEventTracking.Event.EVENT_RESOLUTION_CENTER,
                 AppEventTracking.Category.RESOLUTION_CENTER,
@@ -3037,8 +3037,8 @@ public class UnifyTracking extends TrackingUtils {
     }
 
 
-    public static void eventPromoListClickCategory(String categoryName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPromoListClickCategory(Context context, String categoryName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
                 AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
                 AppEventTracking.Action.PROMO_CLICK_CATEGORY,
@@ -3046,8 +3046,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPromoListClickSubCategory(String subCategoryName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPromoListClickSubCategory(Context context, String subCategoryName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
                 AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
                 AppEventTracking.Action.PROMO_CLICK_SUB_CATEGORY,
@@ -3055,8 +3055,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPromoListClickCopyToClipboardPromoCode(String promoName) {
-        sendGTMEvent(new EventTracking(
+    public static void eventPromoListClickCopyToClipboardPromoCode(Context context, String promoName) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
                 AppEventTracking.Category.PROMO_MICROSITE_PROMO_LIST,
                 AppEventTracking.Action.PROMO_CLICK_COPY_PROMO_CODE,
@@ -3064,8 +3064,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPromoTooltipClickOpenTooltip() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPromoTooltipClickOpenTooltip(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
                 AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
                 AppEventTracking.Action.PROMO_CLICK_OPEN_TOOLTIP,
@@ -3073,8 +3073,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventPromoTooltipClickCloseTooltip() {
-        sendGTMEvent(new EventTracking(
+    public static void eventPromoTooltipClickCloseTooltip(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.CLICK_PROMO_MICRO_SITE,
                 AppEventTracking.Category.PROMO_MICROSITE_PROMO_TOOLTIP,
                 AppEventTracking.Action.PROMO_CLICK_CLOSE_TOOLTIP,
@@ -3082,8 +3082,8 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventSearchResultProductWishlistClick(boolean isWishlisted, String keyword) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultProductWishlistClick(Context context, boolean isWishlisted, String keyword) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.PRODUCT_VIEW,
                 AppEventTracking.Category.SEARCH_RESULT.toLowerCase(),
                 AppEventTracking.Action.CLICK_WISHLIST,
@@ -3097,8 +3097,8 @@ public class UnifyTracking extends TrackingUtils {
         return action + " - " + keyword + " - " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", DEFAULT_LOCALE).format(new Date());
     }
 
-    public static void eventSearchResultSort(String screenName, String sortByValue) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultSort(Context context, String screenName, String sortByValue) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.SORT_BY,
                 AppEventTracking.Action.SORT_BY + " - " + screenName,
@@ -3106,8 +3106,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventSearchResultQuickFilter(String filterName, String filterValue, boolean isSelected) {
-        sendGTMEvent(new EventTracking(
+    public static void eventSearchResultQuickFilter(Context context, String filterName, String filterValue, boolean isSelected) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.SEARCH_RESULT,
                 AppEventTracking.Category.FILTER_PRODUCT,
                 AppEventTracking.Action.QUICK_FILTER,
@@ -3123,8 +3123,8 @@ public class UnifyTracking extends TrackingUtils {
         return TextUtils.join("&", filterList);
     }
 
-    public static void eventBeliLongClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventBeliLongClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_BELI,
@@ -3132,8 +3132,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventReferralLongClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventReferralLongClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_REFERRAL,
@@ -3141,8 +3141,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventBayarLongClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventBayarLongClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_BAYAR,
@@ -3150,8 +3150,8 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventJualLongClick() {
-        sendGTMEvent(new EventTracking(
+    public static void eventJualLongClick(Context context) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.LONG_CLICK,
                 AppEventTracking.Category.LONG_PRESS,
                 AppEventTracking.Action.CLICK_JUAL,
@@ -3159,9 +3159,9 @@ public class UnifyTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventDigitalEventTracking(String action, String label) {
+    public static void eventDigitalEventTracking(Context context, String action, String label) {
         Log.d("EVENTSGA", action + " - " + label);
-        sendGTMEvent(new EventTracking(
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.EVENT_DIGITAL_EVENT,
                 AppEventTracking.Category.DIGITAL_EVENT,
                 action,
