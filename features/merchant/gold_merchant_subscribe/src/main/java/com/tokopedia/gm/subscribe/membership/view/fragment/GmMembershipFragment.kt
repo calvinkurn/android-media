@@ -21,7 +21,6 @@ import com.tokopedia.core.app.TkpdCoreRouter
 import com.tokopedia.gm.subscribe.membership.analytic.GmSubscribeMembershipTracking
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipInfoActivity
 import com.tokopedia.gm.subscribe.membership.view.activity.GmMembershipProductActivity
-import com.tokopedia.graphql.data.GraphqlClient
 import kotlinx.android.synthetic.main.fragment_gm_subscribe_membership.*
 
 
@@ -50,7 +49,6 @@ class GmMembershipFragment : BaseDaggerFragment(), GmMembershipView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        GraphqlClient.init(activity!!.applicationContext)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
