@@ -76,6 +76,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
             "EXTRA_STATE_DIGITAL_CATEGORY_LIST_DATA";
     private static final String FIREBASE_DIGITAL_OMS_REMOTE_CONFIG_KEY = "app_enable_oms_native";
     public static final String PARAM_IS_COUPON_ACTIVE = "PARAM_IS_COUPON_APPLIED";
+    public static final String FROM_SELLER = "from_seller";
 
     private static final int DEFAULT_DELAY_TIME = 500;
 
@@ -107,7 +108,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
     private List<DigitalCategoryItemData> digitalCategoryListDataState;
     private boolean fromAppShortcut = false;
     private int isCouponApplied = DEFAULT_COUPON_NOT_APPLIED;
-
+    private boolean fromSeller = false;
     private RemoteConfig remoteConfig;
 
     public static DigitalCategoryListFragment newInstance() {
@@ -197,6 +198,7 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
             }
 
             isCouponApplied = arguments.getInt(PARAM_IS_COUPON_ACTIVE, 0);
+            fromSeller = arguments.getBoolean(FROM_SELLER, false);
         }
     }
 
@@ -476,7 +478,13 @@ public class DigitalCategoryListFragment extends BasePresenterFragment<IDigitalC
         switch (data.getTypeMenu()) {
             case TRANSACTION:
                 if (isDigitalOmsEnable()) {
-                    RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+                    if(!fromSeller){
+                        RouteManager.route(getActivity(), ApplinkConst.DIGITAL_ORDER);
+                    } else {
+                        Intent intent = ((IDigitalModuleRouter) getActivity().getApplication()).
+                                getOrderListIntent(getActivity());
+                        startActivity(intent);
+                    }
                     break;
                 }
             default:
