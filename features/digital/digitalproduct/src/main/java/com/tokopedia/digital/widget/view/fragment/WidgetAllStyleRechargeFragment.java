@@ -219,7 +219,7 @@ public class WidgetAllStyleRechargeFragment extends BasePresenterFragmentV4<IDig
 
         if (SessionHandler.isV4Login(getActivity())) {
             navigateToActivityRequest(
-                    CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassDataState, CartDigitalActivity.PARAM_WIDGET),
+                    CartDigitalActivity.newInstance(getActivity(), digitalCheckoutPassData, CartDigitalActivity.PARAM_WIDGET),
                     IDigitalModuleRouter.REQUEST_CODE_CART_DIGITAL
             );
         } else {

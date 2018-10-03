@@ -48,7 +48,7 @@ public interface TrainEventTracking {
         String CLICK_USE_VOUCHER_CODE = "click gunakan voucher code";
         String VOUCHER_SUCCESS = "voucher success";
         String VOUCHER_ERROR = "voucher error";
-        String PROCEED_TO_PAYMENT = "proceed to payment";
+        String PROCEED_TO_PAYMENT = "click proceed to payment";
         String VIEW_MY_TICKET_PAGE = "view my ticket page";
         String CLICK_MY_TICKET = "click my ticket";
     }
