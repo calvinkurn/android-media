@@ -86,6 +86,7 @@ public class OnboardingFragment extends Fragment {
                 START_IMAGE_NAME
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
+//        subtitle.setText(getText(R.string.af_onboarding_make_profile_desc));
         goBtn.setOnClickListener(view1 ->
                 startActivity(DomainInputActivity.createIntent(getContext()))
         );
