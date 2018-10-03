@@ -22,8 +22,10 @@ import java.util.Objects;
 
 public class OnboardingFragment extends Fragment {
 
+    private static final String PATH_FORMAT = "%s/%s/%s/%s.jpg";
     private static final String ANDROID_IMAGE_URL = "https://ecs7.tokopedia.net/img/android";
     private static final String FINISH_IMAGE_NAME = "af_onboarding_finish";
+    private static final String START_IMAGE_NAME = "af_onboarding_start";
 
     private ImageView image;
     private TextView title;
@@ -76,13 +78,22 @@ public class OnboardingFragment extends Fragment {
     }
 
     private void setUpOnboardingStart() {
-        goBtn.setOnClickListener(view1 -> {
-            startActivity(DomainInputActivity.createIntent(getContext()));
-        });
+        String imageUrl = String.format(
+                PATH_FORMAT,
+                ANDROID_IMAGE_URL,
+                START_IMAGE_NAME,
+                DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(getContext())),
+                START_IMAGE_NAME
+        );
+        ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
+        goBtn.setOnClickListener(view1 ->
+                startActivity(DomainInputActivity.createIntent(getContext()))
+        );
     }
 
     private void setUpOnboardingFinish() {
-        String imageUrl = String.format("%s/%s/%s/%s.jpg",
+        String imageUrl = String.format(
+                PATH_FORMAT,
                 ANDROID_IMAGE_URL,
                 FINISH_IMAGE_NAME,
                 DisplayMetricUtils.getScreenDensity(Objects.requireNonNull(getContext())),
@@ -92,9 +103,9 @@ public class OnboardingFragment extends Fragment {
         title.setText(R.string.af_complete_profile);
         subtitle.setText(R.string.af_select_product_recommendation);
         goBtn.setText(R.string.af_see_product_selection);
-        goBtn.setOnClickListener(view -> {
-            Toast.makeText(getContext(), "Going to explore~", Toast.LENGTH_SHORT).show();
-        });
+        goBtn.setOnClickListener(view ->
+                Toast.makeText(getContext(), "Going to explore~", Toast.LENGTH_SHORT).show()
+        );
         commission.setVisibility(View.GONE);
     }
 }
