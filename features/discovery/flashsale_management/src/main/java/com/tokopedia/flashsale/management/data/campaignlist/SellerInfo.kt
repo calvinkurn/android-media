@@ -1,4 +1,4 @@
-package com.tokopedia.flashsale.management.data.campaign_list
+package com.tokopedia.flashsale.management.data.campaignlist
 
 data class SellerInfo(
         var submitted_product: Int = 0,

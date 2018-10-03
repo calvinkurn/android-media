@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.campaign_list.DataCampaignList
+import com.tokopedia.flashsale.management.data.campaignlist.DataCampaignList
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
@@ -40,7 +40,7 @@ class GetCampaignListUsecase(private val context: Context, private val graphqlUs
                         if(all == "true")
                             GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign)
                         else
-                            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_empty_campaign)
+                            GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_campaign)
                     else
                         GraphqlHelper.loadRawString(context.resources, R.raw.dummy_data_empty_campaign)
 

@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.flashsale.management.R
-import com.tokopedia.flashsale.management.data.campaign_label.DataCampaignLabel
+import com.tokopedia.flashsale.management.data.campaignlabel.DataCampaignLabel
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
