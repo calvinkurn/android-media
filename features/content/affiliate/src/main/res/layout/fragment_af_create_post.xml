@@ -97,6 +97,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="@dimen/dp_24"
+                android:layout_marginBottom="@dimen/dp_24"
                 android:drawablePadding="@dimen/dp_8"
                 android:fontFamily="sans-serif-medium"
                 android:gravity="center_horizontal"

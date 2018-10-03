@@ -45,10 +45,10 @@
     <string name="af_add_more_image_to_product">Tambah gambar agar produk rekomendasimu semakin dilirik.</string>
     <string name="af_see_example">Lihat Contoh</string>
     <string name="af_title_ok">Oke</string>
-    <string name="title_image_picker">Image Picker</string>
-    <string name="title_image_editor">Image Editor</string>
-    <string name="title_create_post">Create Post</string>
-    <string name="title_create_post_example">Contoh Gambar</string>
+    <string name="title_af_image_picker">Gambar Produk</string>
+    <string name="title_af_image_editor">Image Editor</string>
+    <string name="title_af_create_post">Tambah Gambar</string>
+    <string name="title_af_create_post_example">Contoh Gambar</string>
     <string name="af_use_image_to_show">Gunakan gambar yang menampilkan produk rekomendasimu.</string>
     <string name="af_set_main_image">Atur Sebagai Gambar Utama</string>
 
