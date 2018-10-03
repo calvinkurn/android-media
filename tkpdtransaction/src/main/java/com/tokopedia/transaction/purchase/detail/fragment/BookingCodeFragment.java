@@ -23,6 +23,9 @@ import com.tokopedia.transaction.purchase.detail.activity.BookingCodeActivity;
 import com.tokopedia.transaction.purchase.detail.activity.BookingCodeContract;
 import com.tokopedia.transaction.purchase.detail.model.detail.response.OnlineBooking;
 import com.tokopedia.transaction.purchase.detail.presenter.BookingCodePresenter;
+import com.tokopedia.transaction.purchase.utils.OrderDetailAnalytics;
+import com.tokopedia.transaction.purchase.utils.OrderDetailConstant;
+import com.tokopedia.transaction.router.ITransactionOrderDetailRouter;
 
 public class BookingCodeFragment extends BaseDaggerFragment implements BookingCodeContract.BookingView {
 
@@ -35,6 +38,8 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
     OnlineBooking mData;
     BookingCodeContract.BookingPresenter mPresenter;
 
+    OrderDetailAnalytics orderDetailAnalytics;
+
     public BookingCodeFragment() {
     }
 
@@ -46,6 +51,9 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        orderDetailAnalytics = new OrderDetailAnalytics(
+                (ITransactionOrderDetailRouter) getActivity().getApplication()
+        );
         mData = getArguments() != null ? getArguments().getParcelable(BookingCodeActivity.JOB_CODE_EXTRA) : null;
         mPresenter = new BookingCodePresenter();
         mPresenter.setView(this);
@@ -99,12 +107,16 @@ public class BookingCodeFragment extends BaseDaggerFragment implements BookingCo
 
     @Override
     public void zoomBarcode() {
+        orderDetailAnalytics.sendAnalyticsClickShipping(OrderDetailConstant.VALUE_CLICK_BARCODE,
+                OrderDetailConstant.VALUE_EMPTY);
         filterView.setVisibility(View.VISIBLE);
         filterView.setOnClickListener(view -> view.setVisibility(View.GONE));
     }
 
     @Override
     public void showSuccessOnCopy() {
+        orderDetailAnalytics.sendAnalyticsClickShipping(OrderDetailConstant.VALUE_CLICK_COPY_CODE,
+                OrderDetailConstant.VALUE_EMPTY);
         NetworkErrorHelper.showGreenCloseSnackbar(getActivity(),
                 getString(R.string.booking_code_copied_notif));
     }
