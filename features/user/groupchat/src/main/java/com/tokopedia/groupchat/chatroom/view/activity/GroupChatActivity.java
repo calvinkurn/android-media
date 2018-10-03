@@ -121,6 +121,7 @@ public class GroupChatActivity extends BaseSimpleActivity
     private static final String TOKOPEDIA_APPLINK = "tokopedia://";
     Dialog exitDialog;
     private static final float ELEVATION = 10;
+    private static final int YOUTUBE_DELAY = 1500;
     private long onPlayTime, onPauseTime, onEndTime, onLeaveTime, onTrackingTime;
 
     @DeepLink(ApplinkConstant.GROUPCHAT_ROOM)
@@ -279,8 +280,13 @@ public class GroupChatActivity extends BaseSimpleActivity
             sponsorLayout.setVisibility(View.GONE);
 
              if (youTubePlayer != null) {
-                youTubePlayer.pause();
-                youTubePlayer.loadVideo(channelInfoViewModel.getVideoId());
+                youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                 new Handler().postDelayed(new Runnable() {
+                     @Override
+                     public void run() {
+                         youTubePlayer.play();
+                     }
+                 }, YOUTUBE_DELAY);
                 return;
             }
 
@@ -294,7 +300,13 @@ public class GroupChatActivity extends BaseSimpleActivity
                         youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.DEFAULT);
 
                         //cue the 1st video by default
-                        youTubePlayer.loadVideo(channelInfoViewModel.getVideoId());
+                        youTubePlayer.cueVideo(channelInfoViewModel.getVideoId());
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                youTubePlayer.play();
+                            }
+                        }, YOUTUBE_DELAY);
 
                         youTubePlayer.setPlaybackEventListener(new YouTubePlayer.PlaybackEventListener() {
                             String TAG = "youtube";
