@@ -682,12 +682,6 @@ public class MainParentActivity extends BaseActivity implements
         }
     }
 
-    public static class UserSession {
-        public static boolean isFirstTimeUser(Context context) {
-            return com.tokopedia.user.session.UserSession.isFirstTimeUser(context);
-        }
-    }
-
     @RestrictTo(RestrictTo.Scope.TESTS)
     public MainParentPresenter getPresenter() {
         return presenter;
@@ -776,15 +770,5 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
-    }
-
-    @Override
-    public void onCartEmpty(String autoApplyMessage) {
-
-    }
-
-    @Override
-    public void onCartNotEmpty(Bundle bundle) {
-
     }
 }
