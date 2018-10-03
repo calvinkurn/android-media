@@ -92,6 +92,10 @@ public class UserSession implements UserSessionInterface {
         return shopId;
     }
 
+    public boolean hasShop() {
+        return !TextUtils.isEmpty(getShopId()) && !DEFAULT_EMPTY_SHOP_ID.equals(getShopId());
+    }
+
     public String getName() {
         SharedPreferences sharedPrefs = context.getSharedPreferences(LOGIN_SESSION,
                 Context.MODE_PRIVATE);
