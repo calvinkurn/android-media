@@ -111,7 +111,7 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM() {
         if (ContainerHolderSingleton.getContainerHolder().getStatus().isSuccess()) {
-            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
         }
@@ -119,7 +119,7 @@ public class GTMContainer implements IGTMContainer {
 
     private void validateGTM(ContainerHolder containerHolder) {
         if (containerHolder.getStatus().isSuccess()) {
-            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED));
+            Log.i(TAG, STR_GTM_EXCEPTION_ENABLED + TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED));
         } else {
             Log.e("GTMContainer", "failure loading container");
         }
@@ -161,7 +161,7 @@ public class GTMContainer implements IGTMContainer {
                 }
             }, 2, TimeUnit.SECONDS);
         } catch (Exception e) {
-            TrackingUtils.eventError(context.getClass().toString(), e.toString());
+            TrackingUtils.eventError(context, context.getClass().toString(), e.toString());
         }
     }
 
@@ -347,7 +347,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void eventError(String screenName, String errorDesc) {
-        if (TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
+        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
             Log.d(TAG, "Sending Push Event Error");
             GTMDataLayer.pushEvent(context, "trackException", DataLayer.mapOf(
                     "screenName", screenName,
@@ -387,7 +387,7 @@ public class GTMContainer implements IGTMContainer {
 
     @Override
     public void eventNetworkError(String networkError) {
-        if (TrackingUtils.getGtmString(GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
+        if (TrackingUtils.getGtmString(context, GTMContainer.IS_EXCEPTION_ENABLED).equals("true")) {
             Log.d(TAG, "Sending Push Event Network Error");
             GTMDataLayer.pushEvent(context,
                     "trackException", DataLayer.mapOf("exception.description", networkError, "exception.isFatal", true));

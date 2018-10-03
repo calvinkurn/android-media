@@ -284,7 +284,7 @@ public class UnifyTracking extends TrackingUtils {
                 AppEventTracking.EventLabel.ORDER_DETAIL
         ).getEvent());
 
-        sendMoEngageClickedNewOrder();
+        sendMoEngageClickedNewOrder(context);
     }
 
     public static void eventTrackOrder(Context context) {
@@ -1318,7 +1318,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventCTAAction(Context context) {
-        eventCTAAction(AppEventTracking.EventLabel.CTA);
+        eventCTAAction(context, AppEventTracking.EventLabel.CTA);
     }
 
     public static void eventCTAAction(Context context, String channel) {
@@ -1488,7 +1488,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventClickGMStatProduct(Context context, String eventLabel) {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT, eventLabel);
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_PRODUCT, eventLabel);
     }
 
     public static void eventClickGMStat(Context context) {
@@ -1527,12 +1527,12 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventClickGMStatFilterNameTransaction(Context context, String filterName) {
-        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
+        eventClickFilterGMStat(context, AppEventTracking.Category.GM_STATISTIC_TRANSACTION_DETAIL,
                 AppEventTracking.EventLabel.GRAPH_X + filterName);
     }
 
     public static void eventClickGMStatFilterTypeProductSold(Context context, String filterType) {
-        eventClickFilterGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_SOLD, filterType);
+        eventClickFilterGMStat(context, AppEventTracking.Category.GM_STATISTIC_PRODUCT_SOLD, filterType);
     }
 
     private static void eventClickGMStat(Context context, String eventCategory, String eventLabel) {
@@ -1554,7 +1554,7 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventClickGMStatMarketInsight(Context context) {
-        eventClickGMStat(AppEventTracking.Category.GM_STATISTIC_PRODUCT_INSIGHT,
+        eventClickGMStat(context, AppEventTracking.Category.GM_STATISTIC_PRODUCT_INSIGHT,
                 AppEventTracking.EventLabel.ADD_PRODUCT);
     }
 
@@ -1568,15 +1568,15 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventChangeCurrencyProductList(Context context) {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST);
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_PRICE_PRODUCT_LIST);
     }
 
     public static void eventChangeCurrencyDropDown(Context context) {
-        eventManageProductClicked(AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN);
+        eventManageProductClicked(context, AppEventTracking.EventLabel.CHANGE_PRICE_DROP_DOWN);
     }
 
     public static void eventCopyProduct(Context context) {
-        eventManageProductClicked(AppEventTracking.EventLabel.COPY_PRODUCT);
+        eventManageProductClicked(context, AppEventTracking.EventLabel.COPY_PRODUCT);
     }
 
     public static void eventMoRegistrationStart(Context context, String medium) {
@@ -2013,11 +2013,11 @@ public class UnifyTracking extends TrackingUtils {
     }
 
     public static void eventSwitchRpToDollarAddProduct(Context context) {
-        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
+        eventClickAddProduct(context, AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_CURRENCY);
     }
 
     public static void eventClickVideoAddProduct(Context context) {
-        eventClickAddProduct(AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
+        eventClickAddProduct(context, AppEventTracking.Category.ADD_PRODUCT, AppEventTracking.EventLabel.GOLD_MERCHANT_VIDEO);
     }
 
     public static void eventClickYesGoldMerchantAddProduct(Context context) {
@@ -2038,7 +2038,7 @@ public class UnifyTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventImpressionAppUpdate(boolean isForceUpdate) {
+    public static void eventImpressionAppUpdate(Context context, boolean isForceUpdate) {
         sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.IMPRESSION_APP_UPDATE,
                 AppEventTracking.Category.APP_UPDATE,

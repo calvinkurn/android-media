@@ -42,7 +42,10 @@ public class Jordan {
     }
 
     public AppsflyerContainer runFirstTimeAppsFlyer(String userID){
-        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance(context);
+        if(!(context instanceof Application)){
+            return null;
+        }
+        AppsflyerContainer appsflyerContainer = AppsflyerContainer.newInstance((Application)context);
         CommonUtils.dumper("Appsflyer login userid " + userID);
 
         AppsFlyerConversionListener conversionListener = new AppsFlyerConversionListener() {
@@ -80,11 +83,17 @@ public class Jordan {
     }
 
     public IAppsflyerContainer getAFContainer(){
-        return AppsflyerContainer.newInstance(context);
+        if(context instanceof Application)
+            return AppsflyerContainer.newInstance((Application)context);
+        else
+            return null;
     }
 
     public IMoengageContainer getMoEngageContainer() {
-        return MoEngageContainer.getMoEngageContainer(context);
+        if(context instanceof Application)
+            return MoEngageContainer.getMoEngageContainer((Application)context);
+        else
+            return null;
     }
 
     public IPerformanceMonitoring getFirebasePerformanceContainer(String traceName) {

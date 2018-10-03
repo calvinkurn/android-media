@@ -31,7 +31,7 @@ public class IndexScreenTracking extends TrackingUtils {
                                   ScreenTracking.IOpenScreenAnalytics openScreenAnalytics) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(activity, openScreenAnalytics, getAfUniqueId())
+                    .newInstance(activity, openScreenAnalytics, getAfUniqueId(activity))
                     .setNetworkSpeed(getNetworkSpeed(activity))
 //                    .setKeyCompetitorIntelligence(getCIData(activity))
                     .execute(activity);

@@ -20,8 +20,8 @@ public class HotlistPageTracking extends TrackingUtils {
         getGTMEngine(context).eventTrackingEnhancedEcommerce(dataLayer);
     }
 
-    public static void eventHotlistSort(String sortValue) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlistSort(Context context, String sortValue) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click sort",
@@ -29,8 +29,8 @@ public class HotlistPageTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventHotlistFilter(Map<String, String> selectedFilter) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlistFilter(Context context, Map<String, String> selectedFilter) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click filter",
@@ -46,8 +46,8 @@ public class HotlistPageTracking extends TrackingUtils {
         return TextUtils.join("&", filterList);
     }
 
-    public static void eventAddWishlist(int position, String productName, String productID) {
-        sendGTMEvent(new EventTracking(
+    public static void eventAddWishlist(Context context, int position, String productName, String productID) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "product list add to wishlist",
@@ -55,8 +55,8 @@ public class HotlistPageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventClickHastag(String url) {
-        sendGTMEvent(new EventTracking(
+    public static void eventClickHastag(Context context, String url) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click category tagging",
@@ -64,8 +64,8 @@ public class HotlistPageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventHotlistPromoImpression(String hotlistTitle, String title, String voucherCode) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlistPromoImpression(Context context, String hotlistTitle, String title, String voucherCode) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click category tagging",
@@ -73,8 +73,8 @@ public class HotlistPageTracking extends TrackingUtils {
         ).getEvent());
     }
 
-    public static void eventShareHotlist(String channel) {
-        sendGTMEvent(new EventTracking(
+    public static void eventShareHotlist(Context context, String channel) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click social share",
@@ -82,8 +82,8 @@ public class HotlistPageTracking extends TrackingUtils {
         ).setUserId().getEvent());
     }
 
-    public static void eventHotlistDisplay(String display) {
-        sendGTMEvent(new EventTracking(
+    public static void eventHotlistDisplay(Context context, String display) {
+        sendGTMEvent(context, new EventTracking(
                 AppEventTracking.Event.HOTLIST,
                 AppEventTracking.Event.HOTLIST_PAGE,
                 "click display",

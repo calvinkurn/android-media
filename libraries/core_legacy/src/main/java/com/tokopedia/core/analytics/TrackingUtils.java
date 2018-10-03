@@ -34,7 +34,7 @@ import java.util.Map;
 
 @Deprecated
 public class TrackingUtils extends TrackingConfig {
-    public static void eventCampaign(Campaign campaign) {
+    public static void eventCampaign(Context context, Campaign campaign) {
         Campaign temp = new Campaign(campaign);
         getGTMEngine(context)
                 .sendCampaign(temp)
@@ -170,7 +170,7 @@ public class TrackingUtils extends TrackingConfig {
                 .build();
 
         getMoEngine(context).setUserData(wrapper, "LOGIN");
-        sendMoEngageLoginEvent(wrapper);
+        sendMoEngageLoginEvent(context, wrapper);
     }
 
 
@@ -192,7 +192,7 @@ public class TrackingUtils extends TrackingConfig {
         return firstSegment;
     }
 
-    private static String getFirstName(Context context,String name) {
+    private static String getFirstName(String name) {
         String firstName = name;
         if (!TextUtils.isEmpty(name)) {
             String token[] = name.split(" ");
@@ -204,7 +204,7 @@ public class TrackingUtils extends TrackingConfig {
         return firstName;
     }
 
-    public static String normalizePhoneNumber(Context context,String phoneNum) {
+    public static String normalizePhoneNumber(String phoneNum) {
         if (!TextUtils.isEmpty(phoneNum))
             return phoneNum.replaceFirst("^0(?!$)", "62");
         else

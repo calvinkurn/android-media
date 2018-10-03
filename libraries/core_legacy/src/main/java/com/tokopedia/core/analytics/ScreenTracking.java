@@ -34,7 +34,7 @@ public class ScreenTracking extends TrackingUtils {
     public static void sendScreen(Activity activity, IOpenScreenAnalytics openScreenAnalytics) {
         try {
             ScreenTrackingBuilder
-                    .newInstance(activity, openScreenAnalytics, getAfUniqueId())
+                    .newInstance(activity, openScreenAnalytics, getAfUniqueId(activity))
                     .execute(activity);
         } catch (Exception e) {
             e.printStackTrace();

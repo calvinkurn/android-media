@@ -55,7 +55,6 @@ public class AppsflyerContainer implements IAppsflyerContainer {
     public void initAppsFlyer(String key, String userID) {
         setCurrencyCode("IDR");
         setUserID(userID);
-        setAndroidID();
         setAFLog(BuildConfig.DEBUG);
         setGCMId(Jordan.GCM_PROJECT_NUMBER);
         setAppsFlyerKey(key);

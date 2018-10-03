@@ -14,8 +14,8 @@ import com.tokopedia.core.analytics.data.DiskAnalyticsDataStore;
 public class UserAuthenticationAnalytics {
     private static DiskAnalyticsDataStore mDiskAnalyticsDataStore;
 
-    public UserAuthenticationAnalytics() {
-        mDiskAnalyticsDataStore = new DiskAnalyticsDataStore();
+    public UserAuthenticationAnalytics(Context context) {
+        mDiskAnalyticsDataStore = new DiskAnalyticsDataStore(context);
     }
 
     private static void checkNotNullAnalyticsData(Context context) {
@@ -24,30 +24,30 @@ public class UserAuthenticationAnalytics {
         }
     }
 
-    public static void setActiveLogin() {
-        checkNotNullAnalyticsData();
+    public static void setActiveLogin(Context context) {
+        checkNotNullAnalyticsData(context);
         mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.LOGIN);
     }
 
-    public static void setActiveRegister() {
-        checkNotNullAnalyticsData();
+    public static void setActiveRegister(Context context) {
+        checkNotNullAnalyticsData(context);
         mDiskAnalyticsDataStore.setActiveAuthenticationState(AppEventTracking.GTMCacheValue.REGISTER);
     }
 
-    public static void setActiveAuthenticationMedium(String medium) {
-        checkNotNullAnalyticsData();
+    public static void setActiveAuthenticationMedium(Context context, String medium) {
+        checkNotNullAnalyticsData(context);
         mDiskAnalyticsDataStore.setActiveAuthenticationMedium(medium);
     }
 
-    public static void sendAnalytics() {
-        checkNotNullAnalyticsData();
+    public static void sendAnalytics(Context context) {
+        checkNotNullAnalyticsData(context);
         switch (mDiskAnalyticsDataStore.getActiveAuthenticationState()) {
             case AppEventTracking.GTMCacheValue.LOGIN:
-                UnifyTracking.eventLoginSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
+                UnifyTracking.eventLoginSuccess(context, mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
             case AppEventTracking.GTMCacheValue.REGISTER:
-                UnifyTracking.eventRegisterSuccess(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
+                UnifyTracking.eventRegisterSuccess(context, mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 CommonUtils.dumper(mDiskAnalyticsDataStore.getActiveAuthenticationMedium());
                 break;
         }
