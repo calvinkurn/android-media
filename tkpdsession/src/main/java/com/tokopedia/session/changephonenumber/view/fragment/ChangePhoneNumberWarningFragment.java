@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.tokopedia.SessionRouter;
-import com.tokopedia.abstraction.base.view.activity.BaseWebViewActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.analytics.ChangePhoneNumberAnalytics;
@@ -368,6 +367,7 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     @Override
     public void goToOvoWebView() {
         startActivity(OvoWebViewActivity.newInstance(getContext()));
+        getActivity().finish();
     }
 
     public Integer getUserId(){

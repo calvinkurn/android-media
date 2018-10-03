@@ -15,7 +15,7 @@ public class GetWarningData {
     private int isSuccess;
     @SerializedName("warning")
     @Expose
-    private List<WarningItem> warning;
+    private List<String> warning;
     @SerializedName("saldo")
     @Expose
     private String saldo;
@@ -52,11 +52,11 @@ public class GetWarningData {
         this.isSuccess = isSuccess;
     }
 
-    public List<WarningItem> getWarning() {
+    public List<String> getWarning() {
         return warning;
     }
 
-    public void setWarning(List<WarningItem> warning) {
+    public void setWarning(List<String> warning) {
         this.warning = warning;
     }
 
@@ -130,28 +130,5 @@ public class GetWarningData {
 
     public void setOvoActivated(boolean ovoActivated) {
         isOvoActivated = ovoActivated;
-    }
-
-    public class WarningItem {
-        @SerializedName("img")
-        private String img;
-        @SerializedName("msg")
-        private String msg;
-
-        public String getImg() {
-            return img;
-        }
-
-        public void setImg(String img) {
-            this.img = img;
-        }
-
-        public String getMsg() {
-            return msg;
-        }
-
-        public void setMsg(String msg) {
-            this.msg = msg;
-        }
     }
 }
