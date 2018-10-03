@@ -6,6 +6,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.Toast
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,7 +31,8 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override lateinit var userSession: UserSession
     private var userId: String = "0"
 
-    @Inject lateinit var presenter: ProfileContract.Presenter
+    @Inject
+    lateinit var presenter: ProfileContract.Presenter
 
     companion object {
         fun createInstance() = ProfileFragment()
@@ -45,6 +47,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
+        initView();
         super.onViewCreated(view, savedInstanceState)
     }
 
@@ -78,7 +81,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun loadData(page: Int) {
-        if (isLoadingInitialData){
+        if (isLoadingInitialData) {
             presenter.getProfileFirstPage(userId);
         } else {
             presenter.getProfilePost(userId)
@@ -122,5 +125,18 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
             userId = it.getString(ProfileActivity.EXTRA_PARAM_USER_ID, ProfileActivity.ZERO)
         }
         userSession = UserSession(context)
+    }
+
+    private fun initView() {
+        footer.viewTreeObserver.addOnGlobalLayoutListener(
+                object : ViewTreeObserver.OnGlobalLayoutListener {
+                    override fun onGlobalLayout() {
+                        footer.viewTreeObserver.removeOnGlobalLayoutListener(this)
+
+                        recyclerView.setPadding(0 ,0, 0, footer.height)
+                        recyclerView.requestLayout()
+                    }
+                }
+        )
     }
 }
