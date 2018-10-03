@@ -1001,14 +1001,6 @@ public class GroupChatActivity extends BaseSimpleActivity
         setSponsorData();
     }
 
-    private void setToolbarAppearance() {
-        if (TextUtils.isEmpty(getChannelInfoViewModel().getVideoId())) {
-            setupToolbar();
-        } else {
-            setToolbarWhite();
-        }
-    }
-
     private void setTooltip(VoteInfoViewModel voteInfoViewModel) {
         if (!currentFragmentIsVote()
                 && checkPollValid()
@@ -1665,7 +1657,25 @@ public class GroupChatActivity extends BaseSimpleActivity
 
     @Override
     public void onChannelFrozen() {
-        onChannelNotFound(getString(R.string.channel_deactivated));
+//        onChannelNotFound(getString(R.string.channel_deactivated));
+
+        AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
+        myAlertDialog.setTitle(getString(R.string.channel_not_found));
+        myAlertDialog.setMessage(getString(R.string.channel_deactivated));
+        final Context context = this;
+        myAlertDialog.setNeutralButton(getString(R.string.exit_group_chat_ok), new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if (isTaskRoot()) {
+                            startActivity(((GroupChatModuleRouter) getApplicationContext()).getInboxChannelsIntent(context));
+                        }
+                        finish();
+                        GroupChatActivity.super.onBackPressed();
+                    }
+                });
+        myAlertDialog.setCancelable(false);
+        myAlertDialog.show();
     }
 
     @Override

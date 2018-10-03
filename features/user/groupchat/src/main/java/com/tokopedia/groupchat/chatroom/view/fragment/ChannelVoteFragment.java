@@ -254,6 +254,7 @@ public class ChannelVoteFragment extends BaseDaggerFragment implements ChannelVo
                     ((GroupChatModuleRouter) getActivity().getApplicationContext()).openRedirectUrl
                             (getActivity(), voteInfoViewModel.getVoteInfoUrl());
                 }
+
             }
         });
 
