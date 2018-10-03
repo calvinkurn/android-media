@@ -51,6 +51,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import javax.inject.Inject;
@@ -412,10 +413,16 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.CART;
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
+            cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
             presenter.processInitialGetCartData();
         }
     }
