@@ -1663,7 +1663,7 @@ public class GroupChatActivity extends BaseSimpleActivity
         myAlertDialog.setTitle(getString(R.string.channel_not_found));
         myAlertDialog.setMessage(getString(R.string.channel_deactivated));
         final Context context = this;
-        myAlertDialog.setNeutralButton(getString(R.string.exit_group_chat_ok), new
+        myAlertDialog.setPositiveButton(getString(R.string.exit_group_chat_ok), new
                 DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -87,6 +87,6 @@
     <string name="exit_group_chat_body">Body</string>
     <string name="exit_group_chat_yes">Yes</string>
     <string name="exit_group_chat_no">No</string>
-    <string name="exit_group_chat_ok">No</string>
+    <string name="exit_group_chat_ok">Ok</string>
 
 </resources>
