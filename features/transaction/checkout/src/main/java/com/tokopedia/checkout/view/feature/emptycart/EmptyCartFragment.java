@@ -51,6 +51,7 @@ import com.tokopedia.topads.sdk.listener.TopAdsListener;
 import com.tokopedia.topads.sdk.view.DisplayMode;
 import com.tokopedia.topads.sdk.widget.TopAdsView;
 import com.tokopedia.transactionanalytics.CheckoutAnalyticsCart;
+import com.tokopedia.transactionanalytics.ConstantTransactionAnalytics;
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist;
 
 import javax.inject.Inject;
@@ -412,10 +413,16 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
+    protected String getScreenName() {
+        return ConstantTransactionAnalytics.ScreenName.CART;
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
 
         if (!hidden) {
+            cartPageAnalytics.sendScreenName(getActivity(), getScreenName());
             presenter.processInitialGetCartData();
         }
     }
@@ -458,6 +465,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void onProductItemClicked(int position, Product product) {
+        cartPageAnalytics.enhancedEcommerceClickProductRecommendationOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(product, position + 1));
         startActivity(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntentForTopAds(product));
     }
 
@@ -477,7 +486,9 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onItemWishListClicked(Wishlist wishlist) {
+    public void onItemWishListClicked(Wishlist wishlist, int position) {
+        cartPageAnalytics.enhancedEcommerceClickProductWishListOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(wishlist, position));
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
                 wishlist.getId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
@@ -493,7 +504,10 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     }
 
     @Override
-    public void onItemRecentViewClicked(RecentView recentView) {
+    public void onItemRecentViewClicked(RecentView recentView, int position) {
+        cartPageAnalytics.enhancedEcommerceClickProductLastSeenOnEmptyCart(
+                String.valueOf(position), presenter.generateEmptyCartAnalyticProductClickDataLayer(recentView, position));
+
         startActivityForResult(checkoutModuleRouter.checkoutModuleRouterGetProductDetailIntent(
                 recentView.getProductId()
         ), REQUEST_CODE_ROUTE_WISHLIST);
