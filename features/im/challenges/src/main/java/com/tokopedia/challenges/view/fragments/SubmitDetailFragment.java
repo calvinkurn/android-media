@@ -273,7 +273,7 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
     public void setApprovedView(String approveText, String statusMessage) {
         if (Utils.STATUS_ENCODING.equalsIgnoreCase(approveText)) {
             approveText = Utils.STATUS_WAITING;
-            statusMessage = "status is pending";
+            statusMessage = getString(R.string.ch_pending_status_msg);
         }
         Utils.setTextViewBackground(getContext(), approvedView, approveText);
         if (Utils.STATUS_APPROVED.equalsIgnoreCase(approveText)) {
@@ -282,10 +282,9 @@ public class SubmitDetailFragment extends BaseDaggerFragment implements SubmitDe
         } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
             btnSubmit.setVisibility(View.VISIBLE);
             llShare.setVisibility(View.GONE);
+            showStatusInfo(statusMessage, true);
             btnSubmit.setOnClickListener(v -> presenter.onSubmitButtonClick(submissionResult.getCollection().getId()));
         } else if (Utils.STATUS_WAITING.equalsIgnoreCase(approveText)) {
-            showStatusInfo(statusMessage, true);
-        } else if (Utils.STATUS_DECLINED.equalsIgnoreCase(approveText)) {
             showStatusInfo(statusMessage, true);
         }
     }

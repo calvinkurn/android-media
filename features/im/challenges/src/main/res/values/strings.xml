@@ -71,7 +71,7 @@
     <string name="ch_copy_to_clipboard_bhahasa">link telah disalin</string>
     <string name="ch_post_deleted_msg">unggahan telah dihapus</string>
     <string name="ch_submitted_success">Berhasil Mengunggah</string>
-    <string name="ch_submit_fail">Challenge Submission is failed</string>
+    <string name="ch_submit_fail">Gagal Mengunggah</string>
     <string name="ch_other">Lainnya</string>
     <string name="ch_error_msg_select_image">Pilih Gambar</string>
     <string name="ch_error_msg_select_video">Pilih Video</string>
@@ -90,5 +90,6 @@
     <string name="ch_network_error_msg">Oops! Terjadi kesalahan saat. Silahkan coba lagi.</string>
     <string name="ch_must_approved_msg">Semua postingan dari peserta harus disetujui oleh Tokopedia</string>
     <string name="ch_not_participated_error_msg">Anda belum bergabung dalam Challenge mana pun.  Coba beberapa saat lagi.</string>
+    <string name="ch_pending_status_msg">Menunggu Pengecekan</string>
 
 </resources>

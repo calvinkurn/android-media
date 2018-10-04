@@ -191,6 +191,10 @@ public class Utils {
                             position = 3;
                             if (finalPosition > position)
                                 finalPosition = position;
+                        }else if (award.getType().equalsIgnoreCase("ThirdPlace")) {
+                            position = 4;
+                            if (finalPosition > position)
+                                finalPosition = position;
                         }
                     }
                 }

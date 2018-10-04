@@ -225,8 +225,11 @@ public class SubmissionItemAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             }
             tvBuzzPoints.setText(String.valueOf(productItem.getPoints()));
             if (isWinner) {
-                tvWinnerNumber.setVisibility(View.VISIBLE);
-                tvWinnerNumber.setText(String.valueOf(getIndex() + 1));
+                int position = Utils.getWinnerPosition(productItem.getAwards());
+                if (position != -1){
+                    tvWinnerNumber.setVisibility(View.VISIBLE);
+                    tvWinnerNumber.setText(String.valueOf(position));
+                }
             }else{
                 tvWinnerNumber.setVisibility(View.GONE);
                 tvWinnerNumber.setText("");

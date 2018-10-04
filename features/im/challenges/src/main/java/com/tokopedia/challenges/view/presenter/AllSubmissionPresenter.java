@@ -78,14 +78,13 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
         getSubmissionChallengesUseCase.execute(new Subscriber<Map<Type, RestResponse>>() {
             @Override
             public void onCompleted() {
-                CommonUtils.dumper("enter onCompleted");
+
             }
 
             @Override
             public void onError(Throwable e) {
                 isLoading = false;
                 getView().hideProgressBar();
-                CommonUtils.dumper("enter error");
                 e.printStackTrace();
                 getView().hideProgressBar();
                 if (pageStart > 0)
@@ -108,8 +107,8 @@ public class AllSubmissionPresenter extends BaseDaggerPresenter<AllSubmissionCon
                 getView().removeFooter();
                 if (submissionResponse != null && submissionResponse.getSubmissionResults() != null
                         && submissionResponse.getSubmissionResults().size() > 0) {
-                    getView().addSubmissionToCards(submissionResponse.getSubmissionResults());
                     pageStart += submissionResponse.getSubmissionResults().size();
+                    getView().addSubmissionToCards(submissionResponse.getSubmissionResults());
                 } else {
                     isLastPage = true;
                 }
