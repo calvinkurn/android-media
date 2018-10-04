@@ -13,6 +13,7 @@ public class Product implements Parcelable {
 
     private boolean isError;
     private String errorMessage;
+    private String errorMessageDescription;
 
     private long cartId;
     private int productId;
@@ -320,6 +321,14 @@ public class Product implements Parcelable {
         this.preOrderDurationDay = preOrderDurationDay;
     }
 
+    public String getErrorMessageDescription() {
+        return errorMessageDescription;
+    }
+
+    public void setErrorMessageDescription(String errorMessageDescription) {
+        this.errorMessageDescription = errorMessageDescription;
+    }
+
     public Product() {
     }
 
@@ -332,6 +341,7 @@ public class Product implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isError ? (byte) 1 : (byte) 0);
         dest.writeString(this.errorMessage);
+        dest.writeString(this.errorMessageDescription);
         dest.writeInt(this.productId);
         dest.writeLong(this.cartId);
         dest.writeString(this.productName);
@@ -368,6 +378,7 @@ public class Product implements Parcelable {
     protected Product(Parcel in) {
         this.isError = in.readByte() != 0;
         this.errorMessage = in.readString();
+        this.errorMessageDescription = in.readString();
         this.productId = in.readInt();
         this.cartId = in.readLong();
         this.productName = in.readString();

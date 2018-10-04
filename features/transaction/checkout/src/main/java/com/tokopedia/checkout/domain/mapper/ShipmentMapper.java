@@ -46,8 +46,7 @@ public class ShipmentMapper implements IShipmentMapper {
         dataResult.setKeroToken(shipmentAddressFormDataResponse.getKeroToken());
         dataResult.setKeroUnixTime(shipmentAddressFormDataResponse.getKeroUnixTime());
         dataResult.setMultiple(shipmentAddressFormDataResponse.getIsMultiple() == 1);
-//        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
-        dataResult.setUseCourierRecommendation(true);
+        dataResult.setUseCourierRecommendation(shipmentAddressFormDataResponse.getIsRobinhood() == 1);
         dataResult.setErrorCode(shipmentAddressFormDataResponse.getErrorCode());
         dataResult.setError(!mapperUtil.isEmpty(shipmentAddressFormDataResponse.getErrors()));
         dataResult.setErrorMessage(mapperUtil.convertToString(shipmentAddressFormDataResponse.getErrors()));
@@ -192,7 +191,10 @@ public class ShipmentMapper implements IShipmentMapper {
                                 analyticsProductCheckoutData.setProductQuantity(String.valueOf(product.getProductQuantity()));
 
                                 productResult.setError(!mapperUtil.isEmpty(product.getErrors()));
-                                productResult.setErrorMessage(mapperUtil.convertToString(product.getErrors()));
+                                if (product.getErrors() != null) {
+                                    productResult.setErrorMessage(product.getErrors().size() >= 1 ? product.getErrors().get(0) : "");
+                                    productResult.setErrorMessageDescription(product.getErrors().size() >= 2 ? product.getErrors().get(1) : "");
+                                }
 
                                 productResult.setProductId(product.getProductId());
                                 productResult.setCartId(product.getCartId());

@@ -93,8 +93,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private TextView tvWarningDescription;
     private TextView tvTextSentBy;
     private TextView tvShopName;
-    private ImageView imgShippingWarning;
-    private TextView tvShippingWarning;
     private LinearLayout llShippingWarningContainer;
     private ImageView ivProductImage;
     private TextView tvProductName;
@@ -182,6 +180,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     private LinearLayout layoutWarningAndError;
     private LinearLayout llCourierStateLoading;
     private LinearLayout llCourierRecommendationStateLoading;
+    private TextView tvErrorShipmentItemTitle;
+    private TextView tvErrorShipmentItemDescription;
 
     private List<ShipmentData> shipmentDataList;
     private Pattern phoneNumberRegexPattern;
@@ -210,8 +210,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         tvWarningDescription = itemView.findViewById(R.id.tv_warning_description);
         tvTextSentBy = itemView.findViewById(R.id.tv_text_sent_by);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
-        imgShippingWarning = itemView.findViewById(R.id.img_shipping_warning);
-        tvShippingWarning = itemView.findViewById(R.id.tv_shipping_warning);
         llShippingWarningContainer = itemView.findViewById(R.id.ll_shipping_warning_container);
         ivProductImage = itemView.findViewById(R.id.iv_product_image);
         tvProductName = itemView.findViewById(R.id.tv_product_name);
@@ -299,6 +297,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         llCourierStateLoading = itemView.findViewById(R.id.ll_courier_state_loading);
         llCourierRecommendationStateLoading = itemView.findViewById(R.id.ll_courier_recommendation_state_loading);
+        tvErrorShipmentItemTitle = itemView.findViewById(R.id.tv_error_shipment_item_title);
+        tvErrorShipmentItemDescription = itemView.findViewById(R.id.tv_error_shipment_item_description);
 
         compositeSubscription = new CompositeSubscription();
         initSaveStateDebouncer();
@@ -460,7 +460,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private void renderFirstCartItem(CartItemModel cartItemModel) {
         if (cartItemModel.isError()) {
-            showShipmentWarning(cartItemModel.getErrorMessage());
+            showShipmentWarning(cartItemModel);
         } else {
             hideShipmentWarning();
         }
@@ -1177,10 +1177,17 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
         };
     }
 
-    private void showShipmentWarning(String message) {
-        if (!TextUtils.isEmpty(message)) {
-            tvShippingWarning.setText(message);
+    private void showShipmentWarning(CartItemModel cartItemModel) {
+        if (!TextUtils.isEmpty(cartItemModel.getErrorMessage())) {
+            tvErrorShipmentItemTitle.setText(cartItemModel.getErrorMessage());
+            tvErrorShipmentItemTitle.setVisibility(View.VISIBLE);
             llShippingWarningContainer.setVisibility(View.VISIBLE);
+            if (!TextUtils.isEmpty(cartItemModel.getErrorMessageDescription())) {
+                tvErrorShipmentItemDescription.setText(cartItemModel.getErrorMessageDescription());
+                tvErrorShipmentItemDescription.setVisibility(View.VISIBLE);
+            } else {
+                tvErrorShipmentItemDescription.setVisibility(View.GONE);
+            }
         } else {
             llShippingWarningContainer.setVisibility(View.GONE);
         }
