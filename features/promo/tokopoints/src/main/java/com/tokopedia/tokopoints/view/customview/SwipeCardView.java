@@ -100,11 +100,11 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
+                this.getParent().requestDisallowInterceptTouchEvent(true);
                 x1 = event.getX();
-                return true;
             }
             case MotionEvent.ACTION_MOVE: {
-
+                this.getParent().requestDisallowInterceptTouchEvent(true);
                 float dx = x - mPreviousX;
 
                 if (event.getX() > mMinWidth
@@ -118,12 +118,14 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
                         mSwipeIcon.setVisibility(GONE);
                     }
                 }
-
                 break;
             }
             case MotionEvent.ACTION_UP: {
+                this.getParent().requestDisallowInterceptTouchEvent(false);
+
                 if (Math.abs(x1 - event.getX()) > MIN_SWIPE_AMOUNT_PX) {
                     if (event.getX() > getMaxSwipeWidth() * .75) {
+                        isSwipeEnable = false;
                         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, getMaxSwipeWidth());
                         anim.addUpdateListener(valueAnimator -> {
@@ -134,7 +136,6 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
                         });
                         anim.setDuration(DELAY_SHOW_CHECK_MS);
                         anim.start();
-                        isSwipeEnable = false;
                         mCouponContainer.postDelayed(() -> {
                             mCouponContainer.setDisplayedChild(CONTAINER_CHECK);
                             mSwipeIcon.setVisibility(GONE);
@@ -144,6 +145,7 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
                             }
                         }, DELAY_SHOW_CHECK_MS);
                     } else {
+                        isSwipeEnable = true;
                         ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) mTouchView.getLayoutParams();
                         ValueAnimator anim = ValueAnimator.ofInt(layoutParams.width, mMinWidth);
                         anim.addUpdateListener(valueAnimator -> {
@@ -156,6 +158,7 @@ public class SwipeCardView extends CardView implements View.OnTouchListener {
                         anim.setDuration(DELAY_BACK_MS);
                         anim.start();
                         mTextSwipeTitle.setTextColor(ContextCompat.getColor(getContext(), R.color.black_38));
+                        mSwipeIcon.setVisibility(VISIBLE);
 
                         if (mOnSwipeListener != null) {
                             mOnSwipeListener.onPartialSwipe();
