@@ -85,6 +85,11 @@ public class AppRatingView extends FrameLayout {
         return AppRatingEnum.EMPTY;
     }
 
+    public void setDefaultRating(float rating) {
+        if (ratingBar != null)
+            ratingBar.setRating(rating);
+    }
+
     public float getRating() {
         return ratingBar.getRating();
     }

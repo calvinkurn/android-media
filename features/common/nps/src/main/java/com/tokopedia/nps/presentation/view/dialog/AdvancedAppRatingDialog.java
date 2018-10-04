@@ -62,6 +62,8 @@ public class AdvancedAppRatingDialog extends AppRatingDialog {
         buttonClose = dialogView.findViewById(R.id.button_close);
         appRatingView = dialogView.findViewById(R.id.view_app_rating);
 
+        appRatingView.setDefaultRating(3);
+
         dialog = new AlertDialog.Builder(activity)
                 .setView(dialogView)
                 .create();
