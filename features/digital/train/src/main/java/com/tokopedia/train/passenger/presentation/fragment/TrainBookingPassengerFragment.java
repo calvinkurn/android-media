@@ -190,34 +190,14 @@ public class TrainBookingPassengerFragment extends BaseDaggerFragment implements
     private void initializeActionButton() {
         submitButton.setOnClickListener(view -> {
 
-            String origin = departureScheduleViewModel.getOrigin();
-            String destination = departureScheduleViewModel.getDestination();
-
-            String departureScheduleId = trainScheduleBookingPassData.getDepartureScheduleId();
-            String departureTrainClass = departureScheduleViewModel.getDisplayClass();
-            String departureTrainName = departureScheduleViewModel.getTrainName();
-            double departurePrice = departureScheduleViewModel.getAdultFare() +
-                    departureScheduleViewModel.getInfantFare();
-
-            String returnScheduleId = null;
-            String returnTrainClass = null;
-            String returnTrainName = null;
-            double returnPrice = 0;
             int numOfTotalPassenger = trainScheduleBookingPassData.getAdultPassenger() +
                     trainScheduleBookingPassData.getInfantPassenger();
 
             if (returnScheduleViewModel != null) {
-                String trip = "round trip";
-                returnScheduleId = trainScheduleBookingPassData.getReturnScheduleId();
-                returnTrainClass = returnScheduleViewModel.getDisplayClass();
-                returnTrainName = returnScheduleViewModel.getTrainName();
-                returnPrice = returnScheduleViewModel.getAdultFare()
-                        + returnScheduleViewModel.getInfantFare();
                 trainAnalytics.eventAddToCart(
                         departureScheduleViewModel, returnScheduleViewModel, numOfTotalPassenger
                 );
             } else {
-                String trip = "single trip";
                 trainAnalytics.eventAddToCart(
                         departureScheduleViewModel, numOfTotalPassenger
                 );
