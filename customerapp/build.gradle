@@ -237,9 +237,6 @@ android {
     flavorDimensions "tier", "client"
 
     productFlavors {
-        alpha {
-            dimension "tier"
-        }
         live {
             dimension "tier"
         }
@@ -259,7 +256,6 @@ afterEvaluate {
     dependencies {
         liveDevImplementation rootProject.ext.instabugDependencies.instabug
         stagingDevImplementation rootProject.ext.instabugDependencies.instabug
-        alphaDevImplementation rootProject.ext.instabugDependencies.instabug
     }
 }
 
