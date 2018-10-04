@@ -83,6 +83,7 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.AdsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatPointsViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleAnnouncementViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
@@ -1274,6 +1275,8 @@ public class GroupChatActivity extends BaseSimpleActivity
         if (notifReceiver != null) {
             LocalBroadcastManager.getInstance(this).unregisterReceiver(notifReceiver);
         }
+
+        presenter.destroyWebSocket();
     }
 
     private String getChannelHandlerId() {
@@ -1890,5 +1893,9 @@ public class GroupChatActivity extends BaseSimpleActivity
         } else {
             viewModel.getChannelInfoViewModel().setGroupChatPointsViewModel(model);
         }
+    }
+
+    public void testSendReply(PendingChatViewModel pendingChatViewModel) {
+        presenter.testSendReply(pendingChatViewModel, userSession);
     }
 }

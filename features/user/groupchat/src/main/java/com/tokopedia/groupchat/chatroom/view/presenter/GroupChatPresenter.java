@@ -3,17 +3,25 @@ package com.tokopedia.groupchat.chatroom.view.presenter;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.gson.JsonObject;
 import com.sendbird.android.OpenChannel;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.data.model.session.UserSession;
 import com.tokopedia.groupchat.chatroom.domain.usecase.ChannelHandlerUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.GetChannelInfoUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LoginGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.domain.usecase.LogoutGroupChatUseCase;
 import com.tokopedia.groupchat.chatroom.view.listener.GroupChatContract;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PendingChatViewModel;
 import com.tokopedia.groupchat.chatroom.websocket.RxWebSocket;
 import com.tokopedia.groupchat.chatroom.websocket.WebSocketSubscriber;
 import com.tokopedia.groupchat.common.util.GroupChatErrorHandler;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.inject.Inject;
 
@@ -126,9 +134,7 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
     public void detachView() {
         super.detachView();
         getChannelInfoUseCase.unsubscribe();
-        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
-            mSubscription.unsubscribe();
-        }
+        destroyWebSocket();
     }
 
     public void setHandler(String channelUrl, String channelHandlerId, ChannelHandlerUseCase.ChannelHandlerListener listener) {
@@ -202,7 +208,57 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
             @Override
             public void onError(Throwable e) {
-                super.onError(e);
+                super.onError(e);{
+                    if (mSubscription == null || mSubscription.isUnsubscribed()) {
+                        mSubscription = new CompositeSubscription();
+                    }
+
+                    String magicString = "wss://chat.tokopedia.com" +
+                            "/connect" +
+                            "?os_type=1" +
+                            "&device_id=" + deviceId +
+                            "&user_id=" + userId;
+
+                    WebSocketSubscriber subscriber = new WebSocketSubscriber() {
+                        @Override
+                        protected void onOpen(@NonNull WebSocket webSocket) {
+                            Log.d("MainActivity", " on WebSocket open");
+                        }
+
+                        @Override
+                        protected void onMessage(@NonNull String text) {
+                            Log.d("MainActivity", text);
+                        }
+
+                        @Override
+                        protected void onMessage(@NonNull ByteString byteString) {
+                            Log.d("MainActivity", byteString.toString());
+                        }
+
+                        @Override
+                        protected void onReconnect() {
+                            Log.d("MainActivity", "onReconnect");
+                        }
+
+                        @Override
+                        protected void onClose() {
+                            Log.d("MainActivity", "onClose");
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                        }
+                    };
+                    Subscription subscription = RxWebSocket.get(magicString, accessToken)
+                            //RxLifecycle : https://github.com/dhhAndroid/RxLifecycle
+                            .subscribe(subscriber);
+
+
+                    if (subscriber != null) {
+                        mSubscription.add(subscription);
+                    }
+                }
             }
         };
         Subscription subscription = RxWebSocket.get(magicString, accessToken)
@@ -212,6 +268,37 @@ public class GroupChatPresenter extends BaseDaggerPresenter<GroupChatContract.Vi
 
         if (subscriber != null) {
             mSubscription.add(subscription);
+        }
+    }
+
+    public void testSendReply(PendingChatViewModel pendingChatViewModel, UserSession userSession) {
+        String START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+        SimpleDateFormat date = new SimpleDateFormat(START_TIME_FORMAT, Locale.US);
+        date.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String startTime =  date.format(Calendar.getInstance().getTime());
+
+        String magicString = "wss://chat.tokopedia.com" +
+                "/connect" +
+                "?os_type=1" +
+                "&device_id=" + userSession.getDeviceId() +
+                "&user_id=" + userSession.getUserId();
+
+        JsonObject json = new JsonObject();
+        json.addProperty("code", 103);
+        JsonObject data = new JsonObject();
+        data.addProperty("message_id", 7996643);
+        data.addProperty("message", pendingChatViewModel.getMessage());
+        data.addProperty("start_time", startTime);
+        json.add("data", data);
+
+
+
+        RxWebSocket.send(magicString, json.toString());
+    }
+
+    public void destroyWebSocket() {
+        if (mSubscription != null && !mSubscription.isUnsubscribed()) {
+            mSubscription.unsubscribe();
         }
     }
 }
