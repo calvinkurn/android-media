@@ -246,14 +246,8 @@ public class TopAdsBannerView extends LinearLayout implements BannerAdsContract.
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        presenter.attachView(this);
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
         presenter.detachView();
     }
 }
