@@ -133,7 +133,7 @@ public class EventsDetailsPresenter
         bookTicketIntent.putExtra(EXTRA_EVENT_VIEWMODEL, eventsDetailsViewModel);
         bookTicketIntent.putExtra(EXTRA_SEATING_PARAMETER, hasSeatLayout);
         getView().navigateToActivityRequest(bookTicketIntent, Utils.Constants.SELECT_TICKET_REQUEST);
-        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle() + "-" + getSCREEN_NAME());
+        UnifyTracking.eventDigitalEventTracking(EventsGAConst.EVENT_CLICK_LANJUKTAN, eventsDetailsViewModel.getTitle().toLowerCase() + "-" + getSCREEN_NAME());
     }
 
 }
