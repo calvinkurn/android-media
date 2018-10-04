@@ -10,7 +10,7 @@ import com.tokopedia.core.analytics.nishikino.model.Promotion;
 import com.tokopedia.core.base.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.core.home.BannerWebView;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.design.banner.BannerView;
 import com.tokopedia.home.R;

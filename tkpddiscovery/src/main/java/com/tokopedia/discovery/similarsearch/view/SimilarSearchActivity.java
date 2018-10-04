@@ -13,8 +13,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
 import com.tokopedia.discovery.R;
 
 public class SimilarSearchActivity extends BaseSimpleActivity implements SimilarSearchFragment.OnAnimationCompletelistner{

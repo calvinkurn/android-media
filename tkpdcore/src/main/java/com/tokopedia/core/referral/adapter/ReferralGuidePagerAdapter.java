@@ -1,11 +1,8 @@
 package com.tokopedia.core.referral.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,9 @@ import android.widget.TextView;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.UnifyTracking;
-import com.tokopedia.core.manage.general.ManageWebViewActivity;
-import com.tokopedia.core.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.core.remoteconfig.RemoteConfig;
+import com.tokopedia.remote_config.FirebaseRemoteConfigImpl;
+import com.tokopedia.remote_config.RemoteConfig;
 import com.tokopedia.core.var.TkpdCache;
-import com.tokopedia.core.var.TkpdUrl;
 import com.tokopedia.design.bottomsheet.BottomSheetView;
 
 /**

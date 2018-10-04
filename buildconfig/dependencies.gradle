@@ -408,6 +408,7 @@ ext {
             applink           : ":libraries:applink",
             cacheApi          : ":libraries:cache_api",
             useCase           : ":libraries:use_case",
+            remoteConfig      : ":libraries:remote_config",
             userSession       : ":libraries:user_session",
             config            : ":libraries:global_config",
             network           : ":libraries:network",
