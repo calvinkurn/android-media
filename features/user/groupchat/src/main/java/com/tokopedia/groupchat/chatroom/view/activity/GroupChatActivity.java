@@ -1658,7 +1658,10 @@ public class GroupChatActivity extends BaseSimpleActivity
     @Override
     public void onChannelFrozen() {
 //        onChannelNotFound(getString(R.string.channel_deactivated));
-
+        if(viewModel.getChannelInfoViewModel() == null) {
+            onChannelDeleted();
+            return;
+        }
         AlertDialog.Builder myAlertDialog = new android.app.AlertDialog.Builder(this);
         myAlertDialog.setTitle(getString(R.string.channel_not_found));
         myAlertDialog.setMessage(getString(R.string.channel_deactivated));
