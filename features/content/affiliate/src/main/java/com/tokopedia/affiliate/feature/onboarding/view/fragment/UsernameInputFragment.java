@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.DomainInputActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
@@ -27,7 +27,7 @@ import com.tokopedia.user.session.UserSession;
 /**
  * @author by milhamj on 9/24/18.
  */
-public class DomainInputFragment extends BaseDaggerFragment {
+public class UsernameInputFragment extends BaseDaggerFragment {
 
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
@@ -41,8 +41,8 @@ public class DomainInputFragment extends BaseDaggerFragment {
 
     private String productId = "";
 
-    public static DomainInputFragment newInstance(@NonNull Bundle bundle) {
-        DomainInputFragment fragment = new DomainInputFragment();
+    public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
+        UsernameInputFragment fragment = new UsernameInputFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -51,7 +51,7 @@ public class DomainInputFragment extends BaseDaggerFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_af_domain_input, container, false);
+        View view = inflater.inflate(R.layout.fragment_af_username_input, container, false);
         avatar = view.findViewById(R.id.avatar);
         usernameWrapper = view.findViewById(R.id.usernameWrapper);
         usernameInput = view.findViewById(R.id.usernameInput);
@@ -81,7 +81,7 @@ public class DomainInputFragment extends BaseDaggerFragment {
         userSession = new UserSession(getContext());
 
         if (getArguments() != null) {
-            productId = getArguments().getString(DomainInputActivity.PARAM_PRODUCT_ID, "");
+            productId = getArguments().getString(UsernameInputActivity.PARAM_PRODUCT_ID, "");
         }
     }
 

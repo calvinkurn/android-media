@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.affiliate.R;
-import com.tokopedia.affiliate.feature.onboarding.view.activity.DomainInputActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
@@ -89,7 +89,7 @@ public class OnboardingFragment extends Fragment {
         );
         ImageHandler.loadImage2(image, imageUrl, R.drawable.ic_loading_image);
         goBtn.setOnClickListener(view1 ->
-                startActivity(DomainInputActivity.createIntent(getContext()))
+                startActivity(UsernameInputActivity.createIntent(getContext()))
         );
     }
 
