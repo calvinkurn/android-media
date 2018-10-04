@@ -43,6 +43,9 @@ public class GetWarningData {
     @SerializedName("is_ovo_activated")
     @Expose
     private boolean isOvoActivated;
+    @SerializedName("redirect_url")
+    @Expose
+    private String redirectUrl;
 
     public int getIsSuccess() {
         return isSuccess;
@@ -130,5 +133,13 @@ public class GetWarningData {
 
     public void setOvoActivated(boolean ovoActivated) {
         isOvoActivated = ovoActivated;
+    }
+
+    public String getRedirectUrl() {
+        return redirectUrl;
+    }
+
+    public void setRedirectUrl(String redirectUrl) {
+        this.redirectUrl = redirectUrl;
     }
 }
