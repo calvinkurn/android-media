@@ -1,7 +1,5 @@
 package com.tokopedia.checkout.view.feature.emptycart;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -267,6 +265,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasWishList(boolean hasMoreItem) {
+        cartPageAnalytics.enhancedEcommerceProductViewWishListOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductWishlistDataLayer());
         cvWishList.setVisibility(View.VISIBLE);
         wishlistAdapter.notifyDataSetChanged();
         if (hasMoreItem) {
@@ -291,6 +291,8 @@ public class EmptyCartFragment extends BaseCheckoutFragment
 
     @Override
     public void renderHasRecentView(boolean hasMoreItem) {
+        cartPageAnalytics.enhancedEcommerceProductViewLastSeenOnEmptyCart(
+                presenter.generateEmptyCartAnalyticViewProductRecentViewDataLayer());
         cvLastSeen.setVisibility(View.VISIBLE);
         recentViewAdapter.notifyDataSetChanged();
         if (hasMoreItem) {

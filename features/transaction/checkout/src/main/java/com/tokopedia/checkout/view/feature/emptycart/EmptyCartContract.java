@@ -75,6 +75,12 @@ public interface EmptyCartContract {
 
         Map<String, Object> generateEmptyCartAnalyticProductClickDataLayer(Product product, int index);
 
+        Map<String, Object> generateEmptyCartAnalyticViewProductWishlistDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecentViewDataLayer();
+
+        Map<String, Object> generateEmptyCartAnalyticViewProductRecommendationDataLayer();
+
     }
 
 }
