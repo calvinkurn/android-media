@@ -2,9 +2,16 @@ package com.tokopedia.broadcast.message.data.model
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 
-data class ProductPayloadMutation(val productId: Int = -1,
-                                  val productProfile: ProductProfileMutation): Parcelable{
+data class ProductPayloadMutation(
+        @SerializedName("productId")
+        @Expose
+        val productId: Int = -1,
+        @SerializedName("productProfile")
+        @Expose
+        val productProfile: ProductProfileMutation): Parcelable{
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -30,10 +37,19 @@ data class ProductPayloadMutation(val productId: Int = -1,
         }
     }
 
-    data class ProductProfileMutation(val name: String,
-                                      val price: String,
-                                      val imageUrl: String,
-                                      val url: String): Parcelable {
+    data class ProductProfileMutation(
+            @SerializedName("name")
+            @Expose
+            val name: String,
+            @SerializedName("price")
+            @Expose
+            val price: String,
+            @SerializedName("imageUrl")
+            @Expose
+            val imageUrl: String,
+            @SerializedName("url")
+            @Expose
+            val url: String): Parcelable {
         constructor(parcel: Parcel) : this(
                 parcel.readString(),
                 parcel.readString(),

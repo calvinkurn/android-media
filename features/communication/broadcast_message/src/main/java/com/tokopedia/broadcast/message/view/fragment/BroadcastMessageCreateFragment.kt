@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.data.model.session.UserSession
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
@@ -28,6 +29,8 @@ import com.tokopedia.broadcast.message.view.activity.BroadcastMessagePreviewActi
 import com.tokopedia.broadcast.message.view.adapter.BroadcastMessageProductItemAdapter
 import com.tokopedia.broadcast.message.view.listener.BroadcastMessageCreateView
 import com.tokopedia.broadcast.message.view.presenter.BroadcastMessageCreatePresenter
+import com.tokopedia.design.base.BaseToaster
+import com.tokopedia.design.component.ToasterError
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
@@ -53,7 +56,7 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     private val hashProducList = ArrayList<HashMap<String, String>>()
     private val productAdapter = BroadcastMessageProductItemAdapter({gotoAddProduct()}){
             productId, position -> productIds.remove(productId); selectedProducts.removeAt(position)
-                                    hashProducList.removeAt(position); updateBackgroundImage()}
+                                    hashProducList.removeAt(position)}
     var isShowDialogWhenBack: Boolean = false
 
     private fun gotoAddProduct() {
@@ -105,7 +108,14 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
         })
 
-        button_save.setOnClickListener { moveToPreview() }
+        button_save.setOnClickListener {
+            if (switch_upload_product.isChecked && productIds.isEmpty()){
+                ToasterError.make(view, getString(R.string.empty_attached_product),
+                        BaseToaster.LENGTH_INDEFINITE).setAction(R.string.OK){}.show()
+            } else {
+                moveToPreview()
+            }
+        }
 
         presenter.getShopInfo()
         needEnabledSubmitButton()
@@ -194,7 +204,6 @@ class BroadcastMessageCreateFragment: BaseDaggerFragment(), BroadcastMessageCrea
     private fun needEnabledSubmitButton(){
         var valid = true
         valid = valid && !savedLocalImageUrl.isNullOrEmpty()
-        valid = valid && (!switch_upload_product.isChecked || (switch_upload_product.isChecked && !productIds.isEmpty()))
         valid = valid && !edit_text_message.text.toString().isEmpty()
 
         button_save.isEnabled = valid

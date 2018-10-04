@@ -32,6 +32,7 @@
     <string name="dialog_descr_cancel_create_bm">Pesan yang telah Anda buat tidak bisa disimpan dan akan dihapus</string>
     <string name="dialog_ok_cancel_create_bm">Ya, Batalkan</string>
     <string name="dialog_no_cancel_create_bm">Tidak</string>
+    <string name="empty_attached_product">Harap lampirkan produk atau menonaktifkan tombol \'Lampirkan produk saya\'</string>
     <plurals name="template_follower">
         <item quantity="zero">%d follower</item>
         <item quantity="one">%d follower</item>

@@ -66,6 +66,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginStart="@dimen/dp_16"
+        app:custom_color="@color/grey_200"
         app:corners="@integer/corner_radius_shimmering"
         app:width_weight="0.6"
         app:layout_constraintLeft_toRightOf="@+id/image_sender"
@@ -81,6 +82,7 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_6"
+        app:custom_color="@color/grey_200"
         app:corners="@integer/corner_radius_shimmering"
         app:width_weight="0.4"
         app:layout_constraintLeft_toLeftOf="@+id/tv_loader_name"
@@ -111,7 +113,7 @@
         app:layout_constraintTop_toBottomOf="@+id/top_divider"
         app:layout_constraintBottom_toBottomOf="@+id/preview_device_screen">
 
-        <LinearLayout
+        <LinearLayout android:id="@+id/container_screen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -179,7 +181,7 @@
             
             <TextView style="@style/TextView.Micro.BlackDisabled"
                 android:id="@+id/time_message"
-                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginTop="@dimen/dp_6"
                 android:text="@string/temp_message_time"
                 android:gravity="center"
                 android:drawableRight="@drawable/ic_broadcast_message_grey"

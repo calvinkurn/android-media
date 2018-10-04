@@ -60,12 +60,7 @@
             android:layout_marginTop="@dimen/dp_10"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:paddingTop="@dimen/dp_24"
-            android:paddingBottom="@dimen/dp_24"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingStart="@dimen/dp_16"
-            android:paddingRight="@dimen/dp_16"
-            android:paddingEnd="@dimen/dp_16">
+            android:padding="@dimen/dp_16">
 
             <TextView style="@style/TextView.Small.BlackSecondary"
                 android:layout_width="0dp"

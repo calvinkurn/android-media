@@ -32,6 +32,7 @@ import com.tokopedia.core.base.presentation.BaseDaggerFragment;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.SnackbarRetry;
+import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core.util.RefreshHandler;
 import com.tokopedia.design.text.SearchInputView;
 import com.tokopedia.broadcast.message.common.BroadcastMessageRouter;
@@ -120,22 +121,6 @@ public class InboxChatFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.inbox_chat_organize, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == R.id.action_organize) {
-            setOptionsMenu();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         GraphqlClient.init(context);
@@ -174,12 +159,18 @@ public class InboxChatFragment extends BaseDaggerFragment
         callbackContext = initCallbackActionMode();
         notifier = parentView.findViewById(R.id.notifier);
         sendBroadcast = parentView.findViewById(R.id.tv_bm_action);
+        if (GlobalConfig.isSellerApp()){
+            sendBroadcast.setVisibility(View.VISIBLE);
+            sendBroadcast.setOnClickListener(v -> {
+                if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
+                    ((BroadcastMessageRouter) getActivity().getApplication()).gotoBroadcastMessageList(getContext(), this);
+                }
+            });
+        } else {
+            sendBroadcast.setVisibility(View.GONE);
+        }
         parentView.findViewById(R.id.tv_organize_action).setOnClickListener(v -> setOptionsMenu());
-        sendBroadcast.setOnClickListener(v -> {
-            if (getActivity().getApplication() instanceof BroadcastMessageRouter && getContext() != null){
-                ((BroadcastMessageRouter) getActivity().getApplication()).gotoBroadcastMessageList(getContext(), this);
-            }
-        });
+
         typeFactory = new InboxChatTypeFactoryImpl(this, presenter);
     }
 

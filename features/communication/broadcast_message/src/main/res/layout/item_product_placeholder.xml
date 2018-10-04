@@ -3,11 +3,11 @@
     android:layout_width="@dimen/dp_80"
     android:layout_height="@dimen/dp_80">
 
-    <ImageView android:layout_marginTop="@dimen/dp_7"
+    <ImageView android:layout_marginTop="@dimen/dp_6"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
         android:src="@drawable/ic_plus"
         android:tint="@color/tkpd_main_green"
-        android:background="@drawable/rect_stroke_light_grey_dash"/>
+        android:background="@drawable/bg_product_placeholder"/>
 </FrameLayout>

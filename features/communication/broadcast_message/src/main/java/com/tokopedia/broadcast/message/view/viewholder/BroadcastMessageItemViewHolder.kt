@@ -46,7 +46,8 @@ class BroadcastMessageItemViewHolder(val view: View): AbstractViewHolder<TopChat
             spannableBuilder.append(boldSpannableString (context.getString(R.string.read_progress_template, element.state?.totalRead, element.state?.totalTarget)))
             message_status.setText(spannableBuilder, TextView.BufferType.SPANNABLE)
             message.text = getFormatedMessage(element.message)
-            message.setOnClickListener { if (message.text.endsWith(MORE_DESCRIPTION)) message.text = MethodChecker.fromHtml(element.message) }
+            message.setOnClickListener { if (message.text.endsWith(MORE_DESCRIPTION))
+                message.text = element.message }
             itemView.message_product.adapter = ItemMessageProductAdapter(getListImageUrls(element))
         }
 
@@ -81,7 +82,7 @@ class BroadcastMessageItemViewHolder(val view: View): AbstractViewHolder<TopChat
         val LAYOUT = R.layout.item_broadcast_message
 
         private const val STATUS_SENT = 1
-        private const val MAX_CHAR= 100
+        private const val MAX_CHAR= 75
         private const val MORE_DESCRIPTION = "Selengkapnya"
         private const val HTML_MORE_DESCRIPTION = "<font color='#42b549'>$MORE_DESCRIPTION</font>"
     }

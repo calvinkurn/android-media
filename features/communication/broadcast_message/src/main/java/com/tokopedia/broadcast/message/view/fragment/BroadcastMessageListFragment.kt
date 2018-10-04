@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
+import android.support.v7.widget.LinearLayoutManager
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -51,6 +54,11 @@ class BroadcastMessageListFragment: BaseListFragment<TopChatBlastSeller, Broadca
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        context?.let {
+            val list = getRecyclerView(view)
+            list.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL)
+                .apply { setDrawable(ContextCompat.getDrawable(it, R.drawable.broadcast_message_card_divider)!!)})
+        }
         presenter.getMetaData()
     }
 
