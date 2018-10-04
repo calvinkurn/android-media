@@ -365,8 +365,8 @@ public class ChangePhoneNumberWarningFragment extends BaseDaggerFragment
     }
 
     @Override
-    public void goToOvoWebView() {
-        startActivity(OvoWebViewActivity.newInstance(getContext()));
+    public void goToOvoWebView(String url) {
+        startActivity(OvoWebViewActivity.newInstance(getContext(), url));
         getActivity().finish();
     }
 
