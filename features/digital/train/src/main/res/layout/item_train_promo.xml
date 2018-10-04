@@ -27,7 +27,7 @@
             android:layout_below="@+id/description_promo"
             android:layout_marginRight="@dimen/dp_3"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="Kode Promo:" />
+            android:text="@string/travel_homepage_promo_code_label" />
 
         <TextView
             android:id="@+id/promo_code"
@@ -38,7 +38,7 @@
             android:layout_toRightOf="@id/title_code"
             android:paddingLeft="@dimen/dp_3"
             android:paddingRight="@dimen/dp_3"
-            android:text="LIBURANYUK" />
+            tools:text="LIBURANYUK" />
 
         <TextView
             android:id="@+id/copy_button"
@@ -50,7 +50,7 @@
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
-            android:text="Salin" />
+            android:text="@string/travel_homepage_promo_copy_label" />
 
     </RelativeLayout>
 
