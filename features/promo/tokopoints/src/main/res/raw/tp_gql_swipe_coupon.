@@ -1,0 +1,11 @@
+mutation TokopointsSwipeCoupon($code: String!, $pin: String!) {
+  tokopointsSwipeCoupon(code: $code, pin: $pin) {
+    partnerCode
+    note
+    resultStatus {
+      status
+      code
+      message
+    }
+  }
+}

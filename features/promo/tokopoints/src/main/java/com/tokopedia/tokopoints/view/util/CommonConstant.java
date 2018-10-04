@@ -53,6 +53,7 @@ public interface CommonConstant {
         String CODE = "code";
         String GIFT_EMAIL = "gift_email";
         String NOTES = "notes";
+        String PIN = "pin";
     }
 
     interface TickerMapKeys {
