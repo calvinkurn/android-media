@@ -22,9 +22,21 @@ public class BookingCodePresenter implements BookingCodeContract.BookingPresente
     public Bitmap generateBarcode(String code, String type) {
         MultiFormatWriter multiFormatWriter = new MultiFormatWriter();
         Bitmap bitmap = null;
+        BarcodeFormat format = null;
+        switch (type) {
+            case "128b":
+                format = BarcodeFormat.CODE_128;
+                break;
+            case "39":
+                format = BarcodeFormat.CODE_39;
+                break;
+            case "93":
+                format = BarcodeFormat.CODE_93;
+                break;
+        }
         try {
             BitMatrix bitMatrix = multiFormatWriter
-                    .encode(code, BarcodeFormat.CODE_128, BARCODE_WIDTH, BARCODE_HEIGHT);
+                    .encode(code, format, BARCODE_WIDTH, BARCODE_HEIGHT);
             BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
             bitmap = barcodeEncoder.createBitmap(bitMatrix);
         } catch (WriterException e) {
