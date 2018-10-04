@@ -70,6 +70,8 @@ import com.tokopedia.pms.howtopay.HowtopayApplinkModule;
 import com.tokopedia.pms.howtopay.HowtopayApplinkModuleLoader;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModule;
 import com.tokopedia.product.manage.item.utils.ProductAddDeeplinkModuleLoader;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModule;
+import com.tokopedia.product.manage.list.applink.ProductManageApplinkModuleLoader;
 import com.tokopedia.profile.applink.ProfileApplinkModule;
 import com.tokopedia.profile.applink.ProfileApplinkModuleLoader;
 import com.tokopedia.pushnotif.Constant;
@@ -151,7 +153,8 @@ import io.branch.referral.BranchError;
         RecentViewApplinkModule.class,
         ChangePasswordDeeplinkModule.class,
         SettingBankApplinkModule.class,
-        InboxTalkApplinkModule.class
+        InboxTalkApplinkModule.class,
+        ProductManageApplinkModule.class
 })
 
 public class DeeplinkHandlerActivity extends AppCompatActivity {
@@ -201,7 +204,8 @@ public class DeeplinkHandlerActivity extends AppCompatActivity {
                 new RecentViewApplinkModuleLoader(),
                 new ChangePasswordDeeplinkModuleLoader(),
                 new SettingBankApplinkModuleLoader(),
-                    new InboxTalkApplinkModuleLoader()
+                new InboxTalkApplinkModuleLoader(),
+                new ProductManageApplinkModuleLoader()
 
             );
         }

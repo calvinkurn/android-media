@@ -684,8 +684,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap) {
-        checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap);
+    public void sendAnalyticsCheckoutStep2(Map<String, Object> stringObjectMap, String transactionId) {
+        checkoutAnalyticsCourierSelection.enhancedECommerceGoToCheckoutStep2(stringObjectMap, transactionId);
     }
 
     @Override
