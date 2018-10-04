@@ -1,7 +1,6 @@
 package com.tokopedia.checkout.router;
 
 import android.app.Activity;
-import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -28,7 +27,7 @@ public interface ICheckoutModuleRouter {
     Intent checkoutModuleRouterGetLoyaltyNewCheckoutMarketplaceCartShipmentIntent(
             boolean couponActive, String additionalStringData, String defaultSelectedTab);
 
-    Intent checkoutModuleRouterGetProductDetailIntent(ProductPass productPass);
+    Intent checkoutModuleRouterGetProductDetailIntent(String productId);
 
     Intent checkoutModuleRouterGetProductDetailIntentForTopAds(Product product);
 
@@ -52,7 +51,7 @@ public interface ICheckoutModuleRouter {
 
     Converter.Factory checkoutModuleRouterGetStringResponseConverter();
 
-    Intent checkoutModuleRouterGetHomeFeedIntent(Context context);
+    Intent checkoutModuleRouterGetHomeIntent(Context context);
 
     Intent getAddAddressIntent(Activity activity, @Nullable AddressModel data, Token token, boolean isEdit, boolean isEmptyAddressFirst);
 
@@ -63,4 +62,6 @@ public interface ICheckoutModuleRouter {
     String checkoutModuleRouterGetPublicKey(PublicKey publicKey);
 
     void goToPurchasePage(Activity activity);
+
+    Intent checkoutModuleRouterGetRecentViewIntent();
 }

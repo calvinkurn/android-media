@@ -1,14 +1,22 @@
 package com.tokopedia.topads.sdk.domain.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import com.google.gson.annotations.SerializedName;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class Header {
+public class Header implements Parcelable {
+    @SerializedName(KEY_TOTAL_DATA)
     private int totalData;
+    @SerializedName(KEY_PROCESS_TIME)
     private double processTime;
+    @SerializedName(KEY_META_DATA)
     private MetaData metaData;
 
     private static final String KEY_META_DATA = "meta";
@@ -26,6 +34,34 @@ public class Header {
             setTotalData(object.getInt(KEY_TOTAL_DATA));
         }
     }
+
+    protected Header(Parcel in) {
+        totalData = in.readInt();
+        processTime = in.readDouble();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(totalData);
+        dest.writeDouble(processTime);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Header> CREATOR = new Creator<Header>() {
+        @Override
+        public Header createFromParcel(Parcel in) {
+            return new Header(in);
+        }
+
+        @Override
+        public Header[] newArray(int size) {
+            return new Header[size];
+        }
+    };
 
     public int getTotalData() {
         return totalData;

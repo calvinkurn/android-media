@@ -17,7 +17,6 @@ import com.tokopedia.feedplus.data.FeedAuthInterceptor;
 import com.tokopedia.feedplus.data.api.FeedApi;
 import com.tokopedia.feedplus.data.factory.FavoriteShopFactory;
 import com.tokopedia.feedplus.data.factory.FeedFactory;
-import com.tokopedia.feedplus.data.mapper.CheckNewFeedMapper;
 import com.tokopedia.feedplus.data.mapper.FeedListMapper;
 import com.tokopedia.feedplus.data.mapper.FeedResultMapper;
 import com.tokopedia.feedplus.data.repository.FavoriteShopRepository;
@@ -139,8 +138,7 @@ public class FeedPlusModule {
                                    FeedListMapper feedListMapper,
                                    @Named(NAME_LOCAL) FeedResultMapper feedResultMapperLocal,
                                    @Named(NAME_CLOUD) FeedResultMapper feedResultMapperCloud,
-                                   GlobalCacheManager globalCacheManager,
-                                   CheckNewFeedMapper checkNewFeedMapper) {
+                                   GlobalCacheManager globalCacheManager) {
         return new FeedFactory(
                 context,
                 feedApi,
@@ -148,8 +146,7 @@ public class FeedPlusModule {
                 feedListMapper,
                 feedResultMapperLocal,
                 feedResultMapperCloud,
-                globalCacheManager,
-                checkNewFeedMapper
+                globalCacheManager
         );
     }
 

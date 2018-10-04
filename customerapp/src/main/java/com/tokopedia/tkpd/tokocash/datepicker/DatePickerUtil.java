@@ -3,8 +3,8 @@ package com.tokopedia.tkpd.tokocash.datepicker;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.tokopedia.seller.common.datepicker.view.constant.DatePickerConstant;
-import com.tokopedia.seller.common.datepicker.view.model.PeriodRangeModel;
+import com.tokopedia.datepicker.range.view.constant.DatePickerConstant;
+import com.tokopedia.datepicker.range.view.model.PeriodRangeModel;
 
 import java.text.DateFormat;
 import java.text.ParseException;

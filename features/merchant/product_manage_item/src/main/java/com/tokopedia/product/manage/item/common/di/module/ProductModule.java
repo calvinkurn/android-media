@@ -11,20 +11,12 @@ import com.tokopedia.core.database.manager.GlobalCacheManager;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.di.qualifier.WsV4QualifierWithErrorHander;
 import com.tokopedia.core.network.retrofit.interceptors.BearerInterceptor;
-import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.data.source.ShopInfoDataSource;
-import com.tokopedia.product.manage.item.common.data.repository.DatePickerRepositoryImpl;
-import com.tokopedia.product.manage.item.common.data.source.DatePickerDataSource;
-import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
+import com.tokopedia.product.manage.item.common.data.source.cloud.ShopApi;
 import com.tokopedia.product.manage.item.common.data.source.cloud.TomeProductApi;
-import com.tokopedia.product.manage.item.common.domain.DatePickerRepository;
-import com.tokopedia.product.manage.item.common.domain.interactor.ClearDatePickerUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.FetchDatePickerUseCase;
-import com.tokopedia.product.manage.item.common.domain.interactor.SaveDatePickerUseCase;
+import com.tokopedia.product.manage.item.common.di.scope.ProductScope;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepository;
 import com.tokopedia.product.manage.item.common.domain.repository.ShopInfoRepositoryImpl;
-import com.tokopedia.product.manage.item.common.view.presenter.DatePickerPresenter;
-import com.tokopedia.product.manage.item.common.view.presenter.DatePickerPresenterImpl;
 
 import dagger.Module;
 import dagger.Provides;
@@ -39,19 +31,6 @@ import retrofit2.Retrofit;
 @Module
 public class ProductModule {
 
-    @ProductScope
-    @Provides
-    DatePickerPresenter provideDatePickerPresenter(FetchDatePickerUseCase fetchDatePickerUseCase,
-                                                   SaveDatePickerUseCase saveDatePickerUseCase,
-                                                   ClearDatePickerUseCase clearDatePickerUseCase) {
-        return new DatePickerPresenterImpl(fetchDatePickerUseCase, saveDatePickerUseCase, clearDatePickerUseCase);
-    }
-
-    @ProductScope
-    @Provides
-    DatePickerRepository provideDatePickerRepository(DatePickerDataSource datePickerDataSource) {
-        return new DatePickerRepositoryImpl(datePickerDataSource);
-    }
 
     @ProductScope
     @Provides
