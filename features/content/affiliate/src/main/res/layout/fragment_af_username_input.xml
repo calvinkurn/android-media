@@ -126,5 +126,17 @@
             app:buttonCompatSize="big"
             app:buttonCompatType="primary"
             app:layout_constraintBottom_toTopOf="@id/agreeTerms" />
+
+        <FrameLayout
+            android:id="@+id/loadingView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:visibility="visible"
+            tools:visibility="gone">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </FrameLayout>
     </android.support.constraint.ConstraintLayout>
 </android.support.v4.widget.NestedScrollView>

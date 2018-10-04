@@ -25,12 +25,15 @@ import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
 
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
  * @author by milhamj on 9/24/18.
  */
-public class UsernameInputFragment extends BaseDaggerFragment {
+public class UsernameInputFragment extends BaseDaggerFragment
+        implements UsernameInputContract.View {
 
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
@@ -40,6 +43,7 @@ public class UsernameInputFragment extends BaseDaggerFragment {
     private PrefixEditText usernameInput;
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
+    private View loadingView;
 
     @Inject
     private UsernameInputContract.Presenter presenter;
@@ -63,6 +67,7 @@ public class UsernameInputFragment extends BaseDaggerFragment {
         usernameInput = view.findViewById(R.id.usernameInput);
         termsAndCondition = view.findViewById(R.id.termsAndCondition);
         saveBtn = view.findViewById(R.id.saveBtn);
+        loadingView = view.findViewById(R.id.loadingView);
         return view;
     }
 
@@ -81,6 +86,21 @@ public class UsernameInputFragment extends BaseDaggerFragment {
     @Override
     protected String getScreenName() {
         return null;
+    }
+
+    @Override
+    public void showLoading() {
+        loadingView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onSuccessGetUsernameSuggestion(List<String> suggestions) {
+
     }
 
     private void initVar() {

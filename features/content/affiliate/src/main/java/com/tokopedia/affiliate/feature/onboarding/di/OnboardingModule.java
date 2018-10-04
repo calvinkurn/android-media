@@ -14,8 +14,8 @@ import dagger.Provides;
 public class OnboardingModule {
     @OnboardingScope
     @Provides
-    UsernameInputContract.Presenter provideUsernameInputPresenter(GetUsernameSuggestionUseCase
-                                                                          getUsernameSuggestionUseCase) {
+    UsernameInputContract.Presenter
+    provideUsernameInputPresenter(GetUsernameSuggestionUseCase getUsernameSuggestionUseCase) {
         return new UsernameInputPresenter(getUsernameSuggestionUseCase);
     }
 }

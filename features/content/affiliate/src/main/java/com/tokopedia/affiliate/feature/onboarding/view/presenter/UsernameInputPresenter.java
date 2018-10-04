@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.feature.onboarding.view.presenter;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.affiliate.feature.onboarding.domain.usecase.GetUsernameSuggestionUseCase;
 import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
+import com.tokopedia.affiliate.feature.onboarding.view.subscriber.GetUsernameSuggestionSubscriber;
 
 import javax.inject.Inject;
 
@@ -27,6 +28,7 @@ public class UsernameInputPresenter extends BaseDaggerPresenter<UsernameInputCon
 
     @Override
     public void getUsernameSuggestion() {
-
+        getView().showLoading();
+        getUsernameSuggestionUseCase.execute(new GetUsernameSuggestionSubscriber(getView()));
     }
 }
