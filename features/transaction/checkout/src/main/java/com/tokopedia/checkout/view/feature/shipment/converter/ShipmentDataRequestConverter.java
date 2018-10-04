@@ -33,7 +33,6 @@ public class ShipmentDataRequestConverter {
 
     public ShipmentAdapter.RequestData generateRequestData(
             List<ShipmentCartItemModel> shipmentCartItemModels, RecipientAddressModel recipientAddress) {
-        String ratesId = shipmentCartItemModels.get(0).getSelectedShipmentDetailData().getShippingCourierViewModels().get(0).getRatesId();
         ShipmentAdapter.RequestData requestData = new ShipmentAdapter.RequestData();
         if (shipmentCartItemModels != null && shipmentCartItemModels.size() > 0) {
             List<ShopProductCheckoutRequest> shopProductCheckoutRequestList = new ArrayList<>();
@@ -103,7 +102,8 @@ public class ShipmentDataRequestConverter {
 
     private ShopProductCheckoutRequest getProductCheckoutRequest(ShipmentCartItemModel shipmentCartItemModel) {
         ShipmentDetailData shipmentDetailData = shipmentCartItemModel.getSelectedShipmentDetailData();
-        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
+        if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null
+                && shipmentDetailData.getShippingCourierViewModels() != null) {
             CourierItemData courierItemData = shipmentDetailData.getSelectedCourier();
 
             // Create shop product model for shipment
