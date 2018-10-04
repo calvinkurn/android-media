@@ -18,11 +18,14 @@ import com.tokopedia.affiliate.R;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.UsernameInputActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.OnboardingActivity;
 import com.tokopedia.affiliate.feature.onboarding.view.activity.RecommendProductActivity;
+import com.tokopedia.affiliate.feature.onboarding.view.contract.UsernameInputContract;
 import com.tokopedia.affiliate.feature.onboarding.view.widget.PrefixEditText;
 import com.tokopedia.design.component.ButtonCompat;
 import com.tokopedia.design.text.TkpdHintTextInputLayout;
 import com.tokopedia.design.text.watcher.AfterTextWatcher;
 import com.tokopedia.user.session.UserSession;
+
+import javax.inject.Inject;
 
 /**
  * @author by milhamj on 9/24/18.
@@ -32,13 +35,16 @@ public class UsernameInputFragment extends BaseDaggerFragment {
     private static final Integer USERNAME_MAX_LENGTH = 15;
     private static final Integer USERNAME_MIN_LENGTH = 3;
 
-    private UserSession userSession;
     private ImageView avatar;
     private TkpdHintTextInputLayout usernameWrapper;
     private PrefixEditText usernameInput;
     private TextView termsAndCondition;
     private ButtonCompat saveBtn;
 
+    @Inject
+    private UsernameInputContract.Presenter presenter;
+
+    private UserSession userSession;
     private String productId = "";
 
     public static UsernameInputFragment newInstance(@NonNull Bundle bundle) {
