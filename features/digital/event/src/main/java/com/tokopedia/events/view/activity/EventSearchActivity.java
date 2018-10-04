@@ -103,7 +103,6 @@ public class EventSearchActivity extends TActivity implements
             if (imm != null)
                 imm.hideSoftInputFromWindow(getRootView().getWindowToken(), 0);
         }
-        filterBtn.setVisibility(View.VISIBLE);
         mPresenter.searchSubmitted(text);
     }
 
@@ -178,6 +177,8 @@ public class EventSearchActivity extends TActivity implements
     public void setSuggestions(List<CategoryItemsViewModel> suggestions, String highlight, boolean showCards) {
         if (suggestions != null && !suggestions.isEmpty()) {
             TopEventsSuggestionsAdapter adapter = new TopEventsSuggestionsAdapter(this, suggestions, mPresenter, showCards);
+            if (showCards)
+                filterBtn.setVisibility(View.VISIBLE);
             adapter.setHighLightText(highlight);
             rvTopEventSuggestions.setLayoutManager(layoutManager);
             rvTopEventSuggestions.setAdapter(adapter);
