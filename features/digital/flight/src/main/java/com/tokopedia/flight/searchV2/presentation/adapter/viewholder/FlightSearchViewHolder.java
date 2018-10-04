@@ -38,6 +38,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     private TextView savingPrice;
     private TextView arrivalAddDay;
     private TextView discountTag;
+    private TextView bestPairingTag;
     private View containerDetail;
 
     private FlightSearchAdapterTypeFactory.OnFlightSearchListener onFlightSearchListener;
@@ -55,6 +56,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         savingPrice = (TextView) itemView.findViewById(R.id.saving_price);
         arrivalAddDay = (TextView) itemView.findViewById(R.id.arrival_add_day);
         discountTag = (TextView) itemView.findViewById(R.id.tv_discount_tag);
+        bestPairingTag = itemView.findViewById(R.id.tv_best_pairing_tag);
         containerDetail = itemView.findViewById(R.id.container_detail);
         this.onFlightSearchListener = onFlightSearchListener;
     }
@@ -78,6 +80,7 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
         setRefundableInfo(flightJourneyViewModel);
         setSavingPrice(flightJourneyViewModel);
         setArrivalAddDay(flightJourneyViewModel);
+        setBestPairingPrice(flightJourneyViewModel);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -168,5 +171,9 @@ public class FlightSearchViewHolder extends AbstractViewHolder<FlightJourneyView
     private void setRefundableInfo(FlightJourneyViewModel flightJourneyViewModel) {
         airlineRefundableInfo.setVisibility(View.VISIBLE);
         airlineRefundableInfo.setText(flightJourneyViewModel.isRefundable().getValueRes());
+    }
+
+    private void setBestPairingPrice(FlightJourneyViewModel flightJourneyViewModel) {
+
     }
 }
