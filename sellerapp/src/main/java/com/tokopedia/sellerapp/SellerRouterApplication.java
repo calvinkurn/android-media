@@ -1616,6 +1616,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public Intent getManagePeopleIntent(Context context) {
-        return null;
+        return new Intent(context, ManagePeopleProfileActivity.class);
     }
 }
