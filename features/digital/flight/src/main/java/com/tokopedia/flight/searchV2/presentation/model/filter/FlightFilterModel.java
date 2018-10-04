@@ -36,6 +36,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private List<RefundableEnum> refundableTypeList;
     private boolean isHasFilter = false;
     private boolean isSpecialPrice = false;
+    private boolean isBestPairing = false;
     private String journeyId;
 
     public FlightFilterModel() {
@@ -55,6 +56,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         in.readList(this.refundableTypeList, RefundableEnum.class.getClassLoader());
         this.isHasFilter = in.readByte() != 0;
         this.isSpecialPrice = in.readByte() != 0;
+        this.isBestPairing = in.readByte() != 0;
         this.journeyId = in.readString();
     }
 
@@ -122,6 +124,14 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.refundableTypeList = refundableTypeList;
     }
 
+    public boolean isBestPairing() {
+        return isBestPairing;
+    }
+
+    public void setBestPairing(boolean bestPairing) {
+        isBestPairing = bestPairing;
+    }
+
     public String getJourneyId() {
         return journeyId;
     }
@@ -145,6 +155,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         flightFilterModel.setDepartureTimeList(getCopyOfDepartureList());
         flightFilterModel.setRefundableTypeList(getCopyOfRefundableList());
         flightFilterModel.setSpecialPrice(isSpecialPrice());
+        flightFilterModel.setBestPairing(isBestPairing());
         flightFilterModel.setJourneyId(getJourneyId());
         return flightFilterModel;
     }
@@ -238,6 +249,7 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         dest.writeList(this.refundableTypeList);
         dest.writeByte((byte) (isHasFilter ? 1 : 0));
         dest.writeByte((byte) (isSpecialPrice ? 1 : 0));
+        dest.writeByte((byte) (isBestPairing ? 1 : 0));
         dest.writeString(this.journeyId);
     }
 }

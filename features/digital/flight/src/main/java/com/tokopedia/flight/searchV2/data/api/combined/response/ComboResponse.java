@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Created by Rizky on 19/09/18.
  */
-class ComboResponse {
+public class ComboResponse {
 
     @SerializedName("id")
     @Expose
@@ -26,15 +26,15 @@ class ComboResponse {
 
     @SerializedName("adultPriceNumeric")
     @Expose
-    private String adultPriceNumeric;
+    private int adultPriceNumeric;
 
     @SerializedName("childPriceNumeric")
     @Expose
-    private String childPriceNumeric;
+    private int childPriceNumeric;
 
     @SerializedName("infantPriceNumeric")
     @Expose
-    private String infantPriceNumeric;
+    private int infantPriceNumeric;
 
     public String getId() {
         return id;
@@ -52,15 +52,15 @@ class ComboResponse {
         return infantPrice;
     }
 
-    public String getAdultPriceNumeric() {
+    public int getAdultPriceNumeric() {
         return adultPriceNumeric;
     }
 
-    public String getChildPriceNumeric() {
+    public int getChildPriceNumeric() {
         return childPriceNumeric;
     }
 
-    public String getInfantPriceNumeric() {
+    public int getInfantPriceNumeric() {
         return infantPriceNumeric;
     }
 

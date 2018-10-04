@@ -5,9 +5,9 @@ import rx.Observable
 /**
  * Created by Rizky on 20/09/18.
  */
-abstract class NetworkBoundResourceObservable<ResultType, RequestType> {
+abstract class NetworkBoundResourceObservable<ApiResponseType, DbType> {
 
-    private var result: Observable<ResultType>?
+    private var result: Observable<DbType>
 
     init {
         @Suppress("LeakingThis")
@@ -16,32 +16,29 @@ abstract class NetworkBoundResourceObservable<ResultType, RequestType> {
                 .flatMap { it ->
                     if (shouldFetch(it)) {
                         createCall()
-                                .map {
-                                    mapResponse(it)
-                                }
-                                .doOnNext {
-                                    saveCallResult(it)
-                                }
+                                .map { mapResponse(it) }
+                                .map { saveCallResult(it) }
+                                .flatMap { loadFromDb() }
                                 .doOnError {
                                     onFetchFailed(it.message)
                                 }
                     } else {
                         return@flatMap loadFromDb()
                     }
-                }?.doOnError {
+                }.doOnError {
                     onFetchFailed(it.message)
                 }
     }
 
-    protected abstract fun loadFromDb(): Observable<ResultType>
+    protected abstract fun loadFromDb(): Observable<DbType>
 
-    protected abstract fun shouldFetch(data: ResultType?): Boolean
+    protected abstract fun shouldFetch(data: DbType?): Boolean
 
-    protected abstract fun createCall(): Observable<RequestType>
+    protected abstract fun createCall(): Observable<ApiResponseType>
 
-    abstract fun mapResponse(it: RequestType): ResultType
+    abstract fun mapResponse(response: ApiResponseType): DbType
 
-    protected abstract fun saveCallResult(item: ResultType)
+    protected abstract fun saveCallResult(items: DbType)
 
     protected open fun onFetchFailed(message: String?) {}
 

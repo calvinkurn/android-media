@@ -9,7 +9,7 @@ import java.util.List;
  * Created by User on 11/16/2017.
  */
 
-public class FlightSearchApiRequestModel implements Parcelable{
+public class FlightSearchSingleApiRequestModel implements Parcelable{
     private String depAirport;
     private String arrAirport;
     private String date;
@@ -19,9 +19,9 @@ public class FlightSearchApiRequestModel implements Parcelable{
     private int classID;
     private List<String> airlines;
 
-    public FlightSearchApiRequestModel(String depAirport, String arrAirport,
-                                       String date, int adult, int children, int infant, int classID,
-                                       List<String> airlines) {
+    public FlightSearchSingleApiRequestModel(String depAirport, String arrAirport,
+                                             String date, int adult, int children, int infant, int classID,
+                                             List<String> airlines) {
         this.depAirport = depAirport;
         this.arrAirport = arrAirport;
         this.date = date;
@@ -32,7 +32,7 @@ public class FlightSearchApiRequestModel implements Parcelable{
         this.airlines = airlines;
     }
 
-    protected FlightSearchApiRequestModel(Parcel in) {
+    protected FlightSearchSingleApiRequestModel(Parcel in) {
         depAirport = in.readString();
         arrAirport = in.readString();
         date = in.readString();
@@ -43,15 +43,15 @@ public class FlightSearchApiRequestModel implements Parcelable{
         airlines = in.createStringArrayList();
     }
 
-    public static final Creator<FlightSearchApiRequestModel> CREATOR = new Creator<FlightSearchApiRequestModel>() {
+    public static final Creator<FlightSearchSingleApiRequestModel> CREATOR = new Creator<FlightSearchSingleApiRequestModel>() {
         @Override
-        public FlightSearchApiRequestModel createFromParcel(Parcel in) {
-            return new FlightSearchApiRequestModel(in);
+        public FlightSearchSingleApiRequestModel createFromParcel(Parcel in) {
+            return new FlightSearchSingleApiRequestModel(in);
         }
 
         @Override
-        public FlightSearchApiRequestModel[] newArray(int size) {
-            return new FlightSearchApiRequestModel[size];
+        public FlightSearchSingleApiRequestModel[] newArray(int size) {
+            return new FlightSearchSingleApiRequestModel[size];
         }
     };
 

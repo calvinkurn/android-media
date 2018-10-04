@@ -40,7 +40,7 @@ public class FlightEntity {
     @SerializedName("pdf")
     @Expose
     private String pdf;
-    @SerializedName("journeys")
+    @SerializedName("flightJourneys")
     @Expose
     private List<JourneyEntity> journeys;
     @SerializedName("passengers")

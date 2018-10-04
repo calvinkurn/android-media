@@ -8,7 +8,7 @@ import com.google.gson.annotations.SerializedName;
  */
 public class FlightSearchCombinedRequestData {
 
-    public static final String SEARCH_SINGLE = "search_combined";
+    public static final String SEARCH_COMBINED = "search_combined";
 
     @SerializedName("type")
     @Expose
@@ -19,7 +19,7 @@ public class FlightSearchCombinedRequestData {
     private AttributesRequestData attributes;
 
     public FlightSearchCombinedRequestData(AttributesRequestData attributes) {
-        type = SEARCH_SINGLE;
+        type = SEARCH_COMBINED;
         this.attributes = attributes;
     }
 
