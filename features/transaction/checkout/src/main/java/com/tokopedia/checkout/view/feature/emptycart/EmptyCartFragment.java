@@ -221,15 +221,24 @@ public class EmptyCartFragment extends BaseCheckoutFragment
         rvLastSeen.setNestedScrollingEnabled(false);
 
         swipeRefreshLayout.setOnRefreshListener(() -> presenter.processInitialGetCartData());
-        tvWishListSeeAll.setOnClickListener(v -> startActivityForResult(
-                checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
-                REQUEST_CODE_ROUTE_WISHLIST)
+        tvWishListSeeAll.setOnClickListener(v -> {
+                    cartPageAnalytics.eventClickLihatSemuaWishlist();
+                    startActivityForResult(
+                            checkoutModuleRouter.checkoutModuleRouterGetWhislistIntent(),
+                            REQUEST_CODE_ROUTE_WISHLIST);
+                }
         );
-        tvLastSeenSeeAll.setOnClickListener(v -> startActivityForResult(
-                checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
-                REQUEST_CODE_ROUTE_RECENT_VIEW));
+        tvLastSeenSeeAll.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickLihatSemuaLastSeen();
+            startActivityForResult(
+                    checkoutModuleRouter.checkoutModuleRouterGetRecentViewIntent(),
+                    REQUEST_CODE_ROUTE_RECENT_VIEW);
+        });
         tvRecommendationSeeAll.setOnClickListener(v -> navigateToHome());
-        tvRecommendationSeeAllBottom.setOnClickListener(v -> navigateToHome());
+        tvRecommendationSeeAllBottom.setOnClickListener(v -> {
+            cartPageAnalytics.eventClickLihatLainnya();
+            navigateToHome();
+        });
 
         String autoApplyMessage = null;
         if (getArguments() != null && !TextUtils.isEmpty(getArguments().getString(ARG_AUTO_APPLY_MESSAGE))) {
