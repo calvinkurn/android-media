@@ -8,9 +8,11 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
  */
 public interface UsernameInputContract {
     interface View extends CustomerView {
+        void showLoading();
 
+        void hideLoading();
     }
     interface Presenter extends CustomerPresenter<View> {
-
+        void getUsernameSuggestion();
     }
 }
