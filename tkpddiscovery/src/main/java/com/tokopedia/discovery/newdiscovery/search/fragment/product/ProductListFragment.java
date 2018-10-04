@@ -514,7 +514,7 @@ public class ProductListFragment extends SearchSectionFragment
     }
 
     @Override
-    public void onWishlistButtonClicked(ProductItem productItem) {
+    public void onWishlistButtonClicked(final ProductItem productItem) {
         presenter.handleWishlistButtonClicked(productItem);
     }
 
@@ -608,6 +608,11 @@ public class ProductListFragment extends SearchSectionFragment
         adapter.updateWishlistStatus(productId, false);
         enableWishlistButton(productId);
         NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+    }
+
+    @Override
+    public void notifyAdapter() {
+        adapter.notifyDataSetChanged();
     }
 
     @Override
