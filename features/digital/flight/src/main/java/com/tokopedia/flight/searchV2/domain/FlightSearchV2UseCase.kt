@@ -24,6 +24,9 @@ class FlightSearchV2UseCase @Inject constructor(
         val isRoundTrip = requestParams.getBoolean(PARAM_IS_ROUND_TRIP, false)
         val isReturning = requestParams.getBoolean(PARAM_IS_RETURNING, false)
 
+        val flightSearchApiRequestModel =
+                requestParams.getObject(PARAM_INITIAL_SEARCH) as FlightSearchApiRequestModel
+
         if (isRoundTrip && !isReturning) {
             val flightSearchCombinedApiRequestModel =
                     requestParams.getObject(PARAM_SEARCH_COMBINED) as FlightSearchCombinedApiRequestModel
@@ -34,9 +37,9 @@ class FlightSearchV2UseCase @Inject constructor(
                                 .map { meta ->
                                     with(meta) {
                                         return@map FlightSearchMetaViewModel(
-                                                "",
-                                                "",
-                                                "",
+                                                flightSearchApiRequestModel.depAirport,
+                                                flightSearchApiRequestModel.arrAirport,
+                                                flightSearchApiRequestModel.date,
                                                 isNeedRefresh,
                                                 refreshTime,
                                                 maxRetry,
@@ -46,16 +49,14 @@ class FlightSearchV2UseCase @Inject constructor(
                                     }
                                 }
                     }
-        } else if (isRoundTrip) {
-
         } else {
             return flightSearchRepository.getSearchSingle(requestParams.parameters)
                     .map {
                         with(it) {
                             return@map FlightSearchMetaViewModel(
-                                    "",
-                                    "",
-                                    "",
+                                    flightSearchApiRequestModel.depAirport,
+                                    flightSearchApiRequestModel.arrAirport,
+                                    flightSearchApiRequestModel.date,
                                     isNeedRefresh,
                                     refreshTime,
                                     maxRetry,
@@ -65,7 +66,6 @@ class FlightSearchV2UseCase @Inject constructor(
                         }
                     }
         }
-        return Observable.just(null)
     }
 
     fun createRequestParams(flightSearchSingleApiRequestModel: FlightSearchApiRequestModel,

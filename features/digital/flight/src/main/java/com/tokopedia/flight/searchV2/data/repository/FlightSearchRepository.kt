@@ -11,6 +11,7 @@ import com.tokopedia.flight.searchV2.data.api.combined.FlightSearchCombinedDataA
 import com.tokopedia.flight.searchV2.data.api.combined.response.FlightSearchCombinedResponse
 import com.tokopedia.flight.searchV2.data.db.*
 import com.tokopedia.flight.searchV2.presentation.model.FlightSearchCombinedApiRequestModel
+import com.tokopedia.flight.searchV2.presentation.model.FlightSearchMetaViewModel
 import rx.Observable
 import rx.functions.Func2
 import java.util.*
@@ -22,7 +23,7 @@ import javax.inject.Inject
 open class FlightSearchRepository @Inject constructor(
         private val flightSearchCombinedDataApiSource: FlightSearchCombinedDataApiSource,
         private val flightSearchDataCloudSource: FlightSearchDataCloudSource,
-        private val flightSearchComboDataDbSource: FlightSearchComboDataDbSource,
+        private val flightSearchCombinedDataDbSource: FlightSearchCombinedDataDbSource,
         private val flightSearchSingleDataDbSource: FlightSearchSingleDataDbSource,
         private val flightAirportDataListDBSource: FlightAirportDataListDBSource,
         private val flightAirlineDataListDBSource: FlightAirlineDataListDBSource) {
@@ -33,7 +34,7 @@ open class FlightSearchRepository @Inject constructor(
         return object : NetworkBoundResourceObservable<FlightDataResponse<List<FlightSearchCombinedResponse>>,
                 List<FlightComboTable>>() {
             override fun loadFromDb(): Observable<List<FlightComboTable>> {
-                return flightSearchComboDataDbSource.getAllCombos()
+                return flightSearchCombinedDataDbSource.getAllCombos()
             }
 
             override fun shouldFetch(data: List<FlightComboTable>?) = data == null || data.isEmpty()
@@ -67,7 +68,7 @@ open class FlightSearchRepository @Inject constructor(
             }
 
             override fun saveCallResult(items: List<FlightComboTable>) {
-                flightSearchComboDataDbSource.insert(items)
+                flightSearchCombinedDataDbSource.insert(items)
             }
         }.asObservable()
     }
@@ -85,7 +86,7 @@ open class FlightSearchRepository @Inject constructor(
                                 val routes = createRoutes(journey.attributes.routes, journey.id)
                                 val flightJourneyTable = createJourney(journey.id, journey.attributes, routes)
                                 return@zipWith createJourneyWithAirportAndAirline(flightJourneyTable, pairOfAirport, airlines)
-                            }.zipWith(flightSearchComboDataDbSource.getSearchCombined(journey.id)) {
+                            }.zipWith(flightSearchCombinedDataDbSource.getSearchCombined(journey.id)) {
                                 journeyTable: FlightJourneyTable, combos: List<FlightComboTable> ->
                                 val flightJourneyTable: FlightJourneyTable = if (!combos.isEmpty()) {
                                     val comboBestPairing = combos.find {
