@@ -52,7 +52,7 @@ public class EventDetailsViewModelMapper {
             }
         }
         target.setTimeRange(dateRange);
-        if (source.getSchedules() != null) {
+        if (source.getSchedules() != null && source.getSchedules().size() > 0) {
             int size = source.getSchedules().size();
             target.setAddress(source.getSchedules().get(0).getAddressDetail().getCity());
             List<SchedulesViewModel> schedules = new ArrayList<>(size);

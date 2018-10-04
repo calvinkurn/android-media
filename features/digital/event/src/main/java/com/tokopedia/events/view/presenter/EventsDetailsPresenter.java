@@ -77,6 +77,7 @@ public class EventsDetailsPresenter
             if (from == EventDetailsActivity.FROM_HOME_OR_SEARCH) {
                 getView().renderFromHome(dataFromHome);
                 url = dataFromHome.getUrl();
+                checkForScan(dataFromHome.getId());
             } else if (from == EventDetailsActivity.FROM_DEEPLINK) {
                 url = inIntent.getExtras().getString(EventDetailsActivity.EXTRA_EVENT_NAME_KEY);
             }
@@ -84,7 +85,6 @@ public class EventsDetailsPresenter
             url = dataFromHome.getUrl();
             e.printStackTrace();
         }
-        checkForScan(dataFromHome.getId());
     }
 
     @Override
@@ -121,6 +121,7 @@ public class EventsDetailsPresenter
             public void onNext(EventsDetailsViewModel detailsViewModel) {
                 getView().renderFromCloud(detailsViewModel);   //chained using mapl
                 hasSeatLayout = eventsDetailsViewModel.getHasSeatLayout();
+                checkForScan(detailsViewModel.getId());
                 getView().hideProgressBar();
                 CommonUtils.dumper("enter onNext");
             }
