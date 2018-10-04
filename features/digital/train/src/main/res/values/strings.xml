@@ -50,7 +50,7 @@
     <string name="train_search_sort">Urutkan</string>
     <string name="train_search_filter">Filter</string>
     <string name="train_search_passenger_adult" formatted="false">%d Dewasa</string>
-    <string name="train_search_passenger_infant" formatted="false">%d Infant</string>
+    <string name="train_search_passenger_infant" formatted="false">%d Bayi</string>
     <string name="train_search_departure_title">Perjalanan Pergi</string>
     <string name="train_search_return_title">Perjalanan Pulang</string>
     <string name="train_search_cheapest_label">Termurah</string>
