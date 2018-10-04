@@ -120,7 +120,7 @@ public interface DetailResChatFragmentListener {
 
         void initView(String resolutionId);
 
-        void initUploadImageHandler(Context context, ImageUploadHandler imageUploadHandler);
+        void initContext(Context context);
 
         void sendIconPressed(String message, List<AttachmentViewModel> attachmentList);
 

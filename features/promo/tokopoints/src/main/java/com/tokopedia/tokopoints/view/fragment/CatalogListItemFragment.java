@@ -26,12 +26,15 @@ import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.TokopointRouter;
 import com.tokopedia.tokopoints.di.TokoPointComponent;
+import com.tokopedia.tokopoints.view.activity.MyCouponListingActivity;
+import com.tokopedia.tokopoints.view.activity.SendGiftActivity;
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter;
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration;
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract;
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.presenter.CatalogListItemPresenter;
+import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;
 
 import java.util.ArrayList;
@@ -214,9 +217,19 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog.Builder builder = adb.setPositiveButton(R.string.tp_label_use, (dialogInterface, i) -> {
             //Call api to validate the coupon
             mPresenter.redeemCoupon(code, cta);
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
         });
         adb.setNegativeButton(R.string.tp_label_later, (dialogInterface, i) -> {
-
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI_GUNAKAN_KUPON,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                    title);
         });
         AlertDialog dialog = adb.create();
         dialog.show();
@@ -225,11 +238,23 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
     public void showConfirmRedeemDialog(String cta, String code, String title) {
         AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
-        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> showRedeemCouponDialog(cta, code, title));
+        adb.setNegativeButton(R.string.tp_label_use, (dialogInterface, i) -> {
+            showRedeemCouponDialog(cta, code, title);
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_GUNAKAN,
+                    title);
+        });
 
         adb.setPositiveButton(R.string.tp_label_view_coupon, (dialogInterface, i) -> {
-            //Open webview with lihat kupon
-            openWebView(CommonConstant.WebLink.SEE_COUPON);
+            startActivity(MyCouponListingActivity.getCallingIntent(getActivityContext()));
+
+            AnalyticsTrackerUtil.sendEvent(getContext(),
+                    AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                    AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_BERHASIL,
+                    AnalyticsTrackerUtil.ActionKeys.CLICK_LIHAT_KUPON,
+                    "");
         });
 
         adb.setTitle(R.string.tp_label_successful_exchange);
@@ -274,7 +299,30 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
 
         if (labelNegative != null && !labelNegative.isEmpty()) {
             adb.setNegativeButton(labelNegative, (dialogInterface, i) -> {
-
+                switch (resCode) {
+                    case CommonConstant.CouponRedemptionCode.LOW_POINT:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_NANTI_SAJA,
+                                "");
+                        break;
+                    case CommonConstant.CouponRedemptionCode.SUCCESS:
+                        AnalyticsTrackerUtil.sendEvent(getContext(),
+                                AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                                AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                                AnalyticsTrackerUtil.ActionKeys.CLICK_BATAL,
+                                title);
+                        break;
+                    default:
+                }
             });
         }
 
@@ -283,15 +331,40 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
                 case CommonConstant.CouponRedemptionCode.LOW_POINT:
                     startActivity(HomeRouter.getHomeActivityInterfaceRouter(
                             getAppContext()));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_PENUKARAN_POINT_TIDAK,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_BELANJA,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.QUOTA_LIMIT_REACHED:
                     dialogInterface.cancel();
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KUOTA_HABIS,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_OK,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.PROFILE_INCOMPLETE:
                     startActivity(new Intent(getAppContext(), ProfileCompletionActivity.class));
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_VERIFIED,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_INCOMPLETE_PROFILE,
+                            "");
                     break;
                 case CommonConstant.CouponRedemptionCode.SUCCESS:
                     mPresenter.startSaveCoupon(item);
+
+                    AnalyticsTrackerUtil.sendEvent(getContext(),
+                            AnalyticsTrackerUtil.EventKeys.EVENT_CLICK_COUPON,
+                            AnalyticsTrackerUtil.CategoryKeys.POPUP_KONFIRMASI,
+                            AnalyticsTrackerUtil.ActionKeys.CLICK_TUKAR,
+                            title);
+
                     break;
                 default:
                     dialogInterface.cancel();
@@ -418,5 +491,30 @@ public class CatalogListItemFragment extends BaseDaggerFragment implements Catal
         AlertDialog dialog = adb.create();
         dialog.show();
         decorateDialog(dialog);
+    }
+
+    @Override
+    public void onPreValidateError(String title, String message) {
+        AlertDialog.Builder adb = new AlertDialog.Builder(getActivityContext());
+
+        adb.setTitle(title);
+        adb.setMessage(message);
+
+        adb.setPositiveButton(R.string.tp_label_ok, (dialogInterface, i) -> {
+                }
+        );
+
+        AlertDialog dialog = adb.create();
+        dialog.show();
+        decorateDialog(dialog);
+    }
+
+    @Override
+    public void gotoSendGiftPage(int id, String title, String pointStr) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(CommonConstant.EXTRA_COUPON_ID, id);
+        bundle.putString(CommonConstant.EXTRA_COUPON_TITLE, title);
+        bundle.putString(CommonConstant.EXTRA_COUPON_POINT, pointStr);
+        startActivity(SendGiftActivity.getCallingIntent(getActivity(), bundle));
     }
 }

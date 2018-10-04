@@ -31,22 +31,12 @@ public class CatalogCategory implements Parcelable {
     @SerializedName("timeRemainingSeconds")
     private long timeRemainingSeconds;
 
-    private long timeWithCurrentMs;
-
     @Expose
     @SerializedName("isSelected")
     private boolean isSelected;
 
     public CatalogCategory() {
 
-    }
-
-    public long getTimeWithCurrentMs() {
-        return timeWithCurrentMs;
-    }
-
-    public void setTimeWithCurrentMs(long timeWithCurrentMs) {
-        this.timeWithCurrentMs = timeWithCurrentMs;
     }
 
     public boolean isSelected() {
@@ -129,7 +119,6 @@ public class CatalogCategory implements Parcelable {
         parcel.writeString(imageId);
         parcel.writeString(imageUrl);
         parcel.writeLong(timeRemainingSeconds);
-        parcel.writeLong(timeWithCurrentMs);
     }
 
     private CatalogCategory(Parcel in) {
@@ -139,7 +128,6 @@ public class CatalogCategory implements Parcelable {
         imageId = in.readString();
         imageUrl = in.readString();
         timeRemainingSeconds = in.readLong();
-        timeWithCurrentMs = in.readLong();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

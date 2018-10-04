@@ -61,13 +61,14 @@ public class MainParentActivityLocalTestPowerMock {
         mActivity = (mActivityController = Robolectric.buildActivity(MainParentActivity.class)).get();
     }
 
-    @Test
-    public void testAja() throws Exception{
-        assert mActivity != null;
 
-        /**
-         * this shows that HomeApp cannot be casted.
-         */
-        mActivityController.create().start().resume();
-    }
+//    @Test
+//    public void testAja() throws Exception{
+//        assert mActivity != null;
+//
+//        /**
+//         * this shows that HomeApp cannot be casted.
+//         */
+//        mActivityController.create().start().resume();
+//    }
 }

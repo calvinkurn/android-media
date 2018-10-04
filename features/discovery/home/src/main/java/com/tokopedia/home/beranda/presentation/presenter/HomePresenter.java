@@ -12,6 +12,7 @@ import com.tokopedia.core.util.PagingHandler;
 import com.tokopedia.feedplus.domain.usecase.GetHomeFeedsUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetHomeDataUseCase;
 import com.tokopedia.home.beranda.domain.interactor.GetLocalHomeDataUseCase;
+import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
 import com.tokopedia.home.beranda.listener.HomeFeedListener;
 import com.tokopedia.home.beranda.presentation.view.HomeContract;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewmodel.BannerViewModel;
@@ -23,9 +24,12 @@ import com.tokopedia.home.beranda.presentation.view.subscriber.TokocashHomeSubsc
 import com.tokopedia.home.beranda.presentation.view.subscriber.TokopointHomeSubscriber;
 import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoByDomainUseCase;
+import com.tokopedia.topads.sdk.listener.ImpressionListener;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -483,6 +487,37 @@ public class HomePresenter extends BaseDaggerPresenter<HomeContract.View> implem
                     .unsubscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new TokopointHomeSubscriber(this)));
+        }
+    }
+
+    @Override
+    public void hitBannerImpression(BannerSlidesModel slidesModel) {
+        if (!slidesModel.isImpressed()
+                && slidesModel.getTopadsViewUrl()!=null
+                && !slidesModel.getTopadsViewUrl().isEmpty()) {
+            compositeSubscription.add(Observable.just(new ImpresionTask(new ImpressionListener() {
+                @Override
+                public void onSuccess() {
+                    slidesModel.setImpressed(true);
+                }
+
+                @Override
+                public void onFailed() {
+                    slidesModel.setImpressed(false);
+                }
+            }).execute(slidesModel.getTopadsViewUrl()))
+                    .debounce(200, TimeUnit.MILLISECONDS)
+                    .subscribeOn(Schedulers.newThread())
+                    .unsubscribeOn(Schedulers.newThread())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe());
+        }
+    }
+
+    @Override
+    public void onBannerClicked(BannerSlidesModel slidesModel) {
+        if(slidesModel.getRedirectUrl()!=null && !slidesModel.getRedirectUrl().isEmpty()) {
+            new ImpresionTask().execute(slidesModel.getRedirectUrl());
         }
     }
 }
