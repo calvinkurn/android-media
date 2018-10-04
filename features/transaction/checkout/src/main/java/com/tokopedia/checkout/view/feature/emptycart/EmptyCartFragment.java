@@ -371,6 +371,7 @@ public class EmptyCartFragment extends BaseCheckoutFragment
     @Override
     public void hideLoading() {
         swipeRefreshLayout.setRefreshing(false);
+        nestedScrollView.scrollTo(0, 0);
     }
 
     @Override

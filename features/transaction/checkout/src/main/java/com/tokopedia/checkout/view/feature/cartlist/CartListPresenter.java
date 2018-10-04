@@ -326,17 +326,26 @@ public class CartListPresenter implements ICartListPresenter {
         double totalCashback = 0;
         double totalPrice = 0;
         int totalItemQty = 0;
+        int errorProductCount = 0;
 
         // Collect all Cart Item, if has no error and selected
         List<CartItemHolderData> allCartItemDataList = new ArrayList<>();
         for (CartShopHolderData cartShopHolderData : dataList) {
             if (cartShopHolderData.getShopGroupData().getCartItemDataList() != null) {
-                if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
-                    for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
-                        if (cartItemHolderData.isSelected() && !cartItemHolderData.getCartItemData().isError()) {
-                            allCartItemDataList.add(cartItemHolderData);
+                if (!cartShopHolderData.getShopGroupData().isError()) {
+                    if (cartShopHolderData.isAllSelected() || cartShopHolderData.isPartialSelected()) {
+                        for (CartItemHolderData cartItemHolderData : cartShopHolderData.getShopGroupData().getCartItemDataList()) {
+                            if (!cartItemHolderData.getCartItemData().isError()) {
+                                if (cartItemHolderData.isSelected()) {
+                                    allCartItemDataList.add(cartItemHolderData);
+                                }
+                            } else {
+                                errorProductCount++;
+                            }
                         }
                     }
+                } else {
+                    errorProductCount += cartShopHolderData.getShopGroupData().getCartItemDataList().size();
                 }
             }
         }
@@ -456,7 +465,7 @@ public class CartListPresenter implements ICartListPresenter {
             totalPriceString = CurrencyFormatUtil.convertPriceValueToIdrFormat(((long) totalPrice), false);
         }
         view.updateCashback(totalCashback);
-        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size();
+        boolean selectAllItem = view.getAllCartDataList().size() == allCartItemDataList.size() + errorProductCount;
         view.renderDetailInfoSubTotal(String.valueOf(totalItemQty), totalPriceString, selectAllItem);
 
     }

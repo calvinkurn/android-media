@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -18,6 +19,7 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -82,6 +84,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
 
     private ShipmentAdapterActionListener mActionListener;
 
+    private CardView cvInvoiceItem;
     private LinearLayout layoutError;
     private TextView tvErrorTitle;
     private TextView tvErrorDescription;
@@ -198,6 +201,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void bindViewIds(View itemView) {
+        cvInvoiceItem = itemView.findViewById(R.id.cv_invoice_item);
         layoutError = itemView.findViewById(R.id.layout_error);
         tvErrorTitle = itemView.findViewById(R.id.tv_error_title);
         tvErrorDescription = itemView.findViewById(R.id.tv_error_description);
@@ -355,12 +359,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                                List<ShipmentData> shipmentDataList,
                                RecipientAddressModel recipientAddressModel,
                                RatesDataConverter ratesDataConverter,
-                               ArrayList<ShowCaseObject> showCaseObjectList) {
+                               ArrayList<ShowCaseObject> showCaseObjectList,
+                               boolean isPromoApplied) {
         if (this.shipmentDataList == null) {
             this.shipmentDataList = shipmentDataList;
         }
+        renderMarginFirstItem(shipmentCartItemModel, isPromoApplied);
         renderShop(shipmentCartItemModel);
         renderAddress(shipmentCartItemModel.getRecipientAddressModel());
+        renderShippingType(shipmentCartItemModel, recipientAddressModel, ratesDataConverter, showCaseObjectList);
+        renderErrorAndWarning(shipmentCartItemModel);
+        renderInsurance(shipmentCartItemModel);
+        renderDropshipper();
+        renderCostDetail(shipmentCartItemModel);
+        renderCartItem(shipmentCartItemModel);
+    }
+
+    private void renderErrorAndWarning(ShipmentCartItemModel shipmentCartItemModel) {
+        if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
+            layoutWarningAndError.setVisibility(View.VISIBLE);
+        } else {
+            layoutWarningAndError.setVisibility(View.GONE);
+        }
+        renderError(shipmentCartItemModel);
+        renderWarnings(shipmentCartItemModel);
+    }
+
+    private void renderShippingType(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel recipientAddressModel, RatesDataConverter ratesDataConverter, ArrayList<ShowCaseObject> showCaseObjectList) {
         if (shipmentCartItemModel.isUseCourierRecommendation()) {
             renderCourierRecommendation(shipmentCartItemModel, shipmentCartItemModel.getSelectedShipmentDetailData(),
                     recipientAddressModel, shipmentCartItemModel.getShopShipmentList(), ratesDataConverter);
@@ -382,17 +407,25 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder {
                 );
             }
         }
-        if (shipmentCartItemModel.isWarning() || shipmentCartItemModel.isError()) {
-            layoutWarningAndError.setVisibility(View.VISIBLE);
-        } else {
-            layoutWarningAndError.setVisibility(View.GONE);
+    }
+
+    private void renderMarginFirstItem(ShipmentCartItemModel shipmentCartItemModel, boolean isPromoApplied) {
+        // Only set margin for first item on multiple address
+        if (shipmentCartItemModel.getRecipientAddressModel() != null && isPromoApplied) {
+            if (getAdapterPosition() == 1) {
+                setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16));
+            } else {
+                setMargin((int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_0));
+            }
         }
-        renderError(shipmentCartItemModel);
-        renderWarnings(shipmentCartItemModel);
-        renderInsurance(shipmentCartItemModel);
-        renderDropshipper();
-        renderCostDetail(shipmentCartItemModel);
-        renderCartItem(shipmentCartItemModel);
+    }
+
+    private void setMargin(int topMargin) {
+        ViewGroup.MarginLayoutParams layoutParams =
+                (ViewGroup.MarginLayoutParams) cvInvoiceItem.getLayoutParams();
+        int sideMargin = (int) cvInvoiceItem.getContext().getResources().getDimension(R.dimen.dp_16);
+        layoutParams.setMargins(sideMargin, topMargin, sideMargin, 0);
+        cvInvoiceItem.requestLayout();
     }
 
     private void renderCartItem(ShipmentCartItemModel shipmentCartItemModel) {
